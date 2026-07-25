@@ -1,4 +1,4 @@
-// Tic-tac-toe — hand-rolled GameSpec (docs/GAMES-PLATFORM-SPEC.md, small games).
+// Tic-tac-toe: hand-rolled GameSpec (docs/GAMES-PLATFORM-SPEC.md, small games).
 //
 // Codec: a move is the target cell in algebraic form 'a1'..'c3' (file a–c =
 // column left→right, rank 1–3 = row bottom→top; a1 is bottom-left). White = X
@@ -58,7 +58,7 @@ export const TICTACTOE_SPEC: GameSpec<TicTacToeState> = {
   kind: 'tictactoe',
   family: 'grid',
   title: 'Tic-tac-toe',
-  tagline: 'Three in a row. Simple to learn, impossible to win — against perfect play.',
+  tagline: 'Three in a row. Simple to learn, impossible to win. Against perfect play.',
   players: ['white', 'black'],
   board: { layout: 'cells', files: 3, ranks: 3 },
   flipPolicy: 'none',

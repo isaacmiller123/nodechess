@@ -2,24 +2,24 @@
  "id": "ch03-check-mate-stalemate",
  "band": "03",
  "order": 3,
- "title": "Check, Checkmate, Stalemate — and Mate in One",
+ "title": "Check, Checkmate, Stalemate, and Mate in One",
  "subtitle": "The three end states, and how to finish a game with any piece.",
  "estMinutes": 28,
  "concepts": [
   {
    "id": "checkmate",
    "name": "Checkmate",
-   "short": "The king is in check and has no legal escape — cannot move, block, or capture. The game is over; you win."
+   "short": "The king is in check and has no legal escape. Cannot move, block, or capture. The game is over; you win."
   },
   {
    "id": "stalemate",
    "name": "Stalemate",
-   "short": "The side to move is NOT in check but has no legal move at all. The game is a draw — a won game thrown away."
+   "short": "The side to move is NOT in check but has no legal move at all. The game is a draw. A won game thrown away."
   },
   {
    "id": "mate-in-one",
    "name": "Mate in One",
-   "short": "A single move that delivers checkmate. Ask of every check: can the king move, block, or capture? If not — it is mate."
+   "short": "A single move that delivers checkmate. Ask of every check: can the king move, block, or capture? If not: it is mate."
   },
   {
    "id": "checks-first",
@@ -30,15 +30,15 @@
  "lessons": [
   {
    "id": "l1-mate-vs-stalemate",
-   "title": "Checkmate vs. Stalemate — Know the Difference",
+   "title": "Checkmate vs. Stalemate. Know the Difference",
    "kind": "concept",
    "summary": "The three end states, and the great beginner trap: stalemate throws away a won game.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — deliver the mate",
+     "title": "Warm-up: deliver the mate",
      "intro": {
-      "text": "Before we begin, three positions. Each is one move from mate — find it and play it. A king is mated when it is checked and can neither move, block, nor capture. Train the eye to see the finishing blow."
+      "text": "Before we begin, three positions. Each is one move from mate. Find it and play it. A king is mated when it is checked and can neither move, block, nor capture. Train the eye to see the finishing blow."
      },
      "puzzle": {
       "themes": [
@@ -58,7 +58,7 @@
        "conceptId": "checkmate",
        "coach": {
         "conceptId": "checkmate",
-        "text": "Look at the black king on g8. Its own pawns on f7, g7, h7 wall it in — it has nowhere on the seventh rank to step. The rook stands on e6. Bring it to e8 and the king is checked along the back rank with no escape: that is checkmate. The game ends. White wins. Let me show you.",
+        "text": "Look at the black king on g8. Its own pawns on f7, g7, h7 wall it in. It has nowhere on the seventh rank to step. The rook stands on e6. Bring it to e8 and the king is checked along the back rank with no escape: that is checkmate. The game ends. White wins. Let me show you.",
         "annotations": [
          {
           "kind": "circle",
@@ -95,7 +95,7 @@
        "conceptId": "checkmate",
        "coach": {
         "conceptId": "checkmate",
-        "text": "There it is. Rook to e8, check. Ask the three questions. Move the king? f8 and the back rank are covered by the rook; the pawns block everything else. Block the check? No piece can step onto the rank between. Capture the rook? Nothing reaches e8. No, no, and no — checkmate. This is the goal of every game.",
+        "text": "There it is. Rook to e8, check. Ask the three questions. Move the king? f8 and the back rank are covered by the rook; the pawns block everything else. Block the check? No piece can step onto the rank between. Capture the rook? Nothing reaches e8. No, no, and no, checkmate. This is the goal of every game.",
         "annotations": [
          {
           "kind": "circle",
@@ -122,7 +122,7 @@
        "conceptId": "stalemate",
        "coach": {
         "conceptId": "stalemate",
-        "text": "Now the trap that ruins beginners. Black to move, a king alone against king and queen — surely lost. But look closely. The black king on a8 is NOT in check. And it has no legal move: b8, b7, a7 are all covered by my queen and king. No check, no move — this is stalemate. A draw. The full point, thrown into the sea.",
+        "text": "Now the trap that ruins beginners. Black to move, a king alone against king and queen. Surely lost. But look closely. The black king on a8 is NOT in check. And it has no legal move: b8, b7, a7 are all covered by my queen and king. No check, no move. This is stalemate. A draw. The full point, thrown into the sea.",
         "annotations": [
          {
           "kind": "circle",
@@ -152,7 +152,7 @@
        "conceptId": "stalemate",
        "coach": {
         "conceptId": "stalemate",
-        "text": "Here is how that disaster happens. White to move, queen on d7, king on c6 — a trivial win. But there are two queen moves to the seventh rank, and they could not be more different. Qc7 leaves the king not-in-check with no move: stalemate, a draw. Qb7 instead gives check, guarded by my king, and the king cannot escape: mate. Same position. One move wins, one move throws it away. You will choose.",
+        "text": "Here is how that disaster happens. White to move, queen on d7, king on c6. A trivial win. But there are two queen moves to the seventh rank, and they could not be more different. Qc7 leaves the king not-in-check with no move: stalemate, a draw. Qb7 instead gives check, guarded by my king, and the king cannot escape: mate. Same position. One move wins, one move throws it away. You will choose.",
         "annotations": [
          {
           "kind": "circle",
@@ -206,7 +206,7 @@
        ],
        "successLine": {
         "conceptId": "checkmate",
-        "text": "Qb7, mate. The queen checks from b7, my king on c6 defends her, and a8 has no flight — b8, a7 are covered, and the king cannot take a guarded queen. Clean. You saw the difference between b7 and c7, and that is the whole lesson.",
+        "text": "Qb7, mate. The queen checks from b7, my king on c6 defends her, and a8 has no flight: b8, a7 are covered, and the king cannot take a guarded queen. Clean. You saw the difference between b7 and c7, and that is the whole lesson.",
         "annotations": [
          {
           "kind": "circle",
@@ -224,16 +224,16 @@
        },
        "retryLine": {
         "conceptId": "stalemate",
-        "text": "Stop. If you played Qc7 you have stalemated him — a draw from a winning game. The king is not in check and cannot move: that is the trap. Find the queen move that gives check while my king guards it."
+        "text": "Stop. If you played Qc7 you have stalemated him. A draw from a winning game. The king is not in check and cannot move: that is the trap. Find the queen move that gives check while my king guards it."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — deliver the mate in one",
+     "title": "Cool-down: deliver the mate in one",
      "intro": {
-      "text": "Now finish the job. Each of these is one move from mate. Give the check the king cannot answer — and beware the stalemate when the enemy king has barely a square."
+      "text": "Now finish the job. Each of these is one move from mate. Give the check the king cannot answer, and beware the stalemate when the enemy king has barely a square."
      },
      "puzzle": {
       "themes": [
@@ -248,15 +248,15 @@
   },
   {
    "id": "l2-mate-queen",
-   "title": "Mate in One — the Queen",
+   "title": "Mate in One: the Queen",
    "kind": "tactics",
    "summary": "The queen is the great executioner: the kiss of death beside the king, and the mate on the open rank.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the mate in one",
+     "title": "Warm-up: find the mate in one",
      "intro": {
-      "text": "The queen ends more games than any other piece — and today she is our subject. Warm the eye first: each position is one move from mate. Find the check the king cannot answer and play it."
+      "text": "The queen ends more games than any other piece, and today she is our subject. Warm the eye first: each position is one move from mate. Find the check the king cannot answer and play it."
      },
      "puzzle": {
       "themes": [
@@ -276,7 +276,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The first shape — the kiss of death. My king stands on f6, a knight's leap from his. Bring the queen to g7, right against the enemy king. From g7 she covers every flight herself — f8 and h8 on the diagonals, f7 and h7 to the side. He cannot run anywhere. And he cannot take her, because my king on f6 guards g7. That is the whole trick: the queen seals the box, the king holds the queen. This shape mates again and again.",
+        "text": "The first shape: the kiss of death. My king stands on f6, a knight's leap from his. Bring the queen to g7, right against the enemy king. From g7 she covers every flight herself: f8 and h8 on the diagonals, f7 and h7 to the side. He cannot run anywhere. And he cannot take her, because my king on f6 guards g7. That is the whole trick: the queen seals the box, the king holds the queen. This shape mates again and again.",
         "annotations": [
          {
           "kind": "circle",
@@ -303,7 +303,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The second shape — the back rank. His king is shut behind its own pawns on f7, g7, h7, with no luft, no escape hole. The queen sweeps the length of the board: Qa8, check along the eighth rank. f8 is covered by the queen herself; the pawns seal the rest. Mate from the far corner. A wall of pawns can be a coffin.",
+        "text": "The second shape: the back rank. His king is shut behind its own pawns on f7, g7, h7, with no luft, no escape hole. The queen sweeps the length of the board: Qa8, check along the eighth rank. f8 is covered by the queen herself; the pawns seal the rest. Mate from the far corner. A wall of pawns can be a coffin.",
         "annotations": [
          {
           "kind": "circle",
@@ -383,7 +383,7 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "No. The mate is a check — look first at moves that attack his king. His king is trapped on the back rank by its own pawns. Which queen move checks along the eighth?"
+        "text": "No. The mate is a check. Look first at moves that attack his king. His king is trapped on the back rank by its own pawns. Which queen move checks along the eighth?"
        }
       },
       {
@@ -415,7 +415,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Qg7, mate. Hard against his king, and guarded by mine on f6 — so he cannot take her. From g7 she covers f8, h8, f7 and h7 herself: no flight at all. The queen-and-king kiss — memorize the picture; you will use it your whole life.",
+        "text": "Qg7, mate. Hard against his king, and guarded by mine on f6, so he cannot take her. From g7 she covers f8, h8, f7 and h7 herself: no flight at all. The queen-and-king kiss: memorize the picture; you will use it your whole life.",
         "annotations": [
          {
           "kind": "circle",
@@ -432,7 +432,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. For a mate beside the king, the queen must be defended — my king on f6 guards g7. Put her there, hard against his king, and from g7 she seals every flight herself."
+        "text": "Not yet. For a mate beside the king, the queen must be defended. My king on f6 guards g7. Put her there, hard against his king, and from g7 she seals every flight herself."
        }
       },
       {
@@ -440,7 +440,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "A harder eye. His king is jammed into the corner on h8, walled by its own pawns on f7, g7, h7. Your queen sits in the far corner on h1. Do not reach up the h-file — his own pawn on h7 blocks it. There is exactly one square, clear across the board, from which she checks the back rank with no escape. Find it.",
+        "text": "A harder eye. His king is jammed into the corner on h8, walled by its own pawns on f7, g7, h7. Your queen sits in the far corner on h1. Do not reach up the h-file. His own pawn on h7 blocks it. There is exactly one square, clear across the board, from which she checks the back rank with no escape. Find it.",
         "annotations": [
          {
           "kind": "circle",
@@ -459,7 +459,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Qa8, mate. She rides the whole long diagonal, h1 to a8, and checks down the eighth rank. The pawns seal f7, g7, h7; the queen owns the back rank, so g8 is gone too. The far queen reaches clear across the board to finish him — that is the eye you are training.",
+        "text": "Qa8, mate. She rides the whole long diagonal, h1 to a8, and checks down the eighth rank. The pawns seal f7, g7, h7; the queen owns the back rank, so g8 is gone too. The far queen reaches clear across the board to finish him. That is the eye you are training.",
         "annotations": [
          {
           "kind": "circle",
@@ -477,16 +477,16 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "No. The h-file is blocked by his own pawn on h7, so that is not the way. The mate is a check on the eighth rank — trace the long diagonal from h1 and find the one square that reaches it."
+        "text": "No. The h-file is blocked by his own pawn on h7, so that is not the way. The mate is a check on the eighth rank. Trace the long diagonal from h1 and find the one square that reaches it."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — clean one-movers",
+     "title": "Cool-down: clean one-movers",
      "intro": {
-      "text": "Sharpen the blade. Each is a single move to mate. See the check, count the king's flights, strike — and remember the queen's two shapes when she is the one to finish it."
+      "text": "Sharpen the blade. Each is a single move to mate. See the check, count the king's flights, strike, and remember the queen's two shapes when she is the one to finish it."
      },
      "puzzle": {
       "themes": [
@@ -501,15 +501,15 @@
   },
   {
    "id": "l3-mate-rook-backrank",
-   "title": "Mate in One — the Rook & the Back Rank",
+   "title": "Mate in One: the Rook & the Back Rank",
    "kind": "tactics",
    "summary": "One rook, the open rank or file, and a king sealed behind its own pawns: the back-rank mate.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the mate in one",
+     "title": "Warm-up: find the mate in one",
      "intro": {
-      "text": "A single piece on an open line can end a game — the rook above all, as you are about to see. In each position one move is mate. Look for the check the king cannot answer, and play it."
+      "text": "A single piece on an open line can end a game. The rook above all, as you are about to see. In each position one move is mate. Look for the check the king cannot answer, and play it."
      },
      "puzzle": {
       "themes": [
@@ -529,7 +529,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The classic back-rank mate. His king on g8 never made a luft square — the pawns on f7, g7, h7 became its prison. The rook lifts to e8, check along the eighth rank. The king cannot step off the rank; nothing blocks; nothing captures. A whole army, mated by one rook, because the king forgot to breathe.",
+        "text": "The classic back-rank mate. His king on g8 never made a luft square. The pawns on f7, g7, h7 became its prison. The rook lifts to e8, check along the eighth rank. The king cannot step off the rank; nothing blocks; nothing captures. A whole army, mated by one rook, because the king forgot to breathe.",
         "annotations": [
          {
           "kind": "circle",
@@ -566,7 +566,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "A rook needs no pawn wall if the king does the cutting. My king on g6 stands in direct opposition to his — that single fact steals f7, g7, h7 from him. Now the rook delivers on the eighth: Ra8, check, and the rook's own rank covers f8 and h8. King and rook, the elementary mate you will use to win bare endgames. Burn it in.",
+        "text": "A rook needs no pawn wall if the king does the cutting. My king on g6 stands in direct opposition to his. That single fact steals f7, g7, h7 from him. Now the rook delivers on the eighth: Ra8, check, and the rook's own rank covers f8 and h8. King and rook, the elementary mate you will use to win bare endgames. Burn it in.",
         "annotations": [
          {
           "kind": "circle",
@@ -593,7 +593,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "Two rooks, the lawnmower. One rook on g7 fences off the entire seventh rank — the king can never come down. The second rook swings to h8: check along the eighth, delivered from far away where the king can never reach it. This is how two rooks walk a king to the edge and finish him. Watch.",
+        "text": "Two rooks, the lawnmower. One rook on g7 fences off the entire seventh rank. The king can never come down. The second rook swings to h8: check along the eighth, delivered from far away where the king can never reach it. This is how two rooks walk a king to the edge and finish him. Watch.",
         "annotations": [
          {
           "kind": "circle",
@@ -663,7 +663,7 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "No. The king is sealed on the back rank — the mate must be a check along that rank. Which rook move reaches the eighth?"
+        "text": "No. The king is sealed on the back rank. The mate must be a check along that rank. Which rook move reaches the eighth?"
        }
       },
       {
@@ -695,7 +695,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Ra8, mate. The king takes three squares, the rook takes the rest. This is the K+R mate in miniature — the picture you steer toward when you have a rook and a bare king to hunt.",
+        "text": "Ra8, mate. The king takes three squares, the rook takes the rest. This is the K+R mate in miniature. The picture you steer toward when you have a rook and a bare king to hunt.",
         "annotations": [
          {
           "kind": "circle",
@@ -739,7 +739,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Ra8, mate. The rook checks along the eighth; g8 is the only flight and the rook covers it. A king in the corner with its own pawns behind it is already half-mated — you only had to find the rank.",
+        "text": "Ra8, mate. The rook checks along the eighth; g8 is the only flight and the rook covers it. A king in the corner with its own pawns behind it is already half-mated. You only had to find the rank.",
         "annotations": [
          {
           "kind": "circle",
@@ -757,14 +757,14 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "No. The corner king flees only to g8 — and a rook on the eighth covers g8. Put the rook on the back rank with check."
+        "text": "No. The corner king flees only to g8, and a rook on the eighth covers g8. Put the rook on the back rank with check."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the back rank",
+     "title": "Cool-down: the back rank",
      "intro": {
       "text": "Back-rank mates, the way they appear in real games. Find the rook or queen that reaches the trapped king's rank in one."
      },
@@ -781,15 +781,15 @@
   },
   {
    "id": "l4-mate-minor-pawn",
-   "title": "Mate in One — Minor Pieces & Pawns",
+   "title": "Mate in One: Minor Pieces & Pawns",
    "kind": "tactics",
    "summary": "Any piece can give the final blow: the smothered knight, the supported bishop, the humble pawn, the new queen.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the mate in one",
+     "title": "Warm-up: find the mate in one",
      "intro": {
-      "text": "Beginners fix their eyes on the queen and rook and miss the quieter pieces. Warm up by finding the mate in one in each — then we will study the knight, the bishop, and the pawn doing the killing."
+      "text": "Beginners fix their eyes on the queen and rook and miss the quieter pieces. Warm up by finding the mate in one in each. Then we will study the knight, the bishop, and the pawn doing the killing."
      },
      "puzzle": {
       "themes": [
@@ -809,7 +809,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The smothered mate — the knight's masterpiece. His king on h8 is buried by its own men: rook on g8, pawns on g7 and h7. Not one square is free. The knight leaps to f7: check. A knight check is the one check no piece can ever block — and here the king cannot move, walled in by its own army, nor can anything capture the knight. No block, no flight, no capture: mate. Beautiful and deadly.",
+        "text": "The smothered mate: the knight's masterpiece. His king on h8 is buried by its own men: rook on g8, pawns on g7 and h7. Not one square is free. The knight leaps to f7: check. A knight check is the one check no piece can ever block, and here the king cannot move, walled in by its own army, nor can anything capture the knight. No block, no flight, no capture: mate. Beautiful and deadly.",
         "annotations": [
          {
           "kind": "circle",
@@ -846,7 +846,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "Now the bishop, working with a friend. The king sits on h8 with its own pawn jamming h7. The rook on g1 already guards g8. The bishop swings to f6: check down the long diagonal, straight into h8. Count the king's squares — g8 is the rook's, g7 the bishop covers on the very same diagonal, h7 is blocked by his own pawn. Nothing to capture the bishop, nowhere to run. A bishop rarely mates alone, but give it one helper and the long diagonal becomes a spear.",
+        "text": "Now the bishop, working with a friend. The king sits on h8 with its own pawn jamming h7. The rook on g1 already guards g8. The bishop swings to f6: check down the long diagonal, straight into h8. Count the king's squares: g8 is the rook's, g7 the bishop covers on the very same diagonal, h7 is blocked by his own pawn. Nothing to capture the bishop, nowhere to run. A bishop rarely mates alone, but give it one helper and the long diagonal becomes a spear.",
         "annotations": [
          {
           "kind": "circle",
@@ -874,7 +874,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The pawn — the lowliest soldier delivers mate. His king on h8, its own pawn on h7 blocking the way down. My king stands on f7, covering g8. The pawn pushes g6 to g7: it attacks h8, check. The king cannot take it — my king guards g7. It cannot flee — g8 is mine. Mated by a pawn. Never assume a piece is too small to finish a king.",
+        "text": "The pawn: the lowliest soldier delivers mate. His king on h8, its own pawn on h7 blocking the way down. My king stands on f7, covering g8. The pawn pushes g6 to g7: it attacks h8, check. The king cannot take it (my king guards g7. It cannot flee) g8 is mine. Mated by a pawn. Never assume a piece is too small to finish a king.",
         "annotations": [
          {
           "kind": "circle",
@@ -901,7 +901,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "And the pawn's other face — promotion. The pawn on e7 is one step from glory. It marches to e8 and becomes a queen, checking the king on g8 along the eighth rank. My king on g6 seals f7, g7, h7; the new queen covers f8 and h8. The instant the pawn touches the last rank, a queen is born and the game ends. Always look at your promotions — they are mates in disguise.",
+        "text": "And the pawn's other face: promotion. The pawn on e7 is one step from glory. It marches to e8 and becomes a queen, checking the king on g8 along the eighth rank. My king on g6 seals f7, g7, h7; the new queen covers f8 and h8. The instant the pawn touches the last rank, a queen is born and the game ends. Always look at your promotions: they are mates in disguise.",
         "annotations": [
          {
           "kind": "circle",
@@ -934,7 +934,7 @@
        "conceptId": "mate-in-one",
        "coach": {
         "conceptId": "mate-in-one",
-        "text": "The smothered shape again — his king choked by its own rook and pawns on g8, g7, h7. The knight stands on g5. One leap gives a check nothing can answer. Find it.",
+        "text": "The smothered shape again: his king choked by its own rook and pawns on g8, g7, h7. The knight stands on g5. One leap gives a check nothing can answer. Find it.",
         "annotations": [
          {
           "kind": "circle",
@@ -971,7 +971,7 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "No. The king cannot move at all — you need only a knight check on h8 that nothing blocks. From g5, which square checks the king in the corner?"
+        "text": "No. The king cannot move at all. You need only a knight check on h8 that nothing blocks. From g5, which square checks the king in the corner?"
        }
       },
       {
@@ -1003,7 +1003,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "e8=Q, mate. A pawn one moment, a mating queen the next. Whenever a passed pawn reaches the seventh, ask whether promoting gives check — and whether that check is mate.",
+        "text": "e8=Q, mate. A pawn one moment, a mating queen the next. Whenever a passed pawn reaches the seventh, ask whether promoting gives check, and whether that check is mate.",
         "annotations": [
          {
           "kind": "circle",
@@ -1020,7 +1020,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not quite. Push the pawn to e8 and make it a queen — that is the move that checks along the eighth rank with no escape."
+        "text": "Not quite. Push the pawn to e8 and make it a queen. That is the move that checks along the eighth rank with no escape."
        }
       },
       {
@@ -1052,7 +1052,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "g7, mate. The pawn checks h8, my king guards the pawn and covers g8, and his own pawn blocks h7. A king can be mated by a single pawn — never forget it.",
+        "text": "g7, mate. The pawn checks h8, my king guards the pawn and covers g8, and his own pawn blocks h7. A king can be mated by a single pawn, never forget it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1077,9 +1077,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — any piece can mate",
+     "title": "Cool-down: any piece can mate",
      "intro": {
-      "text": "Mixed one-movers. Do not fix your eye on the heavy pieces — look at every checking move, whatever piece gives it. The mate is always a check; find the one the king cannot answer."
+      "text": "Mixed one-movers. Do not fix your eye on the heavy pieces. Look at every checking move, whatever piece gives it. The mate is always a check; find the one the king cannot answer."
      },
      "puzzle": {
       "themes": [
@@ -1094,13 +1094,13 @@
   },
   {
    "id": "l5-mixed-drill",
-   "title": "Find the Mate in One — Mixed Drill",
+   "title": "Find the Mate in One, Mixed Drill",
    "kind": "practice",
    "summary": "One habit ties it together: look at every check first. The mate, if it is there, is always a check.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — checks first",
+     "title": "Warm-up: checks first",
      "intro": {
       "text": "The method, now a reflex. In any position, scan every checking move before anything else. Find the mate in one in each."
      },
@@ -1122,7 +1122,7 @@
        "conceptId": "checks-first",
        "coach": {
         "conceptId": "checks-first",
-        "text": "One rule turns guessing into seeing. When you want a mate, examine every move that gives check — nothing else. A mate is a check, always; so the mate, if it exists, is hiding among your checks. Here several queen moves give check — Qd8, Qe8, Qc8 — but the king just slips to h7. Only Qg7, the kiss my king guards, both checks and seals every flight. You did not search the whole board; you searched the checks, then asked of each: can he escape? That is the craft.",
+        "text": "One rule turns guessing into seeing. When you want a mate, examine every move that gives check. Nothing else. A mate is a check, always; so the mate, if it exists, is hiding among your checks. Here several queen moves give check (Qd8, Qe8, Qc8) but the king just slips to h7. Only Qg7, the kiss my king guards, both checks and seals every flight. You did not search the whole board; you searched the checks, then asked of each: can he escape? That is the craft.",
         "annotations": [
          {
           "kind": "circle",
@@ -1143,7 +1143,7 @@
     },
     {
      "kind": "guided",
-     "title": "Mixed mates — every piece, every shape",
+     "title": "Mixed mates: every piece, every shape",
      "steps": [
       {
        "fen": "6k1/5ppp/8/8/8/8/8/3Q2K1 w - - 0 1",
@@ -1176,7 +1176,7 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "Look only at checks. His king is sealed by its own pawns — which check reaches the eighth rank?"
+        "text": "Look only at checks. His king is sealed by its own pawns, which check reaches the eighth rank?"
        }
       },
       {
@@ -1198,7 +1198,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Nc7, smothered mate. Mirror it in your mind — corner king, own pieces packed around it, the knight strikes from where nothing can block.",
+        "text": "Nc7, smothered mate. Mirror it in your mind: corner king, own pieces packed around it, the knight strikes from where nothing can block.",
         "annotations": [
          {
           "kind": "circle",
@@ -1210,7 +1210,7 @@
        },
        "retryLine": {
         "conceptId": "checks-first",
-        "text": "The king cannot move at all. Find the knight check on a8 that nothing can block — from b5, which square is it?"
+        "text": "The king cannot move at all. Find the knight check on a8 that nothing can block. From b5, which square is it?"
        }
       },
       {
@@ -1218,7 +1218,7 @@
        "conceptId": "checks-first",
        "coach": {
         "conceptId": "checks-first",
-        "text": "King and rook, the bare-king finish — but a different file this time. My king already stands in opposition and cuts off the seventh rank. Deliver the check that mates.",
+        "text": "King and rook, the bare-king finish, but a different file this time. My king already stands in opposition and cuts off the seventh rank. Deliver the check that mates.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1237,7 +1237,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Ra8, mate. My king holds b7, c7, d7; the rook takes the eighth. The same K+R picture wherever the king is cornered — you will end a hundred endgames this way.",
+        "text": "Ra8, mate. My king holds b7, c7, d7; the rook takes the eighth. The same K+R picture wherever the king is cornered. You will end a hundred endgames this way.",
         "annotations": [
          {
           "kind": "circle",
@@ -1275,7 +1275,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "c8=Q, mate. The pawn becomes a queen and checks along the eighth; my king seals a7 and b7. Promotion is a checking move too — always include it in your scan.",
+        "text": "c8=Q, mate. The pawn becomes a queen and checks along the eighth; my king seals a7 and b7. Promotion is a checking move too. Always include it in your scan.",
         "annotations": [
          {
           "kind": "circle",
@@ -1309,7 +1309,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Rf8, mate. The eighth rank, the cornered king, the covered g8 — the back-rank pattern in its purest form.",
+        "text": "Rf8, mate. The eighth rank, the cornered king, the covered g8, the back-rank pattern in its purest form.",
         "annotations": [
          {
           "kind": "circle",
@@ -1329,7 +1329,7 @@
        "conceptId": "checks-first",
        "coach": {
         "conceptId": "checks-first",
-        "text": "The last one, and the whole chapter in a single choice. King on h8, my king on f6, my queen right beside it on g6. One queen move is mate — and one tempting move boxes him with no check, which is stalemate, a draw. Count his squares before you move.",
+        "text": "The last one, and the whole chapter in a single choice. King on h8, my king on f6, my queen right beside it on g6. One queen move is mate, and one tempting move boxes him with no check, which is stalemate, a draw. Count his squares before you move.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1348,7 +1348,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-one",
-        "text": "Qg7, mate — hard against his king, guarded by mine, every flight sealed. The trap was Qf7: it takes his last squares but gives no check, so it is only stalemate. You checked first, you counted, you found the mate. That is the whole chapter in one move.",
+        "text": "Qg7, mate: hard against his king, guarded by mine, every flight sealed. The trap was Qf7: it takes his last squares but gives no check, so it is only stalemate. You checked first, you counted, you found the mate. That is the whole chapter in one move.",
         "annotations": [
          {
           "kind": "circle",
@@ -1360,14 +1360,14 @@
        },
        "retryLine": {
         "conceptId": "stalemate",
-        "text": "Careful — Qf7 leaves him no move but no check either: stalemate, a drawn game. You need the queen move that gives check, the one my king guards. Find it."
+        "text": "Careful, Qf7 leaves him no move but no check either: stalemate, a drawn game. You need the queen move that gives check, the one my king guards. Find it."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the mate under pressure",
+     "title": "Cool-down: find the mate under pressure",
      "intro": {
       "text": "Slightly harder one-movers from real games, any piece in the lead role. Trust the method: checks first, count the flights, deliver."
      },
@@ -1382,13 +1382,13 @@
     },
     {
      "kind": "boss",
-     "title": "Finish the game — no stalemate",
+     "title": "Finish the game: no stalemate",
      "bossFen": "6k1/8/8/8/8/8/5PPP/Q3R1K1 w - - 0 1",
      "bossEngineElo": 500,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "checkmate",
-      "text": "Now prove it over the board. You are White, a queen and a rook to the good — an overwhelming force. But force alone is nothing if you stalemate him. Drive his king to the edge, keep at least one flight square for him until the final blow, then deliver mate on the back rank. Check first, count his squares, never leave him with no move unless it is mate. Finish cleanly. Begin."
+      "text": "Now prove it over the board. You are White, a queen and a rook to the good, an overwhelming force. But force alone is nothing if you stalemate him. Drive his king to the edge, keep at least one flight square for him until the final blow, then deliver mate on the back rank. Check first, count his squares, never leave him with no move unless it is mate. Finish cleanly. Begin."
      }
     }
    ]
@@ -1401,20 +1401,20 @@
     "kind": "mc",
     "prompt": "You are not in check, but you have no legal move at all. What is the result?",
     "options": [
-     "Stalemate — the game is a draw",
-     "Checkmate — you lose",
+     "Stalemate: the game is a draw",
+     "Checkmate: you lose",
      "You must pass and let the opponent move again",
-     "Check — you must get out of it"
+     "Check: you must get out of it"
     ],
     "answerIndex": 0,
-    "explain": "No check plus no legal move is stalemate, which is a draw. If you were ahead, that is a full point thrown away — the classic beginner trap."
+    "explain": "No check plus no legal move is stalemate, which is a draw. If you were ahead, that is a full point thrown away, the classic beginner trap."
    },
    {
     "kind": "mc",
     "prompt": "To confirm a move is checkmate, you verify the enemy king cannot do which of these?",
     "options": [
      "Only move to a different square",
-     "Move, block, or capture — none of the three saves it",
+     "Move, block, or capture, none of the three saves it",
      "Only capture the checking piece",
      "Castle out of the check"
     ],
@@ -1428,7 +1428,7 @@
      "Only the queen and the rook can give checkmate",
      "You always need at least two pieces to give mate",
      "The king can never be mated by a single minor piece or pawn",
-     "Any piece — even a pawn — can deliver checkmate"
+     "Any piece (even a pawn) can deliver checkmate"
     ],
     "answerIndex": 3,
     "explain": "Any piece can give the final blow: a smothered knight, a supported bishop, a promoting or checking pawn. That is why you must look at every checking move, not just the heavy pieces."
@@ -1440,7 +1440,7 @@
     "solutionUci": [
      "d1d8"
     ],
-    "explain": "Qd8# checks along the eighth rank. The king on b8 is sealed behind its own a7-b7-c7 pawns and the queen covers a8 and c8 — the back-rank mate, this time on the queenside."
+    "explain": "Qd8# checks along the eighth rank. The king on b8 is sealed behind its own a7-b7-c7 pawns and the queen covers a8 and c8. The back-rank mate, this time on the queenside."
    },
    {
     "kind": "play",
@@ -1449,7 +1449,7 @@
     "solutionUci": [
      "c1c8"
     ],
-    "explain": "Rc8# checks down the eighth rank. The king cannot step off the rank, the pawns block f7-g7-h7, and nothing reaches c8 to capture — mate by a single rook."
+    "explain": "Rc8# checks down the eighth rank. The king cannot step off the rank, the pawns block f7-g7-h7, and nothing reaches c8 to capture, mate by a single rook."
    },
    {
     "kind": "play",
@@ -1467,7 +1467,7 @@
     "solutionUci": [
      "e7e8q"
     ],
-    "explain": "e8=Q# promotes with check along the eighth rank. Your king on b6 covers a7, b7, c7 and the new queen covers a8, c8 — mate the moment the pawn queens."
+    "explain": "e8=Q# promotes with check along the eighth rank. Your king on b6 covers a7, b7, c7 and the new queen covers a8, c8, mate the moment the pawn queens."
    },
    {
     "kind": "play",
@@ -1476,7 +1476,7 @@
     "solutionUci": [
      "b5b7"
     ],
-    "explain": "Qb7#: the queen checks from b7, guarded by the king on c6, and a8 has no flight — b8 and a7 are covered. The tempting Qb6 would be stalemate — not in check, no legal move — a drawn game from a winning one."
+    "explain": "Qb7#: the queen checks from b7, guarded by the king on c6, and a8 has no flight: b8 and a7 are covered. The tempting Qb6 would be stalemate (not in check, no legal move) a drawn game from a winning one."
    },
    {
     "kind": "judge",
@@ -1484,7 +1484,7 @@
     "fen": "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
     "lastMoveUci": "h5f7",
     "verdict": "correct",
-    "explain": "Yes — this is Scholar's mate. The queen on f7 checks the king, is defended by the bishop on c4, and the king has no square, no block, and cannot capture a defended queen. Checkmate."
+    "explain": "Yes: this is Scholar's mate. The queen on f7 checks the king, is defended by the bishop on c4, and the king has no square, no block, and cannot capture a defended queen. Checkmate."
    },
    {
     "kind": "judge",
@@ -1492,7 +1492,7 @@
     "fen": "4R3/8/8/8/8/4k3/8/6K1 b - - 5 3",
     "lastMoveUci": "a8e8",
     "verdict": "blunder",
-    "explain": "No — it is only check, not mate. The rook checks down the e-file, but the king walks straight out: d2, d3, d4, f3, f4 are all free. A check the king can step away from is never checkmate — count the escape squares before you call it mate."
+    "explain": "No: it is only check, not mate. The rook checks down the e-file, but the king walks straight out: d2, d3, d4, f3, f4 are all free. A check the king can step away from is never checkmate. Count the escape squares before you call it mate."
    },
    {
     "kind": "judge",
@@ -1500,19 +1500,19 @@
     "fen": "6k1/5ppp/8/8/R7/8/5PPP/6K1 b - - 0 1",
     "lastMoveUci": "a1a4",
     "verdict": "blunder",
-    "explain": "A blunder — White missed mate in one. The rook had Ra8#, ending the game on the back rank behind the f7-g7-h7 pawns; the quiet Ra4 throws the win away. Always look at your checks first."
+    "explain": "A blunder: White missed mate in one. The rook had Ra8#, ending the game on the back rank behind the f7-g7-h7 pawns; the quiet Ra4 throws the win away. Always look at your checks first."
    },
    {
     "kind": "mc",
     "prompt": "You are hunting for a checkmate in one. To find it fast, which moves should you examine first?",
     "options": [
-     "Every checking move — a mate is always a check",
-     "Every capture — mate usually comes from taking a piece",
+     "Every checking move: a mate is always a check",
+     "Every capture: mate usually comes from taking a piece",
      "Quiet moves that take away the king's escape squares",
      "Every possible move, in order, until one works"
     ],
     "answerIndex": 0,
-    "explain": "A checkmate is, by definition, a check the king cannot answer — so the mate, if it exists, is hiding among your checking moves. Scan the checks first and ask of each: can the king move, block, or capture? That turns a whole-board guess into a short, certain search."
+    "explain": "A checkmate is, by definition, a check the king cannot answer, so the mate, if it exists, is hiding among your checking moves. Scan the checks first and ask of each: can the king move, block, or capture? That turns a whole-board guess into a short, certain search."
    }
   ]
  },

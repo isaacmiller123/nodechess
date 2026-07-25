@@ -2,7 +2,7 @@ import { getAppDb } from './database'
 import type { RushRunInput, RushRunRow, RushBest, RushMode, RushEndReason } from '../../shared/types'
 
 // ============================================================================
-// SLICE B — Puzzle Rush / Storm persistence.  ★ OWNED BY THE RUSH BUILDER ★
+// SLICE B: Puzzle Rush / Storm persistence.  ★ OWNED BY THE RUSH BUILDER ★
 //
 // All SQL for the timed modes lives here, against `puzzle_rush_run` (added in
 // migration user_version=5). One row = one finished run. The renderer logs the
@@ -11,8 +11,8 @@ import type { RushRunInput, RushRunRow, RushBest, RushMode, RushEndReason } from
 //
 //   puzzle_rush_run(id, mode, score, solved, missed, best_streak, top_rating,
 //                   duration_ms, ended_reason, created_at)
-//   idx_rush_score   (mode, score DESC)   — leaderboard / personal-best reads
-//   idx_rush_created (created_at DESC)     — history reads
+//   idx_rush_score   (mode, score DESC):    leaderboard / personal-best reads
+//   idx_rush_created (created_at DESC):      history reads
 // ============================================================================
 
 const RUSH_MODES: readonly RushMode[] = ['rush3', 'rush5', 'storm', 'survival']

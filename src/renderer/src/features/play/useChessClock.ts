@@ -1,4 +1,4 @@
-// useChessClock — a single requestAnimationFrame timer driving both sides' clocks.
+// useChessClock: a single requestAnimationFrame timer driving both sides' clocks.
 //
 // Design:
 //   * One rAF loop, never two intervals. It computes elapsed time from a
@@ -9,7 +9,7 @@
 //   * Side effects (flag fall, low-time cue) are surfaced via stable callbacks
 //     given through a ref so the rAF loop never goes stale.
 //   * Cleans the rAF up on unmount and whenever the clock is not live (Unlimited,
-//     game not running, or game over) — no idle timer is left spinning.
+//     game not running, or game over): no idle timer is left spinning.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Color } from '../../chess/chess'
@@ -19,7 +19,7 @@ export interface UseChessClockArgs {
   timeControl: TimeControl
   /**
    * Monotonic key identifying the current game. Changing it resets both clocks
-   * to `timeControl`'s base time — even when the control is unchanged between
+   * to `timeControl`'s base time: even when the control is unchanged between
    * games (same id ⇒ same reference would otherwise skip a reset).
    */
   gameKey: number
@@ -27,7 +27,7 @@ export interface UseChessClockArgs {
   turn: Color
   /** True while the clock should be running (game live and not over). */
   running: boolean
-  /** True when the game has ended — clocks freeze immediately. */
+  /** True when the game has ended. Clocks freeze immediately. */
   over: boolean
   /** Fired exactly once for the side whose clock reaches zero. */
   onFlag: (loser: Color) => void
@@ -113,7 +113,7 @@ export function useChessClock({
   }, [timeControl, gameKey])
 
   // The rAF loop. It runs only while the clock is live (timed control, game
-  // running, not over). It is torn down — not merely parked — when the game ends
+  // running, not over). It is torn down (not merely parked) when the game ends
   // or pauses, and on unmount, honoring "clean up on unmount/game end".
   const live = active && running && !over
   useEffect(() => {

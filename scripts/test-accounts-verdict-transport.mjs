@@ -1,4 +1,4 @@
-// THE A7 VERDICT-TRANSPORT SUITE — brick 2 (Tier-2 verdict rows over the A3
+// THE A7 VERDICT-TRANSPORT SUITE. Brick 2 (Tier-2 verdict rows over the A3
 // overlay: src/shared/accounts/judge/transport.ts).
 //
 //   node scripts/test-accounts-verdict-transport.mjs
@@ -20,7 +20,7 @@
 //      displayState as the judge; pairingLegal refuses the banned ladder.
 //      Invariants as asserts: 5σ-conviction-only (an adopted 3σ escalation
 //      record yields NO ban), §0 no-false-fraud (a compliant selfban
-//      discharges regardless of junk — including an ADOPTED hostile
+//      discharges regardless of junk, including an ADOPTED hostile
 //      suppression record), junk floods (malformed at the gate; well-formed
 //      sub-conviction; conviction-impersonating sybils) can neither suppress
 //      the genuine row nor forge evidence; 'pending' injects nothing;
@@ -66,7 +66,7 @@ async function main() {
   } finally {
     for (const d of [outdir, outNode, outBrowser]) rmSync(d, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -117,7 +117,7 @@ async function run(M, outNode, outBrowser) {
       anchors: JA, verdictWts: 5_000, signer: judge.pubB, key: judge.pubB, priv: judge.priv, ...o,
     })
   // Hand-built conviction-IMPERSONATING record (makeTier2Verdict refuses to
-  // fabricate these — the whole point): valid sig, judge-anchor digest, full-K
+  // fabricate these. The whole point): valid sig, judge-anchor digest, full-K
   // games, z claim ≥ 5σ, but no real evidence behind it.
   const mkImpersonator = (root, signerKp, window, prefix, games) => {
     const body = {
@@ -129,7 +129,7 @@ async function run(M, outNode, outBrowser) {
     return { body, signer: signerKp.pubB, key: signerKp.pubB, sig: b64(A.ed25519.sign(A.canonicalBytes(body), signerKp.priv)) }
   }
 
-  // Accused chains (hand-built, chain-shaped for suppressionScan — the scan
+  // Accused chains (hand-built, chain-shaped for suppressionScan; the scan
   // consumes the reader's ALREADY-VERIFIED chain; sigs are not its business).
   const mkChain = (root) => {
     let h = 0
@@ -195,7 +195,7 @@ async function run(M, outNode, outBrowser) {
     eq(T.verifyVerdictRecord(rec), 'bad-suppression', 'a suppression whose own claim is sub-5σ is refused (A5-21: escalation can never ground suppression)')
     const short = { ...body, zMicro: 6_000_000, games: body.games.slice(0, 10), tier1: body.tier1.slice(0, 10) }
     const rec2 = { body: short, signer: sybil.pubB, key: sybil.pubB, sig: b64(A.ed25519.sign(A.canonicalBytes(short), sybil.priv)) }
-    eq(T.verifyVerdictRecord(rec2), 'bad-suppression', 'a suppression claiming a partial window is refused (no single game — or ten — convicts)')
+    eq(T.verifyVerdictRecord(rec2), 'bad-suppression', 'a suppression claiming a partial window is refused (no single game, or ten, convicts)')
   }
   eq(T.verifyVerdictRecord(recConv, { maxBytes: 64 }), 'oversize', 'per-record byte ceiling enforced')
   for (const junk of [null, 'x', {}, { body: {}, signer: 'x', key: 'x', sig: 'x' }, { ...recConv, extra: 1 }]) {
@@ -210,7 +210,7 @@ async function run(M, outNode, outBrowser) {
     const ch = mkChain(ROOT_S)
     const events = [ch.seg('cheat-28'), ch.seg('cheat-29'), ch.seg('after-1'), ch.seg('after-2')]
     const scan = J.suppressionScan(events, 'cheat-29', LAD)
-    eq(scan.kind, 'suppressed', 'fixture: the accused kept playing past the conviction game — §8 scan yields the deadline')
+    eq(scan.kind, 'suppressed', 'fixture: the accused kept playing past the conviction game, §8 scan yields the deadline')
     return { events, rec: mkVerdict({ kind: 'suppression', root: ROOT_S, ladder: LAD, window: 3, entries: convS, deadlineEvent: scan.deadlineEvent }) }
   })()
   const chainS = recSupp.events
@@ -242,7 +242,7 @@ async function run(M, outNode, outBrowser) {
     for (const b of orders[0]) acc = merge(acc, b, 'record', keyS)
     eq(acc.verdicts.length, 3, 'cap enforced (3)')
     const ids = acc.verdicts.map(recIdOf)
-    ok(ids.includes(recIdOf(recConv)) && ids.includes(recIdOf(recSupp.rec)), 'BOTH genuine conviction records survive every order — sub-conviction junk can never evict conviction evidence (class rank)')
+    ok(ids.includes(recIdOf(recConv)) && ids.includes(recIdOf(recSupp.rec)), 'BOTH genuine conviction records survive every order. Sub-conviction junk can never evict conviction evidence (class rank)')
     ok(ids.includes(recIdOf(imp)), '… the third slot goes to the remaining conviction-CLASS record, never to sub-conviction junk')
     const again = merge(acc, rowOf(recConv, ...junk), 'record', keyS)
     eq(b64h(again), b64h(acc), 're-offering held records + junk is a no-op (dedup by record hash)')
@@ -270,21 +270,21 @@ async function run(M, outNode, outBrowser) {
     const row = merge(null, { v: 1, verdicts: [recConv] }, 'record', keyS)
     // Junk-replace protection is now STRUCTURAL: prev's own records re-bind
     // through the fold, so a non-row value keeps the row BYTE-identical (was a
-    // shape-based prev-shortcut that returned prev by reference — the shortcut
+    // shape-based prev-shortcut that returned prev by reference. The shortcut
     // is gone because it shadowed co-installed layers; byte-identity is the
     // real contract).
     eq(b64h(merge(row, { v: 1, x: 1 }, 'record', keyS)), b64h(row), 'a stored verdict row is protected from junk-replace (prev records re-bind → row byte-identical)')
     const junkVal = { v: 1, x: 2 }
     eq(merge(null, junkVal, 'record', b64h({ k: 'elsewhere' })), junkVal, 'a non-verdict record value binds nothing → delegated to base untouched (no manufactured empty verdict row that could shadow a co-installed layer)')
     // KEY-DOMAIN DISCIPLINE: a row offered under a FOREIGN key binds no record,
-    // so the fold DELEGATES to base (standalone = replace) — it never claims-
+    // so the fold DELEGATES to base (standalone = replace). It never claims-
     // and-empties the value into a self-recognized {verdicts:[]} row (the
     // composition break this fold now avoids; the composed case is asserted in
     // the social-transport suite).
     const foreignKey = J.tier2VerdictKey(b64h({ r: 'other' }))
     eq(b64h(merge(null, { v: 1, verdicts: [recConv] }, 'record', foreignKey)), b64h({ v: 1, verdicts: [recConv] }), 'a row under a foreign key binds nothing → delegated to base unchanged (never claimed-and-emptied)')
     // Binding by EXCLUSION: a record naming a DIFFERENT accused, folded at THIS
-    // subject's key alongside a bound one, is dropped — only the bound record
+    // subject's key alongside a bound one, is dropped. Only the bound record
     // joins the row.
     const recOther = mkVerdict({ kind: 'verdict', root: b64h({ r: 'other-accused' }), ladder: LAD, window: 3, entries: blatant('other') })
     const mixed = merge(null, { v: 1, verdicts: [recConv, recOther] }, 'record', keyS)
@@ -375,7 +375,7 @@ async function run(M, outNode, outBrowser) {
     ok((await T.publishVerdicts(AN.node, imp200.slice(0, 128))) > 0, 'conviction-impersonating sybil flood stores too …')
     ok((await T.publishVerdicts(AN.node, imp200.slice(128))) > 0, '… (second batch)')
     const flooded = await T.fetchVerdictRow(PN.node, ROOT_S)
-    eq(flooded.row.verdicts.length, J.ADOPT_ROW_MAX, `the merged row is capped at ADOPT_ROW_MAX=${J.ADOPT_ROW_MAX} — bounded storage, adopt-prefix consistent`)
+    eq(flooded.row.verdicts.length, J.ADOPT_ROW_MAX, `the merged row is capped at ADOPT_ROW_MAX=${J.ADOPT_ROW_MAX}, bounded storage, adopt-prefix consistent`)
     const ids = new Set(flooded.row.verdicts.map(recIdOf))
     ok(ids.has(recIdOf(recConv)) && ids.has(recIdOf(recSupp.rec)), 'ADVERSARIAL MERGE CANNOT SUPPRESS: both genuine conviction records survive the 260-record flood (class rank + fair share)')
     const evF = T.verdictEvidence({ subjectRoot: ROOT_S, key: flooded.key, row: flooded.row, entriesFor: entriesForS, chainEvents: chainS })
@@ -397,7 +397,7 @@ async function run(M, outNode, outBrowser) {
     const recConvC = mkVerdict({ kind: 'verdict', root: ROOT_C, ladder: LAD, window: 5, entries: convC })
     // The HOSTILE adopted suppression: a real 5σ window (public data) plus a
     // FALSE deadline claim naming the post-selfban segment. It verifies and
-    // adopts — and must still ban nobody.
+    // adopts, and must still ban nobody.
     const attacker = kpOf('vt-hostile-auditor')
     const recSuppHostile = J.makeTier2Verdict({
       kind: 'suppression', root: ROOT_C, ladder: LAD, window: 5, entries: convC,
@@ -409,8 +409,8 @@ async function run(M, outNode, outBrowser) {
     eq(f.row.verdicts.length, 2, 'both records (genuine verdict + hostile suppression) travel')
     const entriesForC = (rec) => (rec.body.window === 5 && rec.body.ladder === LAD ? convC : null)
     const evC = T.verdictEvidence({ subjectRoot: ROOT_C, key: f.key, row: f.row, entriesFor: entriesForC, chainEvents: chainC })
-    eq(evC.adopt.ok, true, 'the hostile suppression record ADOPTS (its window evidence is real — receipts cannot refuse it)')
-    eq(evC.ladders[LAD]?.suppressed, false, '§0: the reader’s OWN scan finds the COMPLIANT selfban — no suppression, junk in the row notwithstanding')
+    eq(evC.adopt.ok, true, 'the hostile suppression record ADOPTS (its window evidence is real; receipts cannot refuse it)')
+    eq(evC.ladders[LAD]?.suppressed, false, '§0: the reader’s OWN scan finds the COMPLIANT selfban, no suppression, junk in the row notwithstanding')
     eq(T.banEvidenceOf(evC, LAD), undefined, '… so transport injects NO ban (the fold’s banStep owns the served 90d term)')
     const suppEntry = evC.ladders[LAD].records.find((r) => r.rec.body.kind === 'suppression')
     eq(suppEntry?.claimConfirmed, false, '… the hostile record’s deadline claim is exposed as UNCONFIRMED')
@@ -435,13 +435,13 @@ async function run(M, outNode, outBrowser) {
     const ROOT_E = b64h({ r: 'accused-escalated' })
     const escE = escal('esc')
     const ch = mkChain(ROOT_E)
-    const chainE = [ch.seg('esc-29'), ch.seg('esc-after')] // kept playing — would be suppression IF this were a conviction
+    const chainE = [ch.seg('esc-29'), ch.seg('esc-after')] // kept playing. Would be suppression IF this were a conviction
     const recEsc = mkVerdict({ kind: 'verdict', root: ROOT_E, ladder: LAD, window: 2, entries: escE })
     await T.publishVerdicts(JN.node, [recEsc])
     const f = await T.fetchVerdictRow(PN.node, ROOT_E)
     const evE = T.verdictEvidence({ subjectRoot: ROOT_E, key: f.key, row: f.row, entriesFor: (rec) => (rec.body.window === 2 ? escE : null), chainEvents: chainE })
     eq(evE.adopt.ok, true, 'a genuine 3σ escalation record adopts fine …')
-    eq(Object.keys(evE.ladders).length, 0, '… but NEVER reaches the ban path (A5-21: 5σ-conviction-only — escalation obliges analysis, never a ban)')
+    eq(Object.keys(evE.ladders).length, 0, '… but NEVER reaches the ban path (A5-21: 5σ-conviction-only, escalation obliges analysis, never a ban)')
     eq(D.displayState(ladderState, 'Blitz', T.banEvidenceOf(evE, LAD), NOW).state, 'ranked', '… so the escalated-but-unconvicted player renders ranked')
   }
   {
@@ -449,8 +449,8 @@ async function run(M, outNode, outBrowser) {
     const honestF = honest('ff')
     const ch = mkChain(ROOT_F)
     const chainF = [ch.seg('ff-29')]
-    // Forge with the REAL game keys and REAL tier1 digests — everything but
-    // the z claim — so rejection is specifically the zMicro receipt.
+    // Forge with the REAL game keys and REAL tier1 digests. Everything but
+    // the z claim, so rejection is specifically the zMicro receipt.
     const forger = kpOf('vt-forger')
     const body = {
       v: 1, kind: 'verdict', root: ROOT_F, ladder: LAD, window: 3, zMicro: 6_000_000,
@@ -458,10 +458,10 @@ async function run(M, outNode, outBrowser) {
       anchors: JA_DIGEST, params: J.PARAMS_A5_DIGEST, verdictWts: 1,
     }
     const forged = { body, signer: forger.pubB, key: forger.pubB, sig: b64(A.ed25519.sign(A.canonicalBytes(body), forger.priv)) }
-    ok((await T.publishVerdicts(AN.node, [forged])) > 0, 'the forged 5σ claim stores (carriers cannot know — §0 puts the duty on adopters)')
+    ok((await T.publishVerdicts(AN.node, [forged])) > 0, 'the forged 5σ claim stores (carriers cannot know: §0 puts the duty on adopters)')
     const f = await T.fetchVerdictRow(PN.node, ROOT_F)
     const evF2 = T.verdictEvidence({ subjectRoot: ROOT_F, key: f.key, row: f.row, entriesFor: (rec) => (rec.body.window === 3 ? honestF : null), chainEvents: chainF })
-    eq(evF2.adopt.adopted.length, 0, 'ADVERSARIAL MERGE CANNOT FORGE: the honest player’s real inputs refute the z claim — nothing adopts')
+    eq(evF2.adopt.adopted.length, 0, 'ADVERSARIAL MERGE CANNOT FORGE: the honest player’s real inputs refute the z claim. Nothing adopts')
     ok(evF2.adopt.errors.some((e) => e.includes('zMicro does not recompute')), '… rejected specifically by the zMicro receipt')
     eq(Object.keys(evF2.ladders).length, 0, '… no ban path input exists')
     eq(D.displayState(ladderState, 'Blitz', T.banEvidenceOf(evF2, LAD), NOW).state, 'ranked', '… the honest player stays ranked (§0 no-false-fraud, end to end)')
@@ -485,8 +485,8 @@ async function run(M, outNode, outBrowser) {
   eq(findNodeBuiltinRefs(browserBundle).length, 0, 'the browser transport bundle carries zero node built-ins')
 }
 
-// The transport decision core (gate verdicts + merge order) bundled twice —
-// platform node vs browser — through one scripted sequence; the digests must
+// The transport decision core (gate verdicts + merge order) bundled twice.
+// Platform node vs browser: through one scripted sequence; the digests must
 // match byte-for-byte and the browser bundle must carry zero node built-ins.
 const PARITY_ENTRY = `
 import { canonicalBytes, canonicalHash, ed25519, sha256, toB64u, utf8 } from '@shared/accounts'

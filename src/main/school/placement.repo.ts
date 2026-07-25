@@ -3,12 +3,12 @@ import { estimateElo } from '../analysis/estElo'
 import type { PlacementState, PlacementGameResult } from '../../shared/types'
 
 // School placement persistence. A single-row store (school_placement, id=1) holds
-// the user's INTERNAL estimated Elo — it gates which chapters unlock and is NEVER
+// the user's INTERNAL estimated Elo: it gates which chapters unlock and is NEVER
 // shown to the user. Each finished placement game (accuracy vs a fixed calibration
 // engine level) is appended to placement_game and the converged estimate is the
 // inverse-variance blend of every game's band, so a second game narrows (or
-// corrects) the first. The estimate may move DOWN as well as up — it is overwritten,
-// not Math.max'd — so a chapter-test pass or a weak game can re-place the user.
+// corrects) the first. The estimate may move DOWN as well as up. It is overwritten,
+// not Math.max'd, so a chapter-test pass or a weak game can re-place the user.
 //
 // Kept deliberately SEPARATE from the Glicko `rating` table (puzzle/vs-bot): that is
 // a public rating; this is an internal teaching gate.
@@ -18,7 +18,7 @@ import type { PlacementState, PlacementGameResult } from '../../shared/types'
  *  single calibration level keeps placement simple and within engine.play's
  *  uciElo>=1320 floor (see memory: engine.play silently rejects weaker).
  *  Label integrity: 1500 >= ENGINE_ELO_FLOOR is a NATIVE UCI_Elo level, so
- *  ratings/botStrength.measuredElo({kind:'engine', elo:1500}) === 1500 — the
+ *  ratings/botStrength.measuredElo({kind:'engine', elo:1500}) === 1500. The
  *  label needs no sub-floor correction (the mislabeled bands are all <1320).
  *  The Elo estimate itself comes from estimateElo(accuracy, moveCount), which
  *  is opponent-independent; recalibrations of that estimator flow through here
@@ -56,7 +56,7 @@ function gameRows(): PlacementGameResult[] {
 }
 
 /** Representative accuracy to echo on the blended band: the same inverse-variance
- *  weights the estimate blend uses (a tighter game weighs more — see
+ *  weights the estimate blend uses (a tighter game weighs more; see
  *  recordPlacementGame), so the accuracy shown with the estimate tracks how the
  *  estimate itself was formed. 0 only when no games exist. */
 function blendedAccuracy(games: PlacementGameResult[]): number {
@@ -141,7 +141,7 @@ export function recordPlacementGame(
 
 /**
  * Set the internal estimate directly (used by a chapter-test pass to correct a
- * mis-placement — bump the estimate to at least `floorElo` so that chapter's band
+ * mis-placement: bump the estimate to at least `floorElo` so that chapter's band
  * unlocks). Only ever raises; never lowers (a pass shouldn't demote).
  */
 export function bumpPlacementFloor(floorElo: number): void {
@@ -165,15 +165,15 @@ export function bumpPlacementFloor(floorElo: number): void {
  * bulk-written by bulkCompleteChapters, not earned, so leaving them would let a
  * lower re-placement inherit stale 'Done' chapters that chain the progression
  * unlock upward (and hide them from pickDailyLesson). Manually earned rows
- * (auto_completed=0) and chapter_test history always survive — a reset must NEVER
+ * (auto_completed=0) and chapter_test history always survive. A reset must NEVER
  * destroy what the learner genuinely earned (spec §1 never says re-placement
  * wipes progress; it only re-derives the Elo gate). The re-place-LOWER hazard
- * that leaves — a surviving earned completion ABOVE the fresh estimate chaining
- * its successor open — is closed on the READ side instead:
+ * that leaves, a surviving earned completion ABOVE the fresh estimate chaining
+ * its successor open, is closed on the READ side instead:
  * school.repo.chapterMetas only chain-unlocks from a cleared chapter whose band
  * is within the CURRENT estimate, so stale above-estimate earned rows read as
  * history (best_pct, completed badges) but never as an unlock link. Direct SQL
- * on the mastery tables here — importing mastery.repo would create the
+ * on the mastery tables here: importing mastery.repo would create the
  * placement→mastery→school→placement cycle (same reason school.repo.chapterMetas
  * reads progress directly).
  */

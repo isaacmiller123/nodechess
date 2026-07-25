@@ -10,12 +10,12 @@
 //   reconcile        stable piece identities across state diffs (slide /
 //                    capture / promotion / othello flip-in-place)
 //
-// The module pulls three.js + R3F — esbuild bundles it for bare node with a
+// The module pulls three.js + R3F. Esbuild bundles it for bare node with a
 // tiny DOM shim; components are never invoked (pure function exports only).
 //
 //   node scripts/test-board3d.mjs
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -53,7 +53,7 @@ try {
     plugins: [
       {
         // The sound tree uses Vite-only import.meta.glob; the bridge only
-        // calls useBoardSound inside components (never invoked here) — stub it.
+        // calls useBoardSound inside components (never invoked here). Stub it.
         name: 'stub-sound',
         setup(b) {
           b.onResolve({ filter: /useBoardSound$/ }, (args) => ({
@@ -131,7 +131,7 @@ try {
     ok(round, `${n}×${n}: pos↔square roundtrip for all ${squares} squares`)
   }
   ok(checkersSquareOf({ file: 0, rank: 7 }, 8) === null, 'light square maps to null')
-  // Square 1 sits on the top row (rank n-1) — the black side as numbered.
+  // Square 1 sits on the top row (rank n-1). The black side as numbered.
   ok(checkersPosOf(1, 8).rank === 7, 'square 1 on the top row (8×8)')
 
   // ---- chessDragMove ---------------------------------------------------------
@@ -239,7 +239,7 @@ try {
   const out5 = reconcile([], [{ file: 9, rank: 9, type: 'stone', color: 'black' }], false, nextId)
   ok(out5.length === 1 && out5[0].id.startsWith('t'), 'spawned piece gets a fresh id')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } finally {
   rmSync(outDir, { recursive: true, force: true })
 }

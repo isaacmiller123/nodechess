@@ -1,6 +1,6 @@
-// Update service — keeps friends off mismatched versions for online play.
+// Update service: keeps friends off mismatched versions for online play.
 //
-// Two delivery paths, decided by updateLogic.decideUpdatePath (BINDING —
+// Two delivery paths, decided by updateLogic.decideUpdatePath (BINDING;
 // unsigned builds, see that file's header):
 //   - 'electron-updater' (packaged Windows): electron-updater polls the GitHub
 //     feed (latest.yml on the release, publish block in electron-builder.yml),
@@ -80,7 +80,7 @@ async function wireWinUpdater(): Promise<void> {
 function friendlyError(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err)
   return /ENOTFOUND|ECONN|ETIMEDOUT|ERR_INTERNET|ERR_NAME|fetch failed|net::/i.test(raw)
-    ? "Couldn't reach the update server — check your connection and try again."
+    ? "Couldn't reach the update server. Check your connection and try again."
     : raw
 }
 
@@ -136,7 +136,7 @@ export function checkForUpdates(): Promise<UpdateStatus> {
 export async function downloadUpdate(): Promise<UpdateActionResult> {
   if (updatePath === 'electron-updater') {
     if (status.state === 'ready') {
-      // User confirmed — install and relaunch. setImmediate lets the IPC reply
+      // User confirmed: install and relaunch. setImmediate lets the IPC reply
       // flush before the windows tear down.
       setImmediate(() => void winUpdater().then((u) => u.quitAndInstall()))
       return { ok: true, action: 'install' }
@@ -155,7 +155,7 @@ export async function downloadUpdate(): Promise<UpdateActionResult> {
 }
 
 /** Startup hook (main/index.ts, after whenReady): one quiet background check a
- *  few seconds in — packaged builds only, so dev never nags or hits the API. */
+ *  few seconds in: packaged builds only, so dev never nags or hits the API. */
 export function initUpdates(): void {
   if (!app.isPackaged) return
   setTimeout(() => {

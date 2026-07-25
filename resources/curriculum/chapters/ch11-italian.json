@@ -14,7 +14,7 @@
   {
    "id": "develop",
    "name": "Develop with purpose",
-   "short": "Knights and bishops off the back rank toward the centre — each move improving a NEW piece and ideally making a threat. Knights before bishops; don't move the same piece twice without reason."
+   "short": "Knights and bishops off the back rank toward the centre. Each move improving a NEW piece and ideally making a threat. Knights before bishops; don't move the same piece twice without reason."
   },
   {
    "id": "castle",
@@ -29,7 +29,7 @@
   {
    "id": "italian-mainline",
    "name": "The Italian Game",
-   "short": "1.e4 e5 2.Nf3 Nc6 3.Bc4 — the bishop aims at f7, Black's weakest point. The most natural opening there is: every move is a principle in action."
+   "short": "1.e4 e5 2.Nf3 Nc6 3.Bc4: the bishop aims at f7, Black's weakest point. The most natural opening there is: every move is a principle in action."
   },
   {
    "id": "f7-weak",
@@ -39,7 +39,7 @@
   {
    "id": "two-knights",
    "name": "The Two Knights Defence",
-   "short": "3...Nf6, hitting White's e4 pawn instead of guarding with ...Bc5. It invites the sharp 4.Ng5 attack on f7 — a fighting reply that must be met accurately."
+   "short": "3...Nf6, hitting White's e4 pawn instead of guarding with ...Bc5. It invites the sharp 4.Ng5 attack on f7. A fighting reply that must be met accurately."
   },
   {
    "id": "fried-liver",
@@ -57,13 +57,13 @@
    "id": "l1-principles",
    "title": "The Four Opening Principles",
    "kind": "concept",
-   "summary": "Centre, development, king safety, connected rooks — the compass for every opening you will ever play.",
+   "summary": "Centre, development, king safety, connected rooks: the compass for every opening you will ever play.",
    "segments": [
     {
      "kind": "puzzle",
      "title": "Warm-up: punish the undeveloped",
      "intro": {
-      "text": "Before we build, a reminder of WHY we develop. Each of these is a player who broke the principles — left a piece loose, kept the king in the middle, brought the queen out too soon. Make them pay. Find the strongest move."
+      "text": "Before we build, a reminder of WHY we develop. Each of these is a player who broke the principles. Left a piece loose, kept the king in the middle, brought the queen out too soon. Make them pay. Find the strongest move."
      },
      "puzzle": {
       "themes": [
@@ -85,7 +85,7 @@
       {
        "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
        "coach": {
-        "text": "Job one: the centre. The four central squares are the high ground of the board. A pawn on e4 stakes a claim and opens lines for the bishop and queen at once. 1.e4 — the king's pawn — is the most direct way to fight for it.",
+        "text": "Job one: the centre. The four central squares are the high ground of the board. A pawn on e4 stakes a claim and opens lines for the bishop and queen at once. 1.e4 (the king's pawn) is the most direct way to fight for it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -121,7 +121,7 @@
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2",
        "coach": {
-        "text": "Job two: develop with purpose. White has answered 1...e5 with 2.Nf3 — a knight toward the centre that ALSO attacks the e5 pawn. That is the ideal developing move: it improves a piece and makes a threat in one stroke. Knights before bishops, because their best squares (f3, c3) are obvious early.",
+        "text": "Job two: develop with purpose. White has answered 1...e5 with 2.Nf3. A knight toward the centre that ALSO attacks the e5 pawn. That is the ideal developing move: it improves a piece and makes a threat in one stroke. Knights before bishops, because their best squares (f3, c3) are obvious early.",
         "annotations": [
          {
           "kind": "circle",
@@ -142,7 +142,7 @@
       {
        "fen": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
        "coach": {
-        "text": "Three pieces are out, all pointing at the centre. Notice nobody has moved a piece twice, nobody has dragged the queen into the open, and not a single tempo is wasted. The bishop on c4 already eyes f7 — Black's softest square. Every move has been a principle.",
+        "text": "Three pieces are out, all pointing at the centre. Notice nobody has moved a piece twice, nobody has dragged the queen into the open, and not a single tempo is wasted. The bishop on c4 already eyes f7, Black's softest square. Every move has been a principle.",
         "annotations": [
          {
           "kind": "arrow",
@@ -168,7 +168,7 @@
       {
        "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/2B1P3/2P2N2/PP1P1PPP/RNBQ1RK1 w - - 0 7",
        "coach": {
-        "text": "Job three and four: the king is castled — safe in the corner behind three untouched pawns — and Black's rooks now see each other across an empty back rank. That last point, connected rooks, is the FINISH LINE of the opening. When you reach it, the opening is over and the real game begins.",
+        "text": "Job three and four: the king is castled (safe in the corner behind three untouched pawns) and Black's rooks now see each other across an empty back rank. That last point, connected rooks, is the FINISH LINE of the opening. When you reach it, the opening is over and the real game begins.",
         "annotations": [
          {
           "kind": "highlight",
@@ -198,7 +198,7 @@
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "1.e4 e5. Both sides hold the centre. What is the best developing move for White — one that improves a piece AND makes a threat?",
+        "text": "1.e4 e5. Both sides hold the centre. What is the best developing move for White. One that improves a piece AND makes a threat?",
         "annotations": [
          {
           "kind": "highlight",
@@ -236,7 +236,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 4 4",
        "coach": {
-        "text": "Knights are out for both. Now the bishop. Where does the light-squared bishop belong — on the diagonal that already points at Black's weakest square?",
+        "text": "Knights are out for both. Now the bishop. Where does the light-squared bishop belong. On the diagonal that already points at Black's weakest square?",
         "annotations": [
          {
           "kind": "highlight",
@@ -250,7 +250,7 @@
         "f1c4"
        ],
        "successLine": {
-        "text": "3.Bc4. The bishop rakes the a2–g8 diagonal and stares straight at f7. With this move you have entered the Italian Game — the rest of the chapter lives here.",
+        "text": "3.Bc4. The bishop rakes the a2–g8 diagonal and stares straight at f7. With this move you have entered the Italian Game. The rest of the chapter lives here.",
         "annotations": [
          {
           "kind": "arrow",
@@ -261,7 +261,7 @@
         ]
        },
        "retryLine": {
-        "text": "The bishop wants the most active diagonal. f7 is defended only by Black's king — aim the bishop there.",
+        "text": "The bishop wants the most active diagonal. f7 is defended only by Black's king, aim the bishop there.",
         "annotations": [
          {
           "kind": "highlight",
@@ -314,21 +314,21 @@
   },
   {
    "id": "l2-giuoco-piano",
-   "title": "The Italian Mainline — Giuoco Piano",
+   "title": "The Italian Mainline: Giuoco Piano",
    "kind": "opening",
-   "summary": "1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 — the 'quiet game'. Build slowly with c3 and d3, then break with d4.",
+   "summary": "1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5: the 'quiet game'. Build slowly with c3 and d3, then break with d4.",
    "segments": [
     {
      "kind": "model",
      "title": "Walk the mainline move by move",
      "intro": {
-      "text": "Watch the whole opening unfold. I will explain the PURPOSE of every move — not 'this is the move', but WHY it is the move. This is the Giuoco Piano, the 'quiet game', and it has been played for five hundred years because it is simply correct."
+      "text": "Watch the whole opening unfold. I will explain the PURPOSE of every move: not 'this is the move', but WHY it is the move. This is the Giuoco Piano, the 'quiet game', and it has been played for five hundred years because it is simply correct."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — claim the centre, free the bishop and queen.",
+        "text": "1.e4: claim the centre, free the bishop and queen.",
         "annotations": [
          {
           "kind": "arrow",
@@ -343,7 +343,7 @@
       {
        "uci": "e7e5",
        "coach": {
-        "text": "1...e5 — Black refuses to give White the whole centre and stakes an equal claim.",
+        "text": "1...e5: Black refuses to give White the whole centre and stakes an equal claim.",
         "annotations": [
          {
           "kind": "highlight",
@@ -356,7 +356,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — develop AND attack e5. Black must react. Develop with threats whenever you can.",
+        "text": "2.Nf3: develop AND attack e5. Black must react. Develop with threats whenever you can.",
         "annotations": [
          {
           "kind": "arrow",
@@ -371,7 +371,7 @@
       {
        "uci": "b8c6",
        "coach": {
-        "text": "2...Nc6 — the natural defence: a developing move that guards e5. Two birds again.",
+        "text": "2...Nc6. The natural defence: a developing move that guards e5. Two birds again.",
         "annotations": [
          {
           "kind": "arrow",
@@ -385,7 +385,7 @@
       {
        "uci": "f1c4",
        "coach": {
-        "text": "3.Bc4 — the Italian bishop, drilling into f7. We are now in the Italian Game.",
+        "text": "3.Bc4: the Italian bishop, drilling into f7. We are now in the Italian Game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -400,7 +400,7 @@
       {
        "uci": "f8c5",
        "coach": {
-        "text": "3...Bc5 — Black mirrors, aiming his own bishop at f2. This symmetric line is the Giuoco Piano.",
+        "text": "3...Bc5: Black mirrors, aiming his own bishop at f2. This symmetric line is the Giuoco Piano.",
         "annotations": [
          {
           "kind": "arrow",
@@ -414,7 +414,7 @@
       {
        "uci": "c2c3",
        "coach": {
-        "text": "4.c3 — the key quiet move. It prepares d2–d4, building a big pawn centre, and clears c2 so a knight or queen can use it. Patience: this is why it is called the 'quiet game'.",
+        "text": "4.c3: the key quiet move. It prepares d2–d4, building a big pawn centre, and clears c2 so a knight or queen can use it. Patience: this is why it is called the 'quiet game'.",
         "annotations": [
          {
           "kind": "highlight",
@@ -433,7 +433,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — develop the last minor piece and hit e4. Black keeps pace.",
+        "text": "4...Nf6: develop the last minor piece and hit e4. Black keeps pace.",
         "annotations": [
          {
           "kind": "arrow",
@@ -448,7 +448,7 @@
       {
        "uci": "d2d3",
        "coach": {
-        "text": "5.d3 — the modern, solid choice. It defends e4, opens the dark-squared bishop, and keeps options. (The sharp 5.d4 we will see in a moment.) Both sides now manoeuvre.",
+        "text": "5.d3: the modern, solid choice. It defends e4, opens the dark-squared bishop, and keeps options. (The sharp 5.d4 we will see in a moment.) Both sides now manoeuvre.",
         "annotations": [
          {
           "kind": "highlight",
@@ -461,7 +461,7 @@
       {
        "uci": "d7d6",
        "coach": {
-        "text": "5...d6 — Black answers symmetrically, supporting e5 and freeing his own bishop.",
+        "text": "5...d6: Black answers symmetrically, supporting e5 and freeing his own bishop.",
         "annotations": [
          {
           "kind": "highlight",
@@ -474,7 +474,7 @@
       {
        "uci": "e1g1",
        "coach": {
-        "text": "6.O-O — king to safety, rook toward the centre. Job three done.",
+        "text": "6.O-O: king to safety, rook toward the centre. Job three done.",
         "annotations": [
          {
           "kind": "highlight",
@@ -488,7 +488,7 @@
       {
        "uci": "e8g8",
        "coach": {
-        "text": "6...O-O — Black castles too. Look at the board: both sides have completed the opening cleanly. The rooks are connected. From here the plan is Nbd2–f1–g3 to swing a knight at the kingside, and a well-timed d3–d4 break. A perfect, principled Italian.",
+        "text": "6...O-O: Black castles too. Look at the board: both sides have completed the opening cleanly. The rooks are connected. From here the plan is Nbd2–f1–g3 to swing a knight at the kingside, and a well-timed d3–d4 break. A perfect, principled Italian.",
         "annotations": [
          {
           "kind": "highlight",
@@ -509,7 +509,7 @@
     },
     {
      "kind": "teach",
-     "title": "The d4 break — the engine of White's play",
+     "title": "The d4 break: the engine of White's play",
      "intro": {
       "text": "The whole point of c3 is the d4 break. Let me show you the sharp version, where White cracks the centre open immediately."
      },
@@ -536,7 +536,7 @@
       {
        "fen": "r1bqk2r/pppp1ppp/2n2n2/8/1bBPP3/2N2N2/PP3PPP/R1BQK2R b KQkq - 2 7",
        "coach": {
-        "text": "After 5.d4 exd4 6.cxd4 Bb4+ 7.Nc3, White owns a powerful pawn duo on d4 and e4 — a broad, mobile centre. This is the reward for the patient c3: a centre that rolls forward and cramps Black. Remember the trade-off — a big centre is a real asset, but it must be defended.",
+        "text": "After 5.d4 exd4 6.cxd4 Bb4+ 7.Nc3, White owns a powerful pawn duo on d4 and e4, a broad, mobile centre. This is the reward for the patient c3: a centre that rolls forward and cramps Black. Remember the trade-off. A big centre is a real asset, but it must be defended.",
         "annotations": [
          {
           "kind": "highlight",
@@ -588,13 +588,13 @@
      "kind": "teach",
      "title": "A sharper third move",
      "intro": {
-      "text": "Not every opponent plays the quiet 3...Bc5. The most combative answer is 3...Nf6 — the Two Knights Defence. You must know how to meet it, because it leads to the sharpest, most famous attack in beginner chess."
+      "text": "Not every opponent plays the quiet 3...Bc5. The most combative answer is 3...Nf6, the Two Knights Defence. You must know how to meet it, because it leads to the sharpest, most famous attack in beginner chess."
      },
      "steps": [
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4",
        "coach": {
-        "text": "3...Nf6. Instead of defending, Black attacks: the knight hits e4. This is double-edged — Black ignores f7 for now and counter-punches. White has a choice between the calm 4.d3 and the violent 4.Ng5.",
+        "text": "3...Nf6. Instead of defending, Black attacks: the knight hits e4. This is double-edged, Black ignores f7 for now and counter-punches. White has a choice between the calm 4.d3 and the violent 4.Ng5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -610,7 +610,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p1N1/2B1P3/8/PPPP1PPP/RNBQK2R b KQkq - 5 4",
        "coach": {
-        "text": "4.Ng5! Now bishop AND knight both hit f7 — a square defended only by Black's king. This violates 'don't move a piece twice in the opening', but here it is justified: the threat 5.Nxf7 winning material is concrete and immediate. Principles bow to a real threat.",
+        "text": "4.Ng5! Now bishop AND knight both hit f7. A square defended only by Black's king. This violates 'don't move a piece twice in the opening', but here it is justified: the threat 5.Nxf7 winning material is concrete and immediate. Principles bow to a real threat.",
         "annotations": [
          {
           "kind": "arrow",
@@ -637,7 +637,7 @@
       {
        "fen": "r1bqkb1r/ppp2ppp/2n2n2/3pp1N1/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq d6 0 5",
        "coach": {
-        "text": "Black's only good reply is 4...d5, the central counter-strike. It blocks the bishop's diagonal and opens lines for Black's own development. Note: 4...d5 does NOT defend f7 — it ignores the attack to hit back in the centre. White takes: 5.exd5.",
+        "text": "Black's only good reply is 4...d5, the central counter-strike. It blocks the bishop's diagonal and opens lines for Black's own development. Note: 4...d5 does NOT defend f7. It ignores the attack to hit back in the centre. White takes: 5.exd5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -656,7 +656,7 @@
       {
        "fen": "r1bqkb1r/ppp2ppp/5n2/nB1Pp1N1/8/8/PPPP1PPP/RNBQK2R b KQkq - 2 6",
        "coach": {
-        "text": "The main line: 5...Na5! — the knight attacks the c4-bishop and steps out of the way so Black can round up the d5-pawn. White plays 6.Bb5+ to keep the bishop. This is theory's verdict: Black sacrifices a pawn for fast development and is fine. The lesson: 5...Na5 is correct. The TEMPTING 5...Nxd5 — recapturing the pawn — walks into the Fried Liver. That is our next lesson.",
+        "text": "The main line: 5...Na5!. The knight attacks the c4-bishop and steps out of the way so Black can round up the d5-pawn. White plays 6.Bb5+ to keep the bishop. This is theory's verdict: Black sacrifices a pawn for fast development and is fine. The lesson: 5...Na5 is correct. The TEMPTING 5...Nxd5 (recapturing the pawn) walks into the Fried Liver. That is our next lesson.",
         "annotations": [
          {
           "kind": "arrow",
@@ -729,7 +729,7 @@
       {
        "fen": "r1bqkb1r/ppp2ppp/2n2n2/3pp1N1/2B1P3/8/PPPP1PPP/RNBQK2R w KQkq d6 0 5",
        "coach": {
-        "text": "Black hit back with 4...d5, attacking your bishop on c4. Don't retreat in fear — open the centre and keep the initiative. What is the principled capture?",
+        "text": "Black hit back with 4...d5, attacking your bishop on c4. Don't retreat in fear. Open the centre and keep the initiative. What is the principled capture?",
         "annotations": [
          {
           "kind": "highlight",
@@ -787,19 +787,19 @@
    "id": "l4-fried-liver",
    "title": "The Fried Liver Attack",
    "kind": "variation",
-   "summary": "5...Nxd5?! 6.Nxf7! — sacrifice the knight to drag the king out, then hunt it with Qf3+ and Nc3.",
+   "summary": "5...Nxd5?! 6.Nxf7!. Sacrifice the knight to drag the king out, then hunt it with Qf3+ and Nc3.",
    "segments": [
     {
      "kind": "teach",
      "title": "Punish the natural recapture",
      "intro": {
-      "text": "Here is the most famous attack a beginner learns. When Black recaptures on d5 with the knight — the natural, greedy move — White sacrifices a whole knight on f7 to expose the king. Memorise this; you WILL get the chance to play it."
+      "text": "Here is the most famous attack a beginner learns. When Black recaptures on d5 with the knight: the natural, greedy move. White sacrifices a whole knight on f7 to expose the king. Memorise this; you WILL get the chance to play it."
      },
      "steps": [
       {
        "fen": "r1bqkb1r/ppp2ppp/2n5/3np1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 6",
        "coach": {
-        "text": "Black has played 5...Nxd5?!, recapturing the pawn. It looks perfectly natural — but the knight has left f7 with only the king to guard it, and the d5-knight is now loose. White strikes: 6.Nxf7!! — the Fried Liver.",
+        "text": "Black has played 5...Nxd5?!, recapturing the pawn. It looks perfectly natural, but the knight has left f7 with only the king to guard it, and the d5-knight is now loose. White strikes: 6.Nxf7!!, the Fried Liver.",
         "annotations": [
          {
           "kind": "arrow",
@@ -820,7 +820,7 @@
       {
        "fen": "r1bqkb1r/ppp2Npp/2n5/3np3/2B5/8/PPPP1PPP/RNBQK2R b KQkq - 0 6",
        "coach": {
-        "text": "6.Nxf7! The knight forks the queen on d8 and the rook on h8 — so Black cannot ignore it. But the deeper point is the king: if Black declines, he is just lost; so he takes. 6...Kxf7. Now the king stands in the open on f7 with no shelter.",
+        "text": "6.Nxf7! The knight forks the queen on d8 and the rook on h8, so Black cannot ignore it. But the deeper point is the king: if Black declines, he is just lost; so he takes. 6...Kxf7. Now the king stands in the open on f7 with no shelter.",
         "annotations": [
          {
           "kind": "arrow",
@@ -840,7 +840,7 @@
       {
        "fen": "r1bq1b1r/ppp2kpp/2n5/3np3/2B5/5Q2/PPPP1PPP/RNB1K2R b KQ - 1 7",
        "coach": {
-        "text": "The king has taken: 6...Kxf7. Now the hunt. White plays 7.Qf3+ — check, and the queen ALSO attacks the loose knight on d5. This double duty is the engine of the attack: every move is a check or a threat, giving Black no time to organise.",
+        "text": "The king has taken: 6...Kxf7. Now the hunt. White plays 7.Qf3+. Check, and the queen ALSO attacks the loose knight on d5. This double duty is the engine of the attack: every move is a check or a threat, giving Black no time to organise.",
         "annotations": [
          {
           "kind": "arrow",
@@ -865,7 +865,7 @@
       {
        "fen": "r1bq1b1r/ppp3pp/2n1k3/3np3/2B5/2N2Q2/PPPP1PPP/R1B1K2R b KQ - 3 8",
        "coach": {
-        "text": "Black's best defence is 7...Ke6 — the king steps up to defend its own knight on d5, the only way to hold it. So White adds an attacker instead of grabbing: 8.Nc3, hitting d5 a second time. White keeps piling pressure on the pinned, overworked knight while the king sits in a crossfire. White has a raging attack and full compensation for the piece — this is exactly why 5...Nxd5 is a mistake.",
+        "text": "Black's best defence is 7...Ke6. The king steps up to defend its own knight on d5, the only way to hold it. So White adds an attacker instead of grabbing: 8.Nc3, hitting d5 a second time. White keeps piling pressure on the pinned, overworked knight while the king sits in a crossfire. White has a raging attack and full compensation for the piece. This is exactly why 5...Nxd5 is a mistake.",
         "annotations": [
          {
           "kind": "arrow",
@@ -899,7 +899,7 @@
       {
        "fen": "r1bqkb1r/ppp2ppp/2n5/3np1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 6",
        "coach": {
-        "text": "Black just played 5...Nxd5, recapturing. f7 is guarded only by the king and the d5-knight is loose. Unleash the Fried Liver — what is the sacrifice?",
+        "text": "Black just played 5...Nxd5, recapturing. f7 is guarded only by the king and the d5-knight is loose. Unleash the Fried Liver: what is the sacrifice?",
         "annotations": [
          {
           "kind": "highlight",
@@ -913,7 +913,7 @@
         "g5f7"
        ],
        "successLine": {
-        "text": "6.Nxf7! The knight forks queen and rook, and after 6...Kxf7 the king is dragged into the open. The sacrifice is the whole point — you are not after material, you are after the king.",
+        "text": "6.Nxf7! The knight forks queen and rook, and after 6...Kxf7 the king is dragged into the open. The sacrifice is the whole point. You are not after material, you are after the king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -930,7 +930,7 @@
         ]
        },
        "retryLine": {
-        "text": "Don't be timid — this is a sacrifice. Capture on f7 with the knight to force the king out.",
+        "text": "Don't be timid. This is a sacrifice. Capture on f7 with the knight to force the king out.",
         "annotations": [
          {
           "kind": "arrow",
@@ -962,7 +962,7 @@
         "d1f3"
        ],
        "successLine": {
-        "text": "7.Qf3+! Check, and the queen also bears down on d5. Black must deal with the check while his knight hangs — the perfect double-purpose move. The attack plays itself when every move is forcing.",
+        "text": "7.Qf3+! Check, and the queen also bears down on d5. Black must deal with the check while his knight hangs. The perfect double-purpose move. The attack plays itself when every move is forcing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -992,7 +992,7 @@
       {
        "fen": "r1bq1b1r/ppp3pp/2n1k3/3np3/2B5/5Q2/PPPP1PPP/RNB1K2R w KQ - 3 8",
        "coach": {
-        "text": "Black defended with 7...Ke6, his king guarding the d5-knight. Don't snatch the knight yet — it is defended three times. Instead bring up reinforcements: develop a piece that adds a SECOND attacker to d5.",
+        "text": "Black defended with 7...Ke6, his king guarding the d5-knight. Don't snatch the knight yet. It is defended three times. Instead bring up reinforcements: develop a piece that adds a SECOND attacker to d5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1005,7 +1005,7 @@
         "b1c3"
        ],
        "successLine": {
-        "text": "8.Nc3! Develop with a threat — now d5 is attacked by bishop, queen, and knight. You keep adding pressure on the overloaded knight and the exposed king. White has a furious attack and is doing very well. This is the punishment 5...Nxd5 deserves.",
+        "text": "8.Nc3! Develop with a threat. Now d5 is attacked by bishop, queen, and knight. You keep adding pressure on the overloaded knight and the exposed king. White has a furious attack and is doing very well. This is the punishment 5...Nxd5 deserves.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1016,7 +1016,7 @@
         ]
        },
        "retryLine": {
-        "text": "Develop a new piece toward d5 — a knight from b1 lands on a square that hits d5 a second time.",
+        "text": "Develop a new piece toward d5. A knight from b1 lands on a square that hits d5 a second time.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1038,15 +1038,15 @@
    "segments": [
     {
      "kind": "teach",
-     "title": "White moves first — symmetry breaks",
+     "title": "White moves first: symmetry breaks",
      "intro": {
-      "text": "Beginners love to copy. 'Whatever you do, I do.' But chess is not fair: White moves first, so in any symmetric race White's threat arrives one tempo sooner. Let me show you the cleanest proof — the copycat trap."
+      "text": "Beginners love to copy. 'Whatever you do, I do.' But chess is not fair: White moves first, so in any symmetric race White's threat arrives one tempo sooner. Let me show you the cleanest proof, the copycat trap."
      },
      "steps": [
       {
        "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPP1PPP/RNBQKB1R w KQkq - 0 4",
        "coach": {
-        "text": "A famous trap: 1.e4 e5 2.Nf3 Nf6 3.Nxe5 — and Black, copying, plays 3...Nxe4?? mirroring the capture (shown here). Disaster. Because White is a move ahead, White strikes first: 4.Qe2! The queen attacks the e4-knight down the now half-open e-file. The ONLY move that holds is the un-symmetric 4...Qe7 — Black must STOP copying.",
+        "text": "A famous trap: 1.e4 e5 2.Nf3 Nf6 3.Nxe5, and Black, copying, plays 3...Nxe4?? mirroring the capture (shown here). Disaster. Because White is a move ahead, White strikes first: 4.Qe2! The queen attacks the e4-knight down the now half-open e-file. The ONLY move that holds is the un-symmetric 4...Qe7. Black must STOP copying.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1067,7 +1067,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/2N2n2/8/8/8/PPPPQPPP/RNB1KB1R b KQkq - 3 5",
        "coach": {
-        "text": "If Black keeps copying with 4...Nf6?? (retreating the knight to mirror White), the trap springs: 5.Nc6+! — a DISCOVERED check. The knight jumps to c6 and unmasks the queen on e2, which now checks the king down the e-file; next move Nxd8 snaps off Black's queen. (Correct was 4...Qe7, which blocks the e-file and after 5.Qxe4 d6 regains the piece.) The lesson: never copy past the point a threat appears. Once your opponent threatens something you must RESPOND, not imitate — White's extra tempo always cashes in.",
+        "text": "If Black keeps copying with 4...Nf6?? (retreating the knight to mirror White), the trap springs: 5.Nc6+!. A DISCOVERED check. The knight jumps to c6 and unmasks the queen on e2, which now checks the king down the e-file; next move Nxd8 snaps off Black's queen. (Correct was 4...Qe7, which blocks the e-file and after 5.Qxe4 d6 regains the piece.) The lesson: never copy past the point a threat appears. Once your opponent threatens something you must RESPOND, not imitate, White's extra tempo always cashes in.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1090,7 +1090,7 @@
     },
     {
      "kind": "teach",
-     "title": "Légal's Trap — punish the careless pin",
+     "title": "Légal's Trap: punish the careless pin",
      "intro": {
       "text": "One more Italian classic. When Black pins your f3-knight with ...Bg4 but leaves f7 weak, there is a stunning queen sacrifice that mates. Three hundred years old and it still catches people."
      },
@@ -1098,7 +1098,7 @@
       {
        "fen": "r2qkbnr/ppp2ppp/2np4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 Nc6 3.Bc4 d6 4.Nc3 Bg4 — Black pins the f3-knight against the queen. It feels safe: 'the knight is pinned, it cannot move.' But the pin is only RELATIVE — the knight CAN move, and behind it lurks a mate. White plays the shocking 5.Nxe5!",
+        "text": "1.e4 e5 2.Nf3 Nc6 3.Bc4 d6 4.Nc3 Bg4: Black pins the f3-knight against the queen. It feels safe: 'the knight is pinned, it cannot move.' But the pin is only RELATIVE. The knight CAN move, and behind it lurks a mate. White plays the shocking 5.Nxe5!",
         "annotations": [
          {
           "kind": "arrow",
@@ -1120,7 +1120,7 @@
       {
        "fen": "r2q1bnr/ppp1kBpp/2np4/3NN3/4P3/8/PPPP1PPP/R1BbK2R b KQ - 2 7",
        "coach": {
-        "text": "If Black grabs the queen — 5...Bxd1?? — White ignores it: 6.Bxf7+ Ke7 7.Nd5#! Checkmate. The d5-knight checks the king; the f7-bishop covers e6 and e8; the e5-knight covers d7; and Black's own pieces clog the rest. The king cannot move. Moral: a queen is worth nothing if you are mated. And always check whether a pin is absolute (against the king) or merely relative (against the queen) — only the absolute pin truly freezes the piece.",
+        "text": "If Black grabs the queen, 5...Bxd1??. White ignores it: 6.Bxf7+ Ke7 7.Nd5#! Checkmate. The d5-knight checks the king; the f7-bishop covers e6 and e8; the e5-knight covers d7; and Black's own pieces clog the rest. The king cannot move. Moral: a queen is worth nothing if you are mated. And always check whether a pin is absolute (against the king) or merely relative (against the queen). Only the absolute pin truly freezes the piece.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1176,7 +1176,7 @@
      "kind": "guided",
      "title": "Play the whole opening, move by move",
      "intro": {
-      "text": "No hints about which line — just the four principles and what you have learned. Build the Italian yourself, from the first move to a finished, principled position."
+      "text": "No hints about which line: just the four principles and what you have learned. Build the Italian yourself, from the first move to a finished, principled position."
      },
      "steps": [
       {
@@ -1272,7 +1272,7 @@
         "f1c4"
        ],
        "successLine": {
-        "text": "3.Bc4 — the Italian Game. The bishop targets f7. You have reached the starting position of everything you learned this chapter.",
+        "text": "3.Bc4: the Italian Game. The bishop targets f7. You have reached the starting position of everything you learned this chapter.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1310,7 +1310,7 @@
         "c2c3"
        ],
        "successLine": {
-        "text": "4.c3 — preparing d4. Steady, principled, and exactly right. From here you castle, play d3 or d4, and complete a textbook opening.",
+        "text": "4.c3: preparing d4. Steady, principled, and exactly right. From here you castle, play d3 or d4, and complete a textbook opening.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1337,7 +1337,7 @@
      "kind": "puzzle",
      "title": "Cool-down: mixed tactics from the open games",
      "intro": {
-      "text": "A final mixed set from open, e4-e5 positions — forks, pins, and attacks on the king. Everything you have trained, together."
+      "text": "A final mixed set from open, e4-e5 positions. Forks, pins, and attacks on the king. Everything you have trained, together."
      },
      "puzzle": {
       "themes": [
@@ -1358,7 +1358,7 @@
   "questions": [
    {
     "kind": "mc",
-    "prompt": "What is the single most important job of the opening — the goal that, once achieved, means the opening is essentially finished?",
+    "prompt": "What is the single most important job of the opening. The goal that, once achieved, means the opening is essentially finished?",
     "options": [
      "Win a pawn as early as possible",
      "Develop your pieces, castle, and connect your rooks",
@@ -1378,7 +1378,7 @@
      "It blocks Black's c-pawn"
     ],
     "answerIndex": 2,
-    "explain": "Bc4 rakes the a2–g8 diagonal straight at f7. Before Black castles, f7 is guarded only by the king — which is why so many Italian tactics crash through there."
+    "explain": "Bc4 rakes the a2–g8 diagonal straight at f7. Before Black castles, f7 is guarded only by the king, which is why so many Italian tactics crash through there."
    },
    {
     "kind": "mc",
@@ -1411,11 +1411,11 @@
     "solutionUci": [
      "f1c4"
     ],
-    "explain": "3.Bc4 — the Italian bishop, pointing at f7. This is the defining move of the chapter's opening."
+    "explain": "3.Bc4: the Italian bishop, pointing at f7. This is the defining move of the chapter's opening."
    },
    {
     "kind": "play",
-    "prompt": "Two Knights Defence: 3...Nf6 4.Ng5 d5 5.exd5. Black greedily recaptures 5...Nxd5. Launch the Fried Liver — play the move that exposes Black's king.",
+    "prompt": "Two Knights Defence: 3...Nf6 4.Ng5 d5 5.exd5. Black greedily recaptures 5...Nxd5. Launch the Fried Liver. Play the move that exposes Black's king.",
     "fen": "r1bqkb1r/ppp2ppp/2n5/3np1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 0 6",
     "solutionUci": [
      "g5f7"
@@ -1429,11 +1429,11 @@
     "solutionUci": [
      "d1f3"
     ],
-    "explain": "7.Qf3+! A check that also hits the loose d5-knight — a double-purpose move that keeps the attack forcing."
+    "explain": "7.Qf3+! A check that also hits the loose d5-knight. A double-purpose move that keeps the attack forcing."
    },
    {
     "kind": "play",
-    "prompt": "Fried Liver: 7.Qf3+ Ke6 (the king defends its own knight on d5). Don't grab the knight — develop a piece that adds a second attacker to d5.",
+    "prompt": "Fried Liver: 7.Qf3+ Ke6 (the king defends its own knight on d5). Don't grab the knight. Develop a piece that adds a second attacker to d5.",
     "fen": "r1bq1b1r/ppp3pp/2n1k3/3np3/2B5/5Q2/PPPP1PPP/RNB1K2R w KQ - 3 8",
     "solutionUci": [
      "b1c3"
@@ -1442,7 +1442,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Opening principles: 1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6. All your kingside minors are out — play the most sound and important move.",
+    "prompt": "Opening principles: 1.e4 e5 2.Nf3 Nc6 3.Bc4 Bc5 4.c3 Nf6. All your kingside minors are out. Play the most sound and important move.",
     "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/2P2N2/PP1P1PPP/RNBQK2R w KQkq - 1 5",
     "solutionUci": [
      "e1g1",
@@ -1453,7 +1453,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Légal's Trap: 1.e4 e5 2.Nf3 Nc6 3.Bc4 d6 4.Nc3 Bg4. Black has pinned your f3-knight to your queen — but the pin is only relative. Play the shocking move that exploits the weak f7.",
+    "prompt": "Légal's Trap: 1.e4 e5 2.Nf3 Nc6 3.Bc4 d6 4.Nc3 Bg4. Black has pinned your f3-knight to your queen, but the pin is only relative. Play the shocking move that exploits the weak f7.",
     "fen": "r2qkbnr/ppp2ppp/2np4/4p3/2B1P1b1/2N2N2/PPPP1PPP/R1BQK2R w KQkq - 2 5",
     "solutionUci": [
      "f3e5"
@@ -1474,7 +1474,7 @@
     "fen": "r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/2P2N2/PP1P1PPP/RNBQK2R b KQkq - 0 4",
     "lastMoveUci": "c2c3",
     "verdict": "correct",
-    "explain": "4.c3 is the heart of the Giuoco Piano — it prepares the d4 break and clears c2. Patient, principled, and the main line for five centuries."
+    "explain": "4.c3 is the heart of the Giuoco Piano. It prepares the d4 break and clears c2. Patient, principled, and the main line for five centuries."
    },
    {
     "kind": "judge",
@@ -1482,7 +1482,7 @@
     "fen": "rnbqkbnr/pppp1ppp/8/4p2Q/4P3/8/PPPP1PPP/RNB1KBNR b KQkq - 1 2",
     "lastMoveUci": "d1h5",
     "verdict": "blunder",
-    "explain": "Bringing the queen out this early breaks the development principle. Black calmly defends and gains tempo: 2...Nc6 guards e5, and after 3.Bc4 g6 4.Qf3 Nf6 the queen is chased around while Black develops for free. Threats from a lone early queen are easily parried — develop your minor pieces first."
+    "explain": "Bringing the queen out this early breaks the development principle. Black calmly defends and gains tempo: 2...Nc6 guards e5, and after 3.Bc4 g6 4.Qf3 Nf6 the queen is chased around while Black develops for free. Threats from a lone early queen are easily parried. Develop your minor pieces first."
    },
    {
     "kind": "judge",
@@ -1490,7 +1490,7 @@
     "fen": "r1bqkb1r/ppp2ppp/5n2/n2Pp1N1/2B5/8/PPPP1PPP/RNBQK2R w KQkq - 1 6",
     "lastMoveUci": "c6a5",
     "verdict": "correct",
-    "explain": "5...Na5! is theory's verdict — Black gives back a pawn for fast, harmonious development and full equality. It is precisely the move that AVOIDS the Fried Liver that 5...Nxd5 would invite."
+    "explain": "5...Na5! is theory's verdict. Black gives back a pawn for fast, harmonious development and full equality. It is precisely the move that AVOIDS the Fried Liver that 5...Nxd5 would invite."
    }
   ]
  },

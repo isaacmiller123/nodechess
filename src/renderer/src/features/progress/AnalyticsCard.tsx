@@ -73,7 +73,7 @@ function ChartBlock({
 
       {stats ? (
         <>
-          <LineChart points={points} label={`${title} — ${hint}`} tone={tone} formatValue={formatValue} />
+          <LineChart points={points} label={`${title}, ${hint}`} tone={tone} formatValue={formatValue} />
           <div className="chart-block-foot small muted num">
             <span>Now {formatValue(stats.last)}</span>
             <span aria-hidden>·</span>

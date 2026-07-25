@@ -1,4 +1,4 @@
-// ffish family wave — GameSpec adapters over ffish-es6 (Fairy-Stockfish WASM)
+// ffish family wave: GameSpec adapters over ffish-es6 (Fairy-Stockfish WASM)
 // for xiangqi, shogi, janggi, makruk and placement chess
 // (docs/GAMES-PLATFORM-SPEC.md §Phases P2).
 //
@@ -7,7 +7,7 @@
 // throws a clear "not loaded yet" error until preloadFfish() resolves.
 // Registry entries carry `requiresPreload: true`.
 //
-// Move codec: ffish UCI strings VERBATIM — shogi drops 'P@e5' and promotions
+// Move codec: ffish UCI strings VERBATIM. Shogi drops 'P@e5' and promotions
 // 'h8b2+', makruk promotions 'c4b3m', janggi pass = same-square king move
 // 'e2e2', xiangqi/janggi two-digit ranks 'e9e10'. Colors are ffish's: `white`
 // is the FIRST mover in every variant here (shogi sente = 'white' internally;
@@ -19,7 +19,7 @@
 // are heap-allocated and need .delete(), so they are transient: every call
 // rebuilds a board from (startFen, moves) inside withBoard() and frees it.
 // Move lists in a session are short; if profiling ever disagrees, memoize the
-// last (state → board) pair in P2 wave 2 — the API stays unchanged.
+// last (state → board) pair in P2 wave 2: the API stays unchanged.
 
 import { getFfish, preloadFfish } from './ffish'
 import type { GameKind, GameResult, GameSpec, MoveMeta, BoardShape } from './kernel'
@@ -99,7 +99,7 @@ function initOf(variant: string, options?: unknown): FfishState {
     }
     startFen = opts.fen
   } else {
-    // Board().fen() is the canonical form — ffish.startingFen('shogi') uses a
+    // Board().fen() is the canonical form, ffish.startingFen('shogi') uses a
     // legacy counter layout that does not round-trip through the constructor.
     const board = makeBoard(variant)
     try {
@@ -133,7 +133,7 @@ function resultOf(s: FfishState): GameResult | null {
     if (score !== '1-0' && score !== '0-1' && score !== '1/2-1/2') return null
     const winner = score === '1-0' ? 'white' : score === '0-1' ? 'black' : null
     const noMoves = board.numberLegalMoves() === 0
-    // Reason labels: 'stalemate' covers every no-move, no-check end — including
+    // Reason labels: 'stalemate' covers every no-move, no-check end, including
     // wins (xiangqi stalemate loses; janggi double-pass adjudication).
     const reason =
       s.variant === 'janggi' && board.isBikjang()
@@ -157,7 +157,7 @@ function moveMetaOf(s: FfishState, move: string): MoveMeta {
     const check = board.isCheck()
     const promote = PROMO_RE.test(move)
     // TODO(P2 wave 2): 'castle' sound for placement castling (plain king UCI
-    // like e1g1 — needs piece introspection to tell it from a king step).
+    // like e1g1. Needs piece introspection to tell it from a king step).
     const sound = check ? 'check' : promote ? 'promote' : capture ? 'capture' : 'move'
     return { capture, sound }
   })
@@ -166,7 +166,7 @@ function moveMetaOf(s: FfishState, move: string): MoveMeta {
 /** SAN for the move about to be played from `s` (kernel notate contract).
  *  ffish's board.sanMove is variant-aware (shogi drops/promotions, xiangqi
  *  two-digit ranks, makruk promotion letters). Only ever called on a LEGAL
- *  move — sanMove on garbage is undefined behavior in the WASM — so legality
+ *  move (sanMove on garbage is undefined behavior in the WASM) so legality
  *  is checked first and anything else echoes the raw move string. */
 function notateOf(s: FfishState, move: string): string {
   if (!MOVE_RE.test(move)) return move
@@ -179,7 +179,7 @@ function notateOf(s: FfishState, move: string): string {
 
 /**
  * Renderer helper (boards/ChessFamilyBoard.tsx): is the side to move in
- * check? Highlight only — never rules-authoritative. Requires preloadFfish()
+ * check? Highlight only: never rules-authoritative. Requires preloadFfish()
  * (like every other rules call).
  */
 export function ffishStateCheck(s: FfishState): boolean {
@@ -227,25 +227,25 @@ export const FFISH_VARIANT_SPECS: Readonly<Partial<Record<GameKind, GameSpec<Ffi
   xiangqi: makeSpec({
     kind: 'xiangqi',
     title: 'Xiangqi',
-    tagline: 'Chinese chess — cannons, rivers and palaces.',
+    tagline: 'Chinese chess: cannons, rivers and palaces.',
     board: { layout: 'intersections', files: 9, ranks: 10 }
   }),
   shogi: makeSpec({
     kind: 'shogi',
     title: 'Shogi',
-    tagline: 'Japanese chess — captured pieces return as your own.',
+    tagline: 'Japanese chess: captured pieces return as your own.',
     board: { layout: 'cells', files: 9, ranks: 9 }
   }),
   janggi: makeSpec({
     kind: 'janggi',
     title: 'Janggi',
-    tagline: 'Korean chess — open palaces and leaping cannons.',
+    tagline: 'Korean chess: open palaces and leaping cannons.',
     board: { layout: 'intersections', files: 9, ranks: 10 }
   }),
   makruk: makeSpec({
     kind: 'makruk',
     title: 'Makruk',
-    tagline: 'Thai chess — ancient rules, razor-sharp endgames.',
+    tagline: 'Thai chess: ancient rules, razor-sharp endgames.',
     board: { layout: 'cells', files: 8, ranks: 8 }
   }),
   placement: makeSpec({

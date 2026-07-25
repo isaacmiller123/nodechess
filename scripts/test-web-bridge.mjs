@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Web IPC-bridge suite (web port W3+W4 — docs/WEB-PORT-SPEC.md, build contract §1/2/4/5).
+// Web IPC-bridge suite (web port W3+W4: docs/WEB-PORT-SPEC.md, build contract §1/2/4/5).
 //
 //   node scripts/test-web-bridge.mjs
 //
@@ -305,7 +305,7 @@ try {
   check('school:debrief small payload still answers', r.status === 200 && Array.isArray(r.body.lines))
   r = await ipc('school:debrief', { ...debriefBase, moves: Array.from({ length: 1025 }, (_, i) => dMove(i + 1)) })
   check('CAP: school:debrief with 1025 moves -> 400', r.status === 400 && r.body.error === 'invalid-payload')
-  // A full game's worth of moves (~200 plies) MUST still pass — the cap is a
+  // A full game's worth of moves (~200 plies) MUST still pass. The cap is a
   // DoS bound, not a real-usage limit.
   r = await ipc('school:debrief', { ...debriefBase, moves: Array.from({ length: 200 }, (_, i) => dMove(i + 1)) })
   check('school:debrief full-game 200 moves still answers', r.status === 200)
@@ -334,7 +334,7 @@ try {
   }
   r = await ipc('coach:explainMove', coachReq)
   check('coach:explainMove small payload still answers', r.status === 200 && typeof r.body.text === 'string')
-  // CoachHint forwards the raw analysis PV — a deep one must not be rejected.
+  // CoachHint forwards the raw analysis PV. A deep one must not be rejected.
   r = await ipc('coach:explainMove', { ...coachReq, pv: Array(80).fill('e2e4') })
   check('coach:explainMove deep 80-move pv still answers', r.status === 200)
   r = await ipc('coach:explainMove', { ...coachReq, pv: Array(257).fill('e2e4') })
@@ -347,7 +347,7 @@ try {
   r = await ipc('puzzles:next', { exclude: Array(300).fill('fx001') })
   check('puzzles:next session-sized exclude (300) still answers', r.status === 200)
   // REGRESSION GUARD: the desktop Custom trainer can select every theme in the
-  // catalog (73 today, no renderer-side cap) — the themes cap must sit above it.
+  // catalog (73 today, no renderer-side cap). The themes cap must sit above it.
   r = await ipc('puzzles:batch', { count: 3, themes: Array.from({ length: 100 }, (_, i) => `theme${i}`) })
   check('puzzles:batch full-catalog 100-theme selection still answers', r.status === 200)
   r = await ipc('puzzles:batch', { count: 3, themes: Array(257).fill('fork') })

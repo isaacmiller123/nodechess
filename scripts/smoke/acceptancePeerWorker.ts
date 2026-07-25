@@ -1,4 +1,4 @@
-// A6 M6 / A-FINAL real-relay ACCEPTANCE worker — one peer, in its own worker
+// A6 M6 / A-FINAL real-relay ACCEPTANCE worker: one peer, in its own worker
 // thread (fresh trystero module state ⇒ its own selfId + relay socket, the
 // multi-process requirement). This is the §1 acceptance-test peer: it runs the
 // app's REAL modules over the REAL trystero + werift transport (localhost Nostr
@@ -6,29 +6,29 @@
 // the WHOLE vertical:
 //
 //   • a FRESH account created from an argon2id identity (deriveIdentity +
-//     deriveChild — byte-identical to web/accounts.ts createAccount, minus the
+//     deriveChild: byte-identical to web/accounts.ts createAccount, minus the
 //     IndexedDB keyring), so the account under test is a real §1 root, not a raw
 //     test keypair.
 //   • createBrowserFabric (Lane A) + startAccountPeerSingleton (Lane B) with the
 //     M3 storage-duty STORE gate installed (shard/pointer accept) + the §5 repair
-//     loop, EXACTLY as accountNetBoot wires them — so this peer is a real storage
+//     loop, EXACTLY as accountNetBoot wires them, so this peer is a real storage
 //     carrier, not just a player.
-//   • matchmakingStore.startRatedSearch / offerWitnessing (M2 L-mm) — two
+//   • matchmakingStore.startRatedSearch / offerWitnessing (M2 L-mm). Two
 //     strangers auto-pair with NO code; a distinct third self-assigns as witness.
-//   • createLeaseRunner + createRatedGamePrep (M2 L-lease) — the live write lease
+//   • createLeaseRunner + createRatedGamePrep (M2 L-lease): the live write lease
 //     + the witnessed 'pairing' anchor before move 1.
 //   • MpNetSession (Lane C, SIGNED) + startWitnessing (Lane D) over werift.
 //   • createSegmentPublisher (Lane E) with the onPublished hook wired to the M5
 //     Tier-1 judge (runTier1ForGame over the finished SIGNED transcript) AND the
 //     M3 §5 finalSyncOwnChain (erasure-code the whole chain into shard space +
-//     pin a self chain-pointer) — the same two things accountNetBoot does when a
+//     pin a self chain-pointer): the same two things accountNetBoot does when a
 //     rated segment lands.
 //   • a 'viewer' role: a FOURTH fresh account that holds shards and, after the
 //     owner goes offline, RECONSTRUCTS the owner's profile/game from shard space
 //     through viewAccountForPeer (Lane L-view).
 //
 // Every module under test is the shipping one; only the game transport is
-// injected (the boot uses the browser `mp` singleton over native WebRTC — a bare
+// injected (the boot uses the browser `mp` singleton over native WebRTC: a bare
 // node worker has only werift). Mirrors scripts/smoke/mmPeerWorker.ts.
 
 import { parentPort, workerData } from 'node:worker_threads'
@@ -106,9 +106,9 @@ interface PeerInit {
   warmupMs?: number
   /** Real STUN/TURN set (public-relay run); empty/absent ⇒ localhost host candidates only. */
   iceServers?: RTCIceServer[]
-  /** Multiple signaling relays (public run) — spreads load like production trystero. */
+  /** Multiple signaling relays (public run). Spreads load like production trystero. */
   relayUrls?: string[]
-  /** Force ICE through TURN only (iceTransportPolicy:'relay') — forbids localhost
+  /** Force ICE through TURN only (iceTransportPolicy:'relay'): forbids localhost
    *  host candidates so ALL media transits a real public TURN server, the genuine
    *  cross-NAT/separate-machines proof from one box. */
   iceRelayOnly?: boolean
@@ -130,8 +130,8 @@ const b64 = (bytes: Uint8Array): string => toB64u(bytes)
 const chainHash = (c: Chain): string => b64(sha256(chainToBytes(c)))
 
 // ---------------------------------------------------------------------------
-// FRESH argon2id identity (deriveIdentity → SLIP-0010 root + device child) —
-// the exact derivation web/accounts.ts createAccount runs. Populated in main()
+// FRESH argon2id identity (deriveIdentity → SLIP-0010 root + device child).
+// The exact derivation web/accounts.ts createAccount runs. Populated in main()
 // before boot (deriveIdentity is async: argon2id memory-hard KDF).
 // ---------------------------------------------------------------------------
 let signing: DeviceSigning
@@ -244,8 +244,8 @@ interface SignedOutcome {
 
 // A spec-faithful UCI double for JudgeEngine (verbatim from
 // test-accounts-judge-runner): answers the `isready` barrier with `readyok`; on
-// `go` emits multiPv info lines (ranks 1..multiPv) + a bestmove. Ignores the FEN
-// — the transcript pipeline + record math are what run, and the SAME deterministic
+// `go` emits multiPv info lines (ranks 1..multiPv) + a bestmove. Ignores the FEN.
+// The transcript pipeline + record math are what run, and the SAME deterministic
 // lines per position give the SAME Tier1Record on BOTH players' independent passes
 // (the §8 cross-instance parity property). The real pinned-WASM judge's
 // determinism is separately proven by test-accounts-judge-runner §7 / test-judge-node.
@@ -310,7 +310,7 @@ async function onSegmentPublished(res: PublishedSegment): Promise<void> {
       // alone), so without this the put's "closest" set collapses toward self and
       // the rows never replicate off-owner. All carriers are live now, so this is
       // fast + lets the shard STOREs reach the distance-assigned duty carriers.
-      try { await peer.bootstrap() } catch { /* honest — a partial refresh still spreads */ }
+      try { await peer.bootstrap() } catch { /* honest. A partial refresh still spreads */ }
       const fs = await finalSyncOwnChain(peer.overlay, signing, chainHolder.get())
       post({
         type: 'synced',
@@ -351,14 +351,14 @@ async function boot(): Promise<void> {
   const fabric = makeFabric()
   // M3 §5: build the overlay STORE-ACCEPT gate over THIS fabric's live directory
   // BEFORE the peer, so its composed validator (shard capacity + pointer duty) +
-  // merge gate every store the overlay makes — EXACTLY accountNetBoot's wiring.
+  // merge gate every store the overlay makes, EXACTLY accountNetBoot's wiring.
   const gate = makeStorageDutyGate({
     shardMb: SHARD_MB,
     directory: () => fabric.directory(),
     nowMs: () => Date.now(),
   })
   storageGate = gate
-  // The viewer is a STORAGE carrier + reconstructor, NOT a witness — advertise
+  // The viewer is a STORAGE carrier + reconstructor, NOT a witness. Advertise
   // witness:false so assignWitnesses (which draws from the directory's
   // witness-capable presences) never picks it, keeping the eligible witness set
   // to the one dedicated witness peer (the M2 single-witness topology).
@@ -503,7 +503,7 @@ async function driveGame(session: MpNetSession, a: MatchAssignment): Promise<voi
   const prep = await prepWithRetries(prepStart)
   post({ type: 'prep', role: init.role, ok: prep.ok, epoch: prep.ok ? prep.epoch : null, reason: prep.ok ? null : prep.reason })
   if (!prep.ok) throw new Error(`rated prep failed after retries: ${prep.reason}`)
-  log(`rated prep OK — lease epoch ${prep.epoch}, witnessed pairing anchored`)
+  log(`rated prep OK: lease epoch ${prep.epoch}, witnessed pairing anchored`)
 
   await sleep(GAME_MESH_SETTLE_MS)
 
@@ -612,16 +612,16 @@ function startSearch(): void {
 
 // ---------------------------------------------------------------------------
 // Viewer: a FOURTH fresh account reconstructs a subject from shard space (§5,
-// Lane L-view) with the owner offline. Retries a few times — over a real mesh
+// Lane L-view) with the owner offline. Retries a few times: over a real mesh
 // the overlay lookups + repair need a beat to settle after the owner leaves.
 // ---------------------------------------------------------------------------
 async function doReconstruct(subjectRoot: string, tries = 12, delayMs = 3_000): Promise<void> {
   const peer = getAccountPeer()
   if (!peer) { post({ type: 'reconstructed', role: init.role, status: 'no-peer', available: false }); return }
   // Refresh routing from the CURRENT directory so shard-row lookups reach the live
-  // carriers. Safe (no dead-contact stall) because the owner LEFT gracefully — its
+  // carriers. Safe (no dead-contact stall) because the owner LEFT gracefully. Its
   // onPeerLeave already pruned it from every routing table.
-  try { await peer.bootstrap() } catch { /* honest — a stale-seed refresh is non-fatal */ }
+  try { await peer.bootstrap() } catch { /* honest. A stale-seed refresh is non-fatal */ }
   let last: Awaited<ReturnType<typeof viewAccountForPeer>> | null = null
   for (let i = 0; i < tries; i++) {
     try {
@@ -654,7 +654,7 @@ async function doReconstruct(subjectRoot: string, tries = 12, delayMs = 3_000): 
 }
 
 // ---------------------------------------------------------------------------
-// Casual proof (degradation phase) — verbatim mmPeerWorker
+// Casual proof (degradation phase): verbatim mmPeerWorker
 // ---------------------------------------------------------------------------
 let casualSession: MpNetSession | null = null
 async function casualHost(): Promise<void> {
@@ -699,7 +699,7 @@ parentPort!.on('message', (m: { type: string; code?: string; subjectRoot?: strin
   if (m.type === 'leave') {
     // The owner GOES OFFLINE gracefully (sign-out / close-tab): closing the peer
     // fires onPeerLeave on every other node, so they PRUNE us from their routing
-    // tables at once — no dead-contact RPC stalls for the reconstructing viewer.
+    // tables at once: no dead-contact RPC stalls for the reconstructing viewer.
     // Our shards live on the OTHER carriers; closing us does not remove them.
     stopRepair?.()
     void stopAccountPeerSingleton().then(() => post({ type: 'left', role: init.role, root: signing.root })).catch(() => post({ type: 'left', role: init.role, root: signing.root }))
@@ -714,7 +714,7 @@ parentPort!.on('message', (m: { type: string; code?: string; subjectRoot?: strin
 // Entry
 // ---------------------------------------------------------------------------
 async function main(): Promise<void> {
-  await deriveFreshAccount() // argon2id — the FRESH account under test
+  await deriveFreshAccount() // argon2id: the FRESH account under test
   await boot()
   if (init.role === 'searcher') {
     if (init.warmupMs) await sleep(init.warmupMs)

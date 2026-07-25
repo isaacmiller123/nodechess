@@ -32,7 +32,7 @@ const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
 /** review:run is single-flight in the main process; a concurrent review rejects
  *  with "review:run: a review is already in progress" (Electron wraps the message,
- *  so match by substring). Anything else is a real failure — don't wait on it. */
+ *  so match by substring). Anything else is a real failure. Don't wait on it. */
 function isReviewBusyError(err: unknown): boolean {
   const msg = err instanceof Error ? err.message : String(err)
   return msg.includes('already in progress')
@@ -57,7 +57,7 @@ interface MoveLog {
  * Placement game. The user plays ONE full game as White against a fixed
  * calibration engine level; when it ends, the game is reviewed for the user's
  * accuracy and that accuracy sets an INTERNAL estimated Elo (school:recordPlacementGame)
- * which unlocks chapters up to that band. The Elo number is NEVER shown — the
+ * which unlocks chapters up to that band. The Elo number is NEVER shown. The
  * result screen is purely qualitative. A second game can be played to refine.
  *
  * All hooks run before any early return (React #300 guard).
@@ -87,7 +87,7 @@ export function PlacementFlow({
 
   const [phase, setPhase] = useState<Phase>('intro')
   // Engine availability guard (fresh install: no Stockfish on disk). Probed on
-  // the intro screen — same pattern as Play/Analysis (v1.1.4). Without it the
+  // the intro screen: same pattern as Play/Analysis (v1.1.4). Without it the
   // placement game dead-ends: the engine reply loop silently never answers, so
   // the learner sits on "thinking…" forever with the whole School locked
   // behind placement. Navigating to Settings and back remounts this flow, so
@@ -211,7 +211,7 @@ export function PlacementFlow({
     [phase, turn, userColor, fen, commitUser]
   )
 
-  // Engine reply loop — runs on the bot's turn.
+  // Engine reply loop: runs on the bot's turn.
   useEffect(() => {
     if (phase !== 'playing') return
     if (turn === userColor) return
@@ -248,7 +248,7 @@ export function PlacementFlow({
 
     return () => {
       cancelled = true
-      // The cancelled path above skips setThinking(false) — clear it here so
+      // The cancelled path above skips setThinking(false): clear it here so
       // "thinking…" can't outlive the game (e.g. resign mid-think, next game).
       setThinking(false)
     }
@@ -282,7 +282,7 @@ export function PlacementFlow({
           <h1 className="placement-title">First, a game with Viktor’s champion</h1>
           <p className="placement-lede">
             Play one game as White. Viktor watches how you handle it and sets where your studies
-            begin — there is no pass or fail, just an honest starting point. You can move up any
+            begin. There is no pass or fail, just an honest starting point. You can move up any
             time by passing a chapter’s test.
           </p>
           {engineReady === false ? (
@@ -378,7 +378,7 @@ export function PlacementFlow({
       </div>
 
       <ViktorPanel
-        text="Play your game. I am watching how you think — there is no wrong place to begin."
+        text="Play your game. I am watching how you think. There is no wrong place to begin."
         eyebrow="Placement"
         silent={false}
       >

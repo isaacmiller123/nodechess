@@ -11,7 +11,7 @@ const FILE_LABELS = 'abcdefghijkl'
 // ffish UCI for custom variants: drops 'P@e4' (letter always uppercase) and
 // from-to with an optional promotion suffix ('q' letter or shogi-style '+').
 // Two-digit rank 10 MUST come before [1-9] in the alternation, and files run
-// a–l (12-wide largeboard limit) — see games/customVariants.ts SQ.
+// a–l (12-wide largeboard limit). See games/customVariants.ts SQ.
 const MOVE_PARTS = /^(?:([A-Z+]?)@([a-l](?:10|[1-9]))|([a-l](?:10|[1-9]))([a-l](?:10|[1-9]))([a-z+]?))$/
 
 export interface ParsedMove {
@@ -22,8 +22,8 @@ export interface ParsedMove {
   suffix?: string
 }
 
-// parseMove/squareName are pure and exported for scripts/test-custom-board-keys.mjs
-// — they are the Variant Lab board's ONLY square/move codec (full UCI names
+// parseMove/squareName are pure and exported for scripts/test-custom-board-keys.mjs.
+// They are the Variant Lab board's ONLY square/move codec (full UCI names
 // like 'a10'; no chessgroundx keys here, this board renders its own grid).
 export function parseMove(raw: string): ParsedMove | null {
   const m = MOVE_PARTS.exec(raw)
@@ -39,7 +39,7 @@ export function squareName(file: number, rank: number): string {
 type Selection = { type: 'square'; sq: string } | { type: 'pocket'; letter: string } | null
 
 /**
- * Interactive 2D board for Variant Lab games — any size the engine supports,
+ * Interactive 2D board for Variant Lab games: any size the engine supports,
  * any piece letter (fairy glyph composition + medallion fallback), click-move
  * with legal-destination dots, drop trays for pocket parents (crazyhouse /
  * placement) and a promotion picker when one from-to has several codas.
@@ -133,7 +133,7 @@ export default function CustomBoard({
         onMove(candidates[0].raw)
         return
       }
-      // several codas (promotion letters / '+') — let the player choose
+      // several codas (promotion letters / '+'), let the player choose
       setPromo({ from: selected.sq, to: sq, options: candidates })
       return
     }

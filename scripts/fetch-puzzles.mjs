@@ -1,4 +1,4 @@
-// fetch-puzzles.mjs — download the raw Lichess puzzle dump for the local build.
+// fetch-puzzles.mjs: download the raw Lichess puzzle dump for the local build.
 //
 // Pulls the public CC0 puzzle database (`lichess_db_puzzle.csv.zst`, ~300 MB)
 // from database.lichess.org into data/raw/, which scripts/build_puzzles_db.py

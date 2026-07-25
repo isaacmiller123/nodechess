@@ -1,5 +1,5 @@
 /* ============================================================
-   Analysis review — feature-scoped styles (game review, coach,
+   Analysis review: feature-scoped styles (game review, coach,
    opening line, eval graph, move badges, game library). Tokens only.
    ============================================================ */
 
@@ -374,7 +374,7 @@
   line-height: var(--lh-body);
   color: var(--text-primary);
 }
-/* "best was Nf3" — plain text normally; a pill button when the board preview
+/* "best was Nf3": plain text normally; a pill button when the board preview
    hook is wired (hover/click paints the best-move arrow). */
 .coach-best .num {
   font-weight: var(--fw-medium);
@@ -511,7 +511,7 @@
 }
 
 /* ============================================================
-   Game library (Your games | Famous) — collapsible sidebar panel
+   Game library (Your games | Famous): collapsible sidebar panel
    ============================================================ */
 .famous-toggle {
   width: 100%;

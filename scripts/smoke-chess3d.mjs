@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// smoke-chess3d.mjs — gate for the chess3d asset pack: parse every GLB in
+// smoke-chess3d.mjs. Gate for the chess3d asset pack: parse every GLB in
 // resources/games-art/chess3d/ with three's real GLTFLoader (the same code path
 // the renderer uses), verify geometry attributes + manifest consistency, and
 // check the shared textures exist. Exits non-zero on any failure.
@@ -99,5 +99,5 @@ for (const group of Object.values(manifest.textures)) {
 }
 
 if (manifest.totalMB > 15) fail(`pack ${manifest.totalMB}MB over 15MB budget`)
-console.log(failed ? 'SMOKE FAILED' : `SMOKE OK — ${PIECES.length} GLBs, ${manifest.totalMB} MB`)
+console.log(failed ? 'SMOKE FAILED' : `SMOKE OK, ${PIECES.length} GLBs, ${manifest.totalMB} MB`)
 process.exit(failed ? 1 : 0)

@@ -25,7 +25,7 @@ export function makeOutdir(tag) {
  * Bundle `entrySource` (TypeScript) into `outdir` and dynamic-import it.
  * @param {string} outdir  temp dir (from makeOutdir)
  * @param {string} entrySource  TS module source (imports use absolute @shared or
- *                               server-relative paths — see the suites)
+ *                               server-relative paths: see the suites)
  * @param {'node'|'browser'} [platform]
  * @returns the imported module namespace
  */

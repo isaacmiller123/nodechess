@@ -1,4 +1,4 @@
-// Shared chapter validator — reused by every authoring agent so they don't
+// Shared chapter validator: reused by every authoring agent so they don't
 // rebuild a legality toolkit (saves tokens + standardizes correctness).
 //
 //   node scripts/validate-chapter.mjs resources/curriculum/chapters/chNN-*.json
@@ -12,7 +12,7 @@
 //   - mc answerIndex is in range
 //   - every DB-query puzzle pool has >= count distinct puzzles in the window
 // Exit 0 = clean, 1 = problems (printed). Verdict CORRECTNESS (good/blunder,
-// which mc option is right) is the author's job — not auto-checkable here.
+// which mc option is right) is the author's job. Not auto-checkable here.
 import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import { parseFen } from 'chessops/fen'
@@ -94,7 +94,7 @@ function validateChapter(file) {
         const r = poolStmt(q.themes.length).get(q.ratingLo, q.ratingHi, ...q.themes)
         if ((r?.c ?? 0) < q.count)
           errs.push(
-            `${w}: puzzle pool too small — [${q.themes.join('|')}] @${q.ratingLo}-${q.ratingHi} has ${r?.c ?? 0} < ${q.count}`
+            `${w}: puzzle pool too small, [${q.themes.join('|')}] @${q.ratingLo}-${q.ratingHi} has ${r?.c ?? 0} < ${q.count}`
           )
       }
       if (seg.kind === 'boss' && seg.bossFen) {
@@ -120,7 +120,7 @@ function validateChapter(file) {
       }
       if (q.kind === 'play') {
         // solutionUci = ACCEPTABLE ALTERNATIVE single moves (renderer accepts any
-        // one), NOT a sequence — validate each independently in the base position.
+        // one), NOT a sequence: validate each independently in the base position.
         for (const u of q.solutionUci || []) {
           nMove++
           playSeq(q.fen, [u], w, errs)
@@ -147,7 +147,7 @@ for (const f of files) {
   const r = validateChapter(f)
   const tag = r.errs.length ? '✗' : '✓'
   console.log(
-    `${tag} ${path.basename(f)} — ${r.lessons ?? '?'} lessons, ${r.test ?? '?'} test Qs, ${r.nFen} FENs, ${r.nMove} moves, ${r.nPool} pools`
+    `${tag} ${path.basename(f)}, ${r.lessons ?? '?'} lessons, ${r.test ?? '?'} test Qs, ${r.nFen} FENs, ${r.nMove} moves, ${r.nPool} pools`
   )
   for (const e of r.errs) console.log(`    ✗ ${e}`)
   if (r.errs.length) bad++

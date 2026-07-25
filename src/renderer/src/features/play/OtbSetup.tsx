@@ -1,4 +1,4 @@
-// Over-the-board setup — two humans sharing one machine. No engine, no
+// Over-the-board setup: two humans sharing one machine. No engine, no
 // assistance: just the two players' names, a shared clock, and the auto-flip
 // option (spin the board to whoever is on move). Lives inside the Local tab.
 // Controlled by PlayView; tokens + namespaced .otb- classes only.
@@ -43,7 +43,7 @@ export function OtbSetup({
         <div className="qm-head-meta">
           <h2>Over the board</h2>
           <span className="muted small">
-            Two players, one screen — pass-and-play with a shared clock.
+            Two players, one screen. Pass-and-play with a shared clock.
           </span>
         </div>
       </header>

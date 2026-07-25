@@ -1,5 +1,5 @@
 // Headless test for the A6 social ephemeral modules (src/shared/accounts/
-// social/presence.ts + social/mailbox.ts — spec §10, C-3).
+// social/presence.ts + social/mailbox.ts: spec §10, C-3).
 //
 //   node scripts/test-accounts-mailbox.mjs
 //
@@ -9,14 +9,14 @@
 //     (expiry boundaries, skew bound, freshest-wins, tie-break, order
 //     independence, deterministic sort);
 //   · mailbox: the §10 sentence AS AN EXECUTABLE ASSERT (a sybil flood of N
-//     fresh roots cannot evict an established-edge sender's message — and the
+//     fresh roots cannot evict an established-edge sender's message, and the
 //     converse: an established sender always displaces sybil mail), per-sender
 //     rate limits, fair-share quotas, deterministic eviction order incl. exact
 //     tie-breaks, retention expiry, bounded sender-window memory, drain
 //     priority order, fail-closed matrix (same-state-reference checks), and a
 //     scripted-sequence re-run asserting bit-identical state hashes.
 //
-// Synthetic fixtures only — no engine, no network. Fixed raw 32-byte seeds.
+// Synthetic fixtures only: no engine, no network. Fixed raw 32-byte seeds.
 // Style: failures counter, per-assert one-line output, exit(failures ? 1 : 0).
 
 import { build } from 'esbuild'
@@ -53,7 +53,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -99,7 +99,7 @@ async function run(outdir) {
   const stateHash = (s) => hash.toB64u(codec.canonicalHash(s))
 
   // ==========================================================================
-  console.log('\n[1] social presence — sign/verify')
+  console.log('\n[1] social presence: sign/verify')
   // ==========================================================================
   const pbody = (root, status, ts, ttlMs = 60_000) => ({ v: 1, root, status, ts, ttlMs })
   const spA = pres.signSocialPresence(pbody(alice.pubB, 'online', 1_000_000), alice.priv)
@@ -121,7 +121,7 @@ async function run(outdir) {
   for (const [name, bad] of badShapes) ok(!pres.verifySocialPresence(bad), `fail-closed shape: ${name}`)
 
   // ==========================================================================
-  console.log('\n[2] social presence — presenceOf aggregation')
+  console.log('\n[2] social presence, presenceOf aggregation')
   // ==========================================================================
   const T = 1_000_000
   eq(pres.presenceOf([], T).length, 0, 'empty claim set → empty')
@@ -157,7 +157,7 @@ async function run(outdir) {
   eq(pres.presenceOf([spA], T + 0.5).length, 0, 'non-integer nowWts fails closed')
 
   // ==========================================================================
-  console.log('\n[3] mailbox — init, happy path, fail-closed matrix')
+  console.log('\n[3] mailbox: init, happy path, fail-closed matrix')
   // ==========================================================================
   // Small test params (functions are parameterized; state pins the digest).
   const P = {
@@ -206,7 +206,7 @@ async function run(outdir) {
   ok(!rMismatch.admitted && rMismatch.reason === 'params-mismatch' && rMismatch.state === r1.state, "fail-closed 'params-mismatch' with SAME state reference")
 
   // ==========================================================================
-  console.log('\n[4] mailbox — dedup + per-sender rate limit')
+  console.log('\n[4] mailbox: dedup + per-sender rate limit')
   // ==========================================================================
   let s = r1.state
   const rDup = mbox.mailboxAdmit(s, m1, meta(150, 250_000), P)
@@ -220,11 +220,11 @@ async function run(outdir) {
   ok(!rC.admitted && rC.reason === 'rate-limited', 'admit #4 in window rate-limited (limit is global across recipients)')
   // window rolls
   const rRoll = mbox.mailboxAdmit(rC.state, mail(alice, carol, 4), meta(100 + P.rateWindowMs, 250_000), P)
-  ok(rRoll.admitted, 'window rolls after rateWindowMs — sender admits again')
+  ok(rRoll.admitted, 'window rolls after rateWindowMs: sender admits again')
   eq(rRoll.state.senders[alice.pubB].count, 1, 'rolled window restarts the count')
 
   // ==========================================================================
-  console.log('\n[5] mailbox — fair-share quota + relay capacity')
+  console.log('\n[5] mailbox: fair-share quota + relay capacity')
   // ==========================================================================
   s = mbox.mailboxInit(P)
   s = mbox.mailboxAdmit(s, mail(alice, bob, 1), meta(10, 0), P).state
@@ -243,11 +243,11 @@ async function run(outdir) {
   ok(mbox.mailboxAdmit(rFull.state, mail(dave, bob, 1), meta(17, 0), P).admitted, 'existing recipient still admittable at relay capacity')
 
   // ==========================================================================
-  console.log('\n[6] mailbox — THE §10 SENTENCE (sybil flood cannot evict established roots)')
+  console.log('\n[6] mailbox: THE §10 SENTENCE (sybil flood cannot evict established roots)')
   // ==========================================================================
   const EDGE = 500_000
   s = mbox.mailboxInit(P)
-  // Fill bob's box to boxCap=4 with two ESTABLISHED senders (2 each — at the fair-share cap).
+  // Fill bob's box to boxCap=4 with two ESTABLISHED senders (2 each; at the fair-share cap).
   const est = [mail(alice, bob, 1), mail(alice, bob, 2), mail(carol, bob, 1), mail(carol, bob, 2)]
   est.forEach((m, i) => {
     s = mbox.mailboxAdmit(s, m, meta(100 + i, EDGE), P).state
@@ -279,17 +279,17 @@ async function run(outdir) {
   eq(rEst.evicted.arrivedWts, 303, 'eviction order: weakest edge, then NEWEST arrival evicted first')
   // Equal-edge newcomer never displaces (first-come wins within a class).
   const rPeer = mbox.mailboxAdmit(s, mail(dave, bob, 1), meta(500, EDGE), P)
-  ok(!rPeer.admitted && rPeer.reason === 'box-full', 'equal-edge newcomer rejected — no eviction among equals')
+  ok(!rPeer.admitted && rPeer.reason === 'box-full', 'equal-edge newcomer rejected, no eviction among equals')
   // Exact tie determinism: equal edge AND equal arrivedWts → greater id evicted.
   let s3 = mbox.mailboxInit(P)
   const tieMsgs = [mail(kp(100), bob, 'a'), mail(kp(101), bob, 'b'), mail(kp(102), bob, 'c'), mail(kp(103), bob, 'd')]
   for (const m of tieMsgs) s3 = mbox.mailboxAdmit(s3, m, meta(600, 0), P).state // all at wts 600
   const ids = tieMsgs.map((m) => mbox.mailId(m.body)).sort(codec.compareKeys)
   const rTie = mbox.mailboxAdmit(s3, mail(alice, bob, 8), meta(601, EDGE), P)
-  eq(rTie.evicted.id, ids[ids.length - 1], 'exact tie (edge+arrival) evicts the greater id — fully deterministic')
+  eq(rTie.evicted.id, ids[ids.length - 1], 'exact tie (edge+arrival) evicts the greater id, fully deterministic')
 
   // ==========================================================================
-  console.log('\n[7] mailbox — retention expiry + bounded sender-window memory')
+  console.log('\n[7] mailbox: retention expiry + bounded sender-window memory')
   // ==========================================================================
   s = mbox.mailboxInit(P)
   s = mbox.mailboxAdmit(s, mail(alice, bob, 1), meta(0, 0), P).state
@@ -309,10 +309,10 @@ async function run(outdir) {
   ok(eve.pubB in s.senders, 'new sender tracked after rotation')
   // expired windows prune on their own
   const rWinPrune = mbox.mailboxAdmit(s, mail(alice, carol, 2), meta(705 + P.rateWindowMs, 0), P)
-  eq(Object.keys(rWinPrune.state.senders).length, 1, 'expired windows pruned — only the fresh admit remains tracked')
+  eq(Object.keys(rWinPrune.state.senders).length, 1, 'expired windows pruned: only the fresh admit remains tracked')
 
   // ==========================================================================
-  console.log('\n[8] mailbox — drain (recipient syncs)')
+  console.log('\n[8] mailbox: drain (recipient syncs)')
   // ==========================================================================
   s = mbox.mailboxInit(P)
   const dm1 = mail(alice, bob, 1) // edge 0, early
@@ -323,7 +323,7 @@ async function run(outdir) {
   s = mbox.mailboxAdmit(s, dm3, meta(20, EDGE), P).state
   const drained = mbox.mailboxDrain(s, bob.pubB, 40, P)
   eq(drained.msgs.length, 3, 'drain returns the whole box')
-  eq(JSON.stringify(drained.msgs.map((m) => m.sender)), JSON.stringify([dave.pubB, carol.pubB, alice.pubB]), 'drain priority: edge DESC, then arrival ASC — established roots first (§10 prioritization)')
+  eq(JSON.stringify(drained.msgs.map((m) => m.sender)), JSON.stringify([dave.pubB, carol.pubB, alice.pubB]), 'drain priority: edge DESC, then arrival ASC, established roots first (§10 prioritization)')
   ok(!(bob.pubB in drained.state.boxes), 'drained box cleared')
   eq(mbox.mailboxDrain(drained.state, bob.pubB, 41, P).msgs.length, 0, 'second drain is empty')
   const badDrain = mbox.mailboxDrain(s, 'not-a-root', 40, P)
@@ -332,7 +332,7 @@ async function run(outdir) {
   ok(mmDrain.state === s && mmDrain.msgs.length === 0, 'drain fails closed (same reference) on params mismatch')
 
   // ==========================================================================
-  console.log('\n[9] determinism — scripted sequence re-runs bit-identical')
+  console.log('\n[9] determinism: scripted sequence re-runs bit-identical')
   // ==========================================================================
   const script = []
   script.push([mail(alice, bob, 1), meta(100, EDGE)])

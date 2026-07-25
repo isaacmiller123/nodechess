@@ -4,7 +4,7 @@
 // PlayCustom, onlineStore's non-chess path) funnels its finished game through
 // archiveFinishedGame(): wire-codec moves verbatim + per-move notation
 // (kernel notateGame replay from the recorded START state) + the init options
-// that reproduce the start position. Best-effort by design — callers fire
+// that reproduce the start position. Best-effort by design: callers fire
 // window.api.games.save with the returned text and never block the banner.
 
 import {
@@ -26,7 +26,7 @@ interface StartStateShape {
 /**
  * The init-options value that reproduces `start` via spec.init(options)
  * (stored as meta.options; undefined = default start, omitted):
- *   - chess family (chessops/ffish/custom states): { fen: startFen } — covers
+ *   - chess family (chessops/ffish/custom states): { fen: startFen }. Covers
  *     chess960 shuffles and custom-FEN starts;
  *   - go: size/komi/scoring/handicap (all live on the state);
  *   - gomoku: size;
@@ -68,7 +68,7 @@ export function archiveFinishedGame<S>(input: ArchiveInput<S>): string {
   const { spec, start, moves, result } = input
   const options = replayOptionsOf(spec, start)
   // Notation is best-effort: a throwing rules engine (ffish teardown race)
-  // must never cost us the archive itself — the codec moves still replay.
+  // must never cost us the archive itself. The codec moves still replay.
   let notated: string[] | undefined
   try {
     notated = notateGame(spec, start, moves)

@@ -1,11 +1,11 @@
-// Checkers / International draughts board — clean React implementation
+// Checkers / International draughts board. Clean React implementation
 // (no vendored draughtsground: AGPL + heavy for this window; checkers geometry
 // is simple enough to own).
 //
 // kind === 'checkers'       8x8 American (PDN squares 1..32, black at top)
 // kind === 'checkers-intl'  10x10 international (FMJD squares 1..50)
 //
-// Interaction — click-through multi-jump selection over the spec codec
+// Interaction: click-through multi-jump selection over the spec codec
 // ('from-to' quiet, 'NxNxN' full landing chains, see games/checkers.ts):
 // click a piece that owns at least one legal move, then click landings one by
 // one; every prefix narrows the candidate set and intermediate landings are
@@ -17,7 +17,7 @@
 // reconciler transfers the mover's id origin→destination) so CSS transitions
 // animate slides; captured men fade out in place; a man reaching the crown
 // row pops its new crown. Orientation flips render instantly (no cross-board
-// slides) — the pieces layer is remounted via key={orientation}, so a flip
+// slides): the pieces layer is remounted via key={orientation}, so a flip
 // creates fresh DOM with the rotated transforms already in place and the
 // slide transition can never lerp pieces across the board (a one-render
 // "suppress transitions" class was tried first and lost the race: the
@@ -54,7 +54,7 @@ interface RenderPiece {
   king: boolean
   /** True on the render where a man just crowned (plays the pop animation). */
   crowned: boolean
-  /** True once removed from the board — kept one reconcile for the fade-out. */
+  /** True once removed from the board. Kept one reconcile for the fade-out. */
   captured: boolean
 }
 

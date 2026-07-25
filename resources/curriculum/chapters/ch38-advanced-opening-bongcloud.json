@@ -3,13 +3,13 @@
  "band": "38",
  "order": 38,
  "title": "Advanced Opening Theory & the Bong Cloud",
- "subtitle": "Move-order subtleties and transpositions, the gambit-or-decline decision, novelties & opening traps — and the Bong Cloud as a labeled king-safety lesson",
+ "subtitle": "Move-order subtleties and transpositions, the gambit-or-decline decision, novelties & opening traps, and the Bong Cloud as a labeled king-safety lesson",
  "estMinutes": 52,
  "concepts": [
   {
    "id": "move-order",
    "name": "Move-order matters",
-   "short": "Reaching the same position by a different sequence is a transposition; reaching a DIFFERENT position by re-ordering moves is a weapon. The order you play your moves can include — or dodge — whole bodies of theory."
+   "short": "Reaching the same position by a different sequence is a transposition; reaching a DIFFERENT position by re-ordering moves is a weapon. The order you play your moves can include (or dodge) whole bodies of theory."
   },
   {
    "id": "transposition",
@@ -24,12 +24,12 @@
   {
    "id": "gambit-accept",
    "name": "Accepting a gambit",
-   "short": "Take the pawn, then give it back at the right moment for development and a good structure. Greed is fine only if you can return the material before it becomes a target — hold it too long and you fall behind."
+   "short": "Take the pawn, then give it back at the right moment for development and a good structure. Greed is fine only if you can return the material before it becomes a target. Hold it too long and you fall behind."
   },
   {
    "id": "gambit-decline",
    "name": "Declining a gambit",
-   "short": "You don't have to grab the pawn. Declining keeps a sound, solid position and sidesteps the gambiteer's prepared attacking lines — often the most practical choice against deep preparation."
+   "short": "You don't have to grab the pawn. Declining keeps a sound, solid position and sidesteps the gambiteer's prepared attacking lines. Often the most practical choice against deep preparation."
   },
   {
    "id": "opening-trap",
@@ -39,12 +39,12 @@
   {
    "id": "premature-attack",
    "name": "Punishing premature attacks",
-   "short": "When the opponent lunges before developing (an early queen sortie, a greedy pawn grab), you answer with rapid development and central blows — the unprepared attack rebounds on the attacker."
+   "short": "When the opponent lunges before developing (an early queen sortie, a greedy pawn grab), you answer with rapid development and central blows. The unprepared attack rebounds on the attacker."
   },
   {
    "id": "king-safety-rule",
    "name": "King safety is a real rule",
-   "short": "Castle, keep pawns in front of the king, don't waste tempi with the king in the opening. The Bong Cloud (2.Ke2) breaks every part of this on purpose — which is exactly why studying it teaches you the rule by its violation."
+   "short": "Castle, keep pawns in front of the king, don't waste tempi with the king in the opening. The Bong Cloud (2.Ke2) breaks every part of this on purpose, which is exactly why studying it teaches you the rule by its violation."
   }
  ],
  "lessons": [
@@ -52,7 +52,7 @@
    "id": "l1-move-order-warmup",
    "title": "Why move order matters",
    "kind": "warmup",
-   "summary": "Same moves, different order — sometimes the same position, sometimes a completely different game. A warm-up on opening-phase tactics.",
+   "summary": "Same moves, different order. Sometimes the same position, sometimes a completely different game. A warm-up on opening-phase tactics.",
    "segments": [
     {
      "kind": "teach",
@@ -71,7 +71,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "Here is 1.d4 d5. White can reach the Queen's Gambit two ways: 2.c4 directly, or 2.Nf3 first and c4 next move. Same destination — but the order changes which of Black's replies are available. That is the whole art: choose the road that suits YOU and denies your opponent theirs.",
+        "text": "Here is 1.d4 d5. White can reach the Queen's Gambit two ways: 2.c4 directly, or 2.Nf3 first and c4 next move. Same destination, but the order changes which of Black's replies are available. That is the whole art: choose the road that suits YOU and denies your opponent theirs.",
         "annotations": [
          {
           "kind": "arrow",
@@ -92,7 +92,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "But re-ordering is not free. Play 2.c4 and you allow the Queen's Gambit Accepted (2...dxc4) and the Albin (2...e5) right now — sharp lines you must be ready for. Play 2.Nf3 first and those are off the table this move; in return you give up the chance to meet 2...dxc4 by grabbing the centre with an immediate e4. Same pawns, different replies available. A transposition arrives at the SAME position; a move-order TRICK arrives at a different one. Knowing which is which is mastery.",
+        "text": "But re-ordering is not free. Play 2.c4 and you allow the Queen's Gambit Accepted (2...dxc4) and the Albin (2...e5) right now. Sharp lines you must be ready for. Play 2.Nf3 first and those are off the table this move; in return you give up the chance to meet 2...dxc4 by grabbing the centre with an immediate e4. Same pawns, different replies available. A transposition arrives at the SAME position; a move-order TRICK arrives at a different one. Knowing which is which is mastery.",
         "annotations": [
          {
           "kind": "circle",
@@ -109,7 +109,7 @@
      "kind": "puzzle",
      "title": "Warm-up: opening-phase tactics",
      "intro": {
-      "text": "Move order only matters if you don't hang anything along the way. Sharpen your eye — find the tactic that arises straight out of the opening."
+      "text": "Move order only matters if you don't hang anything along the way. Sharpen your eye: find the tactic that arises straight out of the opening."
      },
      "puzzle": {
       "themes": [
@@ -126,21 +126,21 @@
   },
   {
    "id": "l2-transpositions",
-   "title": "Transpositions — same house, different door",
+   "title": "Transpositions: same house, different door",
    "kind": "opening",
-   "summary": "How a Réti/English move order quietly arrives at a Queen's Gambit Declined — and why a strong player chooses the door, not just the house.",
+   "summary": "How a Réti/English move order quietly arrives at a Queen's Gambit Declined, and why a strong player chooses the door, not just the house.",
    "segments": [
     {
      "kind": "model",
      "title": "An English door into the QGD",
      "intro": {
-      "text": "Watch a flank opening turn into a Queen's Gambit Declined without ever playing the 'Queen's Gambit move order'. Listen to WHY each move keeps the transposition available — that flexibility is the point."
+      "text": "Watch a flank opening turn into a Queen's Gambit Declined without ever playing the 'Queen's Gambit move order'. Listen to WHY each move keeps the transposition available. That flexibility is the point."
      },
      "line": [
       {
        "uci": "g1f3",
        "coach": {
-        "text": "1.Nf3 — the most flexible first move in chess. It develops, fights for e5/d4, and commits to NOTHING in the centre. White keeps every transposition open.",
+        "text": "1.Nf3: the most flexible first move in chess. It develops, fights for e5/d4, and commits to NOTHING in the centre. White keeps every transposition open.",
         "annotations": [
          {
           "kind": "circle",
@@ -154,13 +154,13 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "1...Nf6 — Black mirrors, equally flexible. Two masters circling, each refusing to show their structure first."
+        "text": "1...Nf6: Black mirrors, equally flexible. Two masters circling, each refusing to show their structure first."
        }
       },
       {
        "uci": "c2c4",
        "coach": {
-        "text": "2.c4 — now it looks like an English Opening. But it is also the Queen's-Gambit pawn, waiting. The same pawn serves two openings; the order decides which.",
+        "text": "2.c4: now it looks like an English Opening. But it is also the Queen's-Gambit pawn, waiting. The same pawn serves two openings; the order decides which.",
         "annotations": [
          {
           "kind": "highlight",
@@ -174,7 +174,7 @@
       {
        "uci": "e7e6",
        "coach": {
-        "text": "2...e6 — Black prepares ...d5 with a solid, classical setup. He, too, is steering toward a Queen's-Gambit structure he understands.",
+        "text": "2...e6: Black prepares ...d5 with a solid, classical setup. He, too, is steering toward a Queen's-Gambit structure he understands.",
         "annotations": [
          {
           "kind": "arrow",
@@ -188,7 +188,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "3.Nc3 — develop and reinforce the future d5/e4 squares. Still nominally an English.",
+        "text": "3.Nc3: develop and reinforce the future d5/e4 squares. Still nominally an English.",
         "annotations": [
          {
           "kind": "highlight",
@@ -201,7 +201,7 @@
       {
        "uci": "d7d5",
        "coach": {
-        "text": "3...d5 — Black stakes the centre. The pawns now stand exactly as in a Queen's Gambit Declined.",
+        "text": "3...d5: Black stakes the centre. The pawns now stand exactly as in a Queen's Gambit Declined.",
         "annotations": [
          {
           "kind": "highlight",
@@ -214,7 +214,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "4.d4 — and there it is. We have transposed into the QGD tabiya (1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3 reaches the very same position). White chose the English door to reach a Queen's-Gambit room — sidestepping anyone who only prepared anti-1.d4 lines.",
+        "text": "4.d4, and there it is. We have transposed into the QGD tabiya (1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3 reaches the very same position). White chose the English door to reach a Queen's-Gambit room. Sidestepping anyone who only prepared anti-1.d4 lines.",
         "annotations": [
          {
           "kind": "highlight",
@@ -242,7 +242,7 @@
       {
        "fen": "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq - 0 4",
        "coach": {
-        "text": "Because the back door skips Black's sharpest tries. By starting 1.Nf3 instead of 1.d4, White never allows the Albin Counter-Gambit (1.d4 d5 2.c4 e5) or the Chigorin (2...Nc6) on move two — those need an early ...e5 or ...Nc6 that 1.Nf3 discourages. You reach your favourite QGD while denying the opponent half their anti-d4 repertoire.",
+        "text": "Because the back door skips Black's sharpest tries. By starting 1.Nf3 instead of 1.d4, White never allows the Albin Counter-Gambit (1.d4 d5 2.c4 e5) or the Chigorin (2...Nc6) on move two. Those need an early ...e5 or ...Nc6 that 1.Nf3 discourages. You reach your favourite QGD while denying the opponent half their anti-d4 repertoire.",
         "annotations": [
          {
           "kind": "highlight",
@@ -284,7 +284,7 @@
       {
        "fen": "rnbqkb1r/ppp2ppp/4pn2/3p4/2P5/2N2N2/PP1PPPPP/R1BQKB1R w KQkq - 0 4",
        "coach": {
-        "text": "1.Nf3 Nf6 2.c4 e6 3.Nc3 d5. The pawns are set for a Queen's Gambit. Play the move that completes the transposition into the QGD tabiya — claim the centre.",
+        "text": "1.Nf3 Nf6 2.c4 e6 3.Nc3 d5. The pawns are set for a Queen's Gambit. Play the move that completes the transposition into the QGD tabiya, claim the centre.",
         "annotations": [
          {
           "kind": "arrow",
@@ -299,7 +299,7 @@
         "d2d4"
        ],
        "successLine": {
-        "text": "4.d4! Identical to 1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3 — you arrived at your QGD without ever announcing it. That is move-order mastery.",
+        "text": "4.d4! Identical to 1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.Nf3. You arrived at your QGD without ever announcing it. That is move-order mastery.",
         "annotations": [
          {
           "kind": "highlight",
@@ -309,7 +309,7 @@
         ]
        },
        "retryLine": {
-        "text": "You want the central pawn that turns this English into a Queen's Gambit. The c4-pawn is already there — add its partner on d4."
+        "text": "You want the central pawn that turns this English into a Queen's Gambit. The c4-pawn is already there. Add its partner on d4."
        }
       }
      ]
@@ -318,21 +318,21 @@
   },
   {
    "id": "l3-dodging-theory",
-   "title": "Move order as a shield — the Anti-Marshall",
+   "title": "Move order as a shield, the Anti-Marshall",
    "kind": "variation",
-   "summary": "How White uses a precise 8th move to refuse the Marshall Attack entirely — trading a sliver of advantage for a position the opponent hasn't prepared.",
+   "summary": "How White uses a precise 8th move to refuse the Marshall Attack entirely. Trading a sliver of advantage for a position the opponent hasn't prepared.",
    "segments": [
     {
      "kind": "teach",
      "title": "The line you want to avoid",
      "intro": {
-      "text": "You met the Marshall Attack in the Spanish chapter — Black's deeply-prepared ...d5 pawn sacrifice. At a high level, the practical problem is that Black has memorised 25 moves of it and you have not. Move order is your escape."
+      "text": "You met the Marshall Attack in the Spanish chapter, Black's deeply-prepared ...d5 pawn sacrifice. At a high level, the practical problem is that Black has memorised 25 moves of it and you have not. Move order is your escape."
      },
      "steps": [
       {
        "fen": "r1bq1rk1/2p1bppp/p1n2n2/1p1pp3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 w - - 0 9",
        "coach": {
-        "text": "This is what you are trying to avoid. After 8.c3 d5! Black has unleashed the Marshall Gambit — e5 is offered for a vicious, well-mapped attack (...Bd6, ...Qh4, ...Re8). It is SOUND, and against a prepared opponent it is no fun to face cold. The cause was move 8: c3 invited ...d5.",
+        "text": "This is what you are trying to avoid. After 8.c3 d5! Black has unleashed the Marshall Gambit: e5 is offered for a vicious, well-mapped attack (...Bd6, ...Qh4, ...Re8). It is SOUND, and against a prepared opponent it is no fun to face cold. The cause was move 8: c3 invited ...d5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -367,7 +367,7 @@
     },
     {
      "kind": "model",
-     "title": "8.a4 — the Anti-Marshall",
+     "title": "8.a4: the Anti-Marshall",
      "intro": {
       "text": "One quiet pawn move denies Black his entire prepared gambit. Hear the logic."
      },
@@ -375,7 +375,7 @@
       {
        "uci": "a2a4",
        "coach": {
-        "text": "8.a4! The Anti-Marshall. Before touching c3, White prods the b5-pawn. Now if Black tries 8...d5 anyway, 9.exd5 Nxd5 10.axb5 axb5 reaches an equal but completely SAFE position — because White never weakened himself with c3, there is no loose e4-pawn and no open lines, so Black's ...d5 break carries no gambit attack at all. Not a pawn won — a sting removed.",
+        "text": "8.a4! The Anti-Marshall. Before touching c3, White prods the b5-pawn. Now if Black tries 8...d5 anyway, 9.exd5 Nxd5 10.axb5 axb5 reaches an equal but completely SAFE position. Because White never weakened himself with c3, there is no loose e4-pawn and no open lines, so Black's ...d5 break carries no gambit attack at all. Not a pawn won, a sting removed.",
         "annotations": [
          {
           "kind": "arrow",
@@ -404,7 +404,7 @@
       {
        "fen": "r1bq1rk1/2ppbppp/p1n2n2/1p2p3/P3P3/1B3N2/1PPP1PPP/RNBQR1K1 b - - 0 8",
        "coach": {
-        "text": "8.a4 is objectively a touch less ambitious than the main lines — engines call the position only a hair better for White, and Black equalises with accurate play (8...b4 or 8...Bb7). But you have traded that sliver of theoretical edge for something priceless in a real game: a position your opponent did NOT prepare, where understanding beats memory. That trade is the essence of practical opening play.",
+        "text": "8.a4 is objectively a touch less ambitious than the main lines. Engines call the position only a hair better for White, and Black equalises with accurate play (8...b4 or 8...Bb7). But you have traded that sliver of theoretical edge for something priceless in a real game: a position your opponent did NOT prepare, where understanding beats memory. That trade is the essence of practical opening play.",
         "annotations": [
          {
           "kind": "circle",
@@ -427,7 +427,7 @@
       {
        "fen": "r1bq1rk1/2ppbppp/p1n2n2/1p2p3/4P3/1B3N2/PPPP1PPP/RNBQR1K1 w - - 2 8",
        "coach": {
-        "text": "Closed Ruy, move 8. Black is fully prepared for 8.c3 d5 — the Marshall. Play the move that sidesteps it by prodding the b5-pawn first, so that ...d5 carries no gambit attack and White keeps a safe, comfortable game.",
+        "text": "Closed Ruy, move 8. Black is fully prepared for 8.c3 d5, the Marshall. Play the move that sidesteps it by prodding the b5-pawn first, so that ...d5 carries no gambit attack and White keeps a safe, comfortable game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -442,7 +442,7 @@
         "a2a4"
        ],
        "successLine": {
-        "text": "8.a4! The Anti-Marshall. You refused 25 moves of preparation with a single pawn push. Now if Black plays ...d5 anyway it runs into exd5 and axb5 axb5 — material stays equal, but because you never played c3 there is no e4-weakness and no gambit attack, so ...d5 is simply premature. Understanding over memory.",
+        "text": "8.a4! The Anti-Marshall. You refused 25 moves of preparation with a single pawn push. Now if Black plays ...d5 anyway it runs into exd5 and axb5 axb5. Material stays equal, but because you never played c3 there is no e4-weakness and no gambit attack, so ...d5 is simply premature. Understanding over memory.",
         "annotations": [
          {
           "kind": "arrow",
@@ -453,7 +453,7 @@
         ]
        },
        "retryLine": {
-        "text": "Don't play c3 — that is the move that INVITES ...d5. Prod the queenside first: the a-pawn hits b5, taking the sting out of any ...d5 break."
+        "text": "Don't play c3. That is the move that INVITES ...d5. Prod the queenside first: the a-pawn hits b5, taking the sting out of any ...d5 break."
        }
       }
      ]
@@ -462,33 +462,33 @@
   },
   {
    "id": "l4-gambit-accept",
-   "title": "Accepting a gambit — take, then give back",
+   "title": "Accepting a gambit: take, then give back",
    "kind": "opening",
-   "summary": "The Queen's Gambit Accepted: how Black takes the c4-pawn correctly — and why clinging to it with ...b5 is a losing trap.",
+   "summary": "The Queen's Gambit Accepted: how Black takes the c4-pawn correctly, and why clinging to it with ...b5 is a losing trap.",
    "segments": [
     {
      "kind": "model",
      "title": "The QGA done right",
      "intro": {
-      "text": "1.d4 d5 2.c4 dxc4 — Black accepts. The key idea: this is NOT a real pawn-win. Black takes to deflect White's c-pawn from the centre, then RETURNS the pawn and finishes development. Watch the discipline."
+      "text": "1.d4 d5 2.c4 dxc4: Black accepts. The key idea: this is NOT a real pawn-win. Black takes to deflect White's c-pawn from the centre, then RETURNS the pawn and finishes development. Watch the discipline."
      },
      "line": [
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4 — claim the centre."
+        "text": "1.d4: claim the centre."
        }
       },
       {
        "uci": "d7d5",
        "coach": {
-        "text": "1...d5 — Black meets it classically."
+        "text": "1...d5: Black meets it classically."
        }
       },
       {
        "uci": "c2c4",
        "coach": {
-        "text": "2.c4 — the Queen's Gambit. White offers the c-pawn to deflect Black's d5-pawn from the centre.",
+        "text": "2.c4: the Queen's Gambit. White offers the c-pawn to deflect Black's d5-pawn from the centre.",
         "annotations": [
          {
           "kind": "arrow",
@@ -503,7 +503,7 @@
       {
        "uci": "d5c4",
        "coach": {
-        "text": "2...dxc4 — accepted. But understand WHY: Black does not intend to keep this pawn. He grabs it to pull White's pawn off c-file, then will give it back for free development.",
+        "text": "2...dxc4: accepted. But understand WHY: Black does not intend to keep this pawn. He grabs it to pull White's pawn off c-file, then will give it back for free development.",
         "annotations": [
          {
           "kind": "highlight",
@@ -517,7 +517,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "3.Nf3 — develop and, importantly, stop ...e5. White is in no rush to recapture c4; it isn't going anywhere.",
+        "text": "3.Nf3: develop and, importantly, stop ...e5. White is in no rush to recapture c4; it isn't going anywhere.",
         "annotations": [
          {
           "kind": "circle",
@@ -530,13 +530,13 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "3...Nf6 — Black develops too, controlling e4 and d5. He still doesn't try to defend the c4-pawn."
+        "text": "3...Nf6: Black develops too, controlling e4 and d5. He still doesn't try to defend the c4-pawn."
        }
       },
       {
        "uci": "e2e3",
        "coach": {
-        "text": "4.e3 — opens the f1-bishop's path straight at c4. NOW White will simply collect the pawn back with the bishop, having lost nothing.",
+        "text": "4.e3: opens the f1-bishop's path straight at c4. NOW White will simply collect the pawn back with the bishop, having lost nothing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -550,13 +550,13 @@
       {
        "uci": "e7e6",
        "coach": {
-        "text": "4...e6 — Black opens his own bishop and prepares ...c5 to strike the centre. He has conceded the pawn back and aims for free, easy development — the whole point of accepting."
+        "text": "4...e6: Black opens his own bishop and prepares ...c5 to strike the centre. He has conceded the pawn back and aims for free, easy development. The whole point of accepting."
        }
       },
       {
        "uci": "f1c4",
        "coach": {
-        "text": "5.Bxc4 — White regains the pawn with a developed bishop on an active diagonal. Material is even, both sides developed. This is a healthy, equal QGA — and Black got here precisely BY giving the pawn back.",
+        "text": "5.Bxc4: White regains the pawn with a developed bishop on an active diagonal. Material is even, both sides developed. This is a healthy, equal QGA, and Black got here precisely BY giving the pawn back.",
         "annotations": [
          {
           "kind": "highlight",
@@ -570,7 +570,7 @@
       {
        "uci": "c7c5",
        "coach": {
-        "text": "5...c5 — Black hits the d4-centre at once. A typical, balanced QGA middlegame. Lesson: in an accepted gambit, the extra pawn is a loan, not a gift. Take it, use the tempo, give it back on time.",
+        "text": "5...c5: Black hits the d4-centre at once. A typical, balanced QGA middlegame. Lesson: in an accepted gambit, the extra pawn is a loan, not a gift. Take it, use the tempo, give it back on time.",
         "annotations": [
          {
           "kind": "arrow",
@@ -593,7 +593,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/8/2pP4/4P3/PP3PPP/RNBQKBNR b KQkq - 0 3",
        "coach": {
-        "text": "After 3.e3 (threatening Bxc4), Black greedily tries to defend the pawn with 3...b5??. It looks like it props up c4 — but it fatally weakens the queenside and the long light diagonal.",
+        "text": "After 3.e3 (threatening Bxc4), Black greedily tries to defend the pawn with 3...b5??. It looks like it props up c4, but it fatally weakens the queenside and the long light diagonal.",
         "annotations": [
          {
           "kind": "circle",
@@ -666,7 +666,7 @@
         "d1f3"
        ],
        "successLine": {
-        "text": "6.Qf3! The queen rakes down the open a8-h1 diagonal, threatening Qxa8 and hitting the loose b5/c4 pawns. The natural 6...Nc6 drops a piece to 7.Qxc6+, and even the best 6...Bb7 only hands the gambit pawn back into a near-lost position. Either way the greedy ...b5 fails — the classic refutation of clinging to the QGA pawn.",
+        "text": "6.Qf3! The queen rakes down the open a8-h1 diagonal, threatening Qxa8 and hitting the loose b5/c4 pawns. The natural 6...Nc6 drops a piece to 7.Qxc6+, and even the best 6...Bb7 only hands the gambit pawn back into a near-lost position. Either way the greedy ...b5 fails. The classic refutation of clinging to the QGA pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -686,7 +686,7 @@
   },
   {
    "id": "l5-gambit-decline",
-   "title": "Declining a gambit — refuse the bait",
+   "title": "Declining a gambit: refuse the bait",
    "kind": "variation",
    "summary": "Against the King's Gambit, the practical 2...Bc5 declines the pawn, keeps a sound game, and sets a trap of its own if White grabs e5.",
    "segments": [
@@ -694,13 +694,13 @@
      "kind": "teach",
      "title": "You don't have to take",
      "intro": {
-      "text": "A gambit only works if you cooperate. Against a deeply-prepared gambiteer, the soundest practical answer is often to DECLINE — keep your structure, develop, and let their preparation gather dust."
+      "text": "A gambit only works if you cooperate. Against a deeply-prepared gambiteer, the soundest practical answer is often to DECLINE. Keep your structure, develop, and let their preparation gather dust."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2",
        "coach": {
-        "text": "1.e4 e5 2.f4 — the King's Gambit. White offers the f-pawn to rip open the f-file and seize the centre. Accepting (2...exf4) is sharp and exactly what the gambiteer has studied for years. There is a calmer, fully sound road.",
+        "text": "1.e4 e5 2.f4: the King's Gambit. White offers the f-pawn to rip open the f-file and seize the centre. Accepting (2...exf4) is sharp and exactly what the gambiteer has studied for years. There is a calmer, fully sound road.",
         "annotations": [
          {
           "kind": "highlight",
@@ -720,7 +720,7 @@
       {
        "fen": "rnbqk1nr/pppp1ppp/8/2b1p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 1 3",
        "coach": {
-        "text": "2...Bc5! — the Classical King's Gambit Declined. Black ignores the f4-pawn and develops the bishop to its best diagonal, aiming at f2/g1. Crucially the bishop pins White to a tactical problem: White can no longer safely take on e5.",
+        "text": "2...Bc5!, the Classical King's Gambit Declined. Black ignores the f4-pawn and develops the bishop to its best diagonal, aiming at f2/g1. Crucially the bishop pins White to a tactical problem: White can no longer safely take on e5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -743,13 +743,13 @@
      "kind": "teach",
      "title": "The decline sets its own trap",
      "intro": {
-      "text": "Declining is not passive — it can punish a greedy reply."
+      "text": "Declining is not passive. It can punish a greedy reply."
      },
      "steps": [
       {
        "fen": "rnb1k1nr/pppp1ppp/8/2b1P3/4P2q/8/PPPP2PP/RNBQKBNR w KQkq - 1 4",
        "coach": {
-        "text": "If White greedily grabs 3.fxe5??, then 3...Qh4+! is crushing. 4.g3 (forced — 4.Ke2 Qxe4+ is even worse) 4...Qxe4+ wins the e5-pawn back with check, the bishop on c5 rakes g1, and White's king is stuck in the centre with a wrecked kingside. So Black's calm decline actually set a trap: 2...Bc5 makes taking e5 a blunder.",
+        "text": "If White greedily grabs 3.fxe5??, then 3...Qh4+! is crushing. 4.g3 (forced: 4.Ke2 Qxe4+ is even worse) 4...Qxe4+ wins the e5-pawn back with check, the bishop on c5 rakes g1, and White's king is stuck in the centre with a wrecked kingside. So Black's calm decline actually set a trap: 2...Bc5 makes taking e5 a blunder.",
         "annotations": [
          {
           "kind": "arrow",
@@ -769,7 +769,7 @@
       {
        "fen": "rnbqk1nr/pppp1ppp/8/2b1p3/4PP2/8/PPPP2PP/RNBQKBNR w KQkq - 1 3",
        "coach": {
-        "text": "So White must play soundly, e.g. 3.Nf3 (stopping ...Qh4+ and developing). Black continues ...d6, ...Nf6 with an even, healthy game — and White never got his prepared King's Gambit Accepted attack. THAT is the practical value of declining: a sound position your opponent didn't want.",
+        "text": "So White must play soundly, e.g. 3.Nf3 (stopping ...Qh4+ and developing). Black continues ...d6, ...Nf6 with an even, healthy game, and White never got his prepared King's Gambit Accepted attack. THAT is the practical value of declining: a sound position your opponent didn't want.",
         "annotations": [
          {
           "kind": "arrow",
@@ -824,7 +824,7 @@
         ]
        },
        "retryLine": {
-        "text": "White just opened the diagonal to his king by taking on e5. Your queen can deliver check on the h4-e1 line — and the bishop on c5 stops the king from running to g1."
+        "text": "White just opened the diagonal to his king by taking on e5. Your queen can deliver check on the h4-e1 line, and the bishop on c5 stops the king from running to g1."
        }
       }
      ]
@@ -833,7 +833,7 @@
   },
   {
    "id": "l6-lasker-trap",
-   "title": "Novelties & traps — the Lasker Trap",
+   "title": "Novelties & traps: the Lasker Trap",
    "kind": "tactics",
    "summary": "The most famous opening trap in the books: an Albin Counter-Gambit line that ends in an underpromotion. A lesson in knowing the position deeper than your opponent.",
    "segments": [
@@ -841,13 +841,13 @@
      "kind": "teach",
      "title": "The setup",
      "intro": {
-      "text": "An opening trap is a natural-looking move that loses by force. The Lasker Trap is the classic — and it ends with the rarest move in chess, an underpromotion to a knight."
+      "text": "An opening trap is a natural-looking move that loses by force. The Lasker Trap is the classic, and it ends with the rarest move in chess, an underpromotion to a knight."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/ppp2ppp/8/4P3/2Pp4/4P3/PP3PPP/RNBQKBNR b KQkq - 0 4",
        "coach": {
-        "text": "1.d4 d5 2.c4 e5 — the Albin Counter-Gambit; Black gambits a pawn for activity. 3.dxe5 d4 — the d4-pawn is a thorn. Here White carelessly plays 4.e3??, attacking the d4-pawn the obvious way. It loses by force. Black's reply springs the trap.",
+        "text": "1.d4 d5 2.c4 e5: the Albin Counter-Gambit; Black gambits a pawn for activity. 3.dxe5 d4. The d4-pawn is a thorn. Here White carelessly plays 4.e3??, attacking the d4-pawn the obvious way. It loses by force. Black's reply springs the trap.",
         "annotations": [
          {
           "kind": "highlight",
@@ -866,7 +866,7 @@
       {
        "fen": "rnbqk1nr/ppp2ppp/8/4P3/1bP5/4p3/PP1B1PPP/RN1QKBNR w KQkq - 0 6",
        "coach": {
-        "text": "4...Bb4+! 5.Bd2 dxe3!! — Black ignores the attack on his bishop and pushes the pawn into f2's lap. The point: if White grabs the bishop with 6.Bxb4??, then the e3-pawn crashes through. The trap is set.",
+        "text": "4...Bb4+! 5.Bd2 dxe3!!. Black ignores the attack on his bishop and pushes the pawn into f2's lap. The point: if White grabs the bishop with 6.Bxb4??, then the e3-pawn crashes through. The trap is set.",
         "annotations": [
          {
           "kind": "highlight",
@@ -895,7 +895,7 @@
       {
        "fen": "rnbqk1nr/ppp2ppp/8/4P3/1BP5/8/PP2KpPP/RN1Q1BNR b kq - 1 7",
        "coach": {
-        "text": "6.Bxb4?? exf2+ 7.Ke2 (forced — the king had to step out). Now: why NOT 7...fxg1=Q? Because 8.Qxd8+! Kxd8 9.Rxg1 and White wins Black's queen — the natural promotion fails! The position demands the one move most players never consider.",
+        "text": "6.Bxb4?? exf2+ 7.Ke2 (forced: the king had to step out). Now: why NOT 7...fxg1=Q? Because 8.Qxd8+! Kxd8 9.Rxg1 and White wins Black's queen. The natural promotion fails! The position demands the one move most players never consider.",
         "annotations": [
          {
           "kind": "highlight",
@@ -944,7 +944,7 @@
       {
        "fen": "rnbqk1nr/ppp2ppp/8/4P3/1BP5/8/PP2KpPP/RN1Q1BNR b kq - 1 7",
        "coach": {
-        "text": "Your f2-pawn is one step from promotion. A new queen (fxg1=Q) gets captured after Qxd8+. Find the move that promotes WITH CHECK so White has no time to take your queen — the rarest move on the board.",
+        "text": "Your f2-pawn is one step from promotion. A new queen (fxg1=Q) gets captured after Qxd8+. Find the move that promotes WITH CHECK so White has no time to take your queen. The rarest move on the board.",
         "annotations": [
          {
           "kind": "highlight",
@@ -974,7 +974,7 @@
         ]
        },
        "retryLine": {
-        "text": "A queen on g1 doesn't give check — White plays Qxd8+ and wins your queen. You need to promote with CHECK. What piece, promoted on g1, checks the king on e2?"
+        "text": "A queen on g1 doesn't give check. White plays Qxd8+ and wins your queen. You need to promote with CHECK. What piece, promoted on g1, checks the king on e2?"
        }
       }
      ]
@@ -991,13 +991,13 @@
      "kind": "teach",
      "title": "The Wayward Queen",
      "intro": {
-      "text": "Beneath all the theory lies an old truth: an attack launched before development rebounds on the attacker. The Wayward Queen Attack (2.Qh5) is the purest test of this — and the antidote is pure principle."
+      "text": "Beneath all the theory lies an old truth: an attack launched before development rebounds on the attacker. The Wayward Queen Attack (2.Qh5) is the purest test of this, and the antidote is pure principle."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p2Q/4P3/8/PPPP1PPP/RNB1KBNR b KQkq - 1 2",
        "coach": {
-        "text": "1.e4 e5 2.Qh5?! — White lunges at e5 and f7, dreaming of Qxf7#. But the queen is out alone, with no support. Each time Black develops a piece, he can do it with a gain of tempo by hitting the exposed queen. Do not panic — develop.",
+        "text": "1.e4 e5 2.Qh5?!. White lunges at e5 and f7, dreaming of Qxf7#. But the queen is out alone, with no support. Each time Black develops a piece, he can do it with a gain of tempo by hitting the exposed queen. Do not panic. Develop.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1017,7 +1017,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 3 3",
        "coach": {
-        "text": "2...Nc6! defends e5 and develops. 3.Bc4 renews the Qxf7# threat. Now the key move: 3...g6!. It attacks the queen AND blocks the h5-f7 diagonal, so Qxf7 is no longer even possible — the g6-pawn stands in the way. One move kills the threat and kicks the queen.",
+        "text": "2...Nc6! defends e5 and develops. 3.Bc4 renews the Qxf7# threat. Now the key move: 3...g6!. It attacks the queen AND blocks the h5-f7 diagonal, so Qxf7 is no longer even possible. The g6-pawn stands in the way. One move kills the threat and kicks the queen.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1037,7 +1037,7 @@
       {
        "fen": "r1bqkb1r/pppp1p1p/2n2np1/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 2 5",
        "coach": {
-        "text": "4.Qf3 (retreating) Nf6! and look at the board: Black has THREE pieces out and the white queen has moved three times to achieve nothing. Black is comfortably better — he punished the premature attack simply by developing with tempo every move. That is the whole secret.",
+        "text": "4.Qf3 (retreating) Nf6! and look at the board: Black has THREE pieces out and the white queen has moved three times to achieve nothing. Black is comfortably better. He punished the premature attack simply by developing with tempo every move. That is the whole secret.",
         "annotations": [
          {
           "kind": "circle",
@@ -1123,21 +1123,21 @@
   },
   {
    "id": "l8-bong-cloud",
-   "title": "The Bong Cloud — a lesson in king safety",
+   "title": "The Bong Cloud: a lesson in king safety",
    "kind": "opening",
-   "summary": "1.e4 e5 2.Ke2 breaks every king-safety rule on purpose. We study it honestly as a labeled curiosity — to see WHY the rules exist, and the one grain of truth hidden inside it.",
+   "summary": "1.e4 e5 2.Ke2 breaks every king-safety rule on purpose. We study it honestly as a labeled curiosity: to see WHY the rules exist, and the one grain of truth hidden inside it.",
    "segments": [
     {
      "kind": "teach",
      "title": "An opening that breaks every rule",
      "intro": {
-      "text": "This one is famous, and it is a JOKE line — a meme played by strong players for fun, not a serious weapon. We study it honestly, because the fastest way to understand a rule is to watch someone break it on purpose."
+      "text": "This one is famous, and it is a JOKE line. A meme played by strong players for fun, not a serious weapon. We study it honestly, because the fastest way to understand a rule is to watch someone break it on purpose."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR b kq - 1 2",
        "coach": {
-        "text": "1.e4 e5 2.Ke2?! — the Bong Cloud. In a single move White violates THREE opening principles at once: he moves his king into the open early, he forfeits the right to castle (the king and rooks can never connect normally), and he blocks in his own f1-bishop and queen. Everything we teach about the opening says: do not do this.",
+        "text": "1.e4 e5 2.Ke2?!, the Bong Cloud. In a single move White violates THREE opening principles at once: he moves his king into the open early, he forfeits the right to castle (the king and rooks can never connect normally), and he blocks in his own f1-bishop and queen. Everything we teach about the opening says: do not do this.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1161,7 +1161,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/8/PPPPKPPP/RNBQ1BNR w kq - 2 3",
        "coach": {
-        "text": "Black needs no trick to be better — just principled chess. 2...Nf6 develops and hits e4; the e4-pawn is now awkward to defend because the queen and bishop are boxed in behind the misplaced king. Black will follow with ...Nc6, ...d5, ...Bc5 — natural development against a king that has no safe home. White is simply worse from move two.",
+        "text": "Black needs no trick to be better. Just principled chess. 2...Nf6 develops and hits e4; the e4-pawn is now awkward to defend because the queen and bishop are boxed in behind the misplaced king. Black will follow with ...Nc6, ...d5, ...Bc5. Natural development against a king that has no safe home. White is simply worse from move two.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1184,13 +1184,13 @@
      "kind": "teach",
      "title": "Why the rules exist",
      "intro": {
-      "text": "Name the rules the Bong Cloud breaks — that is the real lesson."
+      "text": "Name the rules the Bong Cloud breaks. That is the real lesson."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR b kq - 1 2",
        "coach": {
-        "text": "Rule 1 — CASTLE your king to safety; don't walk it into the centre. Rule 2 — keep the pawn shield in front of the king intact. Rule 3 — develop pieces, don't shuffle the king and bury your bishop and queen. The Bong Cloud breaks all three, so it hands Black a free, lasting advantage. The position is the proof: principles aren't arbitrary — they ARE the evaluation.",
+        "text": "Rule 1: CASTLE your king to safety; don't walk it into the centre. Rule 2: keep the pawn shield in front of the king intact. Rule 3: develop pieces, don't shuffle the king and bury your bishop and queen. The Bong Cloud breaks all three, so it hands Black a free, lasting advantage. The position is the proof: principles aren't arbitrary. They ARE the evaluation.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1209,7 +1209,7 @@
       {
        "fen": "4k3/8/4K3/4P3/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "And yet — there is ONE grain of truth buried in it. King ACTIVITY is a real asset... in the ENDGAME. Here White's king already stands on the SIXTH rank, right in front of its pawn — and that is the winning post. The rule: a king on the sixth in front of its (non-rook) pawn wins. White keeps the king there with Kf6 OR Kd6 — either outflank shoulders Black's king aside and shepherds the pawn home. But step BACK to the fifth (Kd5 or Kf5) and you hand Black the opposition: ...Kd7/...Ke7 holds and it is only a DRAW. The Bong Cloud's mistake is timing: a brave, forward king is right in the endgame and disastrous at move 2.",
+        "text": "And yet: there is ONE grain of truth buried in it. King ACTIVITY is a real asset... in the ENDGAME. Here White's king already stands on the SIXTH rank, right in front of its pawn, and that is the winning post. The rule: a king on the sixth in front of its (non-rook) pawn wins. White keeps the king there with Kf6 OR Kd6. Either outflank shoulders Black's king aside and shepherds the pawn home. But step BACK to the fifth (Kd5 or Kf5) and you hand Black the opposition: ...Kd7/...Ke7 holds and it is only a DRAW. The Bong Cloud's mistake is timing: a brave, forward king is right in the endgame and disastrous at move 2.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1238,13 +1238,13 @@
      "kind": "guided",
      "title": "Right idea, right phase",
      "intro": {
-      "text": "Now prove you know WHEN the king should be brave. This is an endgame — king activity wins."
+      "text": "Now prove you know WHEN the king should be brave. This is an endgame. King activity wins."
      },
      "steps": [
       {
        "fen": "4k3/8/4K3/4P3/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "King-and-pawn endgame, White to move, kings in direct opposition. Your king is already on the sixth rank in front of the pawn — keep it there. Outflank to EITHER side and shoulder Black's king away; only retreating to the fifth rank throws the win away. Find a winning king move.",
+        "text": "King-and-pawn endgame, White to move, kings in direct opposition. Your king is already on the sixth rank in front of the pawn. Keep it there. Outflank to EITHER side and shoulder Black's king away; only retreating to the fifth rank throws the win away. Find a winning king move.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1271,7 +1271,7 @@
         "e6d6"
        ],
        "successLine": {
-        "text": "Kf6 (or Kd6) — both win. A king on the sixth in front of its pawn is the winning post: the outflank shoulders Black's king aside and the pawn marches home (e.g. 1.Kf6 Kf8 2.e6 Ke8 3.e7 and queens). Note that retreating with Kd5 or Kf5 would only DRAW — Black answers ...Kd7/...Ke7, takes the opposition, and stops the pawn. In the endgame an active king wins, but it must hold the sixth, not step back. Right idea, right phase.",
+        "text": "Kf6 (or Kd6): both win. A king on the sixth in front of its pawn is the winning post: the outflank shoulders Black's king aside and the pawn marches home (e.g. 1.Kf6 Kf8 2.e6 Ke8 3.e7 and queens). Note that retreating with Kd5 or Kf5 would only DRAW. Black answers ...Kd7/...Ke7, takes the opposition, and stops the pawn. In the endgame an active king wins, but it must hold the sixth, not step back. Right idea, right phase.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1282,7 +1282,7 @@
         ]
        },
        "retryLine": {
-        "text": "Don't retreat. Kd5 and Kf5 drop to the fifth rank and hand Black the opposition (...Kd7/...Ke7) — only a draw. Keep your king on the sixth, in front of the pawn: outflank to f6 OR d6 and shoulder Black's king away."
+        "text": "Don't retreat. Kd5 and Kf5 drop to the fifth rank and hand Black the opposition (...Kd7/...Ke7). Only a draw. Keep your king on the sixth, in front of the pawn: outflank to f6 OR d6 and shoulder Black's king away."
        }
       }
      ]
@@ -1299,13 +1299,13 @@
      "kind": "teach",
      "title": "The advanced-opening checklist",
      "intro": {
-      "text": "You no longer just 'know openings' — you wield them. Here is the mindset that separates 1900 from 1700."
+      "text": "You no longer just 'know openings'. You wield them. Here is the mindset that separates 1900 from 1700."
      },
      "steps": [
       {
        "fen": "rnbqkb1r/ppp2ppp/4pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R b KQkq - 0 4",
        "coach": {
-        "text": "1) MOVE ORDER is a choice, not an accident — steer toward positions YOU know (this QGD came via an English) and away from your opponent's preparation (the Anti-Marshall). A transposition reaches the same room; a move-order trick reaches a better one.",
+        "text": "1) MOVE ORDER is a choice, not an accident. Steer toward positions YOU know (this QGD came via an English) and away from your opponent's preparation (the Anti-Marshall). A transposition reaches the same room; a move-order trick reaches a better one.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1324,7 +1324,7 @@
       {
        "fen": "rnbqkbnr/ppp2ppp/4pn2/8/2pP4/4PN2/PP3PPP/RNBQKB1R w KQkq - 0 5",
        "coach": {
-        "text": "2) GAMBITS are a decision, made on principle. Accept and give the pawn back on time (the QGA) — never cling to it. Or decline and keep a sound game your opponent didn't prepare (the King's Gambit Declined). Greed without a plan to return the pawn is how you lose.",
+        "text": "2) GAMBITS are a decision, made on principle. Accept and give the pawn back on time (the QGA), never cling to it. Or decline and keep a sound game your opponent didn't prepare (the King's Gambit Declined). Greed without a plan to return the pawn is how you lose.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1339,7 +1339,7 @@
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPPKPPP/RNBQ1BNR b kq - 1 2",
        "coach": {
-        "text": "3) KNOW the traps (you can spring the Lasker Trap or refute a premature Qh5), and 4) never break KING SAFETY by accident — the Bong Cloud shows the cost. King activity is a virtue in the endgame and a liability in the opening. Timing is everything.",
+        "text": "3) KNOW the traps (you can spring the Lasker Trap or refute a premature Qh5), and 4) never break KING SAFETY by accident. The Bong Cloud shows the cost. King activity is a virtue in the endgame and a liability in the opening. Timing is everything.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1356,7 +1356,7 @@
      "kind": "puzzle",
      "title": "Cool-down: opening into tactics",
      "intro": {
-      "text": "One last set. These flow straight from the opening into a decisive blow — exactly the moments your move-order and development edge earns you. Find each."
+      "text": "One last set. These flow straight from the opening into a decisive blow. Exactly the moments your move-order and development edge earns you. Find each."
      },
      "puzzle": {
       "themes": [
@@ -1380,7 +1380,7 @@
     "kind": "mc",
     "prompt": "What is the difference between a transposition and a move-order trick?",
     "options": [
-     "There is none — both terms mean the same thing",
+     "There is none: both terms mean the same thing",
      "A transposition reaches the SAME position by a different sequence; a move-order trick reaches a DIFFERENT position to dodge or force a line",
      "A transposition is always a blunder; a move-order trick is always sound",
      "A transposition only happens in gambits; a move-order trick only in the endgame"
@@ -1398,7 +1398,7 @@
      "Because 8.a4 forces an immediate checkmate on the queenside"
     ],
     "answerIndex": 1,
-    "explain": "8.c3 invites the Marshall (8...d5!). 8.a4 prods b5 first and, crucially, avoids the c3 move that creates the e4-weakness the Marshall exploits — so ...d5 carries no gambit attack and is simply premature. It is objectively a touch less ambitious, but it denies the opponent his prepared gambit — understanding over memory, not a pawn win."
+    "explain": "8.c3 invites the Marshall (8...d5!). 8.a4 prods b5 first and, crucially, avoids the c3 move that creates the e4-weakness the Marshall exploits, so ...d5 carries no gambit attack and is simply premature. It is objectively a touch less ambitious, but it denies the opponent his prepared gambit. Understanding over memory, not a pawn win."
    },
    {
     "kind": "mc",
@@ -1416,8 +1416,8 @@
     "kind": "mc",
     "prompt": "The Bong Cloud (2.Ke2) is taught here as a labeled curiosity. What is the ONE genuine idea hidden inside it, and why does the Bong Cloud get it wrong?",
     "options": [
-     "That the king should always stay on e1 — and the Bong Cloud forgets to castle",
-     "That king activity is a real asset — but only in the ENDGAME; the Bong Cloud applies it in the opening, where the king must stay safe",
+     "That the king should always stay on e1, and the Bong Cloud forgets to castle",
+     "That king activity is a real asset, but only in the ENDGAME; the Bong Cloud applies it in the opening, where the king must stay safe",
      "That you should sacrifice the king for development",
      "That moving the king twice gains a tempo"
     ],
@@ -1429,21 +1429,21 @@
     "prompt": "Your opponent is a King's Gambit specialist with reams of preparation in the Accepted lines (2...exf4). What is the most PRACTICAL way to take that preparation off the board?",
     "options": [
      "Accept the gambit anyway and try to out-calculate them in their pet lines",
-     "Decline — keep a sound structure and develop, so their deep Accepted theory never appears on the board",
+     "Decline: keep a sound structure and develop, so their deep Accepted theory never appears on the board",
      "Resign the opening as lost",
      "Play 1...e5 only if you have memorised 25 moves of the Accepted"
     ],
     "answerIndex": 1,
-    "explain": "Declining (e.g. 2...Bc5) keeps a fully sound game and denies the gambiteer the sharp Accepted positions they studied for years. Against deep preparation, a calm sound decline is often the strongest practical choice — understanding over memory."
+    "explain": "Declining (e.g. 2...Bc5) keeps a fully sound game and denies the gambiteer the sharp Accepted positions they studied for years. Against deep preparation, a calm sound decline is often the strongest practical choice, understanding over memory."
    },
    {
     "kind": "play",
-    "prompt": "Scandinavian: 1.e4 d5 2.exd5 Qxd5. Black has brought the queen out early to recapture. Punish the premature sortie — develop a piece that gains a tempo.",
+    "prompt": "Scandinavian: 1.e4 d5 2.exd5 Qxd5. Black has brought the queen out early to recapture. Punish the premature sortie: develop a piece that gains a tempo.",
     "fen": "rnb1kbnr/ppp1pppp/8/3q4/8/8/PPPP1PPP/RNBQKBNR w KQkq - 0 3",
     "solutionUci": [
      "b1c3"
     ],
-    "explain": "3.Nc3! develops with tempo, hitting the d5-queen so it must move again. White gains a free developing move because Black committed the queen too soon — the standard antidote to an early queen sortie."
+    "explain": "3.Nc3! develops with tempo, hitting the d5-queen so it must move again. White gains a free developing move because Black committed the queen too soon. The standard antidote to an early queen sortie."
    },
    {
     "kind": "play",
@@ -1452,29 +1452,29 @@
     "solutionUci": [
      "d1h5"
     ],
-    "explain": "4.Qh5+! forks the king and the loose e5-pawn. After 4...Ke7 5.Qxe5+ White recovers the material by force with a crushing attack against the stranded king (continuing with Bc4/Bxd5+ and a winning assault). The weakening ...f6 rebounds — punish rule-breaking with energy."
+    "explain": "4.Qh5+! forks the king and the loose e5-pawn. After 4...Ke7 5.Qxe5+ White recovers the material by force with a crushing attack against the stranded king (continuing with Bc4/Bxd5+ and a winning assault). The weakening ...f6 rebounds: punish rule-breaking with energy."
    },
    {
     "kind": "judge",
-    "prompt": "The Lasker Trap (Albin): 1.d4 d5 2.c4 e5 3.dxe5 d4 4.e3?? Bb4+ 5.Bd2 dxe3 6.Bxb4?? exf2+ 7.Ke2 — and here, a piece up and one step from promotion, Black grabbed a new queen with 7...fxg1=Q. Judge Black's choice of promotion.",
+    "prompt": "The Lasker Trap (Albin): 1.d4 d5 2.c4 e5 3.dxe5 d4 4.e3?? Bb4+ 5.Bd2 dxe3 6.Bxb4?? exf2+ 7.Ke2, and here, a piece up and one step from promotion, Black grabbed a new queen with 7...fxg1=Q. Judge Black's choice of promotion.",
     "fen": "rnbqk1nr/ppp2ppp/8/4P3/1BP5/8/PP2K1PP/RN1Q1BqR w kq - 0 8",
     "lastMoveUci": "f2g1q",
     "verdict": "blunder",
-    "explain": "7...fxg1=Q?? throws away a won game. The new queen gives no check, so White replies 8.Qxd8+! Kxd8 9.Rxg1 and the queens are traded off into a dead-even (in fact slightly worse) ending — Black has surrendered his extra piece. The winning move was the underpromotion 7...fxg1=N+!: the knight checks the e2-king, so there is no time for Qxd8+, and after 8.Ke1 Qh4+ Black keeps the piece and wins by force. The whole trap hinges on promoting WITH check."
+    "explain": "7...fxg1=Q?? throws away a won game. The new queen gives no check, so White replies 8.Qxd8+! Kxd8 9.Rxg1 and the queens are traded off into a dead-even (in fact slightly worse) ending. Black has surrendered his extra piece. The winning move was the underpromotion 7...fxg1=N+!: the knight checks the e2-king, so there is no time for Qxd8+, and after 8.Ke1 Qh4+ Black keeps the piece and wins by force. The whole trap hinges on promoting WITH check."
    },
    {
     "kind": "play",
-    "prompt": "A different king-and-pawn endgame: White Kc6 and c5-pawn, Black Kc8, kings in direct opposition, White to move. Hold the win — keep your king where it belongs.",
+    "prompt": "A different king-and-pawn endgame: White Kc6 and c5-pawn, Black Kc8, kings in direct opposition, White to move. Hold the win. Keep your king where it belongs.",
     "fen": "2k5/8/2K5/2P5/8/8/8/8 w - - 0 1",
     "solutionUci": [
      "c6b6",
      "c6d6"
     ],
-    "explain": "Kb6 (or Kd6) wins. The king is already on the sixth rank in front of its pawn — the winning post. Outflanking to either side shoulders Black's king away and escorts the c-pawn home. Retreating to the fifth (Kb5/Kd5) would hand Black the opposition with ...Kc7 and only draw. A king on the sixth in front of its non-rook pawn wins; stepping back throws it away."
+    "explain": "Kb6 (or Kd6) wins. The king is already on the sixth rank in front of its pawn, the winning post. Outflanking to either side shoulders Black's king away and escorts the c-pawn home. Retreating to the fifth (Kb5/Kd5) would hand Black the opposition with ...Kc7 and only draw. A king on the sixth in front of its non-rook pawn wins; stepping back throws it away."
    },
    {
     "kind": "judge",
-    "prompt": "1.d4 d5 2.Nf3 Nf6 3.c4 — White, having begun with a quiet 2.Nf3, now strikes with c4. Judge 3.c4.",
+    "prompt": "1.d4 d5 2.Nf3 Nf6 3.c4: White, having begun with a quiet 2.Nf3, now strikes with c4. Judge 3.c4.",
     "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/2PP4/5N2/PP2PPPP/RNBQKB1R b KQkq - 0 3",
     "lastMoveUci": "c2c4",
     "verdict": "correct",
@@ -1482,7 +1482,7 @@
    },
    {
     "kind": "judge",
-    "prompt": "1.e4 e5 2.Nf3 — and Black, imitating a Bong-Cloud idea, replied 2...Ke7, walking his king out on move two. Judge Black's move.",
+    "prompt": "1.e4 e5 2.Nf3, and Black, imitating a Bong-Cloud idea, replied 2...Ke7, walking his king out on move two. Judge Black's move.",
     "fen": "rnbq1bnr/ppppkppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQ - 2 3",
     "lastMoveUci": "e8e7",
     "verdict": "blunder",
@@ -1490,15 +1490,15 @@
    },
    {
     "kind": "judge",
-    "prompt": "Bong Cloud: 1.e4 e5 2.Ke2 Nf6 — and now, regretting it, White tries to undo the damage with 3.Ke1, marching the king back home. Judge 3.Ke1.",
+    "prompt": "Bong Cloud: 1.e4 e5 2.Ke2 Nf6, and now, regretting it, White tries to undo the damage with 3.Ke1, marching the king back home. Judge 3.Ke1.",
     "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/8/PPPP1PPP/RNBQKBNR b kq - 3 3",
     "lastMoveUci": "e2e1",
     "verdict": "blunder",
-    "explain": "3.Ke1?? does not fix anything — castling rights are gone for good the moment the king first moved, so White has simply burned two tempi and STILL cannot castle. Worse, it abandons the e4-pawn: 3...Nxe4 wins it cleanly (the queen and bishop are still boxed in). You cannot un-ring the bell; the Bong Cloud's damage is permanent."
+    "explain": "3.Ke1?? does not fix anything. Castling rights are gone for good the moment the king first moved, so White has simply burned two tempi and STILL cannot castle. Worse, it abandons the e4-pawn: 3...Nxe4 wins it cleanly (the queen and bishop are still boxed in). You cannot un-ring the bell; the Bong Cloud's damage is permanent."
    },
    {
     "kind": "judge",
-    "prompt": "QGA: 1.d4 d5 2.c4 dxc4 3.e3 — Black played 3...b5 to defend the extra pawn. Judge Black's move.",
+    "prompt": "QGA: 1.d4 d5 2.c4 dxc4 3.e3, Black played 3...b5 to defend the extra pawn. Judge Black's move.",
     "fen": "rnbqkbnr/p1p1pppp/8/1p6/2pP4/4P3/PP3PPP/RNBQKBNR w KQkq - 0 4",
     "lastMoveUci": "b7b5",
     "verdict": "blunder",
@@ -1506,15 +1506,15 @@
    },
    {
     "kind": "judge",
-    "prompt": "Anti-Marshall: after 8.a4, Black tried the Marshall break anyway — 8...d5 9.exd5 Nxd5 — and White has just played 10.axb5. Black's queenside is opening up. Judge 10.axb5.",
+    "prompt": "Anti-Marshall: after 8.a4, Black tried the Marshall break anyway (8...d5 9.exd5 Nxd5) and White has just played 10.axb5. Black's queenside is opening up. Judge 10.axb5.",
     "fen": "r1bq1rk1/2p1bppp/p1n5/1P1np3/8/1B3N2/1PPP1PPP/RNBQR1K1 b - - 0 10",
     "lastMoveUci": "a4b5",
     "verdict": "correct",
-    "explain": "10.axb5 is fine and not a blunder. The point of the Anti-Marshall is NOT a pawn win — after 10...axb5 material is dead even. The real gain is that because White never played c3, there is no weak e4-pawn and no open lines for a gambit attack: Black's ...d5 break carries zero Marshall compensation, so White has a safe, comfortable game where ...d5 was simply premature. Understanding over memory — not material."
+    "explain": "10.axb5 is fine and not a blunder. The point of the Anti-Marshall is NOT a pawn win. After 10...axb5 material is dead even. The real gain is that because White never played c3, there is no weak e4-pawn and no open lines for a gambit attack: Black's ...d5 break carries zero Marshall compensation, so White has a safe, comfortable game where ...d5 was simply premature. Understanding over memory: not material."
    },
    {
     "kind": "judge",
-    "prompt": "QGA: 1.d4 d5 2.c4 dxc4 3.Nf3 Nf6 4.e3 e6 5.Bxc4 — Black played 5...c5. Judge Black's move.",
+    "prompt": "QGA: 1.d4 d5 2.c4 dxc4 3.Nf3 Nf6 4.e3 e6 5.Bxc4. Black played 5...c5. Judge Black's move.",
     "fen": "rnbqkb1r/pp3ppp/4pn2/2p5/2BP4/4PN2/PP3PPP/RNBQK2R w KQkq - 0 6",
     "lastMoveUci": "c7c5",
     "verdict": "correct",

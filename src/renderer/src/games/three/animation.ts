@@ -1,4 +1,4 @@
-// Piece motion controller — one per <Tabletop3D>.
+// Piece motion controller: one per <Tabletop3D>.
 //
 // Pure math, no React: piece systems sample `pose(id)` every frame and write
 // the result onto their instance transforms. Tabletop3D drives it from prop
@@ -69,7 +69,7 @@ export class MotionController {
   }
 
   /**
-   * Re-home a piece with NO slide — used when the whole layout changes under
+   * Re-home a piece with NO slide: used when the whole layout changes under
    * the pieces (OTB orientation flip mirrors the world): every piece must
    * repaint at its new spot instantly, never glide across the board.
    */
@@ -183,7 +183,7 @@ export class MotionController {
   private scratch: PiecePose = { position: new THREE.Vector3(), flipAngle: 0, scale: 1 }
 
   /**
-   * Current pose. Returned object is reused across calls — copy what you keep.
+   * Current pose. Returned object is reused across calls. Copy what you keep.
    */
   pose(id: string): PiecePose | null {
     const e = this.entries.get(id)

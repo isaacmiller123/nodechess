@@ -34,7 +34,7 @@ import { annotationsToShapes, SCHOOL_BRUSHES } from './annotations'
 import { BoardFrame, EMPTY_DESTS, ROLE_FROM_CHAR, type BoardEnv } from './segments'
 
 // Default pass threshold when a chapter test doesn't set one. The attempt cap is
-// owned by the shared contract (@shared/types `MAX_ATTEMPTS`) — the SERVER is
+// owned by the shared contract (@shared/types `MAX_ATTEMPTS`): the SERVER is
 // authoritative on attempts/pass/retake; we import that single source of truth
 // rather than redefining it here, and use it only for "attempts left" copy.
 const PASS_FLOOR = 0.7
@@ -46,7 +46,7 @@ export interface ChapterTestProps {
   env: BoardEnv
   /** Prior attempts already taken (from window.api.school.testState). */
   priorAttempts: number
-  /** Already passed previously — purely informational. */
+  /** Already passed previously. Purely informational. */
   alreadyPassed: boolean
   onBack: () => void
   /** Test attempt finished (passed or not); refresh overview state. */
@@ -71,7 +71,7 @@ type Verdict =
  * The SERVER is authoritative on pass/fail + retake: the client sends only the raw
  * scorePct (no `passed`), and the result screen renders from the returned
  * TestRecordResult (result.passed / result.attempts / result.mustRetake /
- * result.bestPct) — not from any locally-derived verdict. On a true 2nd fail the
+ * result.bestPct): not from any locally-derived verdict. On a true 2nd fail the
  * server resets the whole chapter, which is reflected by routing the
  * "must retake the chapter" path off result.mustRetake.
  *
@@ -217,7 +217,7 @@ export function ChapterTestView({
     )
   }
 
-  // -------- RUNNING — one question at a time --------
+  // -------- RUNNING: one question at a time --------
   const q = questions[qIdx]
   return (
     <div className="lesson-player">
@@ -237,9 +237,9 @@ export function ChapterTestView({
 }
 
 // ===========================================================================
-// RESULT CARD — renders the SERVER verdict (TestRecordResult). While the
+// RESULT CARD: renders the SERVER verdict (TestRecordResult). While the
 // round-trip is in flight we show a recording state; on failure we show a
-// neutral "not recorded" card (raw score + retry) — never a pass/fail verdict
+// neutral "not recorded" card (raw score + retry): never a pass/fail verdict
 // the server did not issue. result.passed / result.attempts / result.mustRetake
 // / result.bestPct are the source of truth.
 // ===========================================================================
@@ -265,7 +265,7 @@ function ResultCard({
   onRetryRecord: () => void
   onFinished: () => void
 }): JSX.Element {
-  // While recording, hold the result screen on a calm pending card — never flash a
+  // While recording, hold the result screen on a calm pending card. Never flash a
   // (wrong) locally-derived pass/fail before the server speaks.
   if (verdict.status === 'recording') {
     return (
@@ -348,12 +348,12 @@ function ResultCard({
         {passed
           ? alreadyPassed
             ? 'Cleanly done again. The chapter stays mastered.'
-            : 'Strong work. Viktor signs off on this chapter — you may move on.'
+            : 'Strong work. Viktor signs off on this chapter. You may move on.'
           : alreadyPassed
-            ? 'Not your sharpest — but you have already cleared this chapter, so it stays mastered. Go again whenever you like.'
+            ? 'Not your sharpest. You have already cleared this chapter, so it stays mastered. Go again whenever you like.'
             : mustRetake
-              ? 'That was your final attempt. You must retake the chapter — work back through the lessons, then sit the test again.'
-              : `Not yet. You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left. I will not show you which you missed — review the lessons and try once more.`}
+              ? 'That was your final attempt. You must retake the chapter: work back through the lessons, then sit the test again.'
+              : `Not yet. You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left. I will not show you which you missed. Review the lessons and try once more.`}
       </p>
 
       <div className="test-result-actions">
@@ -465,7 +465,7 @@ function QuestionView({
     [onAnswer]
   )
 
-  // ---- play: single-ply — accept any of solutionUci, matched on from/to ----
+  // ---- play: single-ply. Accept any of solutionUci, matched on from/to ----
   // The board has no promotion picker, so the solution itself supplies the
   // promotion piece (underpromotions like 'e7e8n' included). A WRONG move that is
   // itself a promotion push still needs a role to be legal: apply it as a queen so
@@ -491,23 +491,23 @@ function QuestionView({
     [question, boardFen, commit]
   )
 
-  // ---- play: multi-ply — "play the opening out" step loop ----
+  // ---- play: multi-ply, "play the opening out" step loop ----
   // Each step accepts any of step.userUci (queen-promo tolerant); on a match we play
   // it, auto-play step.replyUci, advance to the next step, and only mark the whole
   // question correct once every step is satisfied. A wrong (legal) move fails the
-  // whole question immediately (answers stay hidden, single shot — same as single-ply).
+  // whole question immediately (answers stay hidden, single shot; same as single-ply).
   const onMultiPlyMove = useCallback(
     (orig: Key, dest: Key) => {
       if (question.kind !== 'play' || !line || replying) return
       const step = line[stepIdx]
       if (!step) return
       const plain = `${orig}${dest}`
-      // From/to match — the scripted move supplies any promotion piece.
+      // From/to match: the scripted move supplies any promotion piece.
       const matched = step.userUci.find((s) => s.slice(0, 4) === plain)
 
       if (!matched) {
         // Legal but wrong move ends the question as failed; show what was played.
-        // A wrong promotion push needs a role to be legal — apply it as a queen so
+        // A wrong promotion push needs a role to be legal. Apply it as a queen so
         // it commits as a miss instead of snapping back for free retries.
         const played =
           applyMove(boardFen, orig, dest) ??
@@ -534,7 +534,7 @@ function QuestionView({
       const reply = step.replyUci
 
       if (!reply) {
-        // No opponent reply scripted for this step: advance (or finish) — but only
+        // No opponent reply scripted for this step: advance (or finish), but only
         // if the board is still the learner's to move. Advancing onto the
         // opponent's turn with no scripted reply would dead-lock the question, so
         // treat that as an authoring error and credit the line instead.
@@ -544,7 +544,7 @@ function QuestionView({
           setStepIdx((i) => i + 1)
         } else {
           console.warn(
-            `ChapterTest: line step ${stepIdx} has no replyUci but leaves the opponent on move — treating the line as complete.`
+            `ChapterTest: line step ${stepIdx} has no replyUci but leaves the opponent on move. Treating the line as complete.`
           )
           commit(true)
         }
@@ -613,7 +613,7 @@ function QuestionView({
             />
           </BoardFrame>
         )}
-        <ViktorPanel text={question.prompt} eyebrow={`Key idea — Q${index + 1}`}>
+        <ViktorPanel text={question.prompt} eyebrow={`Key idea (Q${index + 1})`}>
           <div className="school-step-meta">{counter}</div>
           <ul className="test-mc-options" role="listbox" aria-label="Answer choices">
             {question.options.map((opt, i) => (
@@ -644,7 +644,7 @@ function QuestionView({
 
   // -------- PLAY --------
   if (question.kind === 'play') {
-    const eyebrow = isMultiPly ? `Play it out — Q${index + 1}` : `Play it — Q${index + 1}`
+    const eyebrow = isMultiPly ? `Play it out (Q${index + 1})` : `Play it (Q${index + 1})`
     return (
       <div className="school-stage">
         <BoardFrame env={env}>
@@ -683,7 +683,7 @@ function QuestionView({
     )
   }
 
-  // -------- JUDGE — was the highlighted move correct or a blunder? --------
+  // -------- JUDGE: was the highlighted move correct or a blunder? --------
   return (
     <div className="school-stage">
       <BoardFrame env={env}>
@@ -701,7 +701,7 @@ function QuestionView({
           animation={env.animation}
         />
       </BoardFrame>
-      <ViktorPanel text={question.prompt} eyebrow={`Judge it — Q${index + 1}`}>
+      <ViktorPanel text={question.prompt} eyebrow={`Judge it (Q${index + 1})`}>
         <div className="school-step-meta">
           {counter}
           {answeredChip}

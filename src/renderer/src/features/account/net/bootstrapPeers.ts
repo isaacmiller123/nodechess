@@ -1,8 +1,8 @@
-// BOOTSTRAP-SEAM — the always-awake overlay nodes a client prefers when seeding
+// BOOTSTRAP-SEAM: the always-awake overlay nodes a client prefers when seeding
 // its Kademlia routing table (spec §5). Twin of relayConfig.ts / iceConfig.ts:
 // one env var, empty default, no behavior change until a deployment sets it.
 //
-// WHAT THIS IS AND IS NOT. It cannot create connectivity — trystero's relays do
+// WHAT THIS IS AND IS NOT. It cannot create connectivity. Trystero's relays do
 // that, and a peer we have not met over the fabric is unreachable no matter what
 // is configured here. What it changes is WHICH of the peers we have met seed the
 // routing table. `overlayNode.bootstrap()` with no seeds ingests the whole fabric
@@ -11,7 +11,7 @@
 // a k-bucket slot and an `admitOutbound` round-trip, and buckets are small. Seeded
 // from the seed program's nodes (src/seed, run to be up permanently) the table
 // starts with entries that are still there on the next lookup, and Kademlia's own
-// self-lookup discovers everyone else from them — which is the ordinary design of
+// self-lookup discovers everyone else from them, which is the ordinary design of
 // a bootstrap node, not a special case.
 //
 // A pinned root grants NO authority. It does not make a node a witness, a
@@ -19,7 +19,7 @@
 // and nothing else, and every seed here still goes through `verifyPresence`
 // before it enters the table. The worst a bad entry can do is waste a lookup.
 //
-// FORMAT of `VITE_BOOTSTRAP_PEERS` — the b64u ROOT pubkeys (not nodeIds; nodeId =
+// FORMAT of `VITE_BOOTSTRAP_PEERS`: the b64u ROOT pubkeys (not nodeIds; nodeId =
 // sha256(root) and the directory is keyed by it, so we match on the root the
 // presence body carries) of the bootstrap nodes, either:
 //   • comma-separated:  <root>,<root>
@@ -36,7 +36,7 @@ import type { B64u } from '@shared/accounts'
 /**
  * An ed25519 pubkey is 32 bytes, which `toB64u` (base64url, unpadded) renders as
  * exactly 43 chars. Checking the exact length rather than a loose charset match
- * catches the realistic deployment mistake — a truncated copy/paste, or a nodeId
+ * catches the realistic deployment mistake. A truncated copy/paste, or a nodeId
  * pasted where a root belongs would still be 43, but a half-copied key is caught.
  */
 const ROOT_B64U = /^[A-Za-z0-9_-]{43}$/
@@ -50,7 +50,7 @@ export function resolveBootstrapPeers(): readonly B64u[] {
   return envBootstrapPeers() ?? []
 }
 
-/** Whether `root` is a configured bootstrap peer — for status surfaces that need
+/** Whether `root` is a configured bootstrap peer. For status surfaces that need
  *  to say honestly whether a client has reached one. */
 export function isBootstrapPeer(root: B64u): boolean {
   return resolveBootstrapPeers().includes(root)
@@ -63,7 +63,7 @@ export function isBootstrapPeer(root: B64u): boolean {
  *
  * `undefined` is returned both when no peers are configured and when none of them
  * are currently live, so a bootstrap node that is down or not yet gossiped can
- * never be worse than no configuration at all — it degrades to the directory
+ * never be worse than no configuration at all. It degrades to the directory
  * rather than to an empty seed set. Liveness uses the directory's own
  * `staleAfterMs` via `liveNodesOf`, so a bootstrap peer that stopped announcing
  * is treated as gone like any other node.
@@ -82,7 +82,7 @@ export function selectBootstrapSeeds(
 /**
  * Build-time env read, guarded exactly like relayConfig.ts / iceConfig.ts so the
  * module still loads in bare-node bundles with no import.meta.env. Returns null
- * for absent OR malformed — the caller treats both as "no bootstrap peers".
+ * for absent OR malformed: the caller treats both as "no bootstrap peers".
  */
 function envBootstrapPeers(): B64u[] | null {
   const env = (import.meta as { env?: Record<string, unknown> }).env
@@ -108,7 +108,7 @@ function parsePeerList(raw: string): string[] | null {
       if (Array.isArray(parsed) && parsed.every((r) => typeof r === 'string'))
         return parsed.map((r) => (r as string).trim()).filter((s) => s !== '')
     } catch {
-      /* malformed JSON VITE_BOOTSTRAP_PEERS — ignore, bootstrap from the directory */
+      /* malformed JSON VITE_BOOTSTRAP_PEERS: ignore, bootstrap from the directory */
     }
     return null
   }

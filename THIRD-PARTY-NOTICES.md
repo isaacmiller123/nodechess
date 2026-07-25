@@ -49,7 +49,7 @@ The active set's author and license are shown in **Settings → Appearance**.
 
 ## Sounds
 
-- **"Standard" sound theme — Lichess standard sound set**
+- **"Standard" sound theme**, the Lichess standard sound set
   - **Source:** [lichess-org/lila](https://github.com/lichess-org/lila), commit
     [`ecf6f39ed8b5`](https://github.com/lichess-org/lila/tree/ecf6f39ed8b5dc6d9b5d6847954e8cd332127b1d/public/sound/standard)
     (`public/sound/standard/`)
@@ -65,7 +65,7 @@ The active set's author and license are shown in **Settings → Appearance**.
 
 ## Icons
 
-UI icons are from [Lucide](https://lucide.dev/) — ISC License.
+UI icons are from [Lucide](https://lucide.dev/), under the ISC License.
 
 ---
 

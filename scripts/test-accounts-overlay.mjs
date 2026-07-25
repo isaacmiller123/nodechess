@@ -1,4 +1,4 @@
-// THE A3 OVERLAY SUITE — Kademlia routing over MockFabric (spec §5, C-11).
+// THE A3 OVERLAY SUITE: Kademlia routing over MockFabric (spec §5, C-11).
 //
 //   node scripts/test-accounts-overlay.mjs
 //
@@ -6,7 +6,7 @@
 // with REAL ed25519 identities on one MockFabric bus, presence-announced and
 // bootstrapped, then:
 //   0. k-bucket admission law (anti-eclipse: full bucket never evicts a live
-//      long-standing contact — ping the LRS candidate, keep-old/replace-dead);
+//      long-standing contact: ping the LRS candidate, keep-old/replace-dead);
 //   1. bootstrap: every table nonempty + every self-lookup converged;
 //   2. correctness (LOAD-BEARING): 20 deterministic targets → lookup returns
 //      EXACTLY the true k-closest live nodeIds (vs closestEligible ground truth);
@@ -45,7 +45,7 @@ export * as O from '@shared/accounts/overlay'
 export { PARAMS_A3, PARAMS_A3_DIGEST } from '@shared/accounts/storage/params'
 `
 
-// The decision core alone (kbucket + distance underneath) — bundled twice,
+// The decision core alone (kbucket + distance underneath): bundled twice,
 // platform node vs browser, driven through one scripted insert/closest
 // sequence; the digests must match byte-for-byte.
 const PARITY_ENTRY = `
@@ -100,14 +100,14 @@ async function main() {
   } finally {
     for (const d of [outdir, outNode, outBrowser]) rmSync(d, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
 async function run(M, outNode, outBrowser) {
   const { A, W, O, PARAMS_A3, PARAMS_A3_DIGEST } = M
   const NOW = 1_750_000_000_000
-  const K = PARAMS_A3.kBucket // 16 — bucket size AND the k of "k closest"
+  const K = PARAMS_A3.kBucket // 16: bucket size AND the k of "k closest"
 
   const b64 = A.toB64u
   const seed32 = (tag) => A.sha256(A.utf8(tag))
@@ -160,7 +160,7 @@ async function run(M, outNode, outBrowser) {
     for (let i = 0; i < K; i++) if (O.insertContact(t, contactOf(inB0[i], i), K).kind === 'inserted') inserted++
     eq(inserted, K, `a bucket admits kBucket=${K} contacts`)
     const full = O.insertContact(t, contactOf(inB0[16], 100), K)
-    ok(full.kind === 'full' && full.evictionCandidate.nodeId === inB0[0], 'a full bucket returns the LRS contact as eviction candidate — newcomer NOT admitted')
+    ok(full.kind === 'full' && full.evictionCandidate.nodeId === inB0[0], 'a full bucket returns the LRS contact as eviction candidate, newcomer NOT admitted')
     ok(!O.allContacts(t).some((c) => c.nodeId === inB0[16]), 'the newcomer stayed OUT of the table (no silent displacement of a long-standing contact)')
     O.touchContact(t, inB0[0], 200) // eviction ping answered → keep old
     const full2 = O.insertContact(t, contactOf(inB0[16], 300), K)
@@ -188,7 +188,7 @@ async function run(M, outNode, outBrowser) {
   ok(selfConverged, 'every self-lookup converged to the true k-closest set around its own id')
 
   // ==========================================================================
-  console.log('\n· 2. lookup correctness — 20 deterministic targets (LOAD-BEARING) …')
+  console.log('\n· 2. lookup correctness, 20 deterministic targets (LOAD-BEARING) …')
   // ==========================================================================
   const targets = Array.from({ length: 20 }, (_, i) => b64(seed32('ov-target-' + i)))
   const lookupStats = []
@@ -206,7 +206,7 @@ async function run(M, outNode, outBrowser) {
   const medRpcs = median(lookupStats.map((s) => s.rpcs))
   const maxRpcs = Math.max(...lookupStats.map((s) => s.rpcs))
   // Observed on this fixed topology: median rounds 2, median rpcs 16, max
-  // rpcs 16 — comfortably under the ~N/2 ceiling asserted below. (Churn-phase
+  // rpcs 16: comfortably under the ~N/2 ceiling asserted below. (Churn-phase
   // walks that hit failures switch to drain mode and cost up to ~population
   // rpcs; the bounds here cover the failure-free common path only.)
   console.log(`    (20 lookups over N=64: median rounds ${medRounds}, median rpcs ${medRpcs}, max rpcs ${maxRpcs})`)
@@ -285,7 +285,7 @@ async function run(M, outNode, outBrowser) {
     ok(sameIds(res, trueClosest(victimTarget, population, K)), 'the lookup routed through the eclipse attacker still returns the true k-closest live set (fabricated contacts die on direct contact)')
     const tabled = O.allContacts(honest.node.table).map((c) => c.nodeId)
     ok(fabricated.every((f) => !tabled.includes(f)), 'none of the 16 fabricated contacts entered the honest routing table (FIND_NODE responses are ROUTING HINTS only)')
-    ok(tabled.includes(mal.nodeId), 'the attacker itself IS tabled (it answered a direct RPC) — hints, not peers, are quarantined')
+    ok(tabled.includes(mal.nodeId), 'the attacker itself IS tabled (it answered a direct RPC). Hints, not peers, are quarantined')
   }
 
   // ==========================================================================
@@ -293,8 +293,8 @@ async function run(M, outNode, outBrowser) {
   // ==========================================================================
   // The subtler eclipse than §6: the hint carries a REAL, reachable nodeId but
   // a root that does NOT hash to it (nodeId = sha256(rootPub), §4). A direct
-  // exchange only re-confirms the transport nodeId — the root/key ride from the
-  // (malicious) hint — so the binding must be checked at ingest, else lookup()
+  // exchange only re-confirms the transport nodeId: the root/key ride from the
+  // (malicious) hint, so the binding must be checked at ingest, else lookup()
   // hands the pointer/duty layer an attacker-chosen root bound to a live node.
   {
     const bf = new W.MockFabric()
@@ -304,7 +304,7 @@ async function run(M, outNode, outBrowser) {
     await V.node.bootstrap()
     // A forged root (a valid pubkey) whose nodeId != the target it is bound to.
     const forged = kpOf('fr-forged-root')
-    // H2: a reachable, UN-ANNOUNCED node with a CORRECT binding — the positive
+    // H2: a reachable, UN-ANNOUNCED node with a CORRECT binding. The positive
     // control proving the filter admits honest hints, not everything.
     const h2Root = kpOf('fr-H2-root')
     const h2Dev = kpOf('fr-H2-dev')
@@ -341,14 +341,14 @@ async function run(M, outNode, outBrowser) {
   // ==========================================================================
   // A malicious responder pads every FIND_NODE reply with binding-valid junk
   // (nodeIdOf(root)===nodeId, cheap: no key/reachability). Without the cap the
-  // victim's `known` — and thus drain-mode probe count + memory — grows 1:1 with
+  // victim's `known` (and thus drain-mode probe count + memory) grows 1:1 with
   // injected volume. With the FIFO knownCap it is bounded to a constant.
   {
     const cf = new W.MockFabric()
     const CAP = 20
     // ≥ K real nodes so they fill the victim's k-closest window; the far junk
     // (maximal distance) then never enters that window, so it is never probed
-    // (never cleaned) and genuinely accumulates in `known` — exercising the cap.
+    // (never cleaned) and genuinely accumulates in `known`. Exercising the cap.
     const reals = Array.from({ length: 24 }, (_, i) => makeOverlayNode(cf, 'hb-' + i, {}))
     for (const n of reals) await n.node.bootstrap()
     // The padder answers find-node with 64 fresh binding-valid junk contacts.
@@ -356,7 +356,7 @@ async function run(M, outNode, outBrowser) {
     await padder.node.bootstrap()
     // 50 binding-valid junk contacts GROUND far from the padder's own nodeId (top
     // byte = complement of the padder's), so a lookup(padder) never puts them in
-    // its k-closest window — they are never probed, never cleaned, and therefore
+    // its k-closest window: they are never probed, never cleaned, and therefore
     // ACCUMULATE in `known`, exercising the cap (not the probe-and-evict path).
     const farTop = A.fromB64u(padder.nodeId)[0] ^ 0xff
     const junk = []
@@ -375,7 +375,7 @@ async function run(M, outNode, outBrowser) {
       await victim.node.lookup(padder.nodeId) // each offers the 50 far junk again
       peakKnown = Math.max(peakKnown, victim.node.knownSize)
     }
-    // The core anti-DoS invariant: memory is bounded — `known` NEVER exceeds the
+    // The core anti-DoS invariant: memory is bounded, `known` NEVER exceeds the
     // cap even as unprobed far junk accumulates (peak reaches the cap, proving it
     // clamps rather than the junk simply being small).
     ok(peakKnown === CAP, `\`known\` clamps exactly at knownCap (peak ${peakKnown} === ${CAP}) as 50 far junk accumulate`)

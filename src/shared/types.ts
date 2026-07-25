@@ -1,4 +1,4 @@
-// Shared IPC contract — imported (type-only) by both preload and renderer.
+// Shared IPC contract: imported (type-only) by both preload and renderer.
 // Single source of truth for the `window.api` surface. Grows as features land.
 
 export interface PingResult {
@@ -35,7 +35,7 @@ export interface AnalyzeRequest {
 }
 
 /** Stockfish's native UCI_Elo / Skill-Level floor: it cannot be weakened below
- *  this via its own settings. Single source of truth for both processes — at
+ *  this via its own settings. Single source of truth for both processes: at
  *  lower targets the main process switches to MultiPV-softmax weak play. */
 export const ENGINE_ELO_FLOOR = 1320
 
@@ -142,11 +142,11 @@ export interface EngineStatus {
   analysisReady: boolean
   playReady: boolean
   lc0Ready: boolean
-  /** Fairy-Stockfish binary present (imported or bundled) — variant bots can play. */
+  /** Fairy-Stockfish binary present (imported or bundled). Variant bots can play. */
   fairyReady: boolean
-  /** KataGo engine + at least one standard net present — Go bots can play. */
+  /** KataGo engine + at least one standard net present, Go bots can play. */
   katagoReady: boolean
-  /** The optional Human-SL go net is installed — Go bot levels play human-like. */
+  /** The optional Human-SL go net is installed. Go bot levels play human-like. */
   katagoHumanReady: boolean
 }
 
@@ -154,7 +154,7 @@ export interface EngineStatus {
 
 /** One Go bot move request. The full move list (not a position) is sent because
  *  GTP replays games move-by-move; vertices use the go codec ('d4', 'i' skipped,
- *  rank 1 = bottom) which is exactly GTP's own convention. BLACK moves first —
+ *  rank 1 = bottom) which is exactly GTP's own convention. BLACK moves first,
  *  unless `handicap` is non-empty, in which case those stones are pre-placed
  *  for black and WHITE moves first. */
 export interface PlayGoRequest {
@@ -177,7 +177,7 @@ export interface PlayGoResult {
 }
 
 /** Territory-estimate request (engine:estimateGo → one KataGo raw-net eval).
- *  Same position encoding as PlayGoRequest; no level — estimates always use
+ *  Same position encoding as PlayGoRequest; no level: estimates always use
  *  the strongest installed standard net. */
 export interface EstimateGoRequest {
   size: 9 | 13 | 19
@@ -186,7 +186,7 @@ export interface EstimateGoRequest {
   moves: string[]
 }
 
-/** One-shot ownership snapshot from KataGo's raw net (kata-raw-nn — no search,
+/** One-shot ownership snapshot from KataGo's raw net (kata-raw-nn; no search,
  *  a single forward pass, cheap enough to poll during live play). */
 export interface EstimateGoResult {
   /** Per-point ownership, row-major from the TOP-LEFT (Shudan orientation),
@@ -233,7 +233,7 @@ export interface RatingValue {
 // ---- Puzzles trainer: modes, rush/storm, daily, stats (Batch 3) -------------
 // Shared contract for the three trainer slices built against this scaffold:
 //   (A) Themed/Custom training  (B) Puzzle Rush/Storm  (C) Daily + stats/history.
-// Single source of truth for `window.api.puzzles` — preload mirrors it 1:1.
+// Single source of truth for `window.api.puzzles`. Preload mirrors it 1:1.
 
 /** How an attempt was made. Drives `puzzle_attempt.mode` + per-mode history.
  *  'train'/'daily' move the Glicko rating; 'rush'/'custom' do NOT (Rush keeps a
@@ -260,10 +260,10 @@ export interface PuzzleBatchRequest {
    *  Omitted / 'any' = no length filter. */
   length?: 'short' | 'medium' | 'long' | 'any'
   /** Minimum Lichess popularity (the puzzles DB `Popularity` column, roughly
-   *  -100..100 — an up/down-vote balance). Omitted = no popularity floor. */
+   *  -100..100: an up/down-vote balance). Omitted = no popularity floor. */
   minPopularity?: number
   /** When true, skip puzzles the user has already solved (any puzzle_attempt row
-   *  with solved=1). Custom drilling only — lets learners grind fresh material. */
+   *  with solved=1). Custom drilling only. Lets learners grind fresh material. */
   excludeSolved?: boolean
 }
 
@@ -402,7 +402,7 @@ export interface GameRow {
   est_elo_high: number | null
   reviewed: number
   /** Registry game kind ('chess' | 'gomoku' | 'go' | … | 'custom-<id>'). Column
-   *  added in migration v10 with DEFAULT 'chess' — every pre-v10 row is chess. */
+   *  added in migration v10 with DEFAULT 'chess'. Every pre-v10 row is chess. */
   game_kind: string
 }
 
@@ -424,7 +424,7 @@ export interface ListAllGamesResult {
 }
 
 // NOTE (v1.1.5 audit): only game_kind === 'chess' rows are reviewable/listable.
-// Chess VARIANTS (chess960/crazyhouse/…) do NOT qualify — online variant games
+// Chess VARIANTS (chess960/crazyhouse/…) do NOT qualify. Online variant games
 // archive the generic wire codec (onlineStore.genericArchive), not SAN PGN, so
 // the chess Analysis pipeline can't load them. games.repo.listGames filters on
 // 'chess' exactly; there is deliberately no wider "reviewable kinds" list.
@@ -439,7 +439,7 @@ export interface SaveGameInput {
   opponentLabel?: string
   opponentElo?: number
   source?: string
-  /** Registry game kind; omitted = 'chess' (the column default — chess save
+  /** Registry game kind; omitted = 'chess' (the column default; chess save
    *  sites predate the games platform and rely on it). */
   gameKind?: string
 }
@@ -522,8 +522,8 @@ export interface ReviewMoveEval {
   critical: boolean
   /**
    * Factual review comment, computed in main at review time (REVIEW-SPEC.md
-   * comment templates). Derived ONLY from review data (SANs, PV, eval numbers)
-   * — never motif heuristics. Optional: absent on rows cached before this field.
+   * comment templates). Derived ONLY from review data (SANs, PV, eval numbers),
+   * never motif heuristics. Optional: absent on rows cached before this field.
    */
   comment?: string
 }
@@ -581,7 +581,7 @@ export interface FamousGameDetail {
   moves: FamousMove[]
 }
 
-// ---- Chess School (Viktor) — chapters, concepts, coached steps --------------
+// ---- Chess School (Viktor): chapters, concepts, coached steps --------------
 // A board-centric, taught curriculum. Each chapter teaches named concepts via
 // coached steps (with on-board annotations), guided practice, and ends in a
 // "boss": beat a rating-capped engine using what you learned. Viktor (the coach)
@@ -651,7 +651,7 @@ export interface SchoolSegment {
 // chapters set `lessons` + `test`; the player renders lessons when present.
 
 /** One hand-authored puzzle board: an opening lead-in move (the opponent's, played
- *  automatically) followed by the move(s) the learner must find — same convention as
+ *  automatically) followed by the move(s) the learner must find, same convention as
  *  a Lichess puzzle's `moves` (moves[0] is the lead-in, moves[1..] the solution). */
 export interface AuthoredBoard {
   /** stable id (for de-dup + attempt logging). */
@@ -665,7 +665,7 @@ export interface AuthoredBoard {
 /** A set of puzzles for a warm-up / cool-down. Normally pulled from the bundled DB by
  *  theme + rating window; when `boards` is present those hand-authored positions are
  *  used instead (the DB floor is mate-dominated, so the foundation chapters author their
- *  own clean single-capture boards — see docs/school-curriculum.md ch1 fallback). */
+ *  own clean single-capture boards. See docs/school-curriculum.md ch1 fallback). */
 export interface PuzzleQuery {
   /** Lichess theme keys (OR-set). */
   themes: string[]
@@ -729,7 +729,7 @@ export interface TestPlayQuestion {
   kind: 'play'
   prompt: string
   fen: string
-  /** Single-ply solution: the move(s) the learner must play (UCI). Back-compat —
+  /** Single-ply solution: the move(s) the learner must play (UCI). Back-compat:
    *  when `line` is absent this is the whole answer (accept any one of these). */
   solutionUci: string[]
   /** Multi-ply "play the opening out": an ordered script of plies the learner must
@@ -769,7 +769,7 @@ export interface SchoolChapter {
   /** The chapter test. */
   test?: ChapterTest
   estMinutes: number
-  /** Internal Elo floor (band low end) — gates unlock; NEVER shown to the user. */
+  /** Internal Elo floor (band low end): gates unlock; NEVER shown to the user. */
   eloFloor?: number
 }
 
@@ -785,7 +785,7 @@ export interface SchoolChapterMeta {
   /** Number of lessons (new model), or 0 for legacy. */
   lessonCount?: number
   /** True when the chapter is locked behind placement or a higher internal Elo
-   *  floor. The Elo itself is NEVER sent to the renderer — only this boolean and
+   *  floor. The Elo itself is NEVER sent to the renderer. Only this boolean and
    *  the name-based reason. */
   locked?: boolean
   /** Why it's locked, as a name-based hint (never an Elo number). */
@@ -816,7 +816,7 @@ export interface SchoolMastery {
 // ---- Chapter test authority + retake (Feature 1) ----------------------------
 
 /** Max chapter-test attempts before a fail forces a full-chapter retake. The
- *  SERVER is authoritative on attempts (see school:recordTest) — this const is the
+ *  SERVER is authoritative on attempts (see school:recordTest). This const is the
  *  shared source of truth the renderer reads for its copy ("attempts left"). */
 export const MAX_ATTEMPTS = 2
 
@@ -976,9 +976,9 @@ export interface Persona {
   photo: string | null
   /** e.g. "Paul Morphy, via Wikimedia Commons", or null when no photo. */
   photoAttribution: string | null
-  /** Ids into the famous-games library ("<personaId>-g1", ...) — see famous.get. */
+  /** Ids into the famous-games library ("<personaId>-g1", ...). See famous.get. */
   famousGameIds: string[]
-  /** Clock personality — how the bot spends its time: fast 'blitzer', even 'steady', deep-think 'tanker'. */
+  /** Clock personality. How the bot spends its time: fast 'blitzer', even 'steady', deep-think 'tanker'. */
   timeStyle?: 'blitzer' | 'steady' | 'tanker'
 }
 
@@ -997,9 +997,9 @@ export interface DatasetStatus {
   /** KataGo Go bots fully present: engine + both standard nets. */
   katago: boolean
   /** The OPTIONAL 94.5 MB Human-SL go net (human-like go levels) is installed.
-   *  Never gates `complete` — it is an opt-in extra. */
+   *  Never gates `complete`. It is an opt-in extra. */
   katagoHuman: boolean
-  /** Every non-optional group present — every feature is fully available. */
+  /** Every non-optional group present. Every feature is fully available. */
   complete: boolean
 }
 
@@ -1033,7 +1033,7 @@ export interface DatasetImportResult {
 
 // ---- Updates (src/main/updates) ----------------------------------------------
 // Unsigned-build reality: Windows gets true in-place auto-update (electron-
-// updater over NSIS — works unsigned); macOS can NEVER auto-install (Squirrel
+// updater over NSIS: works unsigned); macOS can NEVER auto-install (Squirrel
 // enforces code signatures), so it gets check + notify + a one-click browser
 // download of the right dmg to install over the old app.
 
@@ -1057,7 +1057,7 @@ export interface UpdateStatus {
   latestVersion?: string
   /** Direct download for THIS machine's installer (manual mode). */
   downloadUrl?: string
-  /** GitHub release page — universal fallback link. */
+  /** GitHub release page. Universal fallback link. */
   releaseUrl?: string
   /** 0..1 while state === 'downloading' (auto mode only). */
   progress?: number
@@ -1075,10 +1075,10 @@ export interface UpdateActionResult {
   error?: string
 }
 
-// ---- Internet multiplayer (mp) — protocol v3 ---------------------------------
+// ---- Internet multiplayer (mp): protocol v3 ---------------------------------
 // Two copies of nodechess, anywhere on the internet, play each other over WebRTC data
 // channels established in the RENDERER (Chromium's native RTCPeerConnection).
-// Signaling runs through public relays (trystero/Nostr) — no user-run server and no
+// Signaling runs through public relays (trystero/Nostr), no user-run server and no
 // port forwarding. The join code is a random ROOM KEY (not an address): the host
 // generates one, the guest enters it, and both land in the same room. All game
 // flows through the renderer's MpNetSession; the UI consumes everything as MpEvent.
@@ -1097,7 +1097,7 @@ export interface MpTimeControl {
   initialMs: number
   /** Increment added after each of that side's moves, ms (0 = none). */
   incrementMs: number
-  /** Wire v5 — Japanese byo-yomi (go): after main time runs out, each side gets
+  /** Wire v5, Japanese byo-yomi (go): after main time runs out, each side gets
    *  `periods` overtime periods of `periodMs` each. A move made within the
    *  current period RESETS it to full; letting a period lapse while thinking
    *  CONSUMES it; the last period expiring is a flag. ABSENT = plain Fischer,
@@ -1129,7 +1129,7 @@ export interface MpGameConfig {
    *  for every v4 build; v3 peers are refused by the hello version gate anyway).
    *  `options` is a game-defined, JSON-serializable options blob (e.g. board
    *  size, variant config) that must survive a JSON round-trip untouched.
-   *  `firstMover` is which COLOR moves first (registry spec players[0]) — the
+   *  `firstMover` is which COLOR moves first (registry spec players[0]). The
    *  session is game-agnostic and must be told that go/gomoku/othello/checkers
    *  open with BLACK. Absent = white, so chess configs stay byte-identical.
    *  Color names never change on the wire; only the move ORDER does. */
@@ -1175,7 +1175,7 @@ export type MpEvent =
    *  byo-yomi, its periodsLeft at 0); the store adjudicates the lichess
    *  insufficient-material rule to pick win/draw. */
   | { type: 'flag'; gameId: number; by: MpColor; clockMs: MpClocks; byo?: MpByo }
-  /** The game was aborted before it really began — no result is recorded or
+  /** The game was aborted before it really began. No result is recorded or
    *  saved. 'no-first-move' = an abort watchdog fired; 'manual' = a player aborted. */
   | { type: 'abort'; gameId: number; reason: 'no-first-move' | 'manual' }
   /** A board-terminal ending (checkmate/stalemate/insufficient/…) confirmed on
@@ -1185,13 +1185,13 @@ export type MpEvent =
   | { type: 'drawOffer' }
   /** The remote peer declined our draw offer. */
   | { type: 'drawDecline' }
-  /** The remote peer accepted our draw offer — game over, draw. */
+  /** The remote peer accepted our draw offer. Game over, draw. */
   | { type: 'drawAccept' }
   /** A player resigned (either side; check `by` against your color). */
   | { type: 'resign'; by: MpColor }
   /** The remote peer offers a rematch. */
   | { type: 'rematchOffer' }
-  /** The remote peer declined the rematch — both sides' offers are cleared. */
+  /** The remote peer declined the rematch: both sides' offers are cleared. */
   | { type: 'rematchDecline' }
   /** Rematch accepted: a new game starts with (usually swapped) colors. */
   | { type: 'rematchStart'; gameId: number; yourColor: MpColor }
@@ -1201,7 +1201,7 @@ export type MpEvent =
   // singleton) and both sides' input freezes during peer-away, so the session
   // only re-authorities moves/clocks internally and surfaces a plain 'clock'
   // event. A store-level board rebuild would be needed only if a mid-game
-  // renderer reload were supported — it isn't (reload = leave the game).
+  // renderer reload were supported. It isn't (reload = leave the game).
   /** The peer went silent mid-game; the clock is paused. `graceMs` is how long
    *  they have to reconnect before the game is claimable/abortable. */
   | { type: 'peer-away'; graceMs: number }
@@ -1214,10 +1214,10 @@ export type MpEvent =
   | { type: 'error'; message: string }
 
 // ---------------------------------------------------------------------------
-// Variant Lab — user-authored custom variants (custom_variant table, v9)
+// Variant Lab: user-authored custom variants (custom_variant table, v9)
 
-/** One saved custom variant. `iniText` is Fairy-Stockfish variants.ini text —
- *  the single source of truth for the rules; boardFiles/boardRanks are
+/** One saved custom variant. `iniText` is Fairy-Stockfish variants.ini text.
+ *  The single source of truth for the rules; boardFiles/boardRanks are
  *  denormalized for gallery cards. Dynamic game kind = `custom-<id>`. */
 export interface CustomVariantRow {
   id: string
@@ -1239,7 +1239,7 @@ export interface SaveCustomVariantReq {
   boardRanks: number
 }
 
-/** dialog:saveFile — save arbitrary bytes via the OS save dialog (main owns
+/** dialog:saveFile. Save arbitrary bytes via the OS save dialog (main owns
  *  the dialog + the write). First consumer: Replay Theater's .webm export. */
 export interface SaveFileRequest {
   /** Pre-filled file name (main sanitizes path separators away). */
@@ -1411,7 +1411,7 @@ export interface Api {
     recordLesson(req: { chapterId: string; lessonId: string }): Promise<OkResult>
     /** Record a chapter-test attempt. The SERVER recomputes pass/fail from the
      *  chapter's threshold (no client `passed`), clamps attempts, and on a 2nd
-     *  fail resets the chapter for retake — returning the authoritative verdict. */
+     *  fail resets the chapter for retake. Returning the authoritative verdict. */
     recordTest(req: {
       chapterId: string
       scorePct: number
@@ -1435,7 +1435,7 @@ export interface Api {
     recordDaily(req: { ymd: string }): Promise<{ streak: DailyStreak }>
     /** Local-day study streak (current/best/recent + whether today is done). */
     streak(): Promise<{ streak: DailyStreak }>
-    /** Current placement/unlock state (estimatedElo is internal — used only to
+    /** Current placement/unlock state (estimatedElo is internal: used only to
      *  drive the `locked` flags on chapter metas, never displayed). */
     placementState(): Promise<PlacementState>
     /** Record one finished placement game (accuracy vs a known engine level) and
@@ -1482,12 +1482,12 @@ export interface Api {
     status(): Promise<UpdateStatus>
     /** Manual "Check for updates". Resolves with the post-check status. */
     check(): Promise<UpdateStatus>
-    /** The "Update now" action — installs (win, ready), keeps downloading
+    /** The "Update now" action: installs (win, ready), keeps downloading
      *  (win), or opens the right browser download (mac/manual). */
     download(): Promise<UpdateActionResult>
     onStatus(cb: (s: UpdateStatus) => void): Unsubscribe
   }
-  // NOTE: multiplayer no longer crosses IPC — the renderer owns the WebRTC session
+  // NOTE: multiplayer no longer crosses IPC. The renderer owns the WebRTC session
   // directly (import `mp` from features/play/online/mpClient). See MpEvent above.
 }
 

@@ -1,4 +1,4 @@
-// A3 storage — shared type contract (spec §3 entanglement, §5 storage layers /
+// A3 storage: shared type contract (spec §3 entanglement, §5 storage layers /
 // authenticated pointers / viewing flow, ACCOUNTS-PARAMS §Storage). Types +
 // validity rules only; implementations live in sibling modules.
 // Platform-neutral: no `node:` imports, no DOM globals.
@@ -18,12 +18,12 @@ import type { NodeId } from '../witness/types'
 /**
  * One erasure-coded shard of a blob. Coding is RS over GF(2^8) (poly 0x11d,
  * generator 0x02) with the systematic Cauchy matrix [I_k; C],
- * C[r][j] = 1/((k+r) XOR j) — disjoint x/y index sets, so every k-row subset
+ * C[r][j] = 1/((k+r) XOR j). Disjoint x/y index sets, so every k-row subset
  * is invertible (true MDS: ANY kRec of nShards reconstruct).
  *
  * Integrity is end-to-end: `dataHash` = sha256 of the ORIGINAL blob rides in
- * every shard's framing and reconstruction re-hashes the output against it —
- * a corrupted or substituted shard set can never yield an accepted blob.
+ * every shard's framing and reconstruction re-hashes the output against it.
+ * A corrupted or substituted shard set can never yield an accepted blob.
  */
 export interface Shard extends CanonicalObject {
   v: 1
@@ -31,7 +31,7 @@ export interface Shard extends CanonicalObject {
   idx: number
   k: number
   n: number
-  /** Original blob length (bytes) — strips the zero padding on reconstruct. */
+  /** Original blob length (bytes). Strips the zero padding on reconstruct. */
   dataLen: number
   /** b64u(sha256(original blob)). */
   dataHash: B64u
@@ -40,7 +40,7 @@ export interface Shard extends CanonicalObject {
 }
 
 // ---------------------------------------------------------------------------
-// Snapshot header — binds a shard job to a countersigned chain state
+// Snapshot header: binds a shard job to a countersigned chain state
 // ---------------------------------------------------------------------------
 
 /**
@@ -58,7 +58,7 @@ export interface Shard extends CanonicalObject {
  * `certs`) over the commitment tuple (shards.ts snapshotCommitBytes), which
  * includes `bodyHashes`. Without it a keyless attacker could pair a replayed
  * real head with a foreign blobHash and pin a shard slot the real snapshot could
- * never displace — the reconstruct gate catches a forged blob but only AFTER a
+ * never displace: the reconstruct gate catches a forged blob but only AFTER a
  * poison row has locked the key. A verifier re-checks it, so blobHash and the
  * per-row body bytes are authenticated with no external context; only the owner
  * (or a certified device) can cut a snapshot.
@@ -82,10 +82,10 @@ export interface SnapshotHeader {
   n: number
   /** PARAMS_A3_DIGEST the job was cut under. */
   params: B64u
-  /** b64u(sha256(body)) of every shard row, idx order (n entries) — the owner's
+  /** b64u(sha256(body)) of every shard row, idx order (n entries). The owner's
    * per-row body commitment, authenticated by commitSig. */
   bodyHashes: B64u[]
-  /** ed25519 by head.body.key over snapshotCommitBytes(header) — the owner's
+  /** ed25519 by head.body.key over snapshotCommitBytes(header): the owner's
    * commitment that blobHash/blobLen + bodyHashes are the snapshot of the chain
    * at headId. */
   commitSig: B64u
@@ -100,7 +100,7 @@ export interface ShardEnvelope {
 }
 
 // ---------------------------------------------------------------------------
-// Game segments (§3) — the entanglement event payload (EventType 'segment')
+// Game segments (§3): the entanglement event payload (EventType 'segment')
 // ---------------------------------------------------------------------------
 
 /** Compact profile snapshot embedded in every segment (~the §5 reconstruction
@@ -115,13 +115,13 @@ export interface ProfileSnapshot extends CanonicalObject {
 }
 
 /** A checkpoint embedded for the A4 fold: the opponent's newest ckpt EVENT
- * with its M-of-N cosignatures riding in `wit` — verifiable with no recursion
+ * with its M-of-N cosignatures riding in `wit`. Verifiable with no recursion
  * into the opponent's chain (§6 pinned fold inputs). Absent when the opponent
  * has no checkpoint yet (young account). */
 export type EmbeddedCheckpoint = SignedEvent
 
 /**
- * Payload of a witnessed-lane 'segment' event — one rated game, written into
+ * Payload of a witnessed-lane 'segment' event: one rated game, written into
  * BOTH players' chains (each player writes its own segment event; the pairwise
  * countersigning lives in the transcript's interleaved per-move signatures,
  * wire v6).
@@ -131,7 +131,7 @@ export type EmbeddedCheckpoint = SignedEvent
  * counterparty as holder (see PointerRecord).
  */
 export interface SegmentPayload {
-  /** Global game key (wire v6 gameKey) — canonicalHash of the game-start
+  /** Global game key (wire v6 gameKey): canonicalHash of the game-start
    * record; the value every per-move signature covers. */
   game: B64u
   /** Counterparty root. */
@@ -151,11 +151,11 @@ export interface SegmentPayload {
     b: { head: B64u; height: number }
   }
   /** Witness stream signature over {v:1, t:'wend', g, result, plies,
-   * transcript} — the §3 "witness signs the interleaved stream" terminal
+   * transcript}: the §3 "witness signs the interleaved stream" terminal
    * signature. `wkey` is the witness signing key. */
   wstream: { wkey: B64u; sig: B64u }
   /** Opponent's newest M-of-N-cosigned checkpoint at game time (§6 fold
-   * input) — absent for young opponents. */
+   * input). Absent for young opponents. */
   oppCkpt?: EmbeddedCheckpoint
   /** Opponent's profile snapshot at game time (§5 reconstruction snapshot). */
   oppProfile: ProfileSnapshot
@@ -164,7 +164,7 @@ export interface SegmentPayload {
   kind?: string
   /** A4 ladder binding (§6), dimension 2: the clock. TimeCategory is derived
    * in EXACT INTEGER math (ratings/, estMs = baseMs + 40·incMs vs fixed
-   * thresholds — same semantics as the renderer's timeControlCategory without
+   * thresholds: same semantics as the renderer's timeControlCategory without
    * its float division). baseMs === 0 ⇒ Unlimited ⇒ unrated. Absent ⇒ the
    * rating fold skips the segment. */
   tc?: { baseMs: number; incMs: number }
@@ -207,20 +207,20 @@ export interface WitnessedResultRecord {
 }
 
 // ---------------------------------------------------------------------------
-// Authenticated pointers (§5) — closes index poisoning
+// Authenticated pointers (§5): closes index poisoning
 // ---------------------------------------------------------------------------
 
 /**
  * What a pointer may point at. In ALL 'segment'/'chain' cases the embedded
- * proof `event` is the SUBJECT's OWN countersigned witnessed event — never the
- * holder's — because only the subject's signature is unforgeable by the holder
+ * proof `event` is the SUBJECT's OWN countersigned witnessed event. Never the
+ * holder's: because only the subject's signature is unforgeable by the holder
  * (a holder self-signing "I played X" is freely mintable = poisoning; the
  * subject's signed event naming the holder is not). This is the single
  * canonical (root, opp, hash) direction; ACCOUNTS-SPEC.md §5 ("embeds the
- * countersigned segment header it references — X's head signature + witness
+ * countersigned segment header it references: X's head signature + witness
  * countersignature") is authoritative and reads the same way.
  *
- *  - 'segment': the SUBJECT's chain segment event of a game with the holder —
+ *  - 'segment': the SUBJECT's chain segment event of a game with the holder,
  *    event.body.root === subject, event.payload.opp === holder root. hash =
  *    the event id of THAT (subject's) segment event. The subject signed it and
  *    a witness attested it, so only a real opponent the subject actually named
@@ -242,14 +242,14 @@ export type PointerKind = 'segment' | 'chain' | 'shard'
  *    (event.body.root === subject). For 'segment' its payload names the holder
  *    as counterparty (segment.opp === holder root); 'chain' is the subject's
  *    head/checkpoint. certs prove event.body.key belongs to the subject. A
- *    viewer verifies sig + attestation + the naming rule — a stranger replaying
+ *    viewer verifies sig + attestation + the naming rule. A stranger replaying
  *    the subject's public head event as a 'segment' fails the opp===holder
  *    rule, and a holder cannot self-sign a subject-rooted event, so neither can
  *    mint an enumerable pointer.
  *  - 'shard': `header` is the SnapshotHeader (itself embedding the
  *    countersigned head). The holder additionally claims duty by key
  *    distance: rank = xorDistance(holderNodeId, shardKey(subject, idx)) is
- *    OBJECTIVE — viewers enumerate at most dutyK carriers per idx, closest
+ *    OBJECTIVE: viewers enumerate at most dutyK carriers per idx, closest
  *    first. Poisoning a slot requires grinding sha256(rootPub) into the top
  *    dutyK AND holding bytes that reconstruct to the countersigned head.
  */
@@ -273,7 +273,7 @@ export interface PointerBody {
   hash: B64u
   /** Shard row for kind 'shard'. */
   idx?: number
-  /** Holder-claimed freshness (unix ms) — used for ranking only, never
+  /** Holder-claimed freshness (unix ms): used for ranking only, never
    * authority; capped by verifiers at the embedded proof's witnessed time
    * plus a bounded skew. */
   ts: number
@@ -304,7 +304,7 @@ export interface ContactSheet {
 // ---------------------------------------------------------------------------
 
 /** What a holder serves the viewer on the profile fast path: newest head +
- * newest M-of-N checkpoint + newest profile events — exactly the pinned
+ * newest M-of-N checkpoint + newest profile events: exactly the pinned
  * inputs A4's folds need. Every element is independently verifiable; the
  * summary confers nothing. */
 export interface HolderSummary {
@@ -321,7 +321,7 @@ export interface HolderSummary {
  * so the §5 acceptance proof can assert the guaranteed floor vs expected. */
 export interface ReconstructedProfile {
   root: B64u
-  /** FLOOR path only — the C-12 honest signal (spec §12): present (true) when
+  /** FLOOR path only. The C-12 honest signal (spec §12): present (true) when
    * the view honored ≥1 DEVICE-signed revocation with no chain linkage to vet
    * it. NO-FORGE (§0) requires honoring such revokes (device-to-device
    * revocation is a model feature), but their evidence is mintable by any
@@ -340,7 +340,7 @@ export interface ReconstructedProfile {
    * the segment-union floor was reachable. */
   chain?: import('../types').Chain
   /** Verified game segments recovered (union across sources, deduped by
-   * event id) — the guaranteed floor. */
+   * event id). The guaranteed floor. */
   segments: SignedEvent[]
   sources: { pointers: number; holders: number; shardsUsed: number; viaChain: boolean }
 }

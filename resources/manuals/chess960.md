@@ -1,13 +1,13 @@
 # Chess960 (Fischer Random)
 
 Chess960 is standard chess with one twist: the back-rank pieces start in a
-random arrangement — one of exactly **960** possible positions. Bobby Fischer
+random arrangement: one of exactly **960** possible positions. Bobby Fischer
 designed it to kill memorized opening theory and put both players on their own
 from move one.
 
 ## The rules
 
-Everything you know from standard chess still applies — pieces move the same,
+Everything you know from standard chess still applies. Pieces move the same,
 check, checkmate, stalemate, promotion and en passant are unchanged. Only the
 setup differs:
 
@@ -37,7 +37,7 @@ generalized:
   king may not castle out of, through, or into check.
 
 > In this app you castle by dragging the king **onto its own rook**. That
-> gesture is unambiguous even when the king only moves one square — or none
+> gesture is unambiguous even when the king only moves one square, or none
 > at all.
 
 Sometimes castling barely moves anything (the king may already stand on its
@@ -52,7 +52,7 @@ target square). It still counts as castling and still spends the right.
    memory.
 2. **Find the weak pawn before move five.** In many start positions one pawn
    (often b2/g2 or their mirror) is defended only by the king or not at all.
-   Spot yours — and your opponent's — immediately: early games are decided by
+   Spot yours (and your opponent's) immediately: early games are decided by
    one-move threats against these squares.
 3. **Castle early anyway.** The king starts between the rooks, often in the
    dead center of the rank. An uncastled king in Chess960 is in more danger

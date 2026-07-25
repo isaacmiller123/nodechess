@@ -1,10 +1,10 @@
-// ChessFamilyBoard — ONE chessgroundx board for all 14 chess-family kinds
+// ChessFamilyBoard: ONE chessgroundx board for all 14 chess-family kinds
 // (docs/GAMES-PLATFORM-SPEC.md §Approved stack: chessgroundx, same API family
-// as the app's chessground — the wrapper pattern mirrors board/Board.tsx).
+// as the app's chessground: the wrapper pattern mirrors board/Board.tsx).
 //
 // Parameterized entirely by GameBoardProps + the registry entry:
 //   - dimensions from spec.board (8x8 cells, 9x9 shogi cells, 9x10
-//     xiangqi/janggi INTERSECTIONS — rendered with the classic offset-grid
+//     xiangqi/janggi INTERSECTIONS. Rendered with the classic offset-grid
 //     trick: pieces live in cells, the line grid is drawn through cell
 //     centers by an SVG overlay incl. palace diagonals + river),
 //   - dests grouped from spec.legalMoves(state) (drop moves 'P@e4' become
@@ -30,7 +30,7 @@
 
 import { createElement, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, JSX } from 'react'
-// NOTE: deep import — chessgroundx ships no package.json `main`/`types`, so
+// NOTE: deep import. Chessgroundx ships no package.json `main`/`types`, so
 // the bare specifier resolves for Vite (module field) but not for tsc.
 import { Chessground } from 'chessgroundx/chessground'
 import type { Api } from 'chessgroundx/api'
@@ -74,13 +74,13 @@ const PROMO_LABEL: Record<string, string> = {
 //
 // Kernel/UCI squares use numeric ranks ('a10'); chessgroundx keys use
 // single-character ranks (rank 10 = ':', so a10 is key 'a:'). ALL squares
-// handed to / received from chessground go through boards/cgKeys.ts — a raw
+// handed to / received from chessground go through boards/cgKeys.ts, a raw
 // `as cg.Key` cast on a UCI square breaks rank 10 (immobile xiangqi/janggi
 // back-rank pieces). parseMove/destsOf/lastMoveOf are pure and exported for
 // scripts/test-cg-keys.mjs.
 
 interface ParsedMove {
-  /** chessgroundx orig — board key ('a:') or drop orig ('P@') */
+  /** chessgroundx orig. Board key ('a:') or drop orig ('P@') */
   orig: cg.Orig
   /** chessgroundx dest key ('a:') */
   dest: cg.Key
@@ -89,7 +89,7 @@ interface ParsedMove {
 }
 
 // files a–p / ranks 1–16 = chessgroundx limits (fairy-sf largeboard tops out
-// at l10 — see games/customVariants.ts — comfortably inside).
+// at l10 (see games/customVariants.ts) comfortably inside).
 const BOARD_MOVE_RE = /^([a-p](?:1[0-6]|[1-9]))([a-p](?:1[0-6]|[1-9]))([a-z+]?)$/
 const DROP_MOVE_RE = /^([A-Z])@([a-p](?:1[0-6]|[1-9]))$/
 
@@ -107,7 +107,7 @@ export function parseMove(move: string): ParsedMove | null {
   return { orig, dest, suffix: m[3] }
 }
 
-/** Group legal moves by origin. Same-square moves (janggi pass) are skipped —
+/** Group legal moves by origin. Same-square moves (janggi pass) are skipped:
  *  they cannot be a board gesture; owners surface them as a Pass control. */
 export function destsOf(moves: readonly string[]): cg.Dests {
   const dests = new Map<cg.Orig, cg.Key[]>()
@@ -130,7 +130,7 @@ export function lastMoveOf(moves: readonly string[]): cg.Orig[] | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// State narrowing — every chess-family spec state carries fen + moves.
+// State narrowing: every chess-family spec state carries fen + moves.
 
 interface CfState {
   fen: string
@@ -149,7 +149,7 @@ function turnOf(fen: string, moves: readonly string[]): cg.Color {
   return moves.length % 2 === 0 ? 'white' : 'black'
 }
 
-/** Is the side to move in check? (highlight only — never rules-authoritative) */
+/** Is the side to move in check? (highlight only; never rules-authoritative) */
 function checkOf(kind: GameKind, state: unknown): boolean {
   try {
     if (FFISH_KINDS.has(kind)) return isFfishReady() ? ffishStateCheck(state as never) : false
@@ -386,7 +386,7 @@ export default function ChessFamilyBoard({
     try {
       return spec.legalMoves(state)
     } catch {
-      return [] // ffish not preloaded yet — owner shows the shimmer first
+      return [] // ffish not preloaded yet: owner shows the shimmer first
     }
   }, [spec, state])
 
@@ -406,7 +406,7 @@ export default function ChessFamilyBoard({
     lastMove,
     coordinates: cells8,
     dimensions: { width: files, height: ranks },
-    // Board.tsx lesson: never CREATE the board viewOnly — gate via movable/
+    // Board.tsx lesson: never CREATE the board viewOnly. Gate via movable/
     // draggable/selectable so listeners stay bound.
     viewOnly: false,
     highlight: { lastMove: true, check: true },
@@ -435,7 +435,7 @@ export default function ChessFamilyBoard({
         afterNewPiece: (piece, key) => {
           const live = liveRef.current
           const letter = letterOf(piece.role, true)
-          // key is a cg key ('a:' on rank 10) — kernel moves want 'a10'
+          // key is a cg key ('a:' on rank 10): kernel moves want 'a10'
           live.onMove(`${letter}@${keyToUciSquare(key)}`)
           setNonce((n) => n + 1)
         }
@@ -450,7 +450,7 @@ export default function ChessFamilyBoard({
   const configRef = useRef(config)
   configRef.current = config
 
-  // Create (and re-create on kind/orientation change — pockets bind their color
+  // Create (and re-create on kind/orientation change; pockets bind their color
   // sides at creation time; see chessgroundx renderPocketsInitial).
   useEffect(() => {
     if (!elRef.current) return

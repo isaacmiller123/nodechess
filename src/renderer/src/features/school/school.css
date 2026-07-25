@@ -1,4 +1,4 @@
-/* School accent — matches the rest of the app (blue). Completion/correct
+/* School accent: matches the rest of the app (blue). Completion/correct
    states keep the success green via --school-done. */
 :root {
   --school-accent: var(--accent);
@@ -13,12 +13,12 @@
   --school-accent-soft: var(--accent-soft);
 }
 
-/* Chess School — Duolingo-journey index + chess.com-Lessons player, on the app's
+/* Chess School: Duolingo-journey index + chess.com-Lessons player, on the app's
    dark tokens. The index is a guided PATH: named tiers, a connected node line,
    the current chapter as a hero card with a progress ring, completed chapters
-   compact with checkmarks, locked chapters dimmed (name-based hints only — the
+   compact with checkmarks, locked chapters dimmed (name-based hints only; the
    internal Elo is NEVER rendered). School keeps its green accent (chess.com
-   feel) while the rest of the app stays blue. Tokens only — no hard-coded
+   feel) while the rest of the app stays blue. Tokens only: no hard-coded
    color/space/radius outside tokens.css.
 
    ┌──────────────────────────────────────────────────────────────────────┐
@@ -38,7 +38,7 @@
 
 /* ============================== Header band ============================== */
 /* Identity row (Viktor avatar + lede) with compact stat pills, then the two
-   home surfaces (Today / Recommended) side by side — see school-home.css. */
+   home surfaces (Today / Recommended) side by side: see school-home.css. */
 .school-hero {
   display: flex;
   flex-direction: column;
@@ -617,7 +617,7 @@
 
 /* ============================== Skeletons ============================== */
 /* Base shimmer block. Also used by TodayCard (school-home.css) and the
-   ChapterPlayer loading state — keep the class name stable. */
+   ChapterPlayer loading state: keep the class name stable. */
 .school-skel {
   border-radius: var(--radius-md);
   background: var(--surface-2);
@@ -694,7 +694,7 @@
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   PLAYER CHROME — SHARED CONTRACT with segments.tsx / LessonPlayer.tsx /
+   PLAYER CHROME: SHARED CONTRACT with segments.tsx / LessonPlayer.tsx /
    ChapterTest.tsx / PlacementFlow.tsx / ViktorPanel.tsx. Class names below
    must not change.
    ══════════════════════════════════════════════════════════════════════════ */
@@ -1510,7 +1510,7 @@
 .test-result-card.is-fail {
   border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
 }
-/* Neutral states: recording-in-flight and record-failed — no verdict tint. */
+/* Neutral states: recording-in-flight and record-failed. No verdict tint. */
 .test-result-card.is-pending {
   border-color: var(--border);
 }

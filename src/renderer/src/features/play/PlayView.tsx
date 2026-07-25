@@ -72,7 +72,7 @@ type Phase = 'setup' | 'game'
 // move strength itself is resolved in main (personas:move caps near peakElo).
 // 'maia' is the "Human" style: the maia-<level> lc0 net at nodes=1 (engine:play
 // level.maia); elo = the net's nominal band, which measuredElo passes through.
-// 'human' is Over-the-board: two people on one machine, no engine loop — both
+// 'human' is Over-the-board: two people on one machine, no engine loop. Both
 // player names + the auto-flip preference are frozen at start.
 type Opponent =
   | { kind: 'engine'; elo: number }
@@ -122,7 +122,7 @@ function opponentElo(o: Opponent): number {
 export interface PlayViewProps {
   /** Open a finished game in Analysis by its saved-game row id. */
   onAnalyzeGame?: (gameId: number) => void
-  /** Open a famous game in Analysis by famous-game id (e.g. "morphy-g1") —
+  /** Open a famous game in Analysis by famous-game id (e.g. "morphy-g1"):
    *  consumed by the persona detail pane's "Famous games" list (ids come from
    *  Persona.famousGameIds). */
   onOpenFamousGame?: (famousId: string) => void
@@ -137,7 +137,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // Setup form.
   const [phase, setPhase] = useState<Phase>('setup')
   // Open on the Online tab when a live online session already exists (the user
-  // clicked the floating return chip / rail dot from another view — the store
+  // clicked the floating return chip / rail dot from another view. The store
   // survives across views, so land them straight on the game). Otherwise Local.
   const [tab, setTab] = useState<PlayTab>(() => {
     const p = onlineStore.getState().phase
@@ -161,7 +161,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     autoFlip: true
   })
   // Online (internet) session stage, derived DIRECTLY from the app-lifetime
-  // online store (MP-V3-SPEC §4/§5 — the session no longer lives in OnlineTab's
+  // online store (MP-V3-SPEC §4/§5: the session no longer lives in OnlineTab's
   // component state, so PlayView reads it straight from the store). SetupCard
   // uses this only to widen for a live game; it is no longer a data-loss guard
   // (the store survives any unmount), so the onStage callback is a courtesy.
@@ -173,7 +173,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     // this no-op keeps the existing prop wiring without a second state copy.
   }, [])
 
-  // Persona gallery. selectedPersonaId doubles as "which detail pane is open" —
+  // Persona gallery. selectedPersonaId doubles as "which detail pane is open":
   // null shows the gallery. famousGames holds famous-game metadata by id so the
   // detail pane can label each entry of persona.famousGameIds.
   const [personas, setPersonas] = useState<Persona[]>([])
@@ -188,7 +188,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // install CTA and startGame refuses to dead-end into a rejected spawn.
   const { ready: engineReady, recheck: recheckEngine } = useEngineReady(phase === 'setup')
   // Belt-and-braces: set when engine:newGame rejects at start despite the probe
-  // (e.g. a corrupt/deleted binary) — same CTA, a re-download fixes it.
+  // (e.g. a corrupt/deleted binary). Same CTA, a re-download fixes it.
   const [engineStartError, setEngineStartError] = useState<string | null>(null)
   const engineMissing = engineReady === false || engineStartError !== null
 
@@ -201,7 +201,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // In-game runtime.
   const tree = useGameTree()
   const [thinking, setThinking] = useState(false)
-  // Long allocation (>= DEEP_THINK_MS) — GameView shows the calm dots variant.
+  // Long allocation (>= DEEP_THINK_MS): GameView shows the calm dots variant.
   const [deepThink, setDeepThink] = useState(false)
   const [pendingPromo, setPendingPromo] = useState<{ orig: string; dest: string } | null>(null)
   const [nonce, setNonce] = useState(0)
@@ -213,13 +213,13 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   const savedRef = useRef(false)
 
   // What the bot's last probed think expected the user to reply (botTime's
-  // surprise signal). Cleared on game start and on takeback — an expectation
+  // surprise signal). Cleared on game start and on takeback. An expectation
   // about a line that no longer exists must never inflate a think.
   const lastProbeRef = useRef<ProbeMemo | null>(null)
 
   // The in-progress think's commitment. Browsing history mid-think cancels the
   // reply effect (existing behavior); on return to the tip the effect re-fires
-  // for the SAME fen and must RESUME the original deadline — the bot's clock
+  // for the SAME fen and must RESUME the original deadline. The bot's clock
   // ticked through the scrub, and wiggling the move list must neither buy the
   // bot extra thinking nor let the user drain it into a flag by re-triggering
   // fresh allocations. Cleared when the reply lands, on takeback, on new game.
@@ -239,8 +239,8 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // (`personas.length` stays 0 while `personasLoading` flips true->false, which
   // used to re-trigger the effect in an infinite IPC loop). One attempt per
   // mount; on failure PersonaGallery shows its empty state.
-  // Late setState after unmount is a safe no-op in React 19, so no cancel flag —
-  // a result arriving after a mode toggle is simply kept for the next visit.
+  // Late setState after unmount is a safe no-op in React 19, so no cancel flag.
+  // A result arriving after a mode toggle is simply kept for the next visit.
   // ---- Maia ("Human" style) availability: lc0 + at least one weight on disk.
   // One probe per mount; the toggle simply doesn't render until it confirms.
   useEffect(() => {
@@ -288,22 +288,22 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   const lastMove = tree.current.move ? uciToLastMove(tree.current.move.uci) : undefined
   const over = banner !== null || outcome(fen).over
   // The live game position is the mainline tip (a node with no continuation).
-  // When the user navigates to a PAST move, we're not at the tip — the board is
+  // When the user navigates to a PAST move, we're not at the tip. The board is
   // read-only and the engine must NOT move (it already replied at the tip).
   const atTip = tree.current.children.length === 0
 
-  // Side to move in the LIVE game, from the mainline tip — NOT the displayed
+  // Side to move in the LIVE game, from the mainline tip, NOT the displayed
   // node. While browsing history `turn` is whoever was to move in that past
   // position; ticking the clock off it would drain the wrong side's time. The
   // clock must always follow the tip. (`tree.root` is mutated in place, so
-  // `tree.current` — which changes identity on every move AND on takeback —
+  // `tree.current` (which changes identity on every move AND on takeback)
   // tracks tip growth/shrink.)
   const liveTip = useMemo(() => {
     let n = tree.root
     while (n.children[0]) n = n.children[0]
     return n
   // tree.current.children.length: a takeback can cut the tree at the very node
-  // `current` already sits on (browsing at the cut point) — same node identity,
+  // `current` already sits on (browsing at the cut point), same node identity,
   // fewer children. Without it the memo would keep returning the detached old
   // tip and the clock would tick the wrong side.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -368,7 +368,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       // game-over banner: a rejected IPC here used to leave the board frozen with
       // no banner and no retry (savedRef already latched). On failure the banner
       // simply omits the rating delta / "Analyze this game" action. savedRef stays
-      // latched even then — un-latching would re-arm the opponent-reply effect in
+      // latched even then: un-latching would re-arm the opponent-reply effect in
       // an already-ended game.
       let saved: { gameId: number } | undefined
       try {
@@ -398,12 +398,12 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
         saved = undefined // game not persisted; still end the game in the UI
       }
 
-      // Over-the-board games don't move the vs-bot ladder — no rating report.
+      // Over-the-board games don't move the vs-bot ladder. No rating report.
       let rep: { ratingAfter: number; delta: number } | undefined
       if (!otb) {
         try {
           rep = await window.api?.games.reportResult({
-            // The NOMINAL label — main maps it through measuredElo (sub-floor
+            // The NOMINAL label: main maps it through measuredElo (sub-floor
             // engine levels play stronger than their labels; maia nets rate at
             // their nominal training band) before rating.
             botElo: oppElo,
@@ -457,27 +457,27 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     onLowTime
   })
 
-  // Opponent reply loop — driven by fen changes. Also fires on game start when the
+  // Opponent reply loop: driven by fen changes. Also fires on game start when the
   // opponent plays first (user chose Black). Routes through personas.move in GM
   // mode and engine.play otherwise. Only mutates the tree.
   //
-  // BOT TIME MANAGER (timed games only — Unlimited keeps the original fixed
+  // BOT TIME MANAGER (timed games only, Unlimited keeps the original fixed
   // settings.playThinkMs behavior verbatim): the bot's reply latency and its
   // clock spend are the same real thing. Per move we
   //   1. classify: forced/instant (skip everything), theory (openings.lookup
   //      hit => 0.5-3s), panic (time trouble => 0.4-1.2s + strength collapse),
-  //      or normal — which runs a depth-8/MultiPV-3 probe on the ANALYSIS
+  //      or normal, which runs a depth-8/MultiPV-3 probe on the ANALYSIS
   //      channel to derive a 0.3x..4x complexity multiplier;
   //   2. allocate T via planThink (base = remaining/H + 0.8*inc, personality
   //      and complexity scaled, log-normal noise, floors/ceilings/reserve);
-  //   3. hand the engine a movetime slice of T and then wait out the remainder
-  //      — never replying early, never billing fake time. The clock keeps
+  //   3. hand the engine a movetime slice of T and then wait out the remainder,
+  //      never replying early, never billing fake time. The clock keeps
   //      ticking the bot through all of it, so a bot that thinks past zero
   //      genuinely FLAGS (onFlag ends the game; savedRef discards this reply).
   useEffect(() => {
     if (phase !== 'game') return
     if (opponent.kind === 'human') return // Over-the-board: no engine loop at all
-    if (!atTip) return // viewing history — don't auto-move the engine
+    if (!atTip) return // viewing history, so don't auto-move the engine
     if (turn === userColor) return
     if (outcome(fen).over) return
 
@@ -493,7 +493,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     const startRemainingMs = clock.times[opponentSide]
     const incrementMs = timeControl.incMs
     const t0 = performance.now()
-    // The move that produced this position — the user's move, except at game
+    // The move that produced this position. The user's move, except at game
     // start as Black (bot opens; no previous move, no surprise signal).
     const prevMove =
       tree.current.move != null
@@ -590,7 +590,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
             fen,
             personaId: opponent.persona.id,
             // personas:move accepts 50..10000ms; in panic the slice is already
-            // tiny (<= ~1.1s) — the persona's strength collapse.
+            // tiny (<= ~1.1s). The persona's strength collapse.
             movetimeMs: Math.max(50, Math.min(engineMs, 10_000))
           })
           .catch(() => null)
@@ -598,8 +598,8 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
         // empty persona reply must never stall the turn loop on 'thinking'.
         bestmove = res?.bestmove ?? randomLegalUci(fen) ?? undefined
       } else if (opponent.kind === 'maia') {
-        // "Human" style: the maia net's policy head at nodes=1 IS the player —
-        // the engine slice is irrelevant (a single NN eval answers in ~ms); the
+        // "Human" style: the maia net's policy head at nodes=1 IS the player.
+        // The engine slice is irrelevant (a single NN eval answers in ~ms); the
         // time manager's plan still paces the REPLY below, so a Maia opponent
         // spends clock like a person instead of premoving everything.
         const res = await window.api?.engine
@@ -619,7 +619,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       if (cancelled) return
 
       // Never reply early: sleep out whatever the engine left of the
-      // allocation. The bot's clock ticks through this — it may flag here.
+      // allocation. The bot's clock ticks through this: it may flag here.
       if (plan) {
         const remainderMs = plan.totalMs - (performance.now() - t0)
         if (remainderMs > 0) {
@@ -633,7 +633,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       setThinking(false)
       setDeepThink(false)
       // Game ended out-of-band while the opponent was thinking (resign, flag
-      // fall mid-think, takeback re-arms via cancelled instead) — discard.
+      // fall mid-think, takeback re-arms via cancelled instead). Discard.
       if (savedRef.current || !bestmove) return
       const uci = bestmove
       const promo = uci.length > 4 ? ROLE_FROM_CHAR[uci[4]] : undefined
@@ -641,7 +641,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       if (cancelled || !m) return
       // Remember what this think expected for next turn's surprise signal
       // (null when no probe ran or the pick left the probe's candidates), and
-      // retire the think ledger — this commitment is fulfilled.
+      // retire the think ledger. This commitment is fulfilled.
       lastProbeRef.current = memoAfterMove(probe, uci)
       thinkLedgerRef.current = null
       tree.addMove(m)
@@ -652,7 +652,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       const out = outcome(m.fen)
       if (out.over && out.result) void finishGame(out.result, out.reason ?? 'draw')
     })().catch(() => {
-      // A mid-game engine failure (probe/play IPC rejection — e.g. the engine
+      // A mid-game engine failure (probe/play IPC rejection, e.g. the engine
       // process died) must never become an unhandled rejection that leaves
       // "thinking…" stuck on forever; clear the indicators and let the user
       // retry/resign. Start-time availability is guarded in startGame.
@@ -728,7 +728,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     let resolved: Opponent
     const otb = tab === 'local' && localMode === 'otb'
     // Engine-dependent starts (vs Computer, Grandmasters) are blocked while the
-    // Stockfish dataset is missing — the setup card is already showing the
+    // Stockfish dataset is missing. The setup card is already showing the
     // install CTA in place of Start/Challenge, so just refuse to dead-end.
     if (!otb && tab !== 'online' && engineMissing) return
     if (tab === 'grandmasters') {
@@ -789,7 +789,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     }
     tree.reset(INITIAL_FEN)
     // Bump the game key so the clock resets to base time (even for an unchanged
-    // control). Unlimited is a no-op clock — the hook parks itself.
+    // control). Unlimited is a no-op clock. The hook parks itself.
     setGameKey((k) => k + 1)
     setPhase('game')
     play('gameStart')
@@ -809,10 +809,10 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // ---- Takeback (settings.allowTakebacks) ----------------------------------
   // Takes back a full move pair from the LIVE tip: the user's last move plus
   // the bot's reply when it already landed (n=2); if the bot is still thinking
-  // only the user's move exists, so n=1 — and the tree change re-runs the reply
+  // only the user's move exists, so n=1, and the tree change re-runs the reply
   // effect, whose teardown cancels the in-flight reply (an already-searching
   // engine result is discarded via the `cancelled` guard). Repeatable, one pair
-  // per click. CLOCK POLICY: no refund — thinking time stays spent and earned
+  // per click. CLOCK POLICY: no refund. Thinking time stays spent and earned
   // increments stay banked (per-move spend isn't tracked anywhere cheap, and
   // useChessClock exposes no rewind; this mirrors casual OTB takebacks).
   // OTB takes back a single ply (whoever just moved); vs engine/persona takes a
@@ -821,7 +821,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   const takebackFloor = otbGame ? 1 : userColor === 'white' ? 1 : 2
   const canTakeback = !over && liveTip.ply >= takebackFloor
   const onTakeback = useCallback(() => {
-    if (savedRef.current) return // banner up / result recorded — too late
+    if (savedRef.current) return // banner up / result recorded, too late
     let tip = tree.root
     while (tip.children[0]) tip = tip.children[0]
     if (otbGame) {
@@ -841,7 +841,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     }
     if (tip.ply < (userColor === 'white' ? 1 : 2)) return // no user move yet
     // Ply parity: odd plies are White's moves. If the last mainline move is the
-    // user's, the bot hasn't replied (it's mid-think) — take 1; else take 2.
+    // user's, the bot hasn't replied (it's mid-think): take 1; else take 2.
     const lastIsUser = (tip.ply % 2 === 1) === (userColor === 'white')
     tree.undoPlies(lastIsUser ? 1 : 2)
     // Expectations/commitments refer to a line that no longer exists. Clearing
@@ -925,7 +925,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     : null
 
   // OTB maps the two chips to BOARD SIDES (bottom = orientation color), so a
-  // flip — manual or auto — keeps each name/clock beside its own pieces. The
+  // flip (manual or auto) keeps each name/clock beside its own pieces. The
   // side to move is resolved separately (GameView's `otb` flag makes the board
   // movable for `turn`, not for a fixed color). vs engine/persona keeps the
   // classic user-at-bottom mapping.
@@ -935,7 +935,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
   // Personas are billed at their modern strength estimate (the elo captured at
   // game start), which the "~" flags as approximate. Sub-floor engine levels
   // show their MEASURED strength (shared/botStrength calibration) next to the
-  // selected level — the number the rating update actually uses.
+  // selected level: the number the rating update actually uses.
   const opponentSub = isOtb
     ? topColor === 'white'
       ? 'White'

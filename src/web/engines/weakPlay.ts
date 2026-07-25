@@ -1,4 +1,4 @@
-// Sub-floor ("weak play") model — VERBATIM port of the calibrated pick model in
+// Sub-floor ("weak play") model: VERBATIM port of the calibrated pick model in
 // src/main/ipc/engine.ipc.ts (weakDepth / weakMultiPv / weakTemperature /
 // gapKnee / weakBlunderChance / blunderGapWindow / openingFullmoves /
 // softmaxPick / pickWeakMove / collectCandidates / weakPlay). The same model is
@@ -10,7 +10,7 @@
 // full-strength MultiPV search, then an Elo-scaled softmax pick over the
 // engine's own candidate moves, plus an Elo-scaled chance of a "human blunder"
 // pick from a bounded severity window. Every constant here is calibrated
-// (scripts/calibrate-weak.mjs, 2026-07-06) — do not retune independently of
+// (scripts/calibrate-weak.mjs, 2026-07-06): do not retune independently of
 // desktop; shared/botStrength.ts MEASURED_WEAK_ANCHORS depends on this model.
 
 import type { BestMove, InfoLine } from './uci'
@@ -48,7 +48,7 @@ export function weakTemperature(elo: number): number {
   return lerpByElo(elo, 100, 650, 1250, 170)
 }
 
-/** Eval-gap knee (cp): weight is exp(-(gap/T) * (1 + gap/knee)) — quadratic
+/** Eval-gap knee (cp): weight is exp(-(gap/T) * (1 + gap/knee)). Quadratic
  *  punishment for candidates that hang material, knee shrinking with Elo. */
 export function gapKnee(elo: number): number {
   return curveByElo(elo, [
@@ -130,7 +130,7 @@ export function softmaxPick(
 /**
  * The full sub-floor pick model over sorted-best-first candidates:
  *  1. Opening phase (fullmove small, near-balanced): hotter softmax, no blunder
- *     roll — varied openings without instant self-destruction.
+ *     roll: varied openings without instant self-destruction.
  *  2. Blunder roll at the band's target rate (doubled under panic, cap 50%):
  *     uniform pick from candidates inside the band's severity window.
  *  3. Otherwise: eval-gap-aware softmax (~1.7x hotter under panic).
@@ -162,7 +162,7 @@ export function pickWeakMove(
  * One bounded MultiPV search on an engine; resolves with the latest info line
  * per multipv index plus the engine's own bestmove. Every exit path (bestmove /
  * timeout / engine exit / engine error) detaches all listeners so nothing
- * leaks onto the long-lived engine — desktop collectCandidates verbatim.
+ * leaks onto the long-lived engine. Desktop collectCandidates verbatim.
  */
 export function collectCandidates(
   eng: WebUciEngine,
@@ -204,7 +204,7 @@ export function collectCandidates(
     // Hard crash ceiling so a wedged engine can never hang the bot's turn.
     const timer = setTimeout(() => fail(new Error('weak-play search timeout')), 20000)
     // The caller's movetime budget is a SOFT cap: at the budget, `stop` the
-    // search — bestmove arrives immediately and the pick runs over whatever
+    // search: bestmove arrives immediately and the pick runs over whatever
     // completed candidate lines exist by then.
     const softStop = setTimeout(() => void eng.stop(), movetimeMs)
     eng.on('info', onInfo)
@@ -228,7 +228,7 @@ export async function weakPlay(
   panic = false,
   movetimeMs = WEAK_DEFAULT_MOVETIME_MS
 ): Promise<BestMove> {
-  // Full-strength search — honest candidate evals; the weakening is in the pick.
+  // Full-strength search: honest candidate evals; the weakening is in the pick.
   eng.setOption('UCI_LimitStrength', false)
   eng.setOption('Skill Level', 20)
   const depth = panic ? Math.max(3, weakDepth(elo) - 2) : weakDepth(elo)

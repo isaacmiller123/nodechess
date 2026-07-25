@@ -12,7 +12,7 @@ import { paletteDef } from './model'
  *
  * Renders the same minimal DOM as board/PieceIcon (a `pieces-<set>` wrapper >
  * `.cg-wrap` > `<piece class="<color> <role>">`, geometry neutralised by
- * piece-icon.css) but sized by the PARENT when `size` is omitted — painter
+ * piece-icon.css) but sized by the PARENT when `size` is omitted. Painter
  * squares and mini-boards are fluid, so the glyph must fill its box.
  */
 export function PieceGlyph({

@@ -1,4 +1,4 @@
-// A6 M5 Lane L-t1 PROOF — the Tier-1 anticheat runner (judgeRunner.ts):
+// A6 M5 Lane L-t1 PROOF. The Tier-1 anticheat runner (judgeRunner.ts):
 // after each rated game, drive the PINNED canonical judge over the signed
 // transcript → the canonical JudgeOutput + per-game Tier1Record, feed the trust/
 // escalation sink, and (A5-17 signing-time discipline) collect the anchored
@@ -8,7 +8,7 @@
 //
 // The suite is engine-GATED like test-judge-node: the CI-safe sections drive
 // runTier1ForGame end-to-end over a FAKE JudgeEngine (a spec-faithful UCI
-// double — no WASM), proving the whole transcript→positions→judgeGame→
+// double: no WASM), proving the whole transcript→positions→judgeGame→
 // tier1Record→sink pipeline + the salt-grant round-trip deterministically. The
 // final section re-runs the SAME path over the REAL pinned Node judge WASM (the
 // judge-parity binary) and asserts cross-run determinism; it is SKIPPED under CI
@@ -36,7 +36,7 @@ const SERVER = resolve(ROOT, 'server').replace(/\\/g, '/')
 const ENGINE_JS = resolve(ROOT, 'node_modules/stockfish/bin/stockfish-18-lite-single.js')
 const ENGINE_WASM = resolve(ROOT, 'node_modules/stockfish/bin/stockfish-18-lite-single.wasm')
 
-// Bundle the runner (renderer, headless — it imports only @shared + the bare-node
+// Bundle the runner (renderer, headless: it imports only @shared + the bare-node
 // chess adapter + type-only siblings) alongside the shared substrate, the M1 Lane
 // E writer/pregame (for the real-chain rated-game-keys proof), and the Node judge
 // adapter (for the local-only engine gate).
@@ -59,7 +59,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -80,7 +80,7 @@ async function run(M) {
 
   // A spec-faithful UCI double for JudgeEngine: answers the `isready` barrier with
   // `readyok`; on `go` emits multiPv info lines (ranks 1..multiPv) + a bestmove.
-  // Ignores the FEN — the transcript pipeline + record math are what's under test,
+  // Ignores the FEN: the transcript pipeline + record math are what's under test,
   // so the SAME deterministic lines per position give a stable, reproducible
   // record without a real search (the engine gate below proves the WASM path).
   const RANKS = ['e2e4', 'd2d4', 'g1f3', 'b1c3', 'c2c4', 'g1e2']
@@ -222,7 +222,7 @@ async function run(M) {
   ok(reVerify.ok && reVerify.salt === saltRes.salt, 'an independent verifier re-derives the identical salt (parity)')
 
   // A5-17 discipline enforced: an ANCHORLESS reveal is rejected on the consensus
-  // path — a predictable-before salt can never be blessed.
+  // path: a predictable-before salt can never be blessed.
   const anchorless = { ...saltRes.reveal, anchor: undefined }
   ok(!core.verifySaltReveal(anchorless, core.consensusSaltOpts(witnessSet)).ok, 'an anchorless reveal is REJECTED (requireAnchor / §7b unpredictable-before)')
 

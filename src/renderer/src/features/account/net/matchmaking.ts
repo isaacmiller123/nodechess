@@ -1,18 +1,18 @@
-// A6 M2 Lane L-mm — OVERLAY-BACKED MATCHMAKING (spec §7 pairing, §4 witness
+// A6 M2 Lane L-mm: OVERLAY-BACKED MATCHMAKING (spec §7 pairing, §4 witness
 // fabric / C-10 honest degradation, §3 pairing anchor).
 //
 // This is the piece that lets ANY TWO STRANGERS get auto-paired for a rated
-// game — no manual room code — with a witness assigned from the canonical
+// game (no manual room code) with a witness assigned from the canonical
 // eligible set, exactly as the §1 acceptance test requires. It COMPOSES the
 // tested substrate and reimplements none of it:
 //
-//   pairingLegal (mm/pairing.ts)         — both-client legality over public
+//   pairingLegal (mm/pairing.ts):          both-client legality over public
 //                                          PairViews (symmetric, atWts-pinned)
-//   canonicalWitnessSet (eligibility.ts) — the wN-closest ELIGIBLE live nodes
+//   canonicalWitnessSet (eligibility.ts): the wN-closest ELIGIBLE live nodes
 //                                          for a game, with the §4 small-pop
 //                                          relaxation + the anti-sock-puppet
 //                                          gates that never relax
-//   makePairingPayload (conduct.ts)      — the §3/§8 pairing record BOTH chains
+//   makePairingPayload (conduct.ts):       the §3/§8 pairing record BOTH chains
 //                                          anchor (built here as the handoff
 //                                          terms; the witnessed 'pairing' event
 //                                          is the L-lease lane's promotion)
@@ -20,18 +20,18 @@
 // SHAPE OF THE LIVENESS. Every signed-in client already announces a SIGNED
 // presence into the account fabric and hosts an overlay node (peerService.ts).
 // Matchmaking layers a small SIGNED-GOSSIP POOL keyed by (kind, ladder) on top:
-//   • a SEEK is a signed advertisement — "I want a rated <ladder> game, here is
-//     my public PairView" — the exact both-client-verifiable input pairingLegal
+//   • a SEEK is a signed advertisement, "I want a rated <ladder> game, here is
+//     my public PairView". The exact both-client-verifiable input pairingLegal
 //     consumes (§7: T, width, brackets are all publicly recomputable);
 //   • every peer folds the SAME shared pool snapshot through the SAME
 //     deterministic matching, so each reads off its own legal partner with NO
 //     coordinator and NO back-and-forth handshake (a distributed skew is healed
 //     by the host's signed OFFER, which the guest re-verifies before joining);
 //   • the WITNESS is drawn from the canonical set over the peer's REAL fabric
-//     directory (a third presence-announced peer that is neither player) — so
+//     directory (a third presence-announced peer that is neither player), so
 //     with no third machine online, canonicalWitnessSet returns EMPTY and the
 //     rated flow HONESTLY WAITS ("waiting for a witness"), never a fake pairing
-//     (§4 C-10). Casual/link play is entirely unaffected — this module is only
+//     (§4 C-10). Casual/link play is entirely unaffected. This module is only
 //     ever entered for a rated search between two signed-in accounts.
 //
 // PLATFORM-SPECIFIC + renderer-hosted (it drives a live pool transport + the
@@ -80,7 +80,7 @@ export const MM_LADDERS: readonly LadderKey[] = ['Bullet', 'Blitz', 'Rapid', 'Cl
  *  GAME_KIND). ladderId = `${GAME_KIND}:${LadderKey}` (ladders.ts ladderId). */
 export const MM_KIND = 'chess'
 
-/** ladderId for a ladder key — the mm/pairing PairView.ladderId + fold key. */
+/** ladderId for a ladder key. The mm/pairing PairView.ladderId + fold key. */
 export function ladderIdOf(key: LadderKey): string {
   return `${MM_KIND}:${key}`
 }
@@ -91,7 +91,7 @@ export interface TimeControlMs {
 }
 
 /**
- * A representative time control per ladder — each lands squarely inside its
+ * A representative time control per ladder: each lands squarely inside its
  * category under ladders.ts timeCategory (estMs = baseMs + 40·incMs vs the
  * PARAMS_A4 rails 179s/480s/1500s): Bullet 1+0 (60s), Blitz 3+2 (260s), Rapid
  * 10+5 (800s), Classical 30+0 (1800s). These match the renderer TIME_CONTROLS
@@ -109,7 +109,7 @@ export const MM_DEFAULT_TC: Record<LadderKey, TimeControlMs> = {
 // ===========================================================================
 
 /** A seeker's advertisement into the (kind, ladder) pool. `view` is the EXACT
- *  mm/pairing PairView the counterparty runs pairingLegal against — public,
+ *  mm/pairing PairView the counterparty runs pairingLegal against. Public,
  *  recomputable state, signed by the seeker's certified device key so a peer
  *  cannot spoof a stranger's rating/trust into the pool. */
 export interface MatchSeekBody {
@@ -120,7 +120,7 @@ export interface MatchSeekBody {
   ladderKey: LadderKey
   /** Seeker account root. */
   root: B64u
-  /** Seeker device signing key — what `sig` verifies against (certified under
+  /** Seeker device signing key: what `sig` verifies against (certified under
    *  `root` in the seeker's chain; a fact the pairing record's verifiers judge,
    *  not this ephemeral ad). */
   key: B64u
@@ -130,9 +130,9 @@ export interface MatchSeekBody {
   /** The time control this seek plays at (the ladder default, or a caller pick
    *  that still categorizes into `ladderKey`). */
   tc: TimeControlMs
-  /** Monotonic per-seeker search counter — freshest (epoch, ts) wins per root. */
+  /** Monotonic per-seeker search counter. Freshest (epoch, ts) wins per root. */
   epoch: number
-  /** Seeker clock (unix ms) — bounds staleness; feeds the pinned atWts. */
+  /** Seeker clock (unix ms): bounds staleness; feeds the pinned atWts. */
   ts: number
 }
 
@@ -146,7 +146,7 @@ export interface MatchOfferBody {
   kind: string
   ladderId: string
   ladderKey: LadderKey
-  /** The signer device key (= hostKey) — what `sig` verifies against, carried
+  /** The signer device key (= hostKey): what `sig` verifies against, carried
    *  uniformly with the seek so verifyMatchMsg reads one `key` field. */
   key: B64u
   /** The mp room code the host opened (host-minted; carried here to all three). */
@@ -159,7 +159,7 @@ export interface MatchOfferBody {
   guestView: PairView
   tc: TimeControlMs
   /** The pairing-legality atWts BOTH sides evaluated at (max of the two seek
-   *  ts) — the §7/A4-16 pinned instant the 'pairing' record will also carry. */
+   *  ts): the §7/A4-16 pinned instant the 'pairing' record will also carry. */
   atWts: number
   ts: number
 }
@@ -172,7 +172,7 @@ export interface SignedMatchMsg {
   sig: B64u
 }
 
-/** The exact bytes a pool message signs — one place so sign + verify agree. A
+/** The exact bytes a pool message signs. One place so sign + verify agree. A
  *  CanonicalObject at runtime (cjson-v1); declared as a plain interface because
  *  it nests PairView/TimeControlMs, so canonicalBytes casts at the seam exactly
  *  like preGame.ts's snapshotBytes / segment.ts's makeWitnessedResult. */
@@ -190,8 +190,8 @@ export function signOffer(body: MatchOfferBody, devicePriv: Uint8Array): SignedM
   return { body, sig: toB64u(ed25519.sign(msgBytes(body), devicePriv)) }
 }
 
-/** True iff `pv` is a structurally-complete PairView bound to (root, ladderId)
- *  — the both-client pairing input, never trusted beyond these shape facts. */
+/** True iff `pv` is a structurally-complete PairView bound to (root, ladderId).
+ *  The both-client pairing input, never trusted beyond these shape facts. */
 function pairViewOk(pv: unknown, root: B64u, ladderId: string): pv is PairView {
   if (pv === null || typeof pv !== 'object') return false
   const v = pv as Partial<PairView>
@@ -205,8 +205,8 @@ function pairViewOk(pv: unknown, root: B64u, ladderId: string): pv is PairView {
 
 /**
  * Verify a pool message end to end, fail-closed on ANY malformation (never
- * throws): the discriminant, the device-key signature over the body, and — for
- * a seek — that its PairView is bound to the advertised (root, ladderId). This
+ * throws): the discriminant, the device-key signature over the body, and. For
+ * a seek: that its PairView is bound to the advertised (root, ladderId). This
  * establishes PROVENANCE only (that `key` signed it); whether `key` is certified
  * under `root`, and whether the account is banned/fuse-tripped, are chain facts
  * the read-time pairing verifiers establish, never this ephemeral ad.
@@ -249,7 +249,7 @@ export function verifyMatchMsg(msg: unknown): msg is SignedMatchMsg {
 
 /**
  * A signed-gossip pool for ONE (kind, ladder): every member sees every live
- * message, freshest-per-(root, type). This is the "advertise/subscribe" seam —
+ * message, freshest-per-(root, type). This is the "advertise/subscribe" seam:
  * production rides a dedicated trystero pool room over the account fabric app id
  * (createTrysteroMatchPool); the headless harness rides a shared in-memory hub
  * (createMemoryMatchPool). The CORE engine depends ONLY on this interface, so it
@@ -289,7 +289,7 @@ export function freshestByRootType(msgs: readonly SignedMatchMsg[]): SignedMatch
 }
 
 // ===========================================================================
-// §3  Pairing math — deterministic legal matching over a pool snapshot
+// §3  Pairing math: deterministic legal matching over a pool snapshot
 // ===========================================================================
 
 /** A verified seek projected to what the matching needs. */
@@ -302,19 +302,19 @@ interface SeekRow {
   ts: number
 }
 
-/** Canonical lower/upper of two roots (stable string order) — decides host. */
+/** Canonical lower/upper of two roots (stable string order). Decides host. */
 function orderRoots(a: B64u, b: B64u): { host: B64u; guest: B64u } {
   return a < b ? { host: a, guest: b } : { host: b, guest: a }
 }
 
-/** A deterministic, both-client-identical key for an unordered pair — the
+/** A deterministic, both-client-identical key for an unordered pair. The
  *  matching sort order (SHA-256 hex of the canonical pair descriptor). */
 function pairKey(kind: string, ladderId: string, a: B64u, b: B64u): string {
   const { host, guest } = orderRoots(a, b)
   return toB64u(sha256(utf8(`mm-pair:${kind}:${ladderId}:${host}:${guest}`)))
 }
 
-/** The pinned pairing-legality instant for two seeks — the later of the two
+/** The pinned pairing-legality instant for two seeks: the later of the two
  *  advertised clocks (both peers derive it identically from the signed seeks;
  *  the same atWts the offer carries and the 'pairing' record anchors). */
 export function pairAtWts(a: { ts: number }, b: { ts: number }): number {
@@ -387,7 +387,7 @@ export function computeMatching(
 }
 
 // ===========================================================================
-// §4  Witness assignment — the canonical eligible set over the live directory
+// §4  Witness assignment: the canonical eligible set over the live directory
 // ===========================================================================
 
 /** A 32-byte nodeId-shaped ranking anchor for a game (deterministic from the
@@ -400,7 +400,7 @@ export function pairWitnessAnchor(kind: string, ladderId: string, host: B64u, gu
 /**
  * The canonical witness set for a game between (host, guest): the wN-closest
  * ELIGIBLE live nodes to the game anchor that are NEITHER player, over the live
- * fabric directory. It is the REAL substrate — canonicalWitnessSet — driven with
+ * fabric directory. It is the REAL substrate (canonicalWitnessSet) driven with
  * a synthetic subject whose entangled set is {host, guest}, so BOTH players are
  * excluded by the structural (never-relaxing) entanglement gate, `self` is a
  * sentinel, and the small-population relaxation admits an untrusted third
@@ -421,7 +421,7 @@ export function assignWitnesses(
   const anchor = pairWitnessAnchor(kind, ladderId, host, guest)
   const subject: SubjectSummary = {
     // A sentinel root that is not any real account (the `self` gate only ever
-    // matters for a candidate whose root equals it — none does). The ranking is
+    // matters for a candidate whose root equals it. None does). The ranking is
     // by anchor distance; entangledRoots excludes both players unconditionally.
     root: `mm-anchor:${anchor}`,
     nodeId: anchor,
@@ -434,10 +434,10 @@ export function assignWitnesses(
 
 /**
  * How many DISTINCT third machines could witness a game for `selfRoot` right
- * now — the honest network status the rated lobby renders (§4). A witness must
+ * now: the honest network status the rated lobby renders (§4). A witness must
  * advertise the witness cap and be neither `selfRoot` nor `oppRoot` (when an
  * opponent is known). Counts the live directory directly (liveNodesOf), NOT a
- * fixture. Zero ⇒ "no witness reachable — rated play waits".
+ * fixture. Zero ⇒ "no witness reachable: rated play waits".
  */
 export function countReachableWitnesses(
   directory: NodeDirectory,
@@ -483,7 +483,7 @@ export interface MatchAssignment {
 
 /**
  * Build the two per-color §3/§8 PairingPayloads BOTH chains anchor for a game,
- * from the assignment + the host-minted gameKey — the WitnessRunnerGameInit
+ * from the assignment + the host-minted gameKey: the WitnessRunnerGameInit
  * `pairing:{w,b}` the M2 witness gate consumes (witnessCore.ts). Reuses the
  * tested makePairingPayload; the caller supplies the real gameKey once the mp
  * host mints it (leaseRunner promotes these into the witnessed 'pairing' event).
@@ -496,7 +496,7 @@ export function makePairingTerms(a: MatchAssignment, gameKey: B64u): { w: Pairin
 }
 
 // ===========================================================================
-// §6  The matchmaking engine (poll loop — headless-testable)
+// §6  The matchmaking engine (poll loop: headless-testable)
 // ===========================================================================
 
 /** The signed-in device identity the engine runs as (Lane C deviceSigningKey). */
@@ -533,7 +533,7 @@ export interface EngineStatus {
 
 export interface MatchmakingEngineDeps {
   identity: MatchmakingIdentity
-  /** The live account fabric — its directory() is the witness candidate set. */
+  /** The live account fabric. Its directory() is the witness candidate set. */
   fabric: FabricEndpoint
   /** The (kind, ladder) pool transport. */
   pool: MatchPool
@@ -565,7 +565,7 @@ export interface WitnessAssignment {
   ladderId: string
   tc: TimeControlMs
   atWts: number
-  /** Both players' {root, device key} — the witness resolves move-sig keys and
+  /** Both players' {root, device key}: the witness resolves move-sig keys and
    *  can re-derive the pairing terms (makePairingTerms) from these. */
   participants: { root: B64u; key: B64u }[]
   host: B64u
@@ -634,7 +634,7 @@ export function createMatchmakingEngine(deps: MatchmakingEngineDeps): Matchmakin
     return signSeek(body, deps.identity.priv)
   }
 
-  /** WITNESS role — for every offer we are neither player of, self-select over
+  /** WITNESS role: for every offer we are neither player of, self-select over
    *  our own directory and attach if we are the canonical top pick. */
   const runWitnessRole = (msgs: SignedMatchMsg[], nowMs: number): void => {
     if (!deps.startWitness) return
@@ -694,13 +694,13 @@ export function createMatchmakingEngine(deps: MatchmakingEngineDeps): Matchmakin
     const ladderId = ladderIdOf(target.ladderKey)
     // Live third-machine count for the lobby. Once we know the MATCHED OPPONENT,
     // EXCLUDE it: a peer we are pairing WITH can never witness that same game
-    // (§4 — the canonical set structurally drops both players), so counting it
+    // (§4: the canonical set structurally drops both players), so counting it
     // would overstate the honest availability. No opponent yet ⇒ count them all.
     const dir = deps.fabric.directory()
     const witnessCount = (opp?: B64u): number => countReachableWitnesses(dir, selfRoot, nowMs, opp)
 
     // GUEST role first: if a valid offer names us, accept it (the host's signed
-    // offer is authoritative — we re-verify legality, never a blind join).
+    // offer is authoritative. We re-verify legality, never a blind join).
     for (const m of msgs) {
       if (m.body.t !== 'mm-offer') continue
       const o = m.body
@@ -724,7 +724,7 @@ export function createMatchmakingEngine(deps: MatchmakingEngineDeps): Matchmakin
       return
     }
 
-    // A legal partner exists — is a third machine available to witness it?
+    // A legal partner exists. Is a third machine available to witness it?
     const witnessSet = assignWitnesses(dir, selfRoot, partner, MM_KIND, ladderId, nowMs, cfg)
     if (witnessSet.length === 0) {
       // C-10 honest degradation: never a fake pairing without a witness.
@@ -771,7 +771,7 @@ export function createMatchmakingEngine(deps: MatchmakingEngineDeps): Matchmakin
     const offer = buildOffer(assignment, partnerSeek.body as MatchSeekBody, target, atWts, nowMs)
     deps.pool.publish(signOffer(offer, deps.identity.priv))
     emit({ phase: 'paired', ladderKey: target.ladderKey, witnessesReachable: witnessCount(partner), opponentRoot: partner, assignment })
-    log(`hosting room ${code} for ${partner.slice(0, 8)}… — offer published`)
+    log(`hosting room ${code} for ${partner.slice(0, 8)}…: offer published`)
   }
 
   return {
@@ -868,7 +868,7 @@ function offerToAssignment(o: MatchOfferBody, role: 'host' | 'guest', self: Matc
 // §7  Pool adapters (in-memory hub for the harness; trystero for production)
 // ===========================================================================
 
-/** A shared in-memory pool — every MatchPool minted from one hub sees one
+/** A shared in-memory pool: every MatchPool minted from one hub sees one
  *  another's messages, exactly like MockFabric's shared directory. This is the
  *  headless harness transport; it is also the honest offline fallback when no
  *  live pool room can be joined. */
@@ -880,9 +880,9 @@ export function createMatchPoolHub(): MatchPoolHub {
   /** Freshest-per-(type|root), so growth is bounded and reads are collapsed. */
   const store = new Map<string, SignedMatchMsg>()
   // Each joined pool keeps its OWN subscriber set. A publish/retract wakes every
-  // OTHER member (a REMOTE message — exactly what a live relay delivers) but
+  // OTHER member (a REMOTE message; exactly what a live relay delivers) but
   // NEVER the originator: its own publish is a LOCAL ECHO, not a remote message.
-  // Without this the live search stack-overflows — the engine subscribes poll to
+  // Without this the live search stack-overflows. The engine subscribes poll to
   // the pool AND poll publishes a fresh (higher-epoch) seek, so a self-notify
   // re-enters poll → publish → notify → … The engine reads list() right after it
   // publishes, so suppressing the self-notify loses nothing. Mirrors the trystero
@@ -938,7 +938,7 @@ export function createMatchPoolHub(): MatchPoolHub {
   }
 }
 
-/** A single standalone in-memory pool (its own hub) — a convenience for a
+/** A single standalone in-memory pool (its own hub). A convenience for a
  *  one-process test or the offline no-op fallback. */
 export function createMemoryMatchPool(): MatchPool {
   return createMatchPoolHub().join()
@@ -946,7 +946,7 @@ export function createMemoryMatchPool(): MatchPool {
 
 // --- trystero pool room (production) ---------------------------------------
 // A dedicated trystero room per (kind, ladder) over the SAME app namespace as
-// the account fabric (browserFabric FABRIC_APP_ID) — the room id IS the pool
+// the account fabric (browserFabric FABRIC_APP_ID): the room id IS the pool
 // key. Signed messages gossip to every member; each keeps freshest-per-(root,
 // type). Mirrors browserFabric's room usage (native WebRTC via resolveIceServers,
 // injected room for headless tests) so `trystero` stays a lazy production-only
@@ -966,19 +966,19 @@ interface PoolRoom {
 export interface TrysteroMatchPoolOpts {
   kind: string
   ladderId: string
-  /** trystero app namespace (default FABRIC_APP_ID — shares the accounts fabric
+  /** trystero app namespace (default FABRIC_APP_ID: shares the accounts fabric
    *  family; the operator peer can join the same pool). */
   appId?: string
   password?: string
   iceServers?: readonly RTCIceServer[]
-  /** Injected room — omit in production (built via joinRoom). Tests inject a
+  /** Injected room: omit in production (built via joinRoom). Tests inject a
    *  fake so the gossip/dedup logic runs headless with no relay. */
   room?: PoolRoom
 }
 
 const POOL_NS = 'mm'
 
-/** The trystero room id for a pool — the (kind, ladder) key, sanitized. */
+/** The trystero room id for a pool. The (kind, ladder) key, sanitized. */
 export function poolRoomId(kind: string, ladderId: string): string {
   return `mm-${kind}-${ladderId}`.replace(/[^a-zA-Z0-9_-]/g, '_')
 }
@@ -1002,14 +1002,14 @@ export function createTrysteroMatchPool(opts: TrysteroMatchPoolOpts): MatchPool 
     }
   }
   const room = opts.room ?? joinPoolRoom(opts)
-  // A REMOTE message (delivered by the room) DOES notify — it is what drives the
+  // A REMOTE message (delivered by the room) DOES notify. It is what drives the
   // engine's poll loop forward when a stranger advertises or offers.
   const action = room.makeAction(POOL_NS, { kind: 'message', onMessage: (d) => ingest(d, true) })
   return {
     publish(m: SignedMatchMsg): void {
       if (!verifyMatchMsg(m)) return
       // LOCAL ECHO: update our OWN store so list() reflects our seek immediately,
-      // but do NOT notify subscribers — a self-publish must never re-enter the
+      // but do NOT notify subscribers. A self-publish must never re-enter the
       // poll loop (the engine subscribes poll to the pool AND poll publishes a
       // fresh seek: notifying here would recurse poll → publish → notify → …).
       // Only a REMOTE message notifies; the engine reads list() right after it
@@ -1023,7 +1023,7 @@ export function createTrysteroMatchPool(opts: TrysteroMatchPoolOpts): MatchPool 
     },
     retract(root: B64u): void {
       // A gossip transport can't un-send; peers TIME OUT our stale seek via the
-      // engine's maxSeekAgeMs bound. We drop it locally + stop re-advertising — a
+      // engine's maxSeekAgeMs bound. We drop it locally + stop re-advertising. A
       // purely LOCAL mutation (like the publish echo), so it doesn't self-notify.
       for (const [k, m] of [...store]) {
         const r = m.body.t === 'mm-seek' ? m.body.root : m.body.host
@@ -1064,7 +1064,7 @@ function joinPoolRoom(opts: TrysteroMatchPoolOpts): PoolRoom {
 // accountsUiStore) the rated lobby reads for HONEST live status: the real
 // third-machine count from the account peer's fabric directory, and the live
 // search phase from the engine. The game HANDOFF (open/join the mp room, attach
-// the witness) is wired by the lead via configureMatchmaking — this module owns
+// the witness) is wired by the lead via configureMatchmaking. This module owns
 // the pool + pairing + witness-assignment, never the mp/witness singletons.
 
 /** The lobby-facing status (adds 'signed-out' to the engine phases). */
@@ -1221,7 +1221,7 @@ export function cancelRatedSearch(): void {
 
 /**
  * Offer to WITNESS matchmade games without seeking one (the always-on / idle
- * posture — the operator peer and any signed-in idle instance run this so a
+ * posture: the operator peer and any signed-in idle instance run this so a
  * two-player table can find its third machine). One witness-only engine per
  * ladder pool; each self-attaches to games it is the canonical witness for.
  * Returns a stop handle. The lead wires this from the boot (opt-in / operator).
@@ -1277,7 +1277,7 @@ export const matchmakingStore = {
   configure: configureMatchmaking,
 }
 
-/** React bridge — house useSyncExternalStore convention. */
+/** React bridge. House useSyncExternalStore convention. */
 export function useMatchmaking(): MatchmakingUiState {
   return useSyncExternalStore(matchmakingStore.subscribe, matchmakingStore.getState, matchmakingStore.getState)
 }

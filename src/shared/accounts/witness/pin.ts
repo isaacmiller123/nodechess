@@ -1,15 +1,15 @@
 // PIN record + attempt-counter + fuse + session + handoff layer (spec §1).
 // Pure verifiers and builders on top of oprf.ts / shamir.ts. Signing, hashing
-// and canonical serialization are A1's (events/codec/hash) — never reimplemented.
+// and canonical serialization are A1's (events/codec/hash), never reimplemented.
 //
 // CHAIN-EVENT vs STANDALONE-RECORD decision (reported to the lead):
 //   A1's EventType is 'genesis'|'cert'|'revoke'|'profile'|'ckpt' and is FROZEN
 //   (types.ts, events.ts). It does NOT include 'pin'. The spec (§1) says the
 //   PIN/fuse records are "published into shard/pointer space under the account's
-//   key" — a *public signed fact any verifier can check*, not necessarily a
+//   key". A *public signed fact any verifier can check*, not necessarily a
 //   witnessed-lane chain event. We therefore carry PIN state as its OWN
 //   root-signed standalone records (SignedPinRecord), verifiable with nothing
-//   but the record + the account root pubkey — exactly like the fuse record the
+//   but the record + the account root pubkey: exactly like the fuse record the
 //   type contract already models as a standalone {body, sigs}. This needs NO
 //   change to the frozen chain event registry. If the lead concludes PIN
 //   records MUST ride the witnessed lane, that requires adding a 'pin' EventType
@@ -44,7 +44,7 @@ function paramsDigest(params: typeof PARAMS_A2): string {
 }
 
 // ---------------------------------------------------------------------------
-// Local zod schemas — the 'pin' payloads live HERE (events.ts is frozen and
+// Local zod schemas: the 'pin' payloads live HERE (events.ts is frozen and
 // has no 'pin' type). Mirror witness/types.ts exactly, all .strict().
 // ---------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ function fail(...errors: string[]): PinVerify {
 const OK: PinVerify = { ok: true, errors: [] }
 
 // ===========================================================================
-// 1. PIN record — root-signed standalone record
+// 1. PIN record: root-signed standalone record
 // ===========================================================================
 
 export interface SignedPinRecord {
@@ -118,7 +118,7 @@ export interface MakePinRecordOpts {
   pinPub: B64u
   /** Previous 'pin' record id when re-provisioning (handoff). */
   prev?: EventId
-  /** Carried-forward failure count (handoff) — a fresh committee can never
+  /** Carried-forward failure count (handoff). A fresh committee can never
    * start below this (spec §1). */
   carriedFails?: number
 }
@@ -185,7 +185,7 @@ export function verifyPinRecord(rec: SignedPinRecord, expectDigest: string = PAR
 }
 
 // ===========================================================================
-// 2. Attempt counter (C-2, spec §1) — evaluations minus proven successes
+// 2. Attempt counter (C-2, spec §1): evaluations minus proven successes
 // ===========================================================================
 
 /** Per-member local counter state. Persisted by each committee member. */
@@ -239,7 +239,7 @@ export function signAttemptReport(
 /**
  * Verify a report's signature. PinAttemptReport carries no signing-key field
  * (only the member NodeId `w`), so the verifier must supply the member's signing
- * pubkey out of band — from the committee's presence/cert records, exactly like
+ * pubkey out of band: from the committee's presence/cert records, exactly like
  * the rest of the fabric maps NodeId→key. (Reported as a contract observation.)
  */
 export function verifyAttemptReport(report: PinAttemptReport, memberKey: B64u): boolean {
@@ -252,7 +252,7 @@ export function verifyAttemptReport(report: PinAttemptReport, memberKey: B64u): 
 /**
  * Committee-effective failure count from a set of co-attested reports: the t-th
  * largest reported value (a minority of ≤ N−t malicious members can neither
- * low-ball nor inflate it — spec §1 "a minority can't low-ball"). Requires ≥ t
+ * low-ball nor inflate it: spec §1 "a minority can't low-ball"). Requires ≥ t
  * reports for the SAME root; returns 0 when fewer than t reports agree.
  * Deterministic. `reports` should be pre-filtered to verified reports.
  */
@@ -269,7 +269,7 @@ export function effectiveCount(reports: readonly PinAttemptReport[], t: number):
 }
 
 // ===========================================================================
-// 3. Fuse (spec §1) — threshold-signed ban record + refill semantics
+// 3. Fuse (spec §1): threshold-signed ban record + refill semantics
 // ===========================================================================
 
 /**
@@ -298,7 +298,7 @@ export function shouldTrip(
   return effective >= fuseThreshold(tripsSoFar, params)
 }
 
-/** Canonical fuse body — signers and assemblers agree on these exact bytes. */
+/** Canonical fuse body: signers and assemblers agree on these exact bytes. */
 export function fuseRecordBody(
   root: B64u,
   fails: number,
@@ -369,7 +369,7 @@ export function verifyFuseRecord(
   const member = new Set(committee)
   const msg = canonicalBytes(fr.body)
   // Verify against the revision the CALLER supplies (opts.params), mirroring
-  // verifyPinRecord's expectDigest — a fuse minted under an earlier params
+  // verifyPinRecord's expectDigest: a fuse minted under an earlier params
   // revision carries that revision's digest and stays verifiable across a bump.
   if (fr.body.params !== paramsDigest(params)) errors.push('fuse: params digest mismatch')
   if (fr.body.expiryWts !== fr.body.trippedWts + params.pinBanDays * MS_PER_DAY)
@@ -406,7 +406,7 @@ export function isFuseActive(fr: FuseRecord, nowWts: number): boolean {
 }
 
 // ===========================================================================
-// 4. PIN session (spec §1) — pinKey-signed authorization for takeover / enroll
+// 4. PIN session (spec §1), pinKey-signed authorization for takeover / enroll
 // ===========================================================================
 
 export function makePinSession(body: PinSessionBody, pinPriv: Uint8Array): PinSession {
@@ -444,7 +444,7 @@ export function makeRootSession(
 /**
  * Verify a root session against the account root pubkey. The root IS the
  * account identifier (LeaseBody.root / PresenceBody.root), so this needs no
- * lookup — the caller passes the same root the record binds to.
+ * lookup: the caller passes the same root the record binds to.
  */
 export function verifyRootSession(session: RootSession, root: B64u): boolean {
   const parsed = zPinSessionBody.safeParse(session.body)
@@ -454,7 +454,7 @@ export function verifyRootSession(session: RootSession, root: B64u): boolean {
 }
 
 // ===========================================================================
-// 5. Committee handoff (spec §1) — re-provision that carries the counter forward
+// 5. Committee handoff (spec §1): re-provision that carries the counter forward
 // ===========================================================================
 
 export interface HandoffAuth {
@@ -463,7 +463,7 @@ export interface HandoffAuth {
   prevPinRecord: EventId
   /** New 'pin' record id being authorized. */
   newPinRecord: EventId
-  /** Failure count carried forward — the new committee starts here, never below. */
+  /** Failure count carried forward. The new committee starts here, never below. */
   carriedFails: number
   /** pinKey-signed session, purpose 'committee-handoff'. */
   session: PinSession
@@ -515,11 +515,11 @@ export interface VerifyHandoffOpts {
    * and load-bearing: binds each handoff signer to its real key so one malicious
    * old member cannot forge the old-committee threshold by claiming peers' `w`s. */
   keyOf: ReadonlyMap<NodeId, B64u>
-  /** pinPub from the OLD PIN record — the handoff must be signed by the same PIN key. */
+  /** pinPub from the OLD PIN record. The handoff must be signed by the same PIN key. */
   pinPub: B64u
   /** The new PIN record the handoff authorizes (its carriedFails is checked). */
   newRecord: SignedPinRecord
-  /** The effective count at handoff time — the new record can never start below it. */
+  /** The effective count at handoff time. The new record can never start below it. */
   minCarry: number
   params?: typeof PARAMS_A2
 }
@@ -528,14 +528,14 @@ export interface VerifyHandoffOpts {
  * Verify a handoff: (a) the pinKey session is valid and purpose 'committee-handoff';
  * (b) ≥ old pinT distinct old-committee members signed the handoff body;
  * (c) the new record's carriedFails == the authorized carriedFails AND is ≥ the
- * pre-handoff effective count — so a password thief cannot re-provision to nodes
+ * pre-handoff effective count, so a password thief cannot re-provision to nodes
  * he controls and reset the fuse to zero (spec §1). Pure.
  */
 export function verifyHandoff(auth: HandoffAuth, opts: VerifyHandoffOpts): PinVerify {
   const params = opts.params ?? PARAMS_A2
   const errors: string[] = []
 
-  // (a) PIN-key session gate — bound to THIS specific handoff (root + new record)
+  // (a) PIN-key session gate: bound to THIS specific handoff (root + new record)
   // so a captured session can't be replayed to authorize a different re-provision.
   if (!verifyPinSession(auth.session, opts.pinPub)) errors.push('handoff: bad pinKey session signature')
   if (auth.session.body.purpose !== 'committee-handoff') errors.push('handoff: session purpose is not committee-handoff')
@@ -570,7 +570,7 @@ export function verifyHandoff(auth: HandoffAuth, opts: VerifyHandoffOpts): PinVe
   }
   if (counted.size < params.pinT) errors.push(`handoff: only ${counted.size} old-committee signatures (need ${params.pinT})`)
 
-  // (c) counter carried forward — never below the pre-handoff count.
+  // (c) counter carried forward. Never below the pre-handoff count.
   if (auth.carriedFails < opts.minCarry) errors.push('handoff: carriedFails below pre-handoff effective count')
   const newCarried = opts.newRecord.payload.carriedFails ?? 0
   if (newCarried !== auth.carriedFails) errors.push('handoff: new record carriedFails != authorized carriedFails')

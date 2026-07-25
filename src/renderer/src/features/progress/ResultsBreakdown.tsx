@@ -56,7 +56,7 @@ export default function ResultsBreakdown({ games }: ResultsBreakdownProps): JSX.
                 <div className="rb-row-head">
                   <span className="rb-group-label">{g.label}</span>
                   <span className="rb-score small num">
-                    {score == null ? '—' : `${score}%`}
+                    {score == null ? '·' : `${score}%`}
                   </span>
                 </div>
                 <ResultBar tally={g.tally} />

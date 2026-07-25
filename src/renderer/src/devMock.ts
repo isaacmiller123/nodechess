@@ -1,12 +1,12 @@
-// Browser preview harness — DORMANT in the real app.
+// Browser preview harness: DORMANT in the real app.
 //
 // installMock() wires a fake `window.api` so the renderer can be driven in a
 // plain browser (no Electron/IPC) for interactive testing. It is loaded ONLY
 // when the page is opened with `?mock` AND no real preload bridge exists
 // (see main.tsx), so it can never run inside the packaged desktop app.
 //
-// The data is small but realistic — real FENs, legal UCI moves, a working
-// curriculum lesson and a streaming engine stub — so the actual product
+// The data is small but realistic. Real FENs, legal UCI moves, a working
+// curriculum lesson and a streaming engine stub, so the actual product
 // components (Board, PuzzlesView, LessonDetail, AnalysisView, …) exercise the
 // same code paths a user hits, just sourced from canned data.
 //
@@ -95,7 +95,7 @@ const MOCK_CHAPTER: SchoolChapter = {
   subtitle: 'How the pieces fight',
   concepts: [
     { id: 'mock-hanging', name: 'Hanging pieces', short: 'A piece nobody defends is free to take.' },
-    { id: 'mock-check', name: 'Check', short: 'Attack the king — it must be answered.' }
+    { id: 'mock-check', name: 'Check', short: 'Attack the king. It must be answered.' }
   ],
   estMinutes: 20,
   lessons: [
@@ -166,10 +166,10 @@ const MOCK_PLACEMENT: PlacementState = {
 }
 
 // Library preview rows: one of each archive shape so the Games → Library list
-// and the replay viewer are fully drivable in the browser harness — a chess
+// and the replay viewer are fully drivable in the browser harness. A chess
 // PGN row (routes to Analysis), an envelope with stored notation (atomic), an
 // envelope replaying live notation (go 9x9), and a LEGACY generic-text row
-// (othello). Moves are real and legal — the replay pipe validates them through
+// (othello). Moves are real and legal. The replay pipe validates them through
 // the actual rules engines, so a drift here shows up as a truncation warning.
 const MOCK_GAME_ROW = {
   white_name: 'You',
@@ -315,26 +315,26 @@ export function installMock(): void {
         const ucis = legalUcis(fen)
         return { bestmove: ucis[0] ?? '0000' }
       },
-      // No engine in the browser mock — variant bots surface the toast path.
+      // No engine in the browser mock. Variant bots surface the toast path.
       playVariant: async () => {
         throw new Error('Fairy-Stockfish is unavailable in the browser dev mock.')
       },
       // Go bots: the not-installed message drives KernelBot's inline prompt.
       playGo: async () => {
-        throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+        throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
       },
-      // Replay-viewer eval: no engines in the browser mock — the bar hides.
+      // Replay-viewer eval: no engines in the browser mock. The bar hides.
       evalVariant: async () => {
         throw new Error('Fairy-Stockfish is unavailable in the browser dev mock.')
       },
       estimateGo: async () => {
-        throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+        throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
       },
       status: async () => ({
         analysisReady: true,
         playReady: true,
         // lc0Ready true so the Classic/Human style toggle is previewable in the
-        // browser harness (engine.play ignores level.maia here — first legal move).
+        // browser harness (engine.play ignores level.maia here; first legal move).
         lc0Ready: true,
         fairyReady: false,
         // katagoReady false so the go vs-Bot INLINE INSTALL PROMPT is previewable.
@@ -579,7 +579,7 @@ export function installMock(): void {
         return { ok: true }
       }
     },
-    // Save dialog: the browser preview has no OS dialog — trigger a plain
+    // Save dialog: the browser preview has no OS dialog. Trigger a plain
     // download so Replay Theater's export stays fully testable in the harness.
     dialog: {
       saveFile: async (req) => {
@@ -593,7 +593,7 @@ export function installMock(): void {
         return { ok: true, path: req.suggestedName }
       }
     },
-    // Updates: the browser preview is neither installable nor updatable — a
+    // Updates: the browser preview is neither installable nor updatable. A
     // static manual-mode snapshot that reports up-to-date on check. Add
     // `&mockUpdate=available` (or `=ready`, the Windows post-download state) to
     // the preview URL to seed a fake newer version so the startup toast and the
@@ -626,7 +626,7 @@ export function installMock(): void {
         onStatus: () => () => {}
       }
     })()
-    // NOTE: multiplayer is no longer part of window.api — the renderer owns the
+    // NOTE: multiplayer is no longer part of window.api. The renderer owns the
     // WebRTC session directly (features/play/online/mpClient), so there's nothing
     // to mock here anymore.
   }

@@ -3,7 +3,7 @@
  "band": "17",
  "order": 17,
  "title": "The Scotch & the Open Games",
- "subtitle": "1.e4 e5 beyond the Italian — the Scotch, the Scotch Gambit, the Four Knights, and the Petrov",
+ "subtitle": "1.e4 e5 beyond the Italian: the Scotch, the Scotch Gambit, the Four Knights, and the Petrov",
  "estMinutes": 42,
  "concepts": [
   {
@@ -24,12 +24,12 @@
   {
    "id": "four-knights-symmetry",
    "name": "Symmetrical development",
-   "short": "The Four Knights develops all four knights first — a solid, classical way to fight for the centre."
+   "short": "The Four Knights develops all four knights first. A solid, classical way to fight for the centre."
   },
   {
    "id": "fork-trick",
    "name": "The fork trick",
-   "short": "...Nxe4 followed by ...d5 regains the piece by forking two minor pieces — Black's standard equaliser."
+   "short": "...Nxe4 followed by ...d5 regains the piece by forking two minor pieces, Black's standard equaliser."
   },
   {
    "id": "petrov-counterattack",
@@ -39,7 +39,7 @@
   {
    "id": "petrov-d6-first",
    "name": "...d6 before ...Nxe4",
-   "short": "In the Petrov Black must play 3...d6 to dislodge the knight BEFORE recapturing on e4 — grabbing at once walks into a trap."
+   "short": "In the Petrov Black must play 3...d6 to dislodge the knight BEFORE recapturing on e4. Grabbing at once walks into a trap."
   }
  ],
  "lessons": [
@@ -53,7 +53,7 @@
      "kind": "teach",
      "title": "One pawn break, four openings",
      "intro": {
-      "text": "You already know the Italian: 1.e4 e5 2.Nf3 Nc6 3.Bc4. Today we go beyond it. After 2.Nf3 Nc6, instead of the quiet bishop move White can strike the centre at once with 3.d4 — the Scotch. We will also meet the Four Knights and Black's solid reply, the Petrov. The thread tying them together: open lines and rapid development.",
+      "text": "You already know the Italian: 1.e4 e5 2.Nf3 Nc6 3.Bc4. Today we go beyond it. After 2.Nf3 Nc6, instead of the quiet bishop move White can strike the centre at once with 3.d4, the Scotch. We will also meet the Four Knights and Black's solid reply, the Petrov. The thread tying them together: open lines and rapid development.",
       "annotations": [
        {
         "kind": "highlight",
@@ -66,7 +66,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
        "coach": {
-        "text": "This is the crossroads. White has played 2.Nf3 and Black defended with 2...Nc6. The Italian goes 3.Bc4. The Scotch goes 3.d4, challenging e5 directly. The Four Knights goes 3.Nc3. Each leads to an OPEN game — pieces out fast, the king's safety decided early.",
+        "text": "This is the crossroads. White has played 2.Nf3 and Black defended with 2...Nc6. The Italian goes 3.Bc4. The Scotch goes 3.d4, challenging e5 directly. The Four Knights goes 3.Nc3. Each leads to an OPEN game. Pieces out fast, the king's safety decided early.",
         "annotations": [
          {
           "kind": "arrow",
@@ -89,7 +89,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
        "coach": {
-        "text": "Black has another idea entirely: 2...Nf6, the Petrov. Black does not defend e5 — Black counter-attacks e4. Same spirit, open and principled, but Black equalises by copying. We will learn how to handle it without falling for its famous trap.",
+        "text": "Black has another idea entirely: 2...Nf6, the Petrov. Black does not defend e5. Black counter-attacks e4. Same spirit, open and principled, but Black equalises by copying. We will learn how to handle it without falling for its famous trap.",
         "annotations": [
          {
           "kind": "circle",
@@ -106,7 +106,7 @@
      "kind": "puzzle",
      "title": "Warm-up: open-game tactics",
      "intro": {
-      "text": "Open positions reward sharp eyes. Find the tactic in each — the kind that decides games once the centre is open."
+      "text": "Open positions reward sharp eyes. Find the tactic in each. The kind that decides games once the centre is open."
      },
      "puzzle": {
       "themes": [
@@ -124,7 +124,7 @@
    "id": "l2-the-scotch",
    "title": "The Scotch",
    "kind": "opening",
-   "summary": "1.e4 e5 2.Nf3 Nc6 3.d4 — open the centre and post the knight.",
+   "summary": "1.e4 e5 2.Nf3 Nc6 3.d4: open the centre and post the knight.",
    "segments": [
     {
      "kind": "model",
@@ -136,31 +136,31 @@
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — claim the centre, free the bishop and queen."
+        "text": "1.e4: claim the centre, free the bishop and queen."
        }
       },
       {
        "uci": "e7e5",
        "coach": {
-        "text": "1...e5 — Black meets you head-on: an Open Game."
+        "text": "1...e5, Black meets you head-on: an Open Game."
        }
       },
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — develop with a threat. The e5-pawn is now attacked."
+        "text": "2.Nf3: develop with a threat. The e5-pawn is now attacked."
        }
       },
       {
        "uci": "b8c6",
        "coach": {
-        "text": "2...Nc6 — the natural defence of e5."
+        "text": "2...Nc6: the natural defence of e5."
        }
       },
       {
        "uci": "d2d4",
        "coach": {
-        "text": "3.d4 — the Scotch! Instead of 3.Bc4 you strike the centre. e5 is hit a second time and cannot hold.",
+        "text": "3.d4: the Scotch! Instead of 3.Bc4 you strike the centre. e5 is hit a second time and cannot hold.",
         "annotations": [
          {
           "kind": "arrow",
@@ -175,13 +175,13 @@
       {
        "uci": "e5d4",
        "coach": {
-        "text": "3...exd4 — Black must take; defending with 3...d6 concedes the centre and 3...exd4 is correct."
+        "text": "3...exd4: Black must take; defending with 3...d6 concedes the centre and 3...exd4 is correct."
        }
       },
       {
        "uci": "f3d4",
        "coach": {
-        "text": "4.Nxd4 — recapture with the knight. Look where it stands: a dominant central post hitting c6, b5 and f5. This is the heart of the Scotch.",
+        "text": "4.Nxd4: recapture with the knight. Look where it stands: a dominant central post hitting c6, b5 and f5. This is the heart of the Scotch.",
         "annotations": [
          {
           "kind": "highlight",
@@ -207,13 +207,13 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — Black develops and attacks e4 in return. 4...Bc5 is the other main move, hitting the d4-knight."
+        "text": "4...Nf6: Black develops and attacks e4 in return. 4...Bc5 is the other main move, hitting the d4-knight."
        }
       },
       {
        "uci": "b1c3",
        "coach": {
-        "text": "5.Nc3 — defend e4 and develop. White has easy, harmonious development and a space edge — the Scotch's lasting promise.",
+        "text": "5.Nc3: defend e4 and develop. White has easy, harmonious development and a space edge, the Scotch's lasting promise.",
         "annotations": [
          {
           "kind": "highlight",
@@ -229,7 +229,7 @@
      "kind": "teach",
      "title": "The Mieses tabiya",
      "intro": {
-      "text": "The sharpest main line runs 4...Nf6 5.Nxc6 bxc6 6.e5 — pushing the pawn to gain space and chase the knight."
+      "text": "The sharpest main line runs 4...Nf6 5.Nxc6 bxc6 6.e5. Pushing the pawn to gain space and chase the knight."
      },
      "steps": [
       {
@@ -255,7 +255,7 @@
       {
        "fen": "r1b1kb1r/p1ppqppp/2p2n2/4P3/8/8/PPP1QPPP/RNB1KB1R w KQkq - 2 8",
        "coach": {
-        "text": "After 6...Qe7 7.Qe2 the queens face off down the e-file with the e5-pawn between them. White keeps the extra space; Black will play ...Nd5 and ...g6 to untangle. The verdict: a small, durable White pull — exactly what the Scotch is for. You do not need to memorise deeper; understand the structure.",
+        "text": "After 6...Qe7 7.Qe2 the queens face off down the e-file with the e5-pawn between them. White keeps the extra space; Black will play ...Nd5 and ...g6 to untangle. The verdict: a small, durable White pull. Exactly what the Scotch is for. You do not need to memorise deeper; understand the structure.",
         "annotations": [
          {
           "kind": "highlight",
@@ -277,7 +277,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
        "coach": {
-        "text": "Black just played 2...Nc6, defending e5. This is the Scotch — strike the centre. What is the move?",
+        "text": "Black just played 2...Nc6, defending e5. This is the Scotch, strike the centre. What is the move?",
         "annotations": [
          {
           "kind": "circle",
@@ -302,13 +302,13 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. The whole point of the Scotch is the immediate central break — push the d-pawn two squares."
+        "text": "Not yet. The whole point of the Scotch is the immediate central break. Push the d-pawn two squares."
        }
       },
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
        "coach": {
-        "text": "Black took: 3...exd4. Recapture on d4 with the piece that belongs there — the one that gains the great central post.",
+        "text": "Black took: 3...exd4. Recapture on d4 with the piece that belongs there. The one that gains the great central post.",
         "annotations": [
          {
           "kind": "highlight",
@@ -322,7 +322,7 @@
         "f3d4"
        ],
        "successLine": {
-        "text": "4.Nxd4! The knight dominates the centre, eyeing f5 and b5. Note: 4.Qxd4 also recaptures but ...Nc6 hits the queen with tempo — the knight recapture is cleaner.",
+        "text": "4.Nxd4! The knight dominates the centre, eyeing f5 and b5. Note: 4.Qxd4 also recaptures but ...Nc6 hits the queen with tempo. The knight recapture is cleaner.",
         "annotations": [
          {
           "kind": "highlight",
@@ -332,7 +332,7 @@
         ]
        },
        "retryLine": {
-        "text": "Recapture toward the centre. The knight on f3 is the natural piece — it lands on a powerful square."
+        "text": "Recapture toward the centre. The knight on f3 is the natural piece. It lands on a powerful square."
        }
       }
      ]
@@ -343,19 +343,19 @@
    "id": "l3-scotch-gambit",
    "title": "The Scotch Gambit",
    "kind": "variation",
-   "summary": "4.Bc4 — give back the pawn for development and pressure on f7.",
+   "summary": "4.Bc4: give back the pawn for development and pressure on f7.",
    "segments": [
     {
      "kind": "teach",
      "title": "A pawn for the initiative",
      "intro": {
-      "text": "Instead of 4.Nxd4 you can play 4.Bc4 — the Scotch Gambit. You leave the d4-pawn alone and develop with threats."
+      "text": "Instead of 4.Nxd4 you can play 4.Bc4, the Scotch Gambit. You leave the d4-pawn alone and develop with threats."
      },
      "steps": [
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/8/2BpP3/5N2/PPP2PPP/RNBQK2R b KQkq - 1 4",
        "coach": {
-        "text": "4.Bc4! The bishop slices toward f7 — Black's most vulnerable square — and White will castle and play c3 to recover d4 with interest. You are temporarily a pawn down, but ahead in development. That trade is the gambit's whole idea.",
+        "text": "4.Bc4! The bishop slices toward f7 (Black's most vulnerable square) and White will castle and play c3 to recover d4 with interest. You are temporarily a pawn down, but ahead in development. That trade is the gambit's whole idea.",
         "annotations": [
          {
           "kind": "arrow",
@@ -375,7 +375,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4P3/2Bp4/5N2/PPP2PPP/RNBQK2R b KQkq - 0 5",
        "coach": {
-        "text": "A common line: 4...Nf6 5.e5, gaining space and kicking the knight. The pawn on e5 and the Bc4 both stab at the kingside. Black must play accurately (5...d5!) to survive — and at the board, the side with the initiative usually wins the practical fight.",
+        "text": "A common line: 4...Nf6 5.e5, gaining space and kicking the knight. The pawn on e5 and the Bc4 both stab at the kingside. Black must play accurately (5...d5!) to survive, and at the board, the side with the initiative usually wins the practical fight.",
         "annotations": [
          {
           "kind": "highlight",
@@ -404,7 +404,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
        "coach": {
-        "text": "Develop the bishop to its most aggressive diagonal, aiming straight at f7 — and offer the d4-pawn for fast development.",
+        "text": "Develop the bishop to its most aggressive diagonal, aiming straight at f7, and offer the d4-pawn for fast development.",
         "annotations": [
          {
           "kind": "arrow",
@@ -429,7 +429,7 @@
         ]
        },
        "retryLine": {
-        "text": "This is a gambit — don't rush to win d4 back. Develop a piece with a threat: the bishop belongs on the f7 diagonal."
+        "text": "This is a gambit. Don't rush to win d4 back. Develop a piece with a threat: the bishop belongs on the f7 diagonal."
        }
       }
      ]
@@ -440,7 +440,7 @@
    "id": "l4-four-knights",
    "title": "The Four Knights",
    "kind": "variation",
-   "summary": "3.Nc3 Nf6 — develop all the knights, then fight for the centre.",
+   "summary": "3.Nc3 Nf6: develop all the knights, then fight for the centre.",
    "segments": [
     {
      "kind": "model",
@@ -452,7 +452,7 @@
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 Nc6 — the standard Open Game start."
+        "text": "1.e4 e5 2.Nf3 Nc6: the standard Open Game start."
        }
       },
       {
@@ -464,19 +464,19 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — attack e5."
+        "text": "2.Nf3: attack e5."
        }
       },
       {
        "uci": "b8c6",
        "coach": {
-        "text": "2...Nc6 — defend it."
+        "text": "2...Nc6: defend it."
        }
       },
       {
        "uci": "b1c3",
        "coach": {
-        "text": "3.Nc3 — develop the second knight and reinforce e4. This is the Four Knights move-order.",
+        "text": "3.Nc3: develop the second knight and reinforce e4. This is the Four Knights move-order.",
         "annotations": [
          {
           "kind": "highlight",
@@ -490,7 +490,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "3...Nf6 — Black completes the symmetry, attacking e4. Now all four knights are out.",
+        "text": "3...Nf6: Black completes the symmetry, attacking e4. Now all four knights are out.",
         "annotations": [
          {
           "kind": "circle",
@@ -504,7 +504,7 @@
       {
        "uci": "f1b5",
        "coach": {
-        "text": "4.Bb5 — the Spanish Four Knights, the soundest try, pinning the c6-knight and pressuring e5 indirectly. (4.Bc4 is playable but allows a famous trick — next.)",
+        "text": "4.Bb5: the Spanish Four Knights, the soundest try, pinning the c6-knight and pressuring e5 indirectly. (4.Bc4 is playable but allows a famous trick, next.)",
         "annotations": [
          {
           "kind": "arrow",
@@ -518,7 +518,7 @@
       {
        "uci": "f8b4",
        "coach": {
-        "text": "4...Bb4 — Black copies, pinning your c3-knight. Symmetry holds; the game is balanced and rich. White breaks it later with d3, Bxc6 and a timely Nd5.",
+        "text": "4...Bb4: Black copies, pinning your c3-knight. Symmetry holds; the game is balanced and rich. White breaks it later with d3, Bxc6 and a timely Nd5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -533,15 +533,15 @@
     },
     {
      "kind": "teach",
-     "title": "The fork trick — why not 4.Bc4",
+     "title": "The fork trick: why not 4.Bc4",
      "intro": {
-      "text": "If White plays the natural 4.Bc4, Black has a clever equaliser you must know — from BOTH sides."
+      "text": "If White plays the natural 4.Bc4, Black has a clever equaliser you must know, from BOTH sides."
      },
      "steps": [
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4",
        "coach": {
-        "text": "White has played 4.Bc4. It looks fine — but e4 is only defended by the c3-knight. Black strikes: 4...Nxe4! Surely that just loses a knight to 5.Nxe4? Watch the point.",
+        "text": "White has played 4.Bc4. It looks fine, but e4 is only defended by the c3-knight. Black strikes: 4...Nxe4! Surely that just loses a knight to 5.Nxe4? Watch the point.",
         "annotations": [
          {
           "kind": "circle",
@@ -561,7 +561,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n5/4p3/2B1N3/5N2/PPPP1PPP/R1BQK2R b KQkq - 0 5",
        "coach": {
-        "text": "After 5.Nxe4 Black plays 5...d5! — one pawn forking the bishop on c4 and the knight on e4 at the same time. Black wins one of them back and regains the piece with a comfortable game. THIS is why 4.Bb5 is preferred: it does not hang e4 to the trick.",
+        "text": "After 5.Nxe4 Black plays 5...d5!. One pawn forking the bishop on c4 and the knight on e4 at the same time. Black wins one of them back and regains the piece with a comfortable game. THIS is why 4.Bb5 is preferred: it does not hang e4 to the trick.",
         "annotations": [
          {
           "kind": "arrow",
@@ -595,7 +595,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2N2N2/PPPP1PPP/R1BQK2R b KQkq - 5 4",
        "coach": {
-        "text": "e4 is guarded only by the knight on c3. Take it — the recapture runs into a fork.",
+        "text": "e4 is guarded only by the knight on c3. Take it. The recapture runs into a fork.",
         "annotations": [
          {
           "kind": "circle",
@@ -609,7 +609,7 @@
         "f6e4"
        ],
        "successLine": {
-        "text": "4...Nxe4! Now 5.Nxe4 d5 forks the bishop and knight, and Black is fine. If instead 5.Bxf7+ Kxf7 6.Nxe4, material is already even — Black has the bishop pair and White only shuffled the king; 6...d5 simply kicks the knight back and Black is comfortable.",
+        "text": "4...Nxe4! Now 5.Nxe4 d5 forks the bishop and knight, and Black is fine. If instead 5.Bxf7+ Kxf7 6.Nxe4, material is already even. Black has the bishop pair and White only shuffled the king; 6...d5 simply kicks the knight back and Black is comfortable.",
         "annotations": [
          {
           "kind": "arrow",
@@ -620,7 +620,7 @@
         ]
        },
        "retryLine": {
-        "text": "The combination starts with a capture on e4. Grab the pawn — the follow-up ...d5 will fork your way out."
+        "text": "The combination starts with a capture on e4. Grab the pawn. The follow-up ...d5 will fork your way out."
        }
       },
       {
@@ -645,7 +645,7 @@
         "d7d5"
        ],
        "successLine": {
-        "text": "5...d5! A textbook fork-trick: the pawn attacks Bc4 and Ne4 together. Black regains the piece and equalises. File this idea away — it appears all over the Open Games.",
+        "text": "5...d5! A textbook fork-trick: the pawn attacks Bc4 and Ne4 together. Black regains the piece and equalises. File this idea away: it appears all over the Open Games.",
         "annotations": [
          {
           "kind": "arrow",
@@ -667,19 +667,19 @@
    "id": "l5-petrov",
    "title": "The Petrov / Russian Defence",
    "kind": "variation",
-   "summary": "2...Nf6 — counter-attack e4 instead of defending e5, and avoid the famous trap.",
+   "summary": "2...Nf6: counter-attack e4 instead of defending e5, and avoid the famous trap.",
    "segments": [
     {
      "kind": "model",
      "title": "Copy, but in the right order",
      "intro": {
-      "text": "The Petrov is Black's rock-solid weapon. The move order is everything — learn it precisely."
+      "text": "The Petrov is Black's rock-solid weapon. The move order is everything. Learn it precisely."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 — White attacks e5."
+        "text": "1.e4 e5 2.Nf3: White attacks e5."
        }
       },
       {
@@ -691,13 +691,13 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — the threat on e5."
+        "text": "2.Nf3: the threat on e5."
        }
       },
       {
        "uci": "g8f6",
        "coach": {
-        "text": "2...Nf6 — the Petrov! Black ignores the threat to e5 and counter-attacks e4. Tit for tat.",
+        "text": "2...Nf6: the Petrov! Black ignores the threat to e5 and counter-attacks e4. Tit for tat.",
         "annotations": [
          {
           "kind": "arrow",
@@ -712,7 +712,7 @@
       {
        "uci": "f3e5",
        "coach": {
-        "text": "3.Nxe5 — White grabs the pawn. Now the critical question: how does Black recapture?",
+        "text": "3.Nxe5: White grabs the pawn. Now the critical question: how does Black recapture?",
         "annotations": [
          {
           "kind": "highlight",
@@ -740,7 +740,7 @@
       {
        "uci": "e5f3",
        "coach": {
-        "text": "4.Nf3 — the knight retreats. NOW e4 is safe to take.",
+        "text": "4.Nf3: the knight retreats. NOW e4 is safe to take.",
         "annotations": [
          {
           "kind": "arrow",
@@ -754,7 +754,7 @@
       {
        "uci": "f6e4",
        "coach": {
-        "text": "4...Nxe4 — with the white knight off e5, Black recaptures the pawn safely. Material is level.",
+        "text": "4...Nxe4: with the white knight off e5, Black recaptures the pawn safely. Material is level.",
         "annotations": [
          {
           "kind": "highlight",
@@ -768,13 +768,13 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "5.d4 — White grabs the centre and opens lines for the pieces."
+        "text": "5.d4: White grabs the centre and opens lines for the pieces."
        }
       },
       {
        "uci": "d6d5",
        "coach": {
-        "text": "5...d5 — Black supports the e4-knight and stakes a central claim. The position is symmetrical and very solid: the Petrov's calling card.",
+        "text": "5...d5: Black supports the e4-knight and stakes a central claim. The position is symmetrical and very solid: the Petrov's calling card.",
         "annotations": [
          {
           "kind": "highlight",
@@ -788,7 +788,7 @@
       {
        "uci": "f1d3",
        "coach": {
-        "text": "6.Bd3 — develop and challenge the e4-knight. White has a tiny pull from the move; Black is rock-solid. A typical Petrov tabiya."
+        "text": "6.Bd3: develop and challenge the e4-knight. White has a tiny pull from the move; Black is rock-solid. A typical Petrov tabiya."
        }
       }
      ]
@@ -803,7 +803,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPPQPPP/RNB1KB1R b KQkq - 1 4",
        "coach": {
-        "text": "Black played the greedy 3...Nxe4? White answered 4.Qe2! — pinning ideas and threatening the e-file. Black must NOT develop naively. The only good move is 4...Qe7, when 5.Qxe4 d6 wins the knight back. But what happens if Black plays a 'natural' developing move like 4...Nf6?",
+        "text": "Black played the greedy 3...Nxe4? White answered 4.Qe2!, pinning ideas and threatening the e-file. Black must NOT develop naively. The only good move is 4...Qe7, when 5.Qxe4 d6 wins the knight back. But what happens if Black plays a 'natural' developing move like 4...Nf6?",
         "annotations": [
          {
           "kind": "arrow",
@@ -823,7 +823,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/2N2n2/8/8/8/PPPPQPPP/RNB1KB1R b KQkq - 3 5",
        "coach": {
-        "text": "After 4...Nf6?? White plays 5.Nc6+!! The knight moves with DISCOVERED CHECK — the Qe2 now checks the king down the open e-file. Black must deal with the check, and the c6-knight forks the queen on d8. White wins the queen for a knight. THIS is why Black plays 3...d6 first.",
+        "text": "After 4...Nf6?? White plays 5.Nc6+!! The knight moves with DISCOVERED CHECK. The Qe2 now checks the king down the open e-file. Black must deal with the check, and the c6-knight forks the queen on d8. White wins the queen for a knight. THIS is why Black plays 3...d6 first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -859,7 +859,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
        "coach": {
-        "text": "Do NOT grab e4 yet — that runs into Qe2 and a discovered-check trap. First evict the knight on e5 with a pawn.",
+        "text": "Do NOT grab e4 yet. That runs into Qe2 and a discovered-check trap. First evict the knight on e5 with a pawn.",
         "annotations": [
          {
           "kind": "highlight",
@@ -884,7 +884,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet — taking e4 now allows Qe2 and the Nc6+ trap. Play the pawn move that attacks the knight on e5 first."
+        "text": "Not yet: taking e4 now allows Qe2 and the Nc6+ trap. Play the pawn move that attacks the knight on e5 first."
        }
       },
       {
@@ -916,7 +916,7 @@
         ]
        },
        "retryLine": {
-        "text": "A developing move walks into Nc6+ winning the queen. You must answer the queen on the e-file directly — meet it with your own queen."
+        "text": "A developing move walks into Nc6+ winning the queen. You must answer the queen on the e-file directly. Meet it with your own queen."
        }
       }
      ]
@@ -975,7 +975,7 @@
       {
        "fen": "r1bqk1nr/pppp1ppp/2n5/2b5/2BpP3/5N2/PPP2PPP/RNBQK2R w KQkq - 2 5",
        "coach": {
-        "text": "Gambit plan (White): when you sacrifice a pawn (here Scotch Gambit, 4...Bc5), you must play FAST. Castle, play c3 to hit d4 and open lines, and target f7. Initiative is the currency you bought with the pawn — spend it before Black consolidates.",
+        "text": "Gambit plan (White): when you sacrifice a pawn (here Scotch Gambit, 4...Bc5), you must play FAST. Castle, play c3 to hit d4 and open lines, and target f7. Initiative is the currency you bought with the pawn. Spend it before Black consolidates.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1027,7 +1027,7 @@
      "3.Bb5"
     ],
     "answerIndex": 1,
-    "explain": "3.d4 is the Scotch — an immediate central break. 3.Bc4 is the Italian, 3.Nc3 the Four Knights, 3.Bb5 the Ruy Lopez."
+    "explain": "3.d4 is the Scotch. An immediate central break. 3.Bc4 is the Italian, 3.Nc3 the Four Knights, 3.Bb5 the Ruy Lopez."
    },
    {
     "kind": "mc",
@@ -1072,16 +1072,16 @@
     "solutionUci": [
      "d2d4"
     ],
-    "explain": "3.d4 — the Scotch break, attacking e5 a second time and opening the centre."
+    "explain": "3.d4: the Scotch break, attacking e5 a second time and opening the centre."
    },
    {
     "kind": "play",
-    "prompt": "3.d4 exd4. Recapture so your recapturing piece lands on a strong, uncontested square — not one Black can hit for free.",
+    "prompt": "3.d4 exd4. Recapture so your recapturing piece lands on a strong, uncontested square. Not one Black can hit for free.",
     "fen": "r1bqkbnr/pppp1ppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
     "solutionUci": [
      "f3d4"
     ],
-    "explain": "4.Nxd4 — the knight lands on a powerful central square. 4.Qxd4 allows ...Nc6 hitting the queen with tempo."
+    "explain": "4.Nxd4: the knight lands on a powerful central square. 4.Qxd4 allows ...Nc6 hitting the queen with tempo."
    },
    {
     "kind": "play",
@@ -1090,7 +1090,7 @@
     "solutionUci": [
      "f1c4"
     ],
-    "explain": "4.Bc4 — the Scotch Gambit, aiming the bishop at f7 and trading the pawn for the initiative."
+    "explain": "4.Bc4: the Scotch Gambit, aiming the bishop at f7 and trading the pawn for the initiative."
    },
    {
     "kind": "play",
@@ -1103,7 +1103,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Continuing as Black, White recaptured 5.Nxe4. One pawn push attacks two pieces at once — find it.",
+    "prompt": "Continuing as Black, White recaptured 5.Nxe4. One pawn push attacks two pieces at once. Find it.",
     "fen": "r1bqkb1r/pppp1ppp/2n5/4p3/2B1N3/5N2/PPPP1PPP/R1BQK2R b KQkq - 0 5",
     "solutionUci": [
      "d7d5"
@@ -1112,7 +1112,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Petrov, you are Black: 2...Nf6 3.Nxe5. Before you regain the pawn, deal with the intruder on e5 — what do you play?",
+    "prompt": "Petrov, you are Black: 2...Nf6 3.Nxe5. Before you regain the pawn, deal with the intruder on e5. What do you play?",
     "fen": "rnbqkb1r/pppp1ppp/5n2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
     "solutionUci": [
      "d7d6"
@@ -1126,11 +1126,11 @@
     "solutionUci": [
      "f6e4"
     ],
-    "explain": "4...Nxe4 — with White's knight off e5 there is no Qe2/Nc6+ trick, so Black regains the pawn and the game is level. Order over greed."
+    "explain": "4...Nxe4: with White's knight off e5 there is no Qe2/Nc6+ trick, so Black regains the pawn and the game is level. Order over greed."
    },
    {
     "kind": "play",
-    "prompt": "You are Black: you grabbed 3...Nxe4 early and White hit you with 4.Qe2. Only one reply saves the game — meet the queen head-on.",
+    "prompt": "You are Black: you grabbed 3...Nxe4 early and White hit you with 4.Qe2. Only one reply saves the game. Meet the queen head-on.",
     "fen": "rnbqkb1r/pppp1ppp/8/4N3/4n3/8/PPPPQPPP/RNB1KB1R b KQkq - 1 4",
     "solutionUci": [
      "d8e7"
@@ -1143,7 +1143,7 @@
     "fen": "rnbqkb1r/pppp1ppp/2N2n2/8/8/8/PPPPQPPP/RNB1KB1R b KQkq - 3 5",
     "lastMoveUci": "e5c6",
     "verdict": "correct",
-    "explain": "5.Nc6+ is a discovered check — Qe2 checks down the open e-file — and the knight forks the queen on d8. White wins the queen."
+    "explain": "5.Nc6+ is a discovered check (Qe2 checks down the open e-file) and the knight forks the queen on d8. White wins the queen."
    },
    {
     "kind": "judge",
@@ -1159,7 +1159,7 @@
     "fen": "rnbqkb1r/pppp1ppp/5n2/4N3/8/8/PPPPQPPP/RNB1KB1R w KQkq - 2 5",
     "lastMoveUci": "e4f6",
     "verdict": "blunder",
-    "explain": "4...Nf6?? loses the queen. With the e-file open and the queen on e2, White plays 5.Nc6+ — a discovered check that simultaneously forks the queen on d8. Black had to play 4...Qe7."
+    "explain": "4...Nf6?? loses the queen. With the e-file open and the queen on e2, White plays 5.Nc6+. A discovered check that simultaneously forks the queen on d8. Black had to play 4...Qe7."
    }
   ]
  },

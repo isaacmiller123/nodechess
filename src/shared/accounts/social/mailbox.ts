@@ -1,4 +1,4 @@
-// A6 social surface — MAILBOX + ANTI-SPAM (spec §10, C-3). The store-and-
+// A6 social surface: MAILBOX + ANTI-SPAM (spec §10, C-3). The store-and-
 // forward box a relaying peer keeps for an offline recipient (friend requests
 // and similar), with the §10 flood defense implemented EXACTLY:
 //
@@ -8,19 +8,19 @@
 //    established roots before the offline recipient next syncs."
 //
 // Modeled as a deterministic PURE structure: mailboxAdmit(state, msg, meta)
-// → { state', admitted, reason?, evicted? }. No I/O, no ambient time —
+// → { state', admitted, reason?, evicted? }. No I/O, no ambient time:
 // meta.nowWts is the caller's witnessed-time input (§4), and meta.edgeMicro
 // is the caller-VERIFIED edge strength of the sender toward the recipient
 // (entanglement / trust / reputation, folded to one integer in [0, 1e6] by
-// the relay from public signed data — never self-asserted by the sender, §0).
+// the relay from public signed data. Never self-asserted by the sender, §0).
 // This module trusts meta exactly as far as its shape: the cryptographic
 // verification of edges is the caller's job because it requires chains, which
 // this bounded structure deliberately does not hold. What IS verified here,
-// unconditionally: the envelope's ed25519 signature by the SENDER ROOT — a
+// unconditionally: the envelope's ed25519 signature by the SENDER ROOT. A
 // relay must never store spoofed mail, or the flood defense is defeated by
 // impersonating established senders. Fail-closed typed rejections everywhere.
 //
-// C-3 honesty: this state is ephemeral coordination — expiring (retentionMs),
+// C-3 honesty: this state is ephemeral coordination. Expiring (retentionMs),
 // reconstructible (senders just re-send), NO authority (a dropped request
 // harms liveness, never truth; friendship itself is the §3 witnessed edge,
 // not the mailbox). Honest players are never *harmed*: the §10 invariant
@@ -29,7 +29,7 @@
 //
 // DETERMINISM: state is a CanonicalObject (plain objects/arrays, integers
 // and strings only) so canonicalHash(state) is the bit-identity anchor. The
-// state after any call sequence is a pure function of that sequence — eager
+// state after any call sequence is a pure function of that sequence. Eager
 // global pruning on every state-MODIFYING call (trust.ts discipline: rejected-
 // before-prune inputs return the SAME state reference), explicit caps on
 // every axis, and a documented total eviction order.
@@ -63,7 +63,7 @@ export interface MailboxParams extends CanonicalObject {
   sendersCap: number
   /** Stored mail older than this is pruned, ms. */
   retentionMs: number
-  /** Max payload chars (opaque string — ciphertext/b64u, relay never reads it). */
+  /** Max payload chars (opaque string, ciphertext/b64u, relay never reads it). */
   payloadMaxChars: number
 }
 
@@ -86,20 +86,20 @@ export function mailboxParamsDigest(params: MailboxParams): string {
 export const PARAMS_SOCIAL_MAILBOX_DIGEST: string = mailboxParamsDigest(PARAMS_SOCIAL_MAILBOX)
 
 // ---------------------------------------------------------------------------
-// Envelope — what a sender signs. The relay treats payload as opaque.
+// Envelope: what a sender signs. The relay treats payload as opaque.
 // ---------------------------------------------------------------------------
 
 export interface MailEnvelope extends CanonicalObject {
   v: 1
-  /** Sender ROOT public key — also the signer of this envelope. */
+  /** Sender ROOT public key. Also the signer of this envelope. */
   sender: B64u
   /** Recipient ROOT public key. */
   recipient: B64u
   /** Message kind, e.g. 'friend-request' (1..32 chars). */
   kind: string
-  /** Opaque bounded payload — the relay never interprets it. */
+  /** Opaque bounded payload. The relay never interprets it. */
   payload: string
-  /** Sender-claimed unix ms — informational + id uniqueness; never trusted. */
+  /** Sender-claimed unix ms: informational + id uniqueness; never trusted. */
   sentTs: number
 }
 
@@ -161,12 +161,12 @@ export function mailboxInit(params: MailboxParams = PARAMS_SOCIAL_MAILBOX): Mail
 
 /** Caller-verified admission facts. NEVER derived from the message itself. */
 export interface AdmitMeta {
-  /** Witnessed time of arrival (§4) — the caller's clock discipline, not ours. */
+  /** Witnessed time of arrival (§4). The caller's clock discipline, not ours. */
   nowWts: number
   /**
    * Sender→recipient edge strength in micro-units [0, 1e6], computed by the
    * relay from PUBLIC SIGNED DATA (a §3 witnessed friend/game edge, mm/trust
-   * T, §6b reputation — caller's fold). 0 = no known edge (fresh root).
+   * T, §6b reputation. Caller's fold). 0 = no known edge (fresh root).
    */
   edgeMicro: number
 }
@@ -213,8 +213,8 @@ export interface AdmitResult {
  *   2. 'bad-meta'        strict meta shape (integers in range)
  *   3. 'params-mismatch' state.params ≠ digest(params)
  *   4. 'bad-sig'         ed25519 by body.sender over canonicalBytes(body)
- *   5. 'self-mail'       sender === recipient
- *      — rejections 1..5 are PURE: the returned state is the SAME reference —
+ *   5. 'self-mail'       sender === recipient.
+ *      Rejections 1..5 are PURE: the returned state is the SAME reference.
  *   6. PRUNE             global eager prune (expired mail + expired windows);
  *                        every later outcome, admitted or not, returns state'
  *   7. 'duplicate'       id already in the recipient's box (checked BEFORE the
@@ -224,12 +224,12 @@ export interface AdmitResult {
  *                        when nowWts ≥ winStartWts + rateWindowMs; only
  *                        ADMITTED messages are ever counted, never refunded)
  *   9. 'relay-full'      recipient box absent and boxes at recipientsCap (a
- *                        new recipient NEVER evicts another recipient's box —
+ *                        new recipient NEVER evicts another recipient's box:
  *                        otherwise sybil recipients could flush real boxes)
  *  10. 'sender-share'    sender already holds perSenderPerBox slots in box
  *  11. 'box-full'        box at boxCap: the eviction candidate is the stored
  *                        message minimal by (edgeMicro ASC, arrivedWts DESC,
- *                        id DESC by compareKeys) — i.e. weakest edge first,
+ *                        id DESC by compareKeys), i.e. weakest edge first,
  *                        then the NEWEST arrival (earliest-received mail of a
  *                        class is retained longest), then the greater id.
  *                        Admit-with-eviction iff msg.edgeMicro is STRICTLY
@@ -247,7 +247,7 @@ export interface AdmitResult {
  *                        (winStartWts ASC, sender ASC by compareKeys).
  *                        HONEST TRADEOFF (A6 review mailbox-1): prune (step
  *                        6) already dropped every EXPIRED window, so the
- *                        evicted window is an ACTIVE one — that sender's
+ *                        evicted window is an ACTIVE one. That sender's
  *                        rate limit resets early. Deterministic bounded
  *                        memory is chosen over a perfect limiter at the cap;
  *                        sendersCap must be sized so rotation is rare, and a
@@ -263,7 +263,7 @@ export function mailboxAdmit(
   meta: AdmitMeta,
   params: MailboxParams = PARAMS_SOCIAL_MAILBOX,
 ): AdmitResult {
-  // 1..5 — pure gate, state untouched (same reference) on rejection.
+  // 1..5: pure gate, state untouched (same reference) on rejection.
   if (!zSignedMail.safeParse(msg).success || msg.body.payload.length > params.payloadMaxChars)
     return { state, admitted: false, reason: 'bad-shape' }
   if (!zAdmitMeta.safeParse(meta).success) return { state, admitted: false, reason: 'bad-meta' }
@@ -279,32 +279,32 @@ export function mailboxAdmit(
   const { sender, recipient } = msg.body
   if (sender === recipient) return { state, admitted: false, reason: 'self-mail' }
 
-  // 6 — prune, then work on mutable copies (state' from here on).
+  // 6: prune, then work on mutable copies (state' from here on).
   const { boxes, senders } = prune(state, meta.nowWts, params)
   const pruned: MailboxState = { v: 1, params: state.params, boxes, senders }
 
-  // 7 — dedup before any charge.
+  // 7: dedup before any charge.
   const id = mailId(msg.body)
   const box = boxes[recipient] ?? []
   if (box.some((m) => m.id === id)) return { state: pruned, admitted: false, reason: 'duplicate' }
 
-  // 8 — per-sender-root rate limit (fixed window, global across recipients).
+  // 8: per-sender-root rate limit (fixed window, global across recipients).
   const win = senders[sender]
   const rolled = !win || meta.nowWts >= win.winStartWts + params.rateWindowMs
   const count = rolled ? 0 : win.count
   if (count >= params.ratePerWindow) return { state: pruned, admitted: false, reason: 'rate-limited' }
 
-  // 9 — recipient capacity (no cross-recipient eviction, ever).
+  // 9: recipient capacity (no cross-recipient eviction, ever).
   if (!(recipient in boxes) && Object.keys(boxes).length >= params.recipientsCap)
     return { state: pruned, admitted: false, reason: 'relay-full' }
 
-  // 10 — fair share inside the box.
+  // 10: fair share inside the box.
   let senderHeld = 0
   for (const m of box) if (m.sender === sender) senderHeld++
   if (senderHeld >= params.perSenderPerBox)
     return { state: pruned, admitted: false, reason: 'sender-share' }
 
-  // 11 — box capacity + priority eviction.
+  // 11. Box capacity + priority eviction.
   let nextBox = box
   let evicted: StoredMail | undefined
   if (box.length >= params.boxCap) {
@@ -316,7 +316,7 @@ export function mailboxAdmit(
     nextBox = box.filter((_, i) => i !== cand)
   }
 
-  // 12 — admit + charge.
+  // 12. Admit + charge.
   const stored: StoredMail = {
     id,
     sender,
@@ -378,13 +378,13 @@ function prune(
 }
 
 // ---------------------------------------------------------------------------
-// Drain — the recipient syncs
+// Drain: the recipient syncs
 // ---------------------------------------------------------------------------
 
 export interface DrainResult {
   state: MailboxState
   /** Priority order: edgeMicro DESC, arrivedWts ASC, id ASC (established and
-   * earliest first) — the §10 prioritization, visible at delivery too. */
+   * earliest first). The §10 prioritization, visible at delivery too. */
   msgs: StoredMail[]
 }
 

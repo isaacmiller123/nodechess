@@ -69,7 +69,7 @@ const engineEvalSchema = z
 // Wire bounds (mirroring server/review.ts): these channels are served to
 // anonymous callers by the web bridge, so every array/string is capped. The
 // caps only need to (a) sit safely ABOVE the largest payload the desktop
-// renderer legitimately sends and (b) be bounded — the 1 MiB body limit + any
+// renderer legitimately sends and (b) be bounded. The 1 MiB body limit + any
 // low-thousands cap already defeats the mutex-stall DoS, so the generous
 // headroom below costs nothing on the security axis and can never reject a
 // real payload. A FEN is ≤~90 chars, a UCI move ≤5. An engine principal
@@ -121,7 +121,7 @@ export function registerSchool(): void {
     const ch = getChapter(id)
     if (!ch) return { chapter: null }
     // Spec §2.2a: the internal Elo band gates unlocks but is NEVER sent to the
-    // renderer — strip it here exactly as chapterMetas() strips it from the cards.
+    // renderer: strip it here exactly as chapterMetas() strips it from the cards.
     const { eloFloor: _hidden, ...safe } = ch
     return { chapter: safe }
   })
@@ -134,7 +134,7 @@ export function registerSchool(): void {
     ({ conceptId, correct }) => {
       const result = recordConcept(conceptId, correct)
       // Seed the concept's SRS card the first time it is taught (no-op when a card
-      // already exists — an in-flight schedule is never reset) so taught concepts
+      // already exists. An in-flight schedule is never reset) so taught concepts
       // actually enter the review queue. Seeded HERE rather than inside
       // mastery.repo.recordConcept to avoid a mastery.repo <-> srs.repo import
       // cycle (srs.repo already imports recordConcept for its review path).
@@ -183,9 +183,9 @@ export function registerSchool(): void {
     z.object({ chapterId: z.string().min(1), lessonId: z.string().min(1) }).strict(),
     ({ chapterId, lessonId }) => {
       recordLesson(chapterId, lessonId)
-      // Completing any lesson is a study action: count today (the LOCAL day —
+      // Completing any lesson is a study action: count today (the LOCAL day,
       // recordSchoolDay defaults to it) toward the school streak. Written here so
-      // there is exactly ONE lesson_done writer — the renderer never calls
+      // there is exactly ONE lesson_done writer. The renderer never calls
       // school:recordDaily itself.
       recordSchoolDay({ lesson: true })
       return { ok: true }
@@ -194,7 +194,7 @@ export function registerSchool(): void {
 
   handle(
     'school:recordTest',
-    // Client no longer asserts pass/fail — the server recomputes it from the
+    // Client no longer asserts pass/fail. The server recomputes it from the
     // chapter's threshold (server-authoritative). Only the raw score + the attempt
     // number the client thinks it's on are accepted.
     z
@@ -257,7 +257,7 @@ export function registerSchool(): void {
   // School "next steps" surface: weakness-driven recommendation (Feature 2),
   // spaced repetition of concepts (Feature 3), daily lesson + local-day streak
   // (Feature 4). Each delegates to a repo function owned by a builder slice
-  // (recommend.ts / srs.repo.ts / daily.repo.ts) — thin IPC, zod-validated.
+  // (recommend.ts / srs.repo.ts / daily.repo.ts), thin IPC, zod-validated.
   //
   //   school:recommend      {}                   -> { recommended }
   //   school:dueReviews     { limit? }           -> { due }

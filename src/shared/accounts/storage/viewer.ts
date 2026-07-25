@@ -1,4 +1,4 @@
-// A3 storage — the reconstruction viewer (spec §5 viewing flow, §2 checkpoint
+// A3 storage: the reconstruction viewer (spec §5 viewing flow, §2 checkpoint
 // verification rules, kickoff item 5; contracts: ./types.ts HolderSummary /
 // ReconstructedProfile, ./pointers.ts contact sheet, ./shards.ts shard read
 // path, ../checkpoint.ts incremental/deep verification).
@@ -19,12 +19,12 @@
 // signatures + witness attestations. The overlay only moves bytes.
 //
 // Determinism rules (suite-load-bearing): platform-neutral (no `node:`
-// imports, no DOM globals), no Date.now / Math.random / timers — clocks,
+// imports, no DOM globals), no Date.now / Math.random / timers. Clocks,
 // directory snapshots, and the §2 spot-check draw are all INJECTED by the
 // caller. Every verifier is pure, fails closed, and is byte-identical on node
 // and in the browser bundle. Distance/duty math reuses witness/distance.ts via
 // pointers/shards; chain and checkpoint verification reuse ../chain.ts and
-// ../checkpoint.ts — nothing is reimplemented.
+// ../checkpoint.ts: nothing is reimplemented.
 
 import { z } from 'zod'
 import { certSetFrom, certsProving } from '../certs'
@@ -69,7 +69,7 @@ import type {
 } from './types'
 
 // ---------------------------------------------------------------------------
-// Bounds (viewer-side hygiene caps — processing bounds, not revisable params)
+// Bounds (viewer-side hygiene caps: processing bounds, not revisable params)
 // ---------------------------------------------------------------------------
 
 /** Max events of a merged 'events' row the viewer verifies per resolve. Real
@@ -86,7 +86,7 @@ export const SUMMARY_PROFILE_MAX = 16
 // ---------------------------------------------------------------------------
 
 /** §2 checkpoint-audit context. `spot` is the INJECTED probabilistic draw
- * (roll ∈ [0,1) from the caller's RNG; drawn when roll < p) — the viewer has
+ * (roll ∈ [0,1) from the caller's RNG; drawn when roll < p): the viewer has
  * no ambient randomness. `cosig` supplies the eligible-witness join + M-of-N
  * rule; WITHOUT it cosigner diversity is unknowable, and the viewer fails
  * toward auditing (spot-check whenever coverage allows). */
@@ -101,7 +101,7 @@ export interface ResolveOpts extends VerifyPointerOpts, CkptAuditOpts {
   holdersMax?: number
   holdersMin?: number
   /** Verified HolderSummary inputs pre-fetched by the embedder (A6 fabric RPC
-   * seam) — verified here regardless of source; junk contributes nothing. */
+   * seam): verified here regardless of source; junk contributes nothing. */
   summaries?: readonly unknown[]
   /** Events-row processing bound; default VIEWER_EVENTS_MAX. */
   eventsMax?: number
@@ -109,7 +109,7 @@ export interface ResolveOpts extends VerifyPointerOpts, CkptAuditOpts {
 
 /** How the newest checkpoint was verified + what A4 needs pinned about its
  * cosigner set. `mOfN`/`prefixes16` are present only when opts.cosig supplied
- * the eligibility join — surfacing the honest A4 seam otherwise. */
+ * the eligibility join: surfacing the honest A4 seam otherwise. */
 export interface CkptSurface {
   event: SignedEvent
   id: EventId
@@ -130,7 +130,7 @@ export interface CkptSurface {
 export type ShardReadReason = 'no-rows' | 'below-k' | 'reconstruct-failed' | 'bad-chain'
 
 /** Honest availability report for the shard-layer read (§5 failure mode:
- * temporary unavailability that heals — never silent loss). */
+ * temporary unavailability that heals: never silent loss). */
 export interface ShardReadReport {
   /** Verified live rows observed for the freshest snapshot group. */
   liveRows: number
@@ -163,7 +163,7 @@ export interface ResolvedProfile extends ReconstructedProfile {
   /** The ≤holdersMax freshest legitimate holders (spec §5 fast path). */
   holdersRanked: RankedHolder[]
   shardReport: ShardReadReport
-  /** Root-signed device certs collected across all sources — carried so the
+  /** Root-signed device certs collected across all sources: carried so the
    * floor-path history pager can prove device keys (historyFromView), which
    * ResolvedProfile is otherwise the only place to reach them from. */
   certs: SignedEvent[]
@@ -176,7 +176,7 @@ export interface ResolvedProfile extends ReconstructedProfile {
 /** Is `ev` a fully-verified witnessed event OF `subjectRoot`: strict shape,
  * lane 'w', root binding, owner signature, ≥1 valid witness attestation, and
  * (when device-signed) key proven by `certs`. The viewer's one admission rule
- * for overlay-delivered events — same floor the store gates enforce, re-run
+ * for overlay-delivered events: same floor the store gates enforce, re-run
  * here because the overlay confers nothing (§0). Never throws. */
 export function verifyWitnessedOf(
   subjectRoot: B64u,
@@ -223,7 +223,7 @@ function poolAddCerts(pool: Pool, certs: readonly SignedEvent[] | undefined): vo
   }
 }
 
-/** Witnessed pool events sorted (height asc, id asc) — the fold order. */
+/** Witnessed pool events sorted (height asc, id asc). The fold order. */
 function poolSorted(pool: Pool): SignedEvent[] {
   return [...pool.byId.entries()]
     .sort((a, b) => a[1].body.height - b[1].body.height || compareKeys(a[0], b[0]))
@@ -231,13 +231,13 @@ function poolSorted(pool: Pool): SignedEvent[] {
 }
 
 // ---------------------------------------------------------------------------
-// Head selection — verified-freshest, never claimed-freshest
+// Head selection: verified-freshest, never claimed-freshest
 // ---------------------------------------------------------------------------
 
 /**
  * The newest VERIFIED witnessed head among `events`: max height wins, ties
- * break to the lexicographically smallest id (repair's rule — deterministic
- * everywhere). Candidates must carry ≥1 valid witness attestation — an
+ * break to the lexicographically smallest id (repair's rule, deterministic
+ * everywhere). Candidates must carry ≥1 valid witness attestation, an
  * unattested event pins nothing. This is why a stale-but-"newer-claimed"
  * snapshot loses: claims (pointer ts, header freshness talk) never rank a
  * head; only countersigned height does, and a higher height cannot be minted
@@ -297,7 +297,7 @@ function coversFromGenesis(working: Chain, through: number): boolean {
  * ckpt event whose incremental step recomputes from the prior checkpoint's
  * embedded state. The spot-check (deep re-derivation from genesis) runs when
  * the injected draw fires, when the cosigner set lacks diversity, or when
- * diversity is UNKNOWN (no cosig join supplied) — and always fails the
+ * diversity is UNKNOWN (no cosig join supplied), and always fails the
  * candidate on mismatch (self-authenticating fraud, §2). When the M-of-N join
  * is supplied, the newest candidate PASSING the M-of-N rule is preferred; if
  * none passes, the newest otherwise-verified candidate is surfaced with
@@ -319,20 +319,20 @@ export function selectCheckpoint(working: Chain, opts: CkptAuditOpts = {}): Ckpt
       if (surface.cosigners < 1) continue // never attested ⇒ pins nothing
       const payload = ev.body.payload as CheckpointPayload
       // A4 review fix (A4-15): a fold-id transition (basic-v1 → a4-v1) is NOT
-      // one-step-verifiable by design — checkpoint.ts's incremental verifier
+      // one-step-verifiable by design: checkpoint.ts's incremental verifier
       // returns false there. Take the promised deep-verify fallback instead of
       // skipping, so an account's FIRST a4-v1 checkpoint (its ladders/rep/
       // trust surface) is never displaced by the stale basic-v1 one.
       let deepFallback = false
       if (!verifyCheckpointIncremental(working, ev)) {
         if (!coversFromGenesis(working, payload.through)) continue
-        if (!verifyCheckpointDeep(working, ev)) continue // fraud — skip, never surface
+        if (!verifyCheckpointDeep(working, ev)) continue // fraud: skip, never surface
         deepFallback = true
       }
       const spotWanted = drawn || surface.diversityLacking
       let spotChecked = deepFallback
       if (!deepFallback && spotWanted && coversFromGenesis(working, payload.through)) {
-        if (!verifyCheckpointDeep(working, ev)) continue // fraud — skip, never surface
+        if (!verifyCheckpointDeep(working, ev)) continue // fraud: skip, never surface
         spotChecked = true
       }
       const out: CkptSurface = {
@@ -348,7 +348,7 @@ export function selectCheckpoint(working: Chain, opts: CkptAuditOpts = {}): Ckpt
         ...(surface.mOfN !== undefined ? { mOfN: surface.mOfN } : {}),
       }
       if (!opts.cosig || surface.mOfN) return out // newest M-of-N (or no join to demand)
-      if (!fallback) fallback = out // newest verified sans M-of-N — surfaced honestly
+      if (!fallback) fallback = out // newest verified sans M-of-N, surfaced honestly
     } catch {
       continue // verifiers fail closed, never throw
     }
@@ -366,7 +366,7 @@ export interface ShardReadResult {
   /** Rows that fed the successful reconstruction (0 when none). */
   shardsUsed: number
   /** The FRESHEST observed group's countersigned head event (verified inside
-   * its envelope) + its cert proof — surfaced even when that group could not
+   * its envelope) + its cert proof: surfaced even when that group could not
    * reconstruct, so a viewer forced onto an older snapshot still pins the
    * newest verified head instead of silently presenting stale as current. */
   freshestHead?: SignedEvent
@@ -376,12 +376,12 @@ export interface ShardReadResult {
 /**
  * Read a subject's chain out of shard space: one overlay get per row key,
  * verify every envelope (owner-signed attested head, certs, params pin, idx
- * and subject binding — shards.ts rules), group rows by snapshot, then try
+ * and subject binding: shards.ts rules), group rows by snapshot, then try
  * groups freshest-first (max height, then smallest headId): reconstruct
  * (erasure-tolerant), parse, and accept ONLY when the chain fully verifies
  * AND its witnessed head equals the group's countersigned headId (the
  * blob↔head binding that kills a real-head/foreign-blob header). Everything
- * short of that is a typed, honest unavailability report — never bytes.
+ * short of that is a typed, honest unavailability report. Never bytes.
  */
 export async function readChainFromShards(
   node: PointerReadNode,
@@ -468,7 +468,7 @@ export async function readChainFromShards(
 }
 
 // ---------------------------------------------------------------------------
-// Chain extension — publish-on-write events newer than the last final sync
+// Chain extension: publish-on-write events newer than the last final sync
 // ---------------------------------------------------------------------------
 
 /**
@@ -479,13 +479,13 @@ export async function readChainFromShards(
  * verify or the extension is discarded whole.
  *
  * A height where TWO distinct pool events link to the current head is an
- * equivocation/fork — §8's to adjudicate, never the viewer's. It STOPS the
+ * equivocation/fork, §8's to adjudicate, never the viewer's. It STOPS the
  * extension (neither branch is taken) rather than picking one by an id
  * tie-break: pool events are only verifyWitnessedOf-checked, so an attacker
  * holding any leaked certified key can ground out a forgery whose eventId sorts
  * below the honest successor's and, on a reconstructed snapshot that lags the
- * honest tip (publish-on-write appends without re-sharding), win that race —
- * orphaning the honest continuation and laundering a would-be-linked forgery
+ * honest tip (publish-on-write appends without re-sharding), win that race.
+ * Orphaning the honest continuation and laundering a would-be-linked forgery
  * into the chain the assembly then trusts. Stopping at the fork keeps the
  * honest events in the pool floor (served by selection) instead of truncating
  * them out of the chain.
@@ -511,17 +511,17 @@ export function extendChainFromPool(chain: Chain, pool: readonly SignedEvent[]):
   let appended = 0
   for (let h = headH + 1; ; h++) {
     const group = byHeight.get(h)
-    if (!group) break // height gap — stop
+    if (!group) break // height gap: stop
     const linking = group.filter((e) => e.body.prev === curHeadId)
-    if (linking.length === 0) break // nothing links to the current head — stop
+    if (linking.length === 0) break // nothing links to the current head: stop
     const distinct = new Set(linking.map((e) => eventId(e.body)))
-    if (distinct.size > 1) break // equivocation/fork at this height — §8's, not the viewer's
+    if (distinct.size > 1) break // equivocation/fork at this height: §8's, not the viewer's
     try {
       cur = appendEvent(cur, linking[0])
       appended++
       curHeadId = eventId(linking[0].body)
     } catch {
-      break // structural reject — stop, stay honest
+      break // structural reject: stop, stay honest
     }
   }
   if (appended === 0) return { chain, appended: 0 }
@@ -529,7 +529,7 @@ export function extendChainFromPool(chain: Chain, pool: readonly SignedEvent[]):
 }
 
 // ---------------------------------------------------------------------------
-// Holder summaries — the §5 fast-path payload (A6 fabric RPC seam)
+// Holder summaries: the §5 fast-path payload (A6 fabric RPC seam)
 // ---------------------------------------------------------------------------
 
 const zHolderSummary = z.strictObject({
@@ -545,7 +545,7 @@ const zHolderSummary = z.strictObject({
  * Build what a holder serves on the profile fast path from a chain it holds:
  * the witnessed head EVENT, the newest ckpt event, and the newest
  * profile-bearing personal events (merge order, newest first, capped at
- * SUMMARY_PROFILE_MAX — enough to cover every profile field's last write in
+ * SUMMARY_PROFILE_MAX: enough to cover every profile field's last write in
  * practice; the chain remains the authority). Throws on a chain with no
  * witnessed lane (builders throw; verifiers fail closed).
  */
@@ -594,7 +594,7 @@ export interface VerifiedSummary {
 
 /**
  * Verify a HolderSummary from an UNTRUSTED holder: strict shape, subject
- * binding, then each element on its own merits — head/ckpt must be
+ * binding, then each element on its own merits: head/ckpt must be
  * owner-signed, witness-attested witnessed events of the subject; profile
  * events must be owner/cert-signed personal 'profile' events. Failed elements
  * are dropped (and named), never partially trusted: the summary itself
@@ -640,7 +640,7 @@ export function verifyHolderSummary(summary: unknown, subjectRoot: B64u): Verifi
 }
 
 /** LWW profile fold over VERIFIED personal profile events in the documented
- * merge order (ts, key, height, id) — the fast-path approximation of the
+ * merge order (ts, key, height, id): the fast-path approximation of the
  * chain's own fold (which stays authoritative once the chain is present).
  * `revokedAt` (pub → earliest revocation ts) makes it match verifyChain's rule:
  * a write by a key AFTER that key was revoked is ignored, so a leaked
@@ -661,7 +661,7 @@ export function foldProfileLww(
   for (const ev of sorted) {
     if (ev.body.type !== 'profile') continue
     const rv = revokedAt?.get(ev.body.key)
-    if (rv !== undefined && ev.body.ts > rv) continue // revoked-key write — ignored
+    if (rv !== undefined && ev.body.ts > rv) continue // revoked-key write. Ignored
     const fields = (ev.body.payload as { fields?: CanonicalObject }).fields
     if (!fields) continue
     for (const f of PROFILE_FIELDS) {
@@ -679,7 +679,7 @@ export function foldProfileLww(
 /**
  * The ≤holdersMax freshest legitimate holders across the sheet's segment +
  * chain entries, by verified capped effTs (a lying ts cannot outrank the
- * embedded proof's witnessed recency — pointers.ts contract). Both sheet
+ * embedded proof's witnessed recency, pointers.ts contract). Both sheet
  * lists arrive freshest-first, so this is a two-list merge that re-verifies
  * only the entries it takes. Pure given (sheet, opts).
  */
@@ -713,7 +713,7 @@ export function pickFreshHolders(sheet: ContactSheet, opts: VerifyPointerOpts = 
 }
 
 // ---------------------------------------------------------------------------
-// resolveProfile — the owner-gone viewing flow (§5), end to end
+// resolveProfile: the owner-gone viewing flow (§5), end to end
 // ---------------------------------------------------------------------------
 
 /**
@@ -735,7 +735,7 @@ export async function resolveProfile(
   const subjectNodeId = nodeIdOf(subjectRoot)
   const pool = newPool()
 
-  // 1. Authenticated pointer index — one O(1) lookup, then pure verification.
+  // 1. Authenticated pointer index. One O(1) lookup, then pure verification.
   let row: CanonicalObject | null = null
   try {
     const key = pointerKeyOfRoot(subjectRoot)
@@ -808,7 +808,7 @@ export async function resolveProfile(
     }
   }
 
-  // 3. Injected holder summaries (A6 fast-path seam) — verified here.
+  // 3. Injected holder summaries (A6 fast-path seam). Verified here.
   for (const s of opts.summaries ?? []) {
     const v = verifyHolderSummary(s, subjectRoot)
     if (!v.ok) continue
@@ -831,11 +831,11 @@ export async function resolveProfile(
   }
   const poolEvents = poolSorted(pool)
 
-  // Revocation floor (§0: a revoked key is NOT owner authority — and an
+  // Revocation floor (§0: a revoked key is NOT owner authority, and an
   // unproven revocation CLAIM is no authority either). TWO invariants hold at
-  // once here: (A) NO-FORGE — a leaked, since-revoked device key (its cert is
+  // once here: (A) NO-FORGE. A leaked, since-revoked device key (its cert is
   // never deleted) must not pin the head or inject a segment/checkpoint/name/
-  // profile; and (B) NO-SUPPRESS — pool/summary events are only
+  // profile; and (B) NO-SUPPRESS: pool/summary events are only
   // verifyWitnessedOf-checked (owner signature + ANY attestation + cert-proven
   // key, NOT chain-linked), so a pool revoke's very presence and claimed
   // body.height are attacker-mintable with any leaked certified key, and such a
@@ -845,18 +845,18 @@ export async function resolveProfile(
   // provably cannot both be absolute there (see the C-12 note below), and §0
   // is paramount, so the floor fails toward NO-FORGERY, shrinks the collateral
   // suppression as far as evidence allows, and SURFACES the remainder via
-  // `revocationContested` — never silently. Revocations enter `revokedAtHeight`
+  // `revocationContested`, never silently. Revocations enter `revokedAtHeight`
   // (and, for the profile fold, `revokedTs`) when:
   //   · ROOT-signed revokes from ANY source (events row, summaries, proofs):
   //     the root is the ultimate authority, cannot be revoked, and its
-  //     signature covers the height — unforgeable, replay-truthful;
-  //   · every revoke inside the VERIFIED chain, at its linked height — including
+  //     signature covers the height: unforgeable, replay-truthful;
+  //   · every revoke inside the VERIFIED chain, at its linked height, including
   //     ones the pool extension LINKED WITHOUT a fork (extendChainFromPool
   //     refuses to link past an equivocation, so a ground-out forgery cannot
   //     win an id race on a stale snapshot and launder itself in);
   //   · on the FLOOR path only (no chain to vet linkage): DEVICE-signed pool
-  //     revokes, shrunk + flagged below (the cold-root flow — revoking a lost
-  //     device from the still-active device — is a supported model feature, so
+  //     revokes, shrunk + flagged below (the cold-root flow, revoking a lost
+  //     device from the still-active device, is a supported model feature, so
   //     refusing them all would let a device-revoked leaked key forge freely).
   const revokedAtHeight = new Map<B64u, number>()
   const revokedTs = new Map<B64u, number>()
@@ -892,85 +892,85 @@ export async function resolveProfile(
     for (const ev of chain.events) admitRevoke(ev) // revokes the extension linked WITHOUT a fork (trustworthy)
   } else {
     // FLOOR path: no linked chain to vet device-signed revocations. §1: a
-    // witnessed revocation invalidates enrollments — including a device-signed
+    // witnessed revocation invalidates enrollments, including a device-signed
     // one (certs.ts makeRevokeEvent, chain.ts verifyChain: the cold-root flow,
     // revoking a lost device from the still-active device, is a supported
     // model feature). The floor MUST therefore honor device-signed pool
     // revokes, or a leaked key whose revocation was device-signed would forge
-    // heads/segments freely here (NO-FORGE, §0 — paramount). But an unlinked
+    // heads/segments freely here (NO-FORGE, §0: paramount). But an unlinked
     // pool revoke's evidence (presence, height, ts) is mintable by ANY leaked
     // certified key, so honoring it can also SUPPRESS an honest device on an
     // attacker's word. Both invariants provably cannot be absolute at once on
     // the pure floor; §0 wins, and the collateral is SHRUNK, then SURFACED:
-    //   · shrink 1 — a device revoke whose SIGNER is shown-revoked by a
+    //   · shrink 1: a device revoke whose SIGNER is shown-revoked by a
     //     ROOT-signed revoke in the visible verified pool is ignored (the root
     //     is unforgeable, so the signer is a proven non-authority);
-    //   · shrink 2 — a device revoke whose TARGET is already root-revoked is
+    //   · shrink 2: a device revoke whose TARGET is already root-revoked is
     //     ignored (the root evidence already gates that key, and skipping the
     //     device claim keeps a forged backdated ts from widening the root's
     //     own ts gate in the profile fold);
-    //   · shrink 3 — a device revoke naming a pub NO root-signed cert in the
+    //   · shrink 3: a device revoke naming a pub NO root-signed cert in the
     //     visible pool proves is ignored (every pool/personal event's key is
-    //     cert-proven, so such a revoke can gate no visible content — and it
+    //     cert-proven, so such a revoke can gate no visible content, and it
     //     must not trip the contested signal);
     //   · MUTUAL/CONTESTED pairs (dOld revokes dAct AND dAct revokes dOld,
     //     neither root-refuted) gate BOTH keys: the viewer cannot tell the
     //     legitimate revoker from the leaked one without chain linkage, and
-    //     any tie-break (id, ts, height, cert age) is attacker-winnable — so
+    //     any tie-break (id, ts, height, cert age) is attacker-winnable, so
     //     NEITHER key's content renders as authoritative. Suppressing the
     //     honest half is the accepted cost of never rendering the forged half.
     // WHAT REMAINS IS IRREDUCIBLE (accepted compromise C-12, spec §12): with
     // the owner gone, <K_rec shard rows surviving, and no chain linkage, a
     // device-signed revoke minted with a leaked certified key whose OWN
     // revocation is not visible in this pool is bit-for-bit indistinguishable
-    // from the legitimate cold-root flow — so it can transiently hide the
+    // from the legitimate cold-root flow, so it can transiently hide the
     // honest key's content. Failing the other way would let that same leaked
     // key FORGE content instead (strictly worse, §0). The suppression is
     // temporary unavailability that HEALS (§14): any reconstructing chain
     // adjudicates every revoke at its real linked height, and the view is
-    // never silent about it — every device-attested-only gate honored below
+    // never silent about it: every device-attested-only gate honored below
     // sets `revocationContested` so callers can render the floor view as
     // revocation-degraded rather than complete.
     const rootRevoked = new Set(revokedAtHeight.keys()) // ROOT-signed evidence only (snapshot BEFORE device admissions, so admission stays order-independent)
     const certifiedPubs = new Set(certSetFrom(subjectRoot, pool.certs).map((c) => c.pub))
     for (const ev of poolEvents) {
       if (ev.body.key === subjectRoot || ev.body.lane !== 'w' || ev.body.type !== 'revoke') continue
-      if (rootRevoked.has(ev.body.key)) continue // shrink 1: signer root-refuted — confers nothing
+      if (rootRevoked.has(ev.body.key)) continue // shrink 1: signer root-refuted. Confers nothing
       const pub = (ev.body.payload as { pub?: unknown }).pub
       if (typeof pub !== 'string' || pub === subjectRoot) continue // the root cannot be revoked
       if (rootRevoked.has(pub)) continue // shrink 2: target already gated by root evidence
-      if (!certifiedPubs.has(pub)) continue // shrink 3: unproven target — gates nothing visible
+      if (!certifiedPubs.has(pub)) continue // shrink 3: unproven target. Gates nothing visible
       admitRevoke(ev)
-      revocationContested = true // C-12: honored on device-attested evidence only — surfaced, never silent
+      revocationContested = true // C-12: honored on device-attested evidence only. Surfaced, never silent
     }
   }
 
   // 5. Assemble. Working set for checkpoint/head/name: the verified chain
-  //    when present (UNGATED — its revocation semantics are verifyChain's,
+  //    when present (UNGATED: its revocation semantics are verifyChain's,
   //    already enforced), else the gated verified pool union (the floor).
   //    EXPECTED-PATH RULE (round 5): with a chain present, content (head,
-  //    segments — checkpoint/name/profile were already chain-derived) draws
+  //    segments: checkpoint/name/profile were already chain-derived) draws
   //    from chain.events plus ONLY pool events holding a REAL LINKED
-  //    POSITION (groundedPool below) — never from raw poolAdmitted.
+  //    POSITION (groundedPool below): never from raw poolAdmitted.
   //    verifyWitnessedOf is a possession-grade admission floor (owner
-  //    signature + ANY attestation + cert-proven key — NO linkage), so a
+  //    signature + ANY attestation + cert-proven key: NO linkage), so a
   //    bare NON-LINKING witnessed event at an attacker-chosen claimed
   //    height, minted with a leaked but NOT-YET-REVOKED certified device
   //    key (the exact case notRevoked cannot filter and no floor shrink
   //    rule touches), must never contribute content or outrank the verified
-  //    head (§0 — view.head is an A4 pinned input).
+  //    head (§0: view.head is an A4 pinned input).
   const workingEvents = chain ? chain.events : poolEvents
   const poolAdmitted = poolEvents.filter(notRevoked)
   const working: Chain = chain ?? { root: subjectRoot, events: poolAdmitted }
 
-  // groundedPool — the admitted pool events holding a REAL linked position:
+  // groundedPool. The admitted pool events holding a REAL linked position:
   // reachable from the verified chain's own witnessed events over hash links
   // with height-contiguous (h+1) steps. extendChainFromPool already absorbed
   // the unambiguous continuation into chain.events; what grounding ADDS back
   // is the fork-stopped case (round 3: the extension refuses to adjudicate
-  // an equivocation — §8's business — and the honest continuation must keep
+  // an equivocation (§8's business) and the honest continuation must keep
   // serving from the pool: NO-SUPPRESS). What it EXCLUDES is round 5's
-  // weapon: a bare non-linking event at an arbitrary claimed height/prev —
+  // weapon: a bare non-linking event at an arbitrary claimed height/prev.
   // LINKAGE evidence, not possession of a certified key, is what earns
   // content on the expected path (§0): NO-FORGE.
   const groundedPool: SignedEvent[] = []
@@ -1007,12 +1007,12 @@ export async function resolveProfile(
   }
 
   // Floor head candidacy: a DEVICE-signed pool revoke is consumed above as
-  // revocation EVIDENCE (subtractive — it can gate keys, shrunk + flagged);
+  // revocation EVIDENCE (subtractive: it can gate keys, shrunk + flagged);
   // it is never elevated to CONTENT: with no chain linkage its height is a
   // bare claim, so letting it pin the head would hand a leaked certified key
   // an arbitrary-height forged head for the price of one minted revoke.
   // ROOT-signed revokes stay eligible (the root's signature covers the
-  // height — unforgeable). On the expected path only the VERIFIED CHAIN and
+  // height: unforgeable). On the expected path only the VERIFIED CHAIN and
   // linked-position pool events pin the head (round-5 rule above): a
   // NON-linking pool event by a certified NON-revoked key must never
   // outrank the verified head on a bare claimed height.
@@ -1023,7 +1023,7 @@ export async function resolveProfile(
 
   let name: string | undefined
   for (const ev of workingEvents) {
-    // genesis is ALWAYS root-signed (verifyChain rule) — a device-signed
+    // genesis is ALWAYS root-signed (verifyChain rule), a device-signed
     // "genesis" cannot set the display name on the floor path.
     if (ev.body.lane === 'w' && ev.body.type === 'genesis' && ev.body.height === 0 && ev.body.key === subjectRoot) {
       const n = (ev.body.payload as { name?: unknown }).name
@@ -1034,11 +1034,11 @@ export async function resolveProfile(
 
   // Profile: the chain's own deterministic fold is authoritative; the floor
   // falls back to the verified summary events' LWW fold (advisory until the
-  // chain confirms — HolderSummary contract). The floor fold honors the SAME
+  // chain confirms: HolderSummary contract). The floor fold honors the SAME
   // revocations as the witnessed gate above (revokedTs, populated by
   // admitRevoke, ts semantics matching verifyChain's personal-lane rule): a
-  // leaked since-revoked device key — revoked by root OR by the still-active
-  // device — cannot render an attacker's post-revocation profile write (A);
+  // leaked since-revoked device key, revoked by root OR by the still-active
+  // device, cannot render an attacker's post-revocation profile write (A);
   // where an honored device-signed revoke may instead be silencing HONEST
   // writes, the view carries revocationContested (C-12 residual, surfaced).
   let profile: CanonicalObject
@@ -1052,11 +1052,11 @@ export async function resolveProfile(
 
   // Segments: on the expected path the game set is the VERIFIED CHAIN plus
   // linked-position pool segments only (round-5 rule): chain segments ride
-  // ungated (revocation-checked by verifyChain at their linked heights — an
+  // ungated (revocation-checked by verifyChain at their linked heights; an
   // unlinked pool revoke cannot drop an honest game), the fork-stopped
   // grounded continuation keeps serving (round 3), and a NON-linking pool
   // event never injects a fabricated game. On the floor, pool segments face
-  // the floor gate — a revoked device key cannot inject a game (§0). Chain
+  // the floor gate: a revoked device key cannot inject a game (§0). Chain
   // first, so on a duplicate id the chain's copy wins.
   const segMap = new Map<EventId, SignedEvent>()
   for (const ev of chain ? [...chain.events, ...groundedPool] : poolAdmitted) {
@@ -1097,7 +1097,7 @@ export async function resolveProfile(
 // ---------------------------------------------------------------------------
 
 /** Async page source: witnessed events of the subject covering heights
- * [from, to] (inclusive). May return extras or junk — the pager verifies. */
+ * [from, to] (inclusive). May return extras or junk. The pager verifies. */
 export interface HistorySource {
   events(from: number, to: number): Promise<readonly SignedEvent[]>
 }
@@ -1116,11 +1116,11 @@ export interface HistoryPager {
 
 /**
  * Open the lazy history pager anchored at a PINNED countersigned head
- * (id + height — the §2 anchor a viewer already verified). Pages run
+ * (id + height: the §2 anchor a viewer already verified). Pages run
  * newest-first: page 0 ends at the head. Every page is verified before it is
  * returned: each event's id must equal the id the chain ABOVE it demands
  * (walking prev links down from the anchor), signatures must verify, and
- * device keys must be proven by `certs` — so NO PAGE SUBSTITUTION is
+ * device keys must be proven by `certs`, so NO PAGE SUBSTITUTION is
  * possible: a swapped interior event breaks the id chain at its own boundary
  * and the page comes back as a typed failure, never as wrong bytes. Anchors
  * are cached per page boundary, so sequential paging verifies each event
@@ -1230,7 +1230,7 @@ export function openHistory(
  * succeeded, else the verified segment floor (missing heights honestly page
  * as 'unavailable'). Anchored at the view's pinned head. Device-signed events
  * need the cert proof at every page: on the floor path (no chain to scrape
- * certs from) it comes from view.certs — the certs resolveProfile collected —
+ * certs from) it comes from view.certs (the certs resolveProfile collected)
  * so a device-signed account's surviving history pages instead of failing
  * closed as 'bad-page'. */
 export function historyFromView(

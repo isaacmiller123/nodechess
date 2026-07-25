@@ -3,19 +3,19 @@
 // auto-shapes in the School visual language (annotations.ts is the single
 // source of truth for the brushes/glow/ring/highlight looks).
 //
-// Engine usage: ONE shot per user turn — a modest depth-limited analyze of the
+// Engine usage: ONE shot per user turn. A modest depth-limited analyze of the
 // current position, started only when something actually needs it (a toggle is
 // on or the ladder was stepped). Results are tagged with the fen of the search
 // that produced them (via the handle -> fen map, NOT the current render's fen),
 // so a line that lands mid-position-change can never be attributed to the new
-// position — the stale-lines-on-fen-change class of bug is impossible by
+// position: the stale-lines-on-fen-change class of bug is impossible by
 // construction. The main process keeps a single analysis search alive, so a
 // CoachHint read may silently replace ours; we simply keep the deepest PV we
 // streamed (fine at these depths) and re-analyze on the next move.
 //
 // Threats note: analyzing "as if the opponent were to move" (a null move) is
 // unsound, so "Show weaknesses" draws the opponent's best reply within the
-// engine's top line — ply 2 of the PV — as a red arrow, plus a direct-attack
+// engine's top line (ply 2 of the PV) as a red arrow, plus a direct-attack
 // count of loose pieces (yours, non-pawn, attacked more times than defended,
 // computed with chessops' attacksTo helper; batteries/x-rays are not counted).
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -52,7 +52,7 @@ function loadPrefs(): AssistPrefs {
       return { showBest: p.showBest === true, showThreats: p.showThreats === true }
     }
   } catch {
-    /* corrupt or unavailable storage — fall through to defaults */
+    /* corrupt or unavailable storage: fall through to defaults */
   }
   return { showBest: false, showThreats: false }
 }
@@ -81,7 +81,7 @@ function useAssistAnalysis(fen: string, enabled: boolean): AssistAnalysis {
   // The in-flight search: results are tagged with THIS fen (the position the
   // search was started for), never the render-time fen.
   const searchRef = useRef<{ handleId: number; fen: string } | null>(null)
-  // Last fen we completed successfully — lets a re-enable (toggle flip) or a
+  // Last fen we completed successfully: lets a re-enable (toggle flip) or a
   // return-to-tip reuse the finished read instead of searching again.
   const lastDoneRef = useRef<string | null>(null)
 
@@ -150,7 +150,7 @@ function useAssistAnalysis(fen: string, enabled: boolean): AssistAnalysis {
 }
 
 // ---------------------------------------------------------------------------
-// Loose ("hanging") pieces — direct attackers vs direct defenders
+// Loose ("hanging") pieces: direct attackers vs direct defenders
 // ---------------------------------------------------------------------------
 
 export interface LoosePiece {
@@ -166,7 +166,7 @@ const ROLE_LETTER: Partial<Record<Role, string>> = {
 }
 
 /** `color`'s non-pawn pieces attacked more times than defended (direct attacks
- *  only — chessops' attacksTo via Chess.kingAttackers; batteries/x-rays are not
+ *  only: chessops' attacksTo via Chess.kingAttackers; batteries/x-rays are not
  *  counted, so treat this as a first-pass tactical smell test, not SEE). */
 export function loosePieces(fen: string, color: Color): LoosePiece[] {
   let pos: Chess
@@ -190,7 +190,7 @@ export function loosePieces(fen: string, color: Color): LoosePiece[] {
 }
 
 // ---------------------------------------------------------------------------
-// useAssist — all assist state; the host renders <AssistPanel assist={...}/>
+// useAssist: all assist state; the host renders <AssistPanel assist={...}/>
 // and forwards `shapes` / `shapesNonce` to its Board.
 // ---------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ export interface UseAssistArgs {
   atTip: boolean
   /** Game over (result banner up or terminal position). */
   over: boolean
-  /** Master switch — settings.hintsEnabled. Off hides the panel entirely. */
+  /** Master switch, settings.hintsEnabled. Off hides the panel entirely. */
   enabled: boolean
 }
 
@@ -213,7 +213,7 @@ export interface AssistState {
   shapes: DrawShape[]
   /** Bumps whenever `shapes` meaningfully change. Board.tsx's shapesKey() only
    *  hashes orig/dest/brush, so customSvg-only changes (glow/ring/highlight)
-   *  need a syncNonce nudge — add this to the Board's existing nonce. */
+   *  need a syncNonce nudge. Add this to the Board's existing nonce. */
   shapesNonce: number
   /** Render the panel at all? (hintsEnabled and the game is still running). */
   visible: boolean
@@ -296,7 +296,7 @@ export function useAssist({ fen, turn, userColor, atTip, over, enabled }: UseAss
     const out: DrawShape[] = []
     if (stage > 0 && bestUci) {
       for (const s of hintShapes(bestUci, stage)) {
-        // Stage 3 draws the focus arrow — redundant (and visually stacked)
+        // Stage 3 draws the focus arrow. Redundant (and visually stacked)
         // when the green best-move arrow is already on. Keep the glow only.
         if (prefs.showBest && s.dest) continue
         out.push(s)

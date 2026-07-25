@@ -5,13 +5,13 @@
 //
 // Bundles the pure ratings modules with esbuild (same pattern as
 // scripts/verify-classification.mjs) and asserts:
-//   1. botStrength mapping goldens — measuredElo per band matches the
+//   1. botStrength mapping goldens: measuredElo per band matches the
 //      2026-07-06 calibration record, native levels are identity, personas
 //      pass through, the curve is monotone, labels carry the '~' marker.
-//   2. Migration idempotence — migrateRatingsIntegrityV8 on a temp node:sqlite
+//   2. Migration idempotence, migrateRatingsIntegrityV8 on a temp node:sqlite
 //      DB (game + rating tables seeded with a synthetic history) writes the
 //      exact same rating row when run twice.
-//   3. Glicko recompute sanity — rating moves DOWN when opponents were weaker
+//   3. Glicko recompute sanity: rating moves DOWN when opponents were weaker
 //      than labeled (wins deserve less), UP when they were stronger (the real
 //      sub-floor case), and the recompute replays applyGameResult exactly
 //      (same per-opponent RD + tau).
@@ -44,7 +44,7 @@ function check(name, ok, detail = '') {
     console.log(`  ok   ${name}`)
   } else {
     failures++
-    console.error(`  FAIL ${name}${detail ? ` — ${detail}` : ''}`)
+    console.error(`  FAIL ${name}${detail ? `, ${detail}` : ''}`)
   }
 }
 
@@ -131,9 +131,9 @@ console.log('migration idempotence')
   addGame(db, { result: '0-1', elo: 800, userColor: 'black' })
   addGame(db, { result: '1/2-1/2', elo: 1500 })
   addGame(db, { result: '0-1', userColor: 'black', kind: 'persona', elo: 2551 })
-  addGame(db, { result: '1-0', kind: 'maia', elo: 1500 }) // Maia game — MUST be counted (was dropped)
-  addGame(db, { result: '*', elo: 1000 }) // unfinished — skipped
-  addGame(db, { result: '1-0', elo: 1000, source: 'import' }) // not a play game — skipped
+  addGame(db, { result: '1-0', kind: 'maia', elo: 1500 }) // Maia game MUST be counted (was dropped)
+  addGame(db, { result: '*', elo: 1000 }) // unfinished. Skipped
+  addGame(db, { result: '1-0', elo: 1000, source: 'import' }) // not a play game. Skipped
   const r1 = R.migrateRatingsIntegrityV8(db)
   const row1 = ratingRow(db)
   const r2 = R.migrateRatingsIntegrityV8(db)
@@ -176,7 +176,7 @@ console.log('glicko recompute sanity')
   // updates (same per-opponent RD and tau as ratings.repo.applyGameResult),
   // for EVERY opponent kind. Maia + persona rows are included on purpose: the
   // live path is measuredElo({ kind, elo: nominal }) (games.ipc reportResult,
-  // where nominal = the maia net's band / the persona's modernElo — exactly
+  // where nominal = the maia net's band / the persona's modernElo. Exactly
   // what PlayView saves as opponent_elo), so the replay must map the stored
   // row through the identical call. A kind coercion (the old maia→'engine'
   // bug) would send maia-1100 through the sub-floor curve and diverge here.

@@ -1,14 +1,14 @@
-// A2 fabric-core — witness eligibility floors + the canonical witness set
+// A2 fabric-core: witness eligibility floors + the canonical witness set
 // (spec §4, ACCOUNTS-PARAMS §Witness). Eligibility is judged by the OBSERVER
 // from public floors + the subject's chain; a node's own presence is trusted
 // only for its signature. Pure + deterministic. Platform-neutral.
 //
 // The §4 floors, from PARAMS_A2:
-//   trust        ≥ eligTrustMicro   (0.5 in micro-units; A4 computes trust —
+//   trust        ≥ eligTrustMicro   (0.5 in micro-units; A4 computes trust:
 //                                     here it is an INPUT, default 0)
 //   uptime       ≥ eligUptimePct    (95% trailing 30d, from the presence record)
 //   entanglement candidate.root NOT in subject.entangledRoots (no direct
-//                game/friend edge in the trailing window — closes sock-puppet
+//                game/friend edge in the trailing window: closes sock-puppet
 //                witnessing)
 //   shared-partner overlap  |cand.2nd ∩ subj.2nd| / |subj.2nd| < eligSharedPartnerPctMax
 //
@@ -18,10 +18,10 @@
 //
 // Small-population relaxation (spec §4: "at populations too small to fill W_n,
 // any eligible node serves"): the SOFT floors (trust, uptime) drop so a fresh,
-// untrusted node CAN witness at tiny scale — but the anti-sock-puppet gates
+// untrusted node CAN witness at tiny scale, but the anti-sock-puppet gates
 // (entanglement, shared-partner, self) stay, and M-of-N + diversity still bound
 // what any single witness can attest. The operator peer is just another
-// eligible node under exactly these rules (§4 C-10) — no special case here.
+// eligible node under exactly these rules (§4 C-10), no special case here.
 
 import type { B64u } from '../types'
 import { closestEligible, nodeIdOf } from './distance'
@@ -123,7 +123,7 @@ function defaultSummary(sp: SignedPresence, nodeId: NodeId): ChainSummary {
  *
  * If fewer than wN nodes pass the full floors, the small-population relaxation
  * applies (soft floors drop) and the wN closest RELAXED-eligible nodes are
- * returned — "all eligible" when still fewer than wN.
+ * returned, "all eligible" when still fewer than wN.
  */
 export function canonicalWitnessSet(
   subject: SubjectSummary,
@@ -142,7 +142,7 @@ export function canonicalWitnessSet(
   const chosen = closestEligible(subject.nodeId, rows, full, params.wN)
   if (chosen.length >= params.wN) return chosen
 
-  // Small-population relaxation — soft floors drop, anti-sock-puppet gates stay.
+  // Small-population relaxation. Soft floors drop, anti-sock-puppet gates stay.
   const relaxed = (r: Row): boolean => isEligible(r.cand, subject, params, nowMs, { relax: true }).ok
   return closestEligible(subject.nodeId, rows, relaxed, params.wN)
 }

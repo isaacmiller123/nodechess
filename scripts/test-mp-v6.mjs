@@ -1,14 +1,14 @@
-// Headless test for WIRE v6 — signed play + the witness seat (accounts spec
-// §3 entanglement — docs/ACCOUNTS-SPEC.md).
+// Headless test for WIRE v6: signed play + the witness seat (accounts spec
+// §3 entanglement, docs/ACCOUNTS-SPEC.md).
 //
 //   node scripts/test-mp-v6.mjs
 //
 // Same harness pattern as scripts/test-mp.mjs (the untouchable v5 gate): both
 // MpNetSession ends run in ONE node process over an in-memory transport pair;
 // esbuild bundles the TS on the fly. This suite adds a WIRETAP on the mock
-// room (every raw send is recorded) so it can assert byte-level facts — a
-// signed move carries `sig`, an unsigned session's move is EXACTLY v5-shaped
-// — and a scripted WITNESS peer driven by the real witnessCore state machine.
+// room (every raw send is recorded) so it can assert byte-level facts. A
+// signed move carries `sig`, an unsigned session's move is EXACTLY v5-shaped,
+// and a scripted WITNESS peer driven by the real witnessCore state machine.
 //
 // Covered:
 //   1. signed host↔guest game with one witness: hello identities → host-minted
@@ -26,7 +26,7 @@
 //   4. v6 spot-checks: guest×guest hello failure, version-mismatch refusal
 //      (deep coverage stays in test-mp.mjs).
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green; any failure
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green; any failure
 // prints and exits 1. Clean exit (no leaked timers/handles).
 
 import { build } from 'esbuild'
@@ -76,7 +76,7 @@ async function assertNoEvent(events, pred, ms, label) {
 }
 
 // ============================================================================
-// In-memory transport pair — the test-mp.mjs mock, plus a WIRETAP: every raw
+// In-memory transport pair. The test-mp.mjs mock, plus a WIRETAP: every raw
 // send is recorded as { from, to, text } so byte-level assertions are possible.
 // ============================================================================
 
@@ -190,7 +190,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
   process.exit(0)
 }
 
@@ -270,7 +270,7 @@ async function run(outdir) {
     const pair = makeMockPair()
     // A6 Lane C: `viaConfigure` proves the additive configureSigning() method
     // seats signed play IDENTICALLY to the constructor `signing` opt (same trio,
-    // same downstream asserts) — the signing config is applied BEFORE host()/join().
+    // same downstream asserts): the signing config is applied BEFORE host()/join().
     const host = track(
       viaConfigure
         ? new MpNetSession(pair.hostFactory)
@@ -343,7 +343,7 @@ async function run(outdir) {
       () => true,
       { timeout: 1, label: 'noop' }
     ).catch(() => null)
-    void wStart // (drained below via find — keep witness.received intact)
+    void wStart // (drained below via find; keep witness.received intact)
     const startRec = witness.received.find((r) => {
       const m = wire.parseWireMsg(r.text)
       return m && m.t === 'start'
@@ -508,7 +508,7 @@ async function run(outdir) {
     eq(`${wclks[0].ply},${wclks[1].ply}`, '3,7', 'wclks countersigned plies 3 and 7')
 
     // Board-terminal draw: BOTH clients detect it and countersign. A draw is
-    // witnessed only once BOTH players' esigs are in — a lone esig can never mint
+    // witnessed only once BOTH players' esigs are in. A lone esig can never mint
     // a witnessed draw, which closes the unilateral loss→draw escape (finding C).
     // host.gameEnded mirrors the host's esig to the witness directly; guest's is
     // called before the host's gameOver reaches it (guest still !over), and the
@@ -518,7 +518,7 @@ async function run(outdir) {
     await waitEvent(ge, (e) => e.type === 'gameOver' && e.result === '1/2-1/2', { label: 'guest gameOver' })
     // The guest's draw esig reaches the witness asynchronously (host forwards
     // it over macrotask-scheduled mock delivery), so re-pump until the wend is
-    // minted rather than racing a single fixed sleep — a 20ms sleep flaked on
+    // minted rather than racing a single fixed sleep: a 20ms sleep flaked on
     // slower Windows CI where the esig had not yet landed when pump() ran. pump()
     // only drains whatever newly arrived, so repeat calls are safe.
     let wend
@@ -806,7 +806,7 @@ async function run(outdir) {
   }
 
   // ==========================================================================
-  // 7. Review regressions (brick-6 adversarial review — confirmed defects).
+  // 7. Review regressions (brick-6 adversarial review, confirmed defects).
   // ==========================================================================
   console.log('\n· regression: witness rejects a decisive esig from the WINNER (loser-binding) …')
   {
@@ -867,7 +867,7 @@ async function run(outdir) {
     // White plays, honestly signing its own 60s clock.
     const m0 = seg.signMove(HOST_I.priv, g, 0, 'e2e4', { w: 60_000, b: 60_000 })
     c.feed({ t: 'move', gameId: 1, ply: 0, uci: 'e2e4', clockMs: { white: 60_000, black: 60_000 }, sig: m0.sig }, 1_000)
-    // MALICIOUS: black signs its move reporting WHITE's clock as 1ms — an attack
+    // MALICIOUS: black signs its move reporting WHITE's clock as 1ms. An attack
     // on the honest opponent. The sig is valid (black signed it) and the witness
     // must forward/see the clock verbatim, so it cannot be sanitized upstream.
     const m1 = seg.signMove(GUEST_I.priv, g, 1, 'e7e5', { w: 1, b: 60_000 }, m0.sig)
@@ -879,7 +879,7 @@ async function run(outdir) {
     ok(wend && wend.result === '0-1', 'white flags only once ITS OWN signed 60s budget lapses')
   }
 
-  console.log('\n· regression: a draw needs BOTH players’ esigs — a lone esig can’t mint a witnessed draw (finding C) …')
+  console.log('\n· regression: a draw needs BOTH players’ esigs. A lone esig can’t mint a witnessed draw (finding C) …')
   {
     const g = seg.gameKey({ v: 1, t: 'game-key', w: HOST_I.root, b: GUEST_I.root, nonce: hash.toB64u(seedBytes(31)), ts: 7 })
     const c = new wc.WitnessCore({ wpriv: WIT_I.priv, wkey: WIT_I.key, wroot: WIT_I.root, now: () => 0 })
@@ -907,7 +907,7 @@ async function run(outdir) {
     const g = seg.gameKey({ v: 1, t: 'game-key', w: HOST_I.root, b: GUEST_I.root, nonce: hash.toB64u(seedBytes(32)), ts: 7 })
     const c = new wc.WitnessCore({ wpriv: WIT_I.priv, wkey: WIT_I.key, wroot: WIT_I.root, now: () => 0 })
     c.init({ gameId: 1, gameKey: g, players: { w: { root: HOST_I.root, key: HOST_I.key }, b: { root: GUEST_I.root, key: GUEST_I.key } } })
-    // Three moves (w,b,w) so BLACK is to move with its own clock recorded — the
+    // Three moves (w,b,w) so BLACK is to move with its own clock recorded. The
     // configuration where a naive tick would flag black, the WINNER.
     const m0 = seg.signMove(HOST_I.priv, g, 0, 'e2e4', { w: 60_000, b: 60_000 })
     const m1 = seg.signMove(GUEST_I.priv, g, 1, 'e7e5', { w: 60_000, b: 60_000 }, m0.sig)
@@ -915,7 +915,7 @@ async function run(outdir) {
     c.feed({ t: 'move', gameId: 1, ply: 0, uci: 'e2e4', clockMs: { white: 60_000, black: 60_000 }, sig: m0.sig }, 1_000)
     c.feed({ t: 'move', gameId: 1, ply: 1, uci: 'e7e5', clockMs: { white: 60_000, black: 60_000 }, sig: m1.sig }, 2_000)
     c.feed({ t: 'move', gameId: 1, ply: 2, uci: 'g1f3', clockMs: { white: 60_000, black: 60_000 }, sig: m2.sig }, 3_000)
-    // White resigns (0-1, white loses) but OMITS its esig — a loser denying its loss.
+    // White resigns (0-1, white loses) but OMITS its esig. A loser denying its loss.
     const rq = c.feed({ t: 'resign', gameId: 1, by: 'white' }, 3_500)
     ok(!rq.ok && /countersignature/i.test(rq.error), 'a decisive resign without an esig is rejected (not finalized)')
     // tick() far past black’s budget must NOT now flag black (the winner) → 1-0.
@@ -935,7 +935,7 @@ async function run(outdir) {
         const m = wire.parseWireMsg(text)
         if (m && m.t === 'hello') {
           // Greet as host WITH identity (⇒ mutual signed play), then a start
-          // that OMITS gameKey — the downgrade a malicious host or relay mounts.
+          // that OMITS gameKey: the downgrade a malicious host or relay mounts.
           fakeHostT.send(JSON.stringify({ t: 'hello', v: 6, role: 'host', root: HOST_I.root, key: HOST_I.key }), from)
           fakeHostT.send(JSON.stringify({ t: 'start', gameId: 1, yourColor: 'black', config: CFG(60_000, 0, 'white') }), from)
         }
@@ -997,7 +997,7 @@ async function run(outdir) {
       `{"g":"${g}","kind":"chess","plies":4,"result":"1-0","t":"wend","tc":{"baseMs":180000,"incMs":2000},"transcript":"${T}","v":1}`,
       'witnessEndBytes with kind/tc folds both into the canonical end-bytes'
     )
-    // A4 review (A4-01/A4-08): the FULL rated binding — players + reason join
+    // A4 review (A4-01/A4-08): the FULL rated binding. Players + reason join
     // kind/tc inside the signed bytes (cjson-v1 sorted keys).
     const PLAYERS = { w: HOST_I.root, b: GUEST_I.root }
     eq(
@@ -1032,7 +1032,7 @@ async function run(outdir) {
     ok(!seg.verifyWitnessEnd(bound, g, '1-0', 4, T, FULL), 'a kind/tc-only end-sig does NOT verify as fully bound')
   }
 
-  console.log('\n· A4 ladder binding: live trio — witness signs the config’s kind/tc …')
+  console.log('\n· A4 ladder binding: live trio. Witness signs the config’s kind/tc …')
   {
     const { host, guest, he, ge, hw, gw, witness } = await connectSignedTrio(CFG(180_000, 2_000, 'white'))
     const startMsg = wire.parseWireMsg(witness.received.find((r) => wire.parseWireMsg(r.text)?.t === 'start').text)
@@ -1040,8 +1040,8 @@ async function run(outdir) {
     eq(ladder.kind, 'chess', 'ladderFromConfig: absent game selector ⇒ chess')
     eq(`${ladder.tc.baseMs},${ladder.tc.incMs}`, '180000,2000', 'ladderFromConfig maps initialMs/incrementMs → baseMs/incMs')
     const wclock = { t: 9_000_000 }
-    // J5: the pairing anchors both players appended before the first move —
-    // each names the OTHER root as opp (the anchoring contract).
+    // J5: the pairing anchors both players appended before the first move.
+    // Each names the OTHER root as opp (the anchoring contract).
     const anchorsOf = (gameKey, k, tc) => ({
       w: { game: gameKey, opp: GUEST_I.root, kind: k, tc, atWts: 8_999_000 },
       b: { game: gameKey, opp: HOST_I.root, kind: k, tc, atWts: 8_999_000 }
@@ -1069,7 +1069,7 @@ async function run(outdir) {
     const badRes = wcoreBad.feed(startMsg, wclock.t)
     ok(!badRes.ok && /ladder/.test(badRes.error), 'a start config contradicting the initialized ladder binding poisons the witness')
     // A4-01: a mirrored start whose players contradict init poisons too (the
-    // witness signs players-by-color into its wend — same 2c pattern).
+    // witness signs players-by-color into its wend. Same 2c pattern).
     const wcoreBadPlayers = new wc.WitnessCore({ wpriv: WIT_I.priv, wkey: WIT_I.key, wroot: WIT_I.root, now: () => wclock.t })
     wcoreBadPlayers.init({
       gameId: startMsg.gameId,
@@ -1082,7 +1082,7 @@ async function run(outdir) {
     ok(!badPlayersRes.ok && /players/.test(badPlayersRes.error), 'a start with color-swapped players contradicting init poisons the witness')
     pump(witness, wcore, wclock) // consume start (consistency check passes)
 
-    // Two plies, then the guest resigns — mpSession's esig is LEGACY-shaped and
+    // Two plies, then the guest resigns: mpSession's esig is LEGACY-shaped and
     // the ladder-bound witness must still accept it (result authority is the
     // player's; ladder authority is the witness's).
     for (const [who, uci, other] of [[host, 'e2e4', ge], [guest, 'e7e5', he]]) {
@@ -1099,7 +1099,7 @@ async function run(outdir) {
     ok(wend, 'ladder-bound witness finalizes on the legacy player esig (wend emitted)')
     const wstream = wcore.wstream()
     // A4 review (A4-01/A4-08): the live wend now covers the FULL rated
-    // binding — kind/tc + players-by-color + the adjudicated reason.
+    // binding: kind/tc + players-by-color + the adjudicated reason.
     const FULL_BINDING = {
       kind: ladder.kind,
       tc: ladder.tc,
@@ -1127,10 +1127,10 @@ async function run(outdir) {
       !seg.verifyWitnessEnd(wstream, startMsg.gameKey, '1-0', 2, wend.transcript, { ...FULL_BINDING, reason: 'abandon' }),
       'live wend sig fails over a relabeled reason'
     )
-    // A6 (Lane C — the mpSession seam, now CLOSED): the live session re-derives
+    // A6 (Lane C; the mpSession seam, now CLOSED): the live session re-derives
     // the rated binding from its OWN config (ladderFromConfig) + this game's
     // players + the wend's reason, so the ladder-bound wend now SURFACES to both
-    // players — exactly the wstream Lane E's segmentWriter embeds into each
+    // players: exactly the wstream Lane E's segmentWriter embeds into each
     // chain's rated segment. (Was assertNoEvent pre-A6: the witness stream was
     // advisory-only because mpSession verified binding-less.)
     const hSurfacedWend = await waitEvent(hw, (m) => m.t === 'wend', { label: 'host surfaces the ladder-bound wend (A6 seam)' })
@@ -1206,10 +1206,10 @@ async function run(outdir) {
     eq(
       seg.verifySegmentEvent(segEventWith({ wstream: legacyWstream })),
       null,
-      'a fully legacy segment (no kind/tc, legacy wstream) still verifies — pre-A4 flow untouched'
+      'a fully legacy segment (no kind/tc, legacy wstream) still verifies, pre-A4 flow untouched'
     )
 
-    // A4-01: COLOR-FLIP attack — the witness signed players {w:HOST, b:GUEST};
+    // A4-01: COLOR-FLIP attack. The witness signed players {w:HOST, b:GUEST};
     // the (losing) author relabels its color. The derived players map flips,
     // so the witness signature no longer covers the payload's claim.
     eq(
@@ -1217,14 +1217,14 @@ async function run(outdir) {
       'bad-ladder-binding',
       'color-flip attack (witness signed players, payload color flipped) → bad-ladder-binding'
     )
-    // A4-01: OPP-SWAP attack — same game, opp relabeled to a different root.
+    // A4-01: OPP-SWAP attack. Same game, opp relabeled to a different root.
     eq(
       seg.verifySegmentEvent(segEventWith({ kind: ladder.kind, tc: ladder.tc, opp: WIT2_I.root })),
       'bad-ladder-binding',
       'opp-swap attack (payload names a root the witness never signed) → bad-ladder-binding'
     )
-    // A4-08: REASON-SWAP attack — the payload keeps the ORIGINAL transcript
-    // digest (opaque to the verifier — exactly the A4-08 hole) but relabels
+    // A4-08: REASON-SWAP attack. The payload keeps the ORIGINAL transcript
+    // digest (opaque to the verifier: exactly the A4-08 hole) but relabels
     // the reason. The witness signed reason into the end-bytes, so it fails.
     eq(
       seg.verifySegmentEvent(
@@ -1253,7 +1253,7 @@ async function run(outdir) {
   }
 
   // ==========================================================================
-  // 8b. A5 J5 (A4-12): the witness pairing gate — a rated game is served only
+  // 8b. A5 J5 (A4-12): the witness pairing gate. A rated game is served only
   // when both players' pairing anchors are present and consistent.
   // ==========================================================================
   console.log('\n· J5 pairing gate: unanchored rated game poisoned; anchored proceeds …')
@@ -1295,7 +1295,7 @@ async function run(outdir) {
     // (c) the embedder-verified flag is accepted in place of inline anchors.
     const flagged = mkCore({ pairing: 'embedder-verified' })
     ok(flagged.feed(START, 10).ok, "pairing: 'embedder-verified' (embedder checked the chain events) passes the gate")
-    // (d) contradiction matrix — each inconsistency poisons (2c pattern).
+    // (d) contradiction matrix: each inconsistency poisons (2c pattern).
     const poisonOn = (pairing, label, re) => {
       const c = mkCore({ pairing })
       const r = c.feed(START, 10)
@@ -1312,7 +1312,7 @@ async function run(outdir) {
       'anchors that do not name the OPPOSING roots poison (two copies of one pairing cannot fill both seats)', /opposing/)
     poisonOn({ w: ANCH.b, b: ANCH.w },
       'color-swapped anchors poison (each chain pairs against the other root)', /opposing/)
-    // (e) legacy/unrated: no kind/tc ⇒ the gate never runs — byte-identical flow.
+    // (e) legacy/unrated: no kind/tc ⇒ the gate never runs. Byte-identical flow.
     const unrated = new wc.WitnessCore({ wpriv: WIT_I.priv, wkey: WIT_I.key, wroot: WIT_I.root, now: () => 0 })
     unrated.init({ gameId: 1, gameKey: g, players: PLAYERS, firstMover: 'w' })
     ok(unrated.feed(START, 10).ok, 'an UNRATED session needs no anchors (legacy flow untouched)')
@@ -1321,7 +1321,7 @@ async function run(outdir) {
   }
 
   // ==========================================================================
-  // 9. A4-02: verifyEmbeddedOppCkpt — embedded-checkpoint authenticity.
+  // 9. A4-02: verifyEmbeddedOppCkpt, embedded-checkpoint authenticity.
   // ==========================================================================
   console.log('\n· A4-02: verifyEmbeddedOppCkpt forged-checkpoint matrix …')
   {
@@ -1343,7 +1343,7 @@ async function run(outdir) {
       }
       return { body, sig: hash.toB64u(hash.ed25519.sign(codec.canonicalBytes(body), signer.priv)) }
     }
-    /** A cosigner attestation over {e, epoch, w, wts} — the attest.ts bytes. */
+    /** A cosigner attestation over {e, epoch, w, wts}: the attest.ts bytes. */
     const attest = (ckpt, cosigner, wts = 1_000) => ({
       w: cosigner.key,
       wts,
@@ -1384,7 +1384,7 @@ async function run(outdir) {
     eq(V(P(cosign(mkCkpt(OPP, OPP.root), [COS[0], COS[1], COS[2], OPP]))), false, 'the opponent cosigning its own checkpoint → false')
     eq(V(P(cosign(mkCkpt(OPP, OPP.root), [COS[0], COS[1], COS[2], OWNER]))), false, 'the segment OWNER cosigning its own fold input → false')
     // canonicalBytes itself refuses unsafe ints, so the forgery is a post-sign
-    // payload mutation — the verifier must fail closed on it, never throw.
+    // payload mutation: the verifier must fail closed on it, never throw.
     const unsafeThrough = { ...good, body: { ...good.body, payload: { ...good.body.payload, through: 2 ** 53 } } }
     eq(V(P(unsafeThrough)), false, 'unsafe-integer `through` → false')
     eq(V(P(cosign(mkCkpt(OPP, OPP.root, { height: -1 }), COS))), false, 'negative height (shape) → false')
@@ -1431,7 +1431,7 @@ async function run(outdir) {
     eq(
       seg.verifySegmentEvent(mkOwnerSegment(mkCkpt(OPP, OPP.root))),
       'bad-opp-ckpt',
-      'a present-but-uncosigned oppCkpt fails the SEGMENT (bad-opp-ckpt) — no silent downgrade to seeds'
+      'a present-but-uncosigned oppCkpt fails the SEGMENT (bad-opp-ckpt), no silent downgrade to seeds'
     )
     eq(
       seg.verifySegmentEvent(mkOwnerSegment(devCkpt)),
@@ -1443,12 +1443,12 @@ async function run(outdir) {
   // ==========================================================================
   // 10. A6 Lane C: additive configureSigning() wiring into mp (players).
   //   (a) a session built UNSIGNED + configureSigning(sig) before host()/join()
-  //       seats signed play IDENTICALLY to the constructor `signing` opt — full
+  //       seats signed play IDENTICALLY to the constructor `signing` opt: full
   //       trio to a witnessed terminal + verifiable per-chain segments;
   //   (b) the identity is FROZEN mid-game (guard) so a live signed game's
   //       key/players/chain can't change under it;
-  //   (c) configureSigning(null) is byte-for-byte v5 — no hello identity, no
-  //       move sig — so casual play stays untouched.
+  //   (c) configureSigning(null) is byte-for-byte v5. No hello identity, no
+  //       move sig, so casual play stays untouched.
   // ==========================================================================
   console.log('\n· A6 Lane C: configureSigning() seats signed play like the constructor opt …')
   {
@@ -1481,7 +1481,7 @@ async function run(outdir) {
       await who.sendMove(uci)
       await waitEvent(other, (e) => e.type === 'move' && e.uci === uci, { label: `${uci} relayed (configured)` })
     }
-    // GUARD: a mid-game configureSigning() is a safe no-op — the live identity is
+    // GUARD: a mid-game configureSigning() is a safe no-op. The live identity is
     // frozen. If it TOOK EFFECT, the host's next move would sign with WIT2's key,
     // fail its own chain (wrong key for white) → failSigned emits 'error' + tears
     // the transport down, so g1f3 would never relay.
@@ -1520,8 +1520,8 @@ async function run(outdir) {
     await waitEvent(gw, (m) => m.t === 'wend', { label: 'guest onWitnessStream wend (configured)' })
     eq(host.getWitnessIdentity()?.key, WIT_I.key, 'configureSigning host knows the seated witness key (segment build input)')
 
-    // getSignedGame() + the verified wstream build a segment BOTH chains accept —
-    // the exact inputs Lane C hands Lane E's buildAndPublishSegment.
+    // getSignedGame() + the verified wstream build a segment BOTH chains accept.
+    // The exact inputs Lane C hands Lane E's buildAndPublishSegment.
     const mkChain = (i, name) =>
       chain.createAccountChain({ rootPriv: i.priv, rootPub: hash.ed25519.getPublicKey(i.priv), displayName: name, ts: 1_000 })
     let hostChain = mkChain(HOST_I, 'Hosty')
@@ -1556,8 +1556,8 @@ async function run(outdir) {
   console.log('\n· A6 Lane C: configureSigning(null) is byte-for-byte v5 (casual untouched) …')
   {
     const pair = makeMockPair()
-    // Built WITH a constructor identity, then explicitly CLEARED before hosting —
-    // the casual path the store takes for an unrated game must be exactly v5.
+    // Built WITH a constructor identity, then explicitly CLEARED before hosting.
+    // The casual path the store takes for an unrated game must be exactly v5.
     const host = track(new MpNetSession(pair.hostFactory, { signing: signingOf(HOST_I) }))
     host.configureSigning(null)
     const guest = track(new MpNetSession(pair.guestFactory))
@@ -1584,7 +1584,7 @@ async function run(outdir) {
 
   // ==========================================================================
   // 11. A6 M2 root-fix: a witness that seats AFTER `start` (the guest handshaked
-  //   first) is CAUGHT UP — mpSession replays the mirrored start + every signed
+  //   first) is CAUGHT UP: mpSession replays the mirrored start + every signed
   //   move to just that late witness, so its WitnessCore initializes, verifies
   //   the full chain, resumes the wclk cadence, and still produces a valid wend.
   //   Before the fix a late witness never saw `start` (host mirrors it once), so
@@ -1603,7 +1603,7 @@ async function run(outdir) {
     host.onWitnessStream((m) => hw.push(m))
     guest.onWitnessStream((m) => gw.push(m))
     const { code } = await host.host(CFG(60_000, 0, 'white'), 'H')
-    // Guest joins FIRST — NO witness in the room yet, so `start` mirrors to nobody.
+    // Guest joins FIRST: NO witness in the room yet, so `start` mirrors to nobody.
     await guest.join(code, 'G')
     await waitEvent(he, (e) => e.type === 'start', { label: 'host start (late-witness)' })
     await waitEvent(ge, (e) => e.type === 'start', { label: 'guest start (late-witness)' })
@@ -1612,11 +1612,11 @@ async function run(outdir) {
       await who.sendMove(uci)
       await waitEvent(other, (e) => e.type === 'move' && e.uci === uci, { label: `${uci} relayed (pre-witness)` })
     }
-    // NOW the witness attaches — AFTER start + 2 moves. It greets every peer it
+    // NOW the witness attaches: AFTER start + 2 moves. It greets every peer it
     // sees (targeted) so the host learns it is a witness and replays the game.
     const witness = pair.injectPeer({ onJoin: (id, transport) => transport.send(WHELLO, id) })
     await sleep(20)
-    witness.transport.send(WHELLO) // broadcast too (duplicate for the host — ignored)
+    witness.transport.send(WHELLO) // broadcast too (duplicate for the host: ignored)
     await sleep(40)
 
     // The host RESENT the mirrored start + replayed BOTH signed moves to the late

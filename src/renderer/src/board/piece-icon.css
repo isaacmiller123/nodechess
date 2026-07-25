@@ -1,5 +1,5 @@
 /* ============================================================
-   PieceIcon (board/PieceIcon.tsx) — inline piece artwork that
+   PieceIcon (board/PieceIcon.tsx): inline piece artwork that
    matches the board's active piece set, plus layout for its two
    consumers that own no CSS file of their own: the promotion
    picker buttons (.promo-choice lives in app.css) and the Play

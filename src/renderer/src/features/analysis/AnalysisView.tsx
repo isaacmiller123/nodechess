@@ -167,7 +167,7 @@ export function AnalysisView({
   const { lines, depth, error: engineError } = useAnalysis(fen, engineOn, multipv)
   // Stockfish-on-disk probe (datasets:status().engine): when the engine dataset
   // was never imported, EnginePanel swaps "analyzing… depth 0" for the install
-  // CTA — the fresh-install Analysis hang from the audit.
+  // CTA. The fresh-install Analysis hang from the audit.
   const { ready: engineReady } = useEngineReady(engineOn)
   const engineMissing = engineOn && engineReady === false
   const best = lines.find((l) => l.multipv === 1) ?? lines[0]
@@ -177,8 +177,8 @@ export function AnalysisView({
 
   // Engine top-line arrows on the board: best move is a solid green arrow, the
   // 2nd/3rd lines are progressively fainter. Re-derived as the engine streams.
-  // settings.showEngineArrows hides them without touching the engine toggle —
-  // the sidebar lines keep streaming, only the board arrows go away.
+  // settings.showEngineArrows hides them without touching the engine toggle.
+  // The sidebar lines keep streaming, only the board arrows go away.
   const engineShapes = useMemo<DrawShape[]>(() => {
     if (!engineOn || !settings.showEngineArrows) return []
     const brushByRank = ['green', 'paleBlue', 'paleGrey'] as const
@@ -441,7 +441,7 @@ export function AnalysisView({
     }
     // Load once when the opened game id changes. loadSavedGame is intentionally
     // NOT a dependency: useGameTree returns a fresh object every render, so its
-    // identity changes each render — including it here re-fired this effect on
+    // identity changes each render, including it here re-fired this effect on
     // every render and looped the game-load (opening + header flickering).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameId])
@@ -466,7 +466,7 @@ export function AnalysisView({
       cancelled = true
     }
     // Load once when the opened famous id changes. loadGame is intentionally NOT
-    // a dependency — same unstable-identity reason as the gameId effect above
+    // a dependency: same unstable-identity reason as the gameId effect above
     // (it closes over the per-render useGameTree object).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [famousId])
@@ -587,7 +587,7 @@ export function AnalysisView({
             <span className="panel-title">Moves</span>
           </div>
           {/* Opening identity renders inside MoveList (OpeningTag header, driven
-              by the persistent trace — it no longer clears when out of book). */}
+              by the persistent trace: it no longer clears when out of book). */}
           <MoveList
             root={tree.root}
             currentId={tree.current.id}

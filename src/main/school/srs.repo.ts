@@ -6,10 +6,10 @@ import { newCard, scheduleNext, type SrsCard } from '../rating/fsrs'
 import type { DueConcept, ConceptReview, ChapterConcept } from '../../shared/types'
 
 // ============================================================================
-// FEATURE 3 — Spaced repetition (SM-2-lite) of concepts.  ★ BUILDER SLICE 3 ★
+// FEATURE 3: Spaced repetition (SM-2-lite) of concepts.  ★ BUILDER SLICE 3 ★
 //
 // All read/write logic for the concept_srs table (one card per taught concept;
-// created at user_version=6). SM-2-LITE — simple, ship-fast — NOT full FSRS. The
+// created at user_version=6). SM-2-LITE: simple, ship-fast: NOT full FSRS. The
 // scheduler math lives in the sibling src/main/rating/fsrs.ts (also slice 3);
 // this repo owns the SQL + the IPC-facing functions.
 //
@@ -23,8 +23,8 @@ import type { DueConcept, ConceptReview, ChapterConcept } from '../../shared/typ
 //     schedule never drift apart.
 //   • A review counts as a "study action today": we OR `review_done=1` into today's
 //     LOCAL-day school_day row (same table the daily/streak slice owns). We write it
-//     directly here — an idempotent ON CONFLICT(ymd) upsert that composes with the
-//     daily slice's own writer — so the streak stays coherent regardless of build
+//     directly here: an idempotent ON CONFLICT(ymd) upsert that composes with the
+//     daily slice's own writer, so the streak stays coherent regardless of build
 //     order. (See verify notes.)
 // ============================================================================
 
@@ -108,10 +108,10 @@ function conceptMeta(
  * Seed or advance a concept's SRS card.
  *
  * Two call shapes:
- *   • upsertSchedule({ conceptId })                  — SEED: first time a concept is
+ *   • upsertSchedule({ conceptId }),                   SEED: first time a concept is
  *     taught, create a NEW card due now (so its first refresher can surface today).
  *     No-op if a card already exists (never resets an in-flight schedule).
- *   • upsertSchedule({ conceptId, correct })         — ADVANCE: run the SM-2-lite
+ *   • upsertSchedule({ conceptId, correct }),          ADVANCE: run the SM-2-lite
  *     step (fsrs.ts) over the existing card (seeding one first if missing) and write
  *     the rescheduled card. Returns the written card.
  *
@@ -163,7 +163,7 @@ export function getDueConcepts(opts?: { limit?: number }): DueConcept[] {
   const limit = opts?.limit
   for (const r of rows) {
     const meta = conceptMeta(r.concept_id)
-    if (!meta) continue // stale concept id — skip
+    if (!meta) continue // stale concept id: skip
     out.push({
       conceptId: r.concept_id,
       conceptName: meta.name,
@@ -179,7 +179,7 @@ export function getDueConcepts(opts?: { limit?: number }): DueConcept[] {
 
 /** Count of concepts still owed right now (drives the Today "N left" badge).
  *  Reuses getDueConcepts() so stale concept ids (removed from the curriculum) are
- *  filtered exactly like the drill list is — the badge and the list can never
+ *  filtered exactly like the drill list is. The badge and the list can never
  *  disagree (a raw COUNT(*) would say "N left" over an empty drill forever). */
 function remainingDueCount(): number {
   return getDueConcepts().length
@@ -187,7 +187,7 @@ function remainingDueCount(): number {
 
 /**
  * Mark today's LOCAL day as "studied via a review". This OR-s review_done=1 into the
- * school_day row keyed by the user's LOCAL 'YYYY-MM-DD' (src/main/util/day.ts) — the
+ * school_day row keyed by the user's LOCAL 'YYYY-MM-DD' (src/main/util/day.ts): the
  * same table + columns the daily/streak slice owns. Written directly (idempotent
  * ON CONFLICT(ymd) upsert) so an SRS review counts the day toward the streak even if
  * the daily slice's recordSchoolDay() writer is built separately; both writers
@@ -219,7 +219,7 @@ export function reviewConcept(args: { conceptId: string; correct: boolean }): Co
 
   // Keep the rolling mastery estimate in step with the review outcome.
   recordConcept(args.conceptId, args.correct)
-  // A review is a "study action today" — count the LOCAL day toward the streak.
+  // A review is a "study action today". Count the LOCAL day toward the streak.
   markReviewDay()
 
   return {

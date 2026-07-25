@@ -3,7 +3,7 @@ import { handle } from './util'
 import { explainMove, positional } from '../coach'
 
 /**
- * LOCAL coaching IPC (architecture §4 — coach domain). No engine call, no LLM,
+ * LOCAL coaching IPC (architecture §4: coach domain). No engine call, no LLM,
  * no network: pure functions over a FEN + the engine eval/PV supplied by the
  * caller. Registered via the shared handle() helper (origin + zod gated).
  *
@@ -25,7 +25,7 @@ export function registerCoach(): void {
     'coach:explainMove',
     // Wire bounds (mirroring server/review.ts): the web bridge serves this
     // channel to anonymous callers, so strings and the PV are capped. The
-    // caps sit far above legit use (FEN ≤~90 chars, UCI ≤5) — CoachHint
+    // caps sit far above legit use (FEN ≤~90 chars, UCI ≤5). CoachHint
     // forwards the RAW engine principal variation, which can run deep, so pv
     // is bounded well above any real search depth rather than at a tight
     // guess. Any low-thousands cap already defeats the mutex-stall DoS.

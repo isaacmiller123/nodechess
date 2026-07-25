@@ -11,7 +11,7 @@
 // gomoku five-detection (rows/columns/both diagonals/overline) + draw on a
 // full board.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -51,7 +51,7 @@ await build({
   platform: 'node',
   jsx: 'automatic',
   // games/ffish.ts resolves the WASM asset via a Vite '?url' import; headless
-  // bundles keep it external (never executed in node — tests pass wasmBinary).
+  // bundles keep it external (never executed in node; tests pass wasmBinary).
   external: ['*?url'],
   loader: { '.css': 'empty' },
   alias: { '@shared': resolve(ROOT, 'src/shared'), '@': resolve(ROOT, 'src/renderer/src') },
@@ -152,7 +152,7 @@ try {
   console.log('go: ko')
   s = playAll(go, go.init({ size: 9 }), [
     'd5', 'f4', 'e4', 'f6', 'e6', 'g5', 'a9', 'e5', // shell built; white takes the ko point
-    'f5' // black captures e5 — ko
+    'f5' // black captures e5, ko
   ])
   eq(signAt(s, 'e5'), 0, 'go: ko capture removes the white stone')
   eq(go.play(s, 'e5'), null, 'go: immediate ko recapture → null')
@@ -162,7 +162,7 @@ try {
 
   // ---- go: handicap (hoshi placement goldens + komi + white-first turn) --------
   console.log('go: handicap')
-  // Placement goldens — the standard hoshi tables per size (tenuki order:
+  // Placement goldens. The standard hoshi tables per size (tenuki order:
   // top-right, bottom-left, bottom-right, top-left, then middles).
   eq(JSON.stringify(handicapPlacement(19, 2)), '["q16","d4"]', 'handicap: 19x19 h2 = q16 d4')
   eq(
@@ -358,7 +358,7 @@ try {
   gomoku.play(gBase, 'h8')
   eq(gBase.moves.length, 0, 'gomoku: play() never mutates the input state')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

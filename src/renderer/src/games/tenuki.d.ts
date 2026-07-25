@@ -1,4 +1,4 @@
-// Minimal ambient types for the untyped `tenuki` package (0.3.1) — ONLY the
+// Minimal ambient types for the untyped `tenuki` package (0.3.1): ONLY the
 // headless surface games/go.ts consumes (Game without an element uses tenuki's
 // NullRenderer, so everything here is DOM-free). y/x are measured from the
 // TOP-LEFT of the board: y = 0 is the top row, x = 0 is the left column.
@@ -29,8 +29,8 @@ declare module 'tenuki' {
     blackStonesCaptured: number
     whiteStonesCaptured: number
     /** Stones removed by the move that produced THIS state. CAUTION: the
-     *  INITIAL state omits this field entirely (undefined at runtime) —
-     *  guard with Array.isArray before reading it. */
+     *  INITIAL state omits this field entirely (undefined at runtime).
+     *  Guard with Array.isArray before reading it. */
     capturedPositions: readonly TenukiPoint[]
     boardSize: number
     intersectionAt(y: number, x: number): TenukiIntersection

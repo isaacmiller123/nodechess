@@ -1,6 +1,6 @@
 /* Library (saved-game archive) + game replay viewer.
    Reuses the games-page layout system (.votb grid, .game-playbar strip,
-   .votb-side rail — games.css) and the global eval-bar/board-controls
+   .votb-side rail: games.css) and the global eval-bar/board-controls
    (app.css); this file only adds the list, chips, move list and replay
    chrome. */
 
@@ -244,7 +244,7 @@
 }
 
 /* Go winrate readout: a slim horizontal bar above the board. Black fills from
-   the left (dark), white remainder to the right — label centered on top. */
+   the left (dark), white remainder to the right, label centered on top. */
 .replay-go-eval {
   position: relative;
   width: min(100%, var(--votb-h));

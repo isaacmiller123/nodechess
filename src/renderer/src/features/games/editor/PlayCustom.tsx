@@ -20,7 +20,7 @@ type Phase =
 /**
  * Local over-the-board play for a Variant Lab creation: registers the variant
  * through the dynamic registry seam, then drives the GameSpec directly
- * (two humans, one machine — same model as VariantOtb). Accurate rules
+ * (two humans, one machine: same model as VariantOtb). Accurate rules
  * end-to-end via ffish, auto-flip, sounds, result banner.
  */
 export function PlayCustom({
@@ -77,7 +77,7 @@ export function PlayCustom({
   }, [])
 
   // Hooks stay above the early returns (hook-after-return caused a prior
-  // crash — see CLAUDE.md). Chess-OTB flip timing: turn a beat after the move.
+  // crash. See CLAUDE.md). Chess-OTB flip timing: turn a beat after the move.
   const result =
     phase.t === 'ready' ? (phase.entry.spec as GameSpec<CustomVariantState>).result(phase.game) : null
   const turn: 'white' | 'black' =
@@ -93,7 +93,7 @@ export function PlayCustom({
     {
       white: 'White',
       black: 'Black',
-      event: `Variant Lab — ${def.name}`,
+      event: `Variant Lab: ${def.name}`,
       source: 'custom',
       opponentKind: 'human',
       opponentLabel: 'Over the board'
@@ -125,8 +125,8 @@ export function PlayCustom({
   const resultLabel =
     result &&
     (result.winner === null
-      ? `Draw — ${result.reason}`
-      : `${result.winner === 'white' ? 'White' : 'Black'} wins — ${result.reason}`)
+      ? `Draw: ${result.reason}`
+      : `${result.winner === 'white' ? 'White' : 'Black'} wins: ${result.reason}`)
 
   return (
     <div className="vl-play">

@@ -1,5 +1,5 @@
 /* ============================================================
-   Accounts hub (A-UI) — Overview landing + Security tab.
+   Accounts hub (A-UI): Overview landing + Security tab.
    Namespace: .ahub- (assigned in account.css). Tokens only; the
    shared primitives (.panel/.panel-head/.panel-title, .card,
    .btn/.btn.ghost/.btn.danger(+.small), .icon-btn, .setting-label/
@@ -184,7 +184,7 @@
 }
 
 /* ============================================================
-   Overview — identity card (§1)
+   Overview: identity card (§1)
    ============================================================ */
 .ahub-identity {
   max-width: none;
@@ -279,7 +279,7 @@
 }
 
 /* ============================================================
-   Overview — ladder tiles (§6 display states)
+   Overview: ladder tiles (§6 display states)
    ============================================================ */
 .ahub-ladders {
   display: grid;
@@ -366,7 +366,7 @@
 }
 
 /* ============================================================
-   Overview + Security — standing strip (§9)
+   Overview + Security: standing strip (§9)
    ============================================================ */
 .ahub-standing {
   display: flex;
@@ -397,7 +397,7 @@
 }
 
 /* ============================================================
-   Overview — reputation card (§6b)
+   Overview: reputation card (§6b)
    ============================================================ */
 .ahub-rep {
   max-width: none;
@@ -471,7 +471,7 @@
 }
 
 /* ============================================================
-   Overview — keyring panel (§1)
+   Overview: keyring panel (§1)
    ============================================================ */
 .ahub-keyring-intro {
   margin: 0;
@@ -553,7 +553,7 @@
 }
 
 /* ============================================================
-   Security — devices (§1)
+   Security: devices (§1)
    ============================================================ */
 .ahub-devices {
   list-style: none;
@@ -647,7 +647,7 @@
 }
 
 /* ============================================================
-   Security — PIN (§1)
+   Security: PIN (§1)
    ============================================================ */
 .ahub-fusemeter {
   display: flex;
@@ -717,7 +717,7 @@
 }
 
 /* ============================================================
-   Security — ban taxonomy (§9)
+   Security: ban taxonomy (§9)
    ============================================================ */
 .ahub-subhead {
   margin: 0;
@@ -788,7 +788,7 @@
 }
 
 /* ============================================================
-   Security — recovery (C-5)
+   Security: recovery (C-5)
    ============================================================ */
 .ahub-recovery-row {
   display: flex;

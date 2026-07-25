@@ -3,13 +3,13 @@
  "band": "24",
  "order": 24,
  "title": "The Ruy Lopez (Spanish)",
- "subtitle": "1.e4 e5 2.Nf3 Nc6 3.Bb5 — the Morphy Defence, the Exchange, the Berlin, the Marshall, and the closed-centre plans",
+ "subtitle": "1.e4 e5 2.Nf3 Nc6 3.Bb5: the Morphy Defence, the Exchange, the Berlin, the Marshall, and the closed-centre plans",
  "estMinutes": 48,
  "concepts": [
   {
    "id": "spanish-bishop",
    "name": "The Spanish bishop",
-   "short": "3.Bb5 pins pressure on the c6-knight that defends e5 — the bishop nags at Black's centre rather than grabbing material at once."
+   "short": "3.Bb5 pins pressure on the c6-knight that defends e5. The bishop nags at Black's centre rather than grabbing material at once."
   },
   {
    "id": "morphy-a6",
@@ -24,7 +24,7 @@
   {
    "id": "closed-centre",
    "name": "The closed-centre manoeuvre",
-   "short": "In the Closed Ruy White plays c3 and d4 slowly, then re-routes the knight Nb1-d2-f1-g3 toward the kingside — a long, strategic build-up."
+   "short": "In the Closed Ruy White plays c3 and d4 slowly, then re-routes the knight Nb1-d2-f1-g3 toward the kingside, a long, strategic build-up."
   },
   {
    "id": "exchange-structure",
@@ -34,12 +34,12 @@
   {
    "id": "berlin-endgame",
    "name": "The Berlin endgame",
-   "short": "The Berlin steers into an early queenless endgame where Black's king sits on d8 and his bishop pair compensates for a wrecked structure — solid and hard to crack."
+   "short": "The Berlin steers into an early queenless endgame where Black's king sits on d8 and his bishop pair compensates for a wrecked structure, solid and hard to crack."
   },
   {
    "id": "marshall-gambit",
    "name": "The Marshall Attack",
-   "short": "Black sacrifices the e5-pawn with ...d5 to rip open the centre and launch a furious kingside attack with ...Bd6, ...Qh4 and ...Re8 — a deeply prepared gambit White must know to face."
+   "short": "Black sacrifices the e5-pawn with ...d5 to rip open the centre and launch a furious kingside attack with ...Bd6, ...Qh4 and ...Re8. A deeply prepared gambit White must know to face."
   }
  ],
  "lessons": [
@@ -47,13 +47,13 @@
    "id": "l1-why-the-spanish",
    "title": "Why the Spanish?",
    "kind": "warmup",
-   "summary": "The idea behind 3.Bb5 and the pressure it creates — plus a tactical warm-up.",
+   "summary": "The idea behind 3.Bb5 and the pressure it creates, plus a tactical warm-up.",
    "segments": [
     {
      "kind": "teach",
      "title": "The oldest serious opening",
      "intro": {
-      "text": "You know 1.e4 e5 2.Nf3 Nc6. The Italian plays 3.Bc4 at f7; the Scotch plays 3.d4. Today: 3.Bb5 — the Ruy Lopez, named for a 16th-century Spanish priest and still the most respected way to fight 1...e5. Its idea is subtle: instead of attacking, White pressures the defender of e5.",
+      "text": "You know 1.e4 e5 2.Nf3 Nc6. The Italian plays 3.Bc4 at f7; the Scotch plays 3.d4. Today: 3.Bb5. The Ruy Lopez, named for a 16th-century Spanish priest and still the most respected way to fight 1...e5. Its idea is subtle: instead of attacking, White pressures the defender of e5.",
       "annotations": [
        {
         "kind": "highlight",
@@ -66,7 +66,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
        "coach": {
-        "text": "3.Bb5. The bishop attacks the c6-knight. Why does that matter? The knight on c6 is the guard of the e5-pawn. White does not threaten to win e5 yet — but he leans on its defender, asking awkward questions for the whole game. This indirect pressure is the soul of the Spanish.",
+        "text": "3.Bb5. The bishop attacks the c6-knight. Why does that matter? The knight on c6 is the guard of the e5-pawn. White does not threaten to win e5 yet, but he leans on its defender, asking awkward questions for the whole game. This indirect pressure is the soul of the Spanish.",
         "annotations": [
          {
           "kind": "arrow",
@@ -87,7 +87,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3",
        "coach": {
-        "text": "Beginners ask: why not 4.Bxc6 winning the e5-pawn? Because it does NOT win it. After 3.Bb5 a6 4.Bxc6 dxc6 5.Nxe5?? Qd4! forks the knight and e4, and Black regains the pawn with a great game. The threat to e5 is an illusion White uses to gain time and harass — not to cash in immediately.",
+        "text": "Beginners ask: why not 4.Bxc6 winning the e5-pawn? Because it does NOT win it. After 3.Bb5 a6 4.Bxc6 dxc6 5.Nxe5?? Qd4! forks the knight and e4, and Black regains the pawn with a great game. The threat to e5 is an illusion White uses to gain time and harass, not to cash in immediately.",
         "annotations": [
          {
           "kind": "highlight",
@@ -109,7 +109,7 @@
      "kind": "puzzle",
      "title": "Warm-up: open-game tactics",
      "intro": {
-      "text": "The Spanish leads to rich, semi-open middlegames. Sharpen your eye first — find the tactic in each."
+      "text": "The Spanish leads to rich, semi-open middlegames. Sharpen your eye first: find the tactic in each."
      },
      "puzzle": {
       "themes": [
@@ -126,7 +126,7 @@
   },
   {
    "id": "l2-morphy-mainline",
-   "title": "The Morphy Defence — main line",
+   "title": "The Morphy Defence: main line",
    "kind": "opening",
    "summary": "3...a6 4.Ba4 and the Closed Ruy backbone: how White builds slowly behind c3 and d4.",
    "segments": [
@@ -134,37 +134,37 @@
      "kind": "model",
      "title": "The backbone, move by move",
      "intro": {
-      "text": "This is the most important sequence in the whole opening. Listen to WHY each move is played — the Spanish is about ideas, not memorised squares."
+      "text": "This is the most important sequence in the whole opening. Listen to WHY each move is played. The Spanish is about ideas, not memorised squares."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — claim the centre and free the bishop and queen."
+        "text": "1.e4: claim the centre and free the bishop and queen."
        }
       },
       {
        "uci": "e7e5",
        "coach": {
-        "text": "1...e5 — Black meets you head-on: an Open Game."
+        "text": "1...e5, Black meets you head-on: an Open Game."
        }
       },
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — develop with a threat. The e5-pawn is attacked."
+        "text": "2.Nf3: develop with a threat. The e5-pawn is attacked."
        }
       },
       {
        "uci": "b8c6",
        "coach": {
-        "text": "2...Nc6 — the natural defence of e5."
+        "text": "2...Nc6: the natural defence of e5."
        }
       },
       {
        "uci": "f1b5",
        "coach": {
-        "text": "3.Bb5 — the Ruy Lopez. Pin the defender of e5, not the pawn. White will pressure c6 for the whole game.",
+        "text": "3.Bb5: the Ruy Lopez. Pin the defender of e5, not the pawn. White will pressure c6 for the whole game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -179,7 +179,7 @@
       {
        "uci": "a7a6",
        "coach": {
-        "text": "3...a6 — the Morphy Defence, Black's overwhelming main choice. It asks the bishop to decide: take on c6, or retreat and keep nagging.",
+        "text": "3...a6: the Morphy Defence, Black's overwhelming main choice. It asks the bishop to decide: take on c6, or retreat and keep nagging.",
         "annotations": [
          {
           "kind": "arrow",
@@ -194,7 +194,7 @@
       {
        "uci": "b5a4",
        "coach": {
-        "text": "4.Ba4 — retreat but keep the pin alive on the a4-e8 diagonal. The bishop still eyes c6. (Taking — 4.Bxc6 — is the Exchange Variation, our next lesson.)",
+        "text": "4.Ba4: retreat but keep the pin alive on the a4-e8 diagonal. The bishop still eyes c6. (Taking, 4.Bxc6, is the Exchange Variation, our next lesson.)",
         "annotations": [
          {
           "kind": "arrow",
@@ -209,7 +209,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — develop and hit e4. Black ignores the lingering pin because ...b5 is always available to break it.",
+        "text": "4...Nf6: develop and hit e4. Black ignores the lingering pin because ...b5 is always available to break it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -223,13 +223,13 @@
       {
        "uci": "e1g1",
        "coach": {
-        "text": "5.O-O — White calmly castles, offering the e4-pawn. It is poisoned-looking but not really lost: 5...Nxe4 6.d4 leads to the Open Ruy, where White regains the pawn with activity. The Spanish player is in no hurry."
+        "text": "5.O-O: White calmly castles, offering the e4-pawn. It is poisoned-looking but not really lost: 5...Nxe4 6.d4 leads to the Open Ruy, where White regains the pawn with activity. The Spanish player is in no hurry."
        }
       },
       {
        "uci": "f8e7",
        "coach": {
-        "text": "5...Be7 — Black declines and develops solidly toward castling. This quiet move leads to the Closed Ruy, the main road.",
+        "text": "5...Be7: Black declines and develops solidly toward castling. This quiet move leads to the Closed Ruy, the main road.",
         "annotations": [
          {
           "kind": "arrow",
@@ -243,7 +243,7 @@
       {
        "uci": "f1e1",
        "coach": {
-        "text": "6.Re1 — NOW the rook backs up e4, renewing a real threat to win the e5-pawn with Bxc6 and Nxe5. Black must react.",
+        "text": "6.Re1: NOW the rook backs up e4, renewing a real threat to win the e5-pawn with Bxc6 and Nxe5. Black must react.",
         "annotations": [
          {
           "kind": "highlight",
@@ -257,7 +257,7 @@
       {
        "uci": "b7b5",
        "coach": {
-        "text": "6...b5 — the point of 3...a6. Black kicks the bishop, ending the pin so that ...Na5 or ...d6 won't drop e5. The queenside expands too.",
+        "text": "6...b5: the point of 3...a6. Black kicks the bishop, ending the pin so that ...Na5 or ...d6 won't drop e5. The queenside expands too.",
         "annotations": [
          {
           "kind": "arrow",
@@ -272,7 +272,7 @@
       {
        "uci": "a4b3",
        "coach": {
-        "text": "7.Bb3 — the bishop swings to its long-term home, the a2-g8 diagonal, now eyeing f7. This bishop will sit here for many moves, a quiet menace.",
+        "text": "7.Bb3: the bishop swings to its long-term home, the a2-g8 diagonal, now eyeing f7. This bishop will sit here for many moves, a quiet menace.",
         "annotations": [
          {
           "kind": "arrow",
@@ -286,7 +286,7 @@
       {
        "uci": "d7d6",
        "coach": {
-        "text": "7...d6 — solidify e5 once and for all and open the c8-bishop's diagonal. The classic Closed Ruy structure is set.",
+        "text": "7...d6: solidify e5 once and for all and open the c8-bishop's diagonal. The classic Closed Ruy structure is set.",
         "annotations": [
          {
           "kind": "highlight",
@@ -299,7 +299,7 @@
       {
        "uci": "c2c3",
        "coach": {
-        "text": "8.c3 — the key Spanish move. It prepares d4 (the central break) AND gives the bishop a retreat to c2 if Black plays ...Na5. Slow, purposeful, deep.",
+        "text": "8.c3: the key Spanish move. It prepares d4 (the central break) AND gives the bishop a retreat to c2 if Black plays ...Na5. Slow, purposeful, deep.",
         "annotations": [
          {
           "kind": "arrow",
@@ -319,7 +319,7 @@
       {
        "uci": "e8g8",
        "coach": {
-        "text": "8...O-O — both kings are safe. We have reached the main tabiya of the Closed Ruy Lopez. From here White prepares d4 and the famous knight tour Nb1-d2-f1-g3; Black plays ...Na5/...c5 or ...Re8 and ...Bf8. A long strategic battle — and you now understand its logic.",
+        "text": "8...O-O: both kings are safe. We have reached the main tabiya of the Closed Ruy Lopez. From here White prepares d4 and the famous knight tour Nb1-d2-f1-g3; Black plays ...Na5/...c5 or ...Re8 and ...Bf8. A long strategic battle, and you now understand its logic.",
         "annotations": [
          {
           "kind": "arrow",
@@ -343,7 +343,7 @@
       {
        "fen": "r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 w - - 1 9",
        "coach": {
-        "text": "Idea one: the break d4. White plays d4 to challenge e5 and open the centre for his pieces. But he prepares it with c3 first so that after ...exd4 he recaptures cxd4 and keeps a broad pawn centre. Timing is everything — push d4 only when it gains, not when ...exd4 just trades.",
+        "text": "Idea one: the break d4. White plays d4 to challenge e5 and open the centre for his pieces. But he prepares it with c3 first so that after ...exd4 he recaptures cxd4 and keeps a broad pawn centre. Timing is everything. Push d4 only when it gains, not when ...exd4 just trades.",
         "annotations": [
          {
           "kind": "arrow",
@@ -363,7 +363,7 @@
       {
        "fen": "r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 w - - 1 9",
        "coach": {
-        "text": "Idea two: the knight tour. The b1-knight has no future on c3 (it would block c3 and the bishop). Instead it travels Nbd2-f1-g3, reaching the kingside where White's attack will come. This famous re-route — three moves for one knight — is the signature manoeuvre of the Spanish.",
+        "text": "Idea two: the knight tour. The b1-knight has no future on c3 (it would block c3 and the bishop). Instead it travels Nbd2-f1-g3, reaching the kingside where White's attack will come. This famous re-route (three moves for one knight) is the signature manoeuvre of the Spanish.",
         "annotations": [
          {
           "kind": "arrow",
@@ -393,13 +393,13 @@
      "kind": "guided",
      "title": "Play the Morphy moves",
      "intro": {
-      "text": "Your turn. Make the defining Spanish moves — and know why each is right."
+      "text": "Your turn. Make the defining Spanish moves, and know why each is right."
      },
      "steps": [
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 2 3",
        "coach": {
-        "text": "Black just played 2...Nc6, defending e5. Play the Ruy Lopez — pressure the defender, don't attack f7.",
+        "text": "Black just played 2...Nc6, defending e5. Play the Ruy Lopez. Pressure the defender, don't attack f7.",
         "annotations": [
          {
           "kind": "circle",
@@ -413,7 +413,7 @@
         "f1b5"
        ],
        "successLine": {
-        "text": "3.Bb5! The Spanish bishop pins pressure on c6 — the guard of e5. Patient, positional, and the most respected reply to 1...e5.",
+        "text": "3.Bb5! The Spanish bishop pins pressure on c6: the guard of e5. Patient, positional, and the most respected reply to 1...e5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -424,13 +424,13 @@
         ]
        },
        "retryLine": {
-        "text": "Not f7 — that is the Italian. The Ruy Lopez bishop goes to b5, leaning on the knight that defends e5."
+        "text": "Not f7: that is the Italian. The Ruy Lopez bishop goes to b5, leaning on the knight that defends e5."
        }
       },
       {
        "fen": "r1bqkbnr/1ppp1ppp/p1n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 4",
        "coach": {
-        "text": "Black played 3...a6, questioning the bishop. Keep the pin alive — retreat, don't trade (yet).",
+        "text": "Black played 3...a6, questioning the bishop. Keep the pin alive. Retreat, don't trade (yet).",
         "annotations": [
          {
           "kind": "arrow",
@@ -445,7 +445,7 @@
         "b5a4"
        ],
        "successLine": {
-        "text": "4.Ba4. The bishop slides back but still rakes the a4-e8 diagonal toward c6. The pressure never lets up — this is the Morphy main line.",
+        "text": "4.Ba4. The bishop slides back but still rakes the a4-e8 diagonal toward c6. The pressure never lets up. This is the Morphy main line.",
         "annotations": [
          {
           "kind": "arrow",
@@ -462,7 +462,7 @@
       {
        "fen": "r1bqk2r/2p1bppp/p1np1n2/1p2p3/4P3/1B3N2/PPPP1PPP/RNBQR1K1 w kq - 0 8",
        "coach": {
-        "text": "Black has played ...b5, ...d6. Prepare the central break d4 AND give your bishop a bolt-hole — one little pawn move does both.",
+        "text": "Black has played ...b5, ...d6. Prepare the central break d4 AND give your bishop a bolt-hole. One little pawn move does both.",
         "annotations": [
          {
           "kind": "arrow",
@@ -498,19 +498,19 @@
    "id": "l3-exchange",
    "title": "The Exchange Variation",
    "kind": "variation",
-   "summary": "4.Bxc6 dxc6 — give up the bishop pair to play for a winning pawn-structure endgame.",
+   "summary": "4.Bxc6 dxc6: give up the bishop pair to play for a winning pawn-structure endgame.",
    "segments": [
     {
      "kind": "model",
      "title": "Trading bishop for structure",
      "intro": {
-      "text": "The Exchange Variation is the great simplifier — Lasker and Fischer used it to grind wins. The idea is purely structural."
+      "text": "The Exchange Variation is the great simplifier. Lasker and Fischer used it to grind wins. The idea is purely structural."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 — the Morphy starting point."
+        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6: the Morphy starting point."
        }
       },
       {
@@ -534,21 +534,21 @@
       {
        "uci": "f1b5",
        "coach": {
-        "text": "3.Bb5 — the Spanish.",
+        "text": "3.Bb5: the Spanish.",
         "conceptId": "spanish-bishop"
        }
       },
       {
        "uci": "a7a6",
        "coach": {
-        "text": "3...a6 — the question.",
+        "text": "3...a6: the question.",
         "conceptId": "morphy-a6"
        }
       },
       {
        "uci": "b5c6",
        "coach": {
-        "text": "4.Bxc6! — the Exchange Variation. White gives up the bishop pair on purpose. Why? To damage Black's pawns and head for a favourable endgame.",
+        "text": "4.Bxc6!, the Exchange Variation. White gives up the bishop pair on purpose. Why? To damage Black's pawns and head for a favourable endgame.",
         "annotations": [
          {
           "kind": "arrow",
@@ -563,7 +563,7 @@
       {
        "uci": "d7c6",
        "coach": {
-        "text": "4...dxc6 — Black recaptures toward the centre (4...bxc6 is worse, leaving the a-pawn weak). Notice the result: Black has FOUR queenside pawns vs THREE, but they are doubled on the c-file. That majority can never make a healthy passed pawn.",
+        "text": "4...dxc6: Black recaptures toward the centre (4...bxc6 is worse, leaving the a-pawn weak). Notice the result: Black has FOUR queenside pawns vs THREE, but they are doubled on the c-file. That majority can never make a healthy passed pawn.",
         "annotations": [
          {
           "kind": "highlight",
@@ -582,7 +582,7 @@
       {
        "uci": "e1g1",
        "coach": {
-        "text": "5.O-O — White castles. He is NOT trying to win e5 by force; he wants to reach an endgame. The long-term trump: White's 4-vs-3 KINGSIDE majority is healthy and can produce a passed pawn, while Black's queenside majority cannot.",
+        "text": "5.O-O: White castles. He is NOT trying to win e5 by force; he wants to reach an endgame. The long-term trump: White's 4-vs-3 KINGSIDE majority is healthy and can produce a passed pawn, while Black's queenside majority cannot.",
         "annotations": [
          {
           "kind": "highlight",
@@ -606,7 +606,7 @@
       {
        "uci": "f7f6",
        "coach": {
-        "text": "5...f6 — Black defends e5 solidly and prepares to develop the bishops; his two bishops are the compensation for the ruined pawns. This is the great structural battle of the Exchange Ruy: bishop pair vs. superior majority.",
+        "text": "5...f6: Black defends e5 solidly and prepares to develop the bishops; his two bishops are the compensation for the ruined pawns. This is the great structural battle of the Exchange Ruy: bishop pair vs. superior majority.",
         "annotations": [
          {
           "kind": "highlight",
@@ -619,7 +619,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "6.d4 — strike the centre. White opens lines to trade pieces and steer toward the endgame where his pawns shine.",
+        "text": "6.d4: strike the centre. White opens lines to trade pieces and steer toward the endgame where his pawns shine.",
         "annotations": [
          {
           "kind": "arrow",
@@ -633,13 +633,13 @@
       {
        "uci": "e5d4",
        "coach": {
-        "text": "6...exd4 — Black takes (else dxe5 opens things for White's pieces)."
+        "text": "6...exd4: Black takes (else dxe5 opens things for White's pieces)."
        }
       },
       {
        "uci": "f3d4",
        "coach": {
-        "text": "7.Nxd4 — recapture with the knight on a fine central square. White will trade down, keep his clean kingside majority, and play a long endgame grind. That is the entire point of the Exchange Variation: a structure you can win with no risk.",
+        "text": "7.Nxd4: recapture with the knight on a fine central square. White will trade down, keep his clean kingside majority, and play a long endgame grind. That is the entire point of the Exchange Variation: a structure you can win with no risk.",
         "annotations": [
          {
           "kind": "highlight",
@@ -662,7 +662,7 @@
       {
        "fen": "r1bqkbnr/1pp3pp/p1p2p2/8/3NP3/8/PPP2PPP/RNBQ1RK1 b kq - 0 7",
        "coach": {
-        "text": "This is the structure after the d-pawns trade off (5...f6 6.d4 exd4 7.Nxd4). Count the queenside now: Black has a6, b7, c6, c7 — four pawns. White has a2, b2, c2 — three. A four-vs-three majority, normally an asset. But Black's are DOUBLED on c6/c7: if he ever advances them he cannot make a passed pawn White's king can't stop. The majority is paralysed.",
+        "text": "This is the structure after the d-pawns trade off (5...f6 6.d4 exd4 7.Nxd4). Count the queenside now: Black has a6, b7, c6, c7, four pawns. White has a2, b2, c2, three. A four-vs-three majority, normally an asset. But Black's are DOUBLED on c6/c7: if he ever advances them he cannot make a passed pawn White's king can't stop. The majority is paralysed.",
         "annotations": [
          {
           "kind": "highlight",
@@ -681,7 +681,7 @@
       {
        "fen": "r1bqkbnr/1pp3pp/p1p2p2/8/3NP3/8/PPP2PPP/RNBQ1RK1 b kq - 0 7",
        "coach": {
-        "text": "Now White's kingside on the same board: e4, f2, g2, h2 — four pawns vs Black's f6, g7, h7 — three. A clean four-vs-three with no doubles. In an endgame White marches f4, g4, etc. to manufacture a passed pawn. THAT is the trade: White swaps the bishop pair (a middlegame asset) for a winning pawn structure (an endgame asset). Trade pieces, not pawns — and grind.",
+        "text": "Now White's kingside on the same board: e4, f2, g2, h2 (four pawns vs Black's f6, g7, h7) three. A clean four-vs-three with no doubles. In an endgame White marches f4, g4, etc. to manufacture a passed pawn. THAT is the trade: White swaps the bishop pair (a middlegame asset) for a winning pawn structure (an endgame asset). Trade pieces, not pawns, and grind.",
         "annotations": [
          {
           "kind": "highlight",
@@ -750,7 +750,7 @@
       {
        "fen": "r1bqkbnr/1pp3pp/p1p2p2/4p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 b kq - 0 6",
        "coach": {
-        "text": "You are Black now. White has just played 6.d4, hitting your e5-pawn. Release the central tension the principled way — capture on d4, so White cannot play dxe5 and open the position for his rooks.",
+        "text": "You are Black now. White has just played 6.d4, hitting your e5-pawn. Release the central tension the principled way: capture on d4, so White cannot play dxe5 and open the position for his rooks.",
         "annotations": [
          {
           "kind": "highlight",
@@ -763,7 +763,7 @@
         "e5d4"
        ],
        "successLine": {
-        "text": "6...exd4 — Black trades to avoid 7.dxe5 opening the position for White's rooks. After 7.Nxd4 White has exactly the endgame structure he wanted.",
+        "text": "6...exd4: Black trades to avoid 7.dxe5 opening the position for White's rooks. After 7.Nxd4 White has exactly the endgame structure he wanted.",
         "annotations": [
          {
           "kind": "highlight",
@@ -773,7 +773,7 @@
         ]
        },
        "retryLine": {
-        "text": "Black should release the central tension by capturing on d4 — leaving it lets White play dxe5 and open lines."
+        "text": "Black should release the central tension by capturing on d4. Leaving it lets White play dxe5 and open lines."
        }
       }
      ]
@@ -784,7 +784,7 @@
    "id": "l4-berlin",
    "title": "The Berlin Defence",
    "kind": "variation",
-   "summary": "3...Nf6 — the rock-solid Berlin Wall and its queenless endgame.",
+   "summary": "3...Nf6: the rock-solid Berlin Wall and its queenless endgame.",
    "segments": [
     {
      "kind": "model",
@@ -796,7 +796,7 @@
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5 — the Spanish.",
+        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5: the Spanish.",
         "conceptId": "spanish-bishop"
        }
       },
@@ -821,13 +821,13 @@
       {
        "uci": "f1b5",
        "coach": {
-        "text": "3.Bb5 — the bishop leans on c6."
+        "text": "3.Bb5: the bishop leans on c6."
        }
       },
       {
        "uci": "g8f6",
        "coach": {
-        "text": "3...Nf6 — the Berlin Defence! Instead of 3...a6, Black develops and counter-attacks e4 at once. Solid and modern.",
+        "text": "3...Nf6: the Berlin Defence! Instead of 3...a6, Black develops and counter-attacks e4 at once. Solid and modern.",
         "annotations": [
          {
           "kind": "arrow",
@@ -842,13 +842,13 @@
       {
        "uci": "e1g1",
        "coach": {
-        "text": "4.O-O — White castles and again offers e4. The main line is the so-called Berlin endgame; let's walk into it."
+        "text": "4.O-O: White castles and again offers e4. The main line is the so-called Berlin endgame; let's walk into it."
        }
       },
       {
        "uci": "f6e4",
        "coach": {
-        "text": "4...Nxe4 — Black grabs the pawn. This is fine because White cannot keep it: the position will balance out into an endgame.",
+        "text": "4...Nxe4: Black grabs the pawn. This is fine because White cannot keep it: the position will balance out into an endgame.",
         "annotations": [
          {
           "kind": "highlight",
@@ -861,7 +861,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "5.d4 — strike the centre, opening lines against the e4-knight and the e5-pawn.",
+        "text": "5.d4: strike the centre, opening lines against the e4-knight and the e5-pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -875,7 +875,7 @@
       {
        "uci": "e4d6",
        "coach": {
-        "text": "5...Nd6 — the knight retreats and hits the b5-bishop. (5...exd4 is the Open-style alternative; 5...Nd6 is the classical main road.)",
+        "text": "5...Nd6: the knight retreats and hits the b5-bishop. (5...exd4 is the Open-style alternative; 5...Nd6 is the classical main road.)",
         "annotations": [
          {
           "kind": "arrow",
@@ -889,7 +889,7 @@
       {
        "uci": "b5c6",
        "coach": {
-        "text": "6.Bxc6 — White takes before retreating, doubling Black's pawns just like the Exchange Variation.",
+        "text": "6.Bxc6: White takes before retreating, doubling Black's pawns just like the Exchange Variation.",
         "annotations": [
          {
           "kind": "arrow",
@@ -903,7 +903,7 @@
       {
        "uci": "d7c6",
        "coach": {
-        "text": "6...dxc6 — recapture toward the centre and open the queen's path. Note the doubled c-pawns again — the Berlin's structural cost.",
+        "text": "6...dxc6: recapture toward the centre and open the queen's path. Note the doubled c-pawns again: the Berlin's structural cost.",
         "annotations": [
          {
           "kind": "highlight",
@@ -916,7 +916,7 @@
       {
        "uci": "d4e5",
        "coach": {
-        "text": "7.dxe5 — White wins back the e-pawn, and the e5-pawn now kicks the d6-knight.",
+        "text": "7.dxe5: White wins back the e-pawn, and the e5-pawn now kicks the d6-knight.",
         "annotations": [
          {
           "kind": "highlight",
@@ -929,7 +929,7 @@
       {
        "uci": "d6f5",
        "coach": {
-        "text": "7...Nf5 — the knight jumps to f5, attacking nothing yet but eyeing the queen trade that is about to define the game.",
+        "text": "7...Nf5: the knight jumps to f5, attacking nothing yet but eyeing the queen trade that is about to define the game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -943,7 +943,7 @@
       {
        "uci": "d1d8",
        "coach": {
-        "text": "8.Qxd8+ — White trades queens with check. This is the Berlin's signature: the queens come off early, removing Black's attacking chances but also White's.",
+        "text": "8.Qxd8+: White trades queens with check. This is the Berlin's signature: the queens come off early, removing Black's attacking chances but also White's.",
         "annotations": [
          {
           "kind": "arrow",
@@ -958,7 +958,7 @@
       {
        "uci": "e8d8",
        "coach": {
-        "text": "8...Kxd8 — Black must recapture with the king, LOSING the right to castle. His king sits oddly on d8. But Black is fine: the bishop pair and a solid blockade compensate. This 'Berlin endgame' is famously hard to break — Black accepts an ugly king for long-term soundness. Understand the trade; you needn't memorise deeper.",
+        "text": "8...Kxd8: Black must recapture with the king, LOSING the right to castle. His king sits oddly on d8. But Black is fine: the bishop pair and a solid blockade compensate. This 'Berlin endgame' is famously hard to break. Black accepts an ugly king for long-term soundness. Understand the trade; you needn't memorise deeper.",
         "annotations": [
          {
           "kind": "highlight",
@@ -975,13 +975,13 @@
      "kind": "teach",
      "title": "Why the Berlin holds",
      "intro": {
-      "text": "Black's king is stuck on d8 and his pawns are doubled — so why is this rock-solid?"
+      "text": "Black's king is stuck on d8 and his pawns are doubled, so why is this rock-solid?"
      },
      "steps": [
       {
        "fen": "r1bk1b1r/ppp2ppp/2p5/4Pn2/8/5N2/PPP2PPP/RNB2RK1 w - - 0 9",
        "coach": {
-        "text": "No queens are on the board. With queens off, an exposed king is far less dangerous — there is no piece big enough to deliver a quick mate. So Black's king on d8 is awkward, not endangered. The bishop pair (the c8- and f8-bishops) gives Black real dynamic compensation for the doubled c-pawns.",
+        "text": "No queens are on the board. With queens off, an exposed king is far less dangerous. There is no piece big enough to deliver a quick mate. So Black's king on d8 is awkward, not endangered. The bishop pair (the c8- and f8-bishops) gives Black real dynamic compensation for the doubled c-pawns.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1005,7 +1005,7 @@
       {
        "fen": "r1bk1b1r/ppp2ppp/2p5/4Pn2/8/5N2/PPP2PPP/RNB2RK1 w - - 0 9",
        "coach": {
-        "text": "White's edge is the e5-pawn cramping Black and a slightly better structure; he will try to activate his pieces and restrict the bishops. Black will untangle with ...Ke8, ...h6, ...Bd7 and use the two bishops. The verdict at master level: roughly balanced — which is exactly why Black chooses it against 1.e4. A pragmatic, drawish weapon you must respect.",
+        "text": "White's edge is the e5-pawn cramping Black and a slightly better structure; he will try to activate his pieces and restrict the bishops. Black will untangle with ...Ke8, ...h6, ...Bd7 and use the two bishops. The verdict at master level: roughly balanced, which is exactly why Black chooses it against 1.e4. A pragmatic, drawish weapon you must respect.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1027,7 +1027,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/1B2p3/4P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 5 4",
        "coach": {
-        "text": "You are Black in the Berlin: 3...Nf6 4.O-O. White ignored the threat to e4 by castling. Grab the central pawn — it's the main line and you'll get it back in the structure.",
+        "text": "You are Black in the Berlin: 3...Nf6 4.O-O. White ignored the threat to e4 by castling. Grab the central pawn: it's the main line and you'll get it back in the structure.",
         "annotations": [
          {
           "kind": "circle",
@@ -1057,7 +1057,7 @@
       {
        "fen": "r1bqkb1r/ppp2ppp/2p5/4Pn2/8/5N2/PPP2PPP/RNBQ1RK1 w kq - 1 8",
        "coach": {
-        "text": "You are White, deep in the Berlin main line. The defining move is here: simplify into the endgame that defangs Black's attack by trading the most powerful pieces — with check.",
+        "text": "You are White, deep in the Berlin main line. The defining move is here: simplify into the endgame that defangs Black's attack by trading the most powerful pieces. With check.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1072,7 +1072,7 @@
         "d1d8"
        ],
        "successLine": {
-        "text": "8.Qxd8+! After 8...Kxd8 Black loses castling rights and we have the Berlin endgame. Queens off means the king on d8 is safe but passive — White plays for a tiny, risk-free pull.",
+        "text": "8.Qxd8+! After 8...Kxd8 Black loses castling rights and we have the Berlin endgame. Queens off means the king on d8 is safe but passive. White plays for a tiny, risk-free pull.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1093,19 +1093,19 @@
    "id": "l5-marshall",
    "title": "The Marshall Attack",
    "kind": "variation",
-   "summary": "...d5 — Black sacrifices the e5-pawn for a raging kingside attack, and how White can sidestep it.",
+   "summary": "...d5: Black sacrifices the e5-pawn for a raging kingside attack, and how White can sidestep it.",
    "segments": [
     {
      "kind": "model",
      "title": "The pawn sacrifice",
      "intro": {
-      "text": "Frank Marshall saved this gambit for years to spring it on Capablanca in 1918. Black gives a pawn for a long-lasting initiative — one of the most analysed gambits in chess."
+      "text": "Frank Marshall saved this gambit for years to spring it on Capablanca in 1918. Black gives a pawn for a long-lasting initiative. One of the most analysed gambits in chess."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3 — the Closed Ruy you already know."
+        "text": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Re1 b5 7.Bb3. The Closed Ruy you already know."
        }
       },
       {
@@ -1179,13 +1179,13 @@
       {
        "uci": "a4b3",
        "coach": {
-        "text": "7.Bb3 — the bishop reaches the a2-g8 diagonal."
+        "text": "7.Bb3: the bishop reaches the a2-g8 diagonal."
        }
       },
       {
        "uci": "e8g8",
        "coach": {
-        "text": "7...O-O — here Black castles instead of the usual 7...d6. This move order is the gateway to the Marshall.",
+        "text": "7...O-O: here Black castles instead of the usual 7...d6. This move order is the gateway to the Marshall.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1198,7 +1198,7 @@
       {
        "uci": "c2c3",
        "coach": {
-        "text": "8.c3 — White prepares d4 as usual. But now comes the bombshell.",
+        "text": "8.c3: White prepares d4 as usual. But now comes the bombshell.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1212,7 +1212,7 @@
       {
        "uci": "d7d5",
        "coach": {
-        "text": "8...d5!! — the Marshall Attack. Black blasts the centre open and OFFERS the e5-pawn. After 9.exd5 Nxd5 10.Nxe5 Nxe5 11.Rxe5 White is a clean pawn up — but Black gets a vicious attack in return.",
+        "text": "8...d5!!. The Marshall Attack. Black blasts the centre open and OFFERS the e5-pawn. After 9.exd5 Nxd5 10.Nxe5 Nxe5 11.Rxe5 White is a clean pawn up, but Black gets a vicious attack in return.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1232,13 +1232,13 @@
       {
        "uci": "e4d5",
        "coach": {
-        "text": "9.exd5 — White accepts the central pawn."
+        "text": "9.exd5: White accepts the central pawn."
        }
       },
       {
        "uci": "f6d5",
        "coach": {
-        "text": "9...Nxd5 — recapture, centralising the knight.",
+        "text": "9...Nxd5: recapture, centralising the knight.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1251,7 +1251,7 @@
       {
        "uci": "f3e5",
        "coach": {
-        "text": "10.Nxe5 — White grabs the offered e5-pawn. This is the critical test: declining looks safer, but accepting is the principled try — test the gambit by accepting the pawn and proving the attack falls short. (The Marshall is fully sound, which is why many strong players prefer to sidestep it — see the Anti-Marshall next.)",
+        "text": "10.Nxe5: White grabs the offered e5-pawn. This is the critical test: declining looks safer, but accepting is the principled try. Test the gambit by accepting the pawn and proving the attack falls short. (The Marshall is fully sound, which is why many strong players prefer to sidestep it; see the Anti-Marshall next.)",
         "annotations": [
          {
           "kind": "highlight",
@@ -1264,13 +1264,13 @@
       {
        "uci": "c6e5",
        "coach": {
-        "text": "10...Nxe5 — Black removes the knight..."
+        "text": "10...Nxe5: Black removes the knight..."
        }
       },
       {
        "uci": "e1e5",
        "coach": {
-        "text": "11.Rxe5 — ...and White is now a clean pawn up with the rook on e5. But watch what Black gets for it.",
+        "text": "11.Rxe5, ...and White is now a clean pawn up with the rook on e5. But watch what Black gets for it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1283,7 +1283,7 @@
       {
        "uci": "c7c6",
        "coach": {
-        "text": "11...c6 — a quiet but deep move: it shores up d5 so the knight stays put, and frees the queen to swing to the kingside with ...Qd6/...Qh4. Black has open lines, the bishop pair pointing at White's king, and ...Bd6, ...Re8 coming. The pawn is a small price for a long, dangerous initiative — THIS is the Marshall.",
+        "text": "11...c6. A quiet but deep move: it shores up d5 so the knight stays put, and frees the queen to swing to the kingside with ...Qd6/...Qh4. Black has open lines, the bishop pair pointing at White's king, and ...Bd6, ...Re8 coming. The pawn is a small price for a long, dangerous initiative. THIS is the Marshall.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1313,7 +1313,7 @@
       {
        "fen": "r1bq1rk1/2ppbppp/p1n2n2/1p2p3/4P3/1B3N2/PPPP1PPP/RNBQR1K1 w - - 2 8",
        "coach": {
-        "text": "This is the moment of choice: Black has just castled (7...O-O), threatening 8...d5, the Marshall. Instead of 8.c3 (allowing it), White plays 8.a4! — the Anti-Marshall. It hits b5 and forces Black to deal with the queenside before he can dream of ...d5.",
+        "text": "This is the moment of choice: Black has just castled (7...O-O), threatening 8...d5, the Marshall. Instead of 8.c3 (allowing it), White plays 8.a4!, the Anti-Marshall. It hits b5 and forces Black to deal with the queenside before he can dream of ...d5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1356,7 +1356,7 @@
       {
        "fen": "r1bq1rk1/2ppbppp/p1n2n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 b - - 0 8",
        "coach": {
-        "text": "You are Black. White just played 8.c3 (preparing d4) — and allowed the Marshall. Strike in the centre and offer the e5-pawn for a roaring attack.",
+        "text": "You are Black. White just played 8.c3 (preparing d4), and allowed the Marshall. Strike in the centre and offer the e5-pawn for a roaring attack.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1371,7 +1371,7 @@
         "d7d5"
        ],
        "successLine": {
-        "text": "8...d5!! The Marshall Attack. After 9.exd5 Nxd5 10.Nxe5 Nxe5 11.Rxe5 c6 Black has the bishop pair, open lines, and ...Bd6/...Qh4 incoming — full compensation for the pawn.",
+        "text": "8...d5!! The Marshall Attack. After 9.exd5 Nxd5 10.Nxe5 Nxe5 11.Rxe5 c6 Black has the bishop pair, open lines, and ...Bd6/...Qh4 incoming, full compensation for the pawn.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1402,7 +1402,7 @@
         "a2a4"
        ],
        "successLine": {
-        "text": "8.a4! The Anti-Marshall. By pressuring b5 you make Black defend the queenside and the clean ...d5 break never comes. A normal, sound Spanish — no memorisation required.",
+        "text": "8.a4! The Anti-Marshall. By pressuring b5 you make Black defend the queenside and the clean ...d5 break never comes. A normal, sound Spanish: no memorisation required.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1423,19 +1423,19 @@
    "id": "l6-spanish-traps",
    "title": "Spanish Tactics & Traps",
    "kind": "tactics",
-   "summary": "The Noah's Ark trap and the e5-pawn illusion — the tricks every Spanish player must know.",
+   "summary": "The Noah's Ark trap and the e5-pawn illusion. The tricks every Spanish player must know.",
    "segments": [
     {
      "kind": "teach",
      "title": "The Noah's Ark trap",
      "intro": {
-      "text": "The most famous trap in the Ruy Lopez. White greedily grabs a pawn and his bishop drowns — caged by a wall of pawns like Noah's animals in the ark."
+      "text": "The most famous trap in the Ruy Lopez. White greedily grabs a pawn and his bishop drowns. Caged by a wall of pawns like Noah's animals in the ark."
      },
      "steps": [
       {
        "fen": "r1bqkbnr/2p2ppp/p2p4/1p6/3pP3/1B6/PPP2PPP/RNBQK2R w KQkq - 0 8",
        "coach": {
-        "text": "The line is 4.Ba4 d6 5.d4 b5 6.Bb3 Nxd4 7.Nxd4 exd4. White is offered the d4-pawn. It looks free — but taking it with the queen is a catastrophe. Watch.",
+        "text": "The line is 4.Ba4 d6 5.d4 b5 6.Bb3 Nxd4 7.Nxd4 exd4. White is offered the d4-pawn. It looks free, but taking it with the queen is a catastrophe. Watch.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1454,7 +1454,7 @@
       {
        "fen": "r1bqkbnr/5ppp/p2p4/1ppQ4/4P3/1B6/PPP2PPP/RNB1K2R b KQkq - 1 9",
        "coach": {
-        "text": "After 8.Qxd4?? c5! the queen is kicked and must move — say 9.Qd5. Now look at White's bishop on b3. Black's pawns a6 and b5 already hem it in. One more pawn move springs the cage.",
+        "text": "After 8.Qxd4?? c5! the queen is kicked and must move. Say 9.Qd5. Now look at White's bishop on b3. Black's pawns a6 and b5 already hem it in. One more pawn move springs the cage.",
         "annotations": [
          {
           "kind": "circle",
@@ -1478,7 +1478,7 @@
       {
        "fen": "r2qkbnr/3b1ppp/p2p4/1p1Q4/2p1P3/1B6/PPP2PPP/RNB1K2R w KQkq - 0 12",
        "coach": {
-        "text": "After 9...Be6 10.Qc6+ Bd7 11.Qd5 c4! the bishop on b3 is trapped — a4 is covered by b5, c4 and a2/c2 are taken. The bishop has nowhere to go and is lost next move. THIS is the Noah's Ark: never snatch that d4-pawn with the queen while your bishop sits on b3.",
+        "text": "After 9...Be6 10.Qc6+ Bd7 11.Qd5 c4! the bishop on b3 is trapped: a4 is covered by b5, c4 and a2/c2 are taken. The bishop has nowhere to go and is lost next move. THIS is the Noah's Ark: never snatch that d4-pawn with the queen while your bishop sits on b3.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1517,7 +1517,7 @@
       {
        "fen": "r1bqkbnr/1pp2ppp/p1p5/4p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 5",
        "coach": {
-        "text": "After 3.Bb5 a6 4.Bxc6 dxc6 it looks like White can simply play 5.Nxe5 and be a pawn up. But 5...Qd4! forks the e5-knight AND the e4-pawn. Black regains the material with a fine, active game. The e5-pawn was never really hanging — its 'weakness' is bait.",
+        "text": "After 3.Bb5 a6 4.Bxc6 dxc6 it looks like White can simply play 5.Nxe5 and be a pawn up. But 5...Qd4! forks the e5-knight AND the e4-pawn. Black regains the material with a fine, active game. The e5-pawn was never really hanging: its 'weakness' is bait.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1547,13 +1547,13 @@
      "kind": "guided",
      "title": "Don't be greedy",
      "intro": {
-      "text": "Recognise the traps from both sides — punish greed, and avoid it."
+      "text": "Recognise the traps from both sides: punish greed, and avoid it."
      },
      "steps": [
       {
        "fen": "r1bqkbnr/2p2ppp/p2p4/1p6/3QP3/1B6/PPP2PPP/RNB1K2R b KQkq - 0 8",
        "coach": {
-        "text": "You are Black. White just grabbed the pawn with 8.Qxd4??. Begin the Noah's Ark trap — kick the queen with a pawn that also starts caging the b3-bishop.",
+        "text": "You are Black. White just grabbed the pawn with 8.Qxd4??. Begin the Noah's Ark trap. Kick the queen with a pawn that also starts caging the b3-bishop.",
         "annotations": [
          {
           "kind": "circle",
@@ -1590,7 +1590,7 @@
       {
        "fen": "r1bqkbnr/1pp2ppp/p1p5/4p3/4P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 0 5",
        "coach": {
-        "text": "You are White in the Exchange Variation. The e5-pawn looks free, but 5.Nxe5?? runs into 5...Qd4 forking the knight and e4. Resist the bait — make the sound developing move and play for the structure instead.",
+        "text": "You are White in the Exchange Variation. The e5-pawn looks free, but 5.Nxe5?? runs into 5...Qd4 forking the knight and e4. Resist the bait. Make the sound developing move and play for the structure instead.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1620,7 +1620,7 @@
         ]
        },
        "retryLine": {
-        "text": "5.Nxe5 fails to 5...Qd4 (forking knight and e4). Don't grab — develop. Castle your king to safety."
+        "text": "5.Nxe5 fails to 5...Qd4 (forking knight and e4). Don't grab. Develop. Castle your king to safety."
        }
       }
      ]
@@ -1655,13 +1655,13 @@
      "kind": "teach",
      "title": "What to actually aim for",
      "intro": {
-      "text": "You will never memorise every Spanish line. Carry these PLANS instead — they tell you what to do when the book runs out."
+      "text": "You will never memorise every Spanish line. Carry these PLANS instead. They tell you what to do when the book runs out."
      },
      "steps": [
       {
        "fen": "r1bq1rk1/2p1bppp/p1np1n2/1p2p3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 w - - 1 9",
        "coach": {
-        "text": "Closed Ruy, White: this is your bread and butter. Plan: play d4 at the right moment, re-route the knight Nbd2-f1-g3 to the kingside, and slowly build a kingside attack while your Bb3 stares at f7. Patience wins — you have a small, permanent space edge. Don't force it.",
+        "text": "Closed Ruy, White: this is your bread and butter. Plan: play d4 at the right moment, re-route the knight Nbd2-f1-g3 to the kingside, and slowly build a kingside attack while your Bb3 stares at f7. Patience wins. You have a small, permanent space edge. Don't force it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1715,7 +1715,7 @@
       {
        "fen": "r1bqkbnr/1pp2ppp/p1p5/4p3/4P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 1 5",
        "coach": {
-        "text": "Exchange Ruy, White: forget attacking. Plan: trade pieces, reach an endgame, and roll your healthy kingside majority (f4, g4, e5) into a passed pawn while Black's doubled c-pawns sit useless. Black's counter-plan is the two bishops — so trade a pair of minors to blunt them. Structure over flash.",
+        "text": "Exchange Ruy, White: forget attacking. Plan: trade pieces, reach an endgame, and roll your healthy kingside majority (f4, g4, e5) into a passed pawn while Black's doubled c-pawns sit useless. Black's counter-plan is the two bishops, so trade a pair of minors to blunt them. Structure over flash.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1738,7 +1738,7 @@
      "kind": "puzzle",
      "title": "Cool-down: finish strong",
      "intro": {
-      "text": "Open games reward the sharper eye. Find the winning blow in each — the kind that decides Spanish middlegames."
+      "text": "Open games reward the sharper eye. Find the winning blow in each. The kind that decides Spanish middlegames."
      },
      "puzzle": {
       "themes": [
@@ -1768,7 +1768,7 @@
      "3.Nc3"
     ],
     "answerIndex": 2,
-    "explain": "3.Bb5 is the Spanish — it pins pressure on the c6-knight, the defender of e5. 3.Bc4 is the Italian, 3.d4 the Scotch, 3.Nc3 the Four Knights."
+    "explain": "3.Bb5 is the Spanish. It pins pressure on the c6-knight, the defender of e5. 3.Bc4 is the Italian, 3.d4 the Scotch, 3.Nc3 the Four Knights."
    },
    {
     "kind": "mc",
@@ -1780,7 +1780,7 @@
      "Because it wins the c6-knight by force"
     ],
     "answerIndex": 1,
-    "explain": "The Spanish is positional: White leans on the defender of e5 to gain time and harass. After e.g. Bxc6 dxc6 Nxe5, ...Qd4 forks the knight and e4 and Black regains the pawn — so e5 was never truly hanging."
+    "explain": "The Spanish is positional: White leans on the defender of e5 to gain time and harass. After e.g. Bxc6 dxc6 Nxe5, ...Qd4 forks the knight and e4 and Black regains the pawn, so e5 was never truly hanging."
    },
    {
     "kind": "mc",
@@ -1808,25 +1808,25 @@
    },
    {
     "kind": "play",
-    "prompt": "Closed Ruy: you prepared with c3 and tucked the bishop to c2 after ...Na5, and Black has just played ...c5 to grab queenside space. The whole plan was aimed at one moment — the central break. Strike it now.",
+    "prompt": "Closed Ruy: you prepared with c3 and tucked the bishop to c2 after ...Na5, and Black has just played ...c5 to grab queenside space. The whole plan was aimed at one moment. The central break. Strike it now.",
     "fen": "r1bq1rk1/4bppp/p2p1n2/npp1p3/4P3/2P2N1P/PPBP1PP1/RNBQR1K1 w - - 0 11",
     "solutionUci": [
      "d2d4"
     ],
-    "explain": "11.d4! The signature Spanish break, prepared move by move by the earlier c3. It challenges e5 and opens the centre for White's better-placed pieces just as Black commits to the queenside. After ...exd4 cxd4 White keeps a broad, mobile centre — the slow build-up finally cashes in."
+    "explain": "11.d4! The signature Spanish break, prepared move by move by the earlier c3. It challenges e5 and opens the centre for White's better-placed pieces just as Black commits to the queenside. After ...exd4 cxd4 White keeps a broad, mobile centre, the slow build-up finally cashes in."
    },
    {
     "kind": "play",
-    "prompt": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 d6 5.O-O b5. Black chases your bishop again — this time before developing the kingside. Find its lasting home, still raking the long light diagonal toward f7.",
+    "prompt": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 d6 5.O-O b5. Black chases your bishop again. This time before developing the kingside. Find its lasting home, still raking the long light diagonal toward f7.",
     "fen": "r1bqkbnr/2p2ppp/p1np4/1p2p3/B3P3/5N2/PPPP1PPP/RNBQ1RK1 w kq - 0 6",
     "solutionUci": [
      "a4b3"
     ],
-    "explain": "6.Bb3. Driven back by ...a6 and ...b5, the Spanish bishop settles on its permanent square — the a2-g8 diagonal, eyeing f7. The pin is gone but the pressure isn't. The square is b3 no matter what move order brought ...b5 about; recognising that is the point."
+    "explain": "6.Bb3. Driven back by ...a6 and ...b5, the Spanish bishop settles on its permanent square. The a2-g8 diagonal, eyeing f7. The pin is gone but the pressure isn't. The square is b3 no matter what move order brought ...b5 about; recognising that is the point."
    },
    {
     "kind": "play",
-    "prompt": "Closed Ruy middlegame: long ago you played c3, and Black has now jumped a knight to a5 to hit your light-squared bishop. Don't let it be traded for a knight — collect the reward of that old c3 move and tuck the bishop onto a square that still aims at Black's king.",
+    "prompt": "Closed Ruy middlegame: long ago you played c3, and Black has now jumped a knight to a5 to hit your light-squared bishop. Don't let it be traded for a knight. Collect the reward of that old c3 move and tuck the bishop onto a square that still aims at Black's king.",
     "fen": "r1bq1rk1/2p1bppp/p2p1n2/np2p3/3PP3/1BP2N2/PP3PPP/RNBQR1K1 w - - 1 10",
     "solutionUci": [
      "b3c2"
@@ -1835,21 +1835,21 @@
    },
    {
     "kind": "play",
-    "prompt": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Bxc6 — White has taken on c6, a delayed Exchange. You are Black: recapture so your pawns stay pointed at the centre and your light-squared bishop comes free.",
+    "prompt": "1.e4 e5 2.Nf3 Nc6 3.Bb5 a6 4.Ba4 Nf6 5.O-O Be7 6.Bxc6. White has taken on c6, a delayed Exchange. You are Black: recapture so your pawns stay pointed at the centre and your light-squared bishop comes free.",
     "fen": "r1bqk2r/1pppbppp/p1B2n2/4p3/4P3/5N2/PPPP1PPP/RNBQ1RK1 b kq - 0 6",
     "solutionUci": [
      "d7c6"
     ],
-    "explain": "6...dxc6 — recapture toward the centre. The other capture (6...bxc6) would leave the a-pawn weak and the queenside even uglier. With ...dxc6 Black opens the c8-bishop's diagonal and counts on the two bishops to balance the doubled c-pawns — the Exchange-structure trade you learned, reached a few moves later."
+    "explain": "6...dxc6: recapture toward the centre. The other capture (6...bxc6) would leave the a-pawn weak and the queenside even uglier. With ...dxc6 Black opens the c8-bishop's diagonal and counts on the two bishops to balance the doubled c-pawns. The Exchange-structure trade you learned, reached a few moves later."
    },
    {
     "kind": "play",
-    "prompt": "Exchange Variation, a step you have NOT seen: 3...a6 4.Bxc6 dxc6 5.O-O Bd6 — Black has the bishop pair and his pieces out. You are White. Forget the bishop pair you gave up; play the break that opens lines so you can trade down toward the endgame your healthy majority will win.",
+    "prompt": "Exchange Variation, a step you have NOT seen: 3...a6 4.Bxc6 dxc6 5.O-O Bd6. Black has the bishop pair and his pieces out. You are White. Forget the bishop pair you gave up; play the break that opens lines so you can trade down toward the endgame your healthy majority will win.",
     "fen": "r1bqk1nr/1pp2ppp/p1pb4/4p3/4P3/5N2/PPPP1PPP/RNBQ1RK1 w kq - 2 6",
     "solutionUci": [
      "d2d4"
     ],
-    "explain": "6.d4! Strike the centre. After the e-pawns come off White trades pieces, neutralises Black's two bishops, and steers into the endgame where his clean 4-vs-3 kingside majority makes a passer and Black's doubled c-pawns sit useless. Structure over flash — the whole point of the Exchange."
+    "explain": "6.d4! Strike the centre. After the e-pawns come off White trades pieces, neutralises Black's two bishops, and steers into the endgame where his clean 4-vs-3 kingside majority makes a passer and Black's doubled c-pawns sit useless. Structure over flash: the whole point of the Exchange."
    },
    {
     "kind": "play",
@@ -1858,7 +1858,7 @@
     "solutionUci": [
      "c6a5"
     ],
-    "explain": "9...Na5 — the Chigorin plan. The knight hits the b3-bishop and, after White tucks it back with Bc2, Black plays ...c5 to seize queenside space and counterattack the centre while White builds slowly on the kingside. This is Black's main road in the Closed Ruy."
+    "explain": "9...Na5: the Chigorin plan. The knight hits the b3-bishop and, after White tucks it back with Bc2, Black plays ...c5 to seize queenside space and counterattack the centre while White builds slowly on the kingside. This is Black's main road in the Closed Ruy."
    },
    {
     "kind": "play",
@@ -1867,11 +1867,11 @@
     "solutionUci": [
      "c5c4"
     ],
-    "explain": "11...c4! seals the cage: a4 is covered by b5, and c4/a2/c2 leave the b3-bishop no square. It is lost next move — the Noah's Ark trap complete. Greed for the d4-pawn cost White a whole piece."
+    "explain": "11...c4! seals the cage: a4 is covered by b5, and c4/a2/c2 leave the b3-bishop no square. It is lost next move, the Noah's Ark trap complete. Greed for the d4-pawn cost White a whole piece."
    },
    {
     "kind": "judge",
-    "prompt": "Closed Ruy: after 7...O-O 8.c3, Black played 8...d5 — the Marshall Attack, offering the e5-pawn. Judge Black's move.",
+    "prompt": "Closed Ruy: after 7...O-O 8.c3, Black played 8...d5. The Marshall Attack, offering the e5-pawn. Judge Black's move.",
     "fen": "r1bq1rk1/2p1bppp/p1n2n2/1p1pp3/4P3/1BP2N2/PP1P1PPP/RNBQR1K1 w - - 0 9",
     "lastMoveUci": "d7d5",
     "verdict": "correct",
@@ -1891,7 +1891,7 @@
     "fen": "r1bqkbnr/1pp2ppp/p1p5/4N3/4P3/8/PPPP1PPP/RNBQK2R b KQkq - 0 5",
     "lastMoveUci": "f3e5",
     "verdict": "blunder",
-    "explain": "5.Nxe5?? loses the pawn back with interest: 5...Qd4! forks the knight on e5 and the pawn on e4. The e5-pawn in the Spanish is bait — play for the structure, not a one-move grab."
+    "explain": "5.Nxe5?? loses the pawn back with interest: 5...Qd4! forks the knight on e5 and the pawn on e4. The e5-pawn in the Spanish is bait. Play for the structure, not a one-move grab."
    },
    {
     "kind": "judge",
@@ -1899,7 +1899,7 @@
     "fen": "r1bQkb1r/ppp2ppp/2p5/4Pn2/8/5N2/PPP2PPP/RNB2RK1 b kq - 0 8",
     "lastMoveUci": "d1d8",
     "verdict": "correct",
-    "explain": "8.Qxd8+ is the main line. Trading queens forces 8...Kxd8 (Black loses castling), reaching the famous Berlin endgame — a small, risk-free pull for White, exactly what the line is about."
+    "explain": "8.Qxd8+ is the main line. Trading queens forces 8...Kxd8 (Black loses castling), reaching the famous Berlin endgame. A small, risk-free pull for White, exactly what the line is about."
    }
   ]
  },

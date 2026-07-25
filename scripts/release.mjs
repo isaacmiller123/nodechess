@@ -4,12 +4,12 @@
 // What cutting a release actually is here: bump package.json `version`, commit
 // it, push an annotated `vX.Y.Z` tag, and let .github/workflows/build.yml build
 // + attach the mac/win installers to the GitHub Release. This script owns the
-// SAFE, boring parts of that — it validates the tree is release-ready and bumps
-// the version — and it REFUSES to do the dangerous part (push a tag) without an
+// SAFE, boring parts of that: it validates the tree is release-ready and bumps
+// the version, and it REFUSES to do the dangerous part (push a tag) without an
 // explicit, confirmed opt-in. The full story lives in docs/RELEASE.md.
 //
 // It is deliberately conservative:
-//   • default command is `check` — read-only, mutates nothing, just tells you
+//   • default command is `check`. Read-only, mutates nothing, just tells you
 //     whether the tree could be released right now.
 //   • `bump` edits ONLY the version string in package.json (targeted, so the
 //     file's formatting is preserved) and stops. It never commits or pushes
@@ -76,7 +76,7 @@ const die = (m) => {
 function run(cmd, args, opts = {}) {
   return execFileSync(cmd, args, { cwd: ROOT, encoding: 'utf8', ...opts }).trim()
 }
-/** Run a command, never throw — returns { ok, out }. For probes. */
+/** Run a command, never throw. Returns { ok, out }. For probes. */
 function tryRun(cmd, args, opts = {}) {
   try {
     return { ok: true, out: run(cmd, args, opts) }
@@ -152,7 +152,7 @@ function updaterTarget() {
 /** Returns a snapshot of the checks so callers (bump) can reuse the results. */
 function validate({ full = false } = {}) {
   const pkg = readPkg()
-  console.log(C.bold(`\nnodechess release check — version ${pkg.version}\n`))
+  console.log(C.bold(`\nnodechess release check, version ${pkg.version}\n`))
 
   // 1. git repo + branch + cleanliness
   const inRepo = tryRun('git', ['rev-parse', '--is-inside-work-tree']).ok
@@ -161,7 +161,7 @@ function validate({ full = false } = {}) {
   const dirty = inRepo && tryRun('git', ['status', '--porcelain']).out.length > 0
   if (inRepo) {
     ok(`git repo present (branch: ${branch})`)
-    if (dirty) warn('working tree is dirty — a release is tagged from a clean tree')
+    if (dirty) warn('working tree is dirty: a release is tagged from a clean tree')
     else ok('working tree is clean')
   }
 
@@ -173,7 +173,7 @@ function validate({ full = false } = {}) {
   const tagName = `v${pkg.version}`
   const localTags = inRepo ? tryRun('git', ['tag', '--list', tagName]).out : ''
   if (localTags === tagName)
-    warn(`tag ${tagName} already exists locally — bump the version before releasing`)
+    warn(`tag ${tagName} already exists locally, bump the version before releasing`)
   else if (inRepo) ok(`tag ${tagName} is not yet used locally`)
 
   // 4. the three GitHub targets must agree: builder publish, git origin, updater
@@ -184,7 +184,7 @@ function validate({ full = false } = {}) {
   if (builder) ok(`electron-builder publishes to ${fmt(builder)}`)
   else fail('could not read publish owner/repo from electron-builder.yml')
   if (remote) ok(`git origin is ${fmt(remote)}`)
-  else warn('no git origin remote — add one before pushing a tag')
+  else warn('no git origin remote: add one before pushing a tag')
   const same = (a, b) => a && b && a.owner === b.owner && a.repo === b.repo
   if (remote && builder && !same(remote, builder))
     fail(`MISMATCH: builder publishes to ${fmt(builder)} but origin is ${fmt(remote)}`)
@@ -209,18 +209,18 @@ function validate({ full = false } = {}) {
     }
   }
 
-  // 6. optional heavy gate — the same typecheck CI runs before packaging
+  // 6. optional heavy gate. The same typecheck CI runs before packaging
   if (full) {
     console.log(C.dim('\n  running `npm run typecheck` (this is what CI gates on)…'))
     const t = tryRun('npm', ['run', 'typecheck'], { stdio: 'pipe' })
     if (t.ok) ok('typecheck passed')
-    else fail('typecheck FAILED — fix before releasing (rerun with output: npm run typecheck)')
+    else fail('typecheck FAILED. Fix before releasing (rerun with output: npm run typecheck)')
   } else {
     warn('skipped typecheck (add --full to run it, or rely on CI) ')
   }
 
   console.log(
-    `\n${hardFails ? C.red(`NOT release-ready — ${hardFails} blocker(s)`) : C.green('release-ready')}` +
+    `\n${hardFails ? C.red(`NOT release-ready, ${hardFails} blocker(s)`) : C.green('release-ready')}` +
       (warnings ? C.yellow(`, ${warnings} warning(s)`) : '') +
       '\n'
   )
@@ -261,7 +261,7 @@ async function cmdBump() {
   if (wantTag) {
     if (!state.inRepo) die('cannot --tag/--push: not a git repository')
     if (state.dirty && !has('--allow-dirty'))
-      die('working tree is dirty — commit/stash first, or pass --allow-dirty')
+      die('working tree is dirty: commit/stash first, or pass --allow-dirty')
   }
   if (hardFails > 0 && !has('--allow-dirty'))
     die(`refusing to bump: ${hardFails} blocker(s) above (override unrelated blockers with --allow-dirty)`)
@@ -270,13 +270,13 @@ async function cmdBump() {
   const target = nextVersion(current, level)
   const tagName = `v${target}`
 
-  // The new tag must not already exist (locally or on origin) — that would make
+  // The new tag must not already exist (locally or on origin). That would make
   // the CI publish clobber a shipped release.
   if (tryRun('git', ['tag', '--list', tagName]).out === tagName)
-    die(`tag ${tagName} already exists locally — pick a different version`)
+    die(`tag ${tagName} already exists locally: pick a different version`)
   if (wantPush) {
     const ls = tryRun('git', ['ls-remote', '--tags', 'origin', tagName])
-    if (ls.ok && ls.out.includes(tagName)) die(`tag ${tagName} already exists on origin — pick a different version`)
+    if (ls.ok && ls.out.includes(tagName)) die(`tag ${tagName} already exists on origin: pick a different version`)
   }
 
   console.log(C.bold('Plan:'))
@@ -284,7 +284,7 @@ async function cmdBump() {
   if (wantTag) console.log(`  • git commit package.json ("release: ${target}")`)
   if (wantTag) console.log(`  • git tag -a ${tagName} -m "nodechess ${target}"`)
   if (wantPush) console.log(`  • git push origin ${state.branch} && git push origin ${tagName}  ${C.dim('(triggers CI build.yml)')}`)
-  if (!wantTag) console.log(C.dim('  • (no git actions — add --tag to commit+tag, --push to also push)'))
+  if (!wantTag) console.log(C.dim('  • (no git actions: add --tag to commit+tag, --push to also push)'))
   console.log('')
 
   if (dryRun) {
@@ -306,10 +306,10 @@ async function cmdBump() {
   }
   if (wantPush) {
     if (!(await confirm(C.yellow(`Really push ${tagName} to origin? This publishes a release.`))))
-      die('push aborted — the version bump and local tag are kept; push manually when ready')
+      die('push aborted: the version bump and local tag are kept; push manually when ready')
     run('git', ['push', 'origin', state.branch], { stdio: 'inherit' })
     run('git', ['push', 'origin', tagName], { stdio: 'inherit' })
-    ok(`pushed ${state.branch} and ${tagName} — watch the Actions tab for the build`)
+    ok(`pushed ${state.branch} and ${tagName}. Watch the Actions tab for the build`)
   }
 
   if (!wantPush) printManualNext(state.branch, tagName, wantTag, wantPush)
@@ -336,5 +336,5 @@ if (cmd === 'check') {
 } else if (cmd === 'bump') {
   await cmdBump()
 } else {
-  die(`unknown command "${cmd}" — expected "check" or "bump" (see --help in the header)`)
+  die(`unknown command "${cmd}": expected "check" or "bump" (see --help in the header)`)
 }

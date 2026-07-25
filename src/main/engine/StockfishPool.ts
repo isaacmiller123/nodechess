@@ -3,8 +3,8 @@ import { UciEngine } from './UciEngine'
 import { stockfishPath } from './paths'
 
 // Two persistent Stockfish instances (architecture §2.1 invariant):
-//   - analysis: big budget, MultiPV 3-5, go infinite — the analysis board.
-//   - play:     capped budget, MultiPV 1, bounded go — never starves analysis.
+//   - analysis: big budget, MultiPV 3-5, go infinite. The analysis board.
+//   - play:     capped budget, MultiPV 1, bounded go, never starves analysis.
 export class StockfishPool {
   private analysis: UciEngine | null = null
   private play: UciEngine | null = null

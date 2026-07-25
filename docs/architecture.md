@@ -15,7 +15,7 @@
 
 The app is **GPL-3.0** as a whole, and that is a deliberate, locked decision:
 
-- **Stockfish** (engine) and **lc0** (Maia body) are GPL-3.0 — they ship as arms-length UCI
+- **Stockfish** (engine) and **lc0** (Maia body) are GPL-3.0. They ship as arms-length UCI
   subprocesses, not linked code.
 - **chessground** (board UI) and **chessops** (rules/PGN/EPD) are GPL-3.0.
 - Because we are already in GPL territory, we **do not** pay the "stay permissive" tax: we use
@@ -30,8 +30,8 @@ Consequences honored throughout this spec:
    compliance is to point at that tag and bundle a source tarball in `resources/licenses/`.
 3. **Bundled content is open only:** Lichess puzzle DB (CC0), `chess-openings` (CC0), piece
    sets restricted to GPL/Apache/MIT/CC0/CC-BY (default **cburnett**, GPLv2+), board themes as
-   CSS flat colors, sounds as **Kenney CC0** (we do NOT ship Lichess "standard" sounds — unclear
-   license). No chess.com proprietary assets, ever.
+   CSS flat colors, sounds as **Kenney CC0** (we do NOT ship Lichess "standard" sounds, whose
+   license is unclear). No chess.com proprietary assets, ever.
 4. **AGPL is deferred** (Maia-3) and never used in any hosted/networked mode.
 
 ---
@@ -46,8 +46,8 @@ Consequences honored throughout this spec:
 | UI runtime | **React + TypeScript** | React `^18.3`, TS `^5.5` | Component model fits the analysis/board/sidebar layout; TS for the typed IPC surface. |
 | Board rendering | **chessground** | `^9.2` | The actual lichess board: drag+click moves, legal dots, last-move/check highlights, premoves, right-click arrows/circles. Rendering only, no chess logic, zero deps. GPL-3.0 (accepted). |
 | Rules / SAN / FEN / EPD / PGN | **chessops** | `^0.15` | lichess-grade. **Decisive:** full PGN game tree (variations + NAGs + comments) via `pgn` module; `makeFen(setup,{epd:true})` for EPD keys; legal-move `dests` map feeds chessground. GPL-3.0 (accepted). |
-| Rules fallback (NOT primary) | chess.js | `^1.4` | BSD-2. Used only in **build scripts** (legality validation of famous-game PGNs, UCI↔SAN in ETL) where a tiny dependency is convenient. **Not** the runtime PGN parser — it drops RAV variations. |
-| Analysis/play/review engine | **Stockfish** (native NNUE binary) | **18** (release `sf_18`, 2026-01-31), `x86-64-universal` Windows build | Native > WASM: full NNUE, true multithreading, **no SharedArrayBuffer / COOP-COEP plumbing**. NNUE net **embedded** → no loose `.nnue` to ship. `x86-64-universal` auto-detects CPU → one binary, no illegal-instruction crashes. GPL-3.0. *(Supersedes the addendum's "17.x" — pin SF18 as current stable; the integration is identical.)* |
+| Rules fallback (NOT primary) | chess.js | `^1.4` | BSD-2. Used only in **build scripts** (legality validation of famous-game PGNs, UCI↔SAN in ETL) where a tiny dependency is convenient. **Not** the runtime PGN parser. It drops RAV variations. |
+| Analysis/play/review engine | **Stockfish** (native NNUE binary) | **18** (release `sf_18`, 2026-01-31), `x86-64-universal` Windows build | Native > WASM: full NNUE, true multithreading, **no SharedArrayBuffer / COOP-COEP plumbing**. NNUE net **embedded** → no loose `.nnue` to ship. `x86-64-universal` auto-detects CPU → one binary, no illegal-instruction crashes. GPL-3.0. *(Supersedes the addendum's "17.x": pin SF18 as current stable; the integration is identical.)* |
 | Human-feel engine | **lc0** (CPU build) + **Maia-1** weights | lc0 `0.31.x` cpu-dnnl/openblas; `maia-1100..1900.pb.gz` | Human move distribution for sub-1900 play. `go nodes 8`. GPL-3.0 (weights treated as GPL pending CSSLab confirmation). |
 | Local DB | **better-sqlite3** | `^11` | Synchronous, fastest, mature. Native module → rebuilt for Electron ABI via `@electron/rebuild`, marked `external`, `asarUnpack`'d. **Main process only.** |
 | Native rebuild | **@electron/rebuild** | `^3.6` | Rebuilds better-sqlite3 against the shipped Electron ABI on postinstall + in packaging. |
@@ -57,7 +57,7 @@ Consequences honored throughout this spec:
 | Packaging | **electron-builder** | `^25` | Windows **NSIS** + **portable** targets; `extraResources` / `asarUnpack` for engines + DB. |
 | Icons | **Lucide** | `^0.4xx` | MIT, ~1,600 stroke icons; all 16 app glyphs verified present. Vendored as SVG sprite (offline). Phosphor (MIT) as fallback. |
 | Fonts | **Inter** (UI) + **Noto Sans** (fallback) | OFL, self-hosted `.woff2` | Inter ships **tabular figures** by default → eval bar / clocks / ratings align. No Google Fonts hotlink. |
-| Charts | **hand-rolled SVG** (eval graph) | — | Best control over the lichess-style advantage fill; zero dep. Recharts (MIT) only if a quick chart is needed elsewhere. |
+| Charts | **hand-rolled SVG** (eval graph) | n/a | Best control over the lichess-style advantage fill; zero dep. Recharts (MIT) only if a quick chart is needed elsewhere. |
 
 **Node / npm:** Node 20 LTS (matches Electron 32 ABI), npm 10+. No `"type":"module"` in `package.json` initially (keeps main/preload as plain CJS and avoids the `.cjs` electron-builder glob footgun); revisit later.
 
@@ -67,7 +67,7 @@ Consequences honored throughout this spec:
 
 Three Electron processes, hardened to defaults. **All Node, engine, and DB access lives in MAIN; the renderer is pure UI and talks only over the typed IPC bridge.**
 
-### 2.1 MAIN process (`src/main`) — privileged
+### 2.1 MAIN process (`src/main`): privileged
 Owns the OS, the engines, and the database. No UI.
 
 ```
@@ -96,7 +96,7 @@ src/main/
     puzzles.repo.ts        # queries over bundled puzzle DB
     games.repo.ts          # game / game_move / progress_snapshot
     ratings.repo.ts        # rating / puzzle_attempt; FSRS cards
-  coach/                   # LOCAL no-LLM coaching engine (motif detectors + templates) — see content-coaching.md
+  coach/                   # LOCAL no-LLM coaching engine (motif detectors + templates). See content-coaching.md
   rating/
     glicko2.ts             # hand-rolled Glicko-2
     accuracy.ts            # Lichess Win% + Accuracy% + per-game Elo band
@@ -111,7 +111,7 @@ Key invariants:
 - **DB opened in MAIN only.** `puzzles.sqlite` opened `{readonly:true, fileMustExist:true}` from
   `process.resourcesPath`; the writable `app.sqlite` lives under `userData` and is `ATTACH`ed.
 
-### 2.2 PRELOAD (`src/preload`) — the only bridge
+### 2.2 PRELOAD (`src/preload`): the only bridge
 Sandboxed (Electron 20+). Bundled to a **single file** by electron-vite. Exposes exactly one frozen,
 typed API object via `contextBridge`. **Never** exposes raw `ipcRenderer`, `fs`, `child_process`, or `path`.
 
@@ -121,7 +121,7 @@ src/preload/
   api.ts                   # the typed surface (mirrors §4 channels)
 ```
 
-### 2.3 RENDERER (`src/renderer`) — unprivileged UI
+### 2.3 RENDERER (`src/renderer`): unprivileged UI
 React + chessground + chessops. No Node. Calls only `window.api.*`.
 
 ```
@@ -187,15 +187,15 @@ Streaming (engine `info` lines) uses a **dedicated push channel**: main `webCont
 throttled per `multipv` index; renderer subscribes via a single `api.engine.onLine(cb)` exposed through
 the bridge (the callback is registered through contextBridge, the raw emitter is never exposed).
 
-### 3.1 Internet multiplayer (renderer-owned WebRTC P2P — does NOT cross IPC)
+### 3.1 Internet multiplayer (renderer-owned WebRTC P2P does NOT cross IPC)
 
 Multiplayer is the one feature that lives **entirely in the renderer** and never touches the main
 process or `window.api`. Chromium already ships a native `RTCPeerConnection`, so two nodechess clients
-talk **peer-to-peer over a WebRTC data channel** — end-to-end encrypted, direct, no relay in the game
+talk **peer-to-peer over a WebRTC data channel**. End-to-end encrypted, direct, no relay in the game
 path. There is **no user-run server and no port forwarding**: one player hosts and gets a random room
 **code** like `A1B2C-D3E4F` (a 50-bit Crockford-base32 key, *not* an IP); the other enters it and the
 two connect across NATs and countries. (This replaced the old same-LAN `ws` transport that lived in
-`src/main/mp/` — that whole subtree, its IPC channel, and the `ws` dependency are gone.)
+`src/main/mp/`: that whole subtree, its IPC channel, and the `ws` dependency are gone.)
 
 Peer **discovery/signaling** rides on [`trystero`](https://github.com/dmotz/trystero) (Nostr strategy
 over a pool of public `wss://` relays): the room code seeds the room key + a derived password, so only
@@ -204,18 +204,18 @@ touches the relays. NAT traversal uses public STUN (Google + Cloudflare, the lat
 Google is blocked) with best-effort TURN fallback for symmetric NATs.
 
 Layers (`src/renderer/src/features/play/online/` + `src/shared/mp/`):
-- `@shared/mp/wire.ts` — isomorphic wire protocol (zod schemas, `PROTOCOL_VERSION`, hello handshake,
+- `@shared/mp/wire.ts`: isomorphic wire protocol (zod schemas, `PROTOCOL_VERSION`, hello handshake,
   wire-level ping/pong heartbeat, the room-code codec). Zero Node imports.
-- `mpSession.ts` (`MpNetSession`) — pure host-authoritative session logic (clocks, turn order, draw/
+- `mpSession.ts` (`MpNetSession`): pure host-authoritative session logic (clocks, turn order, draw/
   resign/rematch, discovery timeout), transport-agnostic via an injected `MpTransport`.
-- `rtcTransport.ts` — the trystero-backed transport factory (the only file that touches the network).
-- `mpClient.ts` — the singleton `mp` the UI imports.
+- `rtcTransport.ts`: the trystero-backed transport factory (the only file that touches the network).
+- `mpClient.ts`: the singleton `mp` the UI imports.
 
 Because `MpNetSession` and the wire protocol are pure and transport-injected, they run unchanged under
 bare Node: `scripts/test-mp.mjs` drives a full host↔guest game over an in-memory transport pair, and
 `scripts/check-relays.mjs` probes live relay/TURN reachability.
 
-Security note: this is the reason the CSP `connect-src` is `'self' wss:` (not just `'self'`) — the
+Security note: this is the reason the CSP `connect-src` is `'self' wss:` (not just `'self'`): the
 signaling relays are outbound WebSockets. WebRTC media/data itself is not subject to `connect-src`.
 
 ---
@@ -330,17 +330,17 @@ Scripts live in `scripts/` and are wired into `package.json`:
 }
 ```
 
-### 5.1 `fetch-puzzles.mjs` — download
+### 5.1 `fetch-puzzles.mjs`: download
 - `GET https://database.lichess.org/lichess_db_puzzle.csv.zst` → `data/raw/` (~286 MiB, CC0).
 - Record the `Last-Modified` and byte count to `data/raw/puzzle_download.log` (already present:
   299,950,785 bytes, 2026-06-03) for the in-app **About → Data version**.
 
-### 5.2 `build-puzzles-db.mjs` — decompress → transform → bundle
+### 5.2 `build-puzzles-db.mjs`: decompress → transform → bundle
 1. **Decompress with the long-window flag** (mandatory):
    `zstd --long=31 -d lichess_db_puzzle.csv.zst -o lichess_db_puzzle.csv` (or Node zstd in long mode).
    *Without `--long=31` you hit "Frame requires too much memory for decoding."*
 2. **Validate the header** equals exactly
-   `PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags` — fail loudly on drift.
+   `PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags`. Fail loudly on drift.
 3. **Schema + fast import** (better-sqlite3, one transaction, `PRAGMA journal_mode=OFF; synchronous=OFF`):
    ```sql
    CREATE TABLE puzzles(
@@ -365,20 +365,20 @@ Scripts live in `scripts/` and are wired into `package.json`:
 position *before* the opponent's lead-in move. Apply `Moves[0]` to `FEN` to get the position shown to
 the player; the **solution starts at `Moves[1]`**. UCI promotions append the piece letter (`e7e8q`).
 
-### 5.3 `build-openings.mjs` — opening names
+### 5.3 `build-openings.mjs`: opening names
 - Vendor `lichess-org/chess-openings` at a **pinned commit** (CC0).
 - Run `bin/gen.py` (`pip install "chess>=1,<2" && make`) to emit `dist/all.tsv`
-  (`eco, name, pgn, uci, epd`) — **or** regenerate the `uci`/`epd` columns in Node with chessops if
+  (`eco, name, pgn, uci, epd`), **or** regenerate the `uci`/`epd` columns in Node with chessops if
   avoiding Python in CI (then validate against python-chess as the golden oracle).
 - Emit `resources/openings/openings.json`: a map **`epd → {eco, name}`** (~3,733 rows, a few hundred KB).
 - **EPD = 4-field FEN** (placement + side-to-move + castling + en-passant), **no move counters**.
 - **En-passant rule (the #1 correctness gotcha):** the ep field is set **only when a legal ep capture
   exists**. After `1.e4 e5 2.Nf3` → ep `-`; after `1.e4 Nf6 2.e5 d5` → ep `d6`. The runtime key
-  generator (chessops `makeFen{epd:true}`) already does this — covered by a golden-oracle test.
+  generator (chessops `makeFen{epd:true}`) already does this. Covered by a golden-oracle test.
 - Runtime name detection: walk game positions, look up each EPD, keep the **deepest** match, stop
   below ~20 pieces (mirrors scalachess `OpeningDb`); transpositions resolve for free.
 
-### 5.4 `build-books.mjs` (NEXT iteration) — opening books
+### 5.4 `build-books.mjs` (NEXT iteration): opening books
 - Build per-player **Polyglot `.bin`** from CC0 Lichess PGNs (`zstd --long=31 -d` the monthly dump,
   filter by Elo/time control, `polyglot make-book`), split White/Black, cap ~12–16 plies. Bundle only
   the **generated `.bin`** (the moves are free facts; never redistribute third-party PGN files verbatim).
@@ -398,7 +398,7 @@ the player; the **solution starts at `Moves[1]`**. UCI promotions append the pie
 ```
 resources/
   engine/
-    win/stockfish.exe          # SF18 x86-64-universal (NNUE EMBEDDED — no loose .nnue)
+    win/stockfish.exe          # SF18 x86-64-universal (NNUE EMBEDDED; no loose .nnue)
     win/lc0.exe                # lc0 CPU build
     win/lc0/ *.dll             # openblas/dnnl runtime deps
     weights/maia-1100.pb.gz … maia-1900.pb.gz
@@ -425,7 +425,7 @@ const bundled = app.isPackaged
   ? path.join(process.resourcesPath, 'engine', dir, name)
   : path.join(__dirname, '../../resources/engine', dir, name);
 ```
-The executable bit is set on macOS/Linux at the moment the binary is written — by the dataset importer for an
+The executable bit is set on macOS/Linux at the moment the binary is written: by the dataset importer for an
 imported engine (`chmod 0o755`), and by `scripts/fetch_engines.py` for a bundled one.
 
 ### 6.3 UCI session protocol (thin hand-rolled wrapper)
@@ -482,7 +482,7 @@ portable:
 
 ---
 
-## 8. DEV containment — nothing leaks to the Desktop
+## 8. DEV containment: nothing leaks to the Desktop
 
 The hard rule: in development, **all** runtime/user data stays inside the project. We redirect Electron's
 `userData` (and session data) into a git-ignored project folder **before** the `ready` event, gated on
@@ -499,9 +499,9 @@ if (!app.isPackaged) {
   app.setPath('sessionData', path.join(devData, 'session'));
 }
 ```
-- `app.setPath` **must** run before `ready` (and `sessionData` override too) — that's why it's the first thing in `main`.
-- `.devdata/` holds the dev `app.sqlite`, caches, logs, settings — and is **git-ignored** (see §9).
-- Raw downloads/build temp live under `data/raw/`, `data/tmp/` — also git-ignored.
+- `app.setPath` **must** run before `ready` (and `sessionData` override too), which is why it's the first thing in `main`.
+- `.devdata/` holds the dev `app.sqlite`, caches, logs, settings, and is **git-ignored** (see §9).
+- Raw downloads/build temp live under `data/raw/`, `data/tmp/`. Also git-ignored.
 - Net effect: a clean `git status` after a dev session shows **no** stray files, and nothing ever lands
   on the Desktop or in the repo root.
 
@@ -539,7 +539,7 @@ chess/
 │   │   ├─ win/lc0.exe            # fetched (ignored)
 │   │   └─ weights/maia-*.pb.gz   # fetched (ignored)
 │   ├─ data/puzzles.sqlite        # built (ignored)
-│   ├─ openings/openings.json     # built (committed — small, CC0)
+│   ├─ openings/openings.json     # built (committed; small, CC0)
 │   ├─ books/*.bin                # built (LFS, NEXT)
 │   ├─ famous/                    # curated PGN + annotations.json (committed)
 │   ├─ assets/
@@ -566,7 +566,7 @@ chess/
 ## 10. `.gitignore` + Git LFS plan
 
 **Principle:** commit **source + small open data** only. Large binaries and generated DBs are either
-**fetched/built by scripts** (so they never enter history — preferred) or, where a binary genuinely
+**fetched/built by scripts** (so they never enter history; preferred) or, where a binary genuinely
 needs versioning, tracked via **Git LFS configured before the first binary commit**.
 
 `.gitignore` (already in place, aligned to §9):
@@ -583,10 +583,10 @@ dist/ dist-electron/ out/ build-output/ release/ *.tsbuildinfo
 .vscode/* !.vscode/extensions.json !.vscode/settings.json
 .idea/ .DS_Store Thumbs.db desktop.ini
 ```
-*(Note: `build/` is a committed installer-assets dir, so the build-output ignore uses a distinct name —
-keep electron-vite's output at `out/`/`dist/`, not `build/`, to avoid clobbering `build/icon.ico`.)*
+*(Note: `build/` is a committed installer-assets dir, so the build-output ignore uses a distinct name.
+Keep electron-vite's output at `out/`/`dist/`, not `build/`, to avoid clobbering `build/icon.ico`.)*
 
-**LFS strategy — fetch-first, LFS only where needed.** The engines, Maia weights, and `puzzles.sqlite`
+**LFS strategy: fetch-first, LFS only where needed.** The engines, Maia weights, and `puzzles.sqlite`
 are **fetched/built by `npm run setup`**, so by default they are git-ignored and **never** enter history
 (keeps the repo lean and dodges LFS quota entirely). LFS is reserved for binaries we *choose* to version
 (e.g. curated `resources/books/*.bin`, or a release-pinned engine snapshot if we ever vendor one).
@@ -611,29 +611,29 @@ into history permanently).
 
 **Goal:** a polished, fully offline analysis board with local coaching, bundled puzzles with a local
 rating, calibrated-Elo + human-feel play, full game review with an accuracy-based strength band, and a
-small famous-games library — all containerized, all open-licensed, packaged as Windows NSIS + portable.
+small famous-games library: all containerized, all open-licensed, packaged as Windows NSIS + portable.
 
 ### 11.1 In scope (v0)
-1. **App shell & security** — electron-vite triple-build; locked `webPreferences`; CSP; `app://` protocol;
+1. **App shell & security**: electron-vite triple-build; locked `webPreferences`; CSP; `app://` protocol;
    typed `window.api`; DEV userData redirect to `.devdata`.
-2. **Engine integration** — Stockfish 18 (analysis + play instances) via the UCI wrapper; lc0+Maia-1 for
+2. **Engine integration**: Stockfish 18 (analysis + play instances) via the UCI wrapper; lc0+Maia-1 for
    human-feel play; bounded `go`, MultiPV streaming, clean lifecycle.
-3. **Analysis board** — chessground + chessops; legal-move dots; eval bar (Win%-mapped, flips); engine
+3. **Analysis board**: chessground + chessops; legal-move dots; eval bar (Win%-mapped, flips); engine
    panel (MultiPV 3–5, depth, click-to-preview); recursive move list with variations/NAGs; right-click arrows.
-4. **Openings** — `openings:lookup` (EPD → name/ECO, deepest match) wired into the move list.
-5. **Puzzles** — bundled pruned `puzzles.sqlite`; `puzzles:next` by theme+rating; correct
+4. **Openings**: `openings:lookup` (EPD → name/ECO, deepest match) wired into the move list.
+5. **Puzzles**: bundled pruned `puzzles.sqlite`; `puzzles:next` by theme+rating; correct
    `FEN+Moves[0]` presentation; **Glicko-2** local rating with per-attempt updates; FSRS review of failures.
-6. **Play vs computer** — Stockfish `UCI_Elo` 1320–3190 + Maia routing below; persisted to `game`.
-7. **Game review** — depth-fixed Stockfish over a full game; per-move win% / accuracy / classification
+6. **Play vs computer**: Stockfish `UCI_Elo` 1320–3190 + Maia routing below; persisted to `game`.
+7. **Game review**: depth-fixed Stockfish over a full game; per-move win% / accuracy / classification
    (incl. sound-sacrifice-aware brilliancy); cached `game_review`/`move_eval`; local coach text per critical move.
-8. **Performance estimate** — accuracy-based per-game Elo **band** (Lichess pipeline), aggregated via
+8. **Performance estimate**: accuracy-based per-game Elo **band** (Lichess pipeline), aggregated via
    inverse-variance shrinkage; always shown as a range, labeled distinct from the Glicko rating.
-9. **Persistence** — `app.sqlite` (writable, in `userData`) with `game`/`game_move`/`progress_snapshot`/
+9. **Persistence**: `app.sqlite` (writable, in `userData`) with `game`/`game_move`/`progress_snapshot`/
    `rating`/`puzzle_attempt`/`game_review`/`move_eval`/FSRS cards; `user_version` migrations; PGN import/export.
-10. **Famous games** — ~100 PD/CC0 games with **build-time engine-generated** annotations.
-11. **Local coaching engine** — motif detectors + slot-fill templates (no LLM, no network) driving
+10. **Famous games**: ~100 PD/CC0 games with **build-time engine-generated** annotations.
+11. **Local coaching engine**: motif detectors + slot-fill templates (no LLM, no network) driving
     review and puzzle feedback.
-12. **Packaging & compliance** — NSIS + portable builds; bundled GPL texts + engine source/offer +
+12. **Packaging & compliance**: NSIS + portable builds; bundled GPL texts + engine source/offer +
     in-app About → Licenses; `setup` scripts reproducible from clean checkout.
 
 ### 11.2 Explicitly deferred to NEXT

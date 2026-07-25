@@ -30,7 +30,7 @@ export interface ClockInterp {
   running: 'white' | 'black' | null
   /** Which side THIS clock renders. */
   side: 'white' | 'black'
-  /** This control's base time (ms) — drives the emergency threshold. */
+  /** This control's base time (ms). Drives the emergency threshold. */
   baseMs: number
   /** Byo-yomi (v5, go): the game's period spec + THIS side's snapshot. The
    *  interpolation rolls across period boundaries exactly like the host rules
@@ -89,9 +89,9 @@ function interpState(interp: ClockInterp, now: number): SideClock {
  * 10s. The ticking side is highlighted; a low clock turns urgent and blinks.
  *
  * Two modes:
- *   • LOCAL play — purely presentational: renders the `ms` handed in each frame
+ *   • LOCAL play. Purely presentational: renders the `ms` handed in each frame
  *     (all timing lives in useChessClock). Low-time = flat LOW_TIME_MS.
- *   • ONLINE play — self-ticking: given `interp`, it runs a 100ms interval and
+ *   • ONLINE play, self-ticking: given `interp`, it runs a 100ms interval and
  *     interpolates the running side down from the store's authoritative snapshot,
  *     with the per-control emergency threshold and a one-shot low-time hook.
  */
@@ -100,7 +100,7 @@ export function Clock({ ms, active, over, label, interp, onLowTime }: ClockProps
   const [, setFrame] = useState(0)
   // One-shot latch so the low-time hook fires at most once per Clock lifetime.
   // Re-armed whenever the game restarts (snapshot base climbs back over the
-  // threshold — a rematch reuses the same mounted Clock).
+  // threshold: a rematch reuses the same mounted Clock).
   const lowFiredRef = useRef(false)
   const onLowTimeRef = useRef(onLowTime)
   onLowTimeRef.current = onLowTime
@@ -130,7 +130,7 @@ export function Clock({ ms, active, over, label, interp, onLowTime }: ClockProps
     // In byo-yomi urgency tracks the PERIOD, not the (long-gone) main time.
     threshold = inByo ? Math.min(LOW_TIME_MS, (interp.byoSpec?.periodMs ?? 0) / 2) : lowTimeThreshold(interp.baseMs)
     if (inByo && lastPeriodsRef.current !== null && periodsLeft < lastPeriodsRef.current) {
-      flashRef.current += 1 // a period was consumed — retrigger the flash
+      flashRef.current += 1 // a period was consumed, so retrigger the flash
     }
     lastPeriodsRef.current = inByo ? periodsLeft : null
     // Re-arm the one-shot when a fresh game lifts us back above the threshold

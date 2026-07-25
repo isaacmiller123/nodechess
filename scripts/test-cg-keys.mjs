@@ -1,8 +1,8 @@
 // Headless test for the UCI ↔ chessgroundx key boundary
 // (src/renderer/src/games/boards/cgKeys.ts + the ChessFamilyBoard move codec).
 //
-// chessgroundx Key ranks are SINGLE characters — rank 10 is ':' (key 'a:'),
-// 11..16 are ';' '<' '=' '>' '?' '@' — while kernel/ffish UCI spells the same
+// chessgroundx Key ranks are SINGLE characters. Rank 10 is ':' (key 'a:'),
+// 11..16 are ';' '<' '=' '>' '?' '@', while kernel/ffish UCI spells the same
 // square 'a10'. Casting UCI squares to cg.Key broke every rank-10 lookup:
 // xiangqi/janggi BLACK back-rank pieces had no dests (unmovable) and board
 // handling of engine moves touching rank 10 failed. This suite pins:
@@ -20,7 +20,7 @@
 //
 //   node scripts/test-cg-keys.mjs
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -169,7 +169,7 @@ try {
   ok(j2 !== null, 'two-digit engine reply a10a8 accepted by spec.play')
   eqArr(lastMoveOf(j2.moves), ['a:', 'a8'], 'janggi lastMove for engine reply → cg keys')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } finally {
   rmSync(tmp, { recursive: true, force: true })
 }

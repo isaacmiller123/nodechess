@@ -8,7 +8,7 @@ import { toB64u } from '../hash'
 
 export const PARAMS_A3 = {
   v: 1,
-  // Erasure coding (§5 layer 3) — Reed-Solomon over GF(2^8), any kRec of
+  // Erasure coding (§5 layer 3): Reed-Solomon over GF(2^8), any kRec of
   // nShards reconstruct (3.33x expansion).
   nShards: 40,
   kRec: 12,
@@ -30,7 +30,7 @@ export const PARAMS_A3 = {
   budgetDesktopMb: 200,
   budgetBrowserMb: 50,
   budgetMobileMb: 15,
-  // Kademlia overlay (§5) — routing only; trystero/Nostr is transport+bootstrap.
+  // Kademlia overlay (§5): routing only; trystero/Nostr is transport+bootstrap.
   kBucket: 16, // contacts per bucket AND the k of "k closest" lookups
   alpha: 3, // parallel in-flight probes per iterative lookup round
   rpcTimeoutMs: 10_000, // per-RPC budget on real transports (mock: instant)
@@ -38,7 +38,7 @@ export const PARAMS_A3 = {
   // Hint-book bound (anti-DoS): FIND_NODE responses feed a supplementary hint
   // book that drain-mode lookups also probe. Capped (FIFO, oldest evicted) so a
   // malicious responder padding replies with binding-valid junk cannot inflate
-  // memory OR the drain probe count without limit — the cost becomes a constant
+  // memory OR the drain probe count without limit: the cost becomes a constant
   // (knownCap + table), never attacker-scalable. The routing table (separately
   // anti-eclipse-bounded) still backs lookup correctness, so bounding hints only
   // trims a supplementary source, never a load-bearing one.

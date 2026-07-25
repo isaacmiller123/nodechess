@@ -11,7 +11,7 @@ function evalMove(p, mv){ const before=p.board.get(mv.to); const immCap = before
     let best=0; for(const [wf,ws] of p2.allDests()) for(const wt of ws){const v=p2.board.get(wt); if(v&&v.color==='black') best=Math.max(best,VAL[v.role])}
     minH=Math.min(minH,best) }
   return {win: Math.max(immCap, minH), gaveCheck:p1.isCheck(), immCap} }
-// King on b8 (dark) — bishop must be DARK-squared to check it. Loose rook on a dark square too. bishop lands hitting both.
+// King on b8 (dark): bishop must be DARK-squared to check it. Loose rook on a dark square too. bishop lands hitting both.
 // Try dark-squared bishop, BK on b8, rook on a dark square, WK e1.
 const out=[]
 const bk='b8'

@@ -1,4 +1,4 @@
-// Gomoku bot — threat evaluation over games/gomoku.ts (docs/GAMES-PLATFORM-
+// Gomoku bot: threat evaluation over games/gomoku.ts (docs/GAMES-PLATFORM-
 // SPEC.md §Bots, 'worker:gomoku'; hand-rolled like the other small games).
 //
 // The classic dual-threat heuristic: a cell is worth what it BUILDS for the
@@ -8,7 +8,7 @@
 // add a depth-2 best-reply lookahead over the strongest candidates. First
 // move is always the center point (GOMOKU_CENTER on the standard board).
 //
-// Headless like every rules module — exercised by scripts/test-bots.mjs.
+// Headless like every rules module, exercised by scripts/test-bots.mjs.
 
 import { pointToVertex } from './go'
 import { turnOfGomoku, type GomokuState } from './gomoku'
@@ -24,7 +24,7 @@ const DIRECTIONS: ReadonlyArray<readonly [number, number]> = [
 
 /** Threat value of one direction line: run length + number of open ends. */
 function lineScore(run: number, open: number): number {
-  if (run >= 5) return 10_000_000 // five (or overline) — a win
+  if (run >= 5) return 10_000_000 // five (or overline): a win
   if (run === 4) return open === 2 ? 1_000_000 : open === 1 ? 50_000 : 0
   if (run === 3) return open === 2 ? 30_000 : open === 1 ? 1_500 : 0
   if (run === 2) return open === 2 ? 600 : open === 1 ? 80 : 0
@@ -137,7 +137,7 @@ export const GOMOKU_BOT: GomokuBot = {
     const opp: PlayerColor = me === 'black' ? 'white' : 'black'
     const candidates = candidateCells(s)
     if (candidates.length === 0) {
-      // Empty board (or a full ring of stones — impossible): open in the center.
+      // Empty board (or a full ring of stones; impossible): open in the center.
       const mid = Math.floor(s.size / 2)
       if (s.cells[mid * s.size + mid] === null) return pointToVertex(mid, mid, s.size)
       const anyEmpty = s.cells.findIndex((c) => c === null)
@@ -158,7 +158,7 @@ export const GOMOKU_BOT: GomokuBot = {
       scores = shallow.map((e) => e - 5_000_000) // unranked: heavily discounted
       for (const { cell, k, e } of ranked) {
         if (e >= 10_000_000) {
-          scores[k] = e // immediate five — nothing to read
+          scores[k] = e // immediate five: nothing to read
           continue
         }
         cells[cell] = me

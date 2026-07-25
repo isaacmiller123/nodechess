@@ -3,7 +3,7 @@
 // board labelling), this keeps the full named line as SAN so each opening can be
 // listed, searched and replayed move-by-move.
 //
-// Source: lichess-org/chess-openings TSVs — each row is `eco<TAB>name<TAB>pgn`
+// Source: lichess-org/chess-openings TSVs. Each row is `eco<TAB>name<TAB>pgn`
 // where pgn is numbered SAN movetext (e.g. "1. e4 e5 2. Nf3"). CC0 licensed, so
 // the generated JSON is committed to the repo (no network at app runtime).
 //

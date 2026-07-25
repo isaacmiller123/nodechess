@@ -3,18 +3,18 @@
 // One explicit, reversible flag decides which account system this server
 // speaks. ON = the decentralized accounts are the account system and the
 // interim server-account ENDPOINTS (/api/auth/*, server/auth.ts) answer
-// 410 Gone "superseded". OFF = the interim system is fully intact — the
+// 410 Gone "superseded". OFF = the interim system is fully intact, the
 // emergency-fallback path. Nothing is deleted either way: server/auth.ts
 // stays, and the flip is a restart with a different env.
 //
 // Resolution (first tier that speaks wins):
-//   1. env ACCOUNTS_DECENTRALIZED — '1'/'true'/'on'/'yes' => ON,
+//   1. env ACCOUNTS_DECENTRALIZED: '1'/'true'/'on'/'yes' => ON,
 //      '0'/'false'/'off'/'no' => OFF (case-insensitive, trimmed). The single
 //      explicit switch, and the emergency OFF lever on a shipped build.
-//   2. build default __ACCOUNTS_DECENTRALIZED_DEFAULT__ — scripts/
+//   2. build default __ACCOUNTS_DECENTRALIZED_DEFAULT__, scripts/
 //      build-server.mjs injects 'on', so EVERY shipped bundle (dist-server,
 //      Docker) defaults to the decentralized path.
-//   3. fallback OFF — a bundle without the define. That is exactly the
+//   3. fallback OFF: a bundle without the define. That is exactly the
 //      pre-A-final rigs: the existing web suites (test-web-auth/-bridge/
 //      -server) esbuild server/index.ts ad hoc with only __WEB_APP_VERSION__
 //      defined, and they assert the interim lifecycle. Fallback-OFF keeps
@@ -23,18 +23,18 @@
 //
 // Scope of the gate (§14: content plane stays conventionally served):
 //   ONLY '/api/auth' and '/api/auth/*' are refused. The bridge
-//   (/api/ipc/:channel — puzzle DB, curriculum, famous, personas, i.e. the
+//   (/api/ipc/:channel; puzzle DB, curriculum, famous, personas, i.e. the
 //   content plane plus anon persistence) and /api/review/* are untouched, as
 //   are statics and /healthz. Existing interim session COOKIES also still
 //   resolve on those routes (requireUser is not gated): with the auth
 //   endpoints refused no NEW interim session can ever be minted or queried,
 //   but flipping ON must never strand an honest user's per-user data behind
-//   an unreachable code path — reversibility over purity, spec §0.
+//   an unreachable code path: reversibility over purity, spec §0.
 
 import type { FastifyInstance, FastifyReply } from 'fastify'
 
 // Injected by scripts/build-server.mjs; absent in ad-hoc bundles (typeof
-// guard below — same pattern as __WEB_APP_VERSION__ in index.ts).
+// guard below. Same pattern as __WEB_APP_VERSION__ in index.ts).
 declare const __ACCOUNTS_DECENTRALIZED_DEFAULT__: string
 
 export type AccountsFlagSource = 'env' | 'build-default' | 'fallback'
@@ -46,7 +46,7 @@ export interface AccountsFlag {
 }
 
 /** Parse one flag token; undefined = "this tier does not speak" (unset or
- *  unrecognized — an unrecognized value NEVER silently picks a side). */
+ *  unrecognized: an unrecognized value NEVER silently picks a side). */
 export function parseFlagToken(raw: string | undefined): boolean | undefined {
   if (typeof raw !== 'string') return undefined
   const t = raw.trim().toLowerCase()
@@ -55,7 +55,7 @@ export function parseFlagToken(raw: string | undefined): boolean | undefined {
   return undefined
 }
 
-/** Pure tiered resolution — exported so the suite can exercise the whole
+/** Pure tiered resolution: exported so the suite can exercise the whole
  *  matrix without booting a server. */
 export function resolveAccountsFlag(
   envRaw: string | undefined,
@@ -77,7 +77,7 @@ export function accountsDecentralized(): AccountsFlag {
   return resolveAccountsFlag(process.env.ACCOUNTS_DECENTRALIZED, buildRaw)
 }
 
-export const INTERIM_SUPERSEDED_STATUS = 410 // Gone — deliberate, not an error
+export const INTERIM_SUPERSEDED_STATUS = 410 // Gone, deliberate, not an error
 
 export const INTERIM_SUPERSEDED_BODY = {
   error: 'interim-accounts-superseded',
@@ -94,7 +94,7 @@ export interface GateRefusal {
 
 /**
  * Pure routing decision: should this request path be refused as a superseded
- * interim-account endpoint? Only the /api/auth namespace is ever gated —
+ * interim-account endpoint? Only the /api/auth namespace is ever gated,
  * '/api/authx' or any content-plane path passes untouched, and nothing is
  * gated when the flag is OFF.
  */
@@ -109,7 +109,7 @@ export function gateInterimAuth(on: boolean, urlPath: string): { gated: false } 
 
 /**
  * Register the 410 responders for the whole interim-auth namespace (bare path
- * + subtree, mirroring index.ts's coming-online pattern — find-my-way's
+ * + subtree, mirroring index.ts's coming-online pattern: find-my-way's
  * wildcard does not match the prefix itself). Called INSTEAD of
  * registerAuthRoutes when the flag is ON, and regardless of whether the ipc
  * bridge bundle is present: superseded is superseded, not coming-online.

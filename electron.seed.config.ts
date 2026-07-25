@@ -2,7 +2,7 @@ import { resolve } from 'node:path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
-// nodechess seed — desktop build.
+// nodechess seed: desktop build.
 //
 // Separate from electron.vite.config.ts (the full app) because it shares
 // nothing with it: no preload bridge, no IPC, no engines, no datasets. The

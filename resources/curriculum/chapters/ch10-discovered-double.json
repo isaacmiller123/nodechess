@@ -3,28 +3,28 @@
  "band": "10",
  "order": 10,
  "title": "Discovered & Double Attacks",
- "subtitle": "One move, two threats — unmask the gun and fire the battery",
+ "subtitle": "One move, two threats: unmask the gun and fire the battery",
  "estMinutes": 42,
  "concepts": [
   {
    "id": "discovered-attack",
    "name": "Discovered Attack",
-   "short": "Move one piece out of the way and the piece behind it suddenly attacks — two threats from one move."
+   "short": "Move one piece out of the way and the piece behind it suddenly attacks. Two threats from one move."
   },
   {
    "id": "discovered-check",
    "name": "Discovered Check",
-   "short": "The unmasked piece gives check, so the mover is free to grab anything — the enemy must answer the check first."
+   "short": "The unmasked piece gives check, so the mover is free to grab anything. The enemy must answer the check first."
   },
   {
    "id": "double-check",
    "name": "Double Check",
-   "short": "Both the mover and the unmasked piece check the king at once. Only a king move answers it — nothing can be blocked or captured."
+   "short": "Both the mover and the unmasked piece check the king at once. Only a king move answers it. Nothing can be blocked or captured."
   },
   {
    "id": "the-battery",
    "name": "The Battery",
-   "short": "Two pieces stacked on one line with a screen in front — the loaded gun. Move the screen to fire."
+   "short": "Two pieces stacked on one line with a screen in front, the loaded gun. Move the screen to fire."
   },
   {
    "id": "defuse-the-battery",
@@ -37,13 +37,13 @@
    "id": "l1-discovered-attack",
    "title": "The Discovered Attack",
    "kind": "concept",
-   "summary": "Move a front piece and the piece behind it opens fire — one move makes two attacks.",
+   "summary": "Move a front piece and the piece behind it opens fire. One move makes two attacks.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — spot the double threat",
+     "title": "Warm-up: spot the double threat",
      "intro": {
-      "text": "Viktor: Before we name it, feel it. In each of these, one move attacks two things at once. Find it. Two threats, one move — that is the whole chapter in a sentence."
+      "text": "Viktor: Before we name it, feel it. In each of these, one move attacks two things at once. Find it. Two threats, one move. That is the whole chapter in a sentence."
      },
      "puzzle": {
       "themes": [
@@ -58,13 +58,13 @@
      "kind": "teach",
      "title": "Unmask the gun",
      "intro": {
-      "text": "Viktor: A discovered attack. My knight on d4 stands in front of my rook on d1. As long as it sits there, the rook sees nothing — the knight is a wall. But the moment the knight steps aside, the rook's beam runs up the d-file onto the enemy queen. And a knight never steps aside quietly: it moves and grabs something on the way. One move, two attacks."
+      "text": "Viktor: A discovered attack. My knight on d4 stands in front of my rook on d1. As long as it sits there, the rook sees nothing. The knight is a wall. But the moment the knight steps aside, the rook's beam runs up the d-file onto the enemy queen. And a knight never steps aside quietly: it moves and grabs something on the way. One move, two attacks."
      },
      "steps": [
       {
        "fen": "6k1/3q4/8/5b2/3N2P1/8/4B3/3R2K1 w - - 0 1",
        "coach": {
-        "text": "Look at the d-file: rook d1, my own knight d4, the black queen on d7. The knight is the screen. Behind it the rook is a loaded gun aimed at the queen — it just can't fire yet. And the bishop on f5 is loose, with my pawn on g4 ready to guard whatever lands there. Where can the knight go that also grabs material?",
+        "text": "Look at the d-file: rook d1, my own knight d4, the black queen on d7. The knight is the screen. Behind it the rook is a loaded gun aimed at the queen. It just can't fire yet. And the bishop on f5 is loose, with my pawn on g4 ready to guard whatever lands there. Where can the knight go that also grabs material?",
         "annotations": [
          {
           "kind": "highlight",
@@ -92,7 +92,7 @@
       {
        "fen": "6k1/3q4/8/5b2/3N2P1/8/4B3/3R2K1 w - - 0 1",
        "coach": {
-        "text": "Nxf5. The knight takes the bishop — my g4 pawn now guards it on f5 — and by vacating d4 it unmasks the rook, which stares straight up the file at the queen. She is worth far more than a rook, and she cannot capture mine: the bishop on e2 guards d1, so Qxd1 just loses her for a rook. So she must run, and I keep my extra bishop. The rook never moved, yet it won the day. That is the discovery.",
+        "text": "Nxf5. The knight takes the bishop (my g4 pawn now guards it on f5) and by vacating d4 it unmasks the rook, which stares straight up the file at the queen. She is worth far more than a rook, and she cannot capture mine: the bishop on e2 guards d1, so Qxd1 just loses her for a rook. So she must run, and I keep my extra bishop. The rook never moved, yet it won the day. That is the discovery.",
         "annotations": [
          {
           "kind": "arrow",
@@ -114,10 +114,10 @@
         "d4f5"
        ],
        "successLine": {
-        "text": "Viktor: Clean. The queen flees, the bishop is mine. Notice WHY it worked: my rook was DEFENDED (by the bishop on e2), so the queen could not simply take it and run — she had to abandon the file. The defender answers one threat; you keep the other. Choose the move that makes two."
+        "text": "Viktor: Clean. The queen flees, the bishop is mine. Notice WHY it worked: my rook was DEFENDED (by the bishop on e2), so the queen could not simply take it and run. She had to abandon the file. The defender answers one threat; you keep the other. Choose the move that makes two."
        },
        "retryLine": {
-        "text": "Viktor: No. I do not want a quiet knight move — I want the knight to earn its keep AS it unmasks. It should grab the bishop on f5 and step off the d-file in the same breath. Note Nxf5 is safe: the g4 pawn guards it. Look at f5."
+        "text": "Viktor: No. I do not want a quiet knight move. I want the knight to earn its keep AS it unmasks. It should grab the bishop on f5 and step off the d-file in the same breath. Note Nxf5 is safe: the g4 pawn guards it. Look at f5."
        },
        "conceptId": "discovered-attack"
       }
@@ -125,7 +125,7 @@
     },
     {
      "kind": "guided",
-     "title": "Your turn — fire the discovery",
+     "title": "Your turn: fire the discovery",
      "intro": {
       "text": "Viktor: Same idea, your hands. Rook e1 guarded by your bishop on d2, knight e4 the screen on the e-file; the black queen sits at the far end on e8. Find the knight move that takes something and unmasks the rook."
      },
@@ -133,7 +133,7 @@
       {
        "fen": "4q1k1/5ppp/8/2b5/4N3/8/3B2PP/4R2K w - - 0 1",
        "coach": {
-        "text": "The bishop on c5 is loose and your knight can reach it — and on c5 the knight sits perfectly safe, nothing of Black's touches that square. Does that capture also clear the e-file so the rook hits the queen?",
+        "text": "The bishop on c5 is loose and your knight can reach it, and on c5 the knight sits perfectly safe, nothing of Black's touches that square. Does that capture also clear the e-file so the rook hits the queen?",
         "annotations": [
          {
           "kind": "highlight",
@@ -154,10 +154,10 @@
         "e4c5"
        ],
        "successLine": {
-        "text": "Viktor: Nxc5 — bishop pocketed, and the e-file flies open onto the queen. She cannot take your rook either: the bishop on d2 guards e1, so Qxe1 would just lose her to Bxe1. She must run, and you keep the extra piece. That is a discovered attack done right."
+        "text": "Viktor: Nxc5. Bishop pocketed, and the e-file flies open onto the queen. She cannot take your rook either: the bishop on d2 guards e1, so Qxe1 would just lose her to Bxe1. She must run, and you keep the extra piece. That is a discovered attack done right."
        },
        "retryLine": {
-        "text": "Viktor: The knight must leave the e-file to unmask the rook AND grab the loose bishop — and only the knight can take that bishop, so this is the way to win it. One square does both jobs. Which capture clears e4?"
+        "text": "Viktor: The knight must leave the e-file to unmask the rook AND grab the loose bishop, and only the knight can take that bishop, so this is the way to win it. One square does both jobs. Which capture clears e4?"
        },
        "conceptId": "discovered-attack"
       }
@@ -165,7 +165,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — train the eye",
+     "title": "Cool-down: train the eye",
      "intro": {
       "text": "Viktor: Three more. Each time, ask: which of my pieces is a screen, and what wakes up when it moves?"
      },
@@ -182,15 +182,15 @@
   },
   {
    "id": "l2-discovered-check",
-   "title": "Discovered Check — the free move",
+   "title": "Discovered Check: the free move",
    "kind": "tactics",
-   "summary": "When the unmasked piece gives check, the mover can take anything — the enemy is forced to deal with the check first.",
+   "summary": "When the unmasked piece gives check, the mover can take anything. The enemy is forced to deal with the check first.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the check that comes from behind",
+     "title": "Warm-up: the check that comes from behind",
      "intro": {
-      "text": "Viktor: Yesterday's discovery wins a piece because the defender saves one threat and you take the other. Today we make the discovered threat a CHECK. Then the defender has NO choice at all — he must answer the check, and you keep your loot. Warm up first."
+      "text": "Viktor: Yesterday's discovery wins a piece because the defender saves one threat and you take the other. Today we make the discovered threat a CHECK. Then the defender has NO choice at all. He must answer the check, and you keep your loot. Warm up first."
      },
      "puzzle": {
       "themes": [
@@ -205,13 +205,13 @@
      "kind": "teach",
      "title": "A check, while you rob the house",
      "intro": {
-      "text": "Viktor: This is the strongest form. The piece behind the screen aims at the enemy KING. When the screen steps aside it gives check — and a check must be answered immediately. So while the king is forced to wriggle, the mover steals whatever it likes. The defender literally does not get to recapture."
+      "text": "Viktor: This is the strongest form. The piece behind the screen aims at the enemy KING. When the screen steps aside it gives check, and a check must be answered immediately. So while the king is forced to wriggle, the mover steals whatever it likes. The defender literally does not get to recapture."
      },
      "steps": [
       {
        "fen": "4k3/8/6r1/4N3/8/8/8/4R1K1 w - - 0 1",
        "coach": {
-        "text": "Rook e1, knight e5, the black KING on e8. The rook is aimed at the king — only the knight blocks the check. And there is a loose rook on g6. Watch what one knight move does.",
+        "text": "Rook e1, knight e5, the black KING on e8. The rook is aimed at the king. Only the knight blocks the check. And there is a loose rook on g6. Watch what one knight move does.",
         "annotations": [
          {
           "kind": "arrow",
@@ -233,7 +233,7 @@
       {
        "fen": "4k3/8/6r1/4N3/8/8/8/4R1K1 w - - 0 1",
        "coach": {
-        "text": "Nxg6+. The knight snatches the rook AND uncovers check from e1. Black is in check — he MUST move the king or block; he cannot take my knight on g6, because that would leave his king in check. I win a whole rook for free. That little '+' is the difference between winning a piece and winning it with no comeback.",
+        "text": "Nxg6+. The knight snatches the rook AND uncovers check from e1. Black is in check. He MUST move the king or block; he cannot take my knight on g6, because that would leave his king in check. I win a whole rook for free. That little '+' is the difference between winning a piece and winning it with no comeback.",
         "annotations": [
          {
           "kind": "arrow",
@@ -255,7 +255,7 @@
         "e5g6"
        ],
        "successLine": {
-        "text": "Viktor: Yes. The check is a leash — it yanks the defender's attention to his king while your knight walks off with the rook. Always check whether your discovery can be made WITH check. It usually doubles the haul."
+        "text": "Viktor: Yes. The check is a leash. It yanks the defender's attention to his king while your knight walks off with the rook. Always check whether your discovery can be made WITH check. It usually doubles the haul."
        },
        "retryLine": {
         "text": "Viktor: I want the knight to capture the rook on g6 AND leave the e-file so my rook checks the king. One move does both. Find it."
@@ -266,9 +266,9 @@
     },
     {
      "kind": "guided",
-     "title": "Your turn — grab it with check",
+     "title": "Your turn: grab it with check",
      "intro": {
-      "text": "Viktor: New geometry, same weapon. My bishop on g2 looks down the long diagonal at the black king on a8 — but my knight on e4 blocks the beam. There is a loose rook on c5. Discover the check and take the rook."
+      "text": "Viktor: New geometry, same weapon. My bishop on g2 looks down the long diagonal at the black king on a8, but my knight on e4 blocks the beam. There is a loose rook on c5. Discover the check and take the rook."
      },
      "steps": [
       {
@@ -295,7 +295,7 @@
         "e4c5"
        ],
        "successLine": {
-        "text": "Viktor: Nxc5+. Bishop checks the king, knight takes the rook, and Black cannot answer both — the check comes first, the king must move, your knight keeps the rook. A piece earned with no risk."
+        "text": "Viktor: Nxc5+. Bishop checks the king, knight takes the rook, and Black cannot answer both. The check comes first, the king must move, your knight keeps the rook. A piece earned with no risk."
        },
        "retryLine": {
         "text": "Viktor: The knight must land on the rook AND clear the g2–a8 diagonal so the bishop checks. Only one capture does that. Which one?"
@@ -306,9 +306,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — discoveries with check",
+     "title": "Cool-down: discoveries with check",
      "intro": {
-      "text": "Viktor: Find the discovery in each. Bonus points to yourself when it comes with check — that is the cleanest money in chess."
+      "text": "Viktor: Find the discovery in each. Bonus points to yourself when it comes with check. That is the cleanest money in chess."
      },
      "puzzle": {
       "themes": [
@@ -323,21 +323,21 @@
   },
   {
    "id": "l3-double-check",
-   "title": "Double Check — the unanswerable blow",
+   "title": "Double Check, the unanswerable blow",
    "kind": "tactics",
-   "summary": "When the mover AND the unmasked piece both check the king, only a king move is legal — no block, no capture. Often it is mate.",
+   "summary": "When the mover AND the unmasked piece both check the king, only a king move is legal. No block, no capture. Often it is mate.",
    "segments": [
     {
      "kind": "teach",
      "title": "Two checks at once",
      "intro": {
-      "text": "Viktor: The crown jewel. In a discovered check the MOVER itself can also give check — so the king is attacked by TWO pieces in one move. You cannot block two checkers with one body. You cannot capture two checkers with one move. The king must run, and only run. If it has nowhere to run, it is mate. This is why a double check can ignore any defence — even a defender guarding the mating square is helpless."
+      "text": "Viktor: The crown jewel. In a discovered check the MOVER itself can also give check, so the king is attacked by TWO pieces in one move. You cannot block two checkers with one body. You cannot capture two checkers with one move. The king must run, and only run. If it has nowhere to run, it is mate. This is why a double check can ignore any defence. Even a defender guarding the mating square is helpless."
      },
      "steps": [
       {
        "fen": "7k/7p/8/4N3/8/8/1B6/6K1 w - - 0 1",
        "coach": {
-        "text": "Bishop b2 rakes the long diagonal straight to the black king on h8 — the knight on e5 is the only thing blocking it. The king has one breathing-square at g8. We are up a piece here, so plenty of moves win — but I want you to see the MECHANISM: find the ONE knight square that both checks the king itself and steps off the diagonal so the bishop fires too.",
+        "text": "Bishop b2 rakes the long diagonal straight to the black king on h8. The knight on e5 is the only thing blocking it. The king has one breathing-square at g8. We are up a piece here, so plenty of moves win, but I want you to see the MECHANISM: find the ONE knight square that both checks the king itself and steps off the diagonal so the bishop fires too.",
         "annotations": [
          {
           "kind": "arrow",
@@ -359,7 +359,7 @@
       {
        "fen": "7k/7p/8/4N3/8/8/1B6/6K1 w - - 0 1",
        "coach": {
-        "text": "Ng6+. The knight checks from g6; the bishop checks down the diagonal. DOUBLE check. Black cannot block — no single piece can step in front of two checkers at once. He cannot capture his way out either — there is nothing that takes both the knight and the bishop, and taking just one leaves the other still checking. The king MUST move, and only g8 is open. Here that one escape exists, so it is not yet mate; in the next position, with g8 sealed too, the very same blow is checkmate.",
+        "text": "Ng6+. The knight checks from g6; the bishop checks down the diagonal. DOUBLE check. Black cannot block. No single piece can step in front of two checkers at once. He cannot capture his way out either. There is nothing that takes both the knight and the bishop, and taking just one leaves the other still checking. The king MUST move, and only g8 is open. Here that one escape exists, so it is not yet mate; in the next position, with g8 sealed too, the very same blow is checkmate.",
         "annotations": [
          {
           "kind": "arrow",
@@ -381,10 +381,10 @@
         "e5g6"
        ],
        "successLine": {
-        "text": "Viktor: Two checkers, one king. The king has no answer but his feet. Burn this in: against a double check, the king MUST move — so if you can cover its escape squares, double check is mate."
+        "text": "Viktor: Two checkers, one king. The king has no answer but his feet. Burn this in: against a double check, the king MUST move, so if you can cover its escape squares, double check is mate."
        },
        "retryLine": {
-        "text": "Viktor: I need the knight to check the king AND vacate the diagonal so the bishop also checks. From e5, only g6 does both — a knight on g6 hits h8. Play it."
+        "text": "Viktor: I need the knight to check the king AND vacate the diagonal so the bishop also checks. From e5, only g6 does both. A knight on g6 hits h8. Play it."
        },
        "conceptId": "double-check"
       }
@@ -392,15 +392,15 @@
     },
     {
      "kind": "guided",
-     "title": "Your turn — deliver the mate",
+     "title": "Your turn, deliver the mate",
      "intro": {
-      "text": "Viktor: Now the killing version — fresh geometry, so you must find the square yourself. The black king is cornered on a1, boxed in by its own pawn on a2. My bishop on g7 rakes the long dark diagonal straight down at it; my knight on d4 is the screen. My bishop on f5 seals the b1 flight. But watch the trap: Black's bishop on e1 can drop to c3 — so a plain discovered check is blocked. I need the check that cannot be blocked."
+      "text": "Viktor: Now the killing version. Fresh geometry, so you must find the square yourself. The black king is cornered on a1, boxed in by its own pawn on a2. My bishop on g7 rakes the long dark diagonal straight down at it; my knight on d4 is the screen. My bishop on f5 seals the b1 flight. But watch the trap: Black's bishop on e1 can drop to c3, so a plain discovered check is blocked. I need the check that cannot be blocked."
      },
      "steps": [
       {
        "fen": "8/6B1/8/5B2/3N4/8/p7/k3b2K w - - 0 1",
        "coach": {
-        "text": "Test it in your head: any quiet knight jump just opens the g7 bishop's check — and Black answers ...Bc3, interposing on the diagonal. Not mate. So the knight must ALSO check, so there is nothing to block. The flights are already sealed: a2 by Black's own pawn, b1 by my bishop on f5, b2 by the g7 bishop. Which knight jump leaves the diagonal AND gives check to a1 itself?",
+        "text": "Test it in your head: any quiet knight jump just opens the g7 bishop's check, and Black answers ...Bc3, interposing on the diagonal. Not mate. So the knight must ALSO check, so there is nothing to block. The flights are already sealed: a2 by Black's own pawn, b1 by my bishop on f5, b2 by the g7 bishop. Which knight jump leaves the diagonal AND gives check to a1 itself?",
         "annotations": [
          {
           "kind": "arrow",
@@ -422,10 +422,10 @@
         "d4b3"
        ],
        "successLine": {
-        "text": "Viktor: Nb3#. NOW the bishop on e1 is helpless — you cannot block two checks with one move, and the king has no square (a2 its own pawn, b1 sealed by the f5 bishop, b2 by the g7 bishop). THAT is the power of the double check: it walks straight through a defender who would have stopped a single check. Seal the flight squares and it is mate."
+        "text": "Viktor: Nb3#. NOW the bishop on e1 is helpless. You cannot block two checks with one move, and the king has no square (a2 its own pawn, b1 sealed by the f5 bishop, b2 by the g7 bishop). THAT is the power of the double check: it walks straight through a defender who would have stopped a single check. Seal the flight squares and it is mate."
        },
        "retryLine": {
-        "text": "Viktor: A plain discovery lets Black block with ...Bc3. You need the knight to check too, so nothing can interpose. From d4, the jump that lands giving check to a1 itself — and opens the bishop's beam behind it — is the one. Nb3#."
+        "text": "Viktor: A plain discovery lets Black block with ...Bc3. You need the knight to check too, so nothing can interpose. From d4, the jump that lands giving check to a1 itself (and opens the bishop's beam behind it) is the one. Nb3#."
        },
        "conceptId": "double-check"
       }
@@ -433,7 +433,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the king must move",
+     "title": "Cool-down: the king must move",
      "intro": {
       "text": "Viktor: Double checks are rare and deadly. Here are positions where a check from behind ends matters; treat the king's escape squares as the real puzzle."
      },
@@ -450,21 +450,21 @@
   },
   {
    "id": "l4-battery-wins-queen",
-   "title": "Aim the Battery at the King — and Win the Queen",
+   "title": "Aim the Battery at the King, and Win the Queen",
    "kind": "tactics",
-   "summary": "A battery aimed at the enemy king is the deadliest discovery of all: when the screen jumps WITH check AND attacks the queen, the defender must answer the check first — so he either abandons the queen (you win her whole) or blocks with her (you win queen-for-rook). Either way, a winning haul.",
+   "summary": "A battery aimed at the enemy king is the deadliest discovery of all: when the screen jumps WITH check AND attacks the queen, the defender must answer the check first, so he either abandons the queen (you win her whole) or blocks with her (you win queen-for-rook). Either way, a winning haul.",
    "segments": [
     {
      "kind": "teach",
      "title": "Aim the check at the queen",
      "intro": {
-      "text": "Viktor: A loose queen always runs — you saw it: aim a quiet discovery at her and she steps away. So we add a SECOND threat she cannot ignore. Aim the battery at the KING. Then when the screen jumps it gives a discovered CHECK — and if that same jump ALSO lands attacking the queen, Black is forked: he must deal with the check first, so he has no free move to walk the queen to safety. Either he loses her outright, or he can only save her by throwing himself in the way and giving her up for a rook. Heads you win, tails you win. The whole art is choosing the jump that does BOTH jobs — fires the check AND lands a knight's-hop from the queen."
+      "text": "Viktor: A loose queen always runs. You saw it: aim a quiet discovery at her and she steps away. So we add a SECOND threat she cannot ignore. Aim the battery at the KING. Then when the screen jumps it gives a discovered CHECK, and if that same jump ALSO lands attacking the queen, Black is forked: he must deal with the check first, so he has no free move to walk the queen to safety. Either he loses her outright, or he can only save her by throwing himself in the way and giving her up for a rook. Heads you win, tails you win. The whole art is choosing the jump that does BOTH jobs. Fires the check AND lands a knight's-hop from the queen."
      },
      "steps": [
       {
        "fen": "4k3/pp6/8/2q1N3/8/8/PP5K/4R3 w - - 0 1",
        "coach": {
-        "text": "The battery is built: rook e1, my knight e5 in front, the black KING on e8 at the end of the file. The rook is a loaded gun on the king — the knight is the only screen. And there is the black queen on c5. The knight cannot touch her from e5. But where can the knight jump so that it BOTH attacks the queen AND unmasks the rook's check?",
+        "text": "The battery is built: rook e1, my knight e5 in front, the black KING on e8 at the end of the file. The rook is a loaded gun on the king. The knight is the only screen. And there is the black queen on c5. The knight cannot touch her from e5. But where can the knight jump so that it BOTH attacks the queen AND unmasks the rook's check?",
         "annotations": [
          {
           "kind": "arrow",
@@ -492,7 +492,7 @@
       {
        "fen": "4k3/pp6/8/2q1N3/8/8/PP5K/4R3 w - - 0 1",
        "coach": {
-        "text": "Nd3+. The knight leaps to d3 — it attacks the queen on c5 AND, by leaving e5, it unmasks the rook's check on the king. Black must answer the check. If he moves his king (Kd7), he abandons the queen — Nxc5+ and she is mine for free, with check on top. His only way to keep her is to throw her in front of the check — Qe7 or Qe5 — but then I take her with the rook (Rxe7+ / Rxe5+) and win the queen for my rook. Either way I come out a queen, or queen-for-rook, ahead.",
+        "text": "Nd3+. The knight leaps to d3: it attacks the queen on c5 AND, by leaving e5, it unmasks the rook's check on the king. Black must answer the check. If he moves his king (Kd7), he abandons the queen. Nxc5+ and she is mine for free, with check on top. His only way to keep her is to throw her in front of the check (Qe7 or Qe5) but then I take her with the rook (Rxe7+ / Rxe5+) and win the queen for my rook. Either way I come out a queen, or queen-for-rook, ahead.",
         "annotations": [
          {
           "kind": "arrow",
@@ -521,7 +521,7 @@
         "e5d3"
        ],
        "successLine": {
-        "text": "Viktor: Yes. If the king steps aside, Nxc5+ collects the whole queen; if Black blocks with the queen, I take her with the rook and win queen-for-rook. THAT is the power of a battery pointed at the king: the discovered check forces Black to spend his move on the king, so he cannot calmly walk the queen to safety. Be honest about the haul — sometimes the whole queen, sometimes queen-for-rook — but always a winning amount."
+        "text": "Viktor: Yes. If the king steps aside, Nxc5+ collects the whole queen; if Black blocks with the queen, I take her with the rook and win queen-for-rook. THAT is the power of a battery pointed at the king: the discovered check forces Black to spend his move on the king, so he cannot calmly walk the queen to safety. Be honest about the haul (sometimes the whole queen, sometimes queen-for-rook) but always a winning amount."
        },
        "retryLine": {
         "text": "Viktor: A quiet attack on the queen lets her run. I need the knight to land on a square that hits the queen on c5 AND clears e5 so the rook checks the king. From e5, only one jump does both. Which square reaches c5 and leaves the e-file? Play Nd3+."
@@ -532,15 +532,15 @@
     },
     {
      "kind": "guided",
-     "title": "Your turn — fire the battery, win the queen",
+     "title": "Your turn: fire the battery, win the queen",
      "intro": {
-      "text": "Viktor: New file, same weapon, your move. Rook d1, your knight d4 in front, the black king on d8 at the end of the line — the battery is aimed at the king. The black queen sits far away on h6. Find the knight jump that fires the discovered check AND lands attacking the queen — that second job is the whole trick, because a check Black can answer for free wins you nothing."
+      "text": "Viktor: New file, same weapon, your move. Rook d1, your knight d4 in front, the black king on d8 at the end of the line. The battery is aimed at the king. The black queen sits far away on h6. Find the knight jump that fires the discovered check AND lands attacking the queen. That second job is the whole trick, because a check Black can answer for free wins you nothing."
      },
      "steps": [
       {
        "fen": "3k4/8/7q/8/3N4/8/6PP/3R2K1 w - - 0 1",
        "coach": {
-        "text": "Your knight on d4 can't touch the queen on h6 from where it stands. Any jump off the d-file fires the rook's check on the king — but most landing squares leave the queen alone, and then Black answers the check and waltzes her to safety. You want the ONE square that does both jobs: opens the d-file AND lands a knight's-hop from h6, so the queen is attacked at the same instant the king is. Which jump hits h6?",
+        "text": "Your knight on d4 can't touch the queen on h6 from where it stands. Any jump off the d-file fires the rook's check on the king, but most landing squares leave the queen alone, and then Black answers the check and waltzes her to safety. You want the ONE square that does both jobs: opens the d-file AND lands a knight's-hop from h6, so the queen is attacked at the same instant the king is. Which jump hits h6?",
         "annotations": [
          {
           "kind": "arrow",
@@ -561,10 +561,10 @@
         "d4f5"
        ],
        "successLine": {
-        "text": "Viktor: Nf5+. The rook's discovered check hits the king, and the knight on f5 lands attacking the queen on h6 — both threats in one move. Black must answer the check, but nothing he does saves her: step the king (Kc7, Kc8, Ke8) and Nxh6 pockets the whole queen; throw her in front on the d-file (Qd2 or Qd6) and I just take her — Rxd2, or Nxd6 with my knight. Heads the whole queen, tails queen-for-rook, always winning. The lesson: it is not enough to fire the check — the jump has to land within reach of the queen. Squares like c6 or e6 open the same check but do not attack h6, so Black answers the check and keeps his queen."
+        "text": "Viktor: Nf5+. The rook's discovered check hits the king, and the knight on f5 lands attacking the queen on h6. Both threats in one move. Black must answer the check, but nothing he does saves her: step the king (Kc7, Kc8, Ke8) and Nxh6 pockets the whole queen; throw her in front on the d-file (Qd2 or Qd6) and I just take her: Rxd2, or Nxd6 with my knight. Heads the whole queen, tails queen-for-rook, always winning. The lesson: it is not enough to fire the check. The jump has to land within reach of the queen. Squares like c6 or e6 open the same check but do not attack h6, so Black answers the check and keeps his queen."
        },
        "retryLine": {
-        "text": "Viktor: Most knight jumps open the rook's check but leave the queen untouched — then Black deals with the check and walks her away. You need the square that hits h6 in the same breath. From d4, the only jump that reaches h6 is f5. Play Nf5+."
+        "text": "Viktor: Most knight jumps open the rook's check but leave the queen untouched. Then Black deals with the check and walks her away. You need the square that hits h6 in the same breath. From d4, the only jump that reaches h6 is f5. Play Nf5+."
        },
        "conceptId": "the-battery"
       }
@@ -572,9 +572,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — fire the battery",
+     "title": "Cool-down: fire the battery",
      "intro": {
-      "text": "Viktor: In each, find the discovery. Ask first: is my battery aimed at the king? If so, the jump comes WITH check — and while the defender is forced to answer it, the jumping piece collects whatever it also attacks. Just be honest about the haul: if the defender can throw his piece in front of the check, you win the exchange rather than the piece for free."
+      "text": "Viktor: In each, find the discovery. Ask first: is my battery aimed at the king? If so, the jump comes WITH check, and while the defender is forced to answer it, the jumping piece collects whatever it also attacks. Just be honest about the haul: if the defender can throw his piece in front of the check, you win the exchange rather than the piece for free."
      },
      "puzzle": {
       "themes": [
@@ -591,7 +591,7 @@
    "id": "l5-defuse-the-battery",
    "title": "Defending the Discovery",
    "kind": "tactics",
-   "summary": "The same weapon, pointed at you. Learn to spot the enemy battery and defuse it — and never open the firing line yourself.",
+   "summary": "The same weapon, pointed at you. Learn to spot the enemy battery and defuse it, and never open the firing line yourself.",
    "segments": [
     {
      "kind": "teach",
@@ -603,7 +603,7 @@
       {
        "fen": "4k3/2b5/2r5/4N3/8/8/8/4R1K1 b - - 0 1",
        "coach": {
-        "text": "You are Black. White has a loaded battery: rook e1, knight e5, your king on e8. If you sit still, Nxc6+ wins your rook with a discovered check. Do not wait for it. What can you do to the screen — the knight on e5 — right now?",
+        "text": "You are Black. White has a loaded battery: rook e1, knight e5, your king on e8. If you sit still, Nxc6+ wins your rook with a discovered check. Do not wait for it. What can you do to the screen (the knight on e5) right now?",
         "annotations": [
          {
           "kind": "arrow",
@@ -625,7 +625,7 @@
       {
        "fen": "4k3/2b5/2r5/4N3/8/8/8/4R1K1 b - - 0 1",
        "coach": {
-        "text": "Bxe5. Take the screen. Remove the front piece and the battery collapses — there is nothing left to make a discovery with. White recaptures Rxe5+, you simply step the king aside, and the danger is gone. You traded a bishop for a knight and defused the whole threat. The rule: against a battery, capture the screen if you can.",
+        "text": "Bxe5. Take the screen. Remove the front piece and the battery collapses: there is nothing left to make a discovery with. White recaptures Rxe5+, you simply step the king aside, and the danger is gone. You traded a bishop for a knight and defused the whole threat. The rule: against a battery, capture the screen if you can.",
         "annotations": [
          {
           "kind": "arrow",
@@ -640,10 +640,10 @@
         "c7e5"
        ],
        "successLine": {
-        "text": "Viktor: Bxe5 — battery dismantled. No screen, no discovery. When you see two enemy pieces stacked on a line pointed at your king, your first question is: can I take, pin, or block the front one? Defuse before it fires."
+        "text": "Viktor: Bxe5. Battery dismantled. No screen, no discovery. When you see two enemy pieces stacked on a line pointed at your king, your first question is: can I take, pin, or block the front one? Defuse before it fires."
        },
        "retryLine": {
-        "text": "Viktor: Defend actively. The danger is the discovery that comes when the e5 knight moves. So remove the e5 knight yourself — your bishop on c7 can take it. Bxe5."
+        "text": "Viktor: Defend actively. The danger is the discovery that comes when the e5 knight moves. So remove the e5 knight yourself: your bishop on c7 can take it. Bxe5."
        },
        "conceptId": "defuse-the-battery"
       }
@@ -651,9 +651,9 @@
     },
     {
      "kind": "guided",
-     "title": "Your turn — neutralise the threat",
+     "title": "Your turn, neutralise the threat",
      "intro": {
-      "text": "Viktor: Your king is on h8. White's bishop on b2 rakes the long diagonal toward you, with the knight on e5 as the screen — a loaded discovery. You are Black to move. Defuse it."
+      "text": "Viktor: Your king is on h8. White's bishop on b2 rakes the long diagonal toward you, with the knight on e5 as the screen, a loaded discovery. You are Black to move. Defuse it."
      },
      "steps": [
       {
@@ -680,7 +680,7 @@
         "f6e5"
        ],
        "successLine": {
-        "text": "Viktor: Bxe5. The knight is gone, so the bishop can never discover anything — and if White recaptures Bxe5+, you block or step aside and you are fine. Spot the battery, kill the screen. Defence is just attack seen from the other side of the board."
+        "text": "Viktor: Bxe5. The knight is gone, so the bishop can never discover anything, and if White recaptures Bxe5+, you block or step aside and you are fine. Spot the battery, kill the screen. Defence is just attack seen from the other side of the board."
        },
        "retryLine": {
         "text": "Viktor: The threat is the discovery when the e5 knight jumps. Eliminate the knight: your f6 bishop captures it. Bxe5."
@@ -693,13 +693,13 @@
   },
   {
    "id": "l6-mastery-boss",
-   "title": "Mastery — Spot It in Real Games",
+   "title": "Mastery: Spot It in Real Games",
    "kind": "practice",
    "summary": "Pull it all together: mixed discovery puzzles, then beat the engine using batteries and discoveries.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Mixed drill — every form of the discovery",
+     "title": "Mixed drill: every form of the discovery",
      "intro": {
       "text": "Viktor: No labels now. Some are plain discovered attacks, some come with check, some are double checks, some need a setup move. Decide which screen to move, and whether you can do it with check. This is the real test of the eye."
      },
@@ -715,12 +715,12 @@
     },
     {
      "kind": "boss",
-     "title": "Boss — beat the engine",
+     "title": "Boss: beat the engine",
      "bossFen": "r1bq1rk1/pp2bppp/2n1pn2/3p4/3P4/2NBPN2/PP3PPP/R1BQ1RK1 w - - 0 1",
      "bossUserColor": "white",
      "bossEngineElo": 1180,
      "bossIntro": {
-      "text": "Viktor: A normal middlegame, you have White. No discovery is on the board yet — your job is to MAKE one. Develop with purpose, line a rook or bishop up behind a knight, and the moment the enemy king or queen drifts onto that line, fire. Watch your own king too: do not let the engine build a battery against you. Play."
+      "text": "Viktor: A normal middlegame, you have White. No discovery is on the board yet. Your job is to MAKE one. Develop with purpose, line a rook or bishop up behind a knight, and the moment the enemy king or queen drifts onto that line, fire. Watch your own king too: do not let the engine build a battery against you. Play."
      }
     }
    ]
@@ -731,7 +731,7 @@
   "questions": [
    {
     "kind": "mc",
-    "prompt": "What makes a discovered attack so strong — why does it usually win material?",
+    "prompt": "What makes a discovered attack so strong. Why does it usually win material?",
     "options": [
      "It attacks two things at once, and the defender can only answer one of them.",
      "It always gives check, so the king must move.",
@@ -739,14 +739,14 @@
      "It threatens checkmate on the next move every time."
     ],
     "answerIndex": 0,
-    "explain": "One move makes two threats — the moving piece's own threat and the unmasked piece's threat. The defender saves one; you collect the other."
+    "explain": "One move makes two threats. The moving piece's own threat and the unmasked piece's threat. The defender saves one; you collect the other."
    },
    {
     "kind": "mc",
     "prompt": "Why is a DOUBLE check the one tactic that can never be blocked or parried by a capture?",
     "options": [
      "Because the king is worth the most, so it always moves first.",
-     "Because two pieces give check at once — you cannot block or capture two checkers with a single move, so only the king moving can answer it.",
+     "Because two pieces give check at once. You cannot block or capture two checkers with a single move, so only the king moving can answer it.",
      "Because a knight is giving one of the checks, and knight checks can't be blocked.",
      "Because it is always delivered by a queen."
     ],
@@ -759,7 +759,7 @@
     "options": [
      "Advance the pawns in front of your king.",
      "Offer a queen trade.",
-     "Capture, pin, or otherwise remove the front piece (the screen) — with no screen there is no discovery.",
+     "Capture, pin, or otherwise remove the front piece (the screen). With no screen there is no discovery.",
      "Ignore it; a battery is only dangerous if it gives check."
     ],
     "answerIndex": 2,
@@ -770,7 +770,7 @@
     "prompt": "A loose enemy queen just steps away when you attack it. So why does aiming your battery at the enemy KING let a discovery win the queen anyway?",
     "options": [
      "Because the queen is pinned to the king and cannot legally move.",
-     "Because the discovery is a CHECK — the defender must answer the check first, so he has no free move to walk the also-attacked queen to safety.",
+     "Because the discovery is a CHECK. The defender must answer the check first, so he has no free move to walk the also-attacked queen to safety.",
      "Because a battery is always faster than a queen.",
      "Because the queen is forced to capture the checking piece."
     ],
@@ -779,12 +779,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Discovered attack — and this time the screen is a PAWN. Your pawn on d5 stands in front of the rook on d1; a black rook sits at the end of the file on d8. A black bishop is on c6. Find the move that wins material by unmasking the rook.",
+    "prompt": "Discovered attack, and this time the screen is a PAWN. Your pawn on d5 stands in front of the rook on d1; a black rook sits at the end of the file on d8. A black bishop is on c6. Find the move that wins material by unmasking the rook.",
     "fen": "3r2k1/5ppp/2b5/3P4/8/4N3/5PPP/3R2K1 w - - 0 1",
     "solutionUci": [
      "d5c6"
     ],
-    "explain": "dxc6 — the pawn captures the bishop and, by leaving d5, clears the d-file so your rook on d1 attacks the black rook on d8. Black must save the rook (and if he tries ...Rxd1 your knight on e3 guards d1 and recaptures), so you keep the extra bishop — a clean piece up. A screen need not be a knight — any piece that vacates a line can fire a discovery."
+    "explain": "dxc6: the pawn captures the bishop and, by leaving d5, clears the d-file so your rook on d1 attacks the black rook on d8. Black must save the rook (and if he tries ...Rxd1 your knight on e3 guards d1 and recaptures), so you keep the extra bishop, a clean piece up. A screen need not be a knight. Any piece that vacates a line can fire a discovery."
    },
    {
     "kind": "play",
@@ -793,34 +793,34 @@
     "solutionUci": [
      "e4c3"
     ],
-    "explain": "Nxc3+ captures the rook and discovers check from the bishop. Black must answer the check, so he cannot recapture — you win a clean rook."
+    "explain": "Nxc3+ captures the rook and discovers check from the bishop. Black must answer the check, so he cannot recapture. You win a clean rook."
    },
    {
     "kind": "play",
-    "prompt": "Double check, mate in one. Your rook on h1 fires up the h-file at the black king on h8, screened by your knight on h4; your other knight on f5 covers g7 and the bishop on c4 covers g8. Black's rook on a7 is poised to slide to h7 and block a plain rook check — so find the move it cannot block.",
+    "prompt": "Double check, mate in one. Your rook on h1 fires up the h-file at the black king on h8, screened by your knight on h4; your other knight on f5 covers g7 and the bishop on c4 covers g8. Black's rook on a7 is poised to slide to h7 and block a plain rook check, so find the move it cannot block.",
     "fen": "7k/r7/8/5N2/2B4N/8/8/4K2R w - - 0 1",
     "solutionUci": [
      "h4g6"
     ],
-    "explain": "Ng6#. The knight leaps to g6 — checking h8 itself AND clearing the h-file so the rook on h1 checks too. A double check: a block stops only one checker, so ...Rh7 is useless, and the king has no square (g7 by Nf5, g8 by Bc4, h7 by the rook). Any other knight move gives only a single rook check, which Black simply blocks with ...Rh7."
+    "explain": "Ng6#. The knight leaps to g6: checking h8 itself AND clearing the h-file so the rook on h1 checks too. A double check: a block stops only one checker, so ...Rh7 is useless, and the king has no square (g7 by Nf5, g8 by Bc4, h7 by the rook). Any other knight move gives only a single rook check, which Black simply blocks with ...Rh7."
    },
    {
     "kind": "play",
-    "prompt": "Your battery is aimed at the king: rook e1, your knight e4, the black king on e8. The black queen sits far off on a6 — your knight can't reach her from e4. Find the knight jump that fires the discovered check AND lands attacking the queen, so the check pins Black down while his queen is hanging.",
+    "prompt": "Your battery is aimed at the king: rook e1, your knight e4, the black king on e8. The black queen sits far off on a6. Your knight can't reach her from e4. Find the knight jump that fires the discovered check AND lands attacking the queen, so the check pins Black down while his queen is hanging.",
     "fen": "4k3/5ppp/q7/8/4N3/8/PP4PP/4R1K1 w - - 0 1",
     "solutionUci": [
      "e4c5"
     ],
-    "explain": "Nc5+ — the knight leaps off the e-file (firing the rook's discovered check on the king) and lands on c5, a knight's-hop from the queen on a6. Black must answer the check first, so he has no free move to save her: if he moves his king (Kd8/Kf8), Nxa6 wins the whole queen; his only way to keep her is to interpose on the e-file with ...Qe6 or ...Qe2, and then you snap her off (Nxe6 / Rxe2) for a piece. The point is that the jump must LAND attacking the queen — squares like d6 or f6 open the same check but do not reach a6, so Black would simply answer the check and keep his queen. Pick the square that threatens both at once."
+    "explain": "Nc5+: the knight leaps off the e-file (firing the rook's discovered check on the king) and lands on c5, a knight's-hop from the queen on a6. Black must answer the check first, so he has no free move to save her: if he moves his king (Kd8/Kf8), Nxa6 wins the whole queen; his only way to keep her is to interpose on the e-file with ...Qe6 or ...Qe2, and then you snap her off (Nxe6 / Rxe2) for a piece. The point is that the jump must LAND attacking the queen. Squares like d6 or f6 open the same check but do not reach a6, so Black would simply answer the check and keep his queen. Pick the square that threatens both at once."
    },
    {
     "kind": "play",
-    "prompt": "You are Black. White's bishop on c4 aims at your king on g8 along the a2–g8 diagonal, with the knight on e6 as the screen — a loaded discovery. Defuse it.",
+    "prompt": "You are Black. White's bishop on c4 aims at your king on g8 along the a2–g8 diagonal, with the knight on e6 as the screen, a loaded discovery. Defuse it.",
     "fen": "2b3k1/8/4N3/8/2B5/8/8/6K1 b - - 0 1",
     "solutionUci": [
      "c8e6"
     ],
-    "explain": "Bxe6 removes the screen, trading bishop for knight, so White's bishop can never discover anything. After Bxe6+ you simply step the king aside — the battery is dead."
+    "explain": "Bxe6 removes the screen, trading bishop for knight, so White's bishop can never discover anything. After Bxe6+ you simply step the king aside: the battery is dead."
    },
    {
     "kind": "judge",
@@ -828,7 +828,7 @@
     "fen": "k7/8/8/2N5/8/8/6B1/6K1 b - - 0 1",
     "lastMoveUci": "e4c5",
     "verdict": "correct",
-    "explain": "A discovered check: the knight took the rook and uncovered the bishop's check on the king. Black must answer the check and cannot recapture — White wins a clean rook."
+    "explain": "A discovered check: the knight took the rook and uncovered the bishop's check on the king. Black must answer the check and cannot recapture. White wins a clean rook."
    },
    {
     "kind": "judge",
@@ -836,7 +836,7 @@
     "fen": "4k3/8/2r5/4N3/8/8/8/4R1K1 w - - 0 1",
     "lastMoveUci": "d8e8",
     "verdict": "blunder",
-    "explain": "The king stepped onto the e-file — straight into a loaded battery (rook e1 behind the knight on e5). Now White plays Nxc6+, capturing the rook with a discovered check from e1. Black must answer the check and cannot recapture, so White wins a clean rook. Never park your king on a screened line."
+    "explain": "The king stepped onto the e-file: straight into a loaded battery (rook e1 behind the knight on e5). Now White plays Nxc6+, capturing the rook with a discovered check from e1. Black must answer the check and cannot recapture, so White wins a clean rook. Never park your king on a screened line."
    },
    {
     "kind": "judge",
@@ -844,7 +844,7 @@
     "fen": "4k3/8/6N1/8/8/8/8/4R1K1 b - - 0 1",
     "lastMoveUci": "e5g6",
     "verdict": "correct",
-    "explain": "Textbook discovered check. The knight grabbed the rook and vacated the e-file, so the rook checks the king. Black must move the king and cannot take the knight — a rook won for free."
+    "explain": "Textbook discovered check. The knight grabbed the rook and vacated the e-file, so the rook checks the king. Black must move the king and cannot take the knight. A rook won for free."
    }
   ]
  },

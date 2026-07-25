@@ -25,7 +25,7 @@
 // §3, §4, §6 and §8 (local games, the Glicko-2 chain, the review LRU, debrief
 // enrichment) describe behavior the port did not change and are unchanged.
 //
-// global fetch is MOCKED and every call through it is recorded — the mock is
+// global fetch is MOCKED and every call through it is recorded. The mock is
 // itself an assertion, since a `/api/` URL appearing in the log means the app
 // has grown a server dependency again.
 // Exit 1 on any failure.
@@ -41,7 +41,7 @@ const dir = mkdtempSync(path.join(tmpdir(), 'webclient-'))
 
 // ONE bundle for webApi + reviewStore + the debrief enricher so they share the
 // localData module state the assertions read back. The glicko oracle is a
-// separate pure bundle — no shared state, used only to compute expected values.
+// separate pure bundle: no shared state, used only to compute expected values.
 const entry = path.join(dir, 'entry.ts')
 writeFileSync(
   entry,
@@ -58,7 +58,7 @@ writeFileSync(glickoEntry, `export { glicko2Update } from '${repoRoot}/src/main/
 // The puzzle reader's two sql.js-httpvfs `?url` imports are BARE package
 // specifiers; left external they resolve against the bundle's temp dir, which
 // has no node_modules, and the import throws before the first assertion. Stub
-// them — no SQLite worker is ever spawned here (see §2).
+// them: no SQLite worker is ever spawned here (see §2).
 const urlStub = path.join(dir, 'url-stub.mjs')
 writeFileSync(urlStub, `export default ''\n`)
 
@@ -318,8 +318,8 @@ check('none of the Rush/daily state touched the network', calls.length === rushF
 
 // ---- 8. school debrief enrichment (audit W-01) --------------------------------------
 // There is no server engine, so the move evals Viktor's debrief needs must be
-// computed CLIENT-side. enrichDebriefMoves takes an injectable analyze fn —
-// the canned one below stands in for the WASM engine.
+// computed CLIENT-side. enrichDebriefMoves takes an injectable analyze fn.
+// The canned one below stands in for the WASM engine.
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 const NO_EVAL = { cp: null, mate: null }
@@ -402,7 +402,7 @@ check('a dead engine rejects the debrief instead of faking evals', deadRejected)
 // webApi.school.debrief is inert on web: viktor.ts builds a node StockfishPool
 // at module scope and cannot enter the browser graph, so the enricher above is
 // built but unwired. What the suite pins is that the call says so and writes
-// nothing — the old assertion was the same shape against the engine-copy
+// nothing: the old assertion was the same shape against the engine-copy
 // rejection the bridge path used to produce.
 fetchCount = calls.length
 let debriefErr = null

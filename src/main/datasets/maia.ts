@@ -5,13 +5,13 @@ import { MAIA_LEVELS, type MaiaLevel } from '../../shared/types'
 import { datasetsDir } from './paths'
 import { downloadVerified, type DownloadSpec } from './datasets.service'
 
-// Dataset group 'maia' — everything the "Human" chess bot style needs:
+// Dataset group 'maia': everything the "Human" chess bot style needs:
 //   - lc0 (the Leela Chess Zero engine binary), per-platform, spawned like
 //     Stockfish (UCI over stdio, plus a --weights=<file> launch argument);
 //   - the CSSLab maia-<elo> weight files (lc0 loads .pb.gz directly, no
 //     decompression needed on our side), platform-independent, ~1.3 MB each.
 //
-// Layout on disk (per-user, writable — same root as the other datasets):
+// Layout on disk (per-user, writable; same root as the other datasets):
 //   <userData>/datasets/maia/lc0[.exe]        (+ dnnl.dll on Windows)
 //   <userData>/datasets/maia/weights/maia-<level>.pb.gz
 //
@@ -19,7 +19,7 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 // (public, stable, verified below by sha256+size on 2026-07-06). The lc0 binary
 // follows the Stockfish pattern instead: per-platform artifacts hosted on the
 // project's own datasets release, because upstream ships no raw single binaries
-// (win-x64 is a zip of lc0.exe+dnnl.dll; mac has no official build at all — we
+// (win-x64 is a zip of lc0.exe+dnnl.dll; mac has no official build at all. We
 // extract the Homebrew bottle, lc0 0.32.1, eigen CPU backend, fine at nodes=1).
 
 const RELEASE_BASE =
@@ -86,7 +86,7 @@ interface Lc0File {
 // lc0 0.32.1, keyed by `${process.platform}-${process.arch}` like ENGINE_ARTIFACTS.
 // Both platforms uploaded + verified 2026-07-06 (see docs/DATASETS.md):
 //   mac-arm64: the raw Mach-O from the Homebrew bottle's libexec/lc0 (0.32.1,
-//     Metal/Accelerate — links only system libraries, so one file suffices).
+//     Metal/Accelerate. Links only system libraries, so one file suffices).
 //   win-x64: lc0.exe + dnnl.dll extracted from the official release zip
 //     https://github.com/LeelaChessZero/lc0/releases/download/v0.32.1/lc0-v0.32.1-windows-cpu-dnnl.zip
 //     (two raw files, keeping the one-file-per-item download pattern; no
@@ -211,8 +211,8 @@ function missingItems(): Array<DownloadSpec & { dest: string; fallbackUrl?: stri
     if (!maiaWeightInstalled(w.level)) {
       items.push({
         label: `Maia ${w.level} weights`,
-        // Mirror-first (our datasets release), CSSLab upstream as fallback —
-        // identical bytes, one sha256 verifies either source.
+        // Mirror-first (our datasets release), CSSLab upstream as fallback.
+        // Identical bytes, one sha256 verifies either source.
         url: `${RELEASE_BASE}/${w.asset}`,
         fallbackUrl: `${MAIA_RELEASE}/${w.asset}`,
         bytes: w.bytes,

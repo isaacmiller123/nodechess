@@ -1,13 +1,13 @@
 // Headless test for the internet-multiplayer session/authority logic
-// (src/renderer/src/features/play/online/mpSession.ts — the PURE module, v3).
+// (src/renderer/src/features/play/online/mpSession.ts, the PURE module, v3).
 //
 //   node scripts/test-mp.mjs
 //
 // Multiplayer is WebRTC-in-the-renderer via trystero, and MpNetSession is
 // transport-agnostic: it drives an INJECTED MpTransport. So we esbuild-bundle
 // mpSession.ts to a scratch ESM file (which strips the TS types and proves the
-// module is electron/node/trystero-free), then run BOTH ends — a HOST session and
-// a GUEST session — inside ONE node process, joined by an in-memory transport
+// module is electron/node/trystero-free), then run BOTH ends. A HOST session and
+// a GUEST session: inside ONE node process, joined by an in-memory transport
 // pair. No network, no sockets, deterministic.
 //
 // The transport pair mirrors trystero semantics: string payloads, a `toPeer`
@@ -15,7 +15,7 @@
 // AFTER the joining session's own `await makeTransport()` continuation), and
 // onPeerJoin / onPeerLeave firing on the OTHER transports when a member is
 // created / closed. The v3 mock adds four capabilities the audit needs:
-//   - peer RE-JOIN with the SAME peerId (trystero re-pairs a returning peer —
+//   - peer RE-JOIN with the SAME peerId (trystero re-pairs a returning peer;
 //     drives the ghost-rebond/resume path, T2/D9),
 //   - an injected bare third peer (host-busy / game-in-progress rejection),
 //   - send-error injection on demand (T6 → suspend path),
@@ -31,7 +31,7 @@
 // We assert on events emitted by BOTH real MpNetSession objects, so the v3 wire
 // protocol is exercised for real in both directions. Every §2 rule is covered.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green; any failure prints
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green; any failure prints
 // and exits 1. The process must exit cleanly (no leaked timers/handles).
 
 import { build } from 'esbuild'
@@ -83,7 +83,7 @@ async function assertNoEvent(events, pred, ms, label) {
 }
 
 // ============================================================================
-// In-memory transport pair — a faithful stand-in for the trystero room.
+// In-memory transport pair: a faithful stand-in for the trystero room.
 // ============================================================================
 //
 // A single "room" object holds every transport that has joined it (keyed by a
@@ -289,7 +289,7 @@ async function main() {
   // (Production defaults live in mpSession.ts; this is the documented test hook.)
   // The abort watchdog fires on REAL elapsed time (not the injected monotonic
   // clock), so its default must be comfortably longer than any single suite's
-  // real-world move latency — otherwise it would spuriously abort mid-play. The
+  // real-world move latency. Otherwise it would spuriously abort mid-play. The
   // two dedicated abort-window suites shrink it locally to a few ms.
   const TIMING = {
     DISCOVERY_TIMEOUT_MS: 120,
@@ -449,7 +449,7 @@ async function main() {
     const clock = makeClock()
     const { host, guest, he, ge } = await connectPair(CFG(INITIAL, INC), { clock })
 
-    // Before any move both clocks IDLE at INITIAL. Idle 5s of monotonic time —
+    // Before any move both clocks IDLE at INITIAL. Idle 5s of monotonic time:
     // NO debit should accrue to white (turnStartedAt unset).
     clock.advance(5_000)
     // White's first move (host is white). Debits 0, NO increment.
@@ -460,7 +460,7 @@ async function main() {
     ok(gm1.clockMs.white <= INITIAL, 'white move1 credits NO increment (no gain over INITIAL)')
     eq(gm1.clockMs.black, INITIAL, 'black clock still full after white move1')
 
-    // Now black's clock is running. Black thinks 800ms then replies — normal
+    // Now black's clock is running. Black thinks 800ms then replies. Normal
     // Fischer debit + increment on black.
     clock.advance(800)
     const r2 = await guest.sendMove('e7e5')
@@ -481,7 +481,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 4. Abort watchdogs — BOTH windows.
+  // 4. Abort watchdogs. BOTH windows.
   //    (a) no white move within grace → abort no-first-move (both sides).
   //    (b) white moves, no black reply within grace → abort (both sides).
   //    (c) manual abort only while plyCount < 2; refused at ply ≥ 2.
@@ -538,7 +538,7 @@ async function main() {
     // The flag watchdog, on fire, recomputes remaining from the monotonic base
     // and re-arms if remaining > 0 (D3: never trust timer punctuality). We prove
     // it by FREEZING the injected monotonic clock so, from the session's view,
-    // the on-move side never actually loses time — every real-timer fire sees a
+    // the on-move side never actually loses time. Every real-timer fire sees a
     // positive residual and must re-arm rather than flag. Only once we ADVANCE
     // the monotonic clock past the budget does a subsequent fire flag.
     //
@@ -555,8 +555,8 @@ async function main() {
     await guest.sendMove('e7e5') // black replies → ply 2, abort watchdog cleared, white running
     await waitEvent(he, (e) => e.type === 'move' && e.uci === 'e7e5', { label: 'e7e5 (rearm)' })
     // White (host) is now on move with ~400ms and a FROZEN clock. Over real time,
-    // the flag timer keeps firing early (residual 400 > 0) and re-arming — never
-    // flagging — because the monotonic base doesn't move.
+    // the flag timer keeps firing early (residual 400 > 0) and re-arming. Never
+    // flagging: because the monotonic base doesn't move.
     await assertNoEvent(he, (e) => e.type === 'flag', 300, 'flag while injected clock frozen (watchdog re-arms)')
     // Advance the monotonic clock past white's budget; the next re-armed fire
     // (within one flag-cycle) now sees remaining < 0 and flags white.
@@ -572,7 +572,7 @@ async function main() {
   console.log('\n· flag emits flag (not resign), loser zeroed, both sides …')
   {
     // Get PAST the first-move phase (both sides move → ply 2 → the abort watchdog
-    // is cleared) so the flag watchdog — not the abort watchdog — is what fires.
+    // is cleared) so the flag watchdog (not the abort watchdog) is what fires.
     // Then let white (on move) run out: it flags, sending+emitting `flag` (never
     // `resign`) with white zeroed, on BOTH sides.
     const clock = makeClock()
@@ -677,7 +677,7 @@ async function main() {
   {
     // Now with an inflated RTT: the host forgives min(rtt/2, 250ms) of a guest
     // move's debit. We set the host's rtt estimate DIRECTLY by feeding it a `pong`
-    // whose echoed timestamp is backdated — onPong computes rtt = now − ts — so
+    // whose echoed timestamp is backdated (onPong computes rtt = now − ts) so
     // no clock advance (which would itself burn the on-move clock) is needed.
     const INITIAL = 60_000
     const clock = makeClock()
@@ -685,7 +685,7 @@ async function main() {
     await host.sendMove('e2e4')
     await waitEvent(ge, (e) => e.type === 'move' && e.uci === 'e2e4', { label: 'e2e4 (lag)' })
     // Pin the host's RTT via the dedicated test seam. (RTT is measured with REAL
-    // monotonic time since the Windows-CI fix — injected-clock tricks and crafted
+    // monotonic time since the Windows-CI fix: injected-clock tricks and crafted
     // pongs can no longer influence it, and real heartbeat pongs would EMA-decay
     // any transient value; the pin freezes it at exactly 800.)
     host.__setRttForTests(800)
@@ -805,7 +805,7 @@ async function main() {
     eq((await host.declineDraw()).ok, true, 'host.declineDraw() ok')
     await waitEvent(he, (e) => e.type === 'drawDecline', { label: 'host local drawDecline' })
     await waitEvent(ge, (e) => e.type === 'drawDecline', { label: 'guest sees drawDecline' })
-    // Guest re-offers immediately — host must DROP it (cooldown), no drawOffer.
+    // Guest re-offers immediately: host must DROP it (cooldown), no drawOffer.
     await guest.offerDraw()
     await assertNoEvent(he, (e) => e.type === 'drawOffer', 100, 'guest re-offer within cooldown (dropped by host gate)')
     host.leave(); guest.leave()
@@ -817,7 +817,7 @@ async function main() {
   console.log('\n· resign surfaces on both sides …')
   {
     const { host, guest, he, ge } = await connectPair(CFG(60_000, 0))
-    // Make it a real game (≥ moves) — resign is legal any time in-game.
+    // Make it a real game (≥ moves). Resign is legal any time in-game.
     await host.sendMove('e2e4'); await sleep(15)
     eq((await guest.resign()).ok, true, 'guest.resign() ok')
     const gr = await waitEvent(ge, (e) => e.type === 'resign', { label: 'guest local resign' })
@@ -981,7 +981,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 15. Suspend / resume (T2/T3/T4/L6/D9/MP-06) — the big one.
+  // 15. Suspend / resume (T2/T3/T4/L6/D9/MP-06). The big one.
   //   peer-leave → suspend (clock paused; NO debit over the pause) → same-peer
   //   rebond → resync (moves + clocks match) → new-peer-during-suspend refused →
   //   grace expiry peer-left + claimVictory gameOver.
@@ -1107,7 +1107,7 @@ async function main() {
     const factory = (code, listeners) => { const { transport, self } = room.join(listeners); created.push(self); return transport }
     const host = track(new MpNetSession(factory))
     const he = tap(host)
-    await host.host(CFG(60_000, 0)) // Unlimited? no — 60s = Rapid grace 300ms here
+    await host.host(CFG(60_000, 0)) // Unlimited? no: 60s = Rapid grace 300ms here
     const guest = room.join({
       onMessage: (text, from) => { const m = wire.parseWireMsg(text); if (m && m.t === 'hello') guest.transport.send(JSON.stringify(wire.makeHello('guest', 'G')), from) },
       onPeerJoin: () => {}, onPeerLeave: () => {}
@@ -1182,7 +1182,7 @@ async function main() {
     const host = track(new MpNetSession(factory))
     const he = tap(host)
     await host.host(CFG(60_000, 0))
-    // A guest that handshakes but then goes SILENT (ignores pings — no pong).
+    // A guest that handshakes but then goes SILENT (ignores pings, no pong).
     const guest = room.join({
       onMessage: (text, from) => {
         const m = wire.parseWireMsg(text)
@@ -1245,7 +1245,7 @@ async function main() {
       return { host: h, guest: g, he: hev, ge: gev }
     })()
     // White plays two moves in quick succession while delivery is HELD, then we
-    // flush REVERSED — the guest must drop the out-of-order first arrival and only
+    // flush REVERSED: the guest must drop the out-of-order first arrival and only
     // accept plies in order, so it never diverges.
     await host.sendMove('e2e4')
     await waitEvent(ge, (e) => e.type === 'move' && e.uci === 'e2e4', { label: 'e2e4 (delivery)' })
@@ -1379,7 +1379,7 @@ async function main() {
   //     THE ply-0 deadlock regression: the session used to hardcode
   //     toMove='white' at beginGame and ply%2 white/black parity, so every
   //     black-first online game deadlocked at ply 0 (the kernel said black to
-  //     move, the session said white — neither side could send). The first
+  //     move, the session said white. Neither side could send). The first
   //     mover now TRAVELS IN THE CONFIG (config.game.firstMover); assert:
   //       (a) the ply-0 BLACK move relays + emits on both sides, with the
   //           guest as black AND the host as black;
@@ -1397,7 +1397,7 @@ async function main() {
   console.log('\n· black-first (a): guest-as-black opens at ply 0 …')
   {
     const { host, guest, he, ge } = await connectPair(GOMOKU(60_000))
-    // Host is white, guest is black — the FIRST MOVER. Its ply-0 move must
+    // Host is white, guest is black, the FIRST MOVER. Its ply-0 move must
     // commit + relay (this exact path used to hard-deadlock).
     eq((await host.sendMove('a1')).ok, false, 'black-first: white (host) cannot open at ply 0')
     eq((await guest.sendMove('h8')).ok, true, 'black-first: guest-as-black opens at ply 0')
@@ -1418,7 +1418,7 @@ async function main() {
     const INITIAL = 60_000, INC = 1_000
     const clock = makeClock()
     const { host, guest, he, ge } = await connectPair(GOMOKU(INITIAL, INC, 'black'), { clock })
-    // Host is black — the first mover. Clocks IDLE before the opening move:
+    // Host is black, the first mover. Clocks IDLE before the opening move:
     // 5s of idle monotonic time must debit NOBODY.
     clock.advance(5_000)
     eq((await guest.sendMove('a1')).ok, false, 'black-first: white (guest) cannot open at ply 0')
@@ -1433,7 +1433,7 @@ async function main() {
     const whiteSpent = INITIAL + INC - hm2.clockMs.white
     approx(whiteSpent, 800, 30, "WHITE's clock started after black's move 1 (debit ≈ think)")
     eq(hm2.clockMs.black, INITIAL, "black clock unchanged during white's move 1")
-    // Black's move 2 debits normally — the grace was move 1 only.
+    // Black's move 2 debits normally. The grace was move 1 only.
     clock.advance(1_200)
     eq((await host.sendMove('f8')).ok, true, 'black moves at ply 2')
     const gm3 = await waitEvent(ge, (e) => e.type === 'move' && e.uci === 'f8', { label: 'guest sees f8' })
@@ -1452,7 +1452,7 @@ async function main() {
     eq((await guest.sendMove('h8')).ok, false, 'move after black-first abort refused')
     host.leave(); guest.leave()
   })
-  console.log("\n· black-first (c'): abort window B — black opened, WHITE never replies …")
+  console.log("\n· black-first (c'): abort window B. Black opened, WHITE never replies …")
   await withAbortWindow(150, async () => {
     const { host, guest, he, ge } = await connectPair(GOMOKU(60_000))
     await guest.sendMove('h8') // black opens in time; re-arms the abort for white
@@ -1472,7 +1472,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 25. BYO-YOMI (wire v5) — Japanese overtime for go. The host's clock math:
+  // 25. BYO-YOMI (wire v5). Japanese overtime for go. The host's clock math:
   //     main time debits as usual; the think that exhausts main SPILLS into
   //     period 1; a move within the current period RESETS it to full (never
   //     banked); a lapsed period is CONSUMED; the LAST period lapsing flags.
@@ -1492,12 +1492,12 @@ async function main() {
     const { host, guest, he, ge, gStart } = await connectPair(GO_BYO(1_000, 3, 1_000, 'black'), { clock })
     eq(gStart.config.tc.byoyomi.periods, 3, 'start config carries byoyomi.periods (schema v5)')
     eq(gStart.config.tc.byoyomi.periodMs, 1_000, 'start config carries byoyomi.periodMs')
-    // Black (host) opens — first-move grace, no debit, byo snapshot rides along.
+    // Black (host) opens. First-move grace, no debit, byo snapshot rides along.
     eq((await host.sendMove('d4')).ok, true, 'byo: black opens at ply 0')
     const gm1 = await waitEvent(ge, (e) => e.type === 'move' && e.uci === 'd4', { label: 'guest sees d4' })
     ok(gm1.byo && gm1.byo.black.inByo === false && gm1.byo.black.periodsLeft === 3,
       'move events carry the byo snapshot (black on main time, 3 periods ahead)')
-    // White (guest) replies within main time: plain main debit (approx — the
+    // White (guest) replies within main time: plain main debit (approx; the
     // host forgives rtt/2 of a guest move), no byo change.
     clock.advance(500)
     await guest.sendMove('q16')
@@ -1587,7 +1587,7 @@ async function main() {
     await waitEvent(he, (e) => e.type === 'start', { label: 'start (byo resync suite)' })
     await host.sendMove('e2e4') // white move 1 free → black clock runs
     await sleep(20)
-    // Black replies instantly (raw, ply 1) — black main untouched at 1000.
+    // Black replies instantly (raw, ply 1). Black main untouched at 1000.
     guestMember.transport.send(JSON.stringify({ t: 'move', gameId: 1, ply: 1, uci: 'e7e5', clockMs: { white: 1000, black: 1000 } }))
     await waitEvent(he, (e) => e.type === 'move' && e.uci === 'e7e5', { label: 'host sees e7e5 (byo resync)' })
     // WHITE burns into byo-yomi: think 1.8s → main 1000 lapses, 800 into period
@@ -1632,7 +1632,7 @@ async function main() {
   // ---- teardown -----------------------------------------------------------
   for (const s of live) { try { s.leave() } catch {} }
   rmSync(outdir, { recursive: true, force: true })
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 }
 
 main().then(

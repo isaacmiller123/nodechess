@@ -1,24 +1,24 @@
 // Accounts + sessions (build contract, shared decision 3).
 //
-// Storage: DATA_DIR/server.sqlite —
+// Storage: DATA_DIR/server.sqlite,
 //   users(id, username UNIQUE COLLATE NOCASE, email NULL, pass_hash, created_at)
 //   sessions(token PK = sha256(cookie value), user_id, created_at, expires_at)
-// Passwords: argon2id (hash-wasm, WASM — no native build), encoded format so the
+// Passwords: argon2id (hash-wasm, WASM; no native build), encoded format so the
 // salt+params travel with the hash. Session cookie: sid, httpOnly, SameSite=Lax,
 // Path=/, 30-day ROLLING expiry (every authenticated hit re-stamps the DB row
 // and re-issues the cookie), Secure when the request is https OR the server
 // runs in production (COOKIE_SECURE overrides both ways).
 //
 // Sessions at rest are hashed: the DB stores sha256(token), the raw 256-bit
-// token lives only in the cookie, and lookups hash the presented value — a
+// token lives only in the cookie, and lookups hash the presented value. A
 // server.sqlite read can no longer replay anyone's live session.
 //
 // Abuse bounds: login/signup carry @fastify/rate-limit per-IP configs
 // (registered in server/index.ts), all argon2 work runs through a small
-// concurrency gate (each hash costs ~19 MiB + a CPU burst — an unbounded burst
+// concurrency gate (each hash costs ~19 MiB + a CPU burst; an unbounded burst
 // is a memory-exhaustion vector), signups stop at MAX_ACCOUNTS, and login burns
 // the same argon2 cost whether or not the username exists (timing oracle).
-// Usernames remain enumerable through signup 409s — accepted at friends scale,
+// Usernames remain enumerable through signup 409s. Accepted at friends scale,
 // documented in docs/WEB-DEPLOY.md.
 //
 // Endpoints:
@@ -63,7 +63,7 @@ class Semaphore {
   async run<T>(fn: () => Promise<T>): Promise<T> {
     if (this.active >= this.limit) {
       await new Promise<void>((resolve) => this.queue.push(resolve))
-      // Slot inherited from the finisher — `active` already counts it.
+      // Slot inherited from the finisher: `active` already counts it.
     } else {
       this.active++
     }
@@ -79,7 +79,7 @@ class Semaphore {
 
 const argonGate = new Semaphore(ARGON_CONCURRENCY)
 
-/** sha256 hex of a session token — the only form that ever touches the DB. */
+/** sha256 hex of a session token. The only form that ever touches the DB. */
 function hashToken(token: string): string {
   return crypto.createHash('sha256').update(token).digest('hex')
 }
@@ -137,11 +137,11 @@ export class AuthStore {
   }
 
   /** user_version 1: sessions.token becomes sha256(cookie value). v0 rows hold
-   *  the raw token — the cookie value IS the preimage, so hashing the stored
+   *  the raw token: the cookie value IS the preimage, so hashing the stored
    *  value in place converts every live session without logging anyone out.
    *  Wrapped in a transaction: the token rewrite + the version bump commit
    *  together, so a crash mid-migration rolls back (user_version stays 0) and
-   *  the next boot re-runs cleanly — no half-migrated DB that would double-hash
+   *  the next boot re-runs cleanly: no half-migrated DB that would double-hash
    *  already-converted rows on retry. */
   private migrate(): void {
     const row = this.db.prepare('PRAGMA user_version').get() as
@@ -166,7 +166,7 @@ export class AuthStore {
     }
   }
 
-  /** Total accounts — signup refuses past MAX_ACCOUNTS. */
+  /** Total accounts. Signup refuses past MAX_ACCOUNTS. */
   countUsers(): number {
     const row = this.db.prepare('SELECT COUNT(*) AS n FROM users').get() as { n: number }
     return Number(row.n)
@@ -193,7 +193,7 @@ export class AuthStore {
   /** Verify credentials; null on unknown user OR wrong password. The response
    *  body is identical either way, and an unknown username still burns a full
    *  argon2 verify (against DECOY_HASH) so response TIMING doesn't distinguish
-   *  the two. Signup's 409 still reveals which usernames exist — an accepted
+   *  the two. Signup's 409 still reveals which usernames exist. An accepted
    *  friends-scale trade-off (docs/WEB-DEPLOY.md). */
   async verifyLogin(username: string, password: string): Promise<AuthUser | null> {
     const row = this.db
@@ -246,7 +246,7 @@ export class AuthStore {
 /** Secure unless plainly told otherwise: an https request always gets it, and
  *  production defaults to it even when the proxy forgets X-Forwarded-Proto /
  *  TRUST_PROXY (the cookie would otherwise ship replayable over any http hit).
- *  COOKIE_SECURE=1 forces it on, =0 turns it off — the escape hatch for
+ *  COOKIE_SECURE=1 forces it on, =0 turns it off. The escape hatch for
  *  plain-http LAN/localhost hosting (Safari drops Secure cookies there). */
 function cookieSecure(req: FastifyRequest): boolean {
   if (process.env.COOKIE_SECURE === '1') return true
@@ -267,7 +267,7 @@ function setSidCookie(req: FastifyRequest, reply: FastifyReply, token: string): 
 /**
  * The session gate every protected route uses: resolve the sid cookie, roll the
  * expiry, re-issue the cookie (so the browser's 30-day window rolls too).
- * Returns null when there is no valid session — the caller answers 401.
+ * Returns null when there is no valid session. The caller answers 401.
  */
 export function requireUser(
   auth: AuthStore,
@@ -304,7 +304,7 @@ function envInt(name: string, dflt: number): number {
 }
 
 export function registerAuthRoutes(app: FastifyInstance, auth: AuthStore): void {
-  // Per-IP limits (@fastify/rate-limit, registered global:false in index.ts —
+  // Per-IP limits (@fastify/rate-limit, registered global:false in index.ts;
   // only these two routes carry a config). Signup is the expensive+scarce one:
   // an argon2 hash AND a per-user DB dir. Knobs documented in WEB-DEPLOY.md.
   const loginLimit = {

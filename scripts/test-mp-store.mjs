@@ -1,5 +1,5 @@
 // Headless test for the online store (src/renderer/src/features/play/online/
-// onlineStore.ts — the app-lifetime home of a live internet game, the B1 fix).
+// onlineStore.ts: the app-lifetime home of a live internet game, the B1 fix).
 //
 //   node scripts/test-mp-store.mjs
 //
@@ -7,7 +7,7 @@
 // unchanged in bare node. Its only runtime coupling to the session is
 //   import { mp } from './mpClient'
 // which pulls the real trystero-backed singleton. For this test we esbuild-bundle
-// onlineStore.ts with that ONE import redirected — via an esbuild resolve plugin —
+// onlineStore.ts with that ONE import redirected (via an esbuild resolve plugin)
 // to a MOCK mpClient we write here. The mock's `mp` records every action call and
 // lets the test PUSH any §8 MpEvent into the store's event pump, so we can drive
 // every event→state transition deterministically and assert the resulting
@@ -15,12 +15,12 @@
 //
 // The store's other runtime imports (chess helpers via chessops, treeToPgn) bundle
 // straight through; the type-only imports (SoundName, TreeNode, GameViewBanner) are
-// erased by esbuild. window.api is absent in bare node — the store guards its
+// erased by esbuild. window.api is absent in bare node. The store guards its
 // save() call, so persistence is a no-op we OBSERVE via the mock instead: we stub
 // globalThis.window.api.games.save to record saved games and assert save-once /
 // no-save-on-abort semantics.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green; any failure prints
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green; any failure prints
 // and exits 1. Clean exit (no leaked handles).
 
 import { build } from 'esbuild'
@@ -49,7 +49,7 @@ const settle = () => sleep(0)
 // ---- the mock mpClient source (written to disk, aliased into the bundle) -----
 //
 // It mirrors the mp API surface the store calls: onEvent(cb) (the store subscribes
-// ONCE at construction — we capture that cb), and the action methods. Each action
+// ONCE at construction: we capture that cb), and the action methods. Each action
 // records its call and returns a result the test can control (default ok:true).
 // A global __MP_MOCK__ handle lets the test push events and read/tune calls.
 const MOCK_MPCLIENT = `
@@ -102,7 +102,7 @@ globalThis.__MP_MOCK__ = {
 // with mpClient redirected to a REAL MpNetSession driven by an in-memory
 // transport room (mirroring scripts/test-mp.mjs). The bundle is then COPIED to
 // two files so `import` yields two INDEPENDENT store+session module instances
-// (ESM caches per-URL) — a true host + guest pair in one process.
+// (ESM caches per-URL): a true host + guest pair in one process.
 const REAL_MPCLIENT = `
 import { MpNetSession } from '${resolve(ROOT, 'src/renderer/src/features/play/online/mpSession.ts').replace(/\\/g, '/')}'
 // Each module instance takes the next transport factory off the queue the test
@@ -170,7 +170,7 @@ async function bundle(entry, outfile, extraPlugins = []) {
     // The store consumes the game-kernel registry (wire v4), whose entries lazy-
     // import board renderers (.tsx/.css) and whose ffish specs resolve WASM via a
     // Vite '?url' import: platform node + automatic JSX + empty CSS + external
-    // '?url' make all of that bundle cleanly — none of it EXECUTES here (dynamic
+    // '?url' make all of that bundle cleanly. None of it EXECUTES here (dynamic
     // imports stay lazy; preload is never called for the kinds under test).
     platform: 'node',
     jsx: 'automatic',
@@ -247,7 +247,7 @@ async function main() {
     api: { games: { save: async (g) => { saved.push(g); return { ok: true } } } }
   }
   // The window stub makes emscripten (ffish, section 17) think it is in a
-  // browser and dereference document.currentScript — give it a null one. The
+  // browser and dereference document.currentScript: give it a null one. The
   // wasm itself arrives via wasmBinary, so no other document/fetch use runs.
   globalThis.document ??= { currentScript: null }
   // A performance.now the store uses for clock timestamps.
@@ -363,7 +363,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 5. Move BLOCKED while peerAway (board frozen) — and wrong-turn / dead states.
+  // 5. Move BLOCKED while peerAway (board frozen), and wrong-turn / dead states.
   // ==========================================================================
   console.log('\n· move blocked while peerAway / not my turn / over …')
   {
@@ -444,7 +444,7 @@ async function main() {
     // Abort at ply 0 (no moves): neutral banner, no result recorded, NOT saved.
     emit({ type: 'abort', gameId: 1, reason: 'no-first-move' })
     ok(S().banner !== null, 'abort raises a (neutral) banner')
-    eq(S().banner.title, 'Game aborted — no first move', 'abort banner titled for no-first-move')
+    eq(S().banner.title, 'Game aborted: no first move', 'abort banner titled for no-first-move')
     eq(saved.length, 0, 'aborted game is NOT saved')
   }
   console.log('\n· gameOver (board terminal) banner + save …')
@@ -498,13 +498,13 @@ async function main() {
   {
     // The store adjudicates a flag against state.fen: if the NON-flagged (winning)
     // side has insufficient mating material, the timeout is a DRAW, not a win
-    // (lichess rule). We drive the store's board — by replaying a real, fully-legal
-    // 52-ply game (verified: no intermediate terminal position) — to a position
+    // (lichess rule). We drive the store's board. By replaying a real, fully-legal
+    // 52-ply game (verified: no intermediate terminal position). To a position
     // where WHITE (us) is reduced to a LONE KING while BLACK still holds heavy
     // material (K + Q + R + B + Ns). Final FEN:
     //   2b1k3/1pppn2r/2n5/r4p2/2p5/4q3/2p3p1/6K1 w - - 0 27
     // Now BLACK flags → the winner would be WHITE, but white can never mate, so the
-    // store must record a DRAW "time out — insufficient material".
+    // store must record a DRAW "time out: insufficient material".
     const LINE = ['h2h4','a7a5','d2d4','a8a7','e2e3','a5a4','a2a3','g7g6','c2c4','e7e6','g2g4','f8a3','b2b3','a3c1','h4h5','g6h5','g1e2','a4b3','d4d5','c1e3','d1c2','h5g4','e2g1','e6d5','a1a5','b3c2','g1e2','d5c4','a5h5','e3f2','e1f2','b8c6','h1h3','g4h3','h5h7','h8h7','f2g1','d8h4','f1g2','h3g2','b1d2','g8e7','d2b1','f7f5','e2g3','h4g3','b1d2','g3c3','d2f1','a7a5','f1e3','c3e3']
     reset()
     emit({ type: 'start', gameId: 1, yourColor: 'white', config: CFG(15_000, 0) })
@@ -519,7 +519,7 @@ async function main() {
     emit({ type: 'flag', gameId: 1, by: 'black', clockMs: { white: 15_000, black: 0 } })
     ok(S().banner !== null, 'flag raises a banner in the insufficient-material case')
     eq(S().banner.result, '1/2-1/2', 'flag with an insufficient-material winner → DRAW')
-    eq(S().banner.reason, 'time out — insufficient material', 'draw reason names insufficient material')
+    eq(S().banner.reason, 'time out: insufficient material', 'draw reason names insufficient material')
     eq(saved.length, 1, 'insufficient-material draw is saved')
   }
 
@@ -608,7 +608,7 @@ async function main() {
   console.log('\n· board-terminal via playMove calls mp.gameEnded …')
   {
     reset()
-    // Fool's mate: 1.f3 e5 2.g4 Qh4# — we are white and DELIVER the losing position
+    // Fool's mate: 1.f3 e5 2.g4 Qh4#. We are white and DELIVER the losing position
     // to ourselves by playing into it; the mate is detected after black's Qh4#.
     // Simpler: drive white into a self-checkmate is impossible in 1 move; instead
     // verify gameEnded fires on a REMOTE move that checkmates us. Play the fool's
@@ -617,7 +617,7 @@ async function main() {
     await onlineStore.playMove('f2f3'); await settle()
     emit({ type: 'move', gameId: 1, ply: 1, uci: 'e7e5', clockMs: { white: 60_000, black: 60_000 } })
     await onlineStore.playMove('g2g4'); await settle()
-    // Black plays Qh4# — mate on white. The store detects terminal → mp.gameEnded.
+    // Black plays Qh4#, mate on white. The store detects terminal → mp.gameEnded.
     emit({ type: 'move', gameId: 1, ply: 3, uci: 'd8h4', clockMs: { white: 60_000, black: 60_000 } })
     ok(S().banner !== null, 'checkmate raises a banner')
     eq(S().banner.result, '0-1', 'fool\'s mate: black wins (0-1)')
@@ -689,7 +689,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 16. Wire v4 — a full NON-CHESS game (gomoku) through the kernel adapter:
+  // 16. Wire v4. A full NON-CHESS game (gomoku) through the kernel adapter:
   //     host with a game kind, kernel state exposure, optimistic play, the
   //     HOST-side validator rejecting an illegal (occupied-cell) guest move,
   //     five-in-a-row terminal → gameEnded + generic (non-PGN) archive.
@@ -703,7 +703,7 @@ async function main() {
     eq(S().phase, 'hosting', 'gomoku host() reaches hosting (kernel adapter resolved)')
     eq(MOCK.lastCall('host').args[0].game.kind, 'gomoku', 'host() passes game.kind to the session untouched')
 
-    // Start: we are BLACK — the first mover in gomoku (spec players order).
+    // Start: we are BLACK. The first mover in gomoku (spec players order).
     emit({ type: 'start', gameId: 1, yourColor: 'black', config: GOMOKU_CFG(), opponentName: 'Wei' })
     eq(S().phase, 'game', 'gomoku start → phase game')
     eq(S().gameKind, 'gomoku', 'store exposes gameKind for the UI board switch')
@@ -772,7 +772,7 @@ async function main() {
   }
 
   // ==========================================================================
-  // 17. Wire v4 — xiangqi (ffish WASM adapter): the RANK-10 regression path.
+  // 17. Wire v4. Xiangqi (ffish WASM adapter): the RANK-10 regression path.
   //     v1.1.2's bug class was two-digit-rank squares breaking at a boundary;
   //     this section proves the ONLINE boundary is clean end to end: async
   //     adapter preload during start, a remote 5-char move INTO rank 10, our
@@ -799,13 +799,13 @@ async function main() {
     eq(S().gameKind, 'xiangqi', 'store exposes gameKind xiangqi')
     eq(S().fen.split(' ')[0].split('/').length, 10, 'positionKey is a 10-rank xiangqi FEN')
 
-    // Red (remote): cannon takes the b10 horse over the b8 screen — a 5-char
+    // Red (remote): cannon takes the b10 horse over the b8 screen. A 5-char
     // wire move whose DESTINATION is rank 10.
     emit({ type: 'move', gameId: 1, ply: 0, uci: 'b3b10', clockMs: { white: 59_000, black: 60_000 } })
     eq(S().plyCount, 1, 'remote b3b10 applied through ffish')
     eq(S().moves[0], 'b3b10', 'rank-10 wire move recorded verbatim')
 
-    // Us (black): chariot a10 takes the cannon on b10 — SIX chars, both
+    // Us (black): chariot a10 takes the cannon on b10. SIX chars, both
     // squares on rank 10 (the exact spelling the old cast bug destroyed).
     await onlineStore.playMove('a10b10'); await settle()
     eq(S().plyCount, 2, 'our a10b10 applied optimistically')
@@ -835,11 +835,11 @@ async function main() {
   // ==========================================================================
   // 18. REAL-SESSION black-first game (the regression that shipped): two real
   //     onlineStore singletons driving two real MpNetSessions over an
-  //     in-memory room — NO mocked mp anywhere on the path. The host UI config
+  //     in-memory room: NO mocked mp anywhere on the path. The host UI config
   //     carries NO firstMover (exactly what OnlineTab sends); the store must
   //     stamp it from the registry spec (gomoku players[0] = black), the
   //     joiner must adopt it from `start`, and the guest-as-black FIRST move
-  //     at ply 0 must commit on BOTH sides — the exact path that deadlocked
+  //     at ply 0 must commit on BOTH sides. The exact path that deadlocked
   //     (the mocked sendMove above always answered ok:true, so the session's
   //     turn gate was never exercised from the store).
   // ==========================================================================
@@ -857,7 +857,7 @@ async function main() {
     const room = makeRoom()
     globalThis.__MP_REAL_FACTORIES__ = [(code, l) => room.join(l), (code, l) => room.join(l)]
     const A = (await import(pathToFileURL(realHostOut).href)).onlineStore // host (white seat)
-    const B = (await import(pathToFileURL(realGuestOut).href)).onlineStore // guest (black seat — FIRST MOVER)
+    const B = (await import(pathToFileURL(realGuestOut).href)).onlineStore // guest (black seat, FIRST MOVER)
     // Host with the UI's config shape: game.kind only, NO firstMover.
     await A.host({ tc: { initialMs: 60_000, incrementMs: 0 }, hostColor: 'white', game: { kind: 'gomoku' } })
     await until(() => A.getState().code, 'real host() yields a room code')
@@ -887,7 +887,7 @@ async function main() {
 
   reset()
   rmSync(outdir, { recursive: true, force: true })
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 }
 
 main().then(

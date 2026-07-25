@@ -1,8 +1,8 @@
 /*
- * Accounts UI (A-UI) — shell styles. Tokens only, no hard-coded values.
+ * Accounts UI (A-UI): shell styles. Tokens only, no hard-coded values.
  * Class namespace: .account-* (shell). Sub-surfaces own their own prefixes:
  * .aauth-, .apin-, .ahub-, .adata-, .aprof-, .asoc-, .arate-, .agc-, .afair-.
- * (The interim web chip uses .acct- in src/web/account — do not reuse it.)
+ * (The interim web chip uses .acct- in src/web/account; do not reuse it.)
  */
 
 :root {

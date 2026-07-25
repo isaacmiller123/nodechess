@@ -1,8 +1,8 @@
-// wedge piece system — shogi koma: five-sided boxwood prism lying flat, tip
+// wedge piece system. Shogi koma: five-sided boxwood prism lying flat, tip
 // toward the opponent, glyph/art decal on the face. Piece counts are small
-// (≤40), so wedges render as per-piece groups sharing one geometry+material —
-// the decal plane rides the same transform for free. (High-count systems —
-// stones/discs — are the instanced ones.)
+// (≤40), so wedges render as per-piece groups sharing one geometry+material.
+// The decal plane rides the same transform for free. (High-count systems,
+// stones/discs, are the instanced ones.)
 
 import { useEffect, useMemo, useRef, useState, type JSX } from 'react'
 import * as THREE from 'three'

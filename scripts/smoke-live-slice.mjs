@@ -1,10 +1,10 @@
-// A6 M1 — THE LIVE PROOF (real-transport smoke). Two signed-in player peers + one
+// A6 M1: THE LIVE PROOF (real-transport smoke). Two signed-in player peers + one
 // witness peer, EACH in its own worker thread (fresh trystero selfId + relay
-// socket — the multi-process requirement), play one scripted RATED Blitz game
+// socket: the multi-process requirement), play one scripted RATED Blitz game
 // end-to-end over the REAL trystero + werift WebRTC transport, and BOTH players'
 // chains persist matching countersigned rated `segment`s that verifyChain green
 // and move both ladders off the §6 seed. This is the vertical slice of the §1
-// acceptance test on the live wire — the first time the browser fabric + the
+// acceptance test on the live wire. The first time the browser fabric + the
 // signed-play + witness + segment path all run over a real transport together.
 //
 //   node scripts/smoke-live-slice.mjs
@@ -12,7 +12,7 @@
 // TRANSPORT (stated honestly): trystero 0.25.2 + werift, pointed at a LOCALHOST
 // Nostr relay (scripts/lib/local-nostr-relay.mjs) rather than public relays.
 // WHY: from bare node, three peers hammering the public relay pool trip
-// rate-limiting ("you note too much") and never mesh (verified — see notesForLead);
+// rate-limiting ("you note too much") and never mesh (verified: see notesForLead);
 // the werift WebRTC itself is 100% real (ICE over 127.0.0.1 host candidates). This
 // is exactly the sanctioned A6 fallback: "a multi-process localhost
 // signaling harness that KEEPS the real trystero transport". Point relayConfig at
@@ -124,7 +124,7 @@ async function main() {
     await waitFor(() => peers.white.state.hosted || peers.white.state.error, 40_000, 'white hosted')
     if (peers.white.state.error) throw new Error(`white host failed: ${peers.white.state.error}`)
     const code = peers.white.state.hosted.code
-    console.log(`· room ${code} — seating the witness, then joining black …`)
+    console.log(`· room ${code}: seating the witness, then joining black …`)
     peers.witness.w.postMessage({ type: 'code', code })
     await new Promise((r) => setTimeout(r, 9_000)) // witness WebRTC-connects + seats
     peers.black.w.postMessage({ type: 'code', code })
@@ -142,7 +142,7 @@ async function main() {
     peers.witness.w.postMessage({ type: 'stop' })
 
     // ---- THE PROOF ---------------------------------------------------------
-    console.log('\n· PROOF — matching countersigned rated segments in BOTH chains:')
+    console.log('\n· PROOF. Matching countersigned rated segments in BOTH chains:')
     ok(W.landed && B.landed, 'both players appended a witnessed segment to their own chain')
     ok(W.verifyChainOk && B.verifyChainOk, 'both chains verifyChain green with the appended segment')
     eq(W.segmentVerifyErr, null, "white chain's segment verifies (verifySegmentEvent === null)")
@@ -158,7 +158,7 @@ async function main() {
       eq(W.segment.result, '1-0', 'segment result is 1-0 (black resigned)')
       eq(W.segment.kind, 'chess', 'segment carries the rated ladder kind')
     }
-    console.log('\n· PROOF — the a4 fold moved BOTH ladders off the §6 seed:')
+    console.log('\n· PROOF. The a4 fold moved BOTH ladders off the §6 seed:')
     ok(W.ladder && W.ladder.n === 1, 'white Blitz ladder folded exactly 1 rated game')
     ok(B.ladder && B.ladder.n === 1, 'black Blitz ladder folded exactly 1 rated game')
     ok(W.ladder && W.ladder.r > SEED_MICRO, 'white (winner) rating rose above 1200')
@@ -169,7 +169,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
 
-  console.log(`\n${failed ? `❌ ${failed} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failed ? `, ${failed} failures` : ''}`)
+  console.log(`\n${failed ? `❌ ${failed} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failed ? `, ${failed} failures` : ''}`)
   process.exit(failed ? 1 : 0)
 }
 

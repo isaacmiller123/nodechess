@@ -2,14 +2,14 @@
  "id": "ch16-removing-guard",
  "band": "16",
  "order": 16,
- "title": "Removing the Guard — Combinations",
+ "title": "Removing the Guard, Combinations",
  "subtitle": "Deflection, attraction, clearance, capturing the defender, interference, the in-between move",
  "estMinutes": 55,
  "concepts": [
   {
    "id": "removing-the-guard",
    "name": "Removing the guard",
-   "short": "Every defended target has a defender. Take it, chase it, block it, or lure it away — then the target falls."
+   "short": "Every defended target has a defender. Take it, chase it, block it, or lure it away. Then the target falls."
   },
   {
    "id": "deflection",
@@ -24,7 +24,7 @@
   {
    "id": "clearance",
    "name": "Clearance",
-   "short": "Your own piece blocks the line you need. Move it — with tempo — so the real blow lands."
+   "short": "Your own piece blocks the line you need. Move it (with tempo) so the real blow lands."
   },
   {
    "id": "capturing-defender",
@@ -39,13 +39,13 @@
   {
    "id": "intermezzo",
    "name": "The in-between move (zwischenzug)",
-   "short": "Before you recapture, slip in a bigger threat first. The expected recapture can wait — the threat cannot."
+   "short": "Before you recapture, slip in a bigger threat first. The expected recapture can wait. The threat cannot."
   }
  ],
  "lessons": [
   {
    "id": "l1-deflection",
-   "title": "Deflection — overload the defender",
+   "title": "Deflection: overload the defender",
    "kind": "tactics",
    "summary": "Force the one piece holding everything together to leave its post.",
    "segments": [
@@ -68,7 +68,7 @@
      "kind": "teach",
      "title": "What deflection is",
      "intro": {
-      "text": "Viktor: A defender is only a defender while it stays on its square. Threaten it with something even bigger and it must abandon the post. We call this deflection — and it is the heart of removing the guard.",
+      "text": "Viktor: A defender is only a defender while it stays on its square. Threaten it with something even bigger and it must abandon the post. We call this deflection, and it is the heart of removing the guard.",
       "conceptId": "removing-the-guard"
      },
      "steps": [
@@ -99,7 +99,7 @@
         "h5h6"
        ],
        "successLine": {
-        "text": "Qxh6+! The queen forks king and rook with check. After ...Kg8 (or the rook interposes) White is simply up material and the attack rolls on. The point: the check deflects Black from defending — there is no time to save the g5-rook.",
+        "text": "Qxh6+! The queen forks king and rook with check. After ...Kg8 (or the rook interposes) White is simply up material and the attack rolls on. The point: the check deflects Black from defending. There is no time to save the g5-rook.",
         "annotations": [
          {
           "kind": "arrow",
@@ -152,7 +152,7 @@
         "b3f7"
        ],
        "successLine": {
-        "text": "Bxf7+! The king must take (or run), and either way it abandons the d8-queen. Then Qxd8 wins the queen for a bishop — a winning exchange. The bishop was bait; the deflection was the goal.",
+        "text": "Bxf7+! The king must take (or run), and either way it abandons the d8-queen. Then Qxd8 wins the queen for a bishop, a winning exchange. The bishop was bait; the deflection was the goal.",
         "annotations": [
          {
           "kind": "arrow",
@@ -170,7 +170,7 @@
         "conceptId": "deflection"
        },
        "retryLine": {
-        "text": "Look for the move that forces the king to react. A quiet developing move lets Black consolidate. The king is the only defender of d8 — make it move.",
+        "text": "Look for the move that forces the king to react. A quiet developing move lets Black consolidate. The king is the only defender of d8. Make it move.",
         "conceptId": "deflection"
        }
       }
@@ -195,7 +195,7 @@
   },
   {
    "id": "l2-attraction",
-   "title": "Attraction — lure the king onto a fork",
+   "title": "Attraction: lure the king onto a fork",
    "kind": "tactics",
    "summary": "The opposite trick: instead of pushing a defender away, you drag a target toward you.",
    "segments": [
@@ -203,7 +203,7 @@
      "kind": "puzzle",
      "title": "Warm-up: the welcoming sacrifice",
      "intro": {
-      "text": "Viktor: Deflection pushes a piece off a square. Attraction pulls a piece onto one — a square where your next move hits it. Same family, opposite direction. Feel it first."
+      "text": "Viktor: Deflection pushes a piece off a square. Attraction pulls a piece onto one. A square where your next move hits it. Same family, opposite direction. Feel it first."
      },
      "puzzle": {
       "themes": [
@@ -249,7 +249,7 @@
         "c5f8"
        ],
        "successLine": {
-        "text": "Qf8+!! The king is forced to take — ...Kxf8 — and now it stands on the very square the rook needs: Rb8#. The queen sacrifice was pure attraction: it dragged the king onto the mating net.",
+        "text": "Qf8+!! The king is forced to take (...Kxf8) and now it stands on the very square the rook needs: Rb8#. The queen sacrifice was pure attraction: it dragged the king onto the mating net.",
         "annotations": [
          {
           "kind": "arrow",
@@ -267,7 +267,7 @@
         "conceptId": "attraction"
        },
        "retryLine": {
-        "text": "Mate is one forcing move away — but only if the king is on f8. What can you give on f8 that the king must accept?",
+        "text": "Mate is one forcing move away, but only if the king is on f8. What can you give on f8 that the king must accept?",
         "conceptId": "attraction"
        }
       }
@@ -308,7 +308,7 @@
         "h3h7"
        ],
        "successLine": {
-        "text": "Rxh7+! ...Kxh7 is forced, and the king is dragged to h7 — straight into Qh5#. The rook was the price of admission; the attraction put the king where the queen mates.",
+        "text": "Rxh7+! ...Kxh7 is forced, and the king is dragged to h7, straight into Qh5#. The rook was the price of admission; the attraction put the king where the queen mates.",
         "annotations": [
          {
           "kind": "arrow",
@@ -351,9 +351,9 @@
   },
   {
    "id": "l3-clearance",
-   "title": "Clearance — get out of your own way",
+   "title": "Clearance: get out of your own way",
    "kind": "tactics",
-   "summary": "When your own piece blocks the winning line, the combination is to move it — with tempo.",
+   "summary": "When your own piece blocks the winning line, the combination is to move it, with tempo.",
    "segments": [
     {
      "kind": "puzzle",
@@ -374,14 +374,14 @@
      "kind": "teach",
      "title": "What clearance is",
      "intro": {
-      "text": "Viktor: Clearance is removing your OWN guard — the piece standing on the square or line your real weapon needs. Do it with a check or a capture so the opponent cannot exploit the moment.",
+      "text": "Viktor: Clearance is removing your OWN guard. The piece standing on the square or line your real weapon needs. Do it with a check or a capture so the opponent cannot exploit the moment.",
       "conceptId": "clearance"
      },
      "steps": [
       {
        "fen": "4R3/pp1r1rpk/5pRp/3q4/8/6QP/P4PP1/6K1 w - - 3 32",
        "coach": {
-        "text": "White to move. The queen on g3 wants the g-file, but the g6-rook blocks it. Clear g6 with a check — and the same move smashes the king's cover.",
+        "text": "White to move. The queen on g3 wants the g-file, but the g6-rook blocks it. Clear g6 with a check, and the same move smashes the king's cover.",
         "annotations": [
          {
           "kind": "highlight",
@@ -406,7 +406,7 @@
         "g6h6"
        ],
        "successLine": {
-        "text": "Rxh6+! The rook clears the g-file with check and rips the h-pawn. After ...Kxh6 the g-file is open and Re8-h8 nets the king — mate follows. The rook's job was to vanish from g6; the check made it free.",
+        "text": "Rxh6+! The rook clears the g-file with check and rips the h-pawn. After ...Kxh6 the g-file is open and Re8-h8 nets the king. Mate follows. The rook's job was to vanish from g6; the check made it free.",
         "annotations": [
          {
           "kind": "arrow",
@@ -434,7 +434,7 @@
      "kind": "guided",
      "title": "Clear g2 for the mate",
      "intro": {
-      "text": "Viktor: Black to move now. The g2-square is where you want a piece — but your own rook sits there. Clear it with a capture that also removes a defender."
+      "text": "Viktor: Black to move now. The g2-square is where you want a piece, but your own rook sits there. Clear it with a capture that also removes a defender."
      },
      "steps": [
       {
@@ -465,7 +465,7 @@
         "g2h2"
        ],
        "successLine": {
-        "text": "Rxh2+! The rook clears g2 with check and removes a guard. White can only block with Nxh2 or step onto h2 with the king — either way the g2-square is empty and undefended, and Qg2# follows. One move cleared the line AND eliminated the defender.",
+        "text": "Rxh2+! The rook clears g2 with check and removes a guard. White can only block with Nxh2 or step onto h2 with the king. Either way the g2-square is empty and undefended, and Qg2# follows. One move cleared the line AND eliminated the defender.",
         "annotations": [
          {
           "kind": "arrow",
@@ -493,7 +493,7 @@
      "kind": "puzzle",
      "title": "Cool-down: open the road",
      "intro": {
-      "text": "Viktor: Three more. The winning line is already drawn — your task is to remove the piece of yours standing on it, forcefully."
+      "text": "Viktor: Three more. The winning line is already drawn. Your task is to remove the piece of yours standing on it, forcefully."
      },
      "puzzle": {
       "themes": [
@@ -508,7 +508,7 @@
   },
   {
    "id": "l4-capturing-defender",
-   "title": "Capturing the defender — the direct method",
+   "title": "Capturing the defender: the direct method",
    "kind": "tactics",
    "summary": "No finesse needed: take the piece that holds the defence, then collect what it guarded.",
    "segments": [
@@ -538,7 +538,7 @@
       {
        "fen": "1r1qk2r/2p3pp/p4p2/1p2P3/1n1Q1BN1/4P3/PP1bKPPP/R6R b k - 1 18",
        "coach": {
-        "text": "Black to move. White's d4-queen defends the f4-bishop and holds the centre together. The black queen on d8 can take it. After the recapture, the loose d2-bishop forks — but the first step is the capture.",
+        "text": "Black to move. White's d4-queen defends the f4-bishop and holds the centre together. The black queen on d8 can take it. After the recapture, the loose d2-bishop forks, but the first step is the capture.",
         "annotations": [
          {
           "kind": "circle",
@@ -558,7 +558,7 @@
         "d8d4"
        ],
        "successLine": {
-        "text": "Qxd4! exd4 (forced recapture), and now Bf4+ wins the exchange or worse — the bishop, freed by the trade, hits king and rook. Black emerges up material. The combination began by simply taking the defender.",
+        "text": "Qxd4! exd4 (forced recapture), and now Bf4+ wins the exchange or worse. The bishop, freed by the trade, hits king and rook. Black emerges up material. The combination began by simply taking the defender.",
         "annotations": [
          {
           "kind": "arrow",
@@ -617,7 +617,7 @@
         "g4f3"
        ],
        "successLine": {
-        "text": "Bxf3! removes the only defender of g5. White cannot hold the bishop: even the in-between Bxf6 (a taste of Lesson 6) does not save it — after any reply Black emerges a clear piece up. Capture the defender, then collect the now-loose target.",
+        "text": "Bxf3! removes the only defender of g5. White cannot hold the bishop: even the in-between Bxf6 (a taste of Lesson 6) does not save it. After any reply Black emerges a clear piece up. Capture the defender, then collect the now-loose target.",
         "annotations": [
          {
           "kind": "arrow",
@@ -635,7 +635,7 @@
         "conceptId": "capturing-defender"
        },
        "retryLine": {
-        "text": "The g5-bishop is only held by one piece. Identify it and take it — then the bishop drops next move.",
+        "text": "The g5-bishop is only held by one piece. Identify it and take it. Then the bishop drops next move.",
         "conceptId": "capturing-defender"
        }
       }
@@ -660,7 +660,7 @@
   },
   {
    "id": "l5-interference",
-   "title": "Interference — cut the line of defence",
+   "title": "Interference: cut the line of defence",
    "kind": "tactics",
    "summary": "The defender stays on its square, but you slam the door between it and what it guards.",
    "segments": [
@@ -668,7 +668,7 @@
      "kind": "puzzle",
      "title": "Warm-up: block the guard",
      "intro": {
-      "text": "Viktor: The rarest and prettiest method. You do not move or take the defender — you interpose a piece on the line it defends along. The guard is severed in place."
+      "text": "Viktor: The rarest and prettiest method. You do not move or take the defender. You interpose a piece on the line it defends along. The guard is severed in place."
      },
      "puzzle": {
       "themes": [
@@ -683,14 +683,14 @@
      "kind": "teach",
      "title": "What interference is",
      "intro": {
-      "text": "Viktor: A rook on a file defends only as far as the file is clear. Drop a piece in front of it — even one it can capture — and for that instant the defence is cut. Timing is everything.",
+      "text": "Viktor: A rook on a file defends only as far as the file is clear. Drop a piece in front of it (even one it can capture) and for that instant the defence is cut. Timing is everything.",
       "conceptId": "interference"
      },
      "steps": [
       {
        "fen": "3rr1k1/pppq1ppp/2n3n1/2B3Q1/2B5/P2P3P/1PP2PP1/3R1RK1 b - - 10 19",
        "coach": {
-        "text": "Black to move. The g5-queen is the only thing defending the c5-bishop — it guards it along the 5th rank (g5–f5–e5–d5–c5). Cut that rank and the bishop is loose. Find the move that lands a piece on e5, right across the line.",
+        "text": "Black to move. The g5-queen is the only thing defending the c5-bishop. It guards it along the 5th rank (g5–f5–e5–d5–c5). Cut that rank and the bishop is loose. Find the move that lands a piece on e5, right across the line.",
         "annotations": [
          {
           "kind": "circle",
@@ -714,7 +714,7 @@
         "e8e5"
        ],
        "successLine": {
-        "text": "Rxe5! The rook drops onto the 5th rank, cutting the g5-queen off from the c5-bishop. The bishop is now undefended: if the queen moves, ...Rxc5 collects it, and if Bxe5 then ...Qxg5 wins the queen. The link was severed without ever touching the defender — Black wins a piece.",
+        "text": "Rxe5! The rook drops onto the 5th rank, cutting the g5-queen off from the c5-bishop. The bishop is now undefended: if the queen moves, ...Rxc5 collects it, and if Bxe5 then ...Qxg5 wins the queen. The link was severed without ever touching the defender. Black wins a piece.",
         "annotations": [
          {
           "kind": "arrow",
@@ -742,7 +742,7 @@
       {
        "fen": "r1b3k1/pp5p/2p1prp1/3q4/3P4/2PB2Q1/PP3P1P/R3R1K1 b - - 3 23",
        "coach": {
-        "text": "Black to move. White's d3-bishop defends f1 and the d3-queen sits behind it, while the e1-rook holds the e-file. Drop your rook into f3 — between the queen on g3 and its own pieces — to break the defence.",
+        "text": "Black to move. White's d3-bishop defends f1 and the d3-queen sits behind it, while the e1-rook holds the e-file. Drop your rook into f3 (between the queen on g3 and its own pieces) to break the defence.",
         "annotations": [
          {
           "kind": "highlight",
@@ -767,7 +767,7 @@
         "f6f3"
        ],
        "successLine": {
-        "text": "Rf3! The rook interferes on the third rank, cutting the g3-queen off from the defence and threatening ...Rxg3 and ...Qxd3. White cannot meet every threat — Black wins decisive material. The piece never had to be captured; the line was simply blocked.",
+        "text": "Rf3! The rook interferes on the third rank, cutting the g3-queen off from the defence and threatening ...Rxg3 and ...Qxd3. White cannot meet every threat. Black wins decisive material. The piece never had to be captured; the line was simply blocked.",
         "annotations": [
          {
           "kind": "arrow",
@@ -795,7 +795,7 @@
      "kind": "puzzle",
      "title": "Cool-down: slam the door",
      "intro": {
-      "text": "Viktor: Three more. Find the line the defender works along — then put a piece across it."
+      "text": "Viktor: Three more. Find the line the defender works along. Then put a piece across it."
      },
      "puzzle": {
       "themes": [
@@ -810,13 +810,13 @@
   },
   {
    "id": "l6-intermezzo",
-   "title": "The in-between move — don't rush the recapture",
+   "title": "The in-between move: don't rush the recapture",
    "kind": "tactics",
    "summary": "Before you take back, ask: is there a bigger threat I can play first?",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up: wait — is there something stronger?",
+     "title": "Warm-up: wait. Is there something stronger?",
      "intro": {
       "text": "Viktor: The most common way strong players win extra: instead of the automatic recapture, they insert a move with an even bigger threat. The recapture will still be there next move."
      },
@@ -833,7 +833,7 @@
      "kind": "teach",
      "title": "What the in-between move is",
      "intro": {
-      "text": "Viktor: Zwischenzug — the in-between move. Your opponent expects you to recapture. Surprise them: play a check or a bigger threat FIRST. They must answer it; only then do you take back, having gained a tempo or a piece.",
+      "text": "Viktor: Zwischenzug. The in-between move. Your opponent expects you to recapture. Surprise them: play a check or a bigger threat FIRST. They must answer it; only then do you take back, having gained a tempo or a piece.",
       "conceptId": "intermezzo"
      },
      "steps": [
@@ -864,7 +864,7 @@
         "d4e4"
        ],
        "successLine": {
-        "text": "Rxe4! Not the routine ...Rxc5. By taking the e4-rook first — with the queen on e2 now overloaded — Black wins a whole rook, and only THEN deals with c5. Rushing ...Rxc5 would have let the win slip to equality. The in-between move was worth a rook.",
+        "text": "Rxe4! Not the routine ...Rxc5. By taking the e4-rook first. With the queen on e2 now overloaded. Black wins a whole rook, and only THEN deals with c5. Rushing ...Rxc5 would have let the win slip to equality. The in-between move was worth a rook.",
         "annotations": [
          {
           "kind": "arrow",
@@ -876,7 +876,7 @@
         "conceptId": "intermezzo"
        },
        "retryLine": {
-        "text": "Recapturing on c5 looks natural — but is it best? Check whether you can grab something bigger first, forcing White to respond before you take back.",
+        "text": "Recapturing on c5 looks natural, but is it best? Check whether you can grab something bigger first, forcing White to respond before you take back.",
         "conceptId": "intermezzo"
        }
       }
@@ -916,7 +916,7 @@
         "d5f6"
        ],
        "successLine": {
-        "text": "Nxf6+! The in-between move. Black must recapture (...Bxf6 or ...gxf6) — dealing with the attack on the king first — and only THEN does White play Qxe4, having won the e7-bishop or knight in between. Insert the threat, then collect.",
+        "text": "Nxf6+! The in-between move. Black must recapture (...Bxf6 or ...gxf6). Dealing with the attack on the king first, and only THEN does White play Qxe4, having won the e7-bishop or knight in between. Insert the threat, then collect.",
         "annotations": [
          {
           "kind": "arrow",
@@ -934,7 +934,7 @@
         "conceptId": "intermezzo"
        },
        "retryLine": {
-        "text": "Qxe4 just trades. Before you recapture, is there a forcing move — a capture with check or a strong threat — that wins more? Look at the d5-knight.",
+        "text": "Qxe4 just trades. Before you recapture, is there a forcing move (a capture with check or a strong threat) that wins more? Look at the d5-knight.",
         "conceptId": "intermezzo"
        }
       }
@@ -944,7 +944,7 @@
      "kind": "puzzle",
      "title": "Cool-down: the bigger threat first",
      "intro": {
-      "text": "Viktor: Three more. Each time the obvious recapture is a trap on yourself — find the stronger move to insert first."
+      "text": "Viktor: Three more. Each time the obvious recapture is a trap on yourself. Find the stronger move to insert first."
      },
      "puzzle": {
       "themes": [
@@ -966,7 +966,7 @@
     "prompt": "Every method in this chapter shares one idea. What is 'removing the guard'?",
     "options": [
      "Always trading queens to simplify into a winning endgame",
-     "Neutralizing the piece (or line) that defends a target — by luring it away, capturing it, blocking it, or moving your own blocker — so the target falls",
+     "Neutralizing the piece (or line) that defends a target (by luring it away, capturing it, blocking it, or moving your own blocker) so the target falls",
      "Castling early so your king is never the defender",
      "Advancing pawns to gain space on the side where you are stronger"
     ],
@@ -989,10 +989,10 @@
     "kind": "mc",
     "prompt": "Your opponent has just captured a piece and expects you to recapture. Before you do, you spot a check that wins a rook elsewhere. What is the principle?",
     "options": [
-     "Recapture immediately — material first, always",
+     "Recapture immediately: material first, always",
      "The in-between move (zwischenzug): play the bigger forcing threat first, then recapture afterward",
      "Offer a draw, since the position is unclear",
-     "Interference — block the line before recapturing"
+     "Interference: block the line before recapturing"
     ],
     "answerIndex": 1,
     "explain": "The recapture will usually still be available next move. Insert the stronger forcing move first to gain a tempo or extra material."
@@ -1004,7 +1004,7 @@
     "solutionUci": [
      "e3a7"
     ],
-    "explain": "Ba7+! deflects the king/queen from the back rank. After ...Kxa7 the queen on e6 swings to c8, winning decisive material — the bishop check tore the defence apart."
+    "explain": "Ba7+! deflects the king/queen from the back rank. After ...Kxa7 the queen on e6 swings to c8, winning decisive material. The bishop check tore the defence apart."
    },
    {
     "kind": "play",
@@ -1049,7 +1049,7 @@
     "solutionUci": [
      "d1d5"
     ],
-    "explain": "Qxd5! The in-between capture takes the knight first. Only after Black responds does White deal with b5 — netting an extra piece compared to the routine cxb5."
+    "explain": "Qxd5! The in-between capture takes the knight first. Only after Black responds does White deal with b5. Netting an extra piece compared to the routine cxb5."
    },
    {
     "kind": "judge",
@@ -1057,7 +1057,7 @@
     "fen": "3r3k/pp1N1ppp/8/8/8/8/PB3QPP/6K1 b - - 0 31",
     "lastMoveUci": "e5d7",
     "verdict": "correct",
-    "explain": "Yes. Nxd7! clears e5 with discovered check from the b2-bishop AND grabs a rook on the way. Black must answer the check, leaving White a rook up with a crushing attack. Move your own blocker with tempo so the real weapon — here the bishop's diagonal — fires."
+    "explain": "Yes. Nxd7! clears e5 with discovered check from the b2-bishop AND grabs a rook on the way. Black must answer the check, leaving White a rook up with a crushing attack. Move your own blocker with tempo so the real weapon (here the bishop's diagonal) fires."
    },
    {
     "kind": "judge",
@@ -1065,7 +1065,7 @@
     "fen": "4r1k1/ppp2pp1/2p4p/2P2q2/2P2P2/1Q2r2P/PP5K/2R1R3 w - - 0 23",
     "lastMoveUci": "e6e3",
     "verdict": "correct",
-    "explain": "Yes. Rxe3 removes the bishop, the sole defender of f4. After the forced Rxe3, ...Qxf4 hits the e3-rook and crashes through — Black is winning by a clear margin. Take the defender, then collect what it guarded."
+    "explain": "Yes. Rxe3 removes the bishop, the sole defender of f4. After the forced Rxe3, ...Qxf4 hits the e3-rook and crashes through. Black is winning by a clear margin. Take the defender, then collect what it guarded."
    },
    {
     "kind": "judge",
@@ -1073,7 +1073,7 @@
     "fen": "3r2k1/p4p1p/6p1/4p3/4Q3/2q4P/P1P2PP1/R5K1 w - - 0 22",
     "lastMoveUci": "e8d8",
     "verdict": "blunder",
-    "explain": "Blunder. The routine ...Rxd8?? lets the whole advantage evaporate to a dead-equal position. Black had a zwischenzug: ...Qxa1! grabs White's OTHER rook first. The d8-rook is going nowhere — it still falls to ...Rxd8 next move — so Black ends up a clean rook ahead. Never recapture on autopilot; always ask whether a bigger threat comes first."
+    "explain": "Blunder. The routine ...Rxd8?? lets the whole advantage evaporate to a dead-equal position. Black had a zwischenzug: ...Qxa1! grabs White's OTHER rook first. The d8-rook is going nowhere (it still falls to ...Rxd8 next move) so Black ends up a clean rook ahead. Never recapture on autopilot; always ask whether a bigger threat comes first."
    },
    {
     "kind": "judge",
@@ -1081,7 +1081,7 @@
     "fen": "r3r1k1/pp3ppp/3Q4/8/8/7P/PP3PP1/4R1K1 b - - 0 25",
     "lastMoveUci": "d1d6",
     "verdict": "blunder",
-    "explain": "Blunder. After Qxd6?? Black plays ...Rxe1+ and recaptures the queen next, levelling a winning position. The deflecting Re8+! came first: it drags Black's rook off the back rank, and only THEN does Qxd6 win the queen for free. Force the defender away before you cash in — never trade on autopilot."
+    "explain": "Blunder. After Qxd6?? Black plays ...Rxe1+ and recaptures the queen next, levelling a winning position. The deflecting Re8+! came first: it drags Black's rook off the back rank, and only THEN does Qxd6 win the queen for free. Force the defender away before you cash in: never trade on autopilot."
    }
   ]
  },

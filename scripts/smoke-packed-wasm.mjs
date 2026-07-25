@@ -1,5 +1,5 @@
 // Packaged-app CSP/WASM smoke: proves ffish (xiangqi / Variant Lab) loads
-// under the strict PROD_CSP of the PACKED app — the exact failure class that
+// under the strict PROD_CSP of the PACKED app: the exact failure class that
 // shipped blind in v1.1.0 because dev's CSP carries 'unsafe-eval'.
 //
 //   npm run build && npx electron-builder --dir && npm run smoke:packed-wasm
@@ -32,7 +32,7 @@ const candidates =
 const bin = candidates.map((c) => resolve(ROOT, c)).find((p) => existsSync(p))
 if (!bin) {
   console.error(
-    'PACKED-WASM SMOKE FAIL: no packed binary found under release/ — run: npm run build && npx electron-builder --dir'
+    'PACKED-WASM SMOKE FAIL: no packed binary found under release/, run: npm run build && npx electron-builder --dir'
   )
   process.exit(1)
 }
@@ -44,7 +44,7 @@ const child = spawn(bin, ['--smoke-wasm'], {
 })
 
 const killTimer = setTimeout(() => {
-  console.error(`PACKED-WASM SMOKE FAIL: no exit within ${TIMEOUT_MS}ms — killing`)
+  console.error(`PACKED-WASM SMOKE FAIL: no exit within ${TIMEOUT_MS}ms, killing`)
   child.kill('SIGKILL')
 }, TIMEOUT_MS)
 

@@ -131,4 +131,4 @@ if (failures > 0) {
   console.error(`\n${failures} failure(s)`)
   process.exit(1)
 }
-console.log('\nALL GREEN — settings persist across a fresh getAppDb()')
+console.log('\nALL GREEN: settings persist across a fresh getAppDb()')

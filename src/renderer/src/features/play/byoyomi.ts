@@ -1,5 +1,5 @@
-// Japanese byo-yomi clock math. Pure data + tiny helpers — no React, no
-// window.api, no node — so it bundles into mpSession's isomorphic test bundle
+// Japanese byo-yomi clock math. Pure data + tiny helpers: no React, no
+// window.api, no node, so it bundles into mpSession's isomorphic test bundle
 // (scripts/test-mp.mjs) AND drives the local go clocks (features/games).
 //
 // Model (classic Japanese byo-yomi, lichess/OGS semantics):
@@ -25,7 +25,7 @@ export interface ByoyomiSpec {
 }
 
 export interface SideClock {
-  /** Main ms remaining — or the CURRENT period's remaining ms once inByo. */
+  /** Main ms remaining, or the CURRENT period's remaining ms once inByo. */
   remainingMs: number
   /** Periods remaining, INCLUDING the one currently running. */
   periodsLeft: number
@@ -64,7 +64,7 @@ export interface ConsumeResult {
 /**
  * Burn `elapsedMs` of think time off a side clock, crossing the main→byo-yomi
  * boundary and any number of period boundaries. Pure: returns a fresh clock.
- * A boundary hit exactly (remaining 0) survives — only NEGATIVE time flags,
+ * A boundary hit exactly (remaining 0) survives. Only NEGATIVE time flags,
  * matching the session's historical `remaining < 0` convention.
  */
 export function consumeElapsed(c: SideClock, elapsedMs: number, byo: ByoyomiSpec | null): ConsumeResult {
@@ -94,7 +94,7 @@ export function consumeElapsed(c: SideClock, elapsedMs: number, byo: ByoyomiSpec
     remaining += byo.periodMs
   }
   if (remaining < 0) {
-    // The last period lapsed — flag, everything zeroed.
+    // The last period lapsed: flag, everything zeroed.
     return {
       clock: { remainingMs: 0, periodsLeft: 0, inByo: true },
       flagged: true,

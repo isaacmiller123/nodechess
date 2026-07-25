@@ -1,4 +1,4 @@
-// A6 M1 Lane A — env/config-replaceable STUN/TURN (spec §4 C-11). The ICE server
+// A6 M1 Lane A: env/config-replaceable STUN/TURN (spec §4 C-11). The ICE server
 // set used to live inline in rtcTransport.ts (the proven live WebRTC path); it is
 // extracted here VERBATIM so a single module owns relay/TURN selection for BOTH
 // the mp game transport (rtcTransport.ts) and the browser accounts fabric
@@ -7,7 +7,7 @@
 // C-11 (spec §4): "signaling currently rides third-party Nostr relays + public
 // TURN; both must be replaceable, with the operator peer as fallback". This
 // module makes the TURN/STUN list replaceable in ONE place:
-//   - `override` (programmatic, highest priority — e.g. a settings panel),
+//   - `override` (programmatic, highest priority, e.g. a settings panel),
 //   - `VITE_ICE_SERVERS` (build-time env, JSON RTCIceServer[]),
 //   - else the built-in DEFAULT_ICE_SERVERS (byte-identical to the old inline set),
 //   - plus an OPERATOR-FALLBACK slot appended as relay-of-last-resort, from
@@ -26,13 +26,13 @@
 // (src/web/accountsFlag.ts / src/web/engines/assets.ts precedent).
 
 /**
- * The built-in default STUN/TURN set — extracted verbatim from rtcTransport.ts
+ * The built-in default STUN/TURN set. Extracted verbatim from rtcTransport.ts
  * (was the inline `ICE_SERVERS`). Google STUN is blocked in China, hence the
  * Cloudflare STUN; the openrelay TURN entries are a best-effort fallback for
  * symmetric NATs (ICE silently skips any dead server, so extras never hurt).
  *
  * NOTE (spec §4 honest limit): public openrelay TURN is fine for a demo but is a
- * real availability risk for RATED play — a self-hosted coturn (or the operator
+ * real availability risk for RATED play. A self-hosted coturn (or the operator
  * peer via the fallback slot below) is the symmetric-NAT reliability floor.
  */
 export const DEFAULT_ICE_SERVERS: readonly RTCIceServer[] = [
@@ -57,7 +57,7 @@ export const DEFAULT_ICE_SERVERS: readonly RTCIceServer[] = [
 export interface IceResolveOpts {
   /**
    * Explicit override (highest priority). When present + non-empty it REPLACES
-   * the base set entirely — the programmatic C-11 replacement hook (e.g. a
+   * the base set entirely. The programmatic C-11 replacement hook (e.g. a
    * settings panel or an ops-served config).
    */
   override?: readonly RTCIceServer[] | null
@@ -76,7 +76,7 @@ export interface IceResolveOpts {
  * env → DEFAULT_ICE_SERVERS; then the operator-fallback slot (`operatorFallback`
  * → `VITE_TURN_FALLBACK`) is appended. Returns a FRESH, deeply-copied array (safe
  * to hand to a mutable RTCConfiguration). With no override/env/fallback the
- * result is byte-identical to the old inline `ICE_SERVERS` — the live WebRTC path
+ * result is byte-identical to the old inline `ICE_SERVERS`. The live WebRTC path
  * is unchanged.
  */
 export function resolveIceServers(opts: IceResolveOpts = {}): RTCIceServer[] {
@@ -92,8 +92,8 @@ export function resolveIceServers(opts: IceResolveOpts = {}): RTCIceServer[] {
 /**
  * Build-time env override (C-11): a JSON RTCIceServer[] in `VITE_ICE_SERVERS`.
  * Guarded like accountsFlag.ts so the module loads in bare-node bundles with no
- * import.meta.env. A malformed value is IGNORED (falls back to defaults) —
- * garbage never silently breaks NAT traversal.
+ * import.meta.env. A malformed value is IGNORED (falls back to defaults).
+ * Garbage never silently breaks NAT traversal.
  */
 function envIceServers(): RTCIceServer[] | null {
   const env = (import.meta as { env?: Record<string, unknown> }).env
@@ -103,7 +103,7 @@ function envIceServers(): RTCIceServer[] | null {
     const parsed: unknown = JSON.parse(raw)
     if (Array.isArray(parsed) && parsed.every(isIceServer)) return parsed.map(cloneIceServer)
   } catch {
-    /* malformed VITE_ICE_SERVERS — ignore, keep the defaults */
+    /* malformed VITE_ICE_SERVERS: ignore, keep the defaults */
   }
   return null
 }
@@ -111,7 +111,7 @@ function envIceServers(): RTCIceServer[] | null {
 /**
  * The operator-fallback slot from env (C-11): a JSON RTCIceServer[] in
  * `VITE_TURN_FALLBACK`, typically one self-hosted coturn with its credentials.
- * Same guard + all-or-none validation as envIceServers — a malformed value is
+ * Same guard + all-or-none validation as envIceServers. A malformed value is
  * ignored, leaving the base set alone rather than half-applying it.
  */
 function envTurnFallback(): RTCIceServer[] | null {
@@ -123,7 +123,7 @@ function envTurnFallback(): RTCIceServer[] | null {
     if (Array.isArray(parsed) && parsed.length > 0 && parsed.every(isIceServer))
       return parsed.map(cloneIceServer)
   } catch {
-    /* malformed VITE_TURN_FALLBACK — ignore, ship the base set unchanged */
+    /* malformed VITE_TURN_FALLBACK: ignore, ship the base set unchanged */
   }
   return null
 }

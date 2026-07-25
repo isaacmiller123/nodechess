@@ -1,5 +1,5 @@
 // Headless test for the A4 conduct + reputation modules
-// (src/shared/accounts/ratings/{conduct,reputation}.ts — phase A4 brick 1c,
+// (src/shared/accounts/ratings/{conduct,reputation}.ts; phase A4 brick 1c,
 // re-fixtured by fix-brick F2 for the A4 review: A4-07/11/13/14/22).
 //
 //   node scripts/test-accounts-reputation.mjs
@@ -68,7 +68,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -119,7 +119,7 @@ async function run(outdir) {
   const oppAChild = kp(120) // opponent A's device key
   const stranger = kp(160)
   const wit = kp(200) // the game witness (terminal wstream signatures)
-  // 10 sybil roots (fresh, checkpoint-less commenders — A4-14 farm fixtures)
+  // 10 sybil roots (fresh, checkpoint-less commenders, A4-14 farm fixtures)
   const sybils = Array.from({ length: 10 }, (_, i) => kp(20 + 3 * i))
   // 4 REAL oppCkpt cosigner keypairs with pairwise-distinct 2-char b64u key
   // prefixes (⇒ satisfies segment.ts's ≥3 prefix-diversity bound).
@@ -153,7 +153,7 @@ async function run(outdir) {
     sig: hash.toB64u(hash.ed25519.sign(codec.canonicalBytes({ e: id, epoch: 0, w: k.pubB, wts }), k.priv)),
   })
   /** VERIFIED opponent checkpoint: root-signed by oppKp, 4 real prefix-diverse
-   * cosigner attestations — passes segment.ts verifyEmbeddedOppCkpt. The
+   * cosigner attestations: passes segment.ts verifyEmbeddedOppCkpt. The
    * embedded state self-describes as a4-v1 (A4-10 fold-id rule: a rated-
    * shaped segment may embed a4-v1 checkpoints only). */
   const mkOppCkpt = (oppKp) => {
@@ -175,10 +175,10 @@ async function run(outdir) {
    * Segment payload with a REAL witness terminal signature. Default: BOUND
    * (kind 'chess' + Blitz tc, witness signs the FULL F1 RatedBinding
    * {kind, tc, players, reason}). opts:
-   *   legacy: true  — no kind/tc, witness signs the EXACT legacy bytes;
-   *   est: true     — embed a verified oppCkpt of oppKp (established pair);
-   *   wsig          — override the wstream sig (forgery fixtures);
-   *   bindColor     — sign players for THIS color while the payload claims
+   *   legacy: true.   No kind/tc, witness signs the EXACT legacy bytes;
+   *   est: true.      Embed a verified oppCkpt of oppKp (established pair);
+   *   wsig:           override the wstream sig (forgery fixtures);
+   *   bindColor:      sign players for THIS color while the payload claims
    *                   `color` (the A4-01 color-flip forgery fixture).
    */
   const segPayload = (game, oppKp, opts = {}) => {
@@ -230,7 +230,7 @@ async function run(outdir) {
   }
   const scoreOf = (c) => rep.repScore(fold(c))
 
-  // A root-signed cert event by oppA for oppAChild (standalone — chain
+  // A root-signed cert event by oppA for oppAChild (standalone; chain
   // position is immaterial to a root-signed cert).
   const oppAChildCert = events.signBody(
     {
@@ -246,7 +246,7 @@ async function run(outdir) {
   const G4 = fakeId('game-4')
 
   // ============================================================================
-  // 1. commendBytes / rematchBytes — exact canonical bytes
+  // 1. commendBytes / rematchBytes, exact canonical bytes
   // ============================================================================
   console.log('\n· commendBytes canonical form …')
   {
@@ -270,7 +270,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 2. commend sign/verify — root key, child key + certs, fail-closed matrix
+  // 2. commend sign/verify, root key, child key + certs, fail-closed matrix
   // ============================================================================
   console.log('\n· verifyCommend: root-signed …')
   {
@@ -424,7 +424,7 @@ async function run(outdir) {
     // completion (0.35): 1 abort, 0 segments → completion 0, others: D=100 T=100 N=100 R=0 M=0
     eq(scoreOf(addConduct(mkChain(), conduct.makeConductPayload({ kind: 'abort', game: G1, opp: oppA.pubB }))),
       45, 'abort only: completion 0 → 80 − 35 = 45')
-    // disconnect (0.25): subject lost by disconnect (bound segment — witness signed the reason)
+    // disconnect (0.25): subject lost by disconnect (bound segment; witness signed the reason)
     eq(scoreOf(addSeg(mkChain(), G1, oppA, { color: 'w', result: '0-1', reason: 'disconnect' })),
       55, 'own disconnect loss: disconnect 0 → 80 − 25 = 55')
     eq(scoreOf(addSeg(mkChain(), G1, oppA, { color: 'w', result: '1-0', reason: 'abandon' })),
@@ -462,25 +462,25 @@ async function run(outdir) {
       c = addCommend(c, commendFrom(oppA, G1))
       const s = fold(c)
       eq(s.commend, 1, 'fresh-commender commend counts once')
-      eq(s.commendTw, 1, '…at the FLOOR weight (1 twentieth — no verified opponent checkpoint)')
+      eq(s.commendTw, 1, '…at the FLOOR weight (1 twentieth: no verified opponent checkpoint)')
       eq(rep.repScore(s), 83, 'commendSub = floor(400·1/(20·1)) = 20 → 80 + 3')
     }
     // commend from an ESTABLISHED pair (A4-14 layer split): the FOLD grants
     // only the decayed floor; the est tier is EARNED at read time through
-    // eligibility-verified evidence (repEvidenceOf) — never presumed.
+    // eligibility-verified evidence (repEvidenceOf): never presumed.
     {
       let c = addSeg(mkChain(), G1, oppA, { est: true })
       c = addCommend(c, commendFrom(oppA, G1))
       const s = fold(c)
       eq(s.pair[`${G1}:${oppA.pubB}`].f & rep.PAIR_EST, rep.PAIR_EST, 'the pair carries the PAIR_EST claim flag')
       eq(s.commendTw, 1, 'IN-FOLD the est claim is weightless: the commend folds at the decayed floor (1)')
-      eq(rep.repScore(s), 83, 'score WITHOUT evidence = 83 — est weight is never presumed (A4-14)')
+      eq(rep.repScore(s), 83, 'score WITHOUT evidence = 83: est weight is never presumed (A4-14)')
       const ev = rep.repEvidenceOf(c, elig)
       eq(ev.commendTwBonus, 19, 'eligibility-verified evidence earns the est remainder (20 − 1 = 19)')
       eq(rep.repScore(s, ev), 95, 'score WITH evidence: commendSub = min(100, floor(400·20/(20·1))) = 100 → 95')
       eq(rep.repEvidenceOf(c).commendTwBonus, 0, 'NO eligibility predicate → zero bonus (nothing vouched, nothing earned)')
       eq(rep.repEvidenceOf(c, () => false).commendTwBonus, 0, 'roster rejecting every key → zero bonus')
-      // A4-14 PIN — the review's exact residue: valid-SIGNATURE cosigners that
+      // A4-14 PIN. The review's exact residue: valid-SIGNATURE cosigners that
       // the verifier does NOT recognize as eligible witnesses earn nothing.
       const eligNoCos = (w) => w === wit.pubB
       eq(rep.repEvidenceOf(c, eligNoCos).commendTwBonus, 0,
@@ -492,7 +492,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 4b. legacy segments (kind/tc-less, wstream-valid) — seg only, ever
+  // 4b. legacy segments (kind/tc-less, wstream-valid), seg only, ever
   // ============================================================================
   console.log('\n· legacy segments: completion only, never misconduct/merit …')
   {
@@ -552,7 +552,7 @@ async function run(outdir) {
     }
     const s0 = rep.repInit()
     ok(rep.repStep(s0, crafted) === s0, 'forged event signature → pass-through (same reference)')
-    // (e) unverifiable embedded oppCkpt (fabricated cosigners) — fail-HARD
+    // (e) unverifiable embedded oppCkpt (fabricated cosigners), fail-HARD
     const pBadCk = segPayload(G1, oppA, { est: true })
     pBadCk.oppCkpt = { ...pBadCk.oppCkpt, wit: pBadCk.oppCkpt.wit.map((a, i) => ({ ...a, sig: 'B'.repeat(86) })) }
     const cBadCk = chain.appendWitnessed(mkChain(), me.priv, meB, 'segment', pBadCk, ts++)
@@ -566,7 +566,7 @@ async function run(outdir) {
   console.log('\n· golden chains …')
   {
     // Exemplary: 3 established games + 2 full-weight commends + 1 settled
-    // rematch (claim → the rematch game itself arrives) — tier 3.
+    // rematch (claim → the rematch game itself arrives). Tier 3.
     let c = mkChain()
     c = addSeg(c, G1, oppA, { est: true, reason: 'checkmate' })
     c = addSeg(c, G2, oppA, { est: true, color: 'b', result: '1/2-1/2', reason: 'agreement' })
@@ -665,22 +665,22 @@ async function run(outdir) {
   }
   console.log('\n· A4-14: sybil commend farm floor math …')
   {
-    // 10 fresh sybil roots, one bound game + one root-signed commend each —
-    // a 100% commend rate from checkpoint-less commenders.
+    // 10 fresh sybil roots, one bound game + one root-signed commend each.
+    // A 100% commend rate from checkpoint-less commenders.
     let cFarm = mkChain()
     for (let i = 0; i < 10; i++) cFarm = addSeg(cFarm, fakeId(`farm-${i}`), sybils[i])
     for (let i = 0; i < 10; i++) cFarm = addCommend(cFarm, commendFrom(sybils[i], fakeId(`farm-${i}`)))
     const sFarm = fold(cFarm)
     eq(sFarm.seg, 10, 'farm: all 10 games counted')
     eq(sFarm.commend, 10, 'farm: all 10 commends individually valid and counted')
-    eq(sFarm.commendTw, 10, 'farm: each at the 1/20 floor — 10 twentieths total')
+    eq(sFarm.commendTw, 10, 'farm: each at the 1/20 floor, 10 twentieths total')
     eq(rep.repScore(sFarm), 83, 'farm commendSub = floor(400·10/(20·10)) = 20 → 83, NOT the 95 an earned record gets')
     eq(chain.verifyChain(cFarm).ok, true, 'the farm chain is chain-VALID (the fold rule, not verification, contains it)')
     eq(rep.repEvidenceOf(cFarm, elig).commendTwBonus, 0,
       'farm evidence: no oppCkpt anywhere → zero est bonus even under an honest roster')
-    // A4-14 PIN — the review's sybil residue, closed: the SAME farm shape with
+    // A4-14 PIN. The review's sybil residue, closed: the SAME farm shape with
     // self-minted verifyEmbeddedOppCkpt-PASSING checkpoints (real keypairs,
-    // real signatures — est CLAIMS everywhere) still scores the farm floor:
+    // real signatures. Est CLAIMS everywhere) still scores the farm floor:
     // the fold never grants est weight, and no verifier who does not vouch
     // for those cosigners ever will.
     let cEst = mkChain()
@@ -694,7 +694,7 @@ async function run(outdir) {
     eq(rep.repEvidenceOf(cEst, eligNoCos).commendTwBonus, 0,
       'est-claim farm under a roster that does NOT recognize its cosigners → zero bonus → still 83')
     // contrast: when the verifier DOES vouch for the cosigners (real fabric
-    // witnesses), the same shape earns full credit — goodwill is roster-earned
+    // witnesses), the same shape earns full credit: goodwill is roster-earned
     const evEst = rep.repEvidenceOf(cEst, elig)
     eq(evEst.commendTwBonus, 190, 'eligibility-verified established opponents: bonus 10 × 19')
     eq(rep.repScore(sEst, evEst), 95, 'established commendSub with evidence = min(100, floor(400·200/200)) = 100 → 95')
@@ -703,7 +703,7 @@ async function run(outdir) {
   {
     // The buddy-farm vector: ONE established opp, 3 games, 3 commends. The
     // k-th in-window commend from one opp is worth floor(20/k) TOTAL
-    // (fold floor(1/k) + evidence remainder): 20, 10, 6 — repeat goodwill
+    // (fold floor(1/k) + evidence remainder): 20, 10, 6. Repeat goodwill
     // decays exactly like the trust fold's repeat-play entSat discount.
     let c = mkChain()
     c = addSeg(c, G1, oppA, { est: true })
@@ -713,12 +713,12 @@ async function run(outdir) {
     c = addCommend(c, commendFrom(oppA, G2))
     c = addCommend(c, commendFrom(oppA, G3))
     const s = fold(c)
-    eq(s.commend, 3, 'decay: all 3 commends counted (distinct games — the ≤1-per-(opp,game) rule is separate)')
+    eq(s.commend, 3, 'decay: all 3 commends counted (distinct games; the ≤1-per-(opp,game) rule is separate)')
     eq(s.commendTw, 1, 'decay: fold floor tw = floor(1/1)+floor(1/2)+floor(1/3) = 1 + 0 + 0')
     eq(s.com[oppA.pubB].k, 3, 'decay: the windowed per-opp counter reached 3')
     const ev3 = rep.repEvidenceOf(c, elig)
     eq(ev3.commendTwBonus, 19 + 10 + 6, 'decay: est evidence remainder = 19 + 10 + 6')
-    eq(s.commendTw + ev3.commendTwBonus, 36, 'decay: total credit 36 = 20 + 10 + 6, NOT 60 — buddy commends decay')
+    eq(s.commendTw + ev3.commendTwBonus, 36, 'decay: total credit 36 = 20 + 10 + 6, NOT 60. Buddy commends decay')
     // contrast: the same 3 est commends from 3 DISTINCT opps carry 60
     let cD = mkChain()
     const oppsD = [oppA, oppB, sybils[0]]
@@ -726,7 +726,7 @@ async function run(outdir) {
     for (let i = 0; i < 3; i++) cD = addCommend(cD, commendFrom(oppsD[i], [G1, G2, G3][i]))
     const sD = fold(cD)
     eq(sD.commendTw, 3, 'distinct opps: fold floor 1+1+1')
-    eq(sD.commendTw + rep.repEvidenceOf(cD, elig).commendTwBonus, 60, 'distinct opps: full 20 each — no decay across opponents')
+    eq(sD.commendTw + rep.repEvidenceOf(cD, elig).commendTwBonus, 60, 'distinct opps: full 20 each. No decay across opponents')
     // the decay counter is WINDOWED: a commend after repPairWindow restarts k
     let gen2 = 0
     const pad = (cc, n) => {
@@ -735,7 +735,7 @@ async function run(outdir) {
       return cc
     }
     let cW = addSeg(mkChain(), G1, oppA) // h1
-    cW = addCommend(cW, commendFrom(oppA, G1)) // h2 — k=1, tw+1
+    cW = addCommend(cW, commendFrom(oppA, G1)) // h2: k=1, tw+1
     cW = pad(cW, a4.PARAMS_A4.repPairWindow) // ride far past the window
     cW = addSeg(cW, G2, oppA) // state-modifying → prunes the stale com entry
     cW = addCommend(cW, commendFrom(oppA, G2))
@@ -758,12 +758,12 @@ async function run(outdir) {
     eq(rep.repEvidenceOf(cEok, elig).commendTwBonus, 19, 'evidence at the window edge grants the est remainder')
     const cEbad = addCommend(pad3(cE, 1), commendFrom(oppA, G1)) // diff W+1
     eq(fold(cEbad).commend, 0, '…one past the edge the fold ignores the commend')
-    eq(rep.repEvidenceOf(cEbad, elig).commendTwBonus, 0, '…and evidence grants NOTHING (counted ⇔ earned — zero drift)')
+    eq(rep.repEvidenceOf(cEbad, elig).commendTwBonus, 0, '…and evidence grants NOTHING (counted ⇔ earned, zero drift)')
   }
   console.log('\n· A4-21 CLOSED (A7): the read-time commend-revocation discount …')
   {
     // The scenario the closure covers: oppA certified a child key, the key
-    // was STOLEN, oppA revoked it in oppA's OWN chain — and the thief mints a
+    // was STOLEN, oppA revoked it in oppA's OWN chain, and the thief mints a
     // commend with the old cert inline. The revoke demonstrably exists …
     const revokeEv = events.signBody(
       {
@@ -775,7 +775,7 @@ async function run(outdir) {
     ok(events.verifyEventSig(revokeEv), 'fixture sanity: the revoke event in the COMMENDER’s chain is real and root-signed')
     // … and it lives in the commender's chain, which the FOLD may never read
     // (§5/§6 recursion + A4-04 determinism) and inline payload material
-    // cannot carry — so the two design pins below STAY true forever. The
+    // cannot carry, so the two design pins below STAY true forever. The
     // closure is exactly at the conduct.ts-designated seam: repEvidenceOf
     // takes the caller's revocation view and discounts at READ TIME.
     const childCommend = conduct.makeCommendPayload({
@@ -784,12 +784,12 @@ async function run(outdir) {
       certs: [oppAChildCert],
     })
     ok(conduct.verifyCommend(childCommend, meB),
-      'A4-21 PIN (permanent design boundary): a certified-then-revoked child key still verifies — inline material cannot carry the revoke')
+      'A4-21 PIN (permanent design boundary): a certified-then-revoked child key still verifies. Inline material cannot carry the revoke')
     let c = addSeg(mkChain(), G1, oppA, { est: true })
     c = addCommend(c, childCommend)
     const s = fold(c)
     eq(s.commend, 1,
-      'A4-21 PIN (permanent design boundary): …and the deterministic fold counts it — the discount lives at read time only')
+      'A4-21 PIN (permanent design boundary): …and the deterministic fold counts it. The discount lives at read time only')
     eq(s.commendTw, 1, 'fold floor credit for the commend is 1 twentieth (k = 1)')
     const foldDigestBefore = stateHash(s)
     const commendTs = c.events.find((e) => e.body.type === 'commend').body.ts
@@ -810,7 +810,7 @@ async function run(outdir) {
     const evLive = rep.repEvidenceOf(c, elig, viewAt(commendTs + 1))
     eq(evLive.commendTwRevoked, 0, 'A4-21 honest rotation: key revoked AFTER signing ⇒ no discount')
     eq(evLive.commendTwBonus, 19, '…and the est-tier bonus is granted as before')
-    eq(rep.repScore(s, evLive), 95, '…full commend credit (score 95) — rotation never costs earned goodwill')
+    eq(rep.repScore(s, evLive), 95, '…full commend credit (score 95): rotation never costs earned goodwill')
     // ── no view / view that cannot vouch ⇒ unchanged pre-closure behavior ──
     const evNoView = rep.repEvidenceOf(c, elig)
     eq(evNoView.commendTwRevoked, 0, 'no revocation view ⇒ nothing is flagged (absence of evidence is not a revocation)')
@@ -819,11 +819,11 @@ async function run(outdir) {
       'a view with no revocation for the key flags nothing')
     // ── read-time ONLY: fold/checkpoint bytes are byte-identical ──
     eq(stateHash(fold(c)), foldDigestBefore,
-      'A4-21 DIGEST PIN: the fold state digest is unchanged — no revocation view ever reaches checkpoint-embedded bytes')
+      'A4-21 DIGEST PIN: the fold state digest is unchanged. No revocation view ever reaches checkpoint-embedded bytes')
   }
   console.log('\n· rematch + segment rate limits …')
   {
-    // claim without an in-chain prior — and the game arriving later changes nothing
+    // claim without an in-chain prior, and the game arriving later changes nothing
     let r1 = addConduct(mkChain(), rematchFrom(oppA, { prior: G1, game: G2 }))
     r1 = addSeg(r1, G2, oppA)
     const sr1 = fold(r1)
@@ -833,14 +833,14 @@ async function run(outdir) {
     let r2 = addSeg(mkChain(), G1, oppB)
     r2 = addConduct(r2, rematchFrom(oppA, { prior: G1, game: G2 }))
     eq(fold(r2).rematch, 0, 'rematch-accept whose prior segment names a different opp is ignored')
-    // duplicate claims per (prior, opp) — the second is dead even before settling
+    // duplicate claims per (prior, opp): the second is dead even before settling
     let r3 = addSeg(mkChain(), G1, oppA)
     r3 = addConduct(r3, rematchFrom(oppA, { prior: G1, game: G2 }))
     r3 = addConduct(r3, rematchFrom(oppA, { prior: G1, game: G3 }))
     r3 = addSeg(r3, G2, oppA)
     r3 = addSeg(r3, G3, oppA)
     eq(fold(r3).rematch, 1, 'second claim naming the same (prior, opp) is ignored (anti-farming)')
-    // unilateral (fabricated-countersig) claim — schema-valid, never counts
+    // unilateral (fabricated-countersig) claim: schema-valid, never counts
     let r4 = addSeg(mkChain(), G1, oppA)
     r4 = addConduct(r4, { kind: 'rematch-accept', game: G2, opp: oppA.pubB, prior: G1, key: oppA.pubB, sig: 'A'.repeat(86) })
     r4 = addSeg(r4, G2, oppA)
@@ -907,7 +907,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 8. determinism — state bytes across rebuild + personal-lane reorder
+  // 8. determinism, state bytes across rebuild + personal-lane reorder
   // ============================================================================
   console.log('\n· fold determinism …')
   {
@@ -942,7 +942,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 9. windowed compaction (PARAMS_A4.repPairWindow) — pair AND pend
+  // 9. windowed compaction (PARAMS_A4.repPairWindow), pair AND pend
   // ============================================================================
   console.log('\n· reference window: boundary cases …')
   const W = a4.PARAMS_A4.repPairWindow
@@ -982,26 +982,26 @@ async function run(outdir) {
     eq(sPendPast.rematch, 0, 'pending claim whose game arrives past the window counts nothing (pruned)')
     ok(!(`${G3}:${oppA.pubB}` in sPendPast.pend), '…and the pend entry is gone (bounded state)')
     console.log('\n· reference window: prune ↔ validity, no gap …')
-    // commended in-window, then re-sent after the window: STILL ignored — the
+    // commended in-window, then re-sent after the window: STILL ignored. The
     // rule that expires the memory is the rule that expires validity.
     let cDup = addSeg(mkChain(), G1, oppA) // h1
-    cDup = addCommend(cDup, commendFrom(oppA, G1)) // h2 — counts
+    cDup = addCommend(cDup, commendFrom(oppA, G1)) // h2: counts
     cDup = padPins(cDup, W) // heads through h202
     const sBeforeMod = fold(cDup)
-    ok(`${G1}:${oppA.pubB}` in sBeforeMod.pair, 'pass-through events (pins) do NOT prune — entry still present')
+    ok(`${G1}:${oppA.pubB}` in sBeforeMod.pair, 'pass-through events (pins) do NOT prune, entry still present')
     const pinEv = cDup.events[cDup.events.length - 1]
     ok(rep.repStep(sBeforeMod, pinEv) === sBeforeMod, 'pin event passes through unchanged (same reference, no prune)')
     const cDup2 = addCommend(cDup, commendFrom(oppA, G1)) // h203, diff 202 > W
     eq(fold(cDup2).commend, 1, 're-sent commend after the window is ignored (window rule, entry still in map)')
     // now force a prune (a state-modifying segment), THEN attempt the duplicate:
-    // the entry is GONE — and the duplicate is still rejected by the same rule.
+    // the entry is GONE, and the duplicate is still rejected by the same rule.
     const cPruned = addSeg(cDup, G2, oppB) // h203 → prunes h < 3
     const sPruned = fold(cPruned)
     ok(!(`${G1}:${oppA.pubB}` in sPruned.pair), 'a state-modifying step prunes the out-of-window entry')
     ok(`${G2}:${oppB.pubB}` in sPruned.pair, 'the fresh segment entry is present after the prune')
     eq(sPruned.commend, 1, 'the counted commend survives pruning (counters are permanent; only memory expires)')
     const cPrunedDup = addCommend(cPruned, commendFrom(oppA, G1)) // h204
-    eq(fold(cPrunedDup).commend, 1, 'duplicate attempt AFTER pruning is rejected — no gap, no double count')
+    eq(fold(cPrunedDup).commend, 1, 'duplicate attempt AFTER pruning is rejected, no gap, no double count')
     eq(rep.repScore(fold(cPrunedDup)), rep.repScore(sPruned), 'the rejected post-prune duplicate never moves the score')
     // determinism with pruning in play: fold the pruned fixture twice
     eq(stateHash(fold(cPruned)), stateHash(fold(cPruned)), 'window fixture folds to identical state bytes twice')
@@ -1009,7 +1009,7 @@ async function run(outdir) {
   }
   console.log('\n· reference window: bounded state …')
   {
-    // 300 REAL crafted segment events (valid event + wstream signatures — the
+    // 300 REAL crafted segment events (valid event + wstream signatures; the
     // A4-07 gate verifies them): the pair map must stay O(window).
     let s = rep.repInit()
     for (let i = 1; i <= 300; i++) {
@@ -1054,7 +1054,7 @@ async function run(outdir) {
     throws(() => conduct.makePairingPayload({ game: G1, opp: oppA.pubB, kind: 'chess', tc: BLITZ_TC, atWts: -1 }),
       'negative atWts throws')
   }
-  console.log('\n· J5 obligation: opened / settled by segment / abort / noshow — all neutral …')
+  console.log('\n· J5 obligation: opened / settled by segment / abort / noshow, all neutral …')
   {
     // Opened: the pairing itself moves nothing.
     const cOpen = addPairing(mkChain(), G1, oppA)
@@ -1062,12 +1062,12 @@ async function run(outdir) {
     eq(sOpen.ob[`${G1}:${oppA.pubB}`], 1, 'a pairing opens an obligation at its witnessed height')
     eq(sOpen.unsettled, 0, 'opening an obligation is not misconduct')
     eq(rep.repScore(sOpen), 80, 'a lone open pairing keeps the neutral 80')
-    // Settled by a BOUND segment (any result — here a loss).
+    // Settled by a BOUND segment (any result; here a loss).
     const cSeg = addSeg(cOpen, G1, oppA, { color: 'w', result: '0-1', reason: 'resign' })
     const sSeg = fold(cSeg)
     eq(sSeg.unsettled, 0, 'the bound segment for (game, opp) settles the obligation (any result)')
     eq(Object.keys(sSeg.ob).length, 0, 'settling empties the obligation map')
-    eq(rep.repScore(sSeg), 80, 'a settled pairing is NEUTRAL (no bonus, no penalty — resign loss aside)')
+    eq(rep.repScore(sSeg), 80, 'a settled pairing is NEUTRAL (no bonus, no penalty, resign loss aside)')
     // Settled by an abort conduct event for the same (game, opp).
     const cAb = addConduct(addPairing(mkChain(), G1, oppA), conduct.makeConductPayload({ kind: 'abort', game: G1, opp: oppA.pubB }))
     const sAb = fold(cAb)
@@ -1112,7 +1112,7 @@ async function run(outdir) {
     // A LEGACY segment for the SAME (game, opp) settles NOTHING (unbound opp).
     const cLeg = addSeg(addPairing(mkChain(), G1, oppA), G1, oppA, { legacy: true })
     const sLeg = fold(cLeg)
-    eq(sLeg.unsettled, 1, 'a LEGACY segment cannot settle the obligation (opp unbound) — it condemns instead')
+    eq(sLeg.unsettled, 1, 'a LEGACY segment cannot settle the obligation (opp unbound): it condemns instead')
     eq(sLeg.seg, 1, '…while still counting toward seg (the game happened)')
     // 300 back-to-back pairings: map stays O(1), every predecessor condemned.
     let sMany = rep.repInit()
@@ -1180,7 +1180,7 @@ async function run(outdir) {
     const cSelf = chain.appendWitnessed(mkChain(), me.priv, meB, 'pairing', selfP, ts++)
     const sSelf = fold(cSelf)
     eq(Object.keys(sSelf.ob).length, 0, 'a pairing with opp === root is ignored')
-    // Malformed: ignored, no throw (crafted — never appendable).
+    // Malformed: ignored, no throw (crafted; never appendable).
     const sNeutral = fold(mkChain())
     const mkBad = (payload) => ({
       body: { v: 1, lane: 'w', type: 'pairing', root: meB, key: meB, height: 9, prev: fakeId('p'), ts: 1, payload },
@@ -1211,7 +1211,7 @@ async function run(outdir) {
     eq(stateHash(sA), stateHash(fold(cB)), 'building the same pairing chain twice → identical folded state bytes')
     eq(stateHash(fold(cA)), stateHash(fold(cA)), 'folding the same chain twice → identical state bytes')
     eq(sA.unsettled, 1, 'the J5 determinism fixture condemns exactly one obligation')
-    eq(Object.keys(sA.ob).length, 1, 'the head obligation is still open (no clock — the fold cannot condemn the future)')
+    eq(Object.keys(sA.ob).length, 1, 'the head obligation is still open (no clock: the fold cannot condemn the future)')
     eq(chain.verifyChain(cA).ok, true, 'the pairing-bearing chain verifies ok end-to-end (real crypto)')
     // score: seg=1, abort=1, unsettled=1 → C=floor(100/2)=50, D=100, T=100,
     // Dn = 1+1+0+1 = 3 → N = floor(100·(3−0−1)/3) = 66 → 17.5+25+10+6.6 = 59

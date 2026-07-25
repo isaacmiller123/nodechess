@@ -94,7 +94,7 @@ summary:focus-visible,
   margin: 0 0 var(--space-5);
   color: var(--accent);
 }
-/* Same treatment as .seed-wordmark in src/seed/seed.css — heavier than --fw-bold
+/* Same treatment as .seed-wordmark in src/seed/seed.css. Heavier than --fw-bold
    and tracked tighter than body text, so the app and the seed node read as one
    brand. lowercase is enforced, not merely typed, because the name never takes
    a capital anywhere. */

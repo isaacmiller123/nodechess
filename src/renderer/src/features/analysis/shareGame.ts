@@ -45,7 +45,7 @@ export function parsePgnToGame(pgn: string): LoadedGame | null {
 
   for (const node of game.moves.mainline()) {
     const move = parseSan(pos, node.san)
-    if (!move) break // illegal / unparseable — stop cleanly
+    if (!move) break // illegal / unparseable: stop cleanly
     const san = makeSan(pos, move)
     pos.play(move)
     moves.push({

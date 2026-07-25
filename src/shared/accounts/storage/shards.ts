@@ -1,4 +1,4 @@
-// A3 storage — shard duty + repair (spec §5 retention layer 3, publish-on-write;
+// A3 storage: shard duty + repair (spec §5 retention layer 3, publish-on-write;
 // contracts: ./types.ts SnapshotHeader/ShardEnvelope, ./rs.ts codec, ./params.ts
 // PARAMS_A3, docs/ACCOUNTS-PARAMS.md §Storage).
 //
@@ -8,19 +8,19 @@
 // Publish-on-write replicates witnessed events at creation; a final sync cuts a
 // snapshot of the full chain and leaves all nShards rows in shard space. Repair
 // is a caller-driven scan that re-encodes and redistributes when observed live
-// rows fall below kRec + repairHeadroom — browser eviction = churn = healed.
+// rows fall below kRec + repairHeadroom, browser eviction = churn = healed.
 //
 // Authority NEVER comes from the overlay or the publisher (§0): a shard row is
-// accepted only when its envelope verifies — the embedded head is an
+// accepted only when its envelope verifies. The embedded head is an
 // owner-signed + witness-attested event of the claimed root, the certs prove
 // the signing key, and the shard framing binds byte-for-byte to the header.
 // The overlay moves bytes and routes; the verifiers here gate acceptance.
 //
 // Determinism rules (suite-load-bearing): platform-neutral (no `node:` imports,
-// no DOM globals), no Date.now / Math.random / timers — clocks are the
+// no DOM globals), no Date.now / Math.random / timers. Clocks are the
 // caller's, repair runs only when ticked. Every verifier is pure and
 // byte-identical on node and in the browser bundle. Distance math REUSES
-// witness/distance.ts; RS coding REUSES ./rs.ts — nothing is reimplemented.
+// witness/distance.ts; RS coding REUSES ./rs.ts: nothing is reimplemented.
 
 import { z } from 'zod'
 import { chainFromBytes, chainToBytes, verifyChain } from '../chain'
@@ -47,10 +47,10 @@ import { encode, reconstruct } from './rs'
 import type { Shard, ShardEnvelope, SnapshotHeader } from './types'
 
 // ---------------------------------------------------------------------------
-// Shard keys — where row idx of a subject lives in the overlay keyspace
+// Shard keys: where row idx of a subject lives in the overlay keyspace
 // ---------------------------------------------------------------------------
 
-/** Domain separator for shard keys — fixed forever (records embed the params
+/** Domain separator for shard keys: fixed forever (records embed the params
  * digest for everything revisable; the key derivation itself is structural). */
 const SHARD_KEY_TAG = 'cs:a3:shard-key:v1'
 
@@ -58,7 +58,7 @@ const SHARD_KEY_TAG = 'cs:a3:shard-key:v1'
  * The deterministic 32-byte overlay key of shard row `idx` for a subject:
  * sha256(utf8(SHARD_KEY_TAG) ‖ subjectNodeIdBytes ‖ u32be(idx)) as b64u.
  * Distinct per idx and hash-spread across the keyspace, so one subject's 40
- * rows land on 40 unrelated neighborhoods — no single churn event can take a
+ * rows land on 40 unrelated neighborhoods. No single churn event can take a
  * chain below kRec. Throws on programmer misuse (builders throw; verifiers
  * fail closed).
  */
@@ -86,7 +86,7 @@ export interface SnapshotOpts {
   params?: B64u
 }
 
-/** Domain separator for the owner's blob commitment — fixed forever. */
+/** Domain separator for the owner's blob commitment. Fixed forever. */
 const SNAP_COMMIT_TAG = 'cs:a3:snap-commit:v1'
 
 /**
@@ -129,10 +129,10 @@ export function snapshotCommitBytes(h: {
  * chainToBytes(chain), headId/height from the witnessed head, params digest of
  * the rule set the job is cut under. `head` must be the chain's own witnessed
  * head event (its authority: owner signature + witness attestation ride IN it)
- * and `certs` must prove head.body.key belongs to root when device-signed —
- * both are re-checked by every store-time verifier, so a header is
+ * and `certs` must prove head.body.key belongs to root when device-signed.
+ * Both are re-checked by every store-time verifier, so a header is
  * self-authenticating with no external context. `commitPriv` is the private
- * key of head.body.key — the owner signs blobHash into the header so a keyless
+ * key of head.body.key: the owner signs blobHash into the header so a keyless
  * attacker cannot pair the public head with a foreign blobHash. Throws on
  * programmer misuse (including a commitPriv that does not match head.body.key).
  */
@@ -182,7 +182,7 @@ export function cutSnapshot(
 /**
  * Erasure-code the chain bytes under a header into n framed ShardEnvelopes
  * (rs.encode already stamps dataHash/dataLen, which MUST equal the header's
- * blobHash/blobLen — checked, so a job can never ship self-inconsistent).
+ * blobHash/blobLen. Checked, so a job can never ship self-inconsistent).
  * Deterministic: same (header, bytes) → same envelope bytes everywhere.
  */
 export function shardJob(header: SnapshotHeader, chainBytes: Uint8Array): ShardEnvelope[] {
@@ -192,7 +192,7 @@ export function shardJob(header: SnapshotHeader, chainBytes: Uint8Array): ShardE
 }
 
 // ---------------------------------------------------------------------------
-// Store-time verification (fail CLOSED — typed verdicts, never a throw)
+// Store-time verification (fail CLOSED: typed verdicts, never a throw)
 // ---------------------------------------------------------------------------
 
 export type ShardVerdict =
@@ -206,7 +206,7 @@ export type ShardVerdict =
   | 'bad-shard' // shard framing invalid or not bound byte-for-byte to the header
 
 /** Wire-sanity cap on embedded cert chains (one cert proves one device key;
- * a handful covers multi-device — a padded list is bounded, never trusted). */
+ * a handful covers multi-device. A padded list is bounded, never trusted). */
 export const HEADER_CERTS_MAX = 16
 
 /** Exported for the pointer layer (brick 4): a shard pointer embeds a bare
@@ -249,7 +249,7 @@ export interface VerifyShardOpts extends SnapshotOpts {}
 
 /**
  * Verify a SnapshotHeader STANDING ALONE (no shard body): shape, advertised
- * rule set (params digest + k/n geometry — a foreign rule set is refused, not
+ * rule set (params digest + k/n geometry; a foreign rule set is refused, not
  * guessed), the countersigned head (owner-signed witnessed event of root
  * matching headId/height, ≥1 valid witness attestation), and the embedded
  * cert proof of the signing key. Extracted from verifyShardEnvelope so the
@@ -263,13 +263,13 @@ export function verifySnapshotHeader(header: unknown, opts: VerifyShardOpts = {}
   try {
     if (!zSnapshotHeader.safeParse(header).success) return 'bad-envelope'
     const h = header as SnapshotHeader
-    // rule-set pin: the digest names the rules, k/n are its geometry — both
+    // rule-set pin: the digest names the rules, k/n are its geometry. Both
     // must be the ones this carrier advertises for.
     if (h.params !== (opts.params ?? PARAMS_A3_DIGEST)) return 'wrong-params'
     if (h.k !== (opts.k ?? PARAMS_A3.kRec) || h.n !== (opts.n ?? PARAMS_A3.nShards))
       return 'wrong-params'
     if (h.k > h.n) return 'wrong-params'
-    // One committed body hash per shard row (idx order) — geometry pin on the
+    // One committed body hash per shard row (idx order). Geometry pin on the
     // per-row body commitment authenticated by commitSig below.
     if (h.bodyHashes.length !== h.n) return 'wrong-params'
     // head: an owner-signed, witness-attested witnessed event of root.
@@ -305,13 +305,13 @@ export function verifySnapshotHeader(header: unknown, opts: VerifyShardOpts = {}
  *    the advertised k/n geometry (a foreign rule set is refused, not guessed);
  *  - header.head is a witnessed event OF header.root: owner-signed
  *    (verifyEventSig by head.body.key), witness-attested (≥1 attestation
- *    binding to headId — the A2 context-free floor; witness ELIGIBILITY
+ *    binding to headId: the A2 context-free floor; witness ELIGIBILITY
  *    ranking is the pointer/viewer layer's read-time business), and matches
  *    headId (= eventId(head.body)) and height;
  *  - header.certs prove head.body.key belongs to root (root-signed cert set,
- *    certs.ts rules) — empty when the head is root-signed;
+ *    certs.ts rules): empty when the head is root-signed;
  *  - blobHash/blobLen are committed by head.body.key (verifySnapshotHeader's
- *    commitSig check) — a header pairing a real head with a foreign blobHash is
+ *    commitSig check). A header pairing a real head with a foreign blobHash is
  *    refused HERE, so a keyless attacker cannot pin a shard slot with poison;
  *  - the shard framing binds byte-for-byte to the header: k/n/dataLen/dataHash
  *    equal blob geometry, idx ∈ [0, n), body decodes to exactly
@@ -319,7 +319,7 @@ export function verifySnapshotHeader(header: unknown, opts: VerifyShardOpts = {}
  *    header.bodyHashes[idx] (the per-row body authenticator).
  * The per-row body commitment (bodyHashes, signed by commitSig) means a keyless
  * attacker cannot pin a slot with a same-length garbage/byte-flipped body: such
- * a row is refused at the gate, not merely caught later at reconstruction — so
+ * a row is refused at the gate, not merely caught later at reconstruction, so
  * it can never strand an otherwise-recoverable snapshot. Never throws.
  */
 export function verifyShardEnvelope(env: unknown, opts: VerifyShardOpts = {}): ShardVerdict {
@@ -350,11 +350,11 @@ export function verifyShardEnvelope(env: unknown, opts: VerifyShardOpts = {}): S
 }
 
 // ---------------------------------------------------------------------------
-// Duty assignment — who carries shard row idx of a subject
+// Duty assignment, who carries shard row idx of a subject
 // ---------------------------------------------------------------------------
 
 export interface DutyOpts {
-  /** Injected clock (ms) for presence staleness — REQUIRED, no ambient time. */
+  /** Injected clock (ms) for presence staleness, REQUIRED, no ambient time. */
   nowMs: number
   /** Carriers per row; default PARAMS_A3.dutyK. */
   dutyK?: number
@@ -362,11 +362,11 @@ export interface DutyOpts {
 
 /**
  * The ranked ≤dutyK duty carriers for (subject, idx): the closest
- * CAPACITY-ADVERTISING live nodes to shardKey(subject, idx) — caps.shardMb > 0
+ * CAPACITY-ADVERTISING live nodes to shardKey(subject, idx): caps.shardMb > 0
  * and presence not stale at nowMs. Directory records are signature-verified at
  * ingest (presence.ts / MockFabric announce), so no re-verification here; the
- * ranking itself (closestEligible: XOR distance, byte tie-break) is objective —
- * every observer with the same directory computes the same carriers, which is
+ * ranking itself (closestEligible: XOR distance, byte tie-break) is objective.
+ * Every observer with the same directory computes the same carriers, which is
  * what makes shard-duty claims checkable by viewers (types.ts PointerKind
  * 'shard').
  */
@@ -406,7 +406,7 @@ export function isOnDuty(
 /** The value stored under kind 'events' at nodeIdOf(subject root): a set row
  * of the subject's witnessed events, union-merged by event id at each holder.
  * `certs` carry the subject's root-signed device certs so a device-signed event
- * can be AUTHORIZED at the store gate (key proven for root) — without them a
+ * can be AUTHORIZED at the store gate (key proven for root). Without them a
  * gate could not tell an owner's device key from an attacker's throwaway. */
 export interface EventsRow {
   v: 1
@@ -423,7 +423,7 @@ export const EVENTS_CERTS_MAX = HEADER_CERTS_MAX
  * cost only a witness countersignature, so an active account's whole witnessed
  * lane would otherwise accumulate off-budget at the replicateK closest nodes,
  * bypassing the advertised capacity (§11). The full chain lives in shard space;
- * this row is the recent-events replication convenience — so it keeps the
+ * this row is the recent-events replication convenience, so it keeps the
  * NEWEST rows (plus genesis, which carries the display name) up to the cap. */
 export const EVENTS_ROW_MAX = 8192
 
@@ -437,8 +437,8 @@ const eventsRow = (events: readonly SignedEvent[], certs: readonly SignedEvent[]
  * the subject key on the replicateK overlay-closest nodes (node.put walks the
  * overlay and offers the row; each holder's validator re-verifies the event and
  * its merge unions it into the held row). `certs` prove the event's signing key
- * when device-signed (root-signed certs; omit when the event is root-signed) —
- * the gate rejects a device-signed event whose key is not proven. Returns the
+ * when device-signed (root-signed certs; omit when the event is root-signed).
+ * The gate rejects a device-signed event whose key is not proven. Returns the
  * number of true stores.
  */
 export function publishWitnessedEvent(
@@ -452,7 +452,7 @@ export function publishWitnessedEvent(
 
 /**
  * Batch publish-on-write (viewer/suite seam): replicate MANY witnessed events
- * under the subject key in store-gate-sized rows (eventsPageMax per put — the
+ * under the subject key in store-gate-sized rows (eventsPageMax per put, the
  * per-store cap acceptEvents enforces). Each holder's merge unions the rows,
  * so the result is identical to per-event publishing at a fraction of the
  * puts. `certs` ride EVERY page so each device-signed event is authorizable at
@@ -481,7 +481,7 @@ export interface FinalSyncResult {
 
 /**
  * The §5 final sync: cut a snapshot of the full chain, erasure-code it, and
- * store every ShardEnvelope at its own shardKey(subject, idx) — leaving the
+ * store every ShardEnvelope at its own shardKey(subject, idx). Leaving the
  * complete chain reconstructible from shard space alone. Each row rides
  * node.put, i.e. is offered to the replicateK overlay-closest nodes to its
  * key; the dutyK closest capacity nodes among them are the carriers viewers
@@ -509,14 +509,14 @@ export async function finalSync(
 // ---------------------------------------------------------------------------
 
 export interface ShardStoreOpts {
-  /** Advertised capacity (PresenceBody.caps.shardMb) — the honest budget. */
+  /** Advertised capacity (PresenceBody.caps.shardMb). The honest budget. */
   shardMb: number
   /** Exact byte budget override (suite seam; default shardMb * 2^20). */
   budgetBytes?: number
   /** Verification context for accepted shard jobs (default PARAMS_A3). */
   verify?: VerifyShardOpts
   /** Fallback gate for kinds this layer does not own. Default mirrors the
-   * overlay's own default: accept 'record', refuse the rest — compose with
+   * overlay's own default: accept 'record', refuse the rest: compose with
    * pointers.ts makePointerStoreValidator here to gate kind 'pointers'. */
   base?: StoreValidator
 }
@@ -528,7 +528,7 @@ export interface ShardStoreGate {
   merge: MergeFn
   /** Bytes of shard rows currently accepted against the budget. */
   usedBytes(): number
-  /** Subject nodeIds this node holds shard rows for (sorted, deduped) — the
+  /** Subject nodeIds this node holds shard rows for (sorted, deduped). The
    * repair scan's worklist (the OverlayNode contract has no key enumeration,
    * so the gate records subjects as it accepts their rows). */
   subjects(): NodeId[]
@@ -540,7 +540,7 @@ interface HeldRow {
   bytes: number
   height: number
   headId: EventId
-  /** b64u(sha256(canonicalBytes(value))) of the accepted row — pins the exact
+  /** b64u(sha256(canonicalBytes(value))) of the accepted row, pins the exact
    * bytes so a same-height "re-store" cannot swap the held row's body. */
   valueHash: B64u
 }
@@ -549,21 +549,21 @@ interface HeldRow {
  * Build the storage layer's STORE gate for one node.
  *
  * kind 'shard': accepted only when (1) verifyShardEnvelope passes, (2) the
- * target key IS shardKey(nodeIdOf(header.root), shard.idx) — an envelope
+ * target key IS shardKey(nodeIdOf(header.root), shard.idx). An envelope
  * stored under a foreign key would poison another subject's slot, (3) the row
  * is not STALER than the held row for that key (height must advance, or
  * re-store the BYTE-IDENTICAL snapshot row; a same-height different head, or
- * different bytes under the same head, is refused — first-held wins, fork
+ * different bytes under the same head, is refused. First-held wins, fork
  * adjudication is §8's business, not a store gate's),
  * and (4) the byte budget holds: usedBytes − held + incoming ≤ budget.
  * Refusal is honest degradation (StoreRes stored:false), never an error.
  *
  * kind 'events': accepted only when every event in the row is a witnessed
- * event OF the subject the target key names — nodeIdOf(root) === target,
+ * event OF the subject the target key names: nodeIdOf(root) === target,
  * owner-signed (verifyEventSig), key AUTHORIZED for root (ev.body.key === root
- * or proven by the row's root-signed certs — the §0 floor: standing under the
+ * or proven by the row's root-signed certs. The §0 floor: standing under the
  * subject key comes from owner signatures, never possession, so an attacker's
- * throwaway key is refused), ≥1 valid witness attestation — and the row is
+ * throwaway key is refused), ≥1 valid witness attestation, and the row is
  * within the per-store cap (PARAMS_A3.eventsPageMax). The merge bounds the
  * accumulated row at EVENTS_ROW_MAX so an active lane cannot grow it without
  * limit off-budget (§11).
@@ -588,7 +588,7 @@ export function makeShardStoreValidator(opts: ShardStoreOpts): ShardStoreGate {
     const prev = held.get(target)
     if (prev) {
       // Freshness gate (merge for 'shard' is plain replace, so the gate is
-      // the ONE place staleness is decided — accounting stays exact).
+      // the ONE place staleness is decided. Accounting stays exact).
       if (env.header.height < prev.height) return false
       // Same height: only the BYTE-IDENTICAL row may re-store. A same-length
       // body flip is already refused at verifyShardEnvelope (bodyHashes commit),
@@ -599,7 +599,7 @@ export function makeShardStoreValidator(opts: ShardStoreOpts): ShardStoreGate {
         return false
     }
     const next = used - (prev?.bytes ?? 0) + cb.length
-    if (next > budget) return false // over advertised capacity — honest refusal
+    if (next > budget) return false // over advertised capacity. Honest refusal
     used = next
     held.set(target, { bytes: cb.length, height: env.header.height, headId: env.header.headId, valueHash })
     subjects.add(subject)
@@ -618,7 +618,7 @@ export function makeShardStoreValidator(opts: ShardStoreOpts): ShardStoreGate {
     if (typeof root !== 'string' || nodeIdOf(root) !== target) return false
     // EVERY cert must be a shape-valid, root-signed cert of THIS subject. Certs
     // are otherwise consumed lazily (certSetFrom), so a row of root-signed events
-    // could legally carry arbitrary junk/oversize certs — which then ride the row
+    // could legally carry arbitrary junk/oversize certs, which then ride the row
     // off-budget (§11) and, in the merge cap, evict a real device cert. Validate
     // here so junk is refused at the gate, never stored. certSetFrom re-derives
     // the (deduped, sorted) set from the now-known-valid certs.
@@ -632,11 +632,11 @@ export function makeShardStoreValidator(opts: ShardStoreOpts): ShardStoreGate {
       if (nodeIdOf(ev.body.root) !== target) return false // subject-key binding
       if (!verifyEventSig(ev)) return false
       // Key authorization (§0): a device-signed event stands only when a
-      // root-signed cert proves its key — same floor as verifySnapshotHeader
+      // root-signed cert proves its key: same floor as verifySnapshotHeader
       // and verifyWitnessedOf. Without this any keypair could mint events under
-      // any subject's key (authority from possession — forbidden).
+      // any subject's key (authority from possession: forbidden).
       if (ev.body.key !== ev.body.root && !certSet.some((c) => c.pub === ev.body.key)) return false
-      // Structural (height, type) sanity — height 0 is the genesis slot ONLY: a
+      // Structural (height, type) sanity. Height 0 is the genesis slot ONLY: a
       // witnessed genesis is height 0 + root-signed, and every other witnessed
       // event is height ≥ 1 (chain.ts linkage rules). Rejecting a device-key
       // "genesis" and any non-genesis event minted at height 0 stops a leaked
@@ -672,14 +672,14 @@ export function makeShardStoreValidator(opts: ShardStoreOpts): ShardStoreGate {
 
 /**
  * The storage layer's local-store fold (overlay MergeFn): kind 'events' unions
- * rows by event id, sorted (height, id) — deterministic over the SET of events
- * regardless of arrival order — and BOUNDS the result at EVENTS_ROW_MAX (newest
+ * rows by event id, sorted (height, id): deterministic over the SET of events
+ * regardless of arrival order, and BOUNDS the result at EVENTS_ROW_MAX (newest
  * rows, plus genesis, survive) so an active lane cannot grow the row without
  * limit off the advertised byte budget (§11). Root-signed certs union too
  * (bounded), so a device-signed event's authorization travels with it. Every
  * other kind replaces ('shard' staleness is decided by the validator above, so
- * replace is always forward). Falls back to replace on any unexpected shape —
- * the validator gates what gets here.
+ * replace is always forward). Falls back to replace on any unexpected shape.
+ * The validator gates what gets here.
  */
 export const storageMerge: MergeFn = (prev, next, kind, target) => {
   if (kind !== 'events' || prev === null) return next
@@ -691,7 +691,7 @@ export const storageMerge: MergeFn = (prev, next, kind, target) => {
     // getMerged folds RAW find-value responses through here, so an oversized
     // hostile row would otherwise cost O(N) canonical-hash work BEFORE the cap.
     // Slice each side to the cap FIRST (legit rows are never oversized, so this
-    // is a no-op for them) — the eventId loop then hashes a bounded set.
+    // is a no-op for them). The eventId loop then hashes a bounded set.
     const cap = (evs: SignedEvent[]) => (evs.length > EVENTS_ROW_MAX ? evs.slice(0, EVENTS_ROW_MAX) : evs)
     const byId = new Map<EventId, { ev: SignedEvent; id: EventId }>()
     for (const ev of [...cap(a.events), ...cap(b.events)]) {
@@ -702,30 +702,30 @@ export const storageMerge: MergeFn = (prev, next, kind, target) => {
       (x, y) => x.ev.body.height - y.ev.body.height || compareKeys(x.id, y.id),
     )
     if (recs.length > EVENTS_ROW_MAX) {
-      // Height is attacker-chosen — a leaked cert-proven key mints unlimited
-      // witnessed forgeries at any height (acceptEvents cannot check linkage) —
+      // Height is attacker-chosen. A leaked cert-proven key mints unlimited
+      // witnessed forgeries at any height (acceptEvents cannot check linkage),
       // so it must NOT drive eviction: "keep newest by height" would let a
       // high-height flood evict the real head + segments AND the root-signed
       // revoke that gates the leaked key, silencing honest records on the floor
       // path. Preserve instead what a flood cannot manufacture:
       //   · the subject's ROOT-signed events (genesis carries the display name;
-      //     root revokes gate leaked keys) — a device key, leaked or not, can
+      //     root revokes gate leaked keys). A device key, leaked or not, can
       //     never mint them (bounded: a handful per account);
       //   · the LINKED spine: every event reachable from the real genesis over
-      //     chain-shaped links (prev matches AND height steps +1 — the shape
+      //     chain-shaped links (prev matches AND height steps +1, the shape
       //     verifyChain enforces). A DISCONNECTED high-height flood is
       //     off-spine and cannot displace it, and a forged SIBLING link costs
       //     the attacker its own spine slot but never unseats the real branch
-      //     (the walk is reachability, NOT a unique-successor walk — a unique-
+      //     (the walk is reachability, NOT a unique-successor walk; a unique-
       //     successor walk would collapse to genesis-only on a single forged
       //     h1 link, handing the disconnected flood the eviction back).
       // Any remaining budget is filled newest-first (harmless: the viewer
       // re-verifies + revocation-gates every event it reads). recs is sorted
       // ascending by (height, id), so a tail slice keeps the newest. A leaked
       // key that mints a WHOLE contiguous linked branch from genesis can still
-      // crowd the spine window on the pure floor path — indistinguishable from
+      // crowd the spine window on the pure floor path. Indistinguishable from
       // real chain growth without key-active-ness (the viewer's job), and
-      // priced at one attested forgery per height — but the root-signed gate
+      // priced at one attested forgery per height, but the root-signed gate
       // is preserved, so NO-FORGE holds even then.
       const rootBound = (r: { ev: SignedEvent }): boolean => {
         try {
@@ -780,11 +780,11 @@ export const storageMerge: MergeFn = (prev, next, kind, target) => {
       recs.sort((x, y) => x.ev.body.height - y.ev.body.height || compareKeys(x.id, y.id))
     }
     const events = recs.map((r) => r.ev)
-    // Cert union — DETERMINISTIC over the SET (arrival-order independent) and
+    // Cert union: DETERMINISTIC over the SET (arrival-order independent) and
     // bounded. Keep only shape-valid, root-signed certs of the subject (junk can
     // never occupy a slot), prefer the certs the SURVIVING events actually NEED
     // (so an unneeded-cert flood cannot evict a real device cert), and break ties
-    // by (height, certId) — never by concatenation order. Root taken from the
+    // by (height, certId): never by concatenation order. Root taken from the
     // surviving events (all share it; the read path re-verifies regardless).
     const root = events.length ? events[0].body.root : null
     const ranked: { cert: SignedEvent; pub: B64u; height: number; id: EventId }[] = []
@@ -821,7 +821,7 @@ export const storageMerge: MergeFn = (prev, next, kind, target) => {
  * undetectable per-shard (the framing's dataHash covers the ORIGINAL blob, and
  * that framing is frozen), so it surfaces as a whole-set hash-mismatch throw;
  * this wrapper treats the throw as an erasure: try the full set, then
- * deterministic leave-one-out — any success is end-to-end verified by the
+ * deterministic leave-one-out: any success is end-to-end verified by the
  * dataHash gate inside reconstruct, so a wrong blob can never come back.
  * Heals one corrupt shard per set (deeper corruption = honest null =
  * temporary unavailability, §5's stated failure mode). Never throws.
@@ -845,7 +845,7 @@ export function reconstructTolerant(shards: readonly Shard[]): Uint8Array | null
 }
 
 // ---------------------------------------------------------------------------
-// Background repair — caller-driven, deterministic given inputs
+// Background repair: caller-driven, deterministic given inputs
 // ---------------------------------------------------------------------------
 
 export interface RepairOpts extends SnapshotOpts {
@@ -858,7 +858,7 @@ export interface RepairCtx {
   node: OverlayNode
   /** Presence view for duty ranking (staleness judged at the tick's nowMs). */
   directory: NodeDirectory
-  /** Subjects to scan — typically ShardStoreGate.subjects() (the rows this
+  /** Subjects to scan: typically ShardStoreGate.subjects() (the rows this
    * node has accepted); the embedder may add subjects it is on duty for. */
   subjects: readonly NodeId[]
   opts?: RepairOpts
@@ -871,7 +871,7 @@ export type RepairOutcome =
   | 'unrecoverable'
   | 'not-on-duty'
 
-/** One subject's scan result. Emitted for EVERY subject examined — what could
+/** One subject's scan result. Emitted for EVERY subject examined: what could
  * not be healed is reported, never silently dropped. */
 export interface RepairAction {
   subject: NodeId
@@ -888,16 +888,16 @@ export interface RepairAction {
 }
 
 /**
- * One repair tick (the embedder schedules it — PARAMS_A3.repairScanMs of
+ * One repair tick (the embedder schedules it: PARAMS_A3.repairScanMs of
  * ONLINE time between ticks; nothing here self-schedules). For each subject
  * this node is on duty for (or holds rows of): observe live rows by querying
  * every shardKey(subject, idx) through the overlay (local holdings answer
  * first; dead carriers simply don't), verify each envelope, group by snapshot.
  * The report pins the freshest observed snapshot (max height, then lexicographic
  * headId). When the freshest group is below kRec + repairHeadroom, heal from
- * the freshest group that RECONSTRUCTS — iterating freshest-first, exactly like
+ * the freshest group that RECONSTRUCTS: iterating freshest-first, exactly like
  * readChainFromShards, so a below-kRec or same-height equivocating group at the
- * front cannot strand a recoverable snapshot behind it — re-encode with rs, and
+ * front cannot strand a recoverable snapshot behind it. Re-encode with rs, and
  * re-store every missing row at its duty key. No group ≥ kRec that reconstructs
  * ⇒ 'unrecoverable' (honest unavailability, never a crash or silent truncation);
  * reconstructed but ≥1 re-store refused ⇒ 'heal-incomplete' (the caller retries,
@@ -950,7 +950,7 @@ async function repairSubject(
     return { subject, outcome: 'not-on-duty', live: 0, redistributed: [], stored: 0 }
 
   // Observe: one overlay get per row (local answers first; only reachable
-  // carriers count — that IS the live measurement), verify, group by snapshot.
+  // carriers count: that IS the live measurement), verify, group by snapshot.
   const byGroup = new Map<string, { height: number; headId: EventId; envs: Map<number, ShardEnvelope> }>()
   for (let idx = 0; idx < n; idx++) {
     const got = await ctx.node.get(keys[idx], 'shard')
@@ -966,11 +966,11 @@ async function repairSubject(
     if (!g.envs.has(idx)) g.envs.set(idx, env)
   }
 
-  // Groups freshest-first (max height, then lexicographically smallest headId) —
-  // the SAME total order readChainFromShards uses. Committing to a single
+  // Groups freshest-first (max height, then lexicographically smallest headId).
+  // The SAME total order readChainFromShards uses. Committing to a single
   // tie-broken group and giving up on it would let a below-kRec (or same-height
   // equivocating) group at the front report 'unrecoverable' while a recoverable
-  // snapshot sits behind it — so we iterate.
+  // snapshot sits behind it, so we iterate.
   const ordered = [...byGroup.values()].sort(
     (a, b) => b.height - a.height || compareKeys(a.headId, b.headId),
   )
@@ -988,7 +988,7 @@ async function repairSubject(
   // accepts one: any kRec rows reconstruct (erasure-tolerant), the bytes parse,
   // the chain fully verifies, and its witnessed head is the group's committed
   // head. A group that reconstructs to a SEMANTICALLY-INVALID chain (a
-  // publisher's since-revoked-key / bad-checkpoint / linkage-gap snapshot — bytes
+  // publisher's since-revoked-key / bad-checkpoint / linkage-gap snapshot. Bytes
   // that pass every envelope gate yet no viewer can resolve) is NOT resolvable,
   // so repair never reports it healthy nor re-replicates it: repair's health
   // verdict tracks viewer resolvability, not mere row count.
@@ -1013,14 +1013,14 @@ async function repairSubject(
 
   // The freshest observed snapshot governs the report (stale never masquerades as
   // current). Heal from the freshest group that actually RESOLVES, iterating
-  // freshest-first — a below-kRec / non-reconstructing / semantically-invalid
+  // freshest-first: a below-kRec / non-reconstructing / semantically-invalid
   // group at the front cannot strand a recoverable snapshot behind it.
   const freshest = ordered[0]
   for (const g of ordered) {
     const r = resolve(g)
     if (r === null) continue
     // Healthy: the freshest observed group is resolvable AND above the repair
-    // band — nothing to redistribute. (An older resolvable group behind a broken
+    // band: nothing to redistribute. (An older resolvable group behind a broken
     // freshest one is HEALED, not reported healthy: the freshest is unusable.)
     if (g === freshest && g.envs.size >= kRec + headroom) return report(g, 'healthy')
     const envelopes = shardJob(r.header, r.blob)
@@ -1034,7 +1034,7 @@ async function repairSubject(
       if (s > 0) healedRows++
       redistributed.push(idx)
     }
-    // 'healed' ONLY when every missing row landed somewhere — a scheduler keying
+    // 'healed' ONLY when every missing row landed somewhere, a scheduler keying
     // off 'healed' must never conclude a subject is safe when nothing was
     // re-replicated (over-budget carriers refuse every put).
     return report(g, healedRows === redistributed.length ? 'healed' : 'heal-incomplete', redistributed, stored)

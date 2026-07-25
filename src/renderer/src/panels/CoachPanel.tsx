@@ -20,7 +20,7 @@ export interface CoachPanelProps {
 /**
  * Chess.com-style move verdict panel. Purely presentational over the review
  * data: colored "Qxb2 is a blunder" headline + the FACTUAL review comment
- * computed in main at review time (ReviewMoveEval.comment). No coach/NLG IPC —
+ * computed in main at review time (ReviewMoveEval.comment). No coach/NLG IPC:
  * the motif prose was wrong too often, and review data needs no loading state.
  */
 export function CoachPanel({ moveEval, figurineMode, onPreviewBest }: CoachPanelProps) {
@@ -42,7 +42,7 @@ export function CoachPanel({ moveEval, figurineMode, onPreviewBest }: CoachPanel
       <div className="coach-body">
         {!moveEval || !meta ? (
           <p className="muted small">
-            Step to a reviewed move to see why it works — or where it goes wrong.
+            Step to a reviewed move to see why it works, or where it goes wrong.
           </p>
         ) : (
           <>
@@ -96,13 +96,13 @@ function fallbackComment(m: ReviewMoveEval): string {
     case 'Great':
       return 'This was the only good move here.'
     case 'Best':
-      return 'The engine agrees — this is the top move.'
+      return 'The engine agrees: this is the top move.'
     case 'Excellent':
       return 'Almost nothing given away.'
     case 'Good':
       return 'A solid, sound choice.'
     case 'Book':
-      return 'A known book move — still in theory.'
+      return 'A known book move, still in theory.'
     case 'Forced':
       return 'There was nothing else.'
     case 'Miss':
@@ -114,6 +114,6 @@ function fallbackComment(m: ReviewMoveEval): string {
     case 'Blunder':
       return 'This loses significant winning chances.'
     default:
-      return m.isBest ? 'The engine agrees — a top move.' : 'A solid, sound choice.'
+      return m.isBest ? 'The engine agrees: a top move.' : 'A solid, sound choice.'
   }
 }

@@ -4,7 +4,7 @@
 // "3+2 · Blitz" category readout. Fully controlled: value in, onChange out.
 //
 // Used by Local (engine + OTB) and the Grandmasters challenge row, so it stays
-// self-contained — tokens + namespaced .tcp- classes only, no window.api.
+// self-contained: tokens + namespaced .tcp- classes only, no window.api.
 
 import { useEffect, useRef, useState, type CSSProperties, type JSX } from 'react'
 import { Flame, Infinity as InfinityIcon, Rabbit, Turtle, Zap, SlidersHorizontal } from 'lucide-react'
@@ -70,7 +70,7 @@ export function TimeControlPicker({ value, onChange, dense = false }: TimeContro
   const [customOpen, setCustomOpen] = useState(isCustomValue)
 
   // Follow the incoming value into custom mode (e.g. a saved 'custom' control),
-  // but never force it CLOSED — the user may open Custom off a preset and tune.
+  // but never force it CLOSED: the user may open Custom off a preset and tune.
   const wasCustomValue = useRef(isCustomValue)
   useEffect(() => {
     if (isCustomValue && !wasCustomValue.current) setCustomOpen(true)

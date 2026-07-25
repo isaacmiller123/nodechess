@@ -10,7 +10,7 @@ export interface EvalGraphProps {
   onSeek: (ply: number) => void
 }
 
-// viewBox space — width is computed from the sample count so points are evenly
+// viewBox space: width is computed from the sample count so points are evenly
 // spaced regardless of game length; the container scales the SVG to fit.
 const VB_H = 100
 const PAD_Y = 6

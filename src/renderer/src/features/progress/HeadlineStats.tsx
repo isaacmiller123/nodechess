@@ -26,7 +26,7 @@ export default function HeadlineStats({ summary }: HeadlineStatsProps): JSX.Elem
     },
     {
       label: 'Solve rate',
-      value: pct == null ? '—' : `${pct}%`,
+      value: pct == null ? '·' : `${pct}%`,
       sub: pct == null ? 'attempt a puzzle' : `${formatCount(tried)} attempts`
     },
     {

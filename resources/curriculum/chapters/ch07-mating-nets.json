@@ -2,7 +2,7 @@
  "id": "ch07-mating-nets",
  "band": "07",
  "order": 7,
- "title": "Mating Nets — Mate in Two & the Back Rank",
+ "title": "Mating Nets: Mate in Two & the Back Rank",
  "subtitle": "Your first two-move calculation: a forcing move, the king's only reply, then mate.",
  "estMinutes": 34,
  "concepts": [
@@ -19,7 +19,7 @@
   {
    "id": "calculate-the-reply",
    "name": "Read the Only Reply",
-   "short": "After your forcing move, find every legal answer the enemy has. When there is only one — or all of them lose — you have calculated the line."
+   "short": "After your forcing move, find every legal answer the enemy has. When there is only one (or all of them lose) you have calculated the line."
   },
   {
    "id": "back-rank-mate",
@@ -33,8 +33,8 @@
   },
   {
    "id": "the-box",
-   "name": "The Box — Restrict, Then Mate",
-   "short": "You built the box last chapter; now you CALCULATE it. Restrict the king's squares, leave it exactly one reply, then mate — and prove your move is not stalemate before you play it."
+   "name": "The Box: Restrict, Then Mate",
+   "short": "You built the box last chapter; now you CALCULATE it. Restrict the king's squares, leave it exactly one reply, then mate, and prove your move is not stalemate before you play it."
   },
   {
    "id": "zugzwang",
@@ -45,13 +45,13 @@
  "lessons": [
   {
    "id": "l1-two-moves-ahead",
-   "title": "Two Moves Ahead — The Forcing Move",
+   "title": "Two Moves Ahead: The Forcing Move",
    "kind": "concept",
    "summary": "What a mate in two is, and the habit that finds it: lead with a forcing move, read the king's only reply, then strike.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — finish in one",
+     "title": "Warm-up: finish in one",
      "intro": {
       "text": "You can already end a game in one move. Before we stretch the eye to two, sharpen it on one: each position is mate in a single move. Find the check the king cannot answer and play it. The pattern you finish with today is the pattern you will be aiming AT tomorrow."
      },
@@ -73,7 +73,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "A mate in one, you see in a heartbeat. A mate in TWO asks something new of you: you must see the whole short story before you write the first word. Here are two rooks against a lone king on e7. My rook on a6 has already done quiet work — it fences off the entire sixth rank, so the king can never come down toward my own king. Now I check: Rb7+. The king is shoved up to the eighth rank, because the seventh is the firing line and the sixth is sealed. Then Ra8 mate. Two moves — but I had to see the second before I played the first.",
+        "text": "A mate in one, you see in a heartbeat. A mate in TWO asks something new of you: you must see the whole short story before you write the first word. Here are two rooks against a lone king on e7. My rook on a6 has already done quiet work. It fences off the entire sixth rank, so the king can never come down toward my own king. Now I check: Rb7+. The king is shoved up to the eighth rank, because the seventh is the firing line and the sixth is sealed. Then Ra8 mate. Two moves, but I had to see the second before I played the first.",
         "annotations": [
          {
           "kind": "circle",
@@ -101,7 +101,7 @@
        "conceptId": "calculate-the-reply",
        "coach": {
         "conceptId": "calculate-the-reply",
-        "text": "Rb7 has been played, check. Now do the work that separates a player from a guesser: read the king's replies. It cannot stay on the seventh — my rook owns the whole rank. It cannot drop to the sixth — the a6-rook owns that. So it is driven up to the eighth: d8, e8, or f8, those are the only three squares. It does not matter which one he chooses. Every one of them sits on the eighth rank, and the eighth rank is about to belong to me.",
+        "text": "Rb7 has been played, check. Now do the work that separates a player from a guesser: read the king's replies. It cannot stay on the seventh. My rook owns the whole rank. It cannot drop to the sixth. The a6-rook owns that. So it is driven up to the eighth: d8, e8, or f8, those are the only three squares. It does not matter which one he chooses. Every one of them sits on the eighth rank, and the eighth rank is about to belong to me.",
         "annotations": [
          {
           "kind": "circle",
@@ -138,7 +138,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "And the blow lands: Ra8 mate. The rook checks along the whole eighth rank; the king cannot step down to the seventh, because the other rook guards it. No flight, no block, no capture. This is the two-rook 'ladder', and notice the method — one rook holds a line while the other checks, then they swap roles and march the king to the wall. You did not find a trick. You found a plan, two moves deep.",
+        "text": "And the blow lands: Ra8 mate. The rook checks along the whole eighth rank; the king cannot step down to the seventh, because the other rook guards it. No flight, no block, no capture. This is the two-rook 'ladder', and notice the method: one rook holds a line while the other checks, then they swap roles and march the king to the wall. You did not find a trick. You found a plan, two moves deep.",
         "annotations": [
          {
           "kind": "circle",
@@ -165,7 +165,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "A forcing move is not always a check. Look here: my king on f6 stands in opposition, queen down on f2, the lone king on f8. He has exactly two squares, e8 and g8 — my king already seals e7, f7, g7. It is my move, but I have no mate in one, and any check just hands him room to run. So I do not check. I play the quiet Qa7 — a waiting move — and now it is HIS turn with nowhere good to go. That is zugzwang — when every move he is FORCED to make only worsens his position. After Ke8 I mate with Qe7; after Kg8, Qg7 — the queen beside him, guarded by my king each time. THAT is force: not noise, but leaving the enemy no useful move.",
+        "text": "A forcing move is not always a check. Look here: my king on f6 stands in opposition, queen down on f2, the lone king on f8. He has exactly two squares, e8 and g8. My king already seals e7, f7, g7. It is my move, but I have no mate in one, and any check just hands him room to run. So I do not check. I play the quiet Qa7 (a waiting move) and now it is HIS turn with nowhere good to go. That is zugzwang. When every move he is FORCED to make only worsens his position. After Ke8 I mate with Qe7; after Kg8, Qg7: the queen beside him, guarded by my king each time. THAT is force: not noise, but leaving the enemy no useful move.",
         "annotations": [
          {
           "kind": "circle",
@@ -193,7 +193,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "Forced to move, he played Ke8 — and walked into the kill. It is my move, and here is why he is lost: I play Qe7 mate. The queen steps right against the king, and my king on f6 guards her, so she cannot be taken. His flights? d8 and f8 are covered by the queen along the eighth rank, d7 by the queen too, f7 by my king. Nothing. That is the whole method in one picture — restrict with a quiet waiting move, hand him the move, then mate beside the king with your own king's support. The queen-and-king box is the most common win you will ever convert; make it second nature.",
+        "text": "Forced to move, he played Ke8, and walked into the kill. It is my move, and here is why he is lost: I play Qe7 mate. The queen steps right against the king, and my king on f6 guards her, so she cannot be taken. His flights? d8 and f8 are covered by the queen along the eighth rank, d7 by the queen too, f7 by my king. Nothing. That is the whole method in one picture. Restrict with a quiet waiting move, hand him the move, then mate beside the king with your own king's support. The queen-and-king box is the most common win you will ever convert; make it second nature.",
         "annotations": [
          {
           "kind": "circle",
@@ -227,7 +227,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "Your turn with the ladder. King on e7, your rooks on a6 and b1. The a6-rook already seals the sixth rank. Play the forcing check that drives the king UP to the eighth — and be sure you already see the mate that follows before you move.",
+        "text": "Your turn with the ladder. King on e7, your rooks on a6 and b1. The a6-rook already seals the sixth rank. Play the forcing check that drives the king UP to the eighth, and be sure you already see the mate that follows before you move.",
         "annotations": [
          {
           "kind": "circle",
@@ -252,7 +252,7 @@
        ],
        "successLine": {
         "conceptId": "calculate-the-reply",
-        "text": "Rb7+, exactly. The king is forced to the eighth rank — d8, e8, or f8, nothing else — and wherever it goes, Ra8 is mate next move. You led with force and read the only reply. That is two-move calculation.",
+        "text": "Rb7+, exactly. The king is forced to the eighth rank (d8, e8, or f8, nothing else) and wherever it goes, Ra8 is mate next move. You led with force and read the only reply. That is two-move calculation.",
         "annotations": [
          {
           "kind": "arrow",
@@ -280,7 +280,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "The king has fled to the eighth rank — here it stands on e8, the seventh sealed behind it. Finish the story you already saw. Deliver mate.",
+        "text": "The king has fled to the eighth rank. Here it stands on e8, the seventh sealed behind it. Finish the story you already saw. Deliver mate.",
         "annotations": [
          {
           "kind": "circle",
@@ -326,7 +326,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "Now the quiet kind of force. King on f8, your king on f6 in opposition, queen on f2. The king already has only e8 and g8 — but it is YOUR move and you have no mate in one. Do not check; a check only frees him. Play a waiting move with the queen — keep the cage, hand HIM the move — and from either e8 or g8 you mate next. Make the waiting move.",
+        "text": "Now the quiet kind of force. King on f8, your king on f6 in opposition, queen on f2. The king already has only e8 and g8, but it is YOUR move and you have no mate in one. Do not check; a check only frees him. Play a waiting move with the queen (keep the cage, hand HIM the move) and from either e8 or g8 you mate next. Make the waiting move.",
         "annotations": [
          {
           "kind": "circle",
@@ -351,7 +351,7 @@
        ],
        "successLine": {
         "conceptId": "the-box",
-        "text": "Qa7 — a waiting move, no check, and now the trap is sprung: it is his move, e8 and g8 are all he has, and from either your queen mates beside him next, guarded by your king. After Ke8, Qe7#; after Kg8, Qg7#. A quiet move that hands the enemy zugzwang beats a loud check that lets him run.",
+        "text": "Qa7. A waiting move, no check, and now the trap is sprung: it is his move, e8 and g8 are all he has, and from either your queen mates beside him next, guarded by your king. After Ke8, Qe7#; after Kg8, Qg7#. A quiet move that hands the enemy zugzwang beats a loud check that lets him run.",
         "annotations": [
          {
           "kind": "arrow",
@@ -364,16 +364,16 @@
        },
        "retryLine": {
         "conceptId": "forcing-move",
-        "text": "A check here only chases him around — and you have no mate in one. The king is already boxed on e8 and g8; you simply need to pass the move to him. Make a quiet waiting move with the queen along the seventh rank, keeping the cage intact."
+        "text": "A check here only chases him around, and you have no mate in one. The king is already boxed on e8 and g8; you simply need to pass the move to him. Make a quiet waiting move with the queen along the seventh rank, keeping the cage intact."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — your first mates in two",
+     "title": "Cool-down: your first mates in two",
      "intro": {
-      "text": "Now the real thing: each is mate in two. Find the forcing first move, picture the king's forced reply, confirm the mate — then play it. Do not move until you have seen both moves. Calculation is a habit; build it now."
+      "text": "Now the real thing: each is mate in two. Find the forcing first move, picture the king's forced reply, confirm the mate. Then play it. Do not move until you have seen both moves. Calculation is a habit; build it now."
      },
      "puzzle": {
       "themes": [
@@ -390,13 +390,13 @@
    "id": "l2-the-back-rank",
    "title": "The Back-Rank Mate",
    "kind": "tactics",
-   "summary": "A king walled behind its own pawns, a heavy piece crashing to the last rank — the most common mate in all of chess.",
+   "summary": "A king walled behind its own pawns, a heavy piece crashing to the last rank. The most common mate in all of chess.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the rank in one",
+     "title": "Warm-up: the rank in one",
      "intro": {
-      "text": "First, the finishing pattern alone. Each of these is a back-rank mate in one: a king sealed on its home rank, your rook or queen reaching that rank. Find it and play it. Burn the picture in — a king behind three unmoved pawns is a king in a coffin."
+      "text": "First, the finishing pattern alone. Each of these is a back-rank mate in one: a king sealed on its home rank, your rook or queen reaching that rank. Find it and play it. Burn the picture in: a king behind three unmoved pawns is a king in a coffin."
      },
      "puzzle": {
       "themes": [
@@ -409,14 +409,14 @@
     },
     {
      "kind": "teach",
-     "title": "Why the back rank falls — and the two-move version",
+     "title": "Why the back rank falls, and the two-move version",
      "steps": [
       {
        "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
        "conceptId": "back-rank-mate",
        "coach": {
         "conceptId": "back-rank-mate",
-        "text": "Look at the black king on g8. It has castled and never moved a pawn in front of it: f7, g7, h7 form a wall — and that wall is now a prison. The king has no square on the seventh rank to step to. My rook slides to e8: check along the eighth rank, and the king cannot move, cannot block, cannot capture. Re8 mate. The very pawns that should shelter a king are what seal his tomb. This is the back-rank mate, and you will both deliver it and suffer it a thousand times.",
+        "text": "Look at the black king on g8. It has castled and never moved a pawn in front of it: f7, g7, h7 form a wall, and that wall is now a prison. The king has no square on the seventh rank to step to. My rook slides to e8: check along the eighth rank, and the king cannot move, cannot block, cannot capture. Re8 mate. The very pawns that should shelter a king are what seal his tomb. This is the back-rank mate, and you will both deliver it and suffer it a thousand times.",
         "annotations": [
          {
           "kind": "circle",
@@ -453,7 +453,7 @@
        "conceptId": "calculate-the-reply",
        "coach": {
         "conceptId": "calculate-the-reply",
-        "text": "Now the two-move version — the one that wins real games, because in a real game the back rank usually has ONE defender. Here Black's rook on d7 guards the eighth rank: if I just check, it interposes. So I check anyway: Ra8+. What can Black do? The king is walled by f7, g7, h7 — it cannot move. Nothing captures my rook. The ONLY legal reply is to block: ...Rd8, throwing the rook in the way.",
+        "text": "Now the two-move version: the one that wins real games, because in a real game the back rank usually has ONE defender. Here Black's rook on d7 guards the eighth rank: if I just check, it interposes. So I check anyway: Ra8+. What can Black do? The king is walled by f7, g7, h7. It cannot move. Nothing captures my rook. The ONLY legal reply is to block: ...Rd8, throwing the rook in the way.",
         "annotations": [
          {
           "kind": "circle",
@@ -481,7 +481,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "There is the forced block: ...Rd8 — my rook on a8, his thrown in front on d8. The king is still walled in; the rook has merely stepped into the firing line to save it for one move. So I take the blocker: Rxd8 mate. Same rank, but now nothing guards the square and nothing recaptures — the king is sealed behind its pawns. The pattern to carve into memory: when a lone rook blocks a back-rank check, capture it, and the mate is delivered. Check, block, take.",
+        "text": "There is the forced block: ...Rd8. My rook on a8, his thrown in front on d8. The king is still walled in; the rook has merely stepped into the firing line to save it for one move. So I take the blocker: Rxd8 mate. Same rank, but now nothing guards the square and nothing recaptures. The king is sealed behind its pawns. The pattern to carve into memory: when a lone rook blocks a back-rank check, capture it, and the mate is delivered. Check, block, take.",
         "annotations": [
          {
           "kind": "circle",
@@ -515,7 +515,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "Your move. Black's king is walled behind f7, g7, h7, and a single rook on d7 guards the back rank. Crash in with the check on the eighth rank — the king cannot run, so Black will be forced to block, and you already see what comes next.",
+        "text": "Your move. Black's king is walled behind f7, g7, h7, and a single rook on d7 guards the back rank. Crash in with the check on the eighth rank. The king cannot run, so Black will be forced to block, and you already see what comes next.",
         "annotations": [
          {
           "kind": "circle",
@@ -540,7 +540,7 @@
        ],
        "successLine": {
         "conceptId": "calculate-the-reply",
-        "text": "Ra8+, the only forcing try — and a winning one. The king is sealed by its pawns, so Black's sole legal answer is ...Rd8, blocking. Then you take the blocker and mate. You forced the reply before you played the move.",
+        "text": "Ra8+, the only forcing try, and a winning one. The king is sealed by its pawns, so Black's sole legal answer is ...Rd8, blocking. Then you take the blocker and mate. You forced the reply before you played the move.",
         "annotations": [
          {
           "kind": "arrow",
@@ -553,7 +553,7 @@
        },
        "retryLine": {
         "conceptId": "back-rank-mate",
-        "text": "The king is trapped on the back rank — the mate has to be a check ALONG that rank. The guard on d7 will be forced to block, which you welcome. Which rook move checks down the eighth?"
+        "text": "The king is trapped on the back rank. The mate has to be a check ALONG that rank. The guard on d7 will be forced to block, which you welcome. Which rook move checks down the eighth?"
        }
       },
       {
@@ -586,7 +586,7 @@
        ],
        "successLine": {
         "conceptId": "back-rank-mate",
-        "text": "Rxd8, mate. You captured the blocker, and the back-rank check stands with nothing to stop it. Check, block, take — three words, one dead king. This is how the back rank wins games at every level above the beginner.",
+        "text": "Rxd8, mate. You captured the blocker, and the back-rank check stands with nothing to stop it. Check, block, take, three words, one dead king. This is how the back rank wins games at every level above the beginner.",
         "annotations": [
          {
           "kind": "arrow",
@@ -606,7 +606,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — back-rank mates in two",
+     "title": "Cool-down: back-rank mates in two",
      "intro": {
       "text": "Back-rank nets the way they appear over the board, each a mate in two. The king is sealed by its pawns; a defender stands in the way. Check, force the block or the only move, then deliver. See both moves before you touch a piece."
      },
@@ -623,13 +623,13 @@
   },
   {
    "id": "l3-luft-and-the-guard",
-   "title": "Luft — Defending and Breaking the Back Rank",
+   "title": "Luft: Defending and Breaking the Back Rank",
    "kind": "tactics",
    "summary": "The cure is a breath of air for your king; the kill is removing the one guard with check before he can take that breath.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the rank still falls",
+     "title": "Warm-up: the rank still falls",
      "intro": {
       "text": "One more set of back-rank finishes to keep the pattern hot, then we learn both how to STOP it and how to force it through a defender. Each is mate in one or two on the last rank. Find it."
      },
@@ -651,7 +651,7 @@
        "conceptId": "luft",
        "coach": {
         "conceptId": "luft",
-        "text": "First, defence — because a mate you prevent is worth as much as one you deliver. It is my move, and the black king is one tempo from death: Re8 is mate right now. But see WHY it is mate, and you will see the cure. The king is sealed only because f7, g7, h7 have never moved. The defence has a name: luft, German for 'air'. Had Black found the time for a quiet ...h6 (or ...g6) first, the king would breathe on h7, and my Re8 would be a mere check — he steps out and lives. The discipline every strong player owns: when your own back rank is bare, make luft BEFORE the enemy rook arrives, not after.",
+        "text": "First, defence: because a mate you prevent is worth as much as one you deliver. It is my move, and the black king is one tempo from death: Re8 is mate right now. But see WHY it is mate, and you will see the cure. The king is sealed only because f7, g7, h7 have never moved. The defence has a name: luft, German for 'air'. Had Black found the time for a quiet ...h6 (or ...g6) first, the king would breathe on h7, and my Re8 would be a mere check. He steps out and lives. The discipline every strong player owns: when your own back rank is bare, make luft BEFORE the enemy rook arrives, not after.",
         "annotations": [
          {
           "kind": "circle",
@@ -679,7 +679,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "Now the attack — and the reason a back-rank break MUST come with check. Black's king is walled by f7, g7, h7, and the rook on c8 guards the eighth rank, itself defended by the bishop on b7. If I play a slow move, Black simply makes luft and escapes. So I give no time: Rxc8+. A check. Black cannot make air now — he must answer the check this instant, and the only legal answer is to recapture: ...Bxc8.",
+        "text": "Now the attack, and the reason a back-rank break MUST come with check. Black's king is walled by f7, g7, h7, and the rook on c8 guards the eighth rank, itself defended by the bishop on b7. If I play a slow move, Black simply makes luft and escapes. So I give no time: Rxc8+. A check. Black cannot make air now. He must answer the check this instant, and the only legal answer is to recapture: ...Bxc8.",
         "annotations": [
          {
           "kind": "circle",
@@ -707,7 +707,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "The bishop has recaptured: ...Bxc8. Look what the check bought me — the bishop was DRAGGED off the eighth rank to do it. The guard is gone, and the back rank is naked. My second rook strikes: Re8 mate. This is 'removing the guard' with a check, the deadliest answer to a defended back rank. The lesson cuts both ways: give the enemy a free move and he makes luft; give him a CHECK and he has no time for air. Force first, always.",
+        "text": "The bishop has recaptured: ...Bxc8. Look what the check bought me. The bishop was DRAGGED off the eighth rank to do it. The guard is gone, and the back rank is naked. My second rook strikes: Re8 mate. This is 'removing the guard' with a check, the deadliest answer to a defended back rank. The lesson cuts both ways: give the enemy a free move and he makes luft; give him a CHECK and he has no time for air. Force first, always.",
         "annotations": [
          {
           "kind": "circle",
@@ -741,7 +741,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "Your move. The king is sealed behind its pawns; Black's rook on c8 holds the back rank, guarded by the bishop on b7. A quiet move lets Black breathe with ...h6. Do not give him the chance — take the guard WITH CHECK, so he must recapture and the eighth rank falls open.",
+        "text": "Your move. The king is sealed behind its pawns; Black's rook on c8 holds the back rank, guarded by the bishop on b7. A quiet move lets Black breathe with ...h6. Do not give him the chance. Take the guard WITH CHECK, so he must recapture and the eighth rank falls open.",
         "annotations": [
          {
           "kind": "circle",
@@ -766,7 +766,7 @@
        ],
        "successLine": {
         "conceptId": "calculate-the-reply",
-        "text": "Rxc8+, the move that gives Black no air. It is check, so he cannot play ...h6 — his only legal reply is ...Bxc8, and that very recapture drags his last guard off the back rank. Now your other rook mates on e8. Force denies the defence.",
+        "text": "Rxc8+, the move that gives Black no air. It is check, so he cannot play ...h6. His only legal reply is ...Bxc8, and that very recapture drags his last guard off the back rank. Now your other rook mates on e8. Force denies the defence.",
         "annotations": [
          {
           "kind": "arrow",
@@ -779,7 +779,7 @@
        },
        "retryLine": {
         "conceptId": "luft",
-        "text": "If you play quietly, Black plays ...h6 and his king breathes — the mate is gone. The move must be a CHECK that forces him to recapture and pull his guard away. Capture the rook on c8."
+        "text": "If you play quietly, Black plays ...h6 and his king breathes. The mate is gone. The move must be a CHECK that forces him to recapture and pull his guard away. Capture the rook on c8."
        }
       },
       {
@@ -812,7 +812,7 @@
        ],
        "successLine": {
         "conceptId": "back-rank-mate",
-        "text": "Re8, mate. The deflection did its work: the bishop is on c8, far from the eighth rank's defence, and your fresh rook crashes home. Remember the recipe — a defended back rank is broken by taking the guard WITH CHECK, never by a slow move that hands the enemy time to breathe.",
+        "text": "Re8, mate. The deflection did its work: the bishop is on c8, far from the eighth rank's defence, and your fresh rook crashes home. Remember the recipe. A defended back rank is broken by taking the guard WITH CHECK, never by a slow move that hands the enemy time to breathe.",
         "annotations": [
          {
           "kind": "arrow",
@@ -832,7 +832,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — break the back rank",
+     "title": "Cool-down: break the back rank",
      "intro": {
       "text": "Each is a mate in two against a defended king. Sometimes you force a block and take it; sometimes you remove the guard with a check. The thread is the same: never give the enemy a free move to make luft. Force first, then mate."
      },
@@ -850,15 +850,15 @@
   },
   {
    "id": "l4-driving-to-the-edge",
-   "title": "Calculate the Box — and the Stalemate You Must See",
+   "title": "Calculate the Box, and the Stalemate You Must See",
    "kind": "endgame",
-   "summary": "You built the heavy-piece box last chapter; now you calculate it two moves deep — restrict, leave the king one reply, mate — while proving your first move is not the stalemate that throws the win away.",
+   "summary": "You built the heavy-piece box last chapter; now you calculate it two moves deep (restrict, leave the king one reply, mate) while proving your first move is not the stalemate that throws the win away.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — two-move finishes",
+     "title": "Warm-up: two-move finishes",
      "intro": {
-      "text": "Warm the calculation muscle: each is a mate in two. Find the forcing first move and the mate behind it. Then we take the box you built in the last chapter and learn to CALCULATE it — and to spot the one trap that turns a won box into a draw."
+      "text": "Warm the calculation muscle: each is a mate in two. Find the forcing first move and the mate behind it. Then we take the box you built in the last chapter and learn to CALCULATE it, and to spot the one trap that turns a won box into a draw."
      },
      "puzzle": {
       "themes": [
@@ -871,14 +871,14 @@
     },
     {
      "kind": "teach",
-     "title": "The box you know — now two moves deep",
+     "title": "The box you know: now two moves deep",
      "steps": [
       {
        "fen": "6R1/8/8/8/8/5K2/8/7k w - - 0 1",
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "Last chapter you walked a bare king to the edge with king and rook and finished in one move. Now we calculate that box two moves deep — because the first move of a mate in two can quietly hand back the whole game. King on h1, your king on f3, rook way off on g8. Count his squares: g1, g2, h2 — three. You want him down to ONE, with your move to spare. Step the king up: Kf2. Now f2 robs him of g1 and g2, and only h2 is left. A quiet, deadly restriction.",
+        "text": "Last chapter you walked a bare king to the edge with king and rook and finished in one move. Now we calculate that box two moves deep. Because the first move of a mate in two can quietly hand back the whole game. King on h1, your king on f3, rook way off on g8. Count his squares: g1, g2, h2, three. You want him down to ONE, with your move to spare. Step the king up: Kf2. Now f2 robs him of g1 and g2, and only h2 is left. A quiet, deadly restriction.",
         "annotations": [
          {
           "kind": "circle",
@@ -906,7 +906,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "Now the trap that ruins this very box — and why two-move sight matters. It is tempting to slam the door at once with Rg2, sealing the whole g-file. Look hard: after Rg2 the king on h1 is NOT in check, and g1, g2, h2 are all gone. No check, no move — STALEMATE. A draw, from a rook up. THAT is what 'see both moves' guards against: your forcing move must leave the king exactly one reply, never zero. Kf2 leaves him h2; Rg2 leaves him nothing. Same pieces, one wins, one throws it away.",
+        "text": "Now the trap that ruins this very box, and why two-move sight matters. It is tempting to slam the door at once with Rg2, sealing the whole g-file. Look hard: after Rg2 the king on h1 is NOT in check, and g1, g2, h2 are all gone. No check, no move, STALEMATE. A draw, from a rook up. THAT is what 'see both moves' guards against: your forcing move must leave the king exactly one reply, never zero. Kf2 leaves him h2; Rg2 leaves him nothing. Same pieces, one wins, one throws it away.",
         "annotations": [
          {
           "kind": "circle",
@@ -938,7 +938,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "You played Kf2; he had the single reply you left him — ...Kh2 — and walked into the kill. Now the blow: Rh8, mate. The rook checks the length of the h-file into h2; the king cannot step off — g1, g2, g3 are all your king's. No flight, no block, no capture. That is the box CALCULATED: a quiet move that leaves one reply, the reply forced, then mate. You saw all three half-moves before you touched the king — including the stalemate you refused to walk into.",
+        "text": "You played Kf2; he had the single reply you left him (...Kh2) and walked into the kill. Now the blow: Rh8, mate. The rook checks the length of the h-file into h2; the king cannot step off: g1, g2, g3 are all your king's. No flight, no block, no capture. That is the box CALCULATED: a quiet move that leaves one reply, the reply forced, then mate. You saw all three half-moves before you touched the king, including the stalemate you refused to walk into.",
         "annotations": [
          {
           "kind": "circle",
@@ -972,7 +972,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "Your hands on the box. King on h1, your king on f3, rook on g8. He has g1, g2, h2. Do NOT seal the g-file with the rook — that is stalemate, a drawn game. Instead make the quiet king move that takes g1 and g2 and leaves him exactly one square, h2 — and be sure you already see the mate that follows.",
+        "text": "Your hands on the box. King on h1, your king on f3, rook on g8. He has g1, g2, h2. Do NOT seal the g-file with the rook. That is stalemate, a drawn game. Instead make the quiet king move that takes g1 and g2 and leaves him exactly one square, h2, and be sure you already see the mate that follows.",
         "annotations": [
          {
           "kind": "circle",
@@ -997,7 +997,7 @@
        ],
        "successLine": {
         "conceptId": "calculate-the-reply",
-        "text": "Kf2 — exactly. g1 and g2 are now your king's, h2 is his only reply, and you have not stalemated him. He must play ...Kh2, and then Rh8 mates down the file. A quiet restriction that leaves ONE square, calculated to the end. That is the box, two moves deep.",
+        "text": "Kf2: exactly. g1 and g2 are now your king's, h2 is his only reply, and you have not stalemated him. He must play ...Kh2, and then Rh8 mates down the file. A quiet restriction that leaves ONE square, calculated to the end. That is the box, two moves deep.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1017,7 +1017,7 @@
        },
        "retryLine": {
         "conceptId": "the-box",
-        "text": "Not the rook yet — Rg2 takes his last square with no check, and that is stalemate, a draw. Leave him exactly one flight. Step your king to f2: it covers g1 and g2 and leaves only h2."
+        "text": "Not the rook yet: Rg2 takes his last square with no check, and that is stalemate, a draw. Leave him exactly one flight. Step your king to f2: it covers g1 and g2 and leaves only h2."
        }
       },
       {
@@ -1025,7 +1025,7 @@
        "conceptId": "mate-in-two",
        "coach": {
         "conceptId": "mate-in-two",
-        "text": "He was forced to h2, just as you read. Your king on f2 already seals g1, g2, g3. Finish the line you saw — check him down the h-file from a square he can never reach.",
+        "text": "He was forced to h2, just as you read. Your king on f2 already seals g1, g2, g3. Finish the line you saw. Check him down the h-file from a square he can never reach.",
         "annotations": [
          {
           "kind": "circle",
@@ -1050,7 +1050,7 @@
        ],
        "successLine": {
         "conceptId": "the-box",
-        "text": "Rh8, mate. The rook checks the whole h-file; your king holds g1, g2, g3, so the king has nowhere to step and nothing to capture a rook six ranks away. Restrict to one square, read the forced reply, then mate — the box you owned as technique is now a calculation you see whole.",
+        "text": "Rh8, mate. The rook checks the whole h-file; your king holds g1, g2, g3, so the king has nowhere to step and nothing to capture a rook six ranks away. Restrict to one square, read the forced reply, then mate. The box you owned as technique is now a calculation you see whole.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1071,7 +1071,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "The same box, the other corner — prove you can calculate it cold. King on a8, your king on c6, rook on h7. He has a7, b7, b8. The rook-slam Rh8 would only check and let him run to b7. Make the quiet king move that leaves him exactly one square, then mate next.",
+        "text": "The same box, the other corner: prove you can calculate it cold. King on a8, your king on c6, rook on h7. He has a7, b7, b8. The rook-slam Rh8 would only check and let him run to b7. Make the quiet king move that leaves him exactly one square, then mate next.",
         "annotations": [
          {
           "kind": "circle",
@@ -1096,7 +1096,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-two",
-        "text": "Kb6 — a7 and b7 are now yours, and only b8 is left, with no stalemate. He must play ...Kb8, and then Rh8 mates along the eighth rank. You read the whole box on a strange corner: restrict to one, force the reply, deliver. It is the same skill wherever the king hides.",
+        "text": "Kb6: a7 and b7 are now yours, and only b8 is left, with no stalemate. He must play ...Kb8, and then Rh8 mates along the eighth rank. You read the whole box on a strange corner: restrict to one, force the reply, deliver. It is the same skill wherever the king hides.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1123,9 +1123,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — drive and mate",
+     "title": "Cool-down: drive and mate",
      "intro": {
-      "text": "Two-move nets where the first move restricts or drives and the second mates. Read the king's forced path to the edge, then close the box — and before every first move, count: does the king still have exactly one square? Never zero. See both moves first."
+      "text": "Two-move nets where the first move restricts or drives and the second mates. Read the king's forced path to the edge, then close the box, and before every first move, count: does the king still have exactly one square? Never zero. See both moves first."
      },
      "puzzle": {
       "themes": [
@@ -1140,15 +1140,15 @@
   },
   {
    "id": "l5-find-the-mate-in-two",
-   "title": "Find the Mate in Two — Mixed Drill",
+   "title": "Find the Mate in Two, Mixed Drill",
    "kind": "practice",
    "summary": "One discipline for every net: forcing move first, read the only reply, deliver. Then prove it over the board.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — calculate two deep",
+     "title": "Warm-up: calculate two deep",
      "intro": {
-      "text": "The method, now a reflex. In each position: scan your forcing moves — checks and dead threats — first; pick the one that leaves the king a single reply; confirm the mate that follows. Each is mate in two. Do not move until you see the end."
+      "text": "The method, now a reflex. In each position: scan your forcing moves (checks and dead threats) first; pick the one that leaves the king a single reply; confirm the mate that follows. Each is mate in two. Do not move until you see the end."
      },
      "puzzle": {
       "themes": [
@@ -1168,7 +1168,7 @@
        "conceptId": "calculate-the-reply",
        "coach": {
         "conceptId": "calculate-the-reply",
-        "text": "Every mate in two you have met obeys one rule. Step one: look only at forcing moves — checks first, then dead threats. Step two: for your best one, find the king's every legal reply. Step three: if a mate answers each reply, you have it — play the first move. A ladder, run from the right this time: Rh7+ forces the king to the eighth, and Ra8 answers all three replies with mate. You did not search sixty-four squares; you searched your checks. That is calculation, not luck.",
+        "text": "Every mate in two you have met obeys one rule. Step one: look only at forcing moves. Checks first, then dead threats. Step two: for your best one, find the king's every legal reply. Step three: if a mate answers each reply, you have it. Play the first move. A ladder, run from the right this time: Rh7+ forces the king to the eighth, and Ra8 answers all three replies with mate. You did not search sixty-four squares; you searched your checks. That is calculation, not luck.",
         "annotations": [
          {
           "kind": "circle",
@@ -1196,14 +1196,14 @@
     },
     {
      "kind": "guided",
-     "title": "Mixed two-movers — every net",
+     "title": "Mixed two-movers: every net",
      "steps": [
       {
        "fen": "1r4k1/b4ppp/8/8/8/8/8/1R2R2K w - - 0 1",
        "conceptId": "calculate-the-reply",
        "coach": {
         "conceptId": "calculate-the-reply",
-        "text": "A defended back rank, new shape. The king is walled, the rook on b8 guards the eighth, and the bishop on a7 guards that rook. Find the forcing first move — and remember, a quiet move lets him breathe with ...h6.",
+        "text": "A defended back rank, new shape. The king is walled, the rook on b8 guards the eighth, and the bishop on a7 guards that rook. Find the forcing first move, and remember, a quiet move lets him breathe with ...h6.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1229,7 +1229,7 @@
        ],
        "successLine": {
         "conceptId": "back-rank-mate",
-        "text": "Rxb8+. The check forces ...Bxb8 — the bishop must recapture, and on b8 it no longer covers e8. Your other rook crashes in: Re8 mate. Take the guard with check — never give him time for luft.",
+        "text": "Rxb8+. The check forces ...Bxb8. The bishop must recapture, and on b8 it no longer covers e8. Your other rook crashes in: Re8 mate. Take the guard with check. Never give him time for luft.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1250,7 +1250,7 @@
        "conceptId": "forcing-move",
        "coach": {
         "conceptId": "forcing-move",
-        "text": "The king is sealed by its pawns, a lone rook on c7 guarding the back rank. Force the issue along the eighth — the king cannot move, so the guard must throw itself in front.",
+        "text": "The king is sealed by its pawns, a lone rook on c7 guarding the back rank. Force the issue along the eighth: the king cannot move, so the guard must throw itself in front.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1270,7 +1270,7 @@
        ],
        "successLine": {
         "conceptId": "back-rank-mate",
-        "text": "Ra8+ Rc8 Rxc8#. Check, forced block, take the blocker. The cleanest back-rank net there is — and you saw all three moves before you touched the rook.",
+        "text": "Ra8+ Rc8 Rxc8#. Check, forced block, take the blocker. The cleanest back-rank net there is, and you saw all three moves before you touched the rook.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1291,7 +1291,7 @@
        "conceptId": "the-box",
        "coach": {
         "conceptId": "the-box",
-        "text": "King and rook, the box calculated. His king on h1, yours on f3, rook on a2 — he has g1, g2, h2. Sealing the second rank with Rg2 is stalemate, a draw. Make the quiet king move that leaves him exactly one square, with the mate already in your eye.",
+        "text": "King and rook, the box calculated. His king on h1, yours on f3, rook on a2. He has g1, g2, h2. Sealing the second rank with Rg2 is stalemate, a draw. Make the quiet king move that leaves him exactly one square, with the mate already in your eye.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1316,7 +1316,7 @@
        ],
        "successLine": {
         "conceptId": "calculate-the-reply",
-        "text": "Kg3 — g2 and h2 are now yours, only g1 is left, and no stalemate. He must play ...Kg1, and then Ra1 mates along the first rank. The box, two moves deep, on yet another corner: restrict to one square, force the reply, deliver.",
+        "text": "Kg3: g2 and h2 are now yours, only g1 is left, and no stalemate. He must play ...Kg1, and then Ra1 mates along the first rank. The box, two moves deep, on yet another corner: restrict to one square, force the reply, deliver.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1336,7 +1336,7 @@
        },
        "retryLine": {
         "conceptId": "the-box",
-        "text": "Not the rook — Rg2 leaves him no square and no check, which is stalemate. And a rook check now lets him run. Take the opposition with Kg3: it covers g2 and h2 and leaves only g1. Then Ra1 mates."
+        "text": "Not the rook: Rg2 leaves him no square and no check, which is stalemate. And a rook check now lets him run. Take the opposition with Kg3: it covers g2 and h2 and leaves only g1. Then Ra1 mates."
        }
       },
       {
@@ -1364,7 +1364,7 @@
        ],
        "successLine": {
         "conceptId": "mate-in-two",
-        "text": "Qe7+ forces the king to c8 — its only square — and Qc7 mates beside it, guarded by your king on d6. The queen-and-king box again: drive to the edge, then mate with support. You own this finish now.",
+        "text": "Qe7+ forces the king to c8 (its only square) and Qc7 mates beside it, guarded by your king on d6. The queen-and-king box again: drive to the edge, then mate with support. You own this finish now.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1384,9 +1384,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — mate in two, any net",
+     "title": "Cool-down: mate in two, any net",
      "intro": {
-      "text": "The full test of the chapter: mixed mates in two from real games — back ranks, boxes, ladders, defended kings. Trust the discipline. Forcing move first, read the only reply, deliver. See the end before the beginning."
+      "text": "The full test of the chapter: mixed mates in two from real games. Back ranks, boxes, ladders, defended kings. Trust the discipline. Forcing move first, read the only reply, deliver. See the end before the beginning."
      },
      "puzzle": {
       "themes": [
@@ -1400,13 +1400,13 @@
     },
     {
      "kind": "boss",
-     "title": "Finish the game — box the king, no stalemate",
+     "title": "Finish the game: box the king, no stalemate",
      "bossFen": "4k3/8/8/8/8/8/4PPP1/Q3R1K1 w - - 0 1",
      "bossEngineElo": 600,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "the-box",
-      "text": "Now prove the whole chapter over the board. You are White with a queen and a rook against a bare king — crushing force. But force is nothing without technique. Use the method you have learned: restrict the king's squares, drive it to the edge with checks, and box it in with your two pieces working together. Keep it always with at least one flight until the final blow — never stalemate a won game. And bring your king up; a king on the back rank can be a victim too, so make luft if you must. Two moves ahead, every move. Finish cleanly. Begin."
+      "text": "Now prove the whole chapter over the board. You are White with a queen and a rook against a bare king, crushing force. But force is nothing without technique. Use the method you have learned: restrict the king's squares, drive it to the edge with checks, and box it in with your two pieces working together. Keep it always with at least one flight until the final blow. Never stalemate a won game. And bring your king up; a king on the back rank can be a victim too, so make luft if you must. Two moves ahead, every move. Finish cleanly. Begin."
      }
     }
    ]
@@ -1420,12 +1420,12 @@
     "prompt": "What does it mean to 'see a mate in two'?",
     "options": [
      "You play any check and hope mate follows",
-     "You see your forcing first move, the king's forced reply, AND the mate that follows — all before you move",
+     "You see your forcing first move, the king's forced reply, AND the mate that follows. All before you move",
      "You need two pieces to give the mate",
      "You give two checks in a row"
     ],
     "answerIndex": 1,
-    "explain": "A mate in two is calculation: a forcing first move, the enemy's only reply, then mate — and you must see the whole line before you play the first move. Hoping is not calculating."
+    "explain": "A mate in two is calculation: a forcing first move, the enemy's only reply, then mate, and you must see the whole line before you play the first move. Hoping is not calculating."
    },
    {
     "kind": "mc",
@@ -1437,14 +1437,14 @@
      "Pawns cannot defend the king at all"
     ],
     "answerIndex": 0,
-    "explain": "The f7, g7, h7 pawns that shelter the king also seal it on the back rank. A rook or queen reaching that rank with no defender is mate — the king cannot move, block, or capture."
+    "explain": "The f7, g7, h7 pawns that shelter the king also seal it on the back rank. A rook or queen reaching that rank with no defender is mate. The king cannot move, block, or capture."
    },
    {
     "kind": "mc",
     "prompt": "Your back rank is bare and an enemy rook is heading for it. What is the standard preventive cure?",
     "options": [
      "Move your king into the centre at once",
-     "Make luft — push a pawn (like h3 or h6) to give your king an escape square",
+     "Make luft: push a pawn (like h3 or h6) to give your king an escape square",
      "Offer a draw",
      "Trade your queen immediately"
     ],
@@ -1461,7 +1461,7 @@
      "You can only capture while giving check"
     ],
     "answerIndex": 2,
-    "explain": "Give the enemy a free move and he plays ...h6 and his king lives. A check forces his hand — he must answer it this instant, with no time to make air. Force first, always."
+    "explain": "Give the enemy a free move and he plays ...h6 and his king lives. A check forces his hand. He must answer it this instant, with no time to make air. Force first, always."
    },
    {
     "kind": "play",
@@ -1470,7 +1470,7 @@
     "solutionUci": [
      "g1g7"
     ],
-    "explain": "Rg7+ forces the king to c8, d8, or e8 — the sixth rank is sealed by the h6-rook and the seventh is the firing line — and Rh8# mates along the eighth wherever the king goes. The two-rook ladder, run from the other wing."
+    "explain": "Rg7+ forces the king to c8, d8, or e8 (the sixth rank is sealed by the h6-rook and the seventh is the firing line) and Rh8# mates along the eighth wherever the king goes. The two-rook ladder, run from the other wing."
    },
    {
     "kind": "play",
@@ -1483,12 +1483,12 @@
    },
    {
     "kind": "play",
-    "prompt": "White to move. The king is sealed behind its pawns; the rook on d8 guards the back rank and the bishop on c7 guards the rook. Break through — take the guard WITH CHECK.",
+    "prompt": "White to move. The king is sealed behind its pawns; the rook on d8 guards the back rank and the bishop on c7 guards the rook. Break through. Take the guard WITH CHECK.",
     "fen": "3r2k1/2b2ppp/8/8/8/8/8/3RR2K w - - 0 1",
     "solutionUci": [
      "d1d8"
     ],
-    "explain": "Rxd8+ forces ...Bxd8 (the only legal reply to the check). The bishop recaptures, but from d8 it no longer covers e8 — so Re8# mates with your second rook. A quiet move instead would let Black make luft with ...h6."
+    "explain": "Rxd8+ forces ...Bxd8 (the only legal reply to the check). The bishop recaptures, but from d8 it no longer covers e8, so Re8# mates with your second rook. A quiet move instead would let Black make luft with ...h6."
    },
    {
     "kind": "play",
@@ -1497,7 +1497,7 @@
     "solutionUci": [
      "e1e7"
     ],
-    "explain": "Qe7+ leaves the king only g8 — the queen seals e8 along the eighth rank and covers g7, and your king on f6 guards f7 and g7 — and then Qg7# mates beside the king, guarded by your king. Drive with the check, then mate with support."
+    "explain": "Qe7+ leaves the king only g8 (the queen seals e8 along the eighth rank and covers g7, and your king on f6 guards f7 and g7) and then Qg7# mates beside the king, guarded by your king. Drive with the check, then mate with support."
    },
    {
     "kind": "play",
@@ -1506,16 +1506,16 @@
     "solutionUci": [
      "d1d7"
     ],
-    "explain": "Qd7+ leaves the king only b8 — the queen covers c7, b7 and d8, and your king on c6 also guards b7 — and then Qb7# mates beside the king, guarded by your king. The same box driven toward the other edge: restrict, drive, mate."
+    "explain": "Qd7+ leaves the king only b8 (the queen covers c7, b7 and d8, and your king on c6 also guards b7) and then Qb7# mates beside the king, guarded by your king. The same box driven toward the other edge: restrict, drive, mate."
    },
    {
     "kind": "play",
-    "prompt": "White to move. King on c8, your king on c6 sealing b7-c7-d7, queen on c2. The king has only b8 and d8 and you have NO mate in one — a check would only free him. Find the quiet WAITING move that keeps the cage and hands the king the move.",
+    "prompt": "White to move. King on c8, your king on c6 sealing b7-c7-d7, queen on c2. The king has only b8 and d8 and you have NO mate in one. A check would only free him. Find the quiet WAITING move that keeps the cage and hands the king the move.",
     "fen": "2k5/8/2K5/8/8/8/2Q5/8 w - - 0 1",
     "solutionUci": [
      "c2h7"
     ],
-    "explain": "Qh7 — no check, the queen just shifts along the rank. The king is already boxed on b8/d8; the waiting move passes the move to Black (zugzwang). Then Kb8 allows Qb7#, Kd8 allows Qd7#. A quiet move that hands the enemy zugzwang beats a loud check that lets him run."
+    "explain": "Qh7: no check, the queen just shifts along the rank. The king is already boxed on b8/d8; the waiting move passes the move to Black (zugzwang). Then Kb8 allows Qb7#, Kd8 allows Qd7#. A quiet move that hands the enemy zugzwang beats a loud check that lets him run."
    },
    {
     "kind": "judge",
@@ -1523,7 +1523,7 @@
     "fen": "4R1k1/5ppp/8/8/8/8/8/6K1 b - - 1 1",
     "lastMoveUci": "e1e8",
     "verdict": "correct",
-    "explain": "Yes — a clean back-rank mate. The rook checks along the eighth rank; the king on g8 is walled by f7, g7, h7, cannot block, and nothing captures the rook. Checkmate."
+    "explain": "Yes: a clean back-rank mate. The rook checks along the eighth rank; the king on g8 is walled by f7, g7, h7, cannot block, and nothing captures the rook. Checkmate."
    },
    {
     "kind": "judge",
@@ -1531,7 +1531,7 @@
     "fen": "6k1/R4ppp/8/8/8/8/8/6K1 b - - 1 1",
     "lastMoveUci": "a1a7",
     "verdict": "blunder",
-    "explain": "A blunder — White missed mate in one. Ra8# ended the game at once, with the king sealed behind f7-g7-h7. The quiet Ra7 gives no check and throws the win away. Look at your checks first."
+    "explain": "A blunder: White missed mate in one. Ra8# ended the game at once, with the king sealed behind f7-g7-h7. The quiet Ra7 gives no check and throws the win away. Look at your checks first."
    },
    {
     "kind": "judge",
@@ -1547,7 +1547,7 @@
     "fen": "6k1/5pp1/7p/8/8/8/8/4R1K1 w - - 0 2",
     "lastMoveUci": "h7h6",
     "verdict": "correct",
-    "explain": "Correct — ...h6 makes luft. Now if White plays Re8+, the king simply steps to h7 and lives. A single quiet pawn move has cured the back-rank weakness. Prevention is as valuable as attack."
+    "explain": "Correct: ...h6 makes luft. Now if White plays Re8+, the king simply steps to h7 and lives. A single quiet pawn move has cured the back-rank weakness. Prevention is as valuable as attack."
    },
    {
     "kind": "judge",
@@ -1555,7 +1555,7 @@
     "fen": "4R1k1/5pp1/8/8/8/8/8/6K1 b - - 1 1",
     "lastMoveUci": "e1e8",
     "verdict": "blunder",
-    "explain": "Not mate — only check. With no pawn on h7, the king has luft: it steps to h7 and escapes. Always count the king's escape squares before calling a back-rank check 'mate'. Here White's claim is wrong."
+    "explain": "Not mate: only check. With no pawn on h7, the king has luft: it steps to h7 and escapes. Always count the king's escape squares before calling a back-rank check 'mate'. Here White's claim is wrong."
    }
   ]
  },

@@ -1,6 +1,6 @@
 # UI/UX SPEC
 
-> Implementable UI/UX specification for the Offline Chess Trainer — a fully offline, local-first
+> Implementable UI/UX specification for the Offline Chess Trainer, a fully offline, local-first
 > chess analysis & teaching desktop app (Electron + React + TypeScript + Vite). Targets a
 > chess.com / lichess-grade feel using only open, redistributable assets.
 >
@@ -45,9 +45,9 @@
    muscle memory transfers. Mouse and keyboard are equal-class citizens.
 6. **Deterministic & offline.** No spinners that imply network. "Analyzing…" always means local
    Stockfish. Latency is engine depth, not I/O.
-7. **Accessible by default.** WCAG AA contrast for text and UI; never rely on color alone —
-   classification badges pair color + icon + letter/word; legal-move dots have a shape, not just a
-   tint.
+7. **Accessible by default.** WCAG AA contrast for text and UI; never rely on color alone.
+   Classification badges pair color + icon + letter/word, and legal-move dots have a shape, not
+   just a tint.
 
 ---
 
@@ -86,7 +86,7 @@ Layout: a responsive card grid (12-col, 8 px gutter).
   analysis" or "Resume game" CTA.
 - **Daily puzzle card** (span 3): mini board, "Solve" CTA, current puzzle rating ± band.
 - **Continue learning card** (span 3): next lesson in the active curriculum band, progress ring.
-- **Strength snapshot** (span 6): dual readout — *Estimated playing strength* band (move-quality)
+- **Strength snapshot** (span 6): a dual readout of the *Estimated playing strength* band (move-quality)
   and *Puzzle rating* ± band (Glicko-2), clearly separated with a one-line caption each.
 - **Recent games strip** (span 6): horizontal scroller of last 5 games (result chip, accuracy %,
   opponent), each → Game Review.
@@ -97,13 +97,13 @@ Layout: a responsive card grid (12-col, 8 px gutter).
 Two states: **Setup** and **Game**.
 
 - **Setup (opponent gallery).** Tabbed or sectioned rows (per addendum §1/§2):
-  - **Engine row** — a single configurable opponent: Elo slider 1320–3190, plus a "Beginner" notch
+  - **Engine row**: a single configurable opponent, Elo slider 1320–3190, plus a "Beginner" notch
     that routes to Maia-1100 / randomized sub-1320. Color picker (white / random / black). Time
     control chips (Unlimited, 30+0, 10+0, 5+3, 3+2, 1+0; "Correspondence/Untimed" default for a
     teaching app). "Show eval bar during play" toggle (default off).
-  - **Human-like row** — Maia avatars by rating (1100…1900 in 100 steps), captioned "plays like a
+  - **Human-like row**: Maia avatars by rating (1100…1900 in 100 steps), captioned "plays like a
     ~1500 club player," not "plays as." (Maia is FOUNDATION.)
-  - **Style / Player row** — named personas (NEXT iteration): persona card with caption "plays X's
+  - **Style / Player row**: named personas (NEXT iteration), persona card with caption "plays X's
     openings, then a matched engine," plus a game-count confidence note for sparse books.
   - Primary CTA: **Start game**.
 - **Game.** Live board (hero) + clock(s) + captured-material tray + controls. Sidebar holds the
@@ -117,7 +117,7 @@ The workbench. Full layout in §4. Reached from Home, from "Analyze" quick actio
 
 ### 1.4 Puzzles / Trainer
 
-- **Trainer home:** current puzzle rating ± band sparkline; mode chips — **Rated** (random near
+- **Trainer home:** current puzzle rating ± band sparkline; mode chips: **Rated** (random near
   rating), **Themes** (theme picker grid using Lucide motif icons), **Review** (SRS due queue from
   FSRS-6), **Daily**.
 - **Puzzle screen:** board (hero) + side panel with: prompt ("White to move," "Find the fork"),
@@ -138,8 +138,8 @@ The workbench. Full layout in §4. Reached from Home, from "Analyze" quick actio
 
 ### 1.6 Progress / Profile
 
-- **Profile header:** dual rating summary — *Estimated playing strength* band and *Puzzle / vs-bot
-  Glicko* rating ± band — each captioned, never merged into one number.
+- **Profile header:** a dual rating summary, the *Estimated playing strength* band and the
+  *Puzzle / vs-bot Glicko* rating ± band. Each is captioned, never merged into one number.
 - **Trends:** strength-band-over-time chart (band narrows as confidence grows), accuracy trend,
   blunder-rate trend, puzzle-rating sparkline, curriculum completion %.
 - **My Games:** filterable/searchable table (date, opponent, result, accuracy, est. strength),
@@ -226,7 +226,7 @@ community wrapper (those are stale/GPL/React≤18); we own ~40 lines instead.
 
 ---
 
-## 4. ANALYSIS BOARD — Full Layout
+## 4. ANALYSIS BOARD: Full Layout
 
 The flagship screen. Three columns at the desktop default (≥ 1280 px):
 
@@ -346,7 +346,7 @@ Shown only after a Game Review (§4.10) is computed; collapsed otherwise.
   in tabular figures; ACPL shown as a secondary stat. Accuracy uses the lichess per-move formula
   `Acc = 103.1668·exp(−0.04354415·winDiff) − 3.1669` (clamped 0–100) and the game-accuracy blend
   (volatility-weighted mean + harmonic mean), per `docs/content-coaching.md`.
-- **Classification counts:** a compact legend/tally row — count per class with its badge (§4.7):
+- **Classification counts:** a compact legend/tally row, one count per class with its badge (§4.7):
   Best, Good, Book, Inaccuracy, Mistake, Blunder, Brilliant. Clicking a class filters the move list
   to those moves.
 - **Eval Graph (`<EvalGraph/>`):** hand-rolled SVG area chart (no chart lib, for pixel control of
@@ -364,19 +364,19 @@ Each badge = color + Lucide icon + short word/glyph (never color alone).
 | Class | Label (open) | NAG | Color token | Lucide icon |
 |---|---|---|---|---|
 | Brilliant | Brilliant | `$3` | `--class-brilliant` (teal) | `sparkles` |
-| Best | Best | — | `--class-best` (green) | `circle-check` |
+| Best | Best | n/a | `--class-best` (green) | `circle-check` |
 | Good | Good | `$1` | `--class-good` (muted green) | `check` |
-| Book | Book | — | `--class-book` (brown) | `book-open` |
+| Book | Book | n/a | `--class-book` (brown) | `book-open` |
 | Inaccuracy | Inaccuracy | `$6` | `--class-inaccuracy` (amber) | `alert-circle` |
 | Mistake | Mistake | `$2` | `--class-mistake` (orange) | `alert-triangle` |
 | Blunder | Blunder | `$4` | `--class-blunder` (red) | `x-octagon` |
 
-- **Thresholds (authoritative in content spec):** lichess win-% drop — Inaccuracy ≥ 10, Mistake
+- **Thresholds (authoritative in content spec):** lichess win-% drop, with Inaccuracy ≥ 10, Mistake
   ≥ 20, Blunder ≥ 30; Best = engine best/near-best; Book = in opening DB; **Brilliant = best/near-
   best AND a sound sacrifice/sharp tactic** detected by the motif layer (tuned so romantic-era and
   deliberate sacrifices read as Brilliant, never "blunder"). "Great/Miss" (chess.com concepts) are
   **not** used.
-- **Forms:** inline (small, in move list — icon + glyph), and large (in review tally + on-board
+- **Forms:** inline (small, in move list; icon + glyph), and large (in review tally + on-board
   move stamp). The large on-board stamp animates in over the destination square for ~600 ms after a
   reviewed move is reached.
 
@@ -423,7 +423,7 @@ Both input methods are always enabled simultaneously (chessground supports both)
 
 - **Legal dots:** small centered dots on empty legal targets; **capture targets** render as a ring
   around the occupied square (chessground's capture style), so captures are visually distinct from
-  quiet moves — a shape difference, not just color.
+  quiet moves, a shape difference and not just color.
 - **Last move:** origin + destination squares tinted `--hl-last-move`.
 - **Check:** checked king square gets a radial `--hl-check` glow.
 - **Selected:** `--hl-selected` tint on the selected piece's square.
@@ -488,7 +488,7 @@ all flip consistently; the move list does not change order. Flip animates pieces
 
 - **Engine-strength slider (Play setup):** Elo 1320–3190 with a "Beginner" notch below 1320 routing
   to Maia-1100/randomized. The slider shows a live value bubble and a one-line plain caption ("Club
-  player," "Strong club," "Expert," "Master-level") — never an over-precise promise. Internally maps
+  player," "Strong club," "Expert," "Master-level"), never an over-precise promise. Internally maps
   to `UCI_LimitStrength=true` + `UCI_Elo`; the calibration loop nudges effective level by results.
 - **Maia level slider (Human-like):** discrete stops 1100–1900 (100-Elo steps), captioned "plays
   like a ~N club player."
@@ -511,7 +511,7 @@ Pinch is ignored on the board (board size is fixed by layout, zoom is the app's)
 All tokens are CSS custom properties on `:root` (light) and `[data-theme="dark"]` (dark overrides).
 Component CSS reads only tokens. Hex values are concrete and drop-in.
 
-### 6.1 Color — Light theme
+### 6.1 Color: Light theme
 
 ```css
 :root {
@@ -574,7 +574,7 @@ Component CSS reads only tokens. Hex values are concrete and drop-in.
 }
 ```
 
-### 6.2 Color — Dark theme (lichess-derived)
+### 6.2 Color: Dark theme (lichess-derived)
 
 ```css
 [data-theme="dark"] {
@@ -705,7 +705,7 @@ Dark mode leans on `--border` for separation more than shadow.
 ```
 
 - **Font shipping:** self-host Inter `.woff2` (OFL); **never** hotlink (app is offline). Inter
-  defaults to tabular figures — ideal for the eval bar, clocks, ratings, depth/nodes; apply
+  defaults to tabular figures, ideal for the eval bar, clocks, ratings, depth/nodes; apply
   `font-feature-settings: var(--num-feature)` defensively on those readouts.
 - **Figurine glyphs** (move list figurine mode) use `--font-figurine`. If SVG piece sets are
   preferred for figurines, render small inline SVGs instead and skip the symbols font.
@@ -738,9 +738,9 @@ graph scrubber tween); piece movement reduces to a 0 ms snap.
 
 ## 7. Icons, Pieces, Boards, Sounds (theming model)
 
-### 7.1 Icon pack — Lucide (MIT)
+### 7.1 Icon pack: Lucide (MIT)
 
-Primary UI icon pack: **Lucide** (~1,600 stroke icons, 24×24, 2 px stroke — clean, matches the
+Primary UI icon pack: **Lucide** (~1,600 stroke icons, 24×24, 2 px stroke; clean, matches the
 minimal lichess/chess.com aesthetic). Bundled offline as a tree-shaken `lucide-react` import set
 **or** a vendored SVG sprite (pin the version, snapshot the SVGs so an upgrade can't drop a glyph).
 **Phosphor (MIT)** is the only fallback for a niche glyph Lucide lacks; do not mix three packs in
@@ -792,7 +792,7 @@ Pieces are swapped by a **wrapper class** on the board; each set is 12 SVGs
 
 **Do NOT bundle** any CC-BY-NC set (maestro, staunty, fresca, cardinal, icpieces, gioco, tatiana,
 dubrovny, horsey, california, caliente, anarcandy, cooke, monarchy, xkcd) or freeware-only sets
-(alpha, chess7, companion, leipzig) — they are non-commercial / personal-only. Piece-set switching
+(alpha, chess7, companion, leipzig), which are non-commercial / personal-only. Piece-set switching
 is instant (CSS class swap) with a ~140 ms crossfade.
 
 ### 7.4 Board themes
@@ -804,7 +804,7 @@ wrapper class (`.board-brown` default). Texture themes (AGPL images) are out of 
 
 - **Do NOT ship the lichess "standard" sound set** (no clear license) or robot/instrument/
   woodland/other. Cleanly free options: lila **futuristic / nes / piano / sfx** (AGPLv3+, only if we
-  accept AGPL on the app) — otherwise the safe default is **Kenney CC0** UI/interface audio remapped
+  accept AGPL on the app); otherwise the safe default is **Kenney CC0** UI/interface audio remapped
   to events. Default ship = Kenney CC0 to keep licensing clean.
 - **Events:** `move`, `capture`, `check`, `castle`, `promote`, `low-time`, `game-start`,
   `game-end-win/lose/draw`, `puzzle-correct`, `puzzle-wrong`, `notify`. Each mapped to one short
@@ -881,8 +881,8 @@ Micro-interaction rules: never animate the board's *size*; never block input on 
 - **Move tree:** one immutable chessops PGN node tree in a store; MoveList, board, eval graph, and
   review badges are all views over the current path. Click/keyboard navigation only changes the
   current path.
-- **Ratings:** `RatingBand` reads the two distinct quantities — performance estimate
-  (`perf_estimate`) and Glicko (`rating`) — and always renders the kind caption. Never compute a
+- **Ratings:** `RatingBand` reads the two distinct quantities, performance estimate
+  (`perf_estimate`) and Glicko (`rating`), and always renders the kind caption. Never compute a
   single merged number.
 - **Review cache:** review mode reads `game_review` / `move_eval`; if absent, runs the review
   pipeline with a determinate progress bar, then caches.

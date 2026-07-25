@@ -69,22 +69,22 @@ export function GamePage({
 
   const pickMode = useCallback(
     (m: PlayMode) => {
-      // Online: any kernel-registered game — the OnlineTab below is pre-seeded
+      // Online: any kernel-registered game. The OnlineTab below is pre-seeded
       // with this kind (wire v4 start config carries it to the joiner).
       if (m === 'online') {
         if (onlineKind) {
           setMode('online')
         } else {
-          showToast(`Online ${entry.title} is landing in P2 — join codes will carry the game.`)
+          showToast(`Online ${entry.title} is landing in P2. Join codes will carry the game.`)
         }
         return
       }
       if (entry.status !== 'playable') {
-        showToast(`${entry.title} is landing in P2 — the board is being carved.`)
+        showToast(`${entry.title} is landing in P2.`)
         return
       }
       if ((m === 'otb' || m === 'bot') && !entry.otbReady) {
-        showToast(`The ${entry.title} board is landing in P2 — it is being carved.`)
+        showToast(`The ${entry.title} board is landing in P2.`)
         return
       }
       if (m === 'otb') {
@@ -94,12 +94,12 @@ export function GamePage({
       if (m === 'bot') {
         // Chess family → VariantBot (Fairy-Stockfish); every other registered
         // kind → KernelBot over the games/bots.ts provider seam (KataGo GTP
-        // for go — its install state is handled INLINE by KernelBot).
+        // for go. Its install state is handled INLINE by KernelBot).
         // (Standard chess lives in the Play tab's richer PlayView, not here.)
         if (entry.family === 'chess' || onlineKind) {
           setMode('bot')
         } else {
-          showToast(`Bots for ${entry.title} are landing in P2 — the board is being carved.`)
+          showToast(`Bots for ${entry.title} are landing in P2.`)
         }
       }
     },

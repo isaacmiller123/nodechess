@@ -1,9 +1,9 @@
-// A minimal in-process Nostr relay for the A6 M1 live-slice smoke — the sanctioned
+// A minimal in-process Nostr relay for the A6 M1 live-slice smoke, the sanctioned
 // "localhost signaling harness" that KEEPS the real trystero
 // transport when public relays are rate-limited/flaky from bare node (they are:
 // three peers in one process trip "you note too much"). It speaks exactly the
-// slice of NIP-01 trystero's Nostr strategy uses — REQ/EVENT/CLOSE in, EVENT/
-// EOSE/OK out — and simply FANS OUT every published event to every OTHER socket's
+// slice of NIP-01 trystero's Nostr strategy uses. REQ/EVENT/CLOSE in, EVENT/
+// EOSE/OK out, and simply FANS OUT every published event to every OTHER socket's
 // matching subscriptions (client-side crypto + topic filtering do the rest). No
 // storage, no auth: signaling only. werift still does the real WebRTC (ICE over
 // 127.0.0.1 host candidates), so the transport under test is 100% real.
@@ -39,7 +39,7 @@ function encodeFrame(str) {
 }
 
 /** Pull complete frames out of a socket's accumulated buffer. Returns
- *  { messages: string[], rest: Buffer, close: boolean } — partial trailing
+ *  { messages: string[], rest: Buffer, close: boolean }. Partial trailing
  *  bytes stay in `rest` for the next chunk. */
 function drainFrames(buf) {
   const messages = []
@@ -76,7 +76,7 @@ function drainFrames(buf) {
     }
     off = p + len
     if (opcode === 0x8) { close = true; break } // close
-    else if (opcode === 0x9) continue // ping — caller could pong; harmless to skip for a closed test
+    else if (opcode === 0x9) continue // ping: caller could pong; harmless to skip for a closed test
     else if (opcode === 0x1 || opcode === 0x0) messages.push(payload.toString('utf8'))
   }
   return { messages, rest: buf.subarray(off), close }
@@ -141,7 +141,7 @@ export async function startLocalNostrRelay(port = 0, opts = {}) {
       for (let i = 2; i < msg.length; i++) for (const t of topicsOf(msg[i])) topics.add(t)
       state.subs.set(subId, topics)
       dbg(`REQ sub ${subId.slice(0, 6)} topics=[${[...topics].map((t) => t.slice(0, 6))}]`)
-      send(socket, ['EOSE', subId]) // no stored history — ephemeral signaling
+      send(socket, ['EOSE', subId]) // no stored history: ephemeral signaling
     } else if (type === 'CLOSE') {
       state.subs.delete(msg[1])
     } else if (type === 'EVENT') {

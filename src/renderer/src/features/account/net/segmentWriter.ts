@@ -1,26 +1,26 @@
-// A6 M1 Lane E — the segment writer (spec §3 entanglement, §4 write lease).
+// A6 M1 Lane E: the segment writer (spec §3 entanglement, §4 write lease).
 //
 // The last mile of a signed, witnessed, RATED game: turn the completed game +
 // the witness's terminal stream signature + the opponent's pre-game snapshot
 // into a `segment` event, and land it in THIS player's own chain under a live
 // write lease, countersigned by the game's non-player witness. Both players run
-// this INDEPENDENTLY for their own chain, embedding the SAME witness `wstream`
-// — that is the §3 pairwise entanglement: one game, one witness signature, two
+// this INDEPENDENTLY for their own chain, embedding the SAME witness `wstream`.
+// That is the §3 pairwise entanglement: one game, one witness signature, two
 // self-carried chains that each verify standalone.
 //
 // It COMPOSES the built substrate, re-implementing none of it:
-//   makeSegmentPayload (segment.ts)      — assemble + digest the payload
-//   clientRequestLease (protocol.ts)     — gather the write lease from the
+//   makeSegmentPayload (segment.ts):       assemble + digest the payload
+//   clientRequestLease (protocol.ts):      gather the write lease from the
 //                                          canonical witness set (at 1-witness
 //                                          scale effectiveThreshold floors to 1)
-//   clientAppendWitnessed (protocol.ts)  — build the event under the lease,
+//   clientAppendWitnessed (protocol.ts):   build the event under the lease,
 //                                          collect ≥1 NON-PLAYER attestation
 //                                          (spec §4), attach + append
-//   foldChainA4 (store/derive.ts)        — re-derive the a4 fold so ladders,
+//   foldChainA4 (store/derive.ts).         Re-derive the a4 fold so ladders,
 //                                          reputation and standing update
 //
 // Honest degradation (C-10, no dead buttons): with no reachable witness the
-// lease request returns 'insufficient-witnesses' and this returns it verbatim —
+// lease request returns 'insufficient-witnesses' and this returns it verbatim:
 // the caller shows "Waiting for a witness", never a dead grant, and CASUAL play
 // stays fully available. This is only ever invoked for a rated game between two
 // signed-in players; unsigned/casual play never reaches here, so v5 stays
@@ -92,7 +92,7 @@ export interface PublishSegmentInput {
   color: 'w' | 'b'
   result: '1-0' | '0-1' | '1/2-1/2'
   reason: string
-  /** A4 ladder binding (§6) — BOTH present on a rated game. Absent ⇒ the
+  /** A4 ladder binding (§6): BOTH present on a rated game. Absent ⇒ the
    *  segment writes UNBOUND and the rating fold skips it (legacy/casual). */
   kind?: string
   tc?: { baseMs: number; incMs: number }
@@ -101,10 +101,10 @@ export interface PublishSegmentInput {
   wstream: { wkey: B64u; sig: B64u }
   /** The opponent's verified pre-game snapshot view. */
   opp: OppSnapshotView
-  /** Wall clock (unix ms) — the event ts + the lease grant time. Injected so
+  /** Wall clock (unix ms): the event ts + the lease grant time. Injected so
    *  the path is deterministic headless; prod passes Date.now(). */
   wts: number
-  /** Lease epoch (default 1 — a fresh account's first witnessed write; M2's
+  /** Lease epoch (default 1: a fresh account's first witnessed write; M2's
    *  leaseRunner owns the real monotonic epoch). */
   epoch?: number
   /** Lease TTL ms (default PARAMS_A2.leaseTtlMs). */
@@ -113,7 +113,7 @@ export interface PublishSegmentInput {
   params?: LeaseParams
   /** Params digest embedded in the lease body (default PARAMS_A2_DIGEST). */
   paramsDigest?: B64u
-  /** Chain-derived witness summaries keyed by nodeId — supplied by peerService
+  /** Chain-derived witness summaries keyed by nodeId: supplied by peerService
    *  from the overlay. Empty ⇒ small-population relaxation admits reachable
    *  witnesses (the 1-witness slice), which is exactly the M1 boundary. */
   summaries?: ReadonlyMap<NodeId, ChainSummary>
@@ -134,7 +134,7 @@ export type PublishSegmentResult =
  * Build THIS player's `segment` for a completed rated game and land it in the
  * own chain under a witnessed write lease. Returns the appended chain, the
  * segment event, and the freshly re-derived a4 fold (ladders/reputation move),
- * or a typed failure — 'insufficient-witnesses' (honest degradation), a shape
+ * or a typed failure: 'insufficient-witnesses' (honest degradation), a shape
  * mismatch, or the append reason. Never partially mutates: on any failure the
  * caller's chain is untouched (clientAppendWitnessed builds a new Chain).
  */
@@ -178,7 +178,7 @@ export async function buildAndPublishSegment(input: PublishSegmentInput): Promis
   })
 
   // --- gather the write lease from the canonical witness set ------------------
-  // M1 subject summary is minimal (no entanglement window yet — M2 wires it);
+  // M1 subject summary is minimal (no entanglement window yet: M2 wires it);
   // eligibility relaxes at small population, so the reachable witness grants.
   const subject: SubjectSummary = {
     root: input.chain.root,
@@ -213,7 +213,7 @@ export async function buildAndPublishSegment(input: PublishSegmentInput): Promis
     type: 'segment',
     // SegmentPayload → the transport's CanonicalObject seam (cjson-v1 at
     // runtime; the index-signature cast is segment.ts's own makeWitnessedResult
-    // pattern — clientAppendWitnessed re-validates the payload schema on append).
+    // pattern, clientAppendWitnessed re-validates the payload schema on append).
     payload: payload as unknown as CanonicalObject,
     ts: input.wts,
     epoch,

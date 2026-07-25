@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Headless stress-test of the bot time manager (src/renderer/src/features/play/
-// botTime.ts — the PURE CORE section). esbuild-bundles the real module, then
+// botTime.ts: the PURE CORE section). esbuild-bundles the real module, then
 // simulates hundreds of games per {time control} x {clock personality} cohort
 // with synthetic per-move probe signals, and asserts the clock behavior the
 // feature promises:
@@ -172,7 +172,7 @@ function ranks(xs) {
   return out
 }
 
-/** Spearman rank correlation — the right tool for a monotone relation with
+/** Spearman rank correlation. The right tool for a monotone relation with
  *  log-normal human noise and a complexity-gated tank tail (nonlinear but
  *  order-preserving; linear Pearson under-reads it by construction). */
 function spearman(xs, ys) {
@@ -302,7 +302,7 @@ check(
 
 // 4. Complexity drives think time. Primary: Spearman rank correlation of the
 // multiplier vs the base-normalized spend (the relation is monotone but
-// nonlinear — log-normal noise + the complexity-gated tank tail — so rank
+// nonlinear (log-normal noise + the complexity-gated tank tail) so rank
 // correlation is the honest "strongly positive" measure). Secondary: linear
 // Pearson on the raw spend must still be clearly positive.
 check(
@@ -320,7 +320,7 @@ check(
   `instant-class moves under 2s (max ${secs(Math.max(...cohorts.map((c) => c.maxInstant)))})`
 )
 
-// 6. Ceilings hold: nothing above min(25% snapshot, 90s) — the hard 90s cap.
+// 6. Ceilings hold: nothing above min(25% snapshot, 90s). The hard 90s cap.
 check(
   cohorts.every((c) => c.maxSpend <= 90_000),
   `hard ceiling respected (max single spend ${secs(Math.max(...cohorts.map((c) => c.maxSpend)))})`

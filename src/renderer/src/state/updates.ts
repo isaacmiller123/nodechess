@@ -1,4 +1,4 @@
-// Renderer-side update state — a tiny module singleton over window.api.updates.
+// Renderer-side update state. A tiny module singleton over window.api.updates.
 // One snapshot for the whole app: the Settings → Updates card, the startup
 // toast (components/UpdateToast) and the online lobby's mismatch hint all read
 // the SAME status via useUpdates(), so a check kicked off anywhere updates
@@ -45,7 +45,7 @@ function subscribe(l: () => void): () => void {
 }
 
 /** Live update status, or null until the first snapshot lands (browser mock
- *  included — it just stays 'idle'). */
+ *  included: it just stays 'idle'). */
 export function useUpdates(): UpdateStatus | null {
   ensureInit()
   return useSyncExternalStore(subscribe, () => status)
@@ -62,7 +62,7 @@ export function checkForUpdates(): Promise<UpdateStatus | null> {
   })
 }
 
-/** The "Update now" action — install (win, ready) / open the browser download
+/** The "Update now" action: install (win, ready) / open the browser download
  *  (mac). See UpdateActionResult for what actually happened. */
 export function applyUpdate(): Promise<UpdateActionResult> {
   const api = window.api?.updates

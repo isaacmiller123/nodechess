@@ -1,6 +1,6 @@
 # Sound asset attribution
 
-## `standard/` — Lichess standard sound set
+## `standard/`: Lichess standard sound set
 
 The files in `standard/` are the "standard" sound set from
 [Lichess](https://lichess.org), copied from the
@@ -37,7 +37,7 @@ is available at <https://www.gnu.org/licenses/agpl-3.0.txt>. Copyright
 These sound files are unmodified apart from renaming. They are distributed as
 data assets alongside (not linked into) this GPL-3.0-or-later application.
 
-## `classic/`, `real/` and `games/` — generated in-repo
+## `classic/`, `real/` and `games/`, generated in-repo
 
 The WAV files in `classic/` and `real/` are original works synthesized
 offline by `scripts/gen-sounds.mjs` in this repository (pure-Node procedural

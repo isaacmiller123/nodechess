@@ -1,17 +1,17 @@
-// A6 M1 — the per-client account peer (spec §2.2 per-client node stack, §4
+// A6 M1: the per-client account peer (spec §2.2 per-client node stack, §4
 // witness fabric, §5 overlay, §11 platform budgets).
 //
 // Every signed-in client runs THIS on top of a FabricEndpoint. From the device
 // signing identity it derives `nodeId = sha256(root)`, builds the Kademlia
 // overlay node, bootstraps its routing table from the fabric directory, and
 // registers `witnessServe` + `memberServe` so the client is itself an eligible
-// witness / PIN-committee member — then announces a SIGNED presence with the
+// witness / PIN-committee member. Then announces a SIGNED presence with the
 // per-platform caps (§11: witness+committee true, shardMb by platform). It is an
 // app-lifetime singleton: started on sign-in, stopped on sign-out.
 //
 // PLATFORM-SPECIFIC renderer hosting (the shared tree stays pure). The fabric is
-// INJECTED — a `MockFabric` endpoint in suites, Lane A's `createBrowserFabric`
-// (native WebRTC + trystero) in production — so this module is transport-
+// INJECTED: a `MockFabric` endpoint in suites, Lane A's `createBrowserFabric`
+// (native WebRTC + trystero) in production, so this module is transport-
 // agnostic and unit-testable headless. Clock is injected (`now`), defaulting to
 // Date.now (the renderer layer is where wall-clock time is allowed).
 
@@ -90,7 +90,7 @@ export interface AccountPeerIdentity {
   root: B64u
   /** Device signing child pubkey (advertised in presence, certified in chain). */
   key: B64u
-  /** Device signing child private key — signs presence + attestations/grants. */
+  /** Device signing child private key. Signs presence + attestations/grants. */
   priv: Uint8Array
 }
 
@@ -106,7 +106,7 @@ export interface OverlayTuning {
 export interface StartAccountPeerOpts {
   identity: AccountPeerIdentity
   /** Injected transport endpoint for THIS node. Its `nodeId` MUST equal
-   * `sha256(root)` — Lane A's browser fabric in prod, a MockFabric endpoint in
+   * `sha256(root)`. Lane A's browser fabric in prod, a MockFabric endpoint in
    * suites. */
   fabric: FabricEndpoint
   /** Presence caps. Default: the per-platform §11 envelope. Partial overrides
@@ -136,8 +136,8 @@ export interface StartAccountPeerOpts {
   /** Run `bootstrap()` during start. Default true. Suites that need
    * announce-all-then-bootstrap-all set false and call `peer.bootstrap()`. */
   autoBootstrap?: boolean
-  /** Re-announce presence every N ms (browser keepalive — presence is
-   * ephemeral, §4/§11). Default: off (no timer — determinism preserved). */
+  /** Re-announce presence every N ms (browser keepalive: presence is
+   * ephemeral, §4/§11). Default: off (no timer; determinism preserved). */
   announceIntervalMs?: number
   /** Persistent CanonicalObject store for overlay/shard persistence (M3). Held
    * on the peer for the lead / M3 to wire; unused by the M1 core. */
@@ -169,7 +169,7 @@ export interface AccountPeer {
    * more peers join the room). */
   bootstrap(seeds?: SignedPresence[]): Promise<void>
   /** Tear down: stop re-announce, close the overlay (peers observe us as
-   * unreachable and evict us), and — when `ownsFabric` — close the fabric. */
+   * unreachable and evict us), and: when `ownsFabric`. Close the fabric. */
   stop(): Promise<void>
 }
 
@@ -185,7 +185,7 @@ export async function startAccountPeer(opts: StartAccountPeerOpts): Promise<Acco
   const nodeId = nodeIdOf(root)
   if (fabric.nodeId !== nodeId)
     throw new Error(
-      `peerService: injected fabric nodeId ${fabric.nodeId} != sha256(root) ${nodeId} — mint the endpoint for this identity`,
+      `peerService: injected fabric nodeId ${fabric.nodeId} != sha256(root) ${nodeId}, mint the endpoint for this identity`,
     )
 
   const now = opts.now ?? ((): number => Date.now())
@@ -307,7 +307,7 @@ export async function stopAccountPeerSingleton(): Promise<void> {
     try {
       await pending
     } catch {
-      /* the start already failed — nothing to stop */
+      /* the start already failed: nothing to stop */
     }
   }
   const peer = current

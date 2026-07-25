@@ -1,4 +1,4 @@
-// check-game-sounds.mjs — listen-check gate for the generated game sounds.
+// check-game-sounds.mjs: listen-check gate for the generated game sounds.
 //
 //   node scripts/check-game-sounds.mjs
 //
@@ -7,7 +7,7 @@
 //   * clips or peaks above −1 dBFS,
 //   * exceeds the 120 KiB per-file budget,
 //   * is not 16-bit mono PCM at 44.1 kHz,
-//   * or is effectively silent (peak below −40 dBFS — a broken render).
+//   * or is effectively silent (peak below −40 dBFS; a broken render).
 // Run after scripts/gen-game-sounds.mjs.
 
 import { readdir, readFile } from 'node:fs/promises'
@@ -52,7 +52,7 @@ const dbfs = (x) => (x <= 0 ? -Infinity : 20 * Math.log10(x))
 async function main() {
   const names = (await readdir(DIR)).filter((f) => f.endsWith('.wav')).sort()
   if (names.length === 0) {
-    console.error(`no WAVs in ${DIR} — run: node scripts/gen-game-sounds.mjs`)
+    console.error(`no WAVs in ${DIR}, run: node scripts/gen-game-sounds.mjs`)
     process.exitCode = 1
     return
   }
@@ -93,7 +93,7 @@ async function main() {
     })
     if (clipped > 0) problems.push(`${name}: ${clipped} clipped sample(s)`)
     if (peakDb > MAX_PEAK_DBFS) problems.push(`${name}: peak ${peakDb.toFixed(2)} dBFS above ${MAX_PEAK_DBFS} dBFS ceiling`)
-    if (peakDb < MIN_PEAK_DBFS) problems.push(`${name}: peak ${peakDb.toFixed(2)} dBFS — effectively silent`)
+    if (peakDb < MIN_PEAK_DBFS) problems.push(`${name}: peak ${peakDb.toFixed(2)} dBFS. Effectively silent`)
     if (raw.length > MAX_BYTES) problems.push(`${name}: ${(raw.length / 1024).toFixed(1)} KiB over the 120 KiB budget`)
   }
   console.table(rows)
@@ -102,7 +102,7 @@ async function main() {
     for (const p of problems) console.error('  - ' + p)
     process.exitCode = 1
   } else {
-    console.log(`OK — ${rows.length} files, all peaks ≤ ${MAX_PEAK_DBFS} dBFS, all ≤ 120 KiB.`)
+    console.log(`OK: ${rows.length} files, all peaks ≤ ${MAX_PEAK_DBFS} dBFS, all ≤ 120 KiB.`)
   }
 }
 

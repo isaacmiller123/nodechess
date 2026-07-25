@@ -1,8 +1,8 @@
 // The puzzle query surface, served straight out of the static chunked database.
 //
-// Mirrors the desktop repositories the puzzle IPC channels call —
+// Mirrors the desktop repositories the puzzle IPC channels call:
 // src/main/db/puzzles.repo.ts (next/get/themes/batch) and src/main/db/daily.repo.ts
-// (daily) — with the same defaults, the same clamps and the same randomisation,
+// (daily): with the same defaults, the same clamps and the same randomisation,
 // so a caller cannot tell which side it is talking to. Two things ARE different,
 // both forced by reading a database over HTTP:
 //
@@ -15,8 +15,8 @@
 //     themed batch picks between one clustered scan and a covering index seek
 //     plus point lookups depending on how common the requested themes are.
 //
-// Results are read-only puzzle data. Anything user-scoped — attempts, ratings,
-// daily results, rush runs — is NOT here and never can be: it does not exist in
+// Results are read-only puzzle data. Anything user-scoped, attempts, ratings,
+// daily results, rush runs, is NOT here and never can be: it does not exist in
 // the static artifact. `daily()` therefore always reports `result: null` and the
 // caller must merge the local outcome.
 
@@ -35,8 +35,8 @@ const DEFAULT_RATING_LO = 600
 const DEFAULT_RATING_HI = 2200
 
 /** Bytes one scan may read before it gives up and returns what it has. ~4 MiB
- *  is a few hundred ms on a warm CDN connection and roughly 9,000 puzzle rows —
- *  far more than any batch asks for unless the filters are very selective. */
+ *  is a few hundred ms on a warm CDN connection and roughly 9,000 puzzle rows.
+ *  Far more than any batch asks for unless the filters are very selective. */
 const SCAN_BUDGET_BYTES = 4 * 1024 * 1024
 /** Puzzles fetched by id in one themed batch. Each one is a random page read,
  *  i.e. its own round-trip, so this is the latency ceiling for the rare-theme
@@ -90,7 +90,7 @@ export interface StaticPuzzleReader {
   get(puzzleId: string): Promise<{ puzzle: Puzzle | null }>
   themes(): Promise<{ themes: ThemeCount[] }>
   batch(req: PuzzleBatchRequest): Promise<{ puzzles: Puzzle[] }>
-  /** `result` is always null — this artifact holds no user state. */
+  /** `result` is always null. This artifact holds no user state. */
   daily(req?: { ymd?: string }): Promise<DailyPuzzle>
   transferred(): Promise<{ bytes: number; requests: number } | null>
   close(): Promise<void>
@@ -149,7 +149,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
     return conn
   }
 
-  /** Rows of a contiguous rowid range — the cheapest read this database
+  /** Rows of a contiguous rowid range: the cheapest read this database
    *  supports, since rowid is the rank in (Rating, PuzzleId) order. `extraSql`
    *  filters rows the scan already had to read; it never widens the range. */
   const scanRange = async (
@@ -180,7 +180,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
 
   /** Covering read of the theme junction: (Theme, Rating, PuzzleId) is the
    *  table's primary key, so this touches only index pages in one rating-ordered
-   *  run — no puzzle rows at all. */
+   *  run. No puzzle rows at all. */
   const themeIds = async (
     c: Conn,
     theme: string,
@@ -199,7 +199,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
    *
    *  Broad sets (the Custom trainer's "most themes selected", or any common
    *  theme) match often enough that ONE contiguous scan with a theme test finds
-   *  the whole set — no index, no point lookups, a handful of round-trips.
+   *  the whole set. No index, no point lookups, a handful of round-trips.
    *  Narrow sets would have that scan read the band to find a match, so they go
    *  through the covering index instead and pay one page read per puzzle. */
   const themedBatch = async (
@@ -340,7 +340,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
       if (themes.length === 0) {
         rows = await scanRange(c, firstRowidAtLeast(c.m, target), lastRowidAtMost(c.m, hi), window, lp)
         if (rows.length < want) {
-          // The random target landed too high in the band — re-seek from the
+          // The random target landed too high in the band. Re-seek from the
           // bottom, as the desktop does.
           rows = await scanRange(c, firstRowidAtLeast(c.m, lo), lastRowidAtMost(c.m, hi), window, lp)
         }
@@ -350,7 +350,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
 
       const pool = rows.filter((r) => !exclude.has(r.PuzzleId))
       // A contiguous scan already comes back rating-ordered, but the themed
-      // point-lookup path returns rows in id order — sort so `ascending` means
+      // point-lookup path returns rows in id order, sort so `ascending` means
       // the same thing on both.
       if (req.ascending) pool.sort((a, b) => a.Rating - b.Rating)
       else shuffle(pool)
@@ -364,7 +364,7 @@ export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): 
       const band = lastRowidAtMost(c.m, c.m.daily.ratingHi) - first + 1
       // Identical to dailyPuzzleFor(): hash the day to an offset into the band
       // ordered by (Rating, PuzzleId). Because rowid IS that rank, the offset
-      // resolves to a single rowid — one page read instead of the desktop's
+      // resolves to a single rowid: one page read instead of the desktop's
       // OFFSET scan, and the same puzzle everyone else sees today.
       // Empty band means a database the build script would have rejected; fall
       // back to the whole table so there is still a puzzle of the day.
@@ -433,7 +433,7 @@ function shuffle<T>(items: T[]): void {
 // ---- daily day keys ---------------------------------------------------------
 // Copied from src/main/db/daily.repo.ts, which is the contract: the daily is
 // keyed to the user's LOCAL calendar day and hashed with FNV-1a so every client
-// — desktop or web — resolves the same day to the same puzzle. Keep in step.
+// (desktop or web) resolves the same day to the same puzzle. Keep in step.
 
 function ymdFromMs(ms: number): string {
   const d = new Date(ms)

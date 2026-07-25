@@ -1,4 +1,4 @@
-// Gomoku (five in a row) — hand-rolled rules, no engine dependency
+// Gomoku (five in a row): hand-rolled rules, no engine dependency
 // (docs/GAMES-PLATFORM-SPEC.md §Approved stack: small games are hand-rolled).
 //
 // Freestyle rules: black moves first, five OR MORE in a row (overlines win)
@@ -6,19 +6,19 @@
 // standard board is 15×15; `size` is an option so tests (and future modes)
 // can use smaller boards.
 //
-// Move codec: go-style vertices ('h8' — columns a.. skipping 'i', rank 1 at
+// Move codec: go-style vertices ('h8': columns a.. skipping 'i', rank 1 at
 // the bottom), shared with games/go.ts. Board layout is intersections, like
 // go, and Shudan renders it with the same signMap convention.
 //
 // Bots (P2w2): freestyle has no opening restriction, but the convention (and
-// the strongest first move) is the center point — GOMOKU_CENTER below is the
+// the strongest first move) is the center point. GOMOKU_CENTER below is the
 // canonical opening for bot providers.
 
 import type { GameResult, GameSpec, MoveMeta, PlayerColor } from './kernel'
 import { GO_COL_LETTERS, goLikeNotation, pointToVertex, vertexToPoint } from './go'
 
 export const GOMOKU_SIZE = 15
-/** Center of the standard 15×15 board — canonical bot opening move. */
+/** Center of the standard 15×15 board: canonical bot opening move. */
 export const GOMOKU_CENTER = 'h8'
 
 export interface GomokuOptions {
@@ -139,7 +139,7 @@ export const GOMOKU_SPEC: GameSpec<GomokuState> = {
   kind: 'gomoku',
   family: 'grid',
   title: 'Gomoku',
-  tagline: 'Five in a row wins — simple to learn, vicious to master.',
+  tagline: 'Five in a row wins. Simple to learn, vicious to master.',
   players: ['black', 'white'],
   board: { layout: 'intersections', files: GOMOKU_SIZE, ranks: GOMOKU_SIZE },
   flipPolicy: 'none',

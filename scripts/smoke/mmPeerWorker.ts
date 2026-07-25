@@ -1,22 +1,22 @@
-// A6 M2 real-relay SMOKE worker — one peer, in its own worker thread (fresh
+// A6 M2 real-relay SMOKE worker: one peer, in its own worker thread (fresh
 // trystero module state ⇒ its own selfId + relay socket, the multi-process
 // requirement). Runs the app's REAL M2 modules over the REAL trystero + werift
 // transport (pointed at a localhost Nostr relay, since public relays rate-limit
 // a bare-node mesh) to prove the MATCHMAKING → game handoff end-to-end:
 //
 //   • createBrowserFabric (Lane A) with an INJECTED werift+relay trystero room.
-//   • startAccountPeerSingleton (Lane B) — overlay + witnessServe/memberServe +
+//   • startAccountPeerSingleton (Lane B): overlay + witnessServe/memberServe +
 //     signed presence over that fabric (the witness candidate directory).
 //   • matchmakingStore.startRatedSearch / offerWitnessing (M2 L-mm) over a REAL
-//     werift+relay trystero POOL room — two strangers auto-pair with NO code
+//     werift+relay trystero POOL room: two strangers auto-pair with NO code
 //     exchanged; a distinct third peer self-assigns as the witness.
-//   • createLeaseRunner + createRatedGamePrep (M2 L-lease) — before move 1 each
+//   • createLeaseRunner + createRatedGamePrep (M2 L-lease): before move 1 each
 //     player acquires the live write lease at a monotonic epoch AND anchors the
 //     REAL witnessed 'pairing' event in its own chain (§3/§4/§8).
 //   • MpNetSession (Lane C, SIGNED) over a werift+relay game transport, driven by
 //     the matchmaking handoff (openRoom = host/white, joinRoom = guest/black).
 //   • startWitnessing (witnessController → Lane D) over the same transport.
-//   • createSegmentPublisher (Lane E) — the countersigned rated segment lands at
+//   • createSegmentPublisher (Lane E): the countersigned rated segment lands at
 //     the SAME lease epoch as the pairing; the a4 fold moves both ladders.
 //
 // The handoffs mirror accountNetBoot.ts's configureMatchmaking exactly, with the
@@ -79,7 +79,7 @@ interface PeerInit {
   seed: number
   tc: { initialMs: number; incrementMs: number }
   /** Searcher: wait this long after boot before startRatedSearch, so the fabric
-   *  + pool meshes with the (already-present) witness settle first — the offer is
+   *  + pool meshes with the (already-present) witness settle first. The offer is
    *  a one-shot broadcast, so the witness must be connected before it is sent. */
   warmupMs?: number
 }
@@ -102,7 +102,7 @@ const GAME_MESH_SETTLE_MS = 5_000
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms))
 
 // ---------------------------------------------------------------------------
-// Deterministic identity (raw keypairs, like the M1 smoke) — root ≠ device
+// Deterministic identity (raw keypairs, like the M1 smoke), root ≠ device
 // ---------------------------------------------------------------------------
 const kp = (b: number): { priv: Uint8Array; pub: Uint8Array; pubB: string } => {
   const priv = Uint8Array.from({ length: 32 }, (_, i) => (b * 7 + i) & 0xff)
@@ -132,7 +132,7 @@ const baseRtc = {
   relayConfig: relayCfg,
 }
 
-/** A werift+relay game transport — the rtcTransport.ts adapter, verbatim shape
+/** A werift+relay game transport: the rtcTransport.ts adapter, verbatim shape
  *  (identical to the M1 smoke's gameTransport). */
 const gameTransport: MpTransportFactory = (roomCode, listeners: MpTransportListeners): MpTransport => {
   const canonical = normalizeRoomCode(roomCode) ?? roomCode
@@ -167,7 +167,7 @@ function makeFabric(): ReturnType<typeof createBrowserFabric> {
   return createBrowserFabric({ nodeId: nodeIdOf(signing.root), room: room as unknown as FabricRoom })
 }
 
-/** Wrap a MatchPool so OUR OWN publish never wakes OUR OWN subscribers — only a
+/** Wrap a MatchPool so OUR OWN publish never wakes OUR OWN subscribers. Only a
  *  REMOTE message does (mirrors accountNetBoot.nonReentrantPool). Without it the
  *  live search self-publishes → notify → poll → publish → … forever. */
 function nonReentrantPool(inner: MatchPool): MatchPool {
@@ -184,7 +184,7 @@ function nonReentrantPool(inner: MatchPool): MatchPool {
 }
 
 /** A werift+relay matchmaking POOL room per (kind, ladder), injected into the
- *  real createTrysteroMatchPool — the SAME makeAction(message) contract the
+ *  real createTrysteroMatchPool: the SAME makeAction(message) contract the
  *  browser fabric uses, so a raw trystero room satisfies it (M1-proven). */
 function makePool(kind: string, ladderId: string): MatchPool {
   const room = joinRoom({ appId: FABRIC_APP_ID, password: 'chs-mm-pool-smoke', ...baseRtc }, poolRoomId(kind, ladderId))
@@ -192,7 +192,7 @@ function makePool(kind: string, ladderId: string): MatchPool {
 }
 
 // ---------------------------------------------------------------------------
-// M2 lifecycle objects (real modules) — lease runner, prep, segment publisher
+// M2 lifecycle objects (real modules): lease runner, prep, segment publisher
 // ---------------------------------------------------------------------------
 let leaseRunner: LeaseRunner | null = null
 let ratedGamePrep: ((s: RatedGameStart) => Promise<{ ok: true; epoch: number } | { ok: false; reason: string }>) | null = null
@@ -214,7 +214,7 @@ interface SignedOutcome {
 
 /** Seed the players' current heads into THIS peer's witnessServe attest cache so
  *  their pre-game 'pairing' appends get our non-player attestation (mirrors
- *  accountNetBoot.seedWitnessHeads — the built-in seed is gated on a gameKey we
+ *  accountNetBoot.seedWitnessHeads: the built-in seed is gated on a gameKey we
  *  don't have at attach). The head is game-independent; a placeholder game fetches it. */
 async function seedWitnessHeads(code: string, participants: ReadonlyArray<{ root: string }>): Promise<void> {
   const peer = getAccountPeer()
@@ -293,7 +293,7 @@ async function boot(): Promise<void> {
         // this non-player witness's attestation (gameKey unknown at attach ⇒ the
         // built-in pre-game seed is skipped; the head is game-independent).
         void seedWitnessHeads(a.code, a.participants)
-        // Leave the matchmaking pool now the game is struck — a bare-node werift
+        // Leave the matchmaking pool now the game is struck. A bare-node werift
         // mesh strains under fabric+pool+game rooms; dropping the pool for the game
         // duration keeps it at 2 rooms (like the reliable M1 smoke).
         stopOffer?.()
@@ -307,7 +307,7 @@ async function boot(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
-// The rated match handoff — drive the SIGNED game + the M2 prep + the segment
+// The rated match handoff: drive the SIGNED game + the M2 prep + the segment
 // ---------------------------------------------------------------------------
 const hostCfg = (): { tc: { initialMs: number; incrementMs: number }; hostColor: 'white' } => ({
   tc: { initialMs: init.tc.initialMs, incrementMs: init.tc.incrementMs },
@@ -374,7 +374,7 @@ async function driveGame(session: MpNetSession, a: MatchAssignment): Promise<voi
   await waitEvent((e) => e.type === 'start', 60_000)
   log(`signed game started (${color})`)
   // Leave the matchmaking pool now the match is struck (offer long since published/
-  // accepted) — frees WebRTC for the game + fabric rooms (bare-node werift is
+  // accepted). Frees WebRTC for the game + fabric rooms (bare-node werift is
   // strained by 3 simultaneous meshes; this drops the game phase to 2, like M1).
   matchmakingStore.cancelRatedSearch()
 
@@ -385,11 +385,11 @@ async function driveGame(session: MpNetSession, a: MatchAssignment): Promise<voi
   const prep = await prepWithRetries(prepStart)
   post({ type: 'prep', role: init.role, ok: prep.ok, epoch: prep.ok ? prep.epoch : null, reason: prep.ok ? null : prep.reason })
   if (!prep.ok) throw new Error(`rated prep failed after retries: ${prep.reason}`)
-  log(`rated prep OK — lease epoch ${prep.epoch}, witnessed pairing anchored`)
+  log(`rated prep OK: lease epoch ${prep.epoch}, witnessed pairing anchored`)
 
   // Let ALL game-room WebRTC connections (esp. witness↔guest, which formed last)
   // solidify + the witness seat settle before the game progresses to the one-shot
-  // terminal wend — over a real mesh the last-formed pair can otherwise miss the
+  // terminal wend: over a real mesh the last-formed pair can otherwise miss the
   // single wend broadcast (there is no re-request path). A settle beats that race.
   await sleep(GAME_MESH_SETTLE_MS)
 
@@ -505,7 +505,7 @@ function startSearch(): void {
 
 // ---------------------------------------------------------------------------
 // Casual proof (degradation phase): host/join an UNSIGNED game over the same
-// transport while the rated search HONESTLY WAITS — casual is byte-identical v5.
+// transport while the rated search HONESTLY WAITS. Casual is byte-identical v5.
 // ---------------------------------------------------------------------------
 let casualSession: MpNetSession | null = null
 async function casualHost(): Promise<void> {
@@ -557,7 +557,7 @@ async function main(): Promise<void> {
   await boot()
   if (init.role === 'searcher') {
     // Warm up the meshes (fabric + pool) with the already-present witness before
-    // seeking — the host's offer is a one-shot broadcast (see PeerInit.warmupMs).
+    // seeking: the host's offer is a one-shot broadcast (see PeerInit.warmupMs).
     if (init.warmupMs) await sleep(init.warmupMs)
     startSearch()
   } else {

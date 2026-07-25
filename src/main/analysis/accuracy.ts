@@ -1,12 +1,12 @@
 // Accuracy / Win% math + move classification (docs/content-coaching.md §0.2, §2.3,
 // §3.1 for the Win% math). "REVIEW-SPEC S1-S9" below are rule ids for the
-// classification scenarios — there is no REVIEW-SPEC document in this repo, so the
+// classification scenarios: there is no REVIEW-SPEC document in this repo, so the
 // behaviour these ids name is defined by the code here and held by
 // scripts/verify-classification.mjs.
 //
 // Clean-room re-implementation of the Lichess Win% + Accuracy% pipeline on plain
 // numbers, plus the chess.com-model move classifier (freechess-corrected, see
-// REVIEW-SPEC S1-S9). No engine, no DB, no Electron — the only dependency is
+// REVIEW-SPEC S1-S9). No engine, no DB, no Electron: the only dependency is
 // chessops (pure chess rules) so this module stays headlessly testable
 // (scripts/verify-classification.mjs bundles it with esbuild and runs scenarios).
 //
@@ -32,7 +32,7 @@ export function rawWinningChances(cp: number): number {
 /** Map a signed mate distance to a finite high-band cp value. */
 export function mateToCp(mate: number): number {
   // 'mate 0' (Stockfish) = the side to move is ALREADY checkmated. That is the
-  // losing extreme for this POV, not an equal position — map it to the bottom of
+  // losing extreme for this POV, not an equal position. Map it to the bottom of
   // the clamp band so Win% -> ~0 and cpLoss reflects a decided position.
   if (mate === 0) return -(21 * 100)
   const sign = Math.sign(mate)
@@ -88,7 +88,7 @@ function clamp(x: number, lo: number, hi: number): number {
  *
  * @param accuracies per-move accuracy for this side's moves, in game order.
  * @param winPercents the Win% (0..100, FROM THIS SIDE'S POV) for EACH ply of the
- *        whole game (both sides), in game order — used to compute the volatility
+ *        whole game (both sides), in game order: used to compute the volatility
  *        weighting window. If omitted, falls back to a flat weighting.
  * @param sideIndices the indices into `winPercents` of this side's moves (the post
  *        positions), aligned 1:1 with `accuracies`. If omitted, accuracies are
@@ -165,7 +165,7 @@ export type PracticeVerdict = 'goodMove' | 'inaccuracy' | 'mistake' | 'blunder'
 
 /**
  * Live practice / guess-the-move bucket (Lichess practiceCtrl.ts). The `shift`
- * here is on the HALVED povDiff scale — keep separate from reviewVerdict's delta.
+ * here is on the HALVED povDiff scale. Keep separate from reviewVerdict's delta.
  */
 export function practiceVerdict(shift: number, playedIsBest: boolean): PracticeVerdict {
   if (playedIsBest) return 'goodMove'
@@ -584,7 +584,7 @@ export interface BadgeInput {
   fenBefore: string
   /** FEN after the played move. */
   fenAfter: string
-  /** Played move (UCI) — used for the sacrifice / hanging-destination board tests. */
+  /** Played move (UCI). Used for the sacrifice / hanging-destination board tests. */
   playedUci: string
   /** Played move SAN (S4-B4: promotions are never Brilliant). */
   playedSan: string
@@ -678,7 +678,7 @@ function brilliantSacrifice(
 ): Role | null {
   // B2: the mover must not be worse after the move.
   if (winAfter < BRILLIANT_HOLD) return null
-  // B3: not "winning anyways" — second line unavailable fails conservatively.
+  // B3: not "winning anyways". Second line unavailable fails conservatively.
   if (secondWin == null) return null
   if (secondWin >= SECOND_LINE_WINNING) return null
   if ((i.bestEval.mate ?? 0) > 0 && (i.secondEval?.mate ?? 0) > 0) return null
@@ -856,7 +856,7 @@ function fmtEvalWhite(e: EvalScore, color: 'white' | 'black'): string {
 
 /**
  * COMMENT-SPEC templates, computed from the FINAL badge. Derived ONLY from review
- * data (SANs, PV, eval numbers, opening name, sacrifice piece) — never board-scan
+ * data (SANs, PV, eval numbers, opening name, sacrifice piece), never board-scan
  * motif guesses. Plain SANs, at most one eval mention, <= ~180 chars.
  */
 export function buildComment(i: CommentInput): string {
@@ -864,18 +864,18 @@ export function buildComment(i: CommentInput): string {
   switch (i.badge) {
     case 'Book':
       return i.openingName
-        ? `${i.san} is a book move — ${i.openingName}.`
+        ? `${i.san} is a book move: ${i.openingName}.`
         : `${i.san} is a book move.`
     case 'Forced':
-      return `${i.san} was forced — the only legal move.`
+      return `${i.san} was forced. The only legal move.`
     case 'Brilliant': {
       const name = pieceName(i.sacrificedRole)
       return `${i.san} is brilliant! Giving up the ${name} is the best move here.`
     }
     case 'Great':
       return i.secondSan
-        ? `${i.san} is a great move — the only good move here. The next best, ${i.secondSan}, was much worse.`
-        : `${i.san} is a great move — the only good move here.`
+        ? `${i.san} is a great move. The only good move here. The next best, ${i.secondSan}, was much worse.`
+        : `${i.san} is a great move. The only good move here.`
     case 'Best':
       return `${i.san} is the best move.`
     case 'Excellent':
@@ -902,8 +902,8 @@ export function buildComment(i: CommentInput): string {
       if (mateAgainst) {
         const n = Math.abs(i.playedEval.mate as number)
         return ref
-          ? `${i.san} is a blunder. ${i.bestSan} was best. Now ${ref} — this allows mate in ${n}.`
-          : `${i.san} is a blunder. ${i.bestSan} was best — this allows mate in ${n}.`
+          ? `${i.san} is a blunder. ${i.bestSan} was best. Now ${ref}: this allows mate in ${n}.`
+          : `${i.san} is a blunder. ${i.bestSan} was best. This allows mate in ${n}.`
       }
       return ref
         ? `${i.san} is a blunder. ${i.bestSan} was best. Now ${ref} (${fmtEvalWhite(i.playedEval, i.color)}).`

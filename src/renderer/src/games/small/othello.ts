@@ -1,8 +1,8 @@
-// Othello (Reversi) — hand-rolled 8x8 BigInt-bitboard GameSpec
+// Othello (Reversi): hand-rolled 8x8 BigInt-bitboard GameSpec
 // (docs/GAMES-PLATFORM-SPEC.md, small games). No code from external repos.
 //
 // Codec: a move is the placement square 'a1'..'h8' (bit = rank * 8 + file,
-// a1 = bit 0, bottom-left), or the literal string 'pass' — legal ONLY when the
+// a1 = bit 0, bottom-left), or the literal string 'pass': legal ONLY when the
 // side to move has no placement (and the opponent still has one). When neither
 // side can place, the game ends and is scored by disc count.
 //

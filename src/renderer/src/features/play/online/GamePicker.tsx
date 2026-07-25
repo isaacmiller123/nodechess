@@ -1,7 +1,7 @@
 // Host-card game picker (spec §Library UI: "Online reuses OnlineTab machinery
 // parameterized by kind"). A compact custom select over the kernel registry:
 // the trigger shows the chosen game's icon + name; the popup lists every
-// registered game grouped by family. Chess stays the default — picking it
+// registered game grouped by family. Chess stays the default. Picking it
 // keeps the wire config byte-identical to pre-v4 hosts.
 
 import { useCallback, useEffect, useRef, useState, type JSX } from 'react'
@@ -10,7 +10,7 @@ import type { GameFamily, GameKind } from '../../../games/kernel'
 import { listGames } from '../../../games/registry'
 
 // ---------------------------------------------------------------------------
-// Compact per-kind icons — 22px vector glyphs. Chess family renders the piece
+// Compact per-kind icons, 22px vector glyphs. Chess family renders the piece
 // glyph most iconic for the variant on a mini checker tile; the other families
 // get miniature versions of their library-card art language (discs, stones,
 // grids). All self-contained SVG, no emoji, currentColor-friendly chrome.

@@ -1,4 +1,4 @@
-// A5 J1 — the judged-game protocol (spec §8): drives ANY JudgeEngine adapter
+// A5 J1. The judged-game protocol (spec §8): drives ANY JudgeEngine adapter
 // through the mandated sequence and parses the engine's UCI output into the
 // canonical JudgeOutput, whose canonicalHash digest is the unit of
 // cross-platform verdict parity.
@@ -14,13 +14,13 @@
 //   isready barrier
 //   per position, in transcript order:
 //     position fen <fen> [moves ...]
-//     go nodes <N>                        (fixed nodes — NEVER depth/time)
+//     go nodes <N>                        (fixed nodes, NEVER depth/time)
 //
-// EXACT PARSE RULE (normative — both adapters, every platform):
+// EXACT PARSE RULE (normative; both adapters, every platform):
 //   During one `go nodes N`, an info line is a CANDIDATE RECORD for rank r iff
 //   it contains all of ` multipv r`, ` score cp <int>` or ` score mate <int>`,
 //   and a non-empty ` pv <moves>`. For each rank, the LAST candidate record
-//   seen before the `bestmove` line wins (last-wins, no depth tiebreak — the
+//   seen before the `bestmove` line wins (last-wins, no depth tiebreak; the
 //   single-thread engine's emission order is itself deterministic, so "last"
 //   is well-defined and identical everywhere). The canonical JudgeLine is
 //   { move: first pv token, cp | mate: the reported integer }. Aspiration
@@ -80,7 +80,7 @@ export function judgeConfigForTier(tier: JudgeTier): JudgeConfig {
 }
 
 /**
- * canonicalHash of the canonical output, base64url — THE unit of
+ * canonicalHash of the canonical output, base64url, THE unit of
  * cross-platform verdict parity: same transcript + same config + the pinned
  * binary ⇒ the same digest on every platform.
  */
@@ -89,24 +89,24 @@ export function judgeOutputDigest(out: JudgeOutput): string {
 }
 
 /**
- * THE canonical transcript→positions builder — the single NORMATIVE
+ * THE canonical transcript→positions builder. The single NORMATIVE
  * Tier-1/verdict judging surface (spec §8: same transcript ⇒ same verdict
  * bits). For a transcript of n moves it returns EXACTLY
  * `[{ ply: i, fen: fenBeforeOf(i) }]` for i = 0..n−1: EVERY transcript ply,
- * each encoded as the bare FEN the mover of ply i faced — NO tail position
+ * each encoded as the bare FEN the mover of ply i faced. NO tail position
  * after the final move, NEVER the `position fen <start> moves …` path
  * encoding. (The TT evolves across positions within a judged game, so any
  * ply-set or encoding drift perturbs every later position's bits ⇒ split
  * judgeOutputDigest between honest verifiers ⇒ the A4-04 false-fraud
  * consensus-split class.) This is exactly the surface TIER2_ANCHORS_JUDGE
  * was measured on (gen-cheater-corpus recordGame), so pinning it re-judges
- * nothing. `fenBeforeOf(i)` is caller-supplied — the caller already holds
+ * nothing. `fenBeforeOf(i)` is caller-supplied: the caller already holds
  * each ply's fen-before from its game state; board replay is deliberately
  * NOT in the shared core. tier1Record enforces this surface fail-closed at
  * verification (full contiguous coverage, bare-FEN); every verdict-path
  * producer MUST build its positions here. NON-verdict residual: the
  * gen-judge-corpus fenBefore+tail surface feeds ONLY the JUDGE_ELO_FIT
- * estElo fit, never Tier-1/Tier-2 verdicts — tier1Record already rejects
+ * estElo fit, never Tier-1/Tier-2 verdicts: tier1Record already rejects
  * its tail via the judged-ply ≥ moves.length check.
  */
 export function transcriptToJudgePositions(
@@ -222,7 +222,7 @@ function analyseOne(
       if (!line.startsWith('bestmove')) return
       finish(() => {
         if (line.startsWith('bestmove (none)')) {
-          reject(new JudgeParseError('terminal position (bestmove (none)) — nothing to judge', pos.ply))
+          reject(new JudgeParseError('terminal position (bestmove (none)): nothing to judge', pos.ply))
           return
         }
         const k = byRank.size
@@ -264,8 +264,8 @@ function analyseOne(
  * Judge a game: drive `engine` through the mandated spec-§8 sequence over
  * `positions` (transcript order) at `config`, and return the canonical
  * JudgeOutput. Deterministic: any prior use of the instance is erased by the
- * per-game ucinewgame + TT clear, so a replay — warm or on a fresh instance,
- * on any platform — yields the identical judgeOutputDigest. Rejects
+ * per-game ucinewgame + TT clear, so a replay: warm or on a fresh instance,
+ * on any platform: yields the identical judgeOutputDigest. Rejects
  * fail-closed (JudgeConfigError / JudgeParseError / JudgeEngineError) with no
  * partial output.
  */

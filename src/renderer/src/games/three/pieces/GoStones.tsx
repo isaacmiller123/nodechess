@@ -1,7 +1,7 @@
-// goStone piece system — instanced biconvex stones, slate (black) and
+// goStone piece system: instanced biconvex stones, slate (black) and
 // clamshell (white) physical materials. Every stone carries deterministic
 // sub-grid offset, yaw and a whisper of tilt so a full board reads hand-placed
-// (spec gate: stones must look GOOD — specular slate, randomized pose).
+// (spec gate: stones must look GOOD, specular slate, randomized pose).
 
 import { useMemo, type JSX } from 'react'
 import * as THREE from 'three'

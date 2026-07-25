@@ -1,26 +1,26 @@
-// A6 M4 (lane L-pin) — the LIVE tOPRF PIN committee over the AccountPeer overlay
+// A6 M4 (lane L-pin): the LIVE tOPRF PIN committee over the AccountPeer overlay
 // (spec §1). This is the renderer-hosted BODY around the pure committee brain in
 // src/shared/accounts/witness/{shamir,oprf,pin,counters,protocol}.ts: it draws a
 // distance-ranked T-of-N committee from the live presence directory, provisions
 // Shamir shares to each member's `memberServe` (already registered by
 // peerService), verifies a PIN with the threshold OPRF (`pinVerifyFlow`), reads
-// the committee's replicated failure count, and — on the lifetime cap — trips the
+// the committee's replicated failure count, and (on the lifetime cap) trips the
 // threshold-signed fuse (`tripFuseIfDue`). NO crypto is reimplemented here; every
 // primitive is imported from the tested shared substrate.
 //
 // Two layers:
 //   1. PURE, fabric-injected orchestration (drawPinCommittee / provisionPinCommittee
-//      / verifyPinAgainstCommittee / readCommitteeCount / tripFuseIfCapped) — the
+//      / verifyPinAgainstCommittee / readCommitteeCount / tripFuseIfCapped). The
 //      exact surface the headless suite drives over a MockFabric committee.
 //   2. A UI-facing app-lifetime CONTROLLER (startPinClientSingleton) the lead wires
 //      next to the account peer on sign-in; the un-fixtured PIN dialogs read its
 //      reactive state (subscribePinClient / getPinClientState) and drive it
 //      (runPinProvision / runPinVerify). When no controller is live (signed out, or
-//      the lead hook not yet wired) the surface reports an HONEST state — never a
+//      the lead hook not yet wired) the surface reports an HONEST state, never a
 //      fixture, never a frozen control.
 //
 // PLATFORM-SPECIFIC renderer hosting; src/shared/accounts stays pure. The account
-// ROOT signing key (needed once, to root-sign the PIN record — spec §1) is INJECTED
+// ROOT signing key (needed once, to root-sign the PIN record; spec §1) is INJECTED
 // (never re-derived here): the suite passes a test root, production wires
 // `rootSigningKey()` via setPinRootSignerProvider (see notesForLead). Clock is
 // injected, defaulting to Date.now (renderer glue is where wall-clock is allowed).
@@ -70,11 +70,11 @@ interface GlobalWithCrypto {
 
 /** A cryptographic byte source `(n) => n random bytes` for share dealing + OPRF
  * blinds. Falls back to nothing usable when no WebCrypto exists (headless
- * without an injected rng) — callers in that case pass a seeded rng. */
+ * without an injected rng). Callers in that case pass a seeded rng. */
 export function secureRng(): Rng {
   const c = (globalThis as GlobalWithCrypto).crypto
   if (!c || typeof c.getRandomValues !== 'function')
-    throw new Error('pinClient: no WebCrypto RNG available — inject a seeded rng')
+    throw new Error('pinClient: no WebCrypto RNG available. Inject a seeded rng')
   return (n: number): Uint8Array => c.getRandomValues(new Uint8Array(n))
 }
 
@@ -84,7 +84,7 @@ export function secureRng(): Rng {
 
 /** The account root key material the PIN record is signed with. In production
  * this is a `rootSigningKey()` accessor on the web session (mirrors
- * deviceSigningKey but returns the root child — a LEAD HOOK, see notesForLead);
+ * deviceSigningKey but returns the root child: a LEAD HOOK, see notesForLead);
  * in the suite it is a test keypair. `rootPriv` never leaves the client. */
 export interface PinRootSigner {
   root: B64u
@@ -123,7 +123,7 @@ export interface CommitteeDraw {
  * `pinN` closest committee-capable live nodes by key-distance (spec §1 "drawn by
  * key-distance from the witness fabric §4"), excluding the account itself. A node
  * only counts if it advertises `caps.committee`. Deterministic given the
- * directory + clock. `enough` says whether a full committee was reachable — the
+ * directory + clock. `enough` says whether a full committee was reachable. The
  * honest degradation signal the wizard surfaces as "waiting for a committee".
  */
 export function drawPinCommittee(
@@ -164,7 +164,7 @@ export interface ProvisionPinOpts {
  * Provision a fresh PIN committee (spec §1): deal a random OPRF key T-of-N with
  * Feldman commitments, derive pinPub via a dealer single-key self-evaluation
  * (offline, since the dealer holds the whole key), root-sign the PIN record, and
- * deliver each member its share over `pin-provision`. A first enrollment only —
+ * deliver each member its share over `pin-provision`. A first enrollment only:
  * re-provision (committee handoff) is the separate PIN-gated path (spec §1;
  * exposed to the lead as a follow-up once the change-PIN flow lands).
  *
@@ -184,7 +184,7 @@ export async function provisionPinCommittee(opts: ProvisionPinOpts): Promise<Pro
   const deal = dealScalar(secret, params.pinT, params.pinN, opts.rng)
   const shareCommitments = deal.shares.map((s) => toB64u(pointToBytes(shareCommitment(s.share))))
 
-  // 2. pinPub — the dealer knows the whole key, so a single-key OPRF evaluation
+  // 2. pinPub. The dealer knows the whole key, so a single-key OPRF evaluation
   //    yields the exact output the threshold committee will reproduce (oprf.ts
   //    invariant), and pinKeyFromOutput stretches it into the published pinPub.
   const bl = clientBlind(opts.pin, opts.rng)
@@ -218,7 +218,7 @@ export async function provisionPinCommittee(opts: ProvisionPinOpts): Promise<Pro
       })
       if ((res as { ok?: boolean }).ok === true) provisioned.push(member)
     } catch {
-      // unreachable member — its seat stays un-provisioned; verify routes around it
+      // unreachable member: its seat stays un-provisioned; verify routes around it
     }
   }
   if (provisioned.length < params.pinT)
@@ -243,7 +243,7 @@ export interface VerifyPinOpts {
  * Verify a PIN against its live committee (spec §1) via the threshold OPRF: the
  * committee shape is read straight off the account's PIN record. A correct PIN
  * proves success back to the queried members (net-zero counter); a wrong PIN
- * still spent one evaluation at each queried member — that IS the rate limit. A
+ * still spent one evaluation at each queried member. That IS the rate limit. A
  * fuse-banned root cannot reach a quorum (honest members refuse), surfaced as
  * `reason:'fuse-active'`.
  */
@@ -264,7 +264,7 @@ export async function verifyPinAgainstCommittee(opts: VerifyPinOpts): Promise<Ve
 /**
  * The committee-effective lifetime failure count for a root: gather each
  * member's signed attempt report and reduce with the t-th-largest statistic
- * (`effectiveCount` — a lowballing/inflating minority cannot move it). Reports
+ * (`effectiveCount`. A lowballing/inflating minority cannot move it). Reports
  * that fail their signature under the member's advertised key are dropped.
  * Returns 0 when fewer than pinT members answer (nothing the committee agrees
  * on yet). The authoritative trip still goes through tripFuseIfCapped; this is
@@ -292,7 +292,7 @@ export interface TripFuseOpts {
   record: SignedPinRecord
   keyOf: ReadonlyMap<NodeId, B64u>
   wts: number
-  /** The account's current held fuse (expired, or none) — sets the cycle floor
+  /** The account's current held fuse (expired, or none). Sets the cycle floor
    * (spec §1: each post-expiry cycle needs pinRefill more). */
   heldFuse?: FuseRecord | null
 }
@@ -340,7 +340,7 @@ export interface PinFuseView {
   committeeN: number
   lifetimeCap: number
   refill: number
-  /** Short id of the fuse's bound PIN record — the public reference. */
+  /** Short id of the fuse's bound PIN record. The public reference. */
   recordId: string
 }
 
@@ -368,7 +368,7 @@ export type PinClientPhase =
   | 'no-committee' // peer up, but < pinN committee-capable machines reachable
   | 'unset' // committee reachable, no PIN provisioned yet
   | 'set' // PIN provisioned, committee live
-  | 'banned' // the fuse is active — witnessed zone locked
+  | 'banned' // the fuse is active, witnessed zone locked
 
 export interface PinSeatView {
   nodeId: NodeId
@@ -476,7 +476,7 @@ export function createPinClient(opts: StartPinClientOpts): PinClientHandle {
   let fuse: FuseRecord | null = null
   let provisioned = new Set<NodeId>()
   let stopped = false
-  // Resolves once any persisted record/fuse has loaded — refresh() awaits it so a
+  // Resolves once any persisted record/fuse has loaded: refresh() awaits it so a
   // caller that refreshes immediately after construction never races the load.
   let ready: Promise<void> | null = null
 
@@ -552,7 +552,7 @@ export function createPinClient(opts: StartPinClientOpts): PinClientHandle {
         await opts.publishFuse?.(root, fr).catch(() => {})
       }
     } catch {
-      // committee unreachable / won't co-sign — leave the fuse untripped, honest
+      // committee unreachable / won't co-sign: leave the fuse untripped, honest
     }
   }
 
@@ -600,7 +600,7 @@ export function createPinClient(opts: StartPinClientOpts): PinClientHandle {
       emit({ busy: 'idle', error: e instanceof Error ? e.message : String(e) })
       return { ok: false, reason: 'verify-error' }
     }
-    // A wrong PIN just spent a lifetime failure at each queried member — re-read
+    // A wrong PIN just spent a lifetime failure at each queried member. Re-read
     // the count + trip the fuse if it just crossed the cap.
     await refresh()
     if (res.ok) return { ok: true }
@@ -616,7 +616,7 @@ export function createPinClient(opts: StartPinClientOpts): PinClientHandle {
       const loadedFuse = opts.loadFuse ? await opts.loadFuse(root) : null
       if (loadedFuse) fuse = loadedFuse
     } catch {
-      // no persistence / denied — start from the live draw
+      // no persistence / denied: start from the live draw
     }
   })()
   void refresh()
@@ -660,7 +660,7 @@ export function subscribePinClient(fn: () => void): () => void {
   }
 }
 
-/** The current PIN client state — the singleton's, or the honest signed-out
+/** The current PIN client state: the singleton's, or the honest signed-out
  * default when none is live (no fixture, ever). */
 export function getPinClientState(): PinClientState {
   return singleton ? singleton.getState() : SIGNED_OUT_STATE
@@ -688,7 +688,7 @@ export function startPinClientSingleton(opts: StartPinClientOpts): PinClientHand
 }
 
 /** Start the singleton from the registered root-signer provider (the zero-arg
- * path the lead can call on sign-in — resolves the signer itself). Returns null
+ * path the lead can call on sign-in, resolves the signer itself). Returns null
  * when no provider is set or it yields no signer (honest signed-out). */
 export function startPinClientFromProvider(
   extra: Omit<StartPinClientOpts, 'signer'> = {},

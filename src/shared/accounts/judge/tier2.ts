@@ -1,38 +1,38 @@
-// A5 J4 — Tier-2 (spec §8): salted K-window partition (§7b commit-reveal),
+// A5 J4. Tier-2 (spec §8): salted K-window partition (§7b commit-reveal),
 // Regan-style window aggregation, the DETERMINISTIC escalation trigger,
 // signed/reproducible verdict + suppression records, and the self-ban
 // helpers. Platform-neutral: no `node:` imports, no DOM, no ambient time or
-// randomness. INTEGER/MICRO MATH ONLY — every division below is floor
+// randomness. INTEGER/MICRO MATH ONLY. Every division below is floor
 // division (Math.floor semantics, divisor always a positive integer, floor
 // toward −∞ for negative numerators); no transcendentals (the one square
-// root is an EXACT integer sqrt with a verification-adjust loop — Math.sqrt
+// root is an EXACT integer sqrt with a verification-adjust loop; Math.sqrt
 // is used only as a correctly-rounded IEEE-754 seed, then adjusted to the
 // exact floor, so the result is bit-identical on every platform).
 //
 // ARCHITECTURAL RULE (lead-decided): the escalation trigger and verdicts are
-// pure functions of the chain GIVEN the judge engine — computable and
+// pure functions of the chain GIVEN the judge engine, computable and
 // reproducible by anyone holding (chain bytes, Tier1Records, salt reveals),
 // but NOT computable inside a synchronous fold step (folds cannot run
 // engines). Consequences, mirrored across the codebase:
 //   (a) the a4-v1 fold's `bans` state folds ONLY in-chain 'selfban' events
-//       (ratings/fold.ts) — never a trigger evaluation;
-//   (b) suppression (CONVICTION fired on-chain — A5-21, the 5σ line — with
+//       (ratings/fold.ts), never a trigger evaluation;
+//   (b) suppression (CONVICTION fired on-chain per A5-21, the 5σ line, with
 //       no timely selfban) is
 //       established by an engine-holding auditor producing a signed,
-//       reproducible SUPPRESSION record published to shard space — a
+//       reproducible SUPPRESSION record published to shard space, a
 //       read-time fact like witness/pin.ts fuse records, consumed by
 //       pairingLegal/displayState as INJECTED EVIDENCE, never folded;
 //   (c) every function in this module is deterministic given
 //       (chain bytes, Tier1Records, salt reveals).
 //
 // ─── COMMIT-REVEAL WINDOW SALT (§7b, PARAMS_A5.saltScheme =
-//     'lease-threshold-v1') — EXACT DERIVATION ──────────────────────────────
+//     'lease-threshold-v1'): EXACT DERIVATION ──────────────────────────────
 // The threshold-signature material is the T_lease-signed (root ‖ ladder ‖
 // windowIndex) tuple, using witness/lease.ts's EXACT threshold-signature byte
-// conventions (grantBytes / LeaseGrant — nothing reimplemented):
+// conventions (grantBytes / LeaseGrant, nothing reimplemented):
 //   saltBody      = {v:1, t:'cs:a5:t2salt:v1', scheme:'lease-threshold-v1',
 //                    root, ladder, window[, anchor]}   (anchor: the OPTIONAL
-//                    A5-17 post-game commitment — see UNPREDICTABLE BEFORE)
+//                    A5-17 post-game commitment; see UNPREDICTABLE BEFORE)
 //   saltBodyHash  = b64u(sha256(canonicalBytes(saltBody)))
 //   one grant     = LeaseGrant {w, key, wts, sig} with
 //                   sig = ed25519_key( grantBytes(saltBodyHash, w, wts) )
@@ -45,18 +45,18 @@
 //                   saltBodyHash, g.w, g.wts), one grant per distinct w
 //                   (duplicates: the lexicographically smallest sig b64u wins).
 //                   The PINNED subset of the counted grants is:
-//                     · WITH a canonical witnessSet — the FULL CANONICAL
+//                     · WITH a canonical witnessSet, the FULL CANONICAL
 //                       THRESHOLD SET: the `threshold` smallest-NodeId members
 //                       of the witness set. The reveal MUST carry a valid grant
 //                       from EVERY one of them (else the subset is not pinnable
 //                       and the reveal is rejected); grants from the remaining
 //                       larger-NodeId witnesses are legal availability
 //                       redundancy but NEVER enter the salt.
-//                     · WITHOUT a witnessSet — all ≥ threshold counted grants
-//                       (legacy, reveal-defined — see UNIQUE below).
+//                     · WITHOUT a witnessSet, all ≥ threshold counted grants
+//                       (legacy, reveal-defined; see UNIQUE below).
 //   windowSalt    = sha256(saltRevealBytes)
 // UNIQUE / NO POST-HOC GRIND (A5-18): with the canonical witnessSet supplied,
-// windowSalt is a UNIQUE function of (root, ladder, window, witnessSet) — the
+// windowSalt is a UNIQUE function of (root, ladder, window, witnessSet). The
 // pinned subset is fixed BY THE WITNESS SET, never chosen by the reveal
 // assembler. So a publisher holding MORE than threshold grants cannot slide
 // off(w)/b(w) post-hoc (§7b anti-surf), and two honest auditors holding
@@ -65,19 +65,19 @@
 // the canonical witness set needs a directory snapshot and is the embedder's
 // (same deliberate thinness as storage/pointers.ts duty checks); the CONSENSUS/
 // verdict path MUST supply witnessSet. WITHOUT it the canonical set is unknown,
-// so the salt stays reveal-defined (all counted grants) and is NOT grind-proof
-// — a diagnostic/legacy path only (individual ed25519 grants have no unique
+// so the salt stays reveal-defined (all counted grants) and is NOT grind-proof.
+// It is a diagnostic/legacy path only (individual ed25519 grants have no unique
 // threshold aggregate absent the pinning set).
-// UNPREDICTABLE BEFORE (§7b — A5-17): each pinned sig is a deterministic
+// UNPREDICTABLE BEFORE (§7b, A5-17): each pinned sig is a deterministic
 // ed25519 output of a WITNESS private key, so the SUBJECT (lacking the private
 // keys) cannot compute the salt. But ed25519 IS deterministic and the tuple
-// above is fixed at account creation, so a WITNESS — or anyone it hands early
-// grants to — could precompute EVERY future window's salt at t=0, leaving
+// above is fixed at account creation, so a WITNESS, or anyone it hands early
+// grants to, could precompute EVERY future window's salt at t=0, leaving
 // "unpredictable before the games are played" resting entirely on unenforced
 // witness signing-time discipline. The OPTIONAL post-game `anchor` closes the
 // in-lane half: when supplied (SaltVerifyOpts.requireAnchor gates it ON for the
 // consensus/verdict path) it is a 32-byte commitment to chain state fixed only
-// AFTER the games preceding boundary b(w) are played — the embedder binds the
+// AFTER the games preceding boundary b(w) are played. The embedder binds the
 // rated-game key at ordinal w·K−1 (the LATEST ordinal guaranteed < b(w) for
 // every off(w) ∈ [0,K), so non-circular and recomputable-after), or a digest
 // over ordinals [0, w·K). It is folded into saltBody, hence into every grant's
@@ -87,62 +87,62 @@
 // the anchor invalidates every grant. RECOMPUTABLE AFTER: the published
 // SaltReveal carries {grants, anchor}; anyone re-verifies every signature and
 // re-derives the identical salt (the anchor value's tie to the true chain
-// ordinal is the auditor's chain-bytes duty — the same deliberate thinness as
-// the witnessSet). RESIDUAL (A5-17, DEFERRED — cross-lane): FULL soundness
+// ordinal is the auditor's chain-bytes duty, the same deliberate thinness as
+// the witnessSet). RESIDUAL (A5-17, DEFERRED, cross-lane): FULL soundness
 // still needs witness-node SIGNING-TIME discipline (refuse to sign window w
 // until ordinal w·K−1 is observed on-chain; set wts to the window-close
 // witnessed time, §4) and the embedder wiring that derives + supplies the
-// anchor from the chain — witness-side behavior + a directory snapshot, not
+// anchor from the chain, witness-side behavior + a directory snapshot, not
 // enforceable in this platform-neutral core. Absent it a malicious witness can
-// still pre-sign, but only by signing over a chain anchor it has NOT verified —
-// a narrower, attributable fault than signing a t=0-static tuple.
+// still pre-sign, but only by signing over a chain anchor it has NOT verified.
+// That is a narrower, attributable fault than signing a t=0-static tuple.
 //
 // ─── BOUNDARY JITTER (the salted partition) ────────────────────────────────
 // A ladder's rated games are numbered by ORDINAL 0,1,2,… in witnessed chain
-// order (the chain-derived rated-game list — fold.ts's rated gate defines
+// order (the chain-derived rated-game list; fold.ts's rated gate defines
 // membership). With K = PARAMS_A5.reganK:
-//   off(w)   = u32be(windowSalt(w) bytes 0..3) mod K          — in [0, K)
+//   off(w)   = u32be(windowSalt(w) bytes 0..3) mod K          (in [0, K))
 //              (modulo bias ≤ K/2^32 ≈ 7e-9: negligible, deterministic)
 //   b(0)     = 0
 //   b(w)     = w·K + off(w)                                    for w ≥ 1
 //   window w = ordinals [b(w), b(w+1))
-// Since off ∈ [0, K): b(w) ∈ [wK, (w+1)K) and b(w+1) ≥ (w+1)K > b(w) — the
+// Since off ∈ [0, K): b(w) ∈ [wK, (w+1)K) and b(w+1) ≥ (w+1)K > b(w). The
 // windows are non-empty, non-overlapping, contiguous and exhaustive, each
 // boundary jittered by an unpredictable offset within [0, K); window sizes
 // lie in [1, 2K−1] with mean K. With the post-game `anchor` bound into the
 // salt (above, A5-17) plus its deferred witness signing-time residual, a
 // metering cheater cannot know, before the games approaching the boundary are
 // played, WHICH game closes a window (§7b: the frontier stops being a
-// targetable line) — while after reveal the partition is exactly
+// targetable line), while after reveal the partition is exactly
 // recomputable. NOTE the deterministic TRIGGER below is trailing-K (fixed
-// geometry — every compliant client must agree without any reveal); the
+// geometry, every compliant client must agree without any reveal); the
 // salted windows are the Tier-2 VERDICT unit.
 //
 // ─── REGAN-STYLE WINDOW STATISTIC (exact estimator) ────────────────────────
-// Inputs per game: the accused's Tier1Side s = rec[side], and elo — the
+// Inputs per game: the accused's Tier1Side s = rec[side], and elo, the
 // accused's chain-derived strength estimate ENTERING the game (the a4-v1
-// fold's ladder display rating, floor(r/1e6), before that game rates —
-// a pure function of chain bytes). OPTIONALLY rdMicro — the SAME fold's
+// fold's ladder display rating, floor(r/1e6), before that game rates;
+// a pure function of chain bytes). OPTIONALLY rdMicro, the SAME fold's
 // rating deviation (RD) entering the game, micro-Elo (ladder state `rd`,
 // equally chain-derived). When present, anchor expectations are evaluated
 // at the UPPER-CONFIDENCE strength
 //   effElo = elo + floor(RD_CONF_MUL · rdMicro / 1e6)
 // (A5-02 fix: the display rating LAGS true strength exactly while RD is
-// still large — fresh/placement/fast-improving accounts — so scoring the
+// still large (fresh/placement/fast-improving accounts), so scoring the
 // point estimate there stamps the SAME positive deviation on every honest
 // game of the window; √n aggregation then escalates honest play. A high-RD
 // account is EXPECTED to be up to RD_CONF_MUL·RD stronger than displayed,
 // which shrinks the deviation toward honest; a settled account, RD floored
-// ≈ 30, shifts ≤ ~60 Elo — the calibrated FPR is preserved.) rdMicro
+// ≈ 30, shifts ≤ ~60 Elo. The calibrated FPR is preserved.) rdMicro
 // ABSENT ⇒ effElo = elo: byte-identical to the legacy point-estimate path.
 // Anchor expectations come from an
 // injected Tier2Anchors (Tier1Anchors ACPL curve + engine-match curve). The
 // MEASURED judge-config bundle is anchors.ts TIER2_ANCHORS_JUDGE (J6
-// calibration corpus) — the only set that may feed T; this module keeps
+// calibration corpus), the only set that may feed T; this module keeps
 // anchors injected so receipts can re-verify historic verdicts under the
 // exact bundle they were computed with.
 //   A game is SCORED iff s.scored ≥ 1 (J2 contract: a 0-sample ACPL is not
-//   strength evidence — such games contribute NOTHING and do not count in
+//   strength evidence. Such games contribute NOTHING and do not count in
 //   n_eff).
 //   devAcplMicro  = floor( (expectedAcplMicro(anchors.acpl, elo)
 //                           − s.acplMicro) · 1e6 / anchors.acpl.sigmaAcplMicro )
@@ -153,7 +153,7 @@
 //                          −PER_GAME_DEV_CAP_MICRO, +PER_GAME_DEV_CAP_MICRO )
 //   (positive = better-than-expected = the suspicious direction; the two
 //   terms are averaged, then the per-game contribution is HARD-CAPPED at
-//   ±3σ — see NO-SINGLE-GAME rule.)
+//   ±3σ; see NO-SINGLE-GAME rule.)
 //   sumDev = Σ devMicro over scored games;  n_eff = scored-game count
 //   zMicro = n_eff = 0 ? 0
 //          : floor( sumDev · 1000 / isqrt(n_eff · 1_000_000) )
@@ -161,15 +161,15 @@
 // OVERFLOW AUDIT (all intermediates < 2^53): |expected − acpl| ≤ 2e9
 // (MAX_CPL_MICRO cap) → ·1e6 ≤ 2e15; match diff ≤ 1e6 → ·1e6 ≤ 1e12;
 // |sumDev| ≤ 59·3e6 < 1.8e8 → ·1000 < 1.8e11.
-// NO SINGLE GAME CONVICTS (§8) — STRUCTURAL: with the ±3e6 per-game cap,
-// zMicro ≤ 3e6·√n_eff, so n_eff = 1 peaks at 3.0 and n_eff = 2 at ≈ 4.24 —
+// NO SINGLE GAME CONVICTS (§8). STRUCTURAL: with the ±3e6 per-game cap,
+// zMicro ≤ 3e6·√n_eff, so n_eff = 1 peaks at 3.0 and n_eff = 2 at ≈ 4.24,
 // both below zThresholdMicro (5.0). Conviction is arithmetically impossible
 // on fewer than 3 scored games, however blatant. (A 1-game window CAN meet
-// the 3.0 escalation trigger — escalation only obliges deeper analysis,
-// NEVER the §8 self-ban: the ban obligation anchors on the 5σ conviction —
-// A5-21 — so no single game can ever oblige a ban either.)
+// the 3.0 escalation trigger. Escalation only obliges deeper analysis,
+// NEVER the §8 self-ban: the ban obligation anchors on the 5σ conviction
+// (A5-21), so no single game can ever oblige a ban either.)
 //
-// ─── CROSS-WINDOW LIFETIME ACCUMULATION (J7 — PARAMS_A5.lifetimeScheme =
+// ─── CROSS-WINDOW LIFETIME ACCUMULATION (J7: PARAMS_A5.lifetimeScheme =
 //     'z-sum-over-sqrt-windows-v1') ─────────────────────────────────────────
 // Regan-style evidence accumulates ACROSS a ladder's CLOSED salted windows,
 // closing the §7(a) empty-margin gap J6 measured (metering just under the
@@ -177,52 +177,52 @@
 // channel; sustained metering must eventually convict). Over the ladder's
 // closed windows w = 0..W−1, in chain order, with z_w each window's zMicro:
 //   zLifeMicro(W) = floor( (Σ z_w) · 1000 / isqrt(W · 1_000_000) )
-// — the EXACT same isqrt normalization the per-window statistic applies to
+// This is the EXACT same isqrt normalization the per-window statistic applies to
 // per-game deviations (isqrt(W·1e6) = floor(1000·√W); floor toward −∞).
 // NULL DISTRIBUTION: each window z is (by the per-window construction) the
 // isqrt-normalized sum of ~N(0,1) per-game deviations, so z_w ~ N(0,1) under
 // the null; Σ z_w / √W over W independent windows is again ~N(0,1). Hence the
-// SAME thresholds apply — zEscalateMicro / zThresholdMicro, no new dials.
+// SAME thresholds apply: zEscalateMicro / zThresholdMicro, no new dials.
 // MULTIPLE EVALUATION: z_life is evaluated at EVERY window close (the trigger
 // must be a pure chain condition, not a one-shot), so a lifetime of W windows
 // is W looks at a 5σ statistic. The 5σ conviction threshold absorbs this by
 // construction (§8 "astronomically-low false-positive thresholds"): per-look
 // FPR ≈ 2.9e-7, so even 10^4 closed windows (300k rated games) keep the
-// union-bounded lifetime FPR under 3e-3 of ONE conviction — and the 3σ
+// union-bounded lifetime FPR under 3e-3 of ONE conviction, and the 3σ
 // escalation looks only oblige deeper analysis, never convict. Cancellation
 // is real and intended: honest (mean-zero) windows keep Σ z_w near 0, so
 // z_life does not drift with W; sustained metering at c·σ/window grows as
 // c·√W and crosses ANY threshold eventually (≈2.6σ/window: escalation at
-// W≈2, conviction at W≈4 — the closure).
+// W≈2, conviction at W≈4, the closure).
 //
 // ─── THE DETERMINISTIC ESCALATION TRIGGER (§8) ─────────────────────────────
 // escalationDue evaluates, at every chain point i ≥ K−1 of the ladder's
 // rated-game list, the aggregate zMicro over the TRAILING K games
 // [i−K+1, i]; the trigger fires at the EARLIEST i where zMicro ≥
 // PARAMS_A5.zEscalateMicro. This is the protocol-defined pure condition
-// every compliant client can evaluate — but evaluating it REQUIRES the
+// every compliant client can evaluate, but evaluating it REQUIRES the
 // judge's outputs (Tier1Records are derived from engine analysis), so the
 // obligation binds the client that has judged its own games: §8 Tier-1 runs
 // on EVERY rated game, so on the compliant path the records exist by
 // construction. A missing record therefore fails CLOSED (throw): the
 // evaluation is only defined over judged games, and "I didn't judge" is
 // itself non-compliance, never an excuse.
-// A5-21 (OWNER DECISION 2026-07-22 — "an honest player is never banned"):
+// A5-21 (OWNER DECISION 2026-07-22, "an honest player is never banned"):
 // the 3σ escalation obliges ONLY the deeper Tier-2 analysis; the §8
 // SELF-BAN / SUPPRESSION obligation anchors on the 5σ CONVICTION condition
 // (zThresholdMicro; per-look FPR ≈ 2.9e-7, union-bounded < 3e-3 over 10^4
-// windows). Gating the ban at 3σ carries ≈1.35e-3/window one-sided FPR —
-// an honest 1k/3k/10k-game career eventually owes a false 90-day self-ban
+// windows). Gating the ban at 3σ carries ≈1.35e-3/window one-sided FPR.
+// An honest 1k/3k/10k-game career eventually owes a false 90-day self-ban
 // with probability ≈22.9%/57.9%/93.5%, i.e. the false-fraud §0 forbids.
 // Suppression is provable ONLY relative to that deterministic conviction
-// (§8) — never relative to an arbitrary third-party Tier-2 run, and never
+// (§8), never relative to an arbitrary third-party Tier-2 run, and never
 // relative to mere escalation.
 //
 // ─── VERDICT / SUPPRESSION RECORDS + SELF-BAN ──────────────────────────────
 // Tier2VerdictBody is a cjson-v1 value; its canonicalHash digest is what a
 // SelfBanPayload.verdict references. Records are signed commend-pattern
-// (ratings/conduct.ts): any key — the signer's root, or a child key proven
-// by inline ROOT-signed cert events (certs.ts isRootSignedCert); certs MUST
+// (ratings/conduct.ts): any key works, whether the signer's root or a child key
+// proven by inline ROOT-signed cert events (certs.ts isRootSignedCert); certs MUST
 // be absent when key === signer. verifyTier2Verdict is a full
 // recompute-from-inputs receipt: same (Tier1Records, sides, elos, anchors)
 // ⇒ the same zMicro bits, or the record is rejected. The suppression
@@ -234,7 +234,7 @@
 // PUBLISHING (thin, per the fuse-record/pointers pattern): records live in
 // shard space under the ACCUSED's key at tier2VerdictKey(root); the actual
 // overlay publish/store-gate/merge is embedder work (A3 storage), exactly
-// like fuse records — a read-time fact injected into pairingLegal/display,
+// like fuse records, a read-time fact injected into pairingLegal/display,
 // never folded.
 
 import { z } from 'zod'
@@ -285,11 +285,11 @@ export const PER_GAME_DEV_CAP_MICRO = 3_000_000
  * keeps every product a small safe integer). */
 export const WINDOW_ENTRIES_MAX = 2 * PARAMS_A5.reganK - 1
 
-/** Domain separator of the salt body — fixed forever (like POINTER_KEY_TAG:
+/** Domain separator of the salt body, fixed forever (like POINTER_KEY_TAG:
  * the derivation is structural; everything revisable rides PARAMS_A5). */
 export const SALT_BODY_TAG = 'cs:a5:t2salt:v1'
 
-/** Domain separator of the verdict shard-space key — fixed forever. */
+/** Domain separator of the verdict shard-space key, fixed forever. */
 const VERDICT_KEY_TAG = 'cs:a5:t2verdict-key:v1'
 
 const bad = (msg: string): never => {
@@ -318,13 +318,13 @@ export function isqrt(n: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// Commit-reveal window salt (§7b) — see header for the exact derivation
+// Commit-reveal window salt (§7b); see header for the exact derivation
 // ---------------------------------------------------------------------------
 
 /** The published reveal: the grant set that DEFINES window w's salt. */
 export interface SaltReveal {
   v: 1
-  /** PARAMS_A5.saltScheme — 'lease-threshold-v1'. */
+  /** PARAMS_A5.saltScheme: 'lease-threshold-v1'. */
   scheme: string
   /** Accused/subject account root. */
   root: B64u
@@ -336,7 +336,7 @@ export interface SaltReveal {
    * b64u the embedder derives from the rated-game key at ordinal w·K−1 (or a
    * digest over ordinals [0, w·K)). Folded into saltBody so it is unforgeable
    * (a swap invalidates every grant) and makes windowSalt(w) uncomputable
-   * before that game is chained — the §7b unpredictable-before property. Absent
+   * before that game is chained, the §7b unpredictable-before property. Absent
    * ⇒ the legacy path (predictable-before, diagnostic only); SaltVerifyOpts
    * .requireAnchor rejects an anchorless reveal on the consensus/verdict path. */
   anchor?: B64u
@@ -352,7 +352,7 @@ const zSaltGrant = z.strictObject({
 })
 
 /** Exported for the A7 canonical-reveal publication slot (judge/transport.ts
- * saltRevealKey gate) — the schema stays the single shape authority. */
+ * saltRevealKey gate). The schema stays the single shape authority. */
 export const zSaltReveal = z.strictObject({
   v: z.literal(1),
   scheme: z.literal(PARAMS_A5.saltScheme),
@@ -363,10 +363,10 @@ export const zSaltReveal = z.strictObject({
   grants: z.array(zSaltGrant).min(1).max(64),
 })
 
-/** b64u(sha256(canonicalBytes(saltBody))) — what each grantor signs over
+/** b64u(sha256(canonicalBytes(saltBody))): what each grantor signs over
  * (via lease.ts grantBytes, the exact lease threshold-sig convention). A5-17:
  * an OPTIONAL post-game `anchor` (32-byte b64u) is folded in when present, so
- * the signed body — hence windowSalt(w) — commits to chain state fixed only
+ * the signed body, hence windowSalt(w), commits to chain state fixed only
  * after the games preceding b(w) are played (header: UNPREDICTABLE BEFORE).
  * Absent ⇒ byte-identical to the pre-A5-17 legacy body (goldens unchanged). */
 export function saltBodyHash(root: B64u, ladder: string, windowIndex: number, anchor?: B64u): B64u {
@@ -389,7 +389,7 @@ export function saltBodyHash(root: B64u, ladder: string, windowIndex: number, an
   )
 }
 
-/** One witness signs the salt tuple — byte-identical to a lease grant over
+/** One witness signs the salt tuple, byte-identical to a lease grant over
  * saltBodyHash (grantBytes convention). Builder: throws on misuse. */
 export function signSaltGrant(
   root: B64u,
@@ -409,14 +409,14 @@ export function signSaltGrant(
 
 export interface SaltVerifyOpts {
   /** Grant threshold; default PARAMS_A2.tLease. With a witnessSet the
-   * effective threshold is max(1, min(tLease, |witnessSet|)) — lease.ts's
+   * effective threshold is max(1, min(tLease, |witnessSet|)), lease.ts's
    * small-population rule. */
   tLease?: number
   /** Optional canonical witness set: grants from outside it never count, AND
-   * (A5-18) it PINS the salt — the reveal must carry the `threshold`
+   * (A5-18) it PINS the salt: the reveal must carry the `threshold`
    * smallest-NodeId members of this set (the full canonical threshold set) and
    * the salt is derived from exactly those, so no supra-threshold subset choice
-   * can grind the boundary. Deriving the set needs a directory snapshot —
+   * can grind the boundary. Deriving the set needs a directory snapshot,
    * embedder context (same thinness as storage/pointers.ts duty checks); the
    * consensus/verdict path MUST supply it for a unique, grind-proof salt. */
   witnessSet?: readonly NodeId[]
@@ -424,7 +424,7 @@ export interface SaltVerifyOpts {
    * consensus/verdict path sets this so windowSalt(w) provably commits to chain
    * state fixed only after the games preceding b(w) are played (§7b
    * unpredictable-before). Default false keeps the legacy/diagnostic path
-   * (predictable-before). Orthogonal to witnessSet — a consensus reveal sets
+   * (predictable-before). Orthogonal to witnessSet: a consensus reveal sets
    * both (grind-proof AND unpredictable-before). */
   requireAnchor?: boolean
 }
@@ -433,7 +433,7 @@ export interface SaltVerify {
   ok: boolean
   /** Deterministic, sorted error strings (lease.ts convention). */
   errors: string[]
-  /** Present iff ok — b64u(windowSalt). */
+  /** Present iff ok: b64u(windowSalt). */
   salt?: B64u
 }
 
@@ -443,13 +443,13 @@ export interface SaltVerify {
  * set, fixed order) so the salt is a UNIQUE function of (root, ladder, window,
  * witnessSet) and no supra-threshold subset choice can grind the boundary;
  * WITHOUT a witnessSet the canonical set is unknown, so it falls back to all
- * counted grants (reveal-defined — header). Internal to derivation + verifier. */
+ * counted grants (reveal-defined, see header). Internal to derivation + verifier. */
 function countedGrants(reveal: SaltReveal, opts: SaltVerifyOpts): { grants: LeaseGrant[]; errors: string[] } {
   const errors: string[] = []
   // A5-17: the consensus/verdict path pins requireAnchor so no anchorless
   // (predictable-before) salt is ever blessed. The anchor is folded into
   // bodyHash below, so it also binds every grant's signature (a post-hoc swap
-  // makes every verifyGrantSig fail — unforgeable).
+  // makes every verifyGrantSig fail, so the binding is unforgeable).
   if (opts.requireAnchor === true && reveal.anchor === undefined)
     errors.push('salt: requireAnchor set but the reveal carries no post-game anchor (§7b unpredictable-before)')
   const bodyHash = saltBodyHash(reveal.root, reveal.ladder, reveal.window, reveal.anchor)
@@ -472,12 +472,12 @@ function countedGrants(reveal: SaltReveal, opts: SaltVerifyOpts): { grants: Leas
     inSet === null ? tLease : Math.max(1, Math.min(tLease, (opts.witnessSet as readonly NodeId[]).length))
   if (byW.size < threshold) errors.push(`salt: only ${byW.size} valid grantors (need ${threshold})`)
   const sortedCounted = [...byW.values()].sort((a, b) => compareKeys(a.w, b.w))
-  // A5-18 — PIN THE SALT to a canonical subset so the reveal assembler cannot
+  // A5-18: PIN THE SALT to a canonical subset so the reveal assembler cannot
   // grind off(w)/b(w) post-hoc and two honest auditors agree. With the
   // canonical witnessSet, the salt is derived from the `threshold` smallest-
   // NodeId members of the set (the full canonical threshold set, fixed order):
   // the reveal must carry a valid grant from EVERY one of them, and grants from
-  // the remaining larger-NodeId witnesses never enter the salt — so the salt is
+  // the remaining larger-NodeId witnesses never enter the salt, so the salt is
   // invariant to which supra-threshold subset the reveal carries. Without a
   // witnessSet the canonical set is unknown ⇒ reveal-defined fallback (header).
   if (inSet !== null && errors.length === 0) {
@@ -486,7 +486,7 @@ function countedGrants(reveal: SaltReveal, opts: SaltVerifyOpts): { grants: Leas
     for (const w of designated) {
       const g = byW.get(w)
       if (g === undefined)
-        errors.push(`salt: canonical grantor ${w} did not sign — the pinned threshold subset is incomplete`)
+        errors.push(`salt: canonical grantor ${w} did not sign. The pinned threshold subset is incomplete`)
       else pinned.push(g)
     }
     return { grants: pinned, errors }
@@ -496,7 +496,7 @@ function countedGrants(reveal: SaltReveal, opts: SaltVerifyOpts): { grants: Leas
 
 /** The canonical threshold-signature material: concat of the counted grants'
  * RAW 64 sig bytes (header derivation). Throws Tier2InputError when the
- * reveal does not prove a threshold — no salt from an unproven reveal. */
+ * reveal does not prove a threshold: no salt from an unproven reveal. */
 export function saltRevealBytes(reveal: SaltReveal, opts: SaltVerifyOpts = {}): Uint8Array {
   const p = zSaltReveal.safeParse(reveal)
   if (!p.success) bad('saltRevealBytes: malformed SaltReveal')
@@ -505,7 +505,7 @@ export function saltRevealBytes(reveal: SaltReveal, opts: SaltVerifyOpts = {}): 
   return concatBytes(...grants.map((g) => fromB64u(g.sig)))
 }
 
-/** windowSalt = sha256(saltRevealBytes) — 32 salt bytes (header contract:
+/** windowSalt = sha256(saltRevealBytes), 32 salt bytes (header contract:
  * unpredictable before the witnesses sign, exactly recomputable after). */
 export function windowSalt(reveal: SaltReveal, opts: SaltVerifyOpts = {}): Uint8Array {
   return sha256(saltRevealBytes(reveal, opts))
@@ -527,7 +527,7 @@ export function verifySaltReveal(reveal: unknown, opts: SaltVerifyOpts = {}): Sa
 }
 
 // ---------------------------------------------------------------------------
-// Salted window partition (boundary jitter — header geometry)
+// Salted window partition (boundary jitter, header geometry)
 // ---------------------------------------------------------------------------
 
 /** off(w) ∈ [0, reganK): u32be of salt bytes 0..3 mod K (header; the mod
@@ -549,14 +549,14 @@ function offAt(offsetOf: OffsetOf, w: number): number {
   return off
 }
 
-/** b(w): the first ordinal of window w — 0 for w=0, else w·K + off(w). */
+/** b(w): the first ordinal of window w. It is 0 for w=0, else w·K + off(w). */
 export function windowStart(windowIndex: number, offsetOf: OffsetOf): number {
   if (!isNonNegInt(windowIndex)) bad('windowStart: windowIndex must be a non-negative safe integer')
   if (windowIndex === 0) return 0
   return windowIndex * PARAMS_A5.reganK + offAt(offsetOf, windowIndex)
 }
 
-/** Window w's ordinal range [start, end) — end = b(w+1). Sizes ∈ [1, 2K−1];
+/** Window w's ordinal range [start, end): end = b(w+1). Sizes ∈ [1, 2K−1];
  * consecutive windows tile the ordinals exactly (header proof). */
 export function windowBounds(windowIndex: number, offsetOf: OffsetOf): { start: number; end: number } {
   return { start: windowStart(windowIndex, offsetOf), end: windowStart(windowIndex + 1, offsetOf) }
@@ -573,7 +573,7 @@ export function windowIndexOfOrdinal(ordinal: number, offsetOf: OffsetOf): numbe
 
 /** Slice window w out of the ladder's chain-ordered rated-game list. The
  * window is COMPLETE only when the list already extends past b(w+1); a
- * partial (still-open) window is returned as-is — the caller decides. */
+ * partial (still-open) window is returned as-is. The caller decides. */
 export function windowGames<T>(games: readonly T[], windowIndex: number, offsetOf: OffsetOf): T[] {
   if (!Array.isArray(games)) bad('windowGames: games is not an array')
   const { start, end } = windowBounds(windowIndex, offsetOf)
@@ -581,13 +581,13 @@ export function windowGames<T>(games: readonly T[], windowIndex: number, offsetO
 }
 
 // ---------------------------------------------------------------------------
-// Tier2Anchors — ACPL curve (J2's Tier1Anchors) + engine-match expectation
+// Tier2Anchors: ACPL curve (J2's Tier1Anchors) + engine-match expectation
 // ---------------------------------------------------------------------------
 
 /** Anchor bundle the z-estimator consumes. `matchByElo` is the expected
- * engine-match fraction (micro) by strength at the judge's Tier-1 config —
+ * engine-match fraction (micro) by strength at the judge's Tier-1 config:
  * ascending elo, ascending match. The MEASURED judge-config bundle lives in
- * anchors.ts (TIER2_ANCHORS_JUDGE — J6 calibration corpus); this module
+ * anchors.ts (TIER2_ANCHORS_JUDGE, J6 calibration corpus); this module
  * takes anchors by injection only, so verdict receipts re-verify under the
  * exact bundle (pinned by digest in the record) they were computed with. */
 export interface Tier2Anchors {
@@ -614,14 +614,14 @@ function checkTier2Anchors(a: Tier2Anchors): void {
   }
 }
 
-/** canonicalHash digest of the anchor bundle — embedded in every verdict. */
+/** canonicalHash digest of the anchor bundle, embedded in every verdict. */
 export function tier2AnchorsDigest(a: Tier2Anchors): B64u {
   checkTier2Anchors(a)
   return toB64u(canonicalHash(a as unknown as CanonicalObject))
 }
 
 /** Expected engine-match fraction (micro) at strength `elo`: piecewise-linear
- * floor interpolation between knots, clamped to the end knots — the exact
+ * floor interpolation between knots, clamped to the end knots, the exact
  * mirror of tier1.ts expectedAcplMicro's rounding. */
 export function expectedMatchMicro(anchors: Tier2Anchors, elo: number): number {
   checkTier2Anchors(anchors)
@@ -641,18 +641,18 @@ export function expectedMatchMicro(anchors: Tier2Anchors, elo: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// The window z-statistic (exact estimator — header formulas)
+// The window z-statistic (exact estimator, header formulas)
 // ---------------------------------------------------------------------------
 
 /** [A5-CALIBRATED] Upper-confidence multiplier on the fold RD (header:
  * effElo = elo + floor(RD_CONF_MUL·rdMicro/1e6)). 2 ⇒ a settled account
- * (RD floored at 30) shifts ≤ 60 Elo — negligible against the anchor-knot
- * spacing, so the J6-calibrated honest-holdout FPR is preserved — while a
+ * (RD floored at 30) shifts ≤ 60 Elo, negligible against the anchor-knot
+ * spacing, so the J6-calibrated honest-holdout FPR is preserved, while a
  * placement/climbing account (RD 300+) shifts ≥ 600 Elo, covering the
  * display-rating lag (A5-02). LOCAL const, deliberately NOT in PARAMS_A5:
  * folding it into the params bundle (and re-deriving the honest-holdout
  * margin with rdMicro exercised) is deferred to the next calibration
- * re-pin — do not drift PARAMS_A5_DIGEST for it here. */
+ * re-pin; do not drift PARAMS_A5_DIGEST for it here. */
 const RD_CONF_MUL = 2
 
 /** Validation bound on rdMicro (micro-Elo). The a4-v1 fold clamps RD to the
@@ -693,13 +693,13 @@ function checkEntry(e: WindowEntry, i: number, ladder: string | null): string {
   if (ladder !== null && r.ladder !== ladder)
     bad(`entry[${i}].rec.ladder ${JSON.stringify(r.ladder)} differs from the window's ${JSON.stringify(ladder)}`)
   if (r.params !== PARAMS_A5_DIGEST)
-    bad(`entry[${i}].rec.params does not name PARAMS_A5_DIGEST — refusing a foreign rule set`)
+    bad(`entry[${i}].rec.params does not name PARAMS_A5_DIGEST. Refusing a foreign rule set`)
   checkTier1Side(r[e.side], `entry[${i}].rec.${e.side}`)
   return r.ladder
 }
 
 /** Per-game standardized deviation, micro-σ (header formula; positive =
- * suspicious), or null when the game is unscored (s.scored = 0 — no
+ * suspicious), or null when the game is unscored (s.scored = 0: no
  * evidence, excluded from n_eff). */
 export function gameDevMicro(entry: WindowEntry, anchors: Tier2Anchors): number | null {
   checkTier2Anchors(anchors)
@@ -747,13 +747,13 @@ export interface WindowVerdict {
   games: number
   /** Games that actually carried evidence (s.scored ≥ 1). */
   scoredGames: number
-  /** zMicro ≥ PARAMS_A5.zThresholdMicro — the Tier-2 conviction. */
+  /** zMicro ≥ PARAMS_A5.zThresholdMicro, the Tier-2 conviction. */
   convicted: boolean
-  /** zMicro ≥ PARAMS_A5.zEscalateMicro — the escalation condition. */
+  /** zMicro ≥ PARAMS_A5.zEscalateMicro, the escalation condition. */
   escalate: boolean
 }
 
-/** Judge one window's Tier1Records for one (root, ladder) — header estimator;
+/** Judge one window's Tier1Records for one (root, ladder): header estimator;
  * conviction below 3 scored games is structurally impossible (per-game cap). */
 export function windowVerdict(entries: readonly WindowEntry[], anchors: Tier2Anchors): WindowVerdict {
   const { zMicro, scoredGames } = aggregateZMicro(entries, anchors)
@@ -767,7 +767,7 @@ export function windowVerdict(entries: readonly WindowEntry[], anchors: Tier2Anc
 }
 
 // ---------------------------------------------------------------------------
-// Cross-window lifetime accumulation (J7 — header contract)
+// Cross-window lifetime accumulation (J7, header contract)
 // ---------------------------------------------------------------------------
 
 /** Structural per-window |zMicro| bound: |sumDev| ≤ n_eff·PER_GAME_DEV_CAP
@@ -783,13 +783,13 @@ export const WINDOW_Z_CAP_MICRO =
 export const LIFETIME_WINDOWS_MAX = 10_000
 
 export interface LifetimeVerdict {
-  /** zLifeMicro(W) = floor(Σ z_w · 1000 / isqrt(W·1e6)) — header formula. */
+  /** zLifeMicro(W) = floor(Σ z_w · 1000 / isqrt(W·1e6)), header formula. */
   zLifeMicro: number
-  /** W — the closed-window count the statistic was evaluated over. */
+  /** W: the closed-window count the statistic was evaluated over. */
   windows: number
-  /** zLifeMicro ≥ PARAMS_A5.zThresholdMicro — the SAME 5σ conviction line. */
+  /** zLifeMicro ≥ PARAMS_A5.zThresholdMicro, the SAME 5σ conviction line. */
   convicted: boolean
-  /** zLifeMicro ≥ PARAMS_A5.zEscalateMicro — the SAME 3σ escalation line. */
+  /** zLifeMicro ≥ PARAMS_A5.zEscalateMicro, the SAME 3σ escalation line. */
   escalate: boolean
 }
 
@@ -797,7 +797,7 @@ export interface LifetimeVerdict {
  * The lifetime statistic (PARAMS_A5.lifetimeScheme, header math): aggregate
  * the ladder's CLOSED windows' zMicro values, in chain order, exactly as the
  * per-window statistic aggregates per-game deviations. z_w ~ N(0,1) under
- * the null ⇒ z_life ~ N(0,1) — the same thresholds apply, no new dials; the
+ * the null ⇒ z_life ~ N(0,1): the same thresholds apply, no new dials; the
  * 5σ conviction line absorbs the evaluate-at-every-W multiplicity (header).
  * W = 0 (no closed window yet) is the empty statistic: z = 0, no flags.
  * Deterministic given the window zs; pure integer math.
@@ -826,7 +826,7 @@ export function lifetimeVerdict(windowZs: readonly number[]): LifetimeVerdict {
 }
 
 // ---------------------------------------------------------------------------
-// The deterministic escalation trigger (§8 — header contract)
+// The deterministic escalation trigger (§8, header contract)
 // ---------------------------------------------------------------------------
 
 /** One game of the chain-derived rated-game list for (root, ladder):
@@ -835,7 +835,7 @@ export interface LadderGameRef {
   game: string
   side: Side
   elo: number
-  /** OPTIONAL (A5-02): the fold's ladder RD entering the game, micro-Elo —
+  /** OPTIONAL (A5-02): the fold's ladder RD entering the game, micro-Elo;
    * threaded into WindowEntry.rdMicro (upper-confidence scoring, header). */
   rdMicro?: number
 }
@@ -846,23 +846,23 @@ export interface EscalationVerdict {
    * the 3σ ESCALATION line. A5-20: when `lifetime` is ALSO present, the
    * deeper-analysis obligation began at whichever of the two firing games is
    * EARLIER in chain order (see the fn doc). A5-21: escalation firings anchor
-   * ONLY the deeper-analysis obligation — the self-ban anchor is
+   * ONLY the deeper-analysis obligation: the self-ban anchor is
    * `conviction`, never these fields. */
   atIndex?: number
   /** That game's key. */
   game?: string
   /** The trailing-K zMicro at the firing point. */
   zMicro?: number
-  /** Present iff the LIFETIME accumulation escalated — reported INDEPENDENTLY
+  /** Present iff the LIFETIME accumulation escalated, reported INDEPENDENTLY
    * of the trailing-K arm (A5-20: BOTH may be present when both fire, since
    * either can escalate at the earlier chain ordinal). z_life at the earliest
    * escalating closed-window count W (windows = W, i.e. closed windows
-   * 0..W−1). The corresponding chain game is the one closing window W−1 —
+   * 0..W−1). The corresponding chain game is the one closing window W−1,
    * ordinal b(W)−1 of the salted partition, mapped by the caller (this
    * function never sees the partition). */
   lifetime?: { zLifeMicro: number; windows: number }
   /** A5-21 (owner decision 2026-07-22): present iff either arm reached the
-   * 5σ CONVICTION line (zThresholdMicro) — THE §8 self-ban / suppression
+   * 5σ CONVICTION line (zThresholdMicro), THE §8 self-ban / suppression
    * anchor. Same both-arms / min-by-ordinal contract as the escalation
    * fields: `atIndex/game/zMicro` name the EARLIEST trailing-K window whose
    * recomputed z convicted; `lifetime` names the EARLIEST convicting
@@ -882,43 +882,43 @@ export interface EscalationVerdict {
 /**
  * THE deterministic, protocol-defined escalation condition (header): at each
  * chain point i ≥ reganK−1, aggregate the trailing reganK games; fire at the
- * earliest zMicro ≥ zEscalateMicro. `records` maps gameKey → Tier1Record —
+ * earliest zMicro ≥ zEscalateMicro. `records` maps gameKey → Tier1Record;
  * on the compliant path these exist for every rated game (§8 Tier-1 runs on
  * all of them); a missing record fails CLOSED (Tier2InputError), because the
  * condition is only defined over judged games and an unjudged rated game is
  * itself non-compliance. Deterministic given (chain bytes, Tier1Records).
  *
- * J7 (ADDITIVE — 3-arg callers are byte-unchanged): when `closedWindowZs`
- * (the ladder's closed salted windows' zMicro values, chain order — the
+ * J7 (ADDITIVE, 3-arg callers are byte-unchanged): when `closedWindowZs`
+ * (the ladder's closed salted windows' zMicro values, chain order; the
  * caller derives them from its verified salt reveals) is supplied, the
  * trigger ALSO fires when the lifetime statistic escalates at any prefix:
  * the earliest W with lifetimeVerdict(closedWindowZs[0..W)).escalate. A5-20:
  * the two arms are evaluated INDEPENDENTLY and BOTH firings are reported
  * (`atIndex/game/zMicro` for trailing-K, `lifetime` for the lifetime prefix);
  * a trailing-K firing no longer suppresses an EARLIER-in-chain-order lifetime
- * firing. `due` is their OR — the ESCALATION (deeper-analysis) obligation.
+ * firing. `due` is their OR: the ESCALATION (deeper-analysis) obligation.
  *
- * A5-21 (owner decision 2026-07-22 — honest players are never banned): each
+ * A5-21 (owner decision 2026-07-22, honest players are never banned): each
  * arm is ALSO scanned for its earliest crossing of the 5σ CONVICTION line
  * (zThresholdMicro), reported under `conviction`. THE §8 self-ban deadline
- * anchors on the earliest CONVICTION firing — games[conviction.atIndex] for
+ * anchors on the earliest CONVICTION firing: games[conviction.atIndex] for
  * trailing-K vs the game closing conviction.lifetime's window W−1 (ordinal
- * b(W)−1) — NEVER on a mere escalation firing. Only the partition-holding
+ * b(W)−1), NEVER on a mere escalation firing. Only the partition-holding
  * caller can name b(W)−1, so it (which already resolves that ordinal) takes
  * the min; this function never sees the partition and so cannot order the
- * two — surfacing both losslessly is precisely what lets the caller set the
+ * two. Surfacing both losslessly is precisely what lets the caller set the
  * deadline no later than the earliest conviction (the same A5-20 lossless
  * contract, now applied at the conviction line). A conviction structurally
  * implies escalation (zThresholdMicro > zEscalateMicro), so `conviction`
  * present ⇒ `due` true.
  *
  * VALIDATION DOMAIN (ratified at the A5-21 post-fix review): the condition
- * is defined only over a FULLY-well-formed input — every entry and every
+ * is defined only over a FULLY-well-formed input: every entry and every
  * closedWindowZs element is deep-validated UPFRONT, before any window or
  * prefix is evaluated, so a malformed chain fails closed (Tier2InputError)
  * regardless of where the escalation/conviction crossings sit. Throw
  * behavior is input-shape-determined, never scan-depth-determined.
- * Deterministic given (chain bytes, Tier1Records, salt reveals) — the module
+ * Deterministic given (chain bytes, Tier1Records, salt reveals), the module
  * contract.
  */
 export function escalationDue(
@@ -943,19 +943,19 @@ export function escalationDue(
         bad(`escalationDue: games[${i}] is malformed`)
       const rec = records.get(g.game)
       if (rec === undefined)
-        bad(`escalationDue: no Tier1Record for rated game ${JSON.stringify(g.game)} — unjudged rated games are non-compliant (§8)`)
+        bad(`escalationDue: no Tier1Record for rated game ${JSON.stringify(g.game)}. Unjudged rated games are non-compliant (§8)`)
       return g.rdMicro === undefined
         ? { rec: rec as Tier1Record, side: g.side, elo: g.elo }
         : { rec: rec as Tier1Record, side: g.side, elo: g.elo, rdMicro: g.rdMicro }
     })
     // A5-21 post-fix review ratification: the §8 condition is defined only
     // over a FULLY-well-formed input. EVERY entry is deep-validated upfront
-    // (the same checkEntry the aggregation applies — rdMicro/params/ladder/
+    // (the same checkEntry the aggregation applies, rdMicro/params/ladder/
     // side stats), so whether a chain throws is INPUT-SHAPE-determined,
     // never scan-depth-determined: two evaluators can never split into
     // verdict-vs-throw on identical bytes because one scanned further. (The
     // pre-A5-21 early-break scan validated only the windows it happened to
-    // aggregate — a malformed record beyond the first escalation crossing
+    // aggregate. A malformed record beyond the first escalation crossing
     // was silently unexamined; strictly MORE fail-closed now, per §0.)
     let lad: string | null = null
     for (let i = 0; i < entries.length; i++) lad = checkEntry(entries[i], i, lad)
@@ -970,7 +970,7 @@ export function escalationDue(
     }
   }
   // J7 lifetime arm (over closed salted windows): the EARLIEST escalating
-  // prefix W. A5-20: evaluated INDEPENDENTLY of the trailing-K arm — neither
+  // prefix W. A5-20: evaluated INDEPENDENTLY of the trailing-K arm, neither
   // suppresses the other, because either can escalate at the earlier chain
   // ordinal and the §8 deadline must anchor on whichever fired FIRST. Both
   // firings are surfaced losslessly; the partition-holding caller (the only
@@ -981,7 +981,7 @@ export function escalationDue(
     if (!Array.isArray(closedWindowZs)) bad('escalationDue: closedWindowZs is not an array')
     // Same upfront full-domain rule as the trailing-K arm: validate the
     // WHOLE closed-window list (every element + the LIFETIME_WINDOWS_MAX
-    // bound) before any prefix is evaluated — throw behavior must not depend
+    // bound) before any prefix is evaluated. Throw behavior must not depend
     // on where the escalation/conviction crossings happen to sit.
     lifetimeVerdict(closedWindowZs)
     for (let w = 1; w <= closedWindowZs.length; w++) {
@@ -994,7 +994,7 @@ export function escalationDue(
       }
     }
   }
-  // A5-21: the conviction report (either arm crossed zThresholdMicro) — THE
+  // A5-21: the conviction report (either arm crossed zThresholdMicro), THE
   // §8 self-ban anchor. Structurally conviction ⇒ escalation, so it can
   // never be present on a not-due verdict.
   const conviction =
@@ -1019,25 +1019,25 @@ export function escalationDue(
 
 /** Canonical verdict body (cjson-v1). For kind 'verdict', `window` is the
  * SALTED window index; for 'suppression' it is the ORDINAL of the trailing-
- * K-window-completing game (the chain point the CONVICTION fired at —
+ * K-window-completing game (the chain point the CONVICTION fired at;
  * A5-21: suppression asserts the 5σ conviction, never mere escalation).
  * `games` and `tier1` are parallel arrays in window order.
  *
- * J7 `lifetime` (OPTIONAL EVIDENCE — the simpler consistent rule, chosen
+ * J7 `lifetime` (OPTIONAL EVIDENCE, the simpler consistent rule, chosen
  * over a dedicated kind): any record MAY additionally claim the lifetime
  * statistic over the ladder's closed windows. zLifeMicro/windows are DERIVED
  * from windowZs (verifyTier2Verdict recomputes them exactly like zMicro from
- * the entries — receipts hold); on kind 'verdict' the claim must be evaluated
+ * the entries; receipts hold); on kind 'verdict' the claim must be evaluated
  * AT this record's window (windows = window+1, and this window's own z is
- * the last entry: windowZs[window] = zMicro — schema-refined). That the
+ * the last entry: windowZs[window] = zMicro, schema-refined). That the
  * windowZs really ARE the ladder's closed-window zs is the auditor's
- * chain-bytes check against the salted partition + per-window records — the
+ * chain-bytes check against the salted partition + per-window records, the
  * same deliberate thinness as the "entries really are the named window"
  * claim (header). */
 export interface Tier2VerdictBody {
   v: 1
   kind: 'verdict' | 'suppression'
-  /** The accused's root — the record publishes under THIS key. */
+  /** The accused's root. The record publishes under THIS key. */
   root: B64u
   ladder: string
   window: number
@@ -1047,14 +1047,14 @@ export interface Tier2VerdictBody {
   tier1: readonly B64u[]
   /** tier2AnchorsDigest of the anchor bundle used. */
   anchors: B64u
-  /** PARAMS_A5_DIGEST — the exact rule set that produced this verdict. */
+  /** PARAMS_A5_DIGEST: the exact rule set that produced this verdict. */
   params: string
   /** Computing party's witnessed-time claim (ranking/expiry math upstream). */
   verdictWts: number
   /** SUPPRESSION ONLY: the first witnessed-lane event appended after the
-   * completing game — the §8 deadline the missing selfban is judged by. */
+   * completing game, the §8 deadline the missing selfban is judged by. */
   deadlineEvent?: EventId
-  /** OPTIONAL lifetime claim (J7 — doc comment above): windowZs is the
+  /** OPTIONAL lifetime claim (J7, doc comment above): windowZs is the
    * ladder's closed windows' zMicro list in chain order; zLifeMicro/windows
    * are derived, never asserted. */
   lifetime?: {
@@ -1064,7 +1064,7 @@ export interface Tier2VerdictBody {
   }
 }
 
-/** Signed verdict record — commend-pattern signer (header). */
+/** Signed verdict record, commend-pattern signer (header). */
 export interface Tier2VerdictRecord {
   body: Tier2VerdictBody
   /** Computing party's account root. */
@@ -1130,7 +1130,7 @@ const zTier2VerdictRecord = z.strictObject({
   certs: z.array(z.unknown()).max(8).optional(),
 })
 
-/** canonicalHash(body) b64u — what SelfBanPayload.verdict references. */
+/** canonicalHash(body) b64u: what SelfBanPayload.verdict references. */
 export function tier2VerdictDigest(body: Tier2VerdictBody): B64u {
   return toB64u(canonicalHash(body as unknown as CanonicalObject))
 }
@@ -1140,13 +1140,13 @@ export interface MakeTier2VerdictOpts {
   root: B64u
   ladder: string
   window: number
-  /** The window's entries — zMicro/games/tier1 are DERIVED, never asserted. */
+  /** The window's entries. zMicro/games/tier1 are DERIVED, never asserted. */
   entries: readonly WindowEntry[]
   anchors: Tier2Anchors
   verdictWts: number
   deadlineEvent?: EventId
   /** OPTIONAL lifetime claim: the closed windows' zMicro list (chain order).
-   * body.lifetime is DERIVED from it via lifetimeVerdict — never asserted.
+   * body.lifetime is DERIVED from it via lifetimeVerdict, never asserted.
    * On kind 'verdict' the schema requires it to end at this record's window
    * with this window's zMicro (body doc comment). */
   lifetimeWindowZs?: readonly number[]
@@ -1164,7 +1164,7 @@ export function makeTier2Verdict(o: MakeTier2VerdictOpts): Tier2VerdictRecord {
   const { zMicro } = aggregateZMicro(o.entries, o.anchors)
   const life = o.lifetimeWindowZs === undefined ? undefined : lifetimeVerdict(o.lifetimeWindowZs)
   // A5-03 + A5-21: a suppression record asserts the deterministic CONVICTION
-  // FIRED (§8, at the 5σ line — owner decision 2026-07-22: escalation alone
+  // FIRED (§8, at the 5σ line, owner decision 2026-07-22: escalation alone
   // never obliges a ban, so a sub-conviction suppression is a false-fraud
   // instrument against honest accounts). The condition is fully derivable
   // from these inputs, so the builder refuses to mint one whose own evidence
@@ -1176,7 +1176,7 @@ export function makeTier2Verdict(o: MakeTier2VerdictOpts): Tier2VerdictRecord {
     const lifetimeFired = life !== undefined && life.convicted
     if (!windowFired && !lifetimeFired)
       bad(
-        `makeTier2Verdict: suppression requires the conviction to have fired — window path needs ${PARAMS_A5.reganK} entries with zMicro ≥ ${PARAMS_A5.zThresholdMicro} (got ${o.entries.length} entries, zMicro ${zMicro})` +
+        `makeTier2Verdict: suppression requires the conviction to have fired. Window path needs ${PARAMS_A5.reganK} entries with zMicro ≥ ${PARAMS_A5.zThresholdMicro} (got ${o.entries.length} entries, zMicro ${zMicro})` +
           (life === undefined
             ? '; no lifetime claim'
             : `; lifetime path zLifeMicro ${life.zLifeMicro} < ${PARAMS_A5.zThresholdMicro}`),
@@ -1235,13 +1235,13 @@ export interface Tier2Verify {
  * FULL receipt verification (header): shape, params pin, anchors digest,
  * per-game tier1 digests + game keys, exact zMicro recomputation (same
  * inputs ⇒ same bits, or rejected), the 'suppression' CONVICTION condition
- * (A5-03 + A5-21: recomputed from the same inputs — full-reganK window
+ * (A5-03 + A5-21: recomputed from the same inputs, full-reganK window
  * zMicro ≥ zThresholdMicro, or lifetime zLifeMicro ≥ zThresholdMicro; mere
  * escalation never grounds a suppression),
  * commend-pattern key provenance, and the
- * record signature. Fail-closed: never throws. The chain-side claims — that
+ * record signature. Fail-closed: never throws. The chain-side claims, that
  * `entries` really are the named window of the accused's ladder, and (for
- * 'suppression') that no selfban precedes deadlineEvent — are the auditor's
+ * 'suppression') that no selfban precedes deadlineEvent, are the auditor's
  * chain-bytes checks; this verifier owns everything derivable from its
  * inputs.
  */
@@ -1253,7 +1253,7 @@ export function verifyTier2Verdict(rec: unknown, opts: VerifyTier2Opts): Tier2Ve
     const b = r.body
     if (b.params !== PARAMS_A5_DIGEST) errors.push('verdict: params digest does not name PARAMS_A5_DIGEST')
     if (b.anchors !== tier2AnchorsDigest(opts.anchors)) errors.push('verdict: anchors digest mismatch')
-    // A5-03 + A5-21 conviction evidence (suppression) — recomputed below
+    // A5-03 + A5-21 conviction evidence (suppression), recomputed below
     // from the inputs.
     let windowConvictionFired = false
     let lifetimeConvictionFired = false
@@ -1276,7 +1276,7 @@ export function verifyTier2Verdict(rec: unknown, opts: VerifyTier2Opts): Tier2Ve
         windowConvictionFired = entries.length === PARAMS_A5.reganK && zMicro >= PARAMS_A5.zThresholdMicro
       }
     }
-    // J7: the lifetime claim is a receipt too — zLifeMicro must recompute
+    // J7: the lifetime claim is a receipt too. zLifeMicro must recompute
     // from the claimed windowZs bit-for-bit (windows/windowZs parallelism and
     // the on-kind-'verdict' tie to zMicro are schema-refined above; the zod
     // ±WINDOW_Z_CAP_MICRO bounds guarantee lifetimeVerdict cannot throw).
@@ -1287,12 +1287,12 @@ export function verifyTier2Verdict(rec: unknown, opts: VerifyTier2Opts): Tier2Ve
       lifetimeConvictionFired = lv.convicted
     }
     // A5-03 + A5-21: 'suppression' asserts the deterministic CONVICTION
-    // FIRED (§8, 5σ) — a condition fully derivable from the supplied inputs,
+    // FIRED (§8, 5σ), a condition fully derivable from the supplied inputs,
     // so this verifier owns it (header contract): either the trailing-K
     // window path (a FULL reganK window whose RECOMPUTED zMicro meets
     // zThresholdMicro) or the J7 lifetime path (RECOMPUTED zLifeMicro meets
     // zThresholdMicro, i.e. lifetimeVerdict(...).convicted). Neither ⇒ the
-    // record claims a conviction its own evidence disproves — rejected.
+    // record claims a conviction its own evidence disproves. Rejected.
     // Escalation alone NEVER grounds a suppression (owner decision
     // 2026-07-22: honest players are never banned).
     if (b.kind === 'suppression' && !windowConvictionFired && !lifetimeConvictionFired)
@@ -1325,11 +1325,11 @@ export function verifyTier2Verdict(rec: unknown, opts: VerifyTier2Opts): Tier2Ve
 }
 
 // ---------------------------------------------------------------------------
-// Publishing (thin — the fuse-record/pointers pattern, header contract)
+// Publishing (thin, the fuse-record/pointers pattern, header contract)
 // ---------------------------------------------------------------------------
 
 /** The deterministic 32-byte shard-space key verdict records for `root`
- * publish under: sha256(utf8(tag) ‖ nodeIdOf(root) bytes) — the exact
+ * publish under: sha256(utf8(tag) ‖ nodeIdOf(root) bytes), the exact
  * pointerKey construction, domain-separated forever. Overlay publish /
  * store-gate / merge are embedder work (A3 storage), like fuse records. */
 export function tier2VerdictKey(subjectRoot: B64u): B64u {
@@ -1344,7 +1344,7 @@ export interface Tier2VerdictRow {
   verdicts: Tier2VerdictRecord[]
 }
 
-/** Bundle records for publishing — all must name the same accused root. */
+/** Bundle records for publishing. All must name the same accused root. */
 export function verdictRow(recs: readonly Tier2VerdictRecord[]): Tier2VerdictRow {
   if (!Array.isArray(recs) || recs.length === 0) bad('verdictRow: need ≥ 1 record')
   const root = recs[0].body.root
@@ -1389,20 +1389,20 @@ export function makeSelfBanPayload(o: {
 
 /**
  * The §8 deadline rule, as a pure predicate. A5-21 (OWNER DECISION
- * 2026-07-22 — "an honest player is never banned"): the ban obligation
- * anchors on the deterministic CONVICTION (escalationDue(...).conviction —
+ * 2026-07-22, "an honest player is never banned"): the ban obligation
+ * anchors on the deterministic CONVICTION (escalationDue(...).conviction:
  * either arm crossing zThresholdMicro, 5σ), NEVER on mere escalation. Once
  * the conviction has fired at some chain point and this chain carries no
  * selfban for that (ladder, conviction) yet, the compliant client's NEXT
- * witnessed-lane event MUST be the selfban — appending ANY other
+ * witnessed-lane event MUST be the selfban. Appending ANY other
  * witnessed-lane event after the conviction-completing game while this
  * predicate is true is what a SUPPRESSION record proves (deadlineEvent =
  * that first other event). The 3σ escalation obliges ONLY the deeper Tier-2
  * analysis: at 3σ the one-sided ban FPR is ≈1.35e-3/window, making an
- * honest career's eventual false 90-day ban near-certain (header §A5-21) —
+ * honest career's eventual false 90-day ban near-certain (header §A5-21),
  * the false-fraud §0 forbids; at 5σ the per-look FPR is ≈2.9e-7,
  * union-bounded < 3e-3 over 10^4 windows (§8 "astronomically low").
- * Suppression is provable ONLY relative to the deterministic conviction —
+ * Suppression is provable ONLY relative to the deterministic conviction,
  * never relative to an arbitrary third-party Tier-2 run (§8): a client that
  * never met the on-chain condition is never condemned by a stranger's later
  * computation.

@@ -18,7 +18,7 @@ function manualSource(id: string): string | undefined {
   return hit?.[1]
 }
 
-/** Inline markdown: **bold**, *italic*, `code`. Deliberately tiny — manuals
+/** Inline markdown: **bold**, *italic*, `code`. Deliberately tiny: manuals
  *  are authored in-house, so this covers exactly what we write. */
 function inline(text: string): ReactNode[] {
   const out: ReactNode[] = []
@@ -124,7 +124,7 @@ function renderMarkdown(src: string, entry: CatalogEntry): JSX.Element[] {
       flushList()
       flushPara()
     } else if (list !== null && list.items.length > 0) {
-      // Lazy continuation: manuals hard-wrap list items — a plain line while a
+      // Lazy continuation: manuals hard-wrap list items. A plain line while a
       // list is open belongs to the previous item (else "1. 1. 1." lists).
       list.items[list.items.length - 1] += ` ${line.trim()}`
     } else {
@@ -145,8 +145,8 @@ export function ManualPane({ entry }: { entry: CatalogEntry }): JSX.Element {
         <BookOpen size={28} aria-hidden />
         <strong>Manual coming in P2</strong>
         <p>
-          The illustrated manual for {entry.title} — rules, board reading, three beginner
-          principles and two classic traps — ships with the game.
+          The illustrated manual for {entry.title} ships with the game. It covers rules, board
+          reading, three beginner principles and two classic traps.
         </p>
       </div>
     )

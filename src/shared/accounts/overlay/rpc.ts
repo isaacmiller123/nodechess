@@ -1,4 +1,4 @@
-// A3 overlay — RPC wire schemas + the safe request/handler boundary
+// A3 overlay: RPC wire schemas + the safe request/handler boundary
 // (overlay/types.ts payload contracts riding witness/types.ts FabricEndpoint).
 //
 // zod v4 schemas mirror the type contract EXACTLY (z.strictObject / z.int(),
@@ -30,7 +30,7 @@ export const zContact = z.strictObject({
 
 export const zValueKind = z.enum(['pointers', 'events', 'shard', 'record'])
 
-/** Opaque canonical payload — validated by the STORAGE layer, never here. */
+/** Opaque canonical payload: validated by the STORAGE layer, never here. */
 const zOpaqueValue = z.record(z.string(), z.unknown())
 
 export const zFindNodeReq = z.strictObject({
@@ -56,7 +56,7 @@ export const zFindValueRes = z
     contacts: z.array(zContact).max(WIRE_CONTACTS_MAX).optional(),
   })
   .superRefine((r, ctx) => {
-    // The contract: value (hit) OR contacts (miss) — never both.
+    // The contract: value (hit) OR contacts (miss). Never both.
     if (r.value !== undefined && r.contacts !== undefined)
       ctx.addIssue({ code: 'custom', message: 'find-value response carries value OR contacts, never both' })
   })
@@ -101,8 +101,8 @@ function asMsg<T>(v: T): CanonicalObject {
  * is schema-validated (malformed → typed { error }, never a throw across the
  * fabric) and the handler body is fenced (an unexpected throw → typed
  * { error }). `alive` gates a closed node: once it reports false the handler
- * THROWS, so in-flight requesters observe the node as unreachable and evict —
- * the closest thing to handler release the FabricEndpoint contract allows.
+ * THROWS, so in-flight requesters observe the node as unreachable and evict.
+ * The closest thing to handler release the FabricEndpoint contract allows.
  */
 export function onOverlay<S extends z.ZodType>(
   fabric: FabricEndpoint,

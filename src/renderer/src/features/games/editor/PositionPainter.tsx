@@ -17,8 +17,8 @@ const FILE_LABELS = 'abcdefghijkl'
 /**
  * Click-to-place start-position painter. Pick a brush from the two piece
  * palettes (or the eraser), then paint squares; clicking a square that already
- * holds the brushed piece erases it (fast toggling). Drag-painting works too —
- * squares paint on mouseover while the button is held.
+ * holds the brushed piece erases it (fast toggling). Drag-painting works too.
+ * Squares paint on mouseover while the button is held.
  */
 export function PositionPainter({
   files,
@@ -89,7 +89,7 @@ export function PositionPainter({
             key={def.letter}
             type="button"
             className={`vl-palette-piece${active ? ' is-active' : ''}${def.betza ? ' is-fairy' : ''}`}
-            title={`${def.name} — ${def.moves}${def.betza ? ` (Betza ${def.betza})` : ''}`}
+            title={`${def.name}: ${def.moves}${def.betza ? ` (Betza ${def.betza})` : ''}`}
             onClick={() => setBrush({ kind: 'piece', color, letter: def.letter })}
             disabled={disabled}
           >

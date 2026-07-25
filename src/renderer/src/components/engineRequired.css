@@ -1,4 +1,4 @@
-/* EngineRequiredNotice — visually matches the go bots' .vbot-install card
+/* EngineRequiredNotice: visually matches the go bots' .vbot-install card
    (games.css) but lives standalone so Play/Analysis chunks don't depend on the
    games chunk's stylesheet. Tokens only; namespaced .engine-required-*. */
 .engine-required {

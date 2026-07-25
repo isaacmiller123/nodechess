@@ -34,7 +34,7 @@ const E = await import(pathToFileURL(out).href)
 
 const fit = JSON.parse(readFileSync(path.join(repoRoot, 'scripts/data/elo-fit.json'), 'utf8'))
 
-// Holdout split — FNV-1a mirror of fit-elo-model.mjs.
+// Holdout split: FNV-1a mirror of fit-elo-model.mjs.
 function hashKey(s) {
   let h = 0x811c9dc5
   for (let i = 0; i < s.length; i++) {
@@ -185,7 +185,7 @@ for (const acc of [70, 85, 93]) {
 
 console.log(
   failures === 0
-    ? `\nALL GREEN — ${holdout.length} holdout rows, MAE ${maeWith.toFixed(1)} (with opp) / ${maeNo.toFixed(1)} (without)`
+    ? `\nALL GREEN: ${holdout.length} holdout rows, MAE ${maeWith.toFixed(1)} (with opp) / ${maeNo.toFixed(1)} (without)`
     : `\n${failures} FAILED`
 )
 process.exit(failures ? 1 : 0)

@@ -1,5 +1,5 @@
 /* ============================================================
-   Variant Lab (features/games/editor) — tokens only (tokens.css).
+   Variant Lab (features/games/editor): tokens only (tokens.css).
    The Lab is a creative surface: boards read like real boards
    (warm wood squares), panels stay quiet, actions pop.
    Everything namespaced under .vl-*.
@@ -814,7 +814,7 @@ button.vl-card:focus-visible {
 .vl-play .vl-play-board {
   width: min(100%, calc(var(--votb-h) * var(--vl-files, 8) / var(--vl-ranks, 8)));
 }
-/* Drop-variant trays stack above/below the board — give their height back. */
+/* Drop-variant trays stack above/below the board. Give their height back. */
 .vl-play .vl-play-board:has(.vl-tray) {
   width: min(100%, calc((var(--votb-h) - 112px) * var(--vl-files, 8) / var(--vl-ranks, 8)));
 }

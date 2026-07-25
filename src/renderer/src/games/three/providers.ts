@@ -1,12 +1,12 @@
 // Per-game tabletop providers: GameKind → piece system + board style + params.
-// docs/GAMES-PLATFORM-SPEC.md §3D tiers — WILL: chess family, checkers, go,
+// docs/GAMES-PLATFORM-SPEC.md §3D tiers WILL: chess family, checkers, go,
 // gomoku, othello, connect four. CAN (procedural fallback pieces now): shogi
 // (wedge), xiangqi/janggi/makruk/morris (decal tokens). WON'T: TTT, hex.
 //
 // Standard-board chess kinds use the 'chessSet' system (Poly Haven photoscan
 // GLBs via chessSet.ts; ChessSetPieces.tsx owns board + fallbacks).
 // CRAZYHOUSE stays 2D-only: its pockets (captured pieces held for dropping)
-// have no tabletop representation yet — revisit if a pocket tray ships.
+// have no tabletop representation yet, revisit if a pocket tray ships.
 
 import type { GameKind } from '../kernel'
 import type { TabletopProvider } from './types'
@@ -60,7 +60,7 @@ const CHESS_SET_STYLE: TabletopProvider = {
   chessSet: { variant: 'marble' }
 }
 
-/** Standard-board chess kinds (8×8, orthodox piece codes) — crazyhouse is
+/** Standard-board chess kinds (8×8, orthodox piece codes): crazyhouse is
  *  deliberately absent (pockets aren't representable on the tabletop yet). */
 const CHESS_SET_KINDS = [
   'chess',
@@ -159,7 +159,7 @@ export const TABLETOP_PROVIDERS: Partial<Record<GameKind, TabletopProvider>> = {
     },
     token: { diameter: 0.72, thickness: 0.22 }
   },
-  // TODO(P3): morris boards draw mill lines, not a full grid — needs a 'tracks'
+  // TODO(P3): morris boards draw mill lines, not a full grid. Needs a 'tracks'
   // top-canvas mode. Tokens on the full grid are acceptable until then.
   morris: {
     system: 'token',

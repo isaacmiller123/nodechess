@@ -1,11 +1,11 @@
-// Threshold OPRF for the PIN committee (spec §1) — a thin, CORRECT wrapper over
+// Threshold OPRF for the PIN committee (spec §1): a thin, CORRECT wrapper over
 // @noble/curves ristretto255_oprf (RFC 9497 OPRF(ristretto255, SHA-512)).
 //
 // The committee holds Shamir shares k_i of the OPRF key k. The client blinds
 // its PIN once; each member evaluates the blinded element under its share; the
 // client Lagrange-combines the partial evaluations IN THE GROUP to obtain the
 // exact same element a single-key holder of k would return, then finalizes with
-// the stock RFC 9497 finalize — so the derived PIN key is spec-compatible and
+// the stock RFC 9497 finalize, so the derived PIN key is spec-compatible and
 // deriving it REQUIRES a committee round (offline brute force is impossible;
 // the rate limit lives with the committee counter).
 //
@@ -115,7 +115,7 @@ export function clientFinalize(pin: string, blindState: B64u, combined: B64u): U
 // Single-key reference path (for the correctness test + the dealer's self-check)
 // ---------------------------------------------------------------------------
 
-/** Non-threshold blindEvaluate under the full key k — the reference the
+/** Non-threshold blindEvaluate under the full key k: the reference the
  * threshold path must reproduce bit-for-bit. */
 export function singleKeyBlindEvaluate(k: bigint, blinded: B64u): B64u {
   return toB64u(OPRF.blindEvaluate(scalarToBytes(k), fromB64u(blinded)))
@@ -134,7 +134,7 @@ export function singleKeyOutput(pin: string, k: bigint, rng?: Rng): Uint8Array {
 
 // Domain-separation tags below keep their pre-rebrand spelling on purpose. They
 // are hashed into key material and into the Fiat–Shamir transcript, so editing
-// one is not a rename — it derives a different keypair from the same PIN
+// one is not a rename. It derives a different keypair from the same PIN
 // (locking every existing account out of recovery) and makes new proofs
 // unverifiable against peers still running the old tag.
 const PIN_KEY_DST = utf8('chess-sharp-pin')
@@ -184,7 +184,7 @@ export interface DleqProof {
 /**
  * Core Chaum–Pedersen assembly for a caller-supplied nonce `r`: proves
  * partial = k_i·B is consistent with commitment = k_i·G. The nonce MUST be
- * secret and unique per (share, transcript) — reuse across distinct transcripts
+ * secret and unique per (share, transcript): reuse across distinct transcripts
  * leaks k_i. `dleqProve` (RNG) and `dleqProveDeterministic` (RFC-6979-style)
  * both funnel through here so the two paths can never disagree on the math.
  */
@@ -231,7 +231,7 @@ const DLEQ_NONCE_DST = utf8('chess-sharp-dleq-nonce-v1')
  * keyed by the secret share, so r is unpredictable to anyone without k_i;
  * distinct blinded elements give distinct transcripts and therefore distinct r,
  * so a nonce is never reused across evaluations (reuse would leak k_i). Proving
- * the exact same (share, transcript) twice reproduces the same proof — safe.
+ * the exact same (share, transcript) twice reproduces the same proof. Safe.
  */
 function dleqNonce(shareScalar: bigint, blinded: B64u, partial: B64u, commitment: B64u): bigint {
   const key = scalarToBytes(modL(shareScalar))
@@ -245,7 +245,7 @@ function dleqNonce(shareScalar: bigint, blinded: B64u, partial: B64u, commitment
 }
 
 /**
- * Deterministic DLEQ prover — same math as `dleqProve` but with a safe,
+ * Deterministic DLEQ prover: same math as `dleqProve` but with a safe,
  * RNG-free nonce (see `dleqNonce`). This is what committee members use so they
  * can ALWAYS emit a verifiable proof of an honest partial without any injected
  * randomness (spec §1: "a member returning a wrong partial is detectable").

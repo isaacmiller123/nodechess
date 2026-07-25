@@ -1,19 +1,19 @@
-# nodechess PRODUCTION stack — the whole thing a million people connect through.
+# nodechess PRODUCTION stack: the whole thing a million people connect through.
 #
 #   cd deploy
 #   cp .env.production.example .env.production   # then EDIT it
 #   docker compose --env-file .env.production -f docker-compose.prod.yml up --build -d
 #
 # Brings online, behind automatic HTTPS:
-#   app.DOMAIN    — the web app (static SPA + Fastify; COOP/COEP isolated)
-#   relay.DOMAIN  — the Nostr signaling relay (WebRTC rendezvous)
-#   turn.DOMAIN   — coturn TURN (relays the ~10-20% of pairs behind strict NAT)
+#   app.DOMAIN:     the web app (static SPA + Fastify; COOP/COEP isolated)
+#   relay.DOMAIN:   the Nostr signaling relay (WebRTC rendezvous)
+#   turn.DOMAIN:    coturn TURN (relays the ~10-20% of pairs behind strict NAT)
 #
 # WHY THIS SCALES TO A MILLION: gameplay is peer-to-peer (WebRTC data channels).
 # No central game server, no game database. The web tier only ships static
 # assets (CDN-frontable, trivially horizontal). The relay carries small ephemeral
 # signaling events (run more replicas / more relay hostnames as you grow). TURN
-# carries only strict-NAT pairs' media — size it by bandwidth, add nodes and list
+# carries only strict-NAT pairs' media. Size it by bandwidth, add nodes and list
 # them all in VITE_ICE_SERVERS. See DEPLOY.md § Scaling.
 
 name: nodechess

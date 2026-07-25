@@ -1,6 +1,6 @@
-// Library — every saved game from every mode, one list (games:listAll).
+// Library. Every saved game from every mode, one list (games:listAll).
 // Filter chips: game kind (from the DB's own kind counts), mode/source,
-// outcome (user-relative, client-side — it needs user_color per row). Chess
+// outcome (user-relative, client-side: it needs user_color per row). Chess
 // rows route to the full Analysis/review view; every other kind opens the
 // GameReplayView on the kind's real board.
 
@@ -254,7 +254,7 @@ export default function LibraryView({
           <LibraryIcon size={22} aria-hidden />
           <p>
             {load.data.games.length === 0
-              ? 'No saved games yet — finish a game in any mode and it lands here.'
+              ? 'No saved games yet. Finish a game in any mode and it lands here.'
               : 'Nothing matches these filters.'}
           </p>
         </div>

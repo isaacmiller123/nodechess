@@ -2,7 +2,7 @@
 //
 // Same contract as every 2D board component (games/registry.ts
 // GameBoardProps): presentation only, proposes canonical move strings via
-// onMove and NEVER validates rules — the owner answers by advancing the spec
+// onMove and NEVER validates rules: the owner answers by advancing the spec
 // state, and the piece reconciler below turns that state diff into stable
 // TabletopPiece identities so Tabletop3D plays the right slide / capture-fade /
 // flip animations.
@@ -20,10 +20,10 @@
 //                                           via color-diff → twoTone discs)
 //   connect4       bb bitboards             click → column digit, discs drop in
 //
-// This module pulls three.js — load it ONLY through React.lazy (see
+// This module pulls three.js. Load it ONLY through React.lazy (see
 // features/games/boardMode.tsx). Sounds: non-chess 2D boards self-sound via
 // useBoardSound, so the bridge mirrors that exactly (chess-family views own
-// their sounds — no double-play).
+// their sounds: no double-play).
 
 import { useCallback, useEffect, useMemo, useRef, type JSX } from 'react'
 import { advance } from '@react-three/fiber'
@@ -54,7 +54,7 @@ import { diffFocus, type TheaterDirective } from './theater'
 import type { TabletopBoardShape, TabletopPiece, TabletopPos } from './types'
 
 // ---------------------------------------------------------------------------
-// Occupancy read models — spec state → who sits where (white frame: file 0 =
+// Occupancy read models. Spec state → who sits where (white frame: file 0 =
 // a-file/left from white's seat, rank 0 = white's near row).
 
 export interface OccPiece {
@@ -81,7 +81,7 @@ export function chessOccupancy(fen: string, ranks: number): OccPiece[] {
         digits = ''
       }
       // Promoted-piece markers: crazyhouse suffix 'Q~' and fairy/shogi prefix
-      // '+P' — both annotate a real piece letter, they are not pieces. Reading
+      // '+P': both annotate a real piece letter, they are not pieces. Reading
       // '+' as a piece would also shift every later piece on its rank.
       if (ch === '~' || ch === '+') continue
       if (ch === '[') break // bracket-FEN pocket segment
@@ -187,7 +187,7 @@ export function occupancyOf(kind: GameKind, state: unknown, scoring: boolean): O
       return out
     }
     default: {
-      // Chess family — every spec state carries its FEN.
+      // Chess family. Every spec state carries its FEN.
       const fen = (state as { fen?: string }).fen
       const ranks = getGame(kind)?.spec.board.ranks ?? 8
       return fen ? chessOccupancy(fen, ranks) : []
@@ -198,7 +198,7 @@ export function occupancyOf(kind: GameKind, state: unknown, scoring: boolean): O
 // ---------------------------------------------------------------------------
 // Stable-identity reconciler: matches the new occupancy against the previous
 // TabletopPiece list so ids persist across moves. Match order: same square
-// (same color — or any color for flip-in-place games) → moved same color+type
+// (same color, or any color for flip-in-place games) → moved same color+type
 // (nearest) → same color any type (promotion/crowning) → fresh spawn. Whatever
 // old ids remain were captured (Tabletop3D plays the lift-fade ghost).
 
@@ -323,9 +323,9 @@ export function checkersDragMove(
 // ---------------------------------------------------------------------------
 
 export interface GameBoard3DProps extends GameBoardProps {
-  /** WebGL missing / lost / no provider — the host swaps back to the 2D board. */
+  /** WebGL missing / lost / no provider. The host swaps back to the 2D board. */
   onUnavailable?(reason: string): void
-  /** Replay Theater directive ref — passed through to Tabletop3D (cinematic
+  /** Replay Theater directive ref: passed through to Tabletop3D (cinematic
    *  rig). The bridge stamps `directive.shot` on every state commit, deriving
    *  the action square from the occupancy diff (see games/three/theater.ts). */
   theater?: { current: TheaterDirective }
@@ -361,7 +361,7 @@ export default function GameBoard3D({
     }
   }, [])
 
-  // Non-chess 2D boards self-sound (chess-family views own theirs) — mirror it.
+  // Non-chess 2D boards self-sound (chess-family views own theirs), mirror it.
   useBoardSound(kind, isChessFamily ? null : state)
 
   const goSpec = kind === 'go' ? (spec as unknown as GoSpec) : null
@@ -401,7 +401,7 @@ export default function GameBoard3D({
   }, [occ, kind, size, state])
 
   // Theater choreography: on every committed ply, derive the action square
-  // from the occupancy diff and stamp the directive's shot — TheaterRig frames
+  // from the occupancy diff and stamp the directive's shot. TheaterRig frames
   // it (and slow-mos captures) from there. Scrubs work too: any state diff has
   // a centroid. Ply ≤ 0 (start position) clears the shot.
   const shotTrack = useRef<{ ply: number; occ: OccPiece[] }>({ ply: 0, occ: [] })
@@ -475,7 +475,7 @@ export default function GameBoard3D({
       {scoring && (
         <div className="b3d-scoring" role="status">
           <span>
-            Scoring — tap dead groups
+            Scoring: tap dead groups
             {score ? ` · Black ${score.black} · White ${score.white}` : ''}
           </span>
           {onAction && (

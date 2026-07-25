@@ -3,14 +3,14 @@ import type { DatabaseSync } from 'node:sqlite'
 import { handle } from './util'
 import { getAppDb } from '../db/database'
 
-// Settings persist in the v1 `setting` table (key TEXT PRIMARY KEY, value TEXT
-// — see db/database.ts migrate()). Values are JSON-encoded on write and decoded
+// Settings persist in the v1 `setting` table (key TEXT PRIMARY KEY, value TEXT.
+// See db/database.ts migrate()). Values are JSON-encoded on write and decoded
 // on read, so any structured value the renderer sends survives an app restart.
 // (This replaced an in-memory Map stub that silently lost every setting on
 // quit; the table had existed since v1 but was never wired up.)
 //
 // HONESTY NOTE (v1.1.5 audit): no renderer code currently calls
-// window.api.settings.get/set — the live user-settings store is
+// window.api.settings.get/set. The live user-settings store is
 // src/renderer/src/state/settings.tsx, which persists via localStorage. This
 // channel is real, durable, and tested (scripts/test-settings-persist.mjs),
 // but today it is an available seam, not a wired feature. If a setting ever

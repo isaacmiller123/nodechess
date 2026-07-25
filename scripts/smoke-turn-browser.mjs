@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────────────────────────────────
-// BROWSER TURN PROOF — cross-NAT media over a real TURN relay, native WebRTC.
+// BROWSER TURN PROOF: cross-NAT media over a real TURN relay, native WebRTC.
 //
 //   node scripts/smoke-turn-browser.mjs
 //
@@ -10,7 +10,7 @@
 // that exact transport in TWO headless-Chromium contexts (two "machines"),
 // forces iceTransportPolicy:'relay' (host + srflx candidates FORBIDDEN), points
 // ICE at a real coturn, and signals over real public Nostr relays. If the two
-// pages exchange data, the bytes PHYSICALLY transited the TURN relay — the
+// pages exchange data, the bytes PHYSICALLY transited the TURN relay. The
 // genuine cross-NAT path two strangers on separate networks use.
 //
 // Self-contained: spawns coturn (brew), bundles the trystero entry with esbuild,
@@ -90,7 +90,7 @@ function serve(bundleJs) {
 }
 
 async function main() {
-  console.log('═══ BROWSER TURN PROOF — native WebRTC, relay-only, real coturn ═══')
+  console.log('═══ BROWSER TURN PROOF, native WebRTC, relay-only, real coturn ═══')
   console.log(`· signaling relays: ${RELAYS.join(', ')}`)
   const turn = startCoturn()
   await sleep(2500)
@@ -143,21 +143,21 @@ async function main() {
     ok(gotA.length > 0, `peer A received B's messages over the relay-only channel (${JSON.stringify(gotA.slice(0, 2))})`)
     ok(gotB.length > 0, `peer B received A's messages over the relay-only channel (${JSON.stringify(gotB.slice(0, 2))})`)
     ok(gotA.some((m) => m.includes('from-b')) && gotB.some((m) => m.includes('from-a')),
-      'the messages are genuinely cross-peer (A got B, B got A) — a real bidirectional TURN-relayed channel')
+      'the messages are genuinely cross-peer (A got B, B got A), a real bidirectional TURN-relayed channel')
 
     // coturn MUST show real peer bytes relayed (sp/sb or rp/rb > 0 on a session).
     await sleep(1000)
     let log = ''
     try { log = readFileSync(turn.logFile, 'utf8') } catch {}
-    // A CHANNEL_BIND is TURN's mechanism for relaying data to a SPECIFIC peer —
-    // coturn only processes one when a peer is actively relaying through it. Its
+    // A CHANNEL_BIND is TURN's mechanism for relaying data to a SPECIFIC peer.
+    // Coturn only processes one when a peer is actively relaying through it. Its
     // success (plus the bidirectional message exchange above) is the definitive
     // coturn-side proof. Per-session byte TOTALS print only at teardown (after we
     // tear down), so we assert on the relay-establishment op, not the epilogue.
     const boundChannel = /CHANNEL_BIND processed, success/.test(log)
     const bytesAtTeardown = /\b(sb|rb|sp|rp)=([1-9]\d*)/.test(log)
     ok(boundChannel || bytesAtTeardown,
-      'coturn bound a relay channel + processed peer traffic — media physically transited the TURN server')
+      'coturn bound a relay channel + processed peer traffic. Media physically transited the TURN server')
     const usageLines = log.split('\n').filter((l) => /CHANNEL_BIND|ALLOCATE|usage/i.test(l)).slice(-4)
     if (usageLines.length) console.log('    coturn:\n      ' + usageLines.map((l) => l.replace(/^\d+: \([^)]*\): /, '')).join('\n      '))
     if (errs.length) console.log('  page errors:\n   ' + errs.join('\n   '))
@@ -168,7 +168,7 @@ async function main() {
     spawnSync('pkill', ['-9', '-f', 'turnserver'])
   }
 
-  console.log(`\n${failures ? '✗ FAILED' : 'ALL GREEN'} — ${passed} passed, ${failures} failed`)
+  console.log(`\n${failures ? '✗ FAILED' : 'ALL GREEN'}: ${passed} passed, ${failures} failed`)
   process.exit(failures ? 1 : 0)
 }
 

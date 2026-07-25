@@ -1,18 +1,18 @@
-// Checkpoints (spec §2) — self-verifying, never trusted. The A1 fold is
+// Checkpoints (spec §2): self-verifying, never trusted. The A1 fold is
 // structural ('basic-v1'); A4 adds the ratings/trust fold ('a4-v1',
 // ratings/fold.ts) behind the same ChainFold interface. A checkpoint embeds
 // the prior checkpoint's id, the height it covers through, the fold state at
-// that height, and the state's canonical digest — so it is incrementally
+// that height, and the state's canonical digest, so it is incrementally
 // verifiable in ONE step (recompute the fold over (prevCkpt.through, through]
 // from the prior embedded state) and deeply verifiable from genesis.
 //
 // PLUGGABLE FOLDS (A4): verification selects the fold from the EMBEDDED
-// state's `f` field — absent means 'basic-v1' (every pre-A4 state; behavior
+// state's `f` field: absent means 'basic-v1' (every pre-A4 state; behavior
 // bit-identical to A1), any unknown or non-string id FAILS CLOSED (verify →
 // false: an asserted state under a fold this verifier cannot recompute is
 // never accepted, §2 "nothing on any path accepts an asserted number without
 // a verification rule attached"). Incremental verification additionally
-// demands the PREVIOUS checkpoint embed the SAME fold id — a fold-id
+// demands the PREVIOUS checkpoint embed the SAME fold id. A fold-id
 // transition (e.g. an account's first a4-v1 checkpoint after a basic-v1
 // history) is not one-step-verifiable by construction; verifiers fall back
 // to verifyCheckpointDeep, which recomputes the embedded state's fold from
@@ -47,9 +47,9 @@ export interface BasicFoldState extends CanonicalObject {
   n: number
   /** Per-type event counts. */
   byType: { [t: string]: number }
-  /** Head id at this state — absent only before genesis. */
+  /** Head id at this state. Absent only before genesis. */
   head?: string
-  /** Head height at this state — absent only before genesis. */
+  /** Head height at this state. Absent only before genesis. */
   height?: number
 }
 
@@ -68,7 +68,7 @@ export const basicFold: ChainFold<BasicFoldState> = {
 }
 
 // ---------------------------------------------------------------------------
-// Fold registry (pluggable folds — header contract)
+// Fold registry (pluggable folds, header contract)
 // ---------------------------------------------------------------------------
 
 /** Any fold, viewed through the canonical-state interface the registry and
@@ -89,7 +89,7 @@ export function foldById(id: string): AnyChainFold | undefined {
 
 /** Fold id embedded in a checkpoint state: `f` when a string, 'basic-v1'
  * when absent (pre-A4 states), null when malformed (fail closed). Exported
- * for chain.ts's in-chain checkpoint audit — the two verifiers must select
+ * for chain.ts's in-chain checkpoint audit: the two verifiers must select
  * folds by ONE rule. */
 export function foldIdOfState(state: CanonicalObject): string | null {
   const f = (state as { f?: unknown }).f
@@ -102,7 +102,7 @@ const foldIdOf = foldIdOfState
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Witnessed events sorted by (height, id) — the fold order. */
+/** Witnessed events sorted by (height, id). The fold order. */
 function witnessedSorted(chain: Chain): SignedEvent[] {
   return chain.events
     .filter((e) => e.body.lane === 'w')
@@ -111,7 +111,7 @@ function witnessedSorted(chain: Chain): SignedEvent[] {
 
 /** Lowest witnessed height carrying a rated-shaped segment (§6 ladder binding
  * present: kind + running clock), or -1. The A4-10 rule keys on this: a
- * checkpoint covering rated play must embed the a4-v1 fold — fold-downgrade
+ * checkpoint covering rated play must embed the a4-v1 fold. Fold-downgrade
  * sandbagging (checkpointing basic-v1 forever to hide ladders/reputation and
  * be rated as a 1200/350 seed) is fraud, not a choice. Mirrors chain.ts. */
 function firstRatedHeight(w: readonly SignedEvent[]): number {
@@ -200,7 +200,7 @@ export function dueForCheckpoint(chain: Chain): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Verification (never throws — bad input returns false)
+// Verification (never throws: bad input returns false)
 // ---------------------------------------------------------------------------
 
 interface ParsedCkpt {
@@ -239,8 +239,8 @@ function foldRange(
  * Incremental verification (spec §2: one step): select the fold from the
  * EMBEDDED state's `f` (absent ⇒ basic-v1; unknown/malformed ⇒ false, fail
  * closed), recompute it over (prevCkpt.through, through] starting from the
- * previous checkpoint's EMBEDDED state — which must carry the SAME fold id
- * (header: fold transitions are not one-step-verifiable; use deep) — and
+ * previous checkpoint's EMBEDDED state, which must carry the SAME fold id
+ * (header: fold transitions are not one-step-verifiable; use deep), and
  * require the result to hash to stateDigest. Detects both a forged digest
  * and a forged state under a correct digest.
  */
@@ -252,7 +252,7 @@ export function verifyCheckpointIncremental(chain: Chain, ckptEvent: SignedEvent
     const foldId = foldIdOf(payload.state)
     if (foldId === null) return false
     const fold = foldById(foldId)
-    if (!fold) return false // unknown fold id — fail closed
+    if (!fold) return false // unknown fold id. Fail closed
     let start: CanonicalObject
     let after: number
     if (payload.prevCkpt !== undefined) {
@@ -262,7 +262,7 @@ export function verifyCheckpointIncremental(chain: Chain, ckptEvent: SignedEvent
       if (!prevEv) return false
       const prev = parseCkpt(chain, prevEv)
       if (!prev) return false
-      if (foldIdOf(prev.payload.state) !== foldId) return false // fold transition — not one-step
+      if (foldIdOf(prev.payload.state) !== foldId) return false // fold transition. Not one-step
       start = prev.payload.state
       after = prev.payload.through
     } else {
@@ -292,7 +292,7 @@ export function verifyCheckpointDeep(chain: Chain, ckptEvent: SignedEvent): bool
     const foldId = foldIdOf(parsed.payload.state)
     if (foldId === null) return false
     const fold = foldById(foldId)
-    if (!fold) return false // unknown fold id — fail closed
+    if (!fold) return false // unknown fold id. Fail closed
     // A4-10: a basic-v1 checkpoint may not cover rated play (see firstRatedHeight).
     if (foldId === basicFold.id) {
       const rated = firstRatedHeight(witnessedSorted(chain))

@@ -1,4 +1,4 @@
-// Minimal typed event emitter — the browser stand-in for node:events that
+// Minimal typed event emitter. The browser stand-in for node:events that
 // desktop UciEngine extends. Only what the engine layer needs: on/off/once/
 // emit, with listener snapshots so handlers detaching themselves (or each
 // other) mid-emit can never skip a peer.

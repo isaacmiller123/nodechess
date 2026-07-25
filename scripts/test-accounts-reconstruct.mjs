@@ -1,4 +1,4 @@
-// THE A3 RECONSTRUCTION SUITE — brick 5 + THE A3 ACCEPTANCE PROOF (spec §5
+// THE A3 RECONSTRUCTION SUITE: brick 5 + THE A3 ACCEPTANCE PROOF (spec §5
 // viewing flow / §2 checkpoint rules / §14-A3 acceptance scenario; module:
 // src/shared/accounts/storage/viewer.ts; docs/ACCOUNTS-SPEC.md).
 //
@@ -7,10 +7,10 @@
 // Proves the brick end to end, fabric-suite style:
 //   U. unit matrix (pure viewer core): verified-freshest head selection (an
 //      unattested or merely-claimed-newer head never pins); §2 checkpoint
-//      selection — a fabricated-prior fold that passes the incremental step is
+//      selection: a fabricated-prior fold that passes the incremental step is
 //      caught by the spot-check / forced by lacking cosigner diversity, and
 //      honest fallback + M-of-N preference hold; lazy history pages verified
-//      against the pinned head — a tampered mid-chain event breaks its page
+//      against the pinned head: a tampered mid-chain event breaks its page
 //      with a typed failure, never wrong bytes; holder summaries verified
 //      element-by-element; freshest-holder ranking ignores poisoned pointers
 //      and caps lying timestamps; the shard read serves the freshest
@@ -58,7 +58,7 @@ export * as S from '@shared/accounts/storage'
 export * as SEG from '@shared/accounts/segment'
 `
 
-// The viewer decision core — bundled twice (platform node vs browser), driven
+// The viewer decision core: bundled twice (platform node vs browser), driven
 // through one scripted select/spot-check/page/summary sequence; the digests
 // must match byte-for-byte (verifiers byte-deterministic in a browser bundle)
 // and the browser bundle must carry zero node built-ins.
@@ -137,7 +137,7 @@ async function main() {
   } finally {
     for (const d of [outdir, outNode, outBrowser]) rmSync(d, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -180,7 +180,7 @@ async function run(M, outNode, outBrowser) {
     // The viewer is platform-neutral + byte-deterministic (no ambient time /
     // randomness / timers / node builtins). The browser parity digest exercises
     // one scripted path, so it cannot catch a regression in an unexercised branch
-    // (e.g. a defaulted nowMs) — this source-regex guard covers every branch.
+    // (e.g. a defaulted nowMs). This source-regex guard covers every branch.
     const src = readFileSync(resolve(ROOT, 'src/shared/accounts/storage/viewer.ts'), 'utf8')
     ok(!/\bDate\.now\s*\(|\bMath\.random\s*\(|\bsetTimeout\s*\(|\bsetInterval\s*\(|\bperformance\.now\s*\(/.test(src),
       'viewer.ts calls no ambient time, randomness, or timers (clocks + spot-check draw are INJECTED)')
@@ -194,7 +194,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U1. selectHead — verified-freshest, never claimed-freshest …')
+  console.log('\n· U1. selectHead, verified-freshest, never claimed-freshest …')
   // ==========================================================================
   {
     const r = kpOf('u1-root')
@@ -217,7 +217,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U2. selectCheckpoint — §2 incremental + spot-check + M-of-N …')
+  console.log('\n· U2. selectCheckpoint, §2 incremental + spot-check + M-of-N …')
   // ==========================================================================
   {
     const r = kpOf('u2-root')
@@ -235,7 +235,7 @@ async function run(M, outNode, outBrowser) {
 
     // THE TRAP (§2): a fabricated PRIOR checkpoint F' whose embedded state is
     // wrong but self-consistent, then B computed by folding FROM that wrong
-    // state — B's incremental step verifies; only a deeper re-derivation
+    // state: B's incremental step verifies; only a deeper re-derivation
     // (the spot-check) exposes the pair.
     const head13 = c.events[c.events.length - 1]
     const wrongState = { n: 999, byType: { fabricated: 999 }, head: idLike('u2-fake-head'), height: 13 }
@@ -269,10 +269,10 @@ async function run(M, outNode, outBrowser) {
       'spot-check DRAWN: the fabricated-prior pair is rejected and the honest checkpoint surfaces, deep-verified')
     const unknownDiv = S.selectCheckpoint(c, { spot: { p: 0, roll: 0.9 } })
     ok(unknownDiv !== null && unknownDiv.id === A.eventId(r1.body),
-      'cosigner diversity UNKNOWN (no eligibility join): the viewer fails toward auditing — spot forced, forgery rejected')
+      'cosigner diversity UNKNOWN (no eligibility join): the viewer fails toward auditing, spot forced, forgery rejected')
     const fastPath = S.selectCheckpoint(c, { spot: { p: 0, roll: 0.9 }, cosig: { eligible, rule: { m: 1, n: 8, prefixDiversityMin: 1 } } })
     ok(fastPath !== null && fastPath.id === A.eventId(bBody) && fastPath.verified === 'incremental',
-      "diverse-enough cosigners + no draw: the incremental fast path alone pins the forgery — EXACTLY the exposure §2's p_spot bounds (documented, not desired)")
+      "diverse-enough cosigners + no draw: the incremental fast path alone pins the forgery. EXACTLY the exposure §2's p_spot bounds (documented, not desired)")
     const forcedByDiv = S.selectCheckpoint(c, { spot: { p: 0, roll: 0.9 }, cosig: { eligible, rule: RULE } })
     ok(forcedByDiv !== null && forcedByDiv.id === A.eventId(r1.body) && forcedByDiv.mOfN === true,
       "B's single cosigner LACKS diversity under the M-of-N rule → spot forced → forgery rejected; R1 surfaces with mOfN true")
@@ -284,7 +284,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U3. history pages — no page substitution, honest failures …')
+  console.log('\n· U3. history pages, no page substitution, honest failures …')
   // ==========================================================================
   {
     const r = kpOf('u3-root')
@@ -330,14 +330,14 @@ async function run(M, outNode, outBrowser) {
     eq((await pager.page(-1)).reason, 'out-of-range', 'a negative page fails typed')
 
     // TAMPERED MID-CHAIN EVENT: height 17 substituted with an attacker-signed
-    // variant — its id no longer matches what height 18's prev demands.
+    // variant: its id no longer matches what height 18's prev demands.
     const atk = kpOf('u3-attacker')
     const orig17 = wEvents.find((e) => e.body.height === 17)
     const forged17 = mint({ ...orig17.body, key: atk.pubB, ts: orig17.body.ts + 1 }, atk.priv)
     const tampered = wEvents.map((e) => (e.body.height === 17 ? forged17 : e))
     const tp = S.openHistory(r.pubB, { id: head.id, height: head.height }, sourceOf(tampered), { pageSize: 8, certs })
     ok((await tp.page(0)).ok && (await tp.page(1)).ok, 'pages ABOVE the tamper still verify (anchored from the countersigned head)')
-    eq((await tp.page(2)).reason, 'broken-linkage', 'the page holding the substituted event fails typed — NO PAGE SUBSTITUTION, never wrong bytes')
+    eq((await tp.page(2)).reason, 'broken-linkage', 'the page holding the substituted event fails typed, NO PAGE SUBSTITUTION, never wrong bytes')
     eq((await tp.page(4)).reason, 'broken-linkage', 'pages BELOW a break cannot be authenticated either (fail closed, not fail open)')
     // Same body, flipped signature: the id still matches, the signature dies.
     const sigFlip = wEvents.map((e) => (e.body.height === 17 ? { body: e.body, sig: flip(e.sig) } : e))
@@ -354,7 +354,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U4. holder summaries — verified element-by-element …')
+  console.log('\n· U4. holder summaries. Verified element-by-element …')
   // ==========================================================================
   {
     const r = kpOf('u4-root')
@@ -391,7 +391,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U5. shard read — freshest reconstructible wins; stale never masquerades …')
+  console.log('\n· U5. shard read. Freshest reconstructible wins; stale never masquerades …')
   // ==========================================================================
   {
     const GEO = { k: 2, n: 4 }
@@ -410,7 +410,7 @@ async function run(M, outNode, outBrowser) {
     const keysOf = (n) => Array.from({ length: n }, (_, i) => S.shardKey(subjNid, i))
     const fakeNode = (byKey) => ({ get: async (target) => byKey.get(target) ?? null })
 
-    // Fresh rows on 2 keys, STALE rows on all 4 — the stale group is LARGER.
+    // Fresh rows on 2 keys, STALE rows on all 4: the stale group is LARGER.
     const mixed = new Map()
     const keys = keysOf(4)
     mixed.set(keys[0], envs2[0]); mixed.set(keys[1], envs2[1])
@@ -428,7 +428,7 @@ async function run(M, outNode, outBrowser) {
     ok(res2.chain !== undefined && shaB(A.chainToBytes(res2.chain)) === shaB(A.chainToBytes(c1)),
       'with the fresh group below k the older verified snapshot still serves (temporary staleness, not unavailability)')
     ok(res2.freshestHead !== undefined && res2.freshestHead.body.height === 2,
-      'the newest OBSERVED countersigned head is surfaced alongside — stale can never silently masquerade as current')
+      'the newest OBSERVED countersigned head is surfaced alongside. Stale can never silently masquerade as current')
     eq(S.selectHead([res2.freshestHead]).height, 2, '…and it pins as a verified head fact')
     // Below k everywhere: typed temporary unavailability, no bytes.
     const dead = new Map([[keys[0], envs2[0]]])
@@ -444,11 +444,11 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U6. historyFromView — floor path serves DEVICE-signed history …')
+  console.log('\n· U6. historyFromView: floor path serves DEVICE-signed history …')
   // ==========================================================================
   {
     // Defect I: on the floor path (no chain) the pager must get its device-key
-    // certs from view.certs — otherwise EVERY page of a device-signed account
+    // certs from view.certs: otherwise EVERY page of a device-signed account
     // (the standard multi-device shape) fails closed as 'bad-page'.
     const r = kpOf('u6-root')
     const dev = kpOf('u6-dev')
@@ -478,11 +478,11 @@ async function run(M, outNode, outBrowser) {
     })
     const p0 = await S.historyFromView(floorView(certs), { pageSize: 8 }).page(0)
     ok(p0.ok && p0.games === 8, 'floor historyFromView pages the device-signed segments WITH the collected certs (defect I: no false bad-page)')
-    eq((await S.historyFromView(floorView([]), { pageSize: 8 }).page(0)).reason, 'bad-page', '…and without the certs it still fails closed — the cert proof is load-bearing')
+    eq((await S.historyFromView(floorView([]), { pageSize: 8 }).page(0)).reason, 'bad-page', '…and without the certs it still fails closed: the cert proof is load-bearing')
   }
 
   // ==========================================================================
-  console.log('\n· U7. foldProfileLww — a since-revoked key cannot render its write …')
+  console.log('\n· U7. foldProfileLww. A since-revoked key cannot render its write …')
   // ==========================================================================
   {
     // Defect J: the floor-path profile fold honors revocations exactly as
@@ -499,15 +499,15 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U8. resolveProfile — a revoked device key is barred from head/segment/profile …')
+  console.log('\n· U8. resolveProfile. A revoked device key is barred from head/segment/profile …')
   // ==========================================================================
   {
     // ROUND 2: the round-1 revocation fix (defect J) protected only the profile
     // FOLD leaf; head/segment/checkpoint selection ignored revocation. On the
     // owner-gone FLOOR path a leaked, SINCE-REVOKED device key (its cert is never
     // deleted) could forge the pinned head and inject a fake game. resolveProfile
-    // must honor revocation on ALL witnessed-lane selection — matching verifyChain
-    // — AND drive the profile-fold wiring end-to-end (not just the leaf helper).
+    // must honor revocation on ALL witnessed-lane selection. Matching verifyChain,
+    // AND drive the profile-fold wiring end-to-end (not just the leaf helper).
     const r = kpOf('u8-root')
     const dev = kpOf('u8-dev')
     const w = wits[0]
@@ -539,7 +539,7 @@ async function run(M, outNode, outBrowser) {
     ok(S.verifyWitnessedOf(r.pubB, forgedSeg, certs), 'sanity: the forged revoked-key segment passes context-free verifyWitnessedOf (its still-valid cert proves the key)')
 
     // A holder summary carrying an honest PRE-revocation profile write AND a
-    // revoked-key one (dev after revocation) — exercises the floor-fold wiring.
+    // revoked-key one (dev after revocation). Exercises the floor-fold wiring.
     const honestProf = mint({ v: 1, lane: 'p', type: 'profile', root: r.pubB, key: dev.pubB, height: 0, ts: NOW0 + 500, payload: { fields: { bio: 'honest bio' } } }, dev.priv)
     const atkProf = mint({ v: 1, lane: 'p', type: 'profile', root: r.pubB, key: dev.pubB, height: 1, prev: A.eventId(honestProf.body), ts: NOW0 + 9_000_000, payload: { fields: { bio: 'REVOKED-KEY BIO' } } }, dev.priv)
     const summary = { v: 1, root: r.pubB, head: honestSeg, profileEvents: [honestProf, atkProf], certs }
@@ -559,14 +559,14 @@ async function run(M, outNode, outBrowser) {
     // ROUND 3: a revoked key's pre-revocation floor segment is height-
     // indistinguishable from a forgery at the same height (an unlinked pool
     // event's claimed height is attacker-chosen), so the FLOOR conservatively
-    // drops EVERY revoked-key pool event — NO-FORGE over serving unverifiable
+    // drops EVERY revoked-key pool event, NO-FORGE over serving unverifiable
     // bytes (§0). The genuine game is not lost: it rides the VERIFIED chain on
     // the expected path (asserted just below).
     ok(!view.segments.some((e) => A.eventId(e.body) === A.eventId(honestSeg.body)), 'the revoked-key PRE-revocation segment is conservatively dropped on the FLOOR (height-unverifiable; served via the chain instead)')
     eq(view.profile.bio, 'honest bio', 'the floor profile fold ignores the revoked-key write and keeps the pre-revocation one (defect J wiring, THROUGH resolveProfile)')
 
     // Expected path (shards present): the genuine pre-revocation segment rides
-    // the VERIFIED chain — never lost, just not served off the unverifiable floor.
+    // the VERIFIED chain. Never lost, just not served off the unverifiable floor.
     const GEO8 = { k: 2, n: 4 }
     const hdr8 = S.cutSnapshot(c, revokeEv, certs, r.priv, GEO8)
     const envs8 = S.shardJob(hdr8, A.chainToBytes(c))
@@ -574,23 +574,23 @@ async function run(M, outNode, outBrowser) {
     const getE = async (t, kind) => (kind === 'shard' ? (shardByKey8.get(t) ?? null) : kind === 'events' && t === subjNid ? eventsRow : null)
     const viewExp = await S.resolveProfile({ get: getE, getMerged: getE }, r.pubB, { shard: GEO8, summaries: [summary] })
     eq(viewExp.status, 'expected', 'with shards the chain reconstructs (expected path)')
-    ok(viewExp.segments.some((e) => A.eventId(e.body) === A.eventId(honestSeg.body)), '…and the genuine pre-revocation device segment IS served via the verified chain (never lost — only the floor drops it)')
+    ok(viewExp.segments.some((e) => A.eventId(e.body) === A.eventId(honestSeg.body)), '…and the genuine pre-revocation device segment IS served via the verified chain (never lost; only the floor drops it)')
     ok(!viewExp.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), 'NO-FORGE (expected): the revoked-key forgery stays out of the chain-served segments')
   }
 
   // ==========================================================================
-  console.log('\n· U9. resolveProfile — an unlinked pool revoke can suppress NOTHING …')
+  console.log('\n· U9. resolveProfile. An unlinked pool revoke can suppress NOTHING …')
   // ==========================================================================
   {
     // ROUND 3: the round-2 fix built its revocation gate from EVERY pool
-    // revoke — but pool events are only verifyWitnessedOf-checked (owner sig +
+    // revoke, but pool events are only verifyWitnessedOf-checked (owner sig +
     // ANY attestation + cert-proven key, NOT chain-linked), so a revoke's very
     // presence and claimed body.height/ts are attacker-mintable with any
     // leaked certified key: certs are never deleted, and verifyAttestation has
-    // no eligibility gate. BOTH invariants must hold at once: (A) NO-FORGE —
-    // a long-revoked device key still cannot forge the head / inject a game /
+    // no eligibility gate. BOTH invariants must hold at once: (A) NO-FORGE.
+    // A long-revoked device key still cannot forge the head / inject a game /
     // set the name / write the profile (U8, re-pinned here on the EXPECTED
-    // path too); (B) NO-SUPPRESS — an attacker-minted revoke NAMING THE
+    // path too); (B) NO-SUPPRESS: an attacker-minted revoke NAMING THE
     // VICTIM'S ACTIVE DEVICE (height 0 / ts 0) must not drop honest verified
     // events, downgrade the verified head, or silence the profile, on EITHER
     // path. Only authoritative revokes gate: chain-linked ones (verifyChain
@@ -602,7 +602,7 @@ async function run(M, outNode, outBrowser) {
     let c = A.createAccountChain({ rootPriv: r.priv, rootPub: r.pub, displayName: 'U-Nine', ts: NOW0, device: { pub: dOld.pubB, index: 0 } })
     c = { root: c.root, events: [attOf(c.events[0], w, NOW0 + 5), ...c.events.slice(1)] }
     c = A.appendPersonal(c, r.priv, r.pubB, 'cert', { pub: dAct.pubB, purpose: 0, index: 1 }, NOW0 + 10)
-    c = attachLast(A.appendWitnessed(c, r.priv, r.pubB, 'revoke', { pub: dOld.pubB }, NOW0 + 1000), w, NOW0 + 1005) // h1: dOld revoked — ROOT-signed, IN the chain
+    c = attachLast(A.appendWitnessed(c, r.priv, r.pubB, 'revoke', { pub: dOld.pubB }, NOW0 + 1000), w, NOW0 + 1005) // h1: dOld revoked, ROOT-signed, IN the chain
     const segPayload = (tag) => SEG.makeSegmentPayload({
       game: idLike(tag), opp: kpOf(tag + '-opp').pubB, color: 'w', result: '1-0', reason: 'resign', moves: [],
       heads: { w: { head: idLike(tag + '-hw'), height: 0 }, b: { head: idLike(tag + '-hb'), height: 0 } },
@@ -617,7 +617,7 @@ async function run(M, outNode, outBrowser) {
     const certs = A.certsProving(r.pubB, c.events, [dOld.pubB, dAct.pubB])
     const honestSegIds = c.events.filter((e) => e.body.type === 'segment').map((e) => A.eventId(e.body))
 
-    // THE ATTACK — every piece signed with dOld's LEAKED long-revoked key and
+    // THE ATTACK: every piece signed with dOld's LEAKED long-revoked key and
     // self-attested by a throwaway witness key (height AND ts attacker-chosen):
     const atkWit = kpOf('u9-atk-wit')
     const forge = (body) => ({ ...mint(body, dOld.priv), wit: [W.makeAttestation(A.eventId(body), 1, atkWit.pubB, atkWit.priv, NOW0 + 9_000_005)] })
@@ -625,7 +625,7 @@ async function run(M, outNode, outBrowser) {
     const forgedRevoke = forge({ v: 1, lane: 'w', type: 'revoke', root: r.pubB, key: dOld.pubB, height: 0, ts: 0, payload: { pub: dAct.pubB } })
     // 2. a non-linking forged game at height 99999 (the U8 shape).
     const forgedSeg = forge({ v: 1, lane: 'w', type: 'segment', root: r.pubB, key: dOld.pubB, height: 99999, prev: A.eventId(head6.body), ts: NOW0 + 9_000_000, payload: segPayload('u9-forge') })
-    // 3. a LINKING forged game at height 7 (prev = the real head) — would
+    // 3. a LINKING forged game at height 7 (prev = the real head). Would
     //    structurally extend the reconstructed chain if revocation did not bar it.
     const forgedLink = forge({ v: 1, lane: 'w', type: 'segment', root: r.pubB, key: dOld.pubB, height: 7, prev: A.eventId(head6.body), ts: NOW0 + 9_000_001, payload: segPayload('u9-forge-link') })
     // 4. a device-signed "genesis" carrying an attacker display name.
@@ -633,23 +633,23 @@ async function run(M, outNode, outBrowser) {
     ok(S.verifyWitnessedOf(r.pubB, forgedRevoke, certs), 'sanity: the forged revoke passes context-free verifyWitnessedOf (cert never deleted; throwaway attestation accepted)')
 
     // The events row an honest node ends up serving (publish-on-write union +
-    // the attacker's published row). The REAL store gate accepts it — chain
+    // the attacker's published row). The REAL store gate accepts it: chain
     // linkage is invisible to acceptEvents; the viewer is the last line.
     const subjNid = W.nodeIdOf(r.pub)
     const wAll = c.events.filter((e) => e.body.lane === 'w')
     const eventsRow = { v: 1, events: [...wAll, forgedRevoke, forgedSeg, forgedLink, forgedGenesis], certs }
     // ROUND 3: the store gate now REFUSES structurally-impossible height-0
-    // forgeries (a non-genesis or device-signed event at height 0 — the
+    // forgeries (a non-genesis or device-signed event at height 0; the
     // forgedRevoke / forgedGenesis here), so a leaked key cannot flood the
     // display-name genesis slot. But the viewer must stay robust to a HOSTILE
     // getMerged that bypasses the gate, so the poisoned row is served DIRECTLY
     // below. The structurally-VALID high-height forgeries still pass the gate
-    // (chain linkage is invisible to acceptEvents — the viewer is the last line).
+    // (chain linkage is invisible to acceptEvents; the viewer is the last line).
     const u9validator = S.makeShardStoreValidator({ shardMb: 1 }).validator
     ok(!u9validator('u9-from', subjNid, 'events', eventsRow),
       'the store gate REFUSES the row carrying height-0 forgeries (non-genesis / device-genesis at height 0)')
     ok(u9validator('u9-from', subjNid, 'events', { v: 1, events: [...wAll, forgedSeg, forgedLink], certs }),
-      'the gate ACCEPTS the structurally-valid high-height forgeries (linkage invisible to the gate — the viewer adjudicates)')
+      'the gate ACCEPTS the structurally-valid high-height forgeries (linkage invisible to the gate, the viewer adjudicates)')
 
     // A summary carrying the ACTIVE device's honest profile write.
     const prof = mint({ v: 1, lane: 'p', type: 'profile', root: r.pubB, key: dAct.pubB, height: 0, ts: NOW0 + 3000, payload: { fields: { bio: 'honest active bio' } } }, dAct.priv)
@@ -670,7 +670,7 @@ async function run(M, outNode, outBrowser) {
     eq(viewE.head?.height, 6, 'NO-SUPPRESS (expected): the attacker-chosen height-0 revoke does NOT downgrade the verified head')
     eq(viewE.head?.id, A.eventId(head6.body), "…the pinned head is the chain's own countersigned head (never below chain.witnessedHead)")
     eq(viewE.segments.length, 5, 'NO-SUPPRESS (expected): all 5 honest verified games survive selection')
-    eq(canon(viewE.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '…exactly the honest game set — nothing dropped, nothing injected')
+    eq(canon(viewE.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '…exactly the honest game set: nothing dropped, nothing injected')
     eq(A.verifyChain(viewE.chain).witnessedHeight, 6, 'NO-FORGE (expected): the LINKING height-7 forgery by the revoked key did not extend the chain')
     ok(!viewE.segments.some((e) => e.body.key === dOld.pubB), 'NO-FORGE (expected): no revoked-key game rides view.segments')
     eq(viewE.name, 'U-Nine', 'NO-FORGE (expected): the device-signed "genesis" cannot set the display name')
@@ -684,18 +684,18 @@ async function run(M, outNode, outBrowser) {
     eq(viewF.head?.id, A.eventId(head6.body), '…and it is the honest head event itself')
     eq(viewF.segments.length, 5, 'NO-SUPPRESS (floor): all 5 honest games still ride the floor')
     eq(canon(viewF.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '…exactly the honest game set on the floor too')
-    ok(!viewF.segments.some((e) => e.body.key === dOld.pubB), 'NO-FORGE (floor): the revoked-key games (h7 AND h99999) stay out — the ROOT-signed revoke in the row is honored')
+    ok(!viewF.segments.some((e) => e.body.key === dOld.pubB), 'NO-FORGE (floor): the revoked-key games (h7 AND h99999) stay out. The ROOT-signed revoke in the row is honored')
     eq(viewF.name, 'U-Nine', 'NO-FORGE (floor): the display name stays the root-signed genesis name')
     eq(viewF.profile.bio, 'honest active bio', "NO-SUPPRESS (floor): the forged revoke (attacker ts 0) cannot silence the active device's profile write")
     eq(viewF.revocationContested, undefined, 'ROUND 4 (shrink): the forged device revoke by the ROOT-refuted signer is IGNORED, so the floor view is NOT marked contested (no device-attested gate was honored)')
   }
 
   // ==========================================================================
-  console.log('\n· U10. resolveProfile — stale-snapshot fork race / device-signed revoke / height≤rh …')
+  console.log('\n· U10. resolveProfile, stale-snapshot fork race / device-signed revoke / height≤rh …')
   // ==========================================================================
   {
     // ROUND 3 (second fix). Three residual vectors the first round-3 fix left
-    // open — all pinned end-to-end through the REAL resolveProfile:
+    // open. All pinned end-to-end through the REAL resolveProfile:
     //  (a) NO-SUPPRESS via a stale-snapshot FORK RACE: the reconstructed chain
     //      lags the honest tip (publish-on-write appends without re-sharding),
     //      so a forged device revoke ground to sort below the honest successor
@@ -717,7 +717,7 @@ async function run(M, outNode, outBrowser) {
     // ---- (a) STALE-SNAPSHOT FORK RACE (NO-SUPPRESS, expected path) ----------
     {
       const r = kpOf('u10a-root')
-      const dOld = kpOf('u10a-old') // leaked key, still ACTIVE — the hardest case (no revoke to gate it)
+      const dOld = kpOf('u10a-old') // leaked key, still ACTIVE: the hardest case (no revoke to gate it)
       const dAct = kpOf('u10a-act')
       const atkWit = kpOf('u10a-atk-wit')
       let snap = A.createAccountChain({ rootPriv: r.priv, rootPub: r.pub, displayName: 'U10a', ts: NOW0, device: { pub: dOld.pubB, index: 0 } })
@@ -748,7 +748,7 @@ async function run(M, outNode, outBrowser) {
       eq(view.status, 'expected', '(a) the stale snapshot reconstructs (expected path)')
       eq(view.head?.height, 5, '(a) NO-SUPPRESS: the fork-race revoke does NOT downgrade the head below the honest tip 5')
       eq(view.segments.length, 5, '(a) NO-SUPPRESS: all 5 honest games survive (the forged revoke did not truncate the continuation)')
-      eq(canon(view.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '(a) …exactly the honest game set — nothing suppressed')
+      eq(canon(view.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '(a) …exactly the honest game set: nothing suppressed')
     }
 
     // ---- (b) DEVICE-SIGNED REVOKE of a leaked key, FLOOR NO-FORGE -----------
@@ -777,7 +777,7 @@ async function run(M, outNode, outBrowser) {
       eq(view.status, 'floor', '(b) floor path (no shards)')
       eq(view.head?.height, 4, '(b) NO-FORGE (floor): a leaked key revoked by a DEVICE-signed revoke does NOT forge the head (honest head 4)')
       ok(!view.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), '(b) NO-FORGE (floor): the revoked-key forgery is barred from segments')
-      eq(view.revocationContested, true, '(b) ROUND 4 (C-12 honesty): the floor HONORED a device-signed revoke it cannot chain-verify — the view says so (revocationContested), never silently')
+      eq(view.revocationContested, true, '(b) ROUND 4 (C-12 honesty): the floor HONORED a device-signed revoke it cannot chain-verify. The view says so (revocationContested), never silently')
     }
 
     // ---- (c) REVOKED-KEY SEGMENT AT height ≤ rh (NO-FORGE, both paths) ------
@@ -817,7 +817,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· U11. resolveProfile — the C-12 floor: shrink, gate-both, surface …')
+  console.log('\n· U11. resolveProfile. The C-12 floor: shrink, gate-both, surface …')
   // ==========================================================================
   {
     // ROUND 4 (final hardening). The floor's device-revocation tension is
@@ -825,19 +825,19 @@ async function run(M, outNode, outBrowser) {
     // revocation is a model feature (certs.ts makeRevokeEvent; verifyChain
     // admits a device-signed revoke at its linked height), so the floor must
     // honor device-signed pool revokes or a device-revoked leaked key could
-    // forge freely — yet the same evidence is mintable BY a leaked key against
+    // forge freely, yet the same evidence is mintable BY a leaked key against
     // the honest device. Resolution under §0 (paramount): fail toward
     // NO-FORGERY, shrink the collateral, and SURFACE the residual as
-    // revocationContested — never silent. Pinned end-to-end here:
+    // revocationContested: never silent. Pinned end-to-end here:
     //  (a) the residual PoC: a LONE forged device revoke (its signer's own
     //      revocation not visible on this floor) suppresses the active device
-    //      — accepted C-12 residual — but the view MUST carry the honest
+    //      (accepted C-12 residual) but the view MUST carry the honest
     //      signal, and the claim-only revoke must NOT itself pin the head;
     //  (b) MUTUAL/CONTESTED revokes gate BOTH keys: the forged half can never
-    //      render (gate-neither would re-admit the leaked key — the round-3
+    //      render (gate-neither would re-admit the leaked key; the round-3
     //      NO-FORGE hole), the honest half's suppression is flagged;
     //  (c) the SAME attack on the EXPECTED path: the verified chain
-    //      adjudicates — nothing suppressed, nothing forged, no flag.
+    //      adjudicates: nothing suppressed, nothing forged, no flag.
     const w = wits[0]
     const seg = (tag) => SEG.makeSegmentPayload({
       game: idLike(tag), opp: kpOf(tag + '-opp').pubB, color: 'w', result: '1-0', reason: 'resign', moves: [],
@@ -862,7 +862,7 @@ async function run(M, outNode, outBrowser) {
       for (let g = 1; g <= 3; g++)
         c = attachLast(A.appendWitnessed(c, dAct.priv, dAct.pubB, 'segment', seg('u11a-g' + g), NOW0 + g * 1000), w, NOW0 + g * 1000 + 5)
       const certs = A.certsProving(r.pubB, c.events, [dOld.pubB, dAct.pubB])
-      // dOld is long-revoked IN REALITY — but that revocation is NOT visible in
+      // dOld is long-revoked IN REALITY, but that revocation is NOT visible in
       // this pool (sparse floor: the attacker curates what survivors serve), so
       // dOld is evidence-wise indistinguishable from a still-active device
       // performing the legitimate cold-root flow. THAT is the irreducible core.
@@ -872,13 +872,13 @@ async function run(M, outNode, outBrowser) {
       const get = async (t, kind) => (kind === 'events' && t === subjNid ? eventsRow : null)
       const view = await S.resolveProfile({ get, getMerged: get }, r.pubB, {})
       eq(view.status, 'floor', '(a) floor path (no shards)')
-      eq(view.revocationContested, true, '(a) C-12 SURFACED: the unverifiable device revoke was honored — the view says revocationContested, NEVER silently complete')
+      eq(view.revocationContested, true, '(a) C-12 SURFACED: the unverifiable device revoke was honored. The view says revocationContested, NEVER silently complete')
       eq(view.segments.length, 0, "(a) the accepted residual: the active device's games are transiently withheld (fail toward no-forgery; heals when a chain reconstructs)")
-      eq(view.head?.height, 0, '(a) the claim-only revoke (height 500) does NOT pin the head — the head falls back to the newest ROOT-signed attested event (the genesis): revocation evidence is gate-only, never content')
+      eq(view.head?.height, 0, '(a) the claim-only revoke (height 500) does NOT pin the head. The head falls back to the newest ROOT-signed attested event (the genesis): revocation evidence is gate-only, never content')
       eq(view.name, 'U-Eleven', '(a) the display name (root-signed genesis) is untouched')
     }
 
-    // ---- (b) MUTUAL/CONTESTED: gate BOTH — the forged half cannot render ----
+    // ---- (b) MUTUAL/CONTESTED: gate BOTH. The forged half cannot render ----
     {
       const { r, dOld, dAct, atkWit, c: c0 } = mkAccount('u11b')
       let c = c0
@@ -889,7 +889,7 @@ async function run(M, outNode, outBrowser) {
       eq(A.verifyChain(c).witnessedHeight, 3, '(b) fixture: honest head height 3 (genesis + device revoke + 2 games)')
       const certs = A.certsProving(r.pubB, c.events, [dOld.pubB, dAct.pubB])
       const honestSegIds = c.events.filter((e) => e.body.type === 'segment').map((e) => A.eventId(e.body))
-      // dOld (leaked, DEVICE-revoked — no root-signed revoke of it exists)
+      // dOld (leaked, DEVICE-revoked: no root-signed revoke of it exists)
       // counter-attacks with a forged revoke of dAct AND a forged game:
       const forgedRevoke = forgeBy(dOld.priv, atkWit, { v: 1, lane: 'w', type: 'revoke', root: r.pubB, key: dOld.pubB, height: 500, ts: 0, payload: { pub: dAct.pubB } })
       const forgedSeg = forgeBy(dOld.priv, atkWit, { v: 1, lane: 'w', type: 'segment', root: r.pubB, key: dOld.pubB, height: 99999, prev: A.eventId(head3.body), ts: NOW0 + 9_000_000, payload: seg('u11b-forge') })
@@ -905,10 +905,10 @@ async function run(M, outNode, outBrowser) {
       }
       const viewF = await S.resolveProfile(serve(false), r.pubB, {})
       eq(viewF.status, 'floor', '(b) floor path')
-      ok(!viewF.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), "(b) NO-FORGE (floor, CONTESTED): the leaked key's forged game does NOT render — mutual revokes gate BOTH keys (gate-neither would re-admit the forger: the round-3 hole)")
+      ok(!viewF.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), "(b) NO-FORGE (floor, CONTESTED): the leaked key's forged game does NOT render. Mutual revokes gate BOTH keys (gate-neither would re-admit the forger: the round-3 hole)")
       ok(viewF.head?.height !== 99999, '(b) NO-FORGE (floor, CONTESTED): the forged height-99999 event does NOT pin the head')
-      eq(viewF.head?.height, 0, '(b) …the head falls back to the newest ROOT-signed attested event (the genesis) — neither contested device pins it')
-      eq(viewF.revocationContested, true, "(b) the contested gating is SURFACED (revocationContested) — the honest half's suppression is the flagged C-12 residual, not silence")
+      eq(viewF.head?.height, 0, '(b) …the head falls back to the newest ROOT-signed attested event (the genesis), neither contested device pins it')
+      eq(viewF.revocationContested, true, "(b) the contested gating is SURFACED (revocationContested). The honest half's suppression is the flagged C-12 residual, not silence")
       eq(viewF.segments.length, 0, '(b) …and the honest games are withheld pending chain (the residual the flag names), never rendered alongside a forgery')
       eq(viewF.name, 'U-Eleven', '(b) the display name stays the root-signed genesis name')
 
@@ -916,32 +916,32 @@ async function run(M, outNode, outBrowser) {
       const viewE = await S.resolveProfile(serve(true), r.pubB, { shard: GEO })
       eq(viewE.status, 'expected', '(c) the chain reconstructs (expected path)')
       eq(viewE.head?.height, 3, '(c) NO-SUPPRESS (expected): the mutual-revoke attack cannot downgrade the verified head (view.head >= chain.witnessedHead)')
-      eq(canon(viewE.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '(c) NO-SUPPRESS (expected): exactly the honest game set — the pool revoke pair dropped nothing')
+      eq(canon(viewE.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '(c) NO-SUPPRESS (expected): exactly the honest game set. The pool revoke pair dropped nothing')
       ok(!viewE.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), '(c) NO-FORGE (expected): the chain-revoked leaked key still cannot inject a game')
-      eq(viewE.revocationContested, undefined, '(c) the expected path carries NO contested flag — the chain adjudicated the revocation at its real linked height')
+      eq(viewE.revocationContested, undefined, '(c) the expected path carries NO contested flag. The chain adjudicated the revocation at its real linked height')
     }
   }
 
   // ==========================================================================
-  console.log('\n· U12. resolveProfile — a NON-LINKING pool event contributes NO expected-path content …')
+  console.log('\n· U12. resolveProfile. A NON-LINKING pool event contributes NO expected-path content …')
   // ==========================================================================
   {
     // ROUND 5 (final). The corrected threat model rounds 1-4 under-scoped:
     // the attacker holds a CERTIFIED, NON-REVOKED device key of the victim
-    // (leaked but not yet revoked — cert-proven, so verifyWitnessedOf passes;
+    // (leaked but not yet revoked: cert-proven, so verifyWitnessedOf passes;
     // NOT filtered by notRevoked; untouched by the floor shrink rules). The
     // weapon is a bare NON-LINKING witnessed event at an arbitrary claimed
     // height with a bogus prev and a throwaway self-attestation. On the
     // EXPECTED path (a verified chain reconstructed) such an event must NEVER
     // contribute content (head/segment/checkpoint/name/profile) or outrank
     // the verified chain: pre-fix, headCands and the segment source mixed raw
-    // poolAdmitted into chain-derived content — view.head forged to 99999 (an
+    // poolAdmitted into chain-derived content: view.head forged to 99999 (an
     // A4 pinned input) and a fabricated game injected. Post-fix: with a chain
     // present, pool events contribute content ONLY from a REAL LINKED
     // position (grounded at the verified chain over hash links with h+1
-    // steps — the round-3 fork-stopped honest continuation keeps serving,
-    // U10a); the unambiguous continuation is absorbed by extendChainFromPool
-    // — which is exactly how a REAL linking publish-on-write segment still
+    // steps: the round-3 fork-stopped honest continuation keeps serving,
+    // U10a); the unambiguous continuation is absorbed by extendChainFromPool,
+    // which is exactly how a REAL linking publish-on-write segment still
     // appears ((c) below: the fix is not over-broad).
     const r = kpOf('u12-root')
     const dLeak = kpOf('u12-dev') // certified at genesis; NEVER revoked; key leaked
@@ -962,23 +962,23 @@ async function run(M, outNode, outBrowser) {
     c = A.appendPersonal(c, dLeak.priv, dLeak.pubB, 'profile', { fields: { bio: 'u12 honest bio' } }, NOW0 + 5000)
     const wAll = c.events.filter((e) => e.body.lane === 'w')
     const realHead = wAll[wAll.length - 1] // the 5-cosigned ckpt, height 4
-    ok(A.verifyChain(c).ok && realHead.body.height === 4 && realHead.body.type === 'ckpt', 'fixture: the honest chain verifies — its head is the cosigned height-4 checkpoint')
+    ok(A.verifyChain(c).ok && realHead.body.height === 4 && realHead.body.type === 'ckpt', 'fixture: the honest chain verifies. Its head is the cosigned height-4 checkpoint')
     const certs = A.certsProving(r.pubB, c.events, [dLeak.pubB])
     const honestSegIds = c.events.filter((e) => e.body.type === 'segment').map((e) => A.eventId(e.body))
 
-    // THE FORGERIES — every piece signed by dLeak (certified, NON-revoked)
+    // THE FORGERIES: every piece signed by dLeak (certified, NON-revoked)
     // at an attacker-chosen height with a bogus prev, self-attested:
     const forge = (body) => ({ ...mint(body, dLeak.priv), wit: [W.makeAttestation(A.eventId(body), 1, atkWit.pubB, atkWit.priv, NOW0 + 9_000_005)] })
     const forgedSeg = forge({ v: 1, lane: 'w', type: 'segment', root: r.pubB, key: dLeak.pubB, height: 99999, prev: idLike('u12-bogus-prev'), ts: NOW0 + 9_000_000, payload: seg('u12-FORGE') })
     const junkState = { n: 1, byType: { forged: 1 }, head: idLike('u12-fake-head'), height: 99997 }
     const forgedCkpt = forge({ v: 1, lane: 'w', type: 'ckpt', root: r.pubB, key: dLeak.pubB, height: 99998, prev: idLike('u12-bogus-prev2'), ts: NOW0 + 9_000_001, payload: { prevCkpt: idLike('u12-bogus-ckpt'), through: 99997, state: junkState, stateDigest: canon(junkState) } })
     const forgedName = forge({ v: 1, lane: 'w', type: 'genesis', root: r.pubB, key: dLeak.pubB, height: 0, ts: 0, payload: { params: idLike('u12-fake-params'), name: 'EVIL U12' } })
-    ok(S.verifyWitnessedOf(r.pubB, forgedSeg, certs), 'sanity: the NON-revoked leaked-key forgery passes context-free verifyWitnessedOf (cert-proven key + throwaway attestation — NO linkage check exists there)')
+    ok(S.verifyWitnessedOf(r.pubB, forgedSeg, certs), 'sanity: the NON-revoked leaked-key forgery passes context-free verifyWitnessedOf (cert-proven key + throwaway attestation; NO linkage check exists there)')
     const summary = { v: 1, root: r.pubB, head: forgedSeg, profileEvents: [], certs }
     ok(S.verifyHolderSummary(summary, r.pubB).head !== undefined, 'sanity: the same forgery rides a VERIFYING holder summary head (both ingress routes feed one pool)')
     const subjNid = W.nodeIdOf(r.pub)
     ok(S.makeShardStoreValidator({ shardMb: 1 }).validator('u12-from', subjNid, 'events', { v: 1, events: [...wAll, forgedSeg, forgedCkpt], certs }),
-      'the store gate ACCEPTS the structurally-valid non-linking forgeries (linkage is invisible to acceptEvents — the viewer is the LAST line)')
+      'the store gate ACCEPTS the structurally-valid non-linking forgeries (linkage is invisible to acceptEvents; the viewer is the LAST line)')
 
     // Serve: the full honest chain in shard space + the hostile events row
     // (delivered via a gate-bypassing getMerged, like U9).
@@ -994,41 +994,41 @@ async function run(M, outNode, outBrowser) {
 
     const view = await S.resolveProfile(serve(eventsRow), r.pubB, { shard: GEO, summaries: [summary] })
     eq(view.status, 'expected', 'the chain reconstructs (expected path) with the hostile row + summary present')
-    eq(view.head?.height, 4, 'FIX (a): the height-99999 non-linking forgery does NOT pin the head — view.head is the REAL verified chain head')
+    eq(view.head?.height, 4, 'FIX (a): the height-99999 non-linking forgery does NOT pin the head, view.head is the REAL verified chain head')
     eq(view.head?.id, A.eventId(realHead.body), '…pinned to the real countersigned head id')
     eq(canon(view.headEvent), canon(realHead), '…and headEvent IS the real head event (the A4 pinned input is uncorrupted)')
     ok(!view.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), 'FIX (b): the fabricated game is ABSENT from view.segments (a non-linking pool event contributes NO content when a chain is present)')
-    eq(canon(view.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '…exactly the honest game set — nothing injected, nothing dropped')
-    eq(view.ckpt?.id, A.eventId(ck.body), 'FIX (d): the checkpoint surface stays the real cosigned checkpoint (the working set was already chain-only — re-pinned against this class)')
+    eq(canon(view.segments.map((e) => A.eventId(e.body))), canon(honestSegIds), '…exactly the honest game set: nothing injected, nothing dropped')
+    eq(view.ckpt?.id, A.eventId(ck.body), 'FIX (d): the checkpoint surface stays the real cosigned checkpoint (the working set was already chain-only, re-pinned against this class)')
     eq(view.name, 'U-Twelve', 'FIX (d): the display name stays the root-signed genesis name')
-    eq(view.profile.bio, 'u12 honest bio', "FIX (d): the profile stays the chain's own fold — untouched by the forgeries")
+    eq(view.profile.bio, 'u12 honest bio', "FIX (d): the profile stays the chain's own fold, untouched by the forgeries")
     eq(A.verifyChain(view.chain).witnessedHeight, 4, 'the served chain itself is untouched (nothing non-linking was appended)')
 
     // (c) NOT OVER-BROAD: a REAL publish-on-write continuation by the SAME
-    // device must still appear — extendChainFromPool absorbs it into
+    // device must still appear: extendChainFromPool absorbs it into
     // chain.events, so it rides the CHAIN, never raw poolAdmitted.
     const cLink = attachLast(A.appendWitnessed(c, dLeak.priv, dLeak.pubB, 'segment', seg('u12-link'), NOW0 + 6000), w, NOW0 + 6005)
-    const linkSeg = cLink.events[cLink.events.length - 1] // height 5, prev = the real head id — a genuine continuation
+    const linkSeg = cLink.events[cLink.events.length - 1] // height 5, prev = the real head id. A genuine continuation
     const view2 = await S.resolveProfile(serve({ v: 1, events: [...wAll, linkSeg, forgedSeg, forgedCkpt, forgedName], certs }), r.pubB, { shard: GEO, summaries: [summary] })
     eq(view2.status, 'expected', '(c) expected path again (same sharded snapshot, now-newer events row)')
-    ok(view2.segments.some((e) => A.eventId(e.body) === A.eventId(linkSeg.body)), '(c) NOT OVER-BROAD: the genuinely-LINKING height-5 pool segment by the SAME device STILL appears (absorbed by extendChainFromPool — it rides the chain)')
-    eq(view2.head?.height, 5, '(c) …and the head advances to the real linked continuation (5) — never to a claimed 99999')
+    ok(view2.segments.some((e) => A.eventId(e.body) === A.eventId(linkSeg.body)), '(c) NOT OVER-BROAD: the genuinely-LINKING height-5 pool segment by the SAME device STILL appears (absorbed by extendChainFromPool; it rides the chain)')
+    eq(view2.head?.height, 5, '(c) …and the head advances to the real linked continuation (5), never to a claimed 99999')
     eq(A.verifyChain(view2.chain).witnessedHeight, 5, '(c) the extension rode the verified chain and the whole still verifies')
     ok(!view2.segments.some((e) => A.eventId(e.body) === A.eventId(forgedSeg.body)), '(c) the non-linking forgery STAYS out even alongside the real continuation')
 
-    // FLOOR framing (unchanged round-4 / C-12 semantics — documented, not
+    // FLOOR framing (unchanged round-4 / C-12 semantics; documented, not
     // desired): with NO chain to check linkage against and NO revocation to
     // honor, verifyWitnessedOf IS the floor's whole admission rule, so the
     // same forgery still pins the pure floor head. THAT residual is exactly
     // what the expected path now closes; it heals when any chain reconstructs.
     const viewF = await S.resolveProfile(serve(eventsRow, false), r.pubB, { summaries: [summary] })
     eq(viewF.status, 'floor', 'floor framing (no shards)')
-    eq(viewF.head?.height, 99999, 'FLOOR UNCHANGED (C-12 territory): the certified NON-revoked key’s claimed height still pins the pure floor head — round-4 semantics preserved; the fix touches ONLY the expected path')
+    eq(viewF.head?.height, 99999, 'FLOOR UNCHANGED (C-12 territory): the certified NON-revoked key’s claimed height still pins the pure floor head: round-4 semantics preserved; the fix touches ONLY the expected path')
     eq(viewF.name, 'U-Twelve', 'FLOOR: the device-signed "genesis" still cannot set the display name (root-signed only)')
   }
 
   // ==========================================================================
-  console.log('\n· P. THE A3 PROOF — 1,000 games, 300 opponents, owner gone forever …')
+  console.log('\n· P. THE A3 PROOF: 1,000 games, 300 opponents, owner gone forever …')
   // ==========================================================================
   const tBuild = Date.now()
   const subj = kpOf('rc-subject-root')
@@ -1118,7 +1118,7 @@ async function run(M, outNode, outBrowser) {
 
   // 40 freshest entanglement partners publish segment pointers (their newest
   // game with X), one friend publishes a full-chain pointer, and the duty
-  // carriers of the first 6 rows publish shard pointers — 47 records, all
+  // carriers of the first 6 rows publish shard pointers: 47 records, all
   // inside the structural cap so nothing honest is ever truncated.
   const blobHash = shaB(chainBytes)
   for (let i = 0; i < 40; i++) {
@@ -1171,7 +1171,7 @@ async function run(M, outNode, outBrowser) {
 
   // --- THE OWNER'S NODE LEAVES FOREVER --------------------------------------
   await kill(subjectNode)
-  subjectNode = null // no residual reads — the store died with the node
+  subjectNode = null // no residual reads. The store died with the node
   ok(liveRowCount() === 40, 'shard space is intact without the owner (the network IS the storage)')
 
   // --- a FRESH viewer joins and reconstructs --------------------------------
@@ -1242,7 +1242,7 @@ async function run(M, outNode, outBrowser) {
   // rows): pin a deterministic survivor set of shard holders whose combined
   // holdings cover ≤ 11 rows (below K_rec=12), preferring pointer-index
   // holders as survivors; every OTHER shard holder dies, and so does every
-  // publish-on-write events holder — the floor must come from the surviving
+  // publish-on-write events holder: the floor must come from the surviving
   // pointer index alone.
   const pointerKeyX = S.pointerKeyOfRoot(subj.pubB)
   const eventsHolders = new Set([...alive].filter((n) => n.node.localGet(subjectNodeId, 'events') !== null))
@@ -1265,7 +1265,7 @@ async function run(M, outNode, outBrowser) {
     if (rowsOf.get(n).every((r) => covered.has(r))) survivors.add(n) // redundant copies of kept rows may live
   }
   const keepCount = covered.size
-  ok(keepCount >= 3 && keepCount < 12, `survivor pinning covers ${keepCount} rows — below K_rec=12`)
+  ok(keepCount >= 3 && keepCount < 12, `survivor pinning covers ${keepCount} rows, below K_rec=12`)
   const kills = new Set([...eventsHolders, ...shardHolders.filter((n) => !survivors.has(n))])
   kills.delete(viewer)
   // The heal-1 plan: carriers of (12 − keepCount) dead rows keep their rows on
@@ -1289,7 +1289,7 @@ async function run(M, outNode, outBrowser) {
   ok(pointerHolders.some((n) => !kills.has(n)), 'sanity: the pointer index keeps ≥1 surviving holder')
   for (const n of kills) await kill(n)
   console.log(`    (${kills.size} carriers died; ${alive.size} nodes survive; live rows: ${liveRowCount()})`)
-  eq(liveRowCount(), keepCount, `live shard rows fell to ${keepCount} — below K_rec=12`)
+  eq(liveRowCount(), keepCount, `live shard rows fell to ${keepCount}, below K_rec=12`)
 
   const view2 = await S.resolveProfile(viewer.node, subj.pubB, {
     directory: viewer.ep.directory(), nowMs: now, cosig: { eligible, rule: RULE }, spot: { p: 1, roll: 0 },
@@ -1300,9 +1300,9 @@ async function run(M, outNode, outBrowser) {
   eq(view2.shardReport.reason, 'below-k', 'the failure is TYPED temporary unavailability')
   eq(view2.segments.length, 40, 'the guaranteed floor still serves: the 40 surviving pointer-held segments')
   eq(view2.head?.height, 1050, "the countersigned head STILL pins (the friend's chain pointer proof survives)")
-  ok(view2.ckptInfo === undefined, 'no checkpoint is asserted without its verification rule (the floor lacks the fold range — honest absence)')
+  ok(view2.ckptInfo === undefined, 'no checkpoint is asserted without its verification rule (the floor lacks the fold range, honest absence)')
   ok(view2.sources.viaChain === false && view2.sources.shardsUsed === 0, 'sources reflect the floor honestly')
-  ok(view2.certs.length >= 1, 'the floor view carries the collected device certs (so historyFromView can page a device-signed floor — defect I)')
+  ok(view2.certs.length >= 1, 'the floor view carries the collected device certs (so historyFromView can page a device-signed floor, defect I)')
 
   // The A6 fast-path seam: a holder summary (the friend still holds the chain)
   // restores the profile surface even while the chain layer is unavailable.
@@ -1326,7 +1326,7 @@ async function run(M, outNode, outBrowser) {
     directory: viewer.ep.directory(), nowMs: now, cosig: { eligible, rule: RULE }, spot: { p: 1, roll: 0 },
   })
   eq(view3.status, 'expected', 'at exactly K_rec live rows reconstruction succeeds again')
-  eq(shaB(A.chainToBytes(view3.chain)), shaB(chainBytes), 'HEALED: bit-faithful from exactly 12 of 40 rows — unavailability was TEMPORARY')
+  eq(shaB(A.chainToBytes(view3.chain)), shaB(chainBytes), 'HEALED: bit-faithful from exactly 12 of 40 rows. Unavailability was TEMPORARY')
   eq(view3.ckptInfo?.mOfN, true, 'the M-of-N checkpoint surface is back with the chain')
 
   // --- heal 2: new nodes join; repair re-encodes + redistributes ------------
@@ -1341,7 +1341,7 @@ async function run(M, outNode, outBrowser) {
   eq(actions[0].redistributed.length, 28, 'the 28 dead rows were re-encoded and redistributed')
   ok(actions[0].stored >= 28, 'every redistributed row found live carriers')
   eq(actions[0].headId, fs.header.headId, 'repair preserved the snapshot identity (same countersigned head)')
-  eq(liveRowCount(), 40, 'all 40 rows live again — eviction = churn = healed')
+  eq(liveRowCount(), 40, 'all 40 rows live again, eviction = churn = healed')
   for (const rj of rejoinedNodes) await kill(rj) // even the disk-returning carriers can die again now
   const reLost = 40 - liveRowCount()
   ok(reLost >= 1 && reLost <= 12 - keepCount, `killing the returned carriers re-loses only their unredistributed rows (${reLost})`)
@@ -1349,7 +1349,7 @@ async function run(M, outNode, outBrowser) {
   ok(repairer2 !== undefined, 'sanity: a surviving holder exists to run the next tick')
   const tick2 = await S.runRepair({ node: repairer2.node, directory: repairer2.ep.directory(), subjects: [subjectNodeId] }, now)
   ok(tick2[0].outcome === 'healthy' && tick2[0].live === 40 - reLost && tick2[0].redistributed.length === 0,
-    `${40 - reLost} live rows ≥ kRec+headroom(${12 + S.PARAMS_A3.repairHeadroom}): the tick reports healthy and redistributes nothing — repair converges without oscillation (re-sharding fires only when the headroom floor is threatened, ACCOUNTS-PARAMS §Storage)`)
+    `${40 - reLost} live rows ≥ kRec+headroom(${12 + S.PARAMS_A3.repairHeadroom}): the tick reports healthy and redistributes nothing. Repair converges without oscillation (re-sharding fires only when the headroom floor is threatened, ACCOUNTS-PARAMS §Storage)`)
 
   const viewer4 = mkNode('viewer-final', kpOf('rc-viewer-final'), kpOf('rc-viewer-final'))
   await viewer4.node.bootstrap([...alive].filter((n) => n !== viewer4).slice(0, 8).map((n) => n.presence))
@@ -1357,8 +1357,8 @@ async function run(M, outNode, outBrowser) {
     directory: viewer4.ep.directory(), nowMs: now, cosig: { eligible, rule: RULE }, spot: { p: 1, roll: 0 },
   })
   eq(view4.status, 'expected', 'a brand-new viewer after the full churn cycle reconstructs')
-  eq(shaB(A.chainToBytes(view4.chain)), shaB(chainBytes), 'FINAL: bit-faithful after die → floor → return → repair — NEVER silent loss')
-  eq(view4.segments.length, 1000, 'all 1,000 games — again')
+  eq(shaB(A.chainToBytes(view4.chain)), shaB(chainBytes), 'FINAL: bit-faithful after die → floor → return → repair, NEVER silent loss')
+  eq(view4.segments.length, 1000, 'all 1,000 games: again')
   stamp('degraded + heal cycle', tDeg)
 
   // ==========================================================================

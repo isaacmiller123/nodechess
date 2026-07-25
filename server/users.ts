@@ -59,7 +59,7 @@ export function createUserDbPool(bridge: BridgeModule, dataDir: string): UserDbP
         try {
           coldDb.close()
         } catch {
-          // Already closed/broken — dropping the reference is the point.
+          // Already closed/broken: dropping the reference is the point.
         }
         break
       }

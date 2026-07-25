@@ -5,8 +5,8 @@
  * never asserted): ladders come from the shared a4Fold, reputation from the
  * §6b rep fold embedded in it, standing from the fold's ban map, profile
  * fields from personal-lane 'profile' records, devices from cert/revoke
- * events. No React, no DOM, no ambient clock — callers pass `atWts`
- * explicitly — so the whole module runs headless under the wiring suite
+ * events. No React, no DOM, no ambient clock: callers pass `atWts`
+ * explicitly, so the whole module runs headless under the wiring suite
  * (scripts/test-web-accounts-wiring.mjs) exactly as it runs in the browser.
  */
 
@@ -53,7 +53,7 @@ export interface ChainDerived {
   histories: Record<LadderKey, number[]>
 }
 
-/** Witnessed-lane events in height order — the fold's canonical input. */
+/** Witnessed-lane events in height order. The fold's canonical input. */
 function witnessedInOrder(chain: Chain): SignedEvent[] {
   return chain.events.filter((e) => e.body.lane === 'w').sort((a, b) => a.body.height - b.body.height)
 }
@@ -82,7 +82,7 @@ export function foldChainA4(chain: Chain): ChainDerived {
   return { fold: state, histories }
 }
 
-/** b64u(canonicalHash(foldState)) — the REAL fold digest for the chain view. */
+/** b64u(canonicalHash(foldState)). The REAL fold digest for the chain view. */
 export function foldDigestOf(fold: A4FoldState): B64u {
   return toB64u(canonicalHash(fold))
 }
@@ -92,7 +92,7 @@ export function foldDigestOf(fold: A4FoldState): B64u {
 // ---------------------------------------------------------------------------
 
 /** UiLadder rows for the four shipped categories. `atWts` is the caller's
- * evaluation instant (ban rendering) — never read from a clock here. */
+ * evaluation instant (ban rendering). Never read from a clock here. */
 export function deriveLadders(d: ChainDerived, atWts: number): UiLadder[] {
   return LADDER_KEYS.map((key) => {
     const id = `${GAME_KIND}:${key}`
@@ -113,7 +113,7 @@ export function deriveLadders(d: ChainDerived, atWts: number): UiLadder[] {
 
 const REP_TIERS = ['Poor', 'Mixed', 'Solid', 'Exemplary'] as const
 
-/** §6b reputation card from the fold's embedded rep state — every row is a
+/** §6b reputation card from the fold's embedded rep state. Every row is a
  * counter the fold actually keeps, phrased as itself (no invented rates). */
 export function deriveReputation(fold: A4FoldState): UiReputation {
   const r = fold.rep
@@ -168,7 +168,7 @@ export interface DerivedProfile {
   lastWitnessedActivityWts: number | null
 }
 
-/** Personal-lane merge order — mirrors chain.ts mergeCompare (ts, key,
+/** Personal-lane merge order: mirrors chain.ts mergeCompare (ts, key,
  * height) so every device derives the same last-write-wins result. */
 function personalInOrder(chain: Chain, type: string): SignedEvent[] {
   return chain.events
@@ -182,7 +182,7 @@ function personalInOrder(chain: Chain, type: string): SignedEvent[] {
 }
 
 /** Fold 'profile' records through the CANONICAL shared fold (A6 review
- * friends-1): social/profile.ts profileView — verifyChain's single LWW merge,
+ * friends-1): social/profile.ts profileView, verifyChain's single LWW merge,
  * including the revoked-key exclusion this file's previous local merge
  * omitted (a chain verifyChain accepts must render the SAME fields every
  * viewer derives). Fail-closed: an unverifiable chain renders the empty
@@ -239,9 +239,9 @@ function summarize(ev: SignedEvent): string {
   const p = ev.body.payload as { [k: string]: unknown }
   switch (ev.body.type) {
     case 'genesis':
-      return 'Account created — params digest pinned'
+      return 'Account created, params digest pinned'
     case 'cert': {
-      const label = typeof p.label === 'string' ? ` — ${p.label}` : ''
+      const label = typeof p.label === 'string' ? `, ${p.label}` : ''
       return p.purpose === 0
         ? `Device ${typeof p.index === 'number' ? p.index : '?'} enrolled (root-signed certificate)${label}`
         : `Key certificate issued${label}`
@@ -255,7 +255,7 @@ function summarize(ev: SignedEvent): string {
     case 'ckpt':
       return `Checkpoint through height ${typeof p.through === 'number' ? p.through : '?'}`
     case 'segment':
-      return `Rated game segment — ${typeof p.result === 'string' ? p.result : 'recorded'} (countersigned, written into both chains)`
+      return `Rated game segment, ${typeof p.result === 'string' ? p.result : 'recorded'} (countersigned, written into both chains)`
     case 'conduct':
       return `Conduct event: ${typeof p.kind === 'string' ? p.kind : 'recorded'}`
     case 'commend':
@@ -300,7 +300,7 @@ export interface OwnIdentityInputs {
 
 /** Compose the UiOwnAccount every hub surface renders, entirely from the
  * chain + the session's identity strings. Deterministic for a given
- * (chain, inputs, atWts) — asserted by the wiring suite. */
+ * (chain, inputs, atWts). Asserted by the wiring suite. */
 export function deriveOwnAccount(
   inp: OwnIdentityInputs,
   chain: Chain,

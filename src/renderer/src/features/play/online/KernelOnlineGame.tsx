@@ -3,7 +3,7 @@
 // promotion UI); this component renders the same online chrome around the
 // registry's own 2D board for the kind that arrived in the start config:
 //
-//   status/actions strip  (OnlineChrome — draw / abort / leave)
+//   status/actions strip  (OnlineChrome: draw / abort / leave)
 //   opponent chip + clock (PlayerChip, host-authoritative interp clocks)
 //   the game's board      (React.lazy(entry.loadRenderer), preload spinner)
 //   user chip + clock
@@ -12,7 +12,7 @@
 //
 // All state comes from the onlineStore snapshot; every action goes through the
 // store singleton. Turn is derived from move-count parity against the spec's
-// players order — exactly the adapter's rule (see gameAdapter.adapterFromSpec).
+// players order: exactly the adapter's rule (see gameAdapter.adapterFromSpec).
 
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type JSX } from 'react'
 import { Flag, FlipVertical2, Loader2 } from 'lucide-react'
@@ -48,7 +48,7 @@ export function KernelOnlineGame({
   const { play } = useSound()
 
   const entry = getGame(state.gameKind as GameKind)
-  // Stable lazy component per kind — remounting on every render would drop the
+  // Stable lazy component per kind: remounting on every render would drop the
   // board's internal state (hover, animations).
   const BoardComp = useMemo(
     () => (entry ? lazy(entry.loadRenderer) : null),
@@ -64,7 +64,7 @@ export function KernelOnlineGame({
   const opponentName = state.opponentName || 'Opponent'
 
   // Whose move is it? spec.turn when the game defines one (go: handicap makes
-  // WHITE open), else parity against the spec's move order — exactly the
+  // WHITE open), else parity against the spec's move order. Exactly the
   // adapter's rule, so board glow and input gating always agree with the store.
   const players = entry?.spec.players ?? (['white', 'black'] as const)
   const turn: Color = entry?.spec.turn ? entry.spec.turn(state.boardState) : players[state.plyCount % 2]
@@ -251,7 +251,7 @@ export function KernelOnlineGame({
 }
 
 /** Suspense fallback while the game's board module (and any WASM it pulls)
- *  loads — the "preload spinner" of the join flow. */
+ *  loads: the "preload spinner" of the join flow. */
 function KernelBoardLoading({ title }: { title: string }): JSX.Element {
   return (
     <div className="kernel-board-loading" role="status">

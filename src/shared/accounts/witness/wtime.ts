@@ -1,4 +1,4 @@
-// A2 fabric-core — witnessed time (spec §4). A witnessed timestamp for an
+// A2 fabric-core: witnessed time (spec §4). A witnessed timestamp for an
 // event/record is the MEDIAN of the attesting nodes' independently observed
 // clock readings, valid iff every SURVIVING attester sits within timeWindowMs
 // of that median; claims bearing on account age, ban expiry, or staleness
@@ -6,7 +6,7 @@
 // from the subject (a self-adjacent witness cannot mint accepted time).
 //
 // Pure + deterministic: cjson-v1 is integer-only, so the median of an even count
-// FLOORS the mean of the two central order statistics — no float ever enters a
+// FLOORS the mean of the two central order statistics. No float ever enters a
 // verified value. Platform-neutral: no `node:` imports, no DOM globals.
 
 import type { NodeId, WitnessedTime } from './types'
@@ -39,13 +39,13 @@ export interface WitnessedTimeParams {
 export interface WitnessedTimeOpts {
   /** True iff the attester is entanglement-distant from the subject (§4). When
    * omitted every survivor counts toward diversity (a plain timestamp needs no
-   * age/ban diversity — only the caller that reads diversityOk enforces it). */
+   * age/ban diversity. Only the caller that reads diversityOk enforces it). */
   distant?: (w: NodeId) => boolean
 }
 
 /**
  * Compute the witnessed timestamp of a set of clock samples:
- *  1. dedup by nodeId (one node contributes one reading — first occurrence wins),
+ *  1. dedup by nodeId (one node contributes one reading: first occurrence wins),
  *  2. take the integer median over the deduped set (the anchor),
  *  3. SURVIVORS = deduped samples within ±timeWindowMs of that median (out-of-
  *     window attesters invalidate only themselves; they leave the median, which

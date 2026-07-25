@@ -7,7 +7,7 @@ import {
   saveCustomVariant
 } from '../db/customVariants.repo'
 
-// Variant Lab IPC — persistence only. Rules validation lives in the renderer
+// Variant Lab IPC: persistence only. Rules validation lives in the renderer
 // (games/customVariants.ts runs the ini through ffish WASM before save), so
 // main just enforces shape/limits and stores the definition. Board limits
 // mirror the fairy-sf largeboard build (12 files × 10 ranks, min 4).

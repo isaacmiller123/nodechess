@@ -3,11 +3,11 @@
 // PURE module (no React, no window): scripts/test-replay-pipe.mjs bundles it
 // for bare node together with the game registry, so keep renderer-only imports
 // out. Two storage formats parse into one ParsedArchive:
-//   - the JSON envelope (src/shared/gameArchive.ts — every non-chess save
+//   - the JSON envelope (src/shared/gameArchive.ts: every non-chess save
 //     since the archive contract landed), and
 //   - the LEGACY generic text older online games saved (PGN-style tags incl.
-//     [Variant "<kind>"] + wire-codec moves joined by spaces, result-terminated
-//     — onlineStore.genericArchive).
+//     [Variant "<kind>"] + wire-codec moves joined by spaces, result-terminated.
+//     onlineStore.genericArchive).
 // buildReplay() then replays the moves through GameSpec.play into one state
 // per ply, validating every move and collecting display notation as it goes.
 
@@ -37,7 +37,7 @@ const RESULT_TOKENS = ['1-0', '0-1', '1/2-1/2', '*']
 const TAG_RE = /^\[([A-Za-z][A-Za-z0-9_]*)\s+"([^"]*)"\]\s*$/
 
 /** Parse the legacy generic archive text (tags + one moves line). Null when
- *  the text has no [Variant] tag — that shape is chess PGN, not a kernel game. */
+ *  the text has no [Variant] tag. That shape is chess PGN, not a kernel game. */
 function parseLegacyArchive(text: string): ParsedArchive | null {
   const lines = text.split(/\r?\n/)
   const tags: Record<string, string> = {}
@@ -67,7 +67,7 @@ function parseLegacyArchive(text: string): ParsedArchive | null {
 
 /**
  * Parse a game row's `pgn` column into replayable data. `fallbackKind` is the
- * row's game_kind column — legacy rows are stamped there too, so a missing
+ * row's game_kind column: legacy rows are stamped there too, so a missing
  * [Variant] tag still resolves. Returns null for chess PGN (the Library routes
  * those to the real Analysis view) and for unparseable text.
  */
@@ -94,7 +94,7 @@ export function parseReplayArchive(pgnText: string, fallbackKind?: string): Pars
   const legacy = parseLegacyArchive(pgnText)
   if (legacy) return legacy
   // Tag text without a Variant tag: only replayable if the row itself says
-  // it's a non-chess kind (defensive — no known writer produces this).
+  // it's a non-chess kind (defensive: no known writer produces this).
   if (fallbackKind && fallbackKind !== 'chess') {
     const retagged = parseLegacyArchive(`[Variant "${fallbackKind}"]\n${pgnText}`)
     if (retagged) return retagged
@@ -102,7 +102,7 @@ export function parseReplayArchive(pgnText: string, fallbackKind?: string): Pars
   return null
 }
 
-/** Notation for one move about to be played from `s` — the kernel notate
+/** Notation for one move about to be played from `s`. The kernel notate
  *  contract with the codec string as the universal fallback. */
 export function notationFor<S>(spec: GameSpec<S>, s: S, move: string): string {
   if (!spec.notate) return move
@@ -120,7 +120,7 @@ export interface ReplayLine<S = unknown> {
   moves: string[]
   /** Display notation aligned with `moves`. */
   notated: string[]
-  /** True when a move failed to replay (corrupt/foreign archive) — states/
+  /** True when a move failed to replay (corrupt/foreign archive): states/
    *  moves/notated stop at the last legal position. */
   truncated: boolean
 }
@@ -154,7 +154,7 @@ export function buildReplay<S>(spec: GameSpec<S>, parsed: ParsedArchive): Replay
   return { states, moves, notated, truncated }
 }
 
-/** Side to move in `s` after `plies` moves — the kernel turn contract
+/** Side to move in `s` after `plies` moves. The kernel turn contract
  *  (options-aware via spec.turn: go handicap makes white open) with strict
  *  players-order alternation as the fallback. */
 export function turnAt<S>(spec: GameSpec<S>, s: S, plies: number): PlayerColor {

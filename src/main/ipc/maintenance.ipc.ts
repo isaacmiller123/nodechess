@@ -7,11 +7,11 @@ import { getAppDb } from '../db/database'
 // surface (and future ops like re-index / vacuum) has one obvious home.
 //
 // app:resetProgress wipes locally stored progress per scope:
-//   school  — chapter/lesson/test progress, concept mastery + SRS, study-day
+//   school:   chapter/lesson/test progress, concept mastery + SRS, study-day
 //             streak, and placement (games deleted, school_placement re-locked).
-//   puzzles — attempt history, Rush runs, Daily results, puzzle SRS cards, and
+//   puzzles: attempt history, Rush runs, Daily results, puzzle SRS cards, and
 //             the public puzzle rating (re-seeded).
-//   games   — saved games, the activity feed (progress_event), cached game
+//   games:    saved games, the activity feed (progress_event), cached game
 //             reviews, and the public vs-bot rating (re-seeded).
 // Each scope runs in its own transaction so one failing scope never leaves a
 // half-wiped sibling; a repeat call is a harmless no-op (idempotent deletes).
@@ -24,7 +24,7 @@ const resetProgressSchema = z
 
 type ResetScope = z.infer<typeof resetProgressSchema>['scopes'][number]
 
-/** Glicko-2 seed row — MUST match the migration seed in db/database.ts. */
+/** Glicko-2 seed row MUST match the migration seed in db/database.ts. */
 const GLICKO_SEED = { rating: 1200, rd: 350, vol: 0.06 } as const
 
 /** True when `name` exists as a table. Needed for review.ts's lazily created
@@ -49,7 +49,7 @@ function reseedRating(db: DatabaseSync, kind: 'puzzle' | 'vs-bot', now: number):
 }
 
 /** School: every teaching artifact + placement back to the locked first-run
- *  state (placed=0, estimate cleared) — mirrors placement.repo.resetPlacement
+ *  state (placed=0, estimate cleared): mirrors placement.repo.resetPlacement
  *  but wipes ALL progress rows, not just auto_completed placement artifacts. */
 function wipeSchool(db: DatabaseSync, now: number): void {
   db.exec(`
@@ -86,7 +86,7 @@ function wipeGames(db: DatabaseSync, now: number): void {
     DELETE FROM game;
     DELETE FROM progress_event;
   `)
-  // Review cache tables are created lazily by review.ts — guard their absence.
+  // Review cache tables are created lazily by review.ts. Guard their absence.
   if (tableExists(db, 'game_review')) db.exec('DELETE FROM game_review')
   if (tableExists(db, 'move_eval')) db.exec('DELETE FROM move_eval')
   reseedRating(db, 'vs-bot', now)

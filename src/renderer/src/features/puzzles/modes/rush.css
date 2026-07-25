@@ -1,10 +1,10 @@
-/* Puzzle Rush / Storm mode — slice B styles. Owned by the rush builder.
+/* Puzzle Rush / Storm mode: slice B styles. Owned by the rush builder.
    Design tokens only (var(--…)); mirrors the look of puzzles.css / the app
    shell. Reuses shared classes (.board-area .board-stage .board-wrap .panel
    .btn .btn.ghost .muted .small .puzzle-skeleton). Does NOT edit puzzles.css. */
 
 /* ============================================================
-   Lobby — variant picker + (post-run) result card + stats.
+   Lobby: variant picker + (post-run) result card + stats.
    ============================================================ */
 .rush-lobby {
   display: flex;
@@ -165,7 +165,7 @@
 }
 
 /* ============================================================
-   Stats — leaderboard + history side by side.
+   Stats: leaderboard + history side by side.
    ============================================================ */
 .rush-stats {
   display: grid;
@@ -400,7 +400,7 @@
 }
 
 /* ============================================================
-   Live run — board + HUD (mirrors .puzzles-view grid).
+   Live run, board + HUD (mirrors .puzzles-view grid).
    ============================================================ */
 .rush-play {
   display: grid;

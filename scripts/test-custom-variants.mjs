@@ -1,4 +1,4 @@
-// Headless test for the Variant Lab — custom-variant kernel module
+// Headless test for the Variant Lab: custom-variant kernel module
 // (src/renderer/src/games/customVariants.ts), the registry dynamic seam, and
 // the editor's pure ini generator (features/games/editor/{model,templates}.ts).
 //
@@ -12,7 +12,7 @@
 // friendly errors for invalid ini, dynamic registry register/replace/
 // unregister, model<->ini round-trips and the kernel contract.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -193,7 +193,7 @@ try {
   ok(loneMoves.includes('d4d8') && loneMoves.includes('d4h8'), 'amazon: queen slides are legal too')
   // The fool's mate REFUTATION is the signature Q+N proof: after ...Ah4+ the
   // only legal reply is white's own amazon knight-JUMPING from d1 to f2 to
-  // block — a move no queen could make.
+  // block. A move no queen could make.
   let ag = asp.init()
   for (const m of ['f2f3', 'e7e5', 'g2g4', 'd8h4']) {
     const next = asp.play(ag, m)
@@ -227,7 +227,7 @@ try {
   ok(ng !== null, 'nuke: exd5 plays')
   ok(
     ng.fen.startsWith('rnbqkbnr/ppp1pppp/8/8/8/8/PPPP1PPP/RNBQKBNR'),
-    'nuke: BOTH pawns vanish — the capture exploded'
+    'nuke: BOTH pawns vanish. The capture exploded'
   )
 
   // ---- setup: placement drops -----------------------------------------------------
@@ -290,7 +290,7 @@ try {
   }
   ok(fenErr instanceof Error && /invalid/i.test(fenErr.message), 'init with a bad FEN throws a clear error')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

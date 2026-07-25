@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// prep-chess3d.mjs — build the photoreal chess 3D asset pack from Poly Haven's
+// prep-chess3d.mjs: build the photoreal chess 3D asset pack from Poly Haven's
 // "Chess Set" (CC0, by Riley Queen; https://polyhaven.com/a/chess_set).
 //
 // Downloads the 2k glTF release (API: https://api.polyhaven.com/files/chess_set),
 // extracts ONE representative geometry per piece type × color (+ the board) and
-// re-exports each as a compact geometry-only GLB (no embedded textures — the
+// re-exports each as a compact geometry-only GLB (no embedded textures; the
 // three PBR texture sets are shared across pieces, so they ship once as JPEGs).
 // Output → resources/games-art/chess3d/:
 //   king_white.glb … pawn_black.glb (12), board.glb,
 //   textures/{pieces_white,pieces_black,board}_{diff,normal,arm}.jpg,
 //   manifest.json  { pieces→file/tris/bytes, squareSize, boardTopY, totalMB, license }
 //   LICENSE.txt (CC0-1.0)
-// Texture mix: diffuse 2k, normal+ARM 1k — measured ≤15MB total pack budget.
+// Texture mix: diffuse 2k, normal+ARM 1k. Measured ≤15MB total pack budget.
 // ARM = glTF ORM packing (R=AO, G=roughness, B=metalness).
 //
 // Loader counterpart: src/renderer/src/games/three/chessSet.ts (reads manifest,
@@ -197,7 +197,7 @@ function buildPieceGlb(gltf, bin, node, pieceId) {
     asset: {
       version: '2.0',
       generator: 'nodechess prep-chess3d',
-      copyright: 'Poly Haven "Chess Set" by Riley Queen — CC0-1.0 (polyhaven.com/a/chess_set)'
+      copyright: 'Poly Haven "Chess Set" by Riley Queen: CC0-1.0 (polyhaven.com/a/chess_set)'
     },
     scene: 0,
     scenes: [{ nodes: [0] }],

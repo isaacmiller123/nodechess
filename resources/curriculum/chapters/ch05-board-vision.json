@@ -2,13 +2,13 @@
  "id": "ch05-board-vision",
  "band": "05",
  "order": 5,
- "title": "Board Vision — Is It Defended?",
+ "title": "Board Vision: Is It Defended?",
  "subtitle": "See the whole board, and count. Scan for checks, captures and threats, then count attackers against defenders before you take.",
  "estMinutes": 32,
  "concepts": [
   {
    "id": "the-scan",
-   "name": "The Scan — Checks, Captures, Threats",
+   "name": "The Scan: Checks, Captures, Threats",
    "short": "Before every move, sweep the whole board for both sides: what checks are there, what captures, what threats? This one habit prevents most blunders and finds most wins."
   },
   {
@@ -34,7 +34,7 @@
   {
    "id": "safe-square",
    "name": "Safe Squares",
-   "short": "A square is safe for your piece if the enemy cannot win it there — not attacked, or attacked but defended enough. Put your pieces where they cannot simply be taken."
+   "short": "A square is safe for your piece if the enemy cannot win it there. Not attacked, or attacked but defended enough. Put your pieces where they cannot simply be taken."
   },
   {
    "id": "safety-checklist",
@@ -45,13 +45,13 @@
  "lessons": [
   {
    "id": "l1-the-scan",
-   "title": "Scan the Board — Checks, Captures, Threats",
+   "title": "Scan the Board: Checks, Captures, Threats",
    "kind": "warmup",
-   "summary": "The move-by-move habit that prevents blunders and finds wins: sweep for checks, captures and threats — for both sides.",
+   "summary": "The move-by-move habit that prevents blunders and finds wins: sweep for checks, captures and threats, for both sides.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — a scan finds the free piece",
+     "title": "Warm-up: a scan finds the free piece",
      "intro": {
       "text": "You can already take a free piece and avoid hanging your own. Now we make seeing systematic. Begin by warming the eye: in each position one enemy piece is loose, a single scan reveals it. Find it and take it."
      },
@@ -73,7 +73,7 @@
        "conceptId": "the-scan",
        "coach": {
         "conceptId": "the-scan",
-        "text": "Most games below master level are decided not by deep plans but by who overlooks less. The cure is a habit: before every move, run the same three questions across the whole board — what checks are there, what captures, what threats — for yourself, then again for your opponent. Look at this position, busy as it is. Captures? The pawns on e4 and e5 lock horns in the centre, my bishops eye their knights on f3 and f6, but trace each contact and nothing is actually winnable — every attacked man is defended just enough. The answer is 'nothing free', and that is a real answer: you looked, found no gift, and may move on with a clear conscience. It looks complicated; the scan makes it simple. Now we take the three questions one at a time, on bare boards, so the method is unmistakable.",
+        "text": "Most games below master level are decided not by deep plans but by who overlooks less. The cure is a habit: before every move, run the same three questions across the whole board (what checks are there, what captures, what threats) for yourself, then again for your opponent. Look at this position, busy as it is. Captures? The pawns on e4 and e5 lock horns in the centre, my bishops eye their knights on f3 and f6, but trace each contact and nothing is actually winnable. Every attacked man is defended just enough. The answer is 'nothing free', and that is a real answer: you looked, found no gift, and may move on with a clear conscience. It looks complicated; the scan makes it simple. Now we take the three questions one at a time, on bare boards, so the method is unmistakable.",
         "annotations": [
          {
           "kind": "arrow",
@@ -102,7 +102,7 @@
        "conceptId": "the-scan",
        "coach": {
         "conceptId": "the-scan",
-        "text": "Question one — captures. Sweep both armies and ask what can be taken. Here Black has just developed; nothing is hanging on either side. An empty answer is still an answer. You looked, you found nothing free, and now you may move on with a clear conscience. The blunder is never looking at all.",
+        "text": "Question one: captures. Sweep both armies and ask what can be taken. Here Black has just developed; nothing is hanging on either side. An empty answer is still an answer. You looked, you found nothing free, and now you may move on with a clear conscience. The blunder is never looking at all.",
         "annotations": [
          {
           "kind": "circle",
@@ -122,7 +122,7 @@
        "conceptId": "the-scan",
        "coach": {
         "conceptId": "the-scan",
-        "text": "Question two — threats. A threat is a capture or a check that is not there yet but will be next move. My knight on f3 attacks the e5-pawn — but the pawn is defended by the knight on c6, so it is not yet a real win. Threats are how you read your opponent's intentions. Ask of every enemy move: what does it now attack that it did not before?",
+        "text": "Question two: threats. A threat is a capture or a check that is not there yet but will be next move. My knight on f3 attacks the e5-pawn, but the pawn is defended by the knight on c6, so it is not yet a real win. Threats are how you read your opponent's intentions. Ask of every enemy move: what does it now attack that it did not before?",
         "annotations": [
          {
           "kind": "circle",
@@ -151,7 +151,7 @@
        "conceptId": "both-sides",
        "coach": {
         "conceptId": "both-sides",
-        "text": "Question three — checks, and this is where you must wear your opponent's eyes. White has flung the g- and f-pawns forward and ripped open the diagonal to his own king. Black to move: scan the checks. Qh4 is check, and the king cannot escape it — mate. White never asked what Black could do in reply. Always finish your scan from the other side of the board.",
+        "text": "Question three: checks, and this is where you must wear your opponent's eyes. White has flung the g- and f-pawns forward and ripped open the diagonal to his own king. Black to move: scan the checks. Qh4 is check, and the king cannot escape it, mate. White never asked what Black could do in reply. Always finish your scan from the other side of the board.",
         "annotations": [
          {
           "kind": "circle",
@@ -184,7 +184,7 @@
        "conceptId": "both-sides",
        "coach": {
         "conceptId": "both-sides",
-        "text": "You saw it; now play it. White has opened the e1-h4 diagonal with two careless pawn moves. You are Black. Scan the checks first — one of them ends the game on the spot. Deliver it.",
+        "text": "You saw it; now play it. White has opened the e1-h4 diagonal with two careless pawn moves. You are Black. Scan the checks first. One of them ends the game on the spot. Deliver it.",
         "annotations": [
          {
           "kind": "circle",
@@ -203,7 +203,7 @@
        ],
        "successLine": {
         "conceptId": "both-sides",
-        "text": "Qh4 — mate. The fool's mate, the fastest in chess, and it exists only because White never checked what you could do. Whenever an opponent throws pawns forward near a king, scan the checks at once. The game can end in two moves.",
+        "text": "Qh4: mate. The fool's mate, the fastest in chess, and it exists only because White never checked what you could do. Whenever an opponent throws pawns forward near a king, scan the checks at once. The game can end in two moves.",
         "annotations": [
          {
           "kind": "circle",
@@ -221,7 +221,7 @@
        },
        "retryLine": {
         "conceptId": "the-scan",
-        "text": "No — look only at checks, and look at the diagonal White just opened to his own king. Your queen on d8 can reach h4 in one move. What happens when she lands there?"
+        "text": "No: look only at checks, and look at the diagonal White just opened to his own king. Your queen on d8 can reach h4 in one move. What happens when she lands there?"
        }
       },
       {
@@ -248,7 +248,7 @@
        ],
        "successLine": {
         "conceptId": "the-scan",
-        "text": "Nxc5 — a free bishop. It stood undefended and your knight's leap reached it, so nothing recaptures. That is exactly what the scan hunts: an enemy piece in your range with no guard. See the contact, confirm it is loose, take it.",
+        "text": "Nxc5: a free bishop. It stood undefended and your knight's leap reached it, so nothing recaptures. That is exactly what the scan hunts: an enemy piece in your range with no guard. See the contact, confirm it is loose, take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -286,7 +286,7 @@
        ],
        "successLine": {
         "conceptId": "the-scan",
-        "text": "Qxd7. A whole rook for nothing — the king was too far away to defend it. This is what the scan hunts: a loose piece on an open line. Train your eye to see the undefended man before anything else.",
+        "text": "Qxd7. A whole rook for nothing. The king was too far away to defend it. This is what the scan hunts: a loose piece on an open line. Train your eye to see the undefended man before anything else.",
         "annotations": [
          {
           "kind": "circle",
@@ -303,7 +303,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the scan finds the check",
+     "title": "Cool-down: the scan finds the check",
      "intro": {
       "text": "Close on the other half of the scan: checks. In each position your sweep of the checking moves turns up a mate in one. Look at every check, find the one the king cannot answer, and play it."
      },
@@ -326,9 +326,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the simplest count",
+     "title": "Warm-up: the simplest count",
      "intro": {
-      "text": "Every count begins with the easiest case: one attacker, no defender. Look at the marked enemy piece, count its real defenders — there are none — and your single attacker wins it. One against zero. Warm up on three of these base-case counts before we add a defender and the arithmetic begins in earnest."
+      "text": "Every count begins with the easiest case: one attacker, no defender. Look at the marked enemy piece, count its real defenders (there are none) and your single attacker wins it. One against zero. Warm up on three of these base-case counts before we add a defender and the arithmetic begins in earnest."
      },
      "puzzle": {
       "themes": [
@@ -377,7 +377,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "Here is the skill every tactic rests on. The black pawn on d5 is contested. Count your attackers: two — the pawns on c4 and e4 both strike d5. Count their defenders: one — only the e6-pawn guards it. Two against one. When you attack a square more times than it is defended, and you lose nothing larger along the way, the capture wins material. Two beats one. Take it.",
+        "text": "Here is the skill every tactic rests on. The black pawn on d5 is contested. Count your attackers: two. The pawns on c4 and e4 both strike d5. Count their defenders: one. Only the e6-pawn guards it. Two against one. When you attack a square more times than it is defended, and you lose nothing larger along the way, the capture wins material. Two beats one. Take it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -412,7 +412,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "Watch the sequence play out, because the count is really about the last man standing. White took: c4xd5. Black recaptures with the only defender, e6xd5. Now White takes again, e4xd5 — and Black has nothing left to recapture with. White has won a pawn for nothing. Two attackers spent two captures; one defender could answer only once. The side with more attackers wins the square.",
+        "text": "Watch the sequence play out, because the count is really about the last man standing. White took: c4xd5. Black recaptures with the only defender, e6xd5. Now White takes again, e4xd5, and Black has nothing left to recapture with. White has won a pawn for nothing. Two attackers spent two captures; one defender could answer only once. The side with more attackers wins the square.",
         "annotations": [
          {
           "kind": "circle",
@@ -428,7 +428,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "Now add one defender and everything changes. Same two attackers on d5, c4 and e4 — but now two defenders, the pawns on c6 and e6. Two against two. Play it out: cxd5, cxd5, exd5, exd5 — and when the dust clears each side has given a pawn. You won nothing and spent effort doing it. When attackers only equal defenders, taking gains you nothing; leave it be unless you have a reason.",
+        "text": "Now add one defender and everything changes. Same two attackers on d5, c4 and e4, but now two defenders, the pawns on c6 and e6. Two against two. Play it out: cxd5, cxd5, exd5, exd5, and when the dust clears each side has given a pawn. You won nothing and spent effort doing it. When attackers only equal defenders, taking gains you nothing; leave it be unless you have a reason.",
         "annotations": [
          {
           "kind": "highlight",
@@ -468,7 +468,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "The count is about numbers — but never forget the values, which we sharpen next. Look at the d4-pawn: White attacks it three times, Black defends it twice. Here is a sight you must train: the white men are stacked on the d-file — rook on d1 behind the queen on d2 behind the rook on d3 — and all three strike d4 down the file, each looking past the man in front of it. The same goes for Black's queen and rook on d7 and d8. Pieces lined up on a file or diagonal all count, even the ones in the rear. Three against two, so the pawn falls — take with the cheaper men first and you win it cleanly.",
+        "text": "The count is about numbers, but never forget the values, which we sharpen next. Look at the d4-pawn: White attacks it three times, Black defends it twice. Here is a sight you must train: the white men are stacked on the d-file (rook on d1 behind the queen on d2 behind the rook on d3) and all three strike d4 down the file, each looking past the man in front of it. The same goes for Black's queen and rook on d7 and d8. Pieces lined up on a file or diagonal all count, even the ones in the rear. Three against two, so the pawn falls. Take with the cheaper men first and you win it cleanly.",
         "annotations": [
          {
           "kind": "highlight",
@@ -508,7 +508,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "Your turn to count. White to move. The black pawn on d5 — how many of your men attack it, how many of theirs defend it? Do the arithmetic before you touch a piece, then win the pawn. Lead with a pawn, of course.",
+        "text": "Your turn to count. White to move. The black pawn on d5: how many of your men attack it, how many of theirs defend it? Do the arithmetic before you touch a piece, then win the pawn. Lead with a pawn, of course.",
         "annotations": [
          {
           "kind": "highlight",
@@ -523,7 +523,7 @@
        ],
        "successLine": {
         "conceptId": "counting",
-        "text": "Two attackers, one defender — and you took it. After cxd5 exd5, the second pawn recaptures, exd5, and Black has no answer. A clean pawn won, purely by counting. This arithmetic decides a thousand exchanges; do it every time a square is contested.",
+        "text": "Two attackers, one defender, and you took it. After cxd5 exd5, the second pawn recaptures, exd5, and Black has no answer. A clean pawn won, purely by counting. This arithmetic decides a thousand exchanges; do it every time a square is contested.",
         "annotations": [
          {
           "kind": "circle",
@@ -534,7 +534,7 @@
        },
        "retryLine": {
         "conceptId": "counting",
-        "text": "Count first. The d5-pawn is attacked twice — by c4 and e4 — and defended once, by e6. Two beats one, so it falls. Begin the capture with a pawn: cxd5."
+        "text": "Count first. The d5-pawn is attacked twice (by c4 and e4) and defended once, by e6. Two beats one, so it falls. Begin the capture with a pawn: cxd5."
        }
       },
       {
@@ -542,7 +542,7 @@
        "conceptId": "counting",
        "coach": {
         "conceptId": "counting",
-        "text": "A heavier count, on a new board. White to move. Stack your eyes down the e-file: rook on e3, queen on e2, rook on e1 — all three strike the e4-pawn, the rear pieces counting through the front. Against them, Black's queen on e7 and rook on e8 defend twice. Three against two — but only if you spend your pieces in the right order. Start with the least valuable attacker. Take the pawn.",
+        "text": "A heavier count, on a new board. White to move. Stack your eyes down the e-file: rook on e3, queen on e2, rook on e1. All three strike the e4-pawn, the rear pieces counting through the front. Against them, Black's queen on e7 and rook on e8 defend twice. Three against two, but only if you spend your pieces in the right order. Start with the least valuable attacker. Take the pawn.",
         "annotations": [
          {
           "kind": "highlight",
@@ -563,7 +563,7 @@
        ],
        "successLine": {
         "conceptId": "counting",
-        "text": "Rxe4, leading with the front rook, not the queen behind it. Three attackers against two defenders means the last man on the square is yours — and because the cheap rook went first, you never lose more than you must. Count the heads down the file, then watch the order. We drill that order next.",
+        "text": "Rxe4, leading with the front rook, not the queen behind it. Three attackers against two defenders means the last man on the square is yours, and because the cheap rook went first, you never lose more than you must. Count the heads down the file, then watch the order. We drill that order next.",
         "annotations": [
          {
           "kind": "circle",
@@ -574,16 +574,16 @@
        },
        "retryLine": {
         "conceptId": "capture-order",
-        "text": "The count is three against two, so the pawn falls — but do not reach over the rook with your queen. The front rook on e3 is the cheapest man that strikes e4: take with it first."
+        "text": "The count is three against two, so the pawn falls, but do not reach over the rook with your queen. The front rook on e3 is the cheapest man that strikes e4: take with it first."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — count the defenders",
+     "title": "Cool-down: count the defenders",
      "intro": {
-      "text": "Now you count for yourself, and the only question is the one in this lesson's title: is it defended? In each position an enemy piece sits in your range and looks protected — but count its real defenders and you find there are not enough. One clean capture wins it. Count first, then take."
+      "text": "Now you count for yourself, and the only question is the one in this lesson's title: is it defended? In each position an enemy piece sits in your range and looks protected, but count its real defenders and you find there are not enough. One clean capture wins it. Count first, then take."
      },
      "puzzle": {
       "themes": [
@@ -636,15 +636,15 @@
   },
   {
    "id": "l3-capture-order",
-   "title": "Capture Order — Least Valuable First",
+   "title": "Capture Order, Least Valuable First",
    "kind": "positional",
    "summary": "When several pieces can take on one square, lead with the cheapest. The textbook error is taking first with the queen into a defended square.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — a first taste of order",
+     "title": "Warm-up: a first taste of order",
      "intro": {
-      "text": "A short preview of the very thing this lesson drills. In each position the marked enemy piece on e5 is defended once, and two of your men attack it — a cheap pawn and a big piece. The count wins it; the order keeps the profit. Lead with the pawn, and after the recapture your big piece collects. Two of these now; we drill it to the bone in the cool-down."
+      "text": "A short preview of the very thing this lesson drills. In each position the marked enemy piece on e5 is defended once, and two of your men attack it, a cheap pawn and a big piece. The count wins it; the order keeps the profit. Lead with the pawn, and after the recapture your big piece collects. Two of these now; we drill it to the bone in the cool-down."
      },
      "puzzle": {
       "themes": [
@@ -684,7 +684,7 @@
        "conceptId": "capture-order",
        "coach": {
         "conceptId": "capture-order",
-        "text": "The count can favour you and you can still throw it away by capturing in the wrong order. The d5-pawn is attacked twice — by the e4-pawn and the queen on d1 — and defended once, by the c6-pawn. Two against one: it should fall. But the order is everything. Lead with the pawn, exd5, and after cxd5 you take again with the queen, Qxd5, winning a pawn. Lead with the queen and disaster follows.",
+        "text": "The count can favour you and you can still throw it away by capturing in the wrong order. The d5-pawn is attacked twice (by the e4-pawn and the queen on d1) and defended once, by the c6-pawn. Two against one: it should fall. But the order is everything. Lead with the pawn, exd5, and after cxd5 you take again with the queen, Qxd5, winning a pawn. Lead with the queen and disaster follows.",
         "annotations": [
          {
           "kind": "highlight",
@@ -720,7 +720,7 @@
        "conceptId": "capture-order",
        "coach": {
         "conceptId": "capture-order",
-        "text": "Here is the catastrophe. White led with the queen — Qxd5?? — and now it is Black's move. The c6-pawn simply takes her: cxd5. White has given a nine-point queen to win a one-point pawn. The count was winning; the order ruined it. A big piece must never be the first to enter a defended square.",
+        "text": "Here is the catastrophe. White led with the queen, Qxd5??, and now it is Black's move. The c6-pawn simply takes her: cxd5. White has given a nine-point queen to win a one-point pawn. The count was winning; the order ruined it. A big piece must never be the first to enter a defended square.",
         "annotations": [
          {
           "kind": "circle",
@@ -743,7 +743,7 @@
        "conceptId": "capture-order",
        "coach": {
         "conceptId": "capture-order",
-        "text": "The rule in its pure form. Three of your pieces strike the black rook on d5 — the bishop on g2 up the diagonal, the rook on d1 up the file, the queen on a5 along the rank — and the c6-pawn defends it. The count is three against one, so the rook falls; the only question is which piece takes. Lead with the cheapest, the bishop: Bxd5, and after cxd5 you have given a three-point bishop for a five-point rook — the exchange won, and the d5-pawn drops next too. Lead with the queen and it is a catastrophe: Qxd5 cxd5 throws a nine-point queen at a five-point rook. Always ask not only 'can I take?' but 'with which piece?'",
+        "text": "The rule in its pure form. Three of your pieces strike the black rook on d5 (the bishop on g2 up the diagonal, the rook on d1 up the file, the queen on a5 along the rank) and the c6-pawn defends it. The count is three against one, so the rook falls; the only question is which piece takes. Lead with the cheapest, the bishop: Bxd5, and after cxd5 you have given a three-point bishop for a five-point rook. The exchange won, and the d5-pawn drops next too. Lead with the queen and it is a catastrophe: Qxd5 cxd5 throws a nine-point queen at a five-point rook. Always ask not only 'can I take?' but 'with which piece?'",
         "annotations": [
          {
           "kind": "highlight",
@@ -791,7 +791,7 @@
        "conceptId": "capture-order",
        "coach": {
         "conceptId": "capture-order",
-        "text": "White to move. The d5-pawn is attacked twice, defended once, so it falls — but only if you lead correctly. One of your two attackers is a pawn and one is the queen. Begin the capture with the right one.",
+        "text": "White to move. The d5-pawn is attacked twice, defended once, so it falls, but only if you lead correctly. One of your two attackers is a pawn and one is the queen. Begin the capture with the right one.",
         "annotations": [
          {
           "kind": "highlight",
@@ -805,7 +805,7 @@
        ],
        "successLine": {
         "conceptId": "capture-order",
-        "text": "exd5 — the pawn first. Now if Black recaptures cxd5, your queen takes the pawn on d5 and you are a pawn to the good, queen safe. Had you played Qxd5 first, the c6-pawn would have won your queen. Cheapest man leads. Always.",
+        "text": "exd5: the pawn first. Now if Black recaptures cxd5, your queen takes the pawn on d5 and you are a pawn to the good, queen safe. Had you played Qxd5 first, the c6-pawn would have won your queen. Cheapest man leads. Always.",
         "annotations": [
          {
           "kind": "circle",
@@ -816,7 +816,7 @@
        },
        "retryLine": {
         "conceptId": "capture-order",
-        "text": "Not the queen — leading with her walks into cxd5 and you lose her for a pawn. Take first with the cheapest attacker, the e4-pawn: exd5."
+        "text": "Not the queen: leading with her walks into cxd5 and you lose her for a pawn. Take first with the cheapest attacker, the e4-pawn: exd5."
        }
       },
       {
@@ -824,7 +824,7 @@
        "conceptId": "capture-order",
        "coach": {
         "conceptId": "capture-order",
-        "text": "A fresh board, the same question. White to move. Bishop on b2, rook on e1 and queen on h2 all bear on the black rook on e5, and the d6-pawn defends it. You will win the exchange — but spend the cheapest piece to do it. Capture the rook with the right man.",
+        "text": "A fresh board, the same question. White to move. Bishop on b2, rook on e1 and queen on h2 all bear on the black rook on e5, and the d6-pawn defends it. You will win the exchange, but spend the cheapest piece to do it. Capture the rook with the right man.",
         "annotations": [
          {
           "kind": "highlight",
@@ -844,7 +844,7 @@
        ],
        "successLine": {
         "conceptId": "capture-order",
-        "text": "Bxe5 — the bishop, your cheapest attacker. Now dxe5 recaptures, and you have given a three-point bishop for a five-point rook: the exchange won, and your rook or queen sweeps up the e5-pawn besides. Had you led with the queen, dxe5 would have won her for a rook. The cheapest capturer keeps the profit.",
+        "text": "Bxe5: the bishop, your cheapest attacker. Now dxe5 recaptures, and you have given a three-point bishop for a five-point rook: the exchange won, and your rook or queen sweeps up the e5-pawn besides. Had you led with the queen, dxe5 would have won her for a rook. The cheapest capturer keeps the profit.",
         "annotations": [
          {
           "kind": "circle",
@@ -855,16 +855,16 @@
        },
        "retryLine": {
         "conceptId": "capture-order",
-        "text": "All three of your pieces can take, but you want the cheapest to do it — the d6-pawn will recapture whatever lands on e5. The bishop on b2 is worth less than the rook or queen, so lead with it: Bxe5."
+        "text": "All three of your pieces can take, but you want the cheapest to do it. The d6-pawn will recapture whatever lands on e5. The bishop on b2 is worth less than the rook or queen, so lead with it: Bxe5."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the right capture wins material",
+     "title": "Cool-down: the right capture wins material",
      "intro": {
-      "text": "The count favours you in each — but only the correct order collects. Several of your men attack the marked piece; lead with the cheapest and you win material, lead with a big piece and the recapture punishes you. Choose the right capturer, and take."
+      "text": "The count favours you in each, but only the correct order collects. Several of your men attack the marked piece; lead with the cheapest and you win material, lead with a big piece and the recapture punishes you. Choose the right capturer, and take."
      },
      "puzzle": {
       "themes": [
@@ -923,9 +923,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the loosest piece",
+     "title": "Warm-up: the loosest piece",
      "intro": {
-      "text": "A loose piece is an undefended one, and the loosest of all is the piece simply hanging in your range. Warm up by taking three of them — then we learn to hunt the loose piece on purpose, and to stop leaving our own."
+      "text": "A loose piece is an undefended one, and the loosest of all is the piece simply hanging in your range. Warm up by taking three of them: then we learn to hunt the loose piece on purpose, and to stop leaving our own."
      },
      "puzzle": {
       "themes": [
@@ -945,7 +945,7 @@
        "conceptId": "loose-pieces",
        "coach": {
         "conceptId": "loose-pieces",
-        "text": "Old masters have a saying: loose pieces drop off. A piece with no defender is an accident waiting to happen — and your first job each move is to find the opponent's loose men. The bishop on b7 is undefended, and your rook owns the open b-file. The rook lifts to b7 and the bishop is gone. Hunt the loose piece before you do anything clever.",
+        "text": "Old masters have a saying: loose pieces drop off. A piece with no defender is an accident waiting to happen, and your first job each move is to find the opponent's loose men. The bishop on b7 is undefended, and your rook owns the open b-file. The rook lifts to b7 and the bishop is gone. Hunt the loose piece before you do anything clever.",
         "annotations": [
          {
           "kind": "circle",
@@ -968,7 +968,7 @@
        "conceptId": "safe-square",
        "coach": {
         "conceptId": "safe-square",
-        "text": "Now the other side of the coin: your own pieces. The knight on e5 is attacked by the d6-pawn, and nothing defends it — a loose piece about to drop. You must act. The simplest save is to move it to a square the enemy cannot reach. Nf3 carries it back to safety, still active, eyeing the centre. Never leave a piece sitting where a pawn can take it for free.",
+        "text": "Now the other side of the coin: your own pieces. The knight on e5 is attacked by the d6-pawn, and nothing defends it. A loose piece about to drop. You must act. The simplest save is to move it to a square the enemy cannot reach. Nf3 carries it back to safety, still active, eyeing the centre. Never leave a piece sitting where a pawn can take it for free.",
         "annotations": [
          {
           "kind": "circle",
@@ -997,7 +997,7 @@
        "conceptId": "loose-pieces",
        "coach": {
         "conceptId": "loose-pieces",
-        "text": "One more loose enemy piece, to fix the habit. The knight on c3 has wandered deep with no support. Your bishop on a1 sits on the long dark diagonal — a1, b2, c3 — staring straight at a knight that nobody guards. Bxc3 wins it for nothing. A piece without a defender is a target; learn to feel the pull of it across the board.",
+        "text": "One more loose enemy piece, to fix the habit. The knight on c3 has wandered deep with no support. Your bishop on a1 sits on the long dark diagonal (a1, b2, c3) staring straight at a knight that nobody guards. Bxc3 wins it for nothing. A piece without a defender is a target; learn to feel the pull of it across the board.",
         "annotations": [
          {
           "kind": "circle",
@@ -1045,7 +1045,7 @@
        ],
        "successLine": {
         "conceptId": "loose-pieces",
-        "text": "Rxb7 — a free bishop. It was loose, you saw it, you took it. The open file did the carrying; the missing defender did the rest. This is the cheapest material you will ever win — pieces the opponent simply forgot to guard.",
+        "text": "Rxb7: a free bishop. It was loose, you saw it, you took it. The open file did the carrying; the missing defender did the rest. This is the cheapest material you will ever win. Pieces the opponent simply forgot to guard.",
         "annotations": [
          {
           "kind": "circle",
@@ -1063,7 +1063,7 @@
        "conceptId": "safe-square",
        "coach": {
         "conceptId": "safe-square",
-        "text": "Now save your own, on a fresh board. White to move. Your knight on c4 is attacked by the b5-pawn and has no defender — leave it and it drops next move. Carry it to a safe, active square where nothing can take it.",
+        "text": "Now save your own, on a fresh board. White to move. Your knight on c4 is attacked by the b5-pawn and has no defender. Leave it and it drops next move. Carry it to a safe, active square where nothing can take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1091,7 +1091,7 @@
        ],
        "successLine": {
         "conceptId": "safe-square",
-        "text": "Saved — the knight steps clear of the pawn and stays in the game. Nothing on this board reaches any of its eight squares, so every retreat is safe; the only blunder would be to stand still and let b5xc4. The best keep the knight active — Nd6 and Ne5 jump forward into the centre, where a knight bites. Saving a piece is worth exactly as much as winning one. Guard your own men as fiercely as you hunt theirs.",
+        "text": "Saved: the knight steps clear of the pawn and stays in the game. Nothing on this board reaches any of its eight squares, so every retreat is safe; the only blunder would be to stand still and let b5xc4. The best keep the knight active. Nd6 and Ne5 jump forward into the centre, where a knight bites. Saving a piece is worth exactly as much as winning one. Guard your own men as fiercely as you hunt theirs.",
         "annotations": [
          {
           "kind": "circle",
@@ -1103,16 +1103,16 @@
        },
        "retryLine": {
         "conceptId": "safe-square",
-        "text": "The knight on c4 is attacked and undefended — it must move to a square the enemy cannot reach. Every square it can jump to is safe here, so the only mistake is leaving it for b5xc4. Choose one that keeps it active, eyeing the centre — Ne5 or Nd6 leap forward. Retreat the knight."
+        "text": "The knight on c4 is attacked and undefended. It must move to a square the enemy cannot reach. Every square it can jump to is safe here, so the only mistake is leaving it for b5xc4. Choose one that keeps it active, eyeing the centre, Ne5 or Nd6 leap forward. Retreat the knight."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — count, then win the material",
+     "title": "Cool-down: count, then win the material",
      "intro": {
-      "text": "Now put the hunt together with the count. In each position the material is there to be won — but you must see the loose piece or out-count the defenders, then strike. A notch harder than a bare grab: scan, count, and take what the position owes you."
+      "text": "Now put the hunt together with the count. In each position the material is there to be won, but you must see the loose piece or out-count the defenders, then strike. A notch harder than a bare grab: scan, count, and take what the position owes you."
      },
      "puzzle": {
       "themes": [
@@ -1127,13 +1127,13 @@
   },
   {
    "id": "l5-safety-checklist",
-   "title": "The Safety Checklist — Don't Blunder",
+   "title": "The Safety Checklist: Don't Blunder",
    "kind": "practice",
    "summary": "The pre-move discipline that ties the foundation together: before you release a piece, run the scan. Win material, avoid self-blunders, then convert against the engine.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the eye is warm",
+     "title": "Warm-up: the eye is warm",
      "intro": {
       "text": "One last warm-up before the capstone. Run the scan for captures: in each position one enemy piece sits loose in your range. See it and take it. Then we put the whole chapter together: see everything, hang nothing, and finish a won game."
      },
@@ -1175,7 +1175,7 @@
        "conceptId": "safety-checklist",
        "coach": {
         "conceptId": "safety-checklist",
-        "text": "Watch the checklist catch a blunder. Your bishop on c4 eyes f7, and the greedy move is Bxf7+ — but run the check. After Kxf7 the king simply takes the bishop, which nothing defends. You would have given a bishop for a single pawn. The first question — does this hang a piece? — saves you. Greed without the checklist is how good positions are thrown away.",
+        "text": "Watch the checklist catch a blunder. Your bishop on c4 eyes f7, and the greedy move is Bxf7+, but run the check. After Kxf7 the king simply takes the bishop, which nothing defends. You would have given a bishop for a single pawn. The first question does this hang a piece?, saves you. Greed without the checklist is how good positions are thrown away.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1199,7 +1199,7 @@
        "conceptId": "safety-checklist",
        "coach": {
         "conceptId": "safety-checklist",
-        "text": "And the checklist turned outward, finding a win. White to move. The black knight has raided to h4 — loose, no defender. Now the test of a real trap: do not just attack it, check that it cannot run. Push g3, and it is hit. Where can it go? g2 — your king guards it. f3 and f5 — your rook on the open f-file guards both. g6 — your bishop on d3 guards it down the diagonal. Every flight square is covered, so wherever it jumps you take it. The pawn push wins the whole knight. That is the difference between chasing a piece and trapping one: before you attack, count its escapes.",
+        "text": "And the checklist turned outward, finding a win. White to move. The black knight has raided to h4, loose, no defender. Now the test of a real trap: do not just attack it, check that it cannot run. Push g3, and it is hit. Where can it go? g2 (your king guards it. f3 and f5) your rook on the open f-file guards both. g6. Your bishop on d3 guards it down the diagonal. Every flight square is covered, so wherever it jumps you take it. The pawn push wins the whole knight. That is the difference between chasing a piece and trapping one: before you attack, count its escapes.",
         "annotations": [
          {
           "kind": "circle",
@@ -1235,14 +1235,14 @@
     },
     {
      "kind": "guided",
-     "title": "See everything — win, or stay safe",
+     "title": "See everything: win, or stay safe",
      "steps": [
       {
        "fen": "r5k1/pp6/8/8/7n/3B4/PP4P1/5RK1 w - - 0 1",
        "conceptId": "safety-checklist",
        "coach": {
         "conceptId": "safety-checklist",
-        "text": "White to move. The knight on h4 is loose — and this time it is trapped. Before you push, check its four escape squares: g2, f3, f5, g6. Your king, your rook on the f-file, and your bishop on d3 cover every one. So the humble pawn move that attacks it also wins it outright. Find it.",
+        "text": "White to move. The knight on h4 is loose, and this time it is trapped. Before you push, check its four escape squares: g2, f3, f5, g6. Your king, your rook on the f-file, and your bishop on d3 cover every one. So the humble pawn move that attacks it also wins it outright. Find it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1261,7 +1261,7 @@
        ],
        "successLine": {
         "conceptId": "safety-checklist",
-        "text": "g3, and the knight is lost. It is attacked and has nowhere safe to land — g2 to the king, f3 and f5 to the rook, g6 to the bishop — so next move you simply take it. A whole knight, won by a one-square pawn push, because you checked its escapes before you struck. That is trapping a piece, not merely chasing it.",
+        "text": "g3, and the knight is lost. It is attacked and has nowhere safe to land (g2 to the king, f3 and f5 to the rook, g6 to the bishop) so next move you simply take it. A whole knight, won by a one-square pawn push, because you checked its escapes before you struck. That is trapping a piece, not merely chasing it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1278,7 +1278,7 @@
        },
        "retryLine": {
         "conceptId": "safety-checklist",
-        "text": "The knight on h4 is undefended, and every square it could jump to is covered by your king, rook and bishop. Which pawn attacks h4? The g2-pawn steps to g3 — push it, and the knight has nowhere to run."
+        "text": "The knight on h4 is undefended, and every square it could jump to is covered by your king, rook and bishop. Which pawn attacks h4? The g2-pawn steps to g3: push it, and the knight has nowhere to run."
        }
       },
       {
@@ -1286,7 +1286,7 @@
        "conceptId": "safe-square",
        "coach": {
         "conceptId": "safe-square",
-        "text": "Now stay safe under temptation, on a fresh board. White to move; Black has already castled and you have not. The e5-pawn looks free — but run the checklist before you grab. Nxe5 is met by Nxe5: the c6-knight guards the pawn, so you give a knight for a pawn. Nothing is truly loose. Do not invent a target — finish the opening soundly and tuck your own king away. Castle.",
+        "text": "Now stay safe under temptation, on a fresh board. White to move; Black has already castled and you have not. The e5-pawn looks free, but run the checklist before you grab. Nxe5 is met by Nxe5: the c6-knight guards the pawn, so you give a knight for a pawn. Nothing is truly loose. Do not invent a target. Finish the opening soundly and tuck your own king away. Castle.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1314,7 +1314,7 @@
        ],
        "successLine": {
         "conceptId": "safe-square",
-        "text": "O-O. The e5-pawn was guarded, so Nxe5 only loses a knight for a pawn — no free piece, no sound capture. The disciplined move is to improve your own position and protect your king. The safety checklist is not only about single moves; it is the whole habit of not reaching for what is not there. King safe, rook active, nothing hung.",
+        "text": "O-O. The e5-pawn was guarded, so Nxe5 only loses a knight for a pawn. No free piece, no sound capture. The disciplined move is to improve your own position and protect your king. The safety checklist is not only about single moves; it is the whole habit of not reaching for what is not there. King safe, rook active, nothing hung.",
         "annotations": [
          {
           "kind": "circle",
@@ -1326,7 +1326,7 @@
        },
        "retryLine": {
         "conceptId": "safety-checklist",
-        "text": "Run the checklist: the e5-pawn is defended by the c6-knight, so Nxe5 Nxe5 just drops a knight for a pawn. Nothing of Black's is loose. The sound move is to castle your king to safety. Play O-O — move the king to g1."
+        "text": "Run the checklist: the e5-pawn is defended by the c6-knight, so Nxe5 Nxe5 just drops a knight for a pawn. Nothing of Black's is loose. The sound move is to castle your king to safety. Play O-O. Move the king to g1."
        }
       },
       {
@@ -1334,7 +1334,7 @@
        "conceptId": "safety-checklist",
        "coach": {
         "conceptId": "safety-checklist",
-        "text": "The temptation again, sharper. White to move. The bishop on c4 can give a check on f7 — but before you reach for it, run the first question of the checklist. Is the bishop defended on f7? If not, that check is a gift to the opponent. Find the sound developing move instead: bring a piece out and prepare to castle.",
+        "text": "The temptation again, sharper. White to move. The bishop on c4 can give a check on f7, but before you reach for it, run the first question of the checklist. Is the bishop defended on f7? If not, that check is a gift to the opponent. Find the sound developing move instead: bring a piece out and prepare to castle.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1355,7 +1355,7 @@
        ],
        "successLine": {
         "conceptId": "safety-checklist",
-        "text": "Nc3 — develop, and leave the f7-bishop check well alone. Bxf7+ only loses the bishop after Kxf7, because nothing defends it. You checked the first question, refused the bad gift, and improved your position instead. That refusal is worth as much as any capture.",
+        "text": "Nc3: develop, and leave the f7-bishop check well alone. Bxf7+ only loses the bishop after Kxf7, because nothing defends it. You checked the first question, refused the bad gift, and improved your position instead. That refusal is worth as much as any capture.",
         "annotations": [
          {
           "kind": "circle",
@@ -1366,16 +1366,16 @@
        },
        "retryLine": {
         "conceptId": "safety-checklist",
-        "text": "Bxf7+ fails — after Kxf7 the king wins your undefended bishop for one pawn. Refuse the gift and develop. Bring the queenside knight to c3."
+        "text": "Bxf7+ fails. After Kxf7 the king wins your undefended bishop for one pawn. Refuse the gift and develop. Bring the queenside knight to c3."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — see it under pressure",
+     "title": "Cool-down: see it under pressure",
      "intro": {
-      "text": "Slightly harder than the band, to consolidate the whole chapter. Each position rewards the scan and the count: find the loose piece or the favourable exchange, then play the move that wins the material. Trust the habit — see everything, count, then take."
+      "text": "Slightly harder than the band, to consolidate the whole chapter. Each position rewards the scan and the count: find the loose piece or the favourable exchange, then play the move that wins the material. Trust the habit: see everything, count, then take."
      },
      "puzzle": {
       "themes": [
@@ -1388,13 +1388,13 @@
     },
     {
      "kind": "boss",
-     "title": "Convert a won game — hang nothing",
+     "title": "Convert a won game, hang nothing",
      "bossFen": "4k3/pp3ppp/2n1b3/4p3/4P3/2N1B3/PPP2PPP/2KR4 w - - 0 1",
      "bossEngineElo": 600,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "safety-checklist",
-      "text": "Now prove the whole chapter over the board. You are White, a full rook to the good — a winning position. But a won game is only won if you do not hand it back. Every single move, run the checklist: does this hang a piece, leave one loose, or allow a capture you missed? Trade pieces when the count favours you, keep your men defended, and bring your extra rook to bear. Do not grab at shadows; do not leave your bishop or knight loose. See everything, hang nothing, and grind him down. Begin."
+      "text": "Now prove the whole chapter over the board. You are White, a full rook to the good, a winning position. But a won game is only won if you do not hand it back. Every single move, run the checklist: does this hang a piece, leave one loose, or allow a capture you missed? Trade pieces when the count favours you, keep your men defended, and bring your extra rook to bear. Do not grab at shadows; do not leave your bishop or knight loose. See everything, hang nothing, and grind him down. Begin."
      }
     }
    ]
@@ -1407,13 +1407,13 @@
     "kind": "mc",
     "prompt": "A square has two of your attackers and one enemy defender, and you lose nothing larger along the way. The capture:",
     "options": [
-     "Loses material — leave it alone",
-     "Wins material — take it",
-     "Is exactly even — it makes no difference",
+     "Loses material: leave it alone",
+     "Wins material: take it",
+     "Is exactly even: it makes no difference",
      "Can never be judged without an engine"
     ],
     "answerIndex": 1,
-    "explain": "More attackers than defenders, with no big piece lost on the way, means the last piece standing on the square is yours. Two against one wins material — take it."
+    "explain": "More attackers than defenders, with no big piece lost on the way, means the last piece standing on the square is yours. Two against one wins material. Take it."
    },
    {
     "kind": "mc",
@@ -1433,29 +1433,29 @@
     "options": [
      "They are worth double the usual point value",
      "An undefended piece cannot give check",
-     "They are what tactics like forks and pins win — a loose piece is a target",
+     "They are what tactics like forks and pins win: a loose piece is a target",
      "It forces the opponent to offer a draw"
     ],
     "answerIndex": 2,
-    "explain": "Loose pieces drop off. An undefended piece is a tactic waiting to happen — the very thing a fork, pin or simple attack will win. Spot them first, every move."
+    "explain": "Loose pieces drop off. An undefended piece is a tactic waiting to happen. The very thing a fork, pin or simple attack will win. Spot them first, every move."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Run the scan — sweep every checking move and find the one Black cannot answer.",
+    "prompt": "White to move. Run the scan. Sweep every checking move and find the one Black cannot answer.",
     "fen": "7k/6pp/8/8/8/8/8/R3K3 w - - 0 1",
     "solutionUci": [
      "a1a8"
     ],
-    "explain": "Scan the checks: the rook has exactly one, Ra8, and it is mate. The black king is boxed on h8 by its own pawns on g7 and h7, g8 is covered by the rook, and nothing can block or capture on the open back rank. The scan for checks is half of board vision — sweep it every move."
+    "explain": "Scan the checks: the rook has exactly one, Ra8, and it is mate. The black king is boxed on h8 by its own pawns on g7 and h7, g8 is covered by the rook, and nothing can block or capture on the open back rank. The scan for checks is half of board vision. Sweep it every move."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Run the capture half of the scan from scratch — one black piece sits loose in your range. Find it and take it.",
+    "prompt": "White to move. Run the capture half of the scan from scratch. One black piece sits loose in your range. Find it and take it.",
     "fen": "4k3/8/8/8/6n1/8/8/3QK3 w - - 0 1",
     "solutionUci": [
      "d1g4"
     ],
-    "explain": "Sweep for loose enemy men and the knight on g4 leaps out: undefended, and your queen reaches it up the diagonal d1-e2-f3-g4. Qxg4 wins it for nothing. The from-scratch capture scan — find the unguarded piece before you do anything else — is half of board vision."
+    "explain": "Sweep for loose enemy men and the knight on g4 leaps out: undefended, and your queen reaches it up the diagonal d1-e2-f3-g4. Qxg4 wins it for nothing. The from-scratch capture scan (find the unguarded piece before you do anything else) is half of board vision."
    },
    {
     "kind": "play",
@@ -1465,28 +1465,28 @@
      "d4e5",
      "f4e5"
     ],
-    "explain": "Two attackers (d4, f4) against one defender (d6): the pawn falls. Take with either pawn — after the recapture dxe5, your second pawn takes again and Black has no answer, a pawn up. With two equal attackers the order does not matter; the count alone wins it."
+    "explain": "Two attackers (d4, f4) against one defender (d6): the pawn falls. Take with either pawn. After the recapture dxe5, your second pawn takes again and Black has no answer, a pawn up. With two equal attackers the order does not matter; the count alone wins it."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The d5-pawn is attacked by your c4-pawn and your rook, and defended once by the e6-pawn. Capture it — but lead with the right piece.",
+    "prompt": "White to move. The d5-pawn is attacked by your c4-pawn and your rook, and defended once by the e6-pawn. Capture it, but lead with the right piece.",
     "fen": "4k3/8/4p3/3p4/2P5/8/8/3RK3 w - - 0 1",
     "solutionUci": [
      "c4d5"
     ],
-    "explain": "Lead with the cheapest attacker, the pawn: cxd5. After exd5 your rook takes the pawn, Rxd5, a clean pawn to the good. Lead instead with the rook — Rxd5 exd5 — and you have handed a five-point rook for a one-point pawn. Least valuable first."
+    "explain": "Lead with the cheapest attacker, the pawn: cxd5. After exd5 your rook takes the pawn, Rxd5, a clean pawn to the good. Lead instead with the rook (Rxd5 exd5) and you have handed a five-point rook for a one-point pawn. Least valuable first."
    },
    {
     "kind": "mc",
     "prompt": "A square is attacked twice by your men and defended twice by the enemy's, with equal pieces all round. Capturing there:",
     "options": [
-     "Wins material — more force always breaks through",
-     "Gains nothing — the exchanges come out even, so leave it be",
-     "Loses material — you should never take an equal square",
+     "Wins material: more force always breaks through",
+     "Gains nothing: the exchanges come out even, so leave it be",
+     "Loses material: you should never take an equal square",
      "Wins a pawn every time the count is even"
     ],
     "answerIndex": 1,
-    "explain": "Two attackers against two defenders is a standoff: play it out and each side gives and gets the same, so you finish where you began. When the count only equals — it does not beat — the defenders, the capture wins nothing. Take only when your attackers outnumber the defenders; otherwise decline and do something useful instead."
+    "explain": "Two attackers against two defenders is a standoff: play it out and each side gives and gets the same, so you finish where you began. When the count only equals (it does not beat) the defenders, the capture wins nothing. Take only when your attackers outnumber the defenders; otherwise decline and do something useful instead."
    },
    {
     "kind": "play",
@@ -1495,7 +1495,7 @@
     "solutionUci": [
      "e1a5"
     ],
-    "explain": "The rook on a5 is undefended, and your bishop on e1 looks straight up the dark diagonal e1-d2-c3-b4-a5. Bxa5 wins it for nothing — the loose piece is the cheapest material there is. Hunt the unguarded man first, every move."
+    "explain": "The rook on a5 is undefended, and your bishop on e1 looks straight up the dark diagonal e1-d2-c3-b4-a5. Bxa5 wins it for nothing. The loose piece is the cheapest material there is. Hunt the unguarded man first, every move."
    },
    {
     "kind": "play",
@@ -1511,7 +1511,7 @@
      "d4e2",
      "d4c2"
     ],
-    "explain": "The knight is loose and about to drop. Nothing on the board can reach any of its eight retreats, so every one of them is safe — the only mistake would be to leave it on d4 for the pawn. Choose one that also stays active: Nc6, Ne6 and Nf5 leap forward and eye the centre, where a knight does its work. Saving a piece is worth exactly as much as winning one."
+    "explain": "The knight is loose and about to drop. Nothing on the board can reach any of its eight retreats, so every one of them is safe. The only mistake would be to leave it on d4 for the pawn. Choose one that also stays active: Nc6, Ne6 and Nf5 leap forward and eye the centre, where a knight does its work. Saving a piece is worth exactly as much as winning one."
    },
    {
     "kind": "judge",
@@ -1519,7 +1519,7 @@
     "fen": "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3",
     "lastMoveUci": "d8h4",
     "verdict": "correct",
-    "explain": "Correct — and mate. This is the fool's mate: Qh4 checks down the e1-h4 diagonal that White's own pawns laid bare, and the king can neither move, block, nor capture. White finished his scan only for himself; Black wore the other side's eyes and found the mate. Always look with both pairs."
+    "explain": "Correct, and mate. This is the fool's mate: Qh4 checks down the e1-h4 diagonal that White's own pawns laid bare, and the king can neither move, block, nor capture. White finished his scan only for himself; Black wore the other side's eyes and found the mate. Always look with both pairs."
    },
    {
     "kind": "judge",
@@ -1527,7 +1527,7 @@
     "fen": "6k1/8/8/8/Q7/8/8/4K3 b - - 0 1",
     "lastMoveUci": "d1a4",
     "verdict": "correct",
-    "explain": "Correct. The knight on a4 was loose — undefended — and the queen won it for free, landing on a safe square nothing attacks. Taking an unguarded piece, when your own stays safe, is exactly right."
+    "explain": "Correct. The knight on a4 was loose (undefended) and the queen won it for free, landing on a safe square nothing attacks. Taking an unguarded piece, when your own stays safe, is exactly right."
    },
    {
     "kind": "judge",
@@ -1543,7 +1543,7 @@
     "fen": "r1bqk1nr/pppp1Bpp/2n5/2b1p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 0 4",
     "lastMoveUci": "c4f7",
     "verdict": "blunder",
-    "explain": "Blunder. The check looks tempting, but Kxf7 simply takes the undefended bishop — White has given a three-point bishop for a one-point pawn. The first checklist question, 'does this hang a piece?', refutes it."
+    "explain": "Blunder. The check looks tempting, but Kxf7 simply takes the undefended bishop. White has given a three-point bishop for a one-point pawn. The first checklist question, 'does this hang a piece?', refutes it."
    },
    {
     "kind": "judge",
@@ -1551,7 +1551,7 @@
     "fen": "4k3/8/8/2p5/8/5N2/8/4K3 b - - 0 1",
     "lastMoveUci": "d4f3",
     "verdict": "correct",
-    "explain": "Correct. The knight was loose and about to drop; Nf3 carries it to a square no enemy attacks, still active toward the centre. Tucking an attacked piece onto a safe square is sound — saving a piece is winning a piece."
+    "explain": "Correct. The knight was loose and about to drop; Nf3 carries it to a square no enemy attacks, still active toward the centre. Tucking an attacked piece onto a safe square is sound. Saving a piece is winning a piece."
    }
   ]
  },

@@ -1,5 +1,5 @@
 /* ============================================================
-   Update toast (UpdateToast.tsx) — bottom-right, non-blocking.
+   Update toast (UpdateToast.tsx): bottom-right, non-blocking.
    Same fixed-chip family as .online-return-chip (online.css);
    `is-raised` steps it above that chip when both are showing.
    Tokens from tokens.css; motion is neutralized by the global
@@ -22,7 +22,7 @@
   box-shadow: var(--shadow-lg);
   animation: update-toast-in var(--dur-base) var(--ease-out) both;
 }
-/* The online return chip owns the corner — sit above it. */
+/* The online return chip owns the corner. Sit above it. */
 .update-toast.is-raised {
   bottom: calc(var(--space-5) + 64px);
 }

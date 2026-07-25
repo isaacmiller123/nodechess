@@ -6,12 +6,12 @@
 // This is a deliberately SEPARATE estimate from the Glicko puzzle/vs-bot rating.
 //
 // ---------------------------------------------------------------------------------
-// EMPIRICALLY FITTED MODEL (v3) — every constant below comes from a measured fit,
+// EMPIRICALLY FITTED MODEL (v3): every constant below comes from a measured fit,
 // not folklore. The previous hand-guessed anchor table was calibrated against a
 // DIFFERENT accuracy formula than ours and overrated club-level games by
 // ~600-800 Elo (e.g. a measured-1000-strength game read as ~1800).
 //
-//   Corpus:   scripts/gen-elo-corpus.mjs — 352 rows (176 engine-vs-engine games,
+//   Corpus:   scripts/gen-elo-corpus.mjs, 352 rows (176 engine-vs-engine games,
 //             2 rows/game) at 13 known strengths {400..1200 weak-model bands,
 //             1320..2700 native UCI_Elo}, self-play + cross-pairings at +/-200
 //             and +/-400, analyzed headlessly with the EXACT review.ts accuracy/
@@ -23,10 +23,10 @@
 //   Holdout MAE:  275 Elo with oppElo | 325 without | 481 accuracy-only.
 //   Per-band holdout MAE (with opp): 400:250 600:192 800:310 1000:227 1200:248
 //             1320:385 1500:410 1700:296 1900:435 2100:373 2300:220 2500:211
-//             2700:68 (n=2-12 per band — individual cells are noisy; the
+//             2700:68 (n=2-12 per band; individual cells are noisy; the
 //             overall MAE and the residual-std bands below are the signal).
 //   Bands:    half-width = MEASURED residual std per nMoves bucket (not vibes).
-//             A single game pins strength to roughly +/-300-650 Elo — the wide
+//             A single game pins strength to roughly +/-300-650 Elo. The wide
 //             band is the honest truth of the metric.
 //   Tests:    scripts/test-est-elo.mjs (golden holdout MAE, monotonicity,
 //             short-game widening, opponent-delta direction).
@@ -52,19 +52,19 @@ export interface EloBand {
   high: number
   /** The accuracy% the estimate was derived from (echoed for the UI). */
   accuracy: number
-  /** Always 'estimate' — UI must label this distinct from the Glicko rating. */
+  /** Always 'estimate', UI must label this distinct from the Glicko rating. */
   kind: 'estimate'
 }
 
 /** Extended input for estimateEloEx (review/ratings can adopt incrementally). */
 export interface EstEloInput {
-  /** Game accuracy% (0..100) — the review pipeline's gameAccuracy blend. */
+  /** Game accuracy% (0..100). The review pipeline's gameAccuracy blend. */
   accuracy: number
   /** The side's average centipawn loss, if known. */
   acpl?: number | null
   /** The side's own analyzed move count (drives shrink + band width). */
   nMoves?: number | null
-  /** Opponent strength (e.g. the bot's Elo), if known — sharpens the estimate. */
+  /** Opponent strength (e.g. the bot's Elo), if known. Sharpens the estimate. */
   oppElo?: number | null
 }
 
@@ -112,7 +112,7 @@ const A1 = 0.1
 /** Accuracy-only intercept (acpl unknown: placement, raw perf:estimate). */
 const C0 = -58.7
 /** Short-game shrink toward SHRINK_CENTER; bounded fit (raw OLS -2.19 is
- *  confounded — short corpus games are decisive high-band games). */
+ *  confounded: short corpus games are decisive high-band games). */
 const B_SHRINK = -0.32
 /** Structural opponent slope: estNoOpp ~ trueElo + G_OPP*(oppElo - trueElo). */
 const G_OPP = -0.1902

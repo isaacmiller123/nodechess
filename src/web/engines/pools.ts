@@ -1,4 +1,4 @@
-// Engine pools + serialization chains — the web twin of the desktop pool
+// Engine pools + serialization chains: the web twin of the desktop pool
 // modules (StockfishPool/FairyPool) and engine.ipc.ts's serialize helpers.
 //
 // SHARED SINGLETONS: createEngineApi, createReviewApi and createPersonaMove
@@ -10,9 +10,9 @@
 //
 // Divergences from desktop (documented in the W2 report):
 //  - review runs on the ANALYSIS instance (desktop spawns a throwaway engine
-//    per review) — a third 128 MB wasm instance per review is too heavy.
+//    per review): a third 128 MB wasm instance per review is too heavy.
 //  - persona moves run on the PLAY instance via the play chain (desktop keeps
-//    a separate idle-reaped persona process) — same memory reasoning; every
+//    a separate idle-reaped persona process): same memory reasoning; every
 //    play-chain caller re-asserts its own options before searching, so the
 //    sharing is safe.
 
@@ -54,7 +54,7 @@ function cores(): number {
     : 4
 }
 
-/** Desktop: cpus-1. Web: additionally capped — every wasm thread is a worker
+/** Desktop: cpus-1. Web: additionally capped. Every wasm thread is a worker
  *  with stack inside one shared memory, and the tab shares cores with the UI. */
 function analysisThreads(): number {
   return Math.max(1, Math.min(8, cores() - 1))
@@ -81,7 +81,7 @@ class WebStockfishPool {
   }
 
   /** Drop a crashed engine so the next call respawns instead of writing into a
-   *  dead worker (desktop pools never needed this — a dead process there
+   *  dead worker (desktop pools never needed this; a dead process there
    *  surfaces via spawn errors; a dead worker is silent). */
   private watch(eng: WebUciEngine, slot: 'analysis' | 'play'): WebUciEngine {
     const drop = (): void => {
@@ -129,7 +129,7 @@ export function setFairyModuleLoader(fn: () => Promise<FairyModule>): void {
 
 /** A custom variants.ini to load before selecting the variant. */
 export interface VariantIni {
-  /** Custom variant id — keys the content-diff cache (desktop writeVariantIni). */
+  /** Custom variant id. Keys the content-diff cache (desktop writeVariantIni). */
   id: string
   text: string
 }
@@ -169,7 +169,7 @@ class WebFairyPool {
         const path = `/variant-${variantIni.id}.ini`
         e.writeFile(path, variantIni.text)
         e.setOption('VariantPath', path)
-        await e.isready() // ini parse happens on the option — settle before UCI_Variant
+        await e.isready() // ini parse happens on the option. Settle before UCI_Variant
         this.loadedIni = key
         this.variant = null // re-select even if the name string matches
       }

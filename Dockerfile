@@ -8,17 +8,17 @@
 #   docker build -t nodechess-web .
 #   docker run --rm -p 8080:8080 -v "$PWD/data-web:/data" nodechess-web
 #
-# Puzzle DB (~2.1 GB resources/data/puzzles.sqlite) — two options:
+# Puzzle DB (~2.1 GB resources/data/puzzles.sqlite). Two options:
 #   1. VOLUME (default, keeps the image lean): mount it read-only at runtime and
-#      point PUZZLES_PATH at it — docker-compose.yml does exactly this. The DB
+#      point PUZZLES_PATH at it, which is what docker-compose.yml does. The DB
 #      is .dockerignore'd, so the build context stays small either way.
 #   2. BAKE-IN: pass the DB directory as a NAMED BUILD CONTEXT (named contexts
 #      are not subject to this repo's .dockerignore), plus the build arg:
 #        docker build -t nodechess-web \
 #          --build-arg WITH_PUZZLES=true \
 #          --build-context puzzles-db=resources/data .
-#      The baked file lands at /app/resources/data/puzzles.sqlite — the image's
-#      default PUZZLES_PATH — so no runtime env is needed.
+#      The baked file lands at /app/resources/data/puzzles.sqlite, which is the
+#      image's default PUZZLES_PATH, so no runtime env is needed.
 # Without either, the app still runs; puzzle features report "not installed"
 # honestly in the UI.
 
@@ -28,7 +28,7 @@ ARG WITH_PUZZLES=false
 FROM node:26-alpine AS build
 WORKDIR /app
 
-# --ignore-scripts: skips electron's binary download (desktop-only) — the one
+# --ignore-scripts: skips electron's binary download (desktop-only). The one
 # install script the web build DOES need (ffish CSP patch) runs explicitly.
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -37,14 +37,14 @@ COPY . .
 # import.meta.env.VITE_*). Unset => the app keeps its safe public-relay/STUN
 # defaults (iceConfig.ts / relayConfig.ts both fall back cleanly), so a plain
 # `docker build` still produces a working image.
-#   VITE_ICE_SERVERS  — JSON RTCIceServer[] (OUR coturn TURN + STUN)
-#   VITE_NOSTR_RELAYS — comma list or JSON array of OUR wss:// signaling relays
+#   VITE_ICE_SERVERS    JSON RTCIceServer[] (OUR coturn TURN + STUN)
+#   VITE_NOSTR_RELAYS   comma list or JSON array of OUR wss:// signaling relays
 ARG VITE_ICE_SERVERS=""
 ARG VITE_NOSTR_RELAYS=""
 ENV VITE_ICE_SERVERS=$VITE_ICE_SERVERS \
     VITE_NOSTR_RELAYS=$VITE_NOSTR_RELAYS
 # build:server emits EVERYTHING dist-server needs at runtime (index.cjs +
-# ipc-bridge.cjs) — the npm script is the single source of truth, so dev/CI/
+# ipc-bridge.cjs). The npm script is the single source of truth, so dev/CI/
 # Docker can never drift.
 RUN node scripts/patch-ffish-csp.mjs \
   && npm run build:web \
@@ -78,15 +78,15 @@ WORKDIR /app
 
 COPY --from=build /app/dist-web ./dist-web
 COPY --from=build /app/dist-server ./dist-server
-# Static content the server serves / the IPC bridge reads (the bridge runs with
-# process.resourcesPath = /app/resources — see docs/WEB-PORT-SPEC.md):
+# Static content the server serves / the IPC bridge reads. The bridge runs with
+# process.resourcesPath = /app/resources (see docs/WEB-PORT-SPEC.md):
 #   games-art    3D tabletop textures + piece art (served at /games-art)
 #   curriculum   School chapters (school:* channels)
 #   famous       famous games + persona game archives (famous:* channels)
 #   personas     persona bots: styles, books, photos (personas:* channels)
 #   openings     openings book (openings:lookup)
 #   manuals      authored game manuals (inlined in the SPA today; kept for the
-#                planned manuals-over-IPC serving — 144 KB)
+#                planned manuals-over-IPC serving, 144 KB)
 COPY --from=build /app/resources/games-art ./resources/games-art
 COPY --from=build /app/resources/curriculum ./resources/curriculum
 COPY --from=build /app/resources/famous ./resources/famous
@@ -105,7 +105,7 @@ VOLUME /data
 EXPOSE 8080
 USER node
 
-# node:26 ships global fetch — no curl/wget dependency for the probe.
+# node:26 ships global fetch. No curl/wget dependency for the probe.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||8080)+'/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 

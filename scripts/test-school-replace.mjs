@@ -10,7 +10,7 @@
 //     never leaves chapters above the fresh estimate unlocked through the old
 //     epoch's surviving earned completions.
 //   - placement.repo.resetPlacement: retracts ONLY the placement's own
-//     auto_completed rows — earned chapter/lesson progress and chapter_test
+//     auto_completed rows: earned chapter/lesson progress and chapter_test
 //     history (best_pct) always survive.
 //
 // Bundling (settings-persist pattern): esbuild bundles ipc/school.ipc.ts +
@@ -19,7 +19,7 @@
 // school.repo's chaptersDir() reads the SHIPPED 40 chapters (real eloFloors)
 // via process.resourcesPath -> <repo>/resources. school.repo references
 // __dirname in its dev path, so the bundle is CJS (loaded via createRequire).
-// The app.sqlite is created through the full migrate() chain — no schema stubs.
+// The app.sqlite is created through the full migrate() chain, no schema stubs.
 //
 // Scenario (the audit's exact one):
 //   0. Unplaced: every chapter locked (lockReason 'placement'); metas never
@@ -29,8 +29,8 @@
 //   2. Positive case: EARN the top in-estimate chapter (test pass + a lesson)
 //      -> EXACTLY ONE chapter above the estimate unlocks (the chain link).
 //   3. Re-place LOWER (reset + one weak game) -> NO chapter above the fresh
-//      estimate is unlocked — the old epoch's earned completion must NOT chain
-//      its successor open — while best_pct / earned completion rows survive.
+//      estimate is unlocked. The old epoch's earned completion must NOT chain
+//      its successor open, while best_pct / earned completion rows survive.
 //   4. The documented climb path still works in the low epoch: pass the top
 //      in-estimate chapter's test -> one above unlocks; pass THAT one's test
 //      -> the estimate bumps to its band and the chain extends one further.
@@ -50,7 +50,7 @@ const userData = path.join(dir, 'userData')
 mkdirSync(userData, { recursive: true })
 
 // school.repo reads the packaged curriculum from process.resourcesPath when
-// app.isPackaged — point it at the repo's resources BEFORE the bundle loads.
+// app.isPackaged: point it at the repo's resources BEFORE the bundle loads.
 process.resourcesPath = path.join(repoRoot, 'resources')
 
 // ---- electron stub: packaged app in a temp userData; ipcMain captures ----
@@ -92,8 +92,8 @@ async function check(name, fn) {
   }
 }
 
-// DB seam (docs/WEB-PORT-SPEC.md W1): database.ts no longer reads electron —
-// inject the temp userData directly, like src/main/index.ts does at boot.
+// DB seam (docs/WEB-PORT-SPEC.md W1): database.ts no longer reads electron.
+// Inject the temp userData directly, like src/main/index.ts does at boot.
 M.configureDb({ appDbDir: userData })
 
 M.registerSchool()
@@ -102,7 +102,7 @@ const ev = { senderFrame: { url: 'file:///index.html' } }
 const call = (channel, payload = {}) => handlers[channel](ev, payload)
 
 // The curriculum in canonical order, floors included (the SERVER-side view; the
-// metas the client sees never carry them — asserted below).
+// metas the client sees never carry them. Asserted below).
 const db = M.getAppDb()
 const chaptersResp = await call('school:chapters')
 const metas0 = chaptersResp.chapters
@@ -128,7 +128,7 @@ function accFor(lo, hi) {
     const est = M.estimateElo(acc, 40).est
     if (est >= lo && est <= hi) return acc
   }
-  throw new Error(`no accuracy maps into est [${lo},${hi}] — recalibrate the test bands`)
+  throw new Error(`no accuracy maps into est [${lo},${hi}], recalibrate the test bands`)
 }
 const ACC_HIGH = accFor(1700, 1840)
 const ACC_LOW = accFor(600, 1000)
@@ -151,7 +151,7 @@ await check('metas never expose eloFloor (spec §2.2a)', async () => {
 })
 
 // ---------------------------------------------------------------------------
-// 1) Place HIGH — the floor<=est prefix unlocks; below-top auto-completes.
+// 1) Place HIGH: the floor<=est prefix unlocks; below-top auto-completes.
 // ---------------------------------------------------------------------------
 const stateHigh = await call('school:recordPlacementGame', {
   engineElo: 1500,
@@ -253,7 +253,7 @@ await check(`re-place LOWER (est=${estLow}): nothing above the fresh estimate is
   assert.ok(estLow < estHigh - 400, 'scenario needs a genuinely lower re-placement')
   const metas = await chapterList()
   // The audit's exact regression: topHigh is cleared (earned completion + test
-  // pass survived the reset) but sits ABOVE the fresh estimate — its successor
+  // pass survived the reset) but sits ABOVE the fresh estimate. Its successor
   // must NOT be chain-unlocked, and neither may anything else above estLow.
   assert.deepEqual(unlockedIds(metas), lowPrefix, 'unlocked must be exactly the low prefix')
   const byId = new Map(metas.map((m) => [m.id, m]))
@@ -315,4 +315,4 @@ if (failures > 0) {
   console.error(`\n${failures} failure(s)`)
   process.exit(1)
 }
-console.log('\nALL GREEN — re-place-lower keeps above-estimate chapters locked; earned history survives')
+console.log('\nALL GREEN: re-place-lower keeps above-estimate chapters locked; earned history survives')

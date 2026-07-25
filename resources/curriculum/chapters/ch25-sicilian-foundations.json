@@ -2,8 +2,8 @@
  "id": "ch25-sicilian-foundations",
  "band": "25",
  "order": 25,
- "title": "The Sicilian Defence — Foundations",
- "subtitle": "1.e4 c5 — the Open Sicilian and the Anti-Sicilians (Alapin, Closed, Smith-Morra); structures, plans and the breaks that define them.",
+ "title": "The Sicilian Defence: Foundations",
+ "subtitle": "1.e4 c5: the Open Sicilian and the Anti-Sicilians (Alapin, Closed, Smith-Morra); structures, plans and the breaks that define them.",
  "estMinutes": 48,
  "concepts": [
   {
@@ -19,7 +19,7 @@
   {
    "id": "half-open-c-file",
    "name": "The half-open c-file",
-   "short": "Because Black's c-pawn is gone, the c-file is half-open for Black. Black piles rooks on c8 and a queen on c7/a5 to hammer White's c3-knight and the c2/c3 squares — the soul of Sicilian counterplay."
+   "short": "Because Black's c-pawn is gone, the c-file is half-open for Black. Black piles rooks on c8 and a queen on c7/a5 to hammer White's c3-knight and the c2/c3 squares, the soul of Sicilian counterplay."
   },
   {
    "id": "opposite-wing-plans",
@@ -39,17 +39,17 @@
   {
    "id": "closed-sicilian",
    "name": "The Closed Sicilian (2.Nc3, 3.g3)",
-   "short": "White declines to open the centre: Nc3, g3, Bg2, d3, f4 — a King's-Indian-Attack-style kingside build-up. Black expands on the queenside with ...g6, ...Bg7, ...Rb8 and ...b5-b4."
+   "short": "White declines to open the centre: Nc3, g3, Bg2, d3, f4, a King's-Indian-Attack-style kingside build-up. Black expands on the queenside with ...g6, ...Bg7, ...Rb8 and ...b5-b4."
   },
   {
    "id": "smith-morra-gambit",
    "name": "The Smith-Morra Gambit (2.d4 cxd4 3.c3)",
-   "short": "White sacrifices a pawn: after 2...cxd4 3.c3 dxc3 4.Nxc3, White has fast development, open c- and d-files, and pressure on f7/e5 — paid for with one pawn."
+   "short": "White sacrifices a pawn: after 2...cxd4 3.c3 dxc3 4.Nxc3, White has fast development, open c- and d-files, and pressure on f7/e5. Paid for with one pawn."
   },
   {
    "id": "morra-defensive-setup",
    "name": "Defusing the Morra",
-   "short": "Black accepts the pawn but defends precisely: develop, return the pawn if needed, and reach the key ...a6/...Nf6/...e6 setup with ...Bd7 — the 'Siberian' alertness to Qc7/Nd4 ideas neutralises White's initiative."
+   "short": "Black accepts the pawn but defends precisely: develop, return the pawn if needed, and reach the key ...a6/...Nf6/...e6 setup with ...Bd7, the 'Siberian' alertness to Qc7/Nd4 ideas neutralises White's initiative."
   },
   {
    "id": "boleslavsky-hole-d5",
@@ -68,7 +68,7 @@
      "kind": "teach",
      "title": "An unbalanced fight from move one",
      "intro": {
-      "text": "You have met 1.e4 e5 — symmetry, classical and fair. The Sicilian, 1.e4 c5, refuses the mirror. Black says: I will not copy you; I will fight for the centre on my own terms and play for a win, not a draw. It is the most-played, most-analysed defence in chess. Today, the WHY behind it.",
+      "text": "You have met 1.e4 e5: symmetry, classical and fair. The Sicilian, 1.e4 c5, refuses the mirror. Black says: I will not copy you; I will fight for the centre on my own terms and play for a win, not a draw. It is the most-played, most-analysed defence in chess. Today, the WHY behind it.",
       "annotations": [
        {
         "kind": "highlight",
@@ -83,7 +83,7 @@
        "conceptId": "why-sicilian",
        "coach": {
         "conceptId": "why-sicilian",
-        "text": "1...c5. Notice what it does NOT do: it does not put a pawn on e5. Instead it strikes at d4 from the side. Black's whole idea is to meet White's coming d4 with ...cxd4 — trading a wing pawn (the c-pawn) for a central pawn (White's d-pawn). That trade is the Sicilian's heartbeat: Black ends up with an extra central pawn and a half-open c-file, in return for letting White have a lead in development and more space. An unbalanced, fighting game.",
+        "text": "1...c5. Notice what it does NOT do: it does not put a pawn on e5. Instead it strikes at d4 from the side. Black's whole idea is to meet White's coming d4 with ...cxd4. Trading a wing pawn (the c-pawn) for a central pawn (White's d-pawn). That trade is the Sicilian's heartbeat: Black ends up with an extra central pawn and a half-open c-file, in return for letting White have a lead in development and more space. An unbalanced, fighting game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -105,7 +105,7 @@
        "conceptId": "open-sicilian-d4",
        "coach": {
         "conceptId": "open-sicilian-d4",
-        "text": "2.Nf3 — White's standard route to the Open Sicilian. The knight develops and prepares the central break d4. White is happy: more space, faster development, a target for a kingside attack. The bargain is struck — both sides get something. Whoever uses their trump first usually wins. That is why Sicilian games are sharp and decisive: nobody is copying anybody.",
+        "text": "2.Nf3: White's standard route to the Open Sicilian. The knight develops and prepares the central break d4. White is happy: more space, faster development, a target for a kingside attack. The bargain is struck. Both sides get something. Whoever uses their trump first usually wins. That is why Sicilian games are sharp and decisive: nobody is copying anybody.",
         "annotations": [
          {
           "kind": "circle",
@@ -127,7 +127,7 @@
        "conceptId": "half-open-c-file",
        "coach": {
         "conceptId": "half-open-c-file",
-        "text": "Here is the Sicilian's reward made visible: after 2...d6 (or 2...Nc6) 3.d4 cxd4 4.Nxd4 Nc6, look at Black's c-file. It is HALF-OPEN — no black pawn stands on it. Black will swing a rook to c8 and a queen to c7, and pressure White's queenside, especially the c3-square and a knight that lands there. Meanwhile Black's extra central pawn (the d-pawn) and flexible structure give long-term resilience. White is faster; Black is structurally sounder. Learn to feel that tension — it never leaves the Sicilian.",
+        "text": "Here is the Sicilian's reward made visible: after 2...d6 (or 2...Nc6) 3.d4 cxd4 4.Nxd4 Nc6, look at Black's c-file. It is HALF-OPEN. No black pawn stands on it. Black will swing a rook to c8 and a queen to c7, and pressure White's queenside, especially the c3-square and a knight that lands there. Meanwhile Black's extra central pawn (the d-pawn) and flexible structure give long-term resilience. White is faster; Black is structurally sounder. Learn to feel that tension. It never leaves the Sicilian.",
         "annotations": [
          {
           "kind": "arrow",
@@ -175,19 +175,19 @@
      "kind": "model",
      "title": "The backbone, move by move",
      "intro": {
-      "text": "This is the most-played opening sequence in all of chess. Walk it slowly. Do not memorise the moves — understand the PURPOSE of each, because that is what lets you play the dozens of cousins of this position you will meet over the board."
+      "text": "This is the most-played opening sequence in all of chess. Walk it slowly. Do not memorise the moves. Understand the PURPOSE of each, because that is what lets you play the dozens of cousins of this position you will meet over the board."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — claim the centre, open lines for queen and bishop. The honest first move."
+        "text": "1.e4: claim the centre, open lines for queen and bishop. The honest first move."
        }
       },
       {
        "uci": "c7c5",
        "coach": {
-        "text": "1...c5 — the Sicilian. Black fights for d4 from the flank instead of mirroring with ...e5. Already the game is unbalanced.",
+        "text": "1...c5: the Sicilian. Black fights for d4 from the flank instead of mirroring with ...e5. Already the game is unbalanced.",
         "annotations": [
          {
           "kind": "arrow",
@@ -202,19 +202,19 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — develop and prepare d4. This is White's gateway to the Open Sicilian. (2.c3, 2.Nc3 and 2.d4 are the Anti-Sicilians we meet later in the chapter.)"
+        "text": "2.Nf3: develop and prepare d4. This is White's gateway to the Open Sicilian. (2.c3, 2.Nc3 and 2.d4 are the Anti-Sicilians we meet later in the chapter.)"
        }
       },
       {
        "uci": "d7d6",
        "coach": {
-        "text": "2...d6 — Black supports a future ...e5/...Nf6 and keeps the king's bishop's diagonal flexible. 2...Nc6 and 2...e6 are the other big choices; all aim for the same ...cxd4 trade."
+        "text": "2...d6: Black supports a future ...e5/...Nf6 and keeps the king's bishop's diagonal flexible. 2...Nc6 and 2...e6 are the other big choices; all aim for the same ...cxd4 trade."
        }
       },
       {
        "uci": "d2d4",
        "coach": {
-        "text": "3.d4 — the defining break. White challenges c5 and prepares to open the centre. Black has no good way to avoid the trade.",
+        "text": "3.d4: the defining break. White challenges c5 and prepares to open the centre. Black has no good way to avoid the trade.",
         "annotations": [
          {
           "kind": "arrow",
@@ -230,7 +230,7 @@
       {
        "uci": "c5d4",
        "coach": {
-        "text": "3...cxd4 — the Sicilian trade in the flesh: a wing pawn for a centre pawn. Black's c-file is now half-open; this is the source of all Black's counterplay.",
+        "text": "3...cxd4. The Sicilian trade in the flesh: a wing pawn for a centre pawn. Black's c-file is now half-open; this is the source of all Black's counterplay.",
         "annotations": [
          {
           "kind": "highlight",
@@ -244,7 +244,7 @@
       {
        "uci": "f3d4",
        "coach": {
-        "text": "4.Nxd4 — recapture with the knight, not the queen (Qxd4 invites ...Nc6 with tempo). The knight sits proudly in the centre, eyeing b5, f5 and c6. This is the Open Sicilian tabiya.",
+        "text": "4.Nxd4: recapture with the knight, not the queen (Qxd4 invites ...Nc6 with tempo). The knight sits proudly in the centre, eyeing b5, f5 and c6. This is the Open Sicilian tabiya.",
         "annotations": [
          {
           "kind": "highlight",
@@ -270,7 +270,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — develop AND attack e4, forcing White to defend the centre. A tempo-gaining developing move; never lose time in the Sicilian.",
+        "text": "4...Nf6: develop AND attack e4, forcing White to defend the centre. A tempo-gaining developing move; never lose time in the Sicilian.",
         "annotations": [
          {
           "kind": "arrow",
@@ -284,7 +284,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "5.Nc3 — defend e4 and develop toward the queenside. Now both sides have committed: White to a piece-play, attacking setup; Black to the half-open c-file and central solidity.",
+        "text": "5.Nc3: defend e4 and develop toward the queenside. Now both sides have committed: White to a piece-play, attacking setup; Black to the half-open c-file and central solidity.",
         "annotations": [
          {
           "kind": "highlight",
@@ -297,7 +297,7 @@
       {
        "uci": "a7a6",
        "coach": {
-        "text": "5...a6 — the famous Najdorf move. Tiny but deep: it stops Nb5 and Bb5+, and prepares ...b5 to expand on the queenside and gain space for Black's pieces. Prophylaxis and counterplay in one.",
+        "text": "5...a6: the famous Najdorf move. Tiny but deep: it stops Nb5 and Bb5+, and prepares ...b5 to expand on the queenside and gain space for Black's pieces. Prophylaxis and counterplay in one.",
         "annotations": [
          {
           "kind": "highlight",
@@ -318,13 +318,13 @@
       {
        "uci": "f1e2",
        "coach": {
-        "text": "6.Be2 — a calm, solid developing move, readying to castle. White will follow with O-O, Be3, f3 and queenside expansion — a slow squeeze. (The sharp 6.Bg5 and 6.Be3 mainlines belong to the next Sicilian chapter.)"
+        "text": "6.Be2: a calm, solid developing move, readying to castle. White will follow with O-O, Be3, f3 and queenside expansion, a slow squeeze. (The sharp 6.Bg5 and 6.Be3 mainlines belong to the next Sicilian chapter.)"
        }
       },
       {
        "uci": "e7e5",
        "coach": {
-        "text": "6...e5 — Black gains central space and kicks the d4-knight. The cost: the d5-square is slightly weakened. That single square becomes the strategic battlefield for the rest of the game.",
+        "text": "6...e5: Black gains central space and kicks the d4-knight. The cost: the d5-square is slightly weakened. That single square becomes the strategic battlefield for the rest of the game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -345,7 +345,7 @@
       {
        "uci": "d4b3",
        "coach": {
-        "text": "7.Nb3 — retreat the knight to a useful square: it eyes c5 and a5 and keeps an eye on Black's queenside ambitions. The fight will now centre on whether White can plant a piece on d5, and whether Black can free himself with a timely ...d5 break.",
+        "text": "7.Nb3. Retreat the knight to a useful square: it eyes c5 and a5 and keeps an eye on Black's queenside ambitions. The fight will now centre on whether White can plant a piece on d5, and whether Black can free himself with a timely ...d5 break.",
         "annotations": [
          {
           "kind": "highlight",
@@ -359,7 +359,7 @@
       {
        "uci": "f8e7",
        "coach": {
-        "text": "7...Be7 — develop and prepare to castle. A textbook Open Sicilian has arrived: White will press for d5 control and a kingside/space edge; Black has the half-open c-file, a central pawn majority, and the ...d5 lever in reserve. Equal chances, rich play.",
+        "text": "7...Be7: develop and prepare to castle. A textbook Open Sicilian has arrived: White will press for d5 control and a kingside/space edge; Black has the half-open c-file, a central pawn majority, and the ...d5 lever in reserve. Equal chances, rich play.",
         "annotations": [
          {
           "kind": "arrow",
@@ -408,7 +408,7 @@
        "conceptId": "boleslavsky-hole-d5",
        "coach": {
         "conceptId": "boleslavsky-hole-d5",
-        "text": "Same structure, White's perspective: the plan is the d5-square. Black's ...e5 left a hole on d5 that no black pawn can ever cover again. Here Black has just played ...Be6 to contest it — so White manoeuvres a knight in: Nc3-d5 (or the long route Nb3-d2-f1-e3-d5), offering to trade off the very pieces that guard the square. A white knight on d5 is worth its weight in gold: it cannot be kicked by a pawn and it splits Black's position. Black's whole defensive task is to neutralise d5 — by trading the knights that aim for it, or by striking with ...d5 himself at the right moment.",
+        "text": "Same structure, White's perspective: the plan is the d5-square. Black's ...e5 left a hole on d5 that no black pawn can ever cover again. Here Black has just played ...Be6 to contest it, so White manoeuvres a knight in: Nc3-d5 (or the long route Nb3-d2-f1-e3-d5), offering to trade off the very pieces that guard the square. A white knight on d5 is worth its weight in gold: it cannot be kicked by a pawn and it splits Black's position. Black's whole defensive task is to neutralise d5. By trading the knights that aim for it, or by striking with ...d5 himself at the right moment.",
         "annotations": [
          {
           "kind": "arrow",
@@ -452,7 +452,7 @@
        ],
        "successLine": {
         "conceptId": "open-sicilian-d4",
-        "text": "Good — 2...d6 (or 2...Nc6, or 2...e6). All three are mainstream Sicilians heading for the same ...cxd4 trade. d6 is the most flexible, keeping every Najdorf and Classical setup open.",
+        "text": "Good: 2...d6 (or 2...Nc6, or 2...e6). All three are mainstream Sicilians heading for the same ...cxd4 trade. d6 is the most flexible, keeping every Najdorf and Classical setup open.",
         "annotations": [
          {
           "kind": "highlight",
@@ -462,7 +462,7 @@
         ]
        },
        "retryLine": {
-        "text": "In the Open Sicilian Black develops naturally and heads for the ...cxd4 trade. Play 2...d6, 2...Nc6 or 2...e6 — not a premature ...cxd4, which only helps White's queen develop after Qxd4."
+        "text": "In the Open Sicilian Black develops naturally and heads for the ...cxd4 trade. Play 2...d6, 2...Nc6 or 2...e6. Not a premature ...cxd4, which only helps White's queen develop after Qxd4."
        }
       },
       {
@@ -470,7 +470,7 @@
        "conceptId": "half-open-c-file",
        "coach": {
         "conceptId": "half-open-c-file",
-        "text": "White has played 3.d4, challenging your c5-pawn. This is the Sicilian's defining moment. Make the trade that gives you the half-open c-file — the whole point of the opening.",
+        "text": "White has played 3.d4, challenging your c5-pawn. This is the Sicilian's defining moment. Make the trade that gives you the half-open c-file. The whole point of the opening.",
         "annotations": [
          {
           "kind": "arrow",
@@ -485,7 +485,7 @@
        ],
        "successLine": {
         "conceptId": "half-open-c-file",
-        "text": "3...cxd4 — exactly. A wing pawn for a centre pawn. After White recaptures Nxd4, your c-file is half-open and your queenside counterplay begins. Never shrink from this trade; it IS the Sicilian.",
+        "text": "3...cxd4: exactly. A wing pawn for a centre pawn. After White recaptures Nxd4, your c-file is half-open and your queenside counterplay begins. Never shrink from this trade; it IS the Sicilian.",
         "annotations": [
          {
           "kind": "highlight",
@@ -495,7 +495,7 @@
         ]
        },
        "retryLine": {
-        "text": "Don't avoid the trade. 3...cxd4 is the move — give up the flank c-pawn to win White's central d-pawn and open the c-file. Declining (e.g. 3...Nf6?) lets White build a huge centre for free."
+        "text": "Don't avoid the trade. 3...cxd4 is the move. Give up the flank c-pawn to win White's central d-pawn and open the c-file. Declining (e.g. 3...Nf6?) lets White build a huge centre for free."
        }
       },
       {
@@ -503,7 +503,7 @@
        "conceptId": "boleslavsky-hole-d5",
        "coach": {
         "conceptId": "boleslavsky-hole-d5",
-        "text": "Now you are White, in a Classical Sicilian. Black has just played ...Nc6, and both your knights are developed. Find the natural square for your dark-squared bishop that also eyes Black's queenside and supports a later f3 and queenside push — develop toward the c5/d5 fight.",
+        "text": "Now you are White, in a Classical Sicilian. Black has just played ...Nc6, and both your knights are developed. Find the natural square for your dark-squared bishop that also eyes Black's queenside and supports a later f3 and queenside push. Develop toward the c5/d5 fight.",
         "annotations": [
          {
           "kind": "highlight",
@@ -519,7 +519,7 @@
        ],
        "successLine": {
         "conceptId": "boleslavsky-hole-d5",
-        "text": "Be3 (or Be2, or the sharp Bg5) — all sound developing moves. Be3 is the modern main line: it eyes c5, supports the centre, and prepares Qd2, O-O-O and a kingside pawn storm. White's pieces all point at the d5-square and the black king.",
+        "text": "Be3 (or Be2, or the sharp Bg5). All sound developing moves. Be3 is the modern main line: it eyes c5, supports the centre, and prepares Qd2, O-O-O and a kingside pawn storm. White's pieces all point at the d5-square and the black king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -529,7 +529,7 @@
         ]
        },
        "retryLine": {
-        "text": "Develop a piece toward the centre and the coming fight for d5. Be3, Be2 or Bg5 are all standard. Avoid passive or committal pawn moves here — get the bishop out and prepare to castle."
+        "text": "Develop a piece toward the centre and the coming fight for d5. Be3, Be2 or Bg5 are all standard. Avoid passive or committal pawn moves here. Get the bishop out and prepare to castle."
        }
       }
      ]
@@ -544,7 +544,7 @@
    "segments": [
     {
      "kind": "teach",
-     "title": "Why White plays 2.c3 — and its one flaw",
+     "title": "Why White plays 2.c3, and its one flaw",
      "intro": {
       "text": "Not everyone wants the wild Open Sicilian. 2.c3 is the Alapin: a quiet, ambitious try to get a big classical centre and avoid all of Black's sharp theory."
      },
@@ -554,7 +554,7 @@
        "conceptId": "alapin-c3",
        "coach": {
         "conceptId": "alapin-c3",
-        "text": "2.c3. The idea is simple and strong: next move White plays d4, and if Black takes, White recaptures cxd4 — keeping TWO pawns abreast on d4 and e4, a classical big centre. No half-open c-file for Black, no knight on d4, none of the Open Sicilian's concessions. But 2.c3 has a cost, and you must know it: the c3-pawn occupies the square White's queen's knight wants. That single fact is the key to Black's equaliser.",
+        "text": "2.c3. The idea is simple and strong: next move White plays d4, and if Black takes, White recaptures cxd4. Keeping TWO pawns abreast on d4 and e4, a classical big centre. No half-open c-file for Black, no knight on d4, none of the Open Sicilian's concessions. But 2.c3 has a cost, and you must know it: the c3-pawn occupies the square White's queen's knight wants. That single fact is the key to Black's equaliser.",
         "annotations": [
          {
           "kind": "highlight",
@@ -576,7 +576,7 @@
        "conceptId": "alapin-d5-break",
        "coach": {
         "conceptId": "alapin-d5-break",
-        "text": "The principled reply: 2...d5! Strike the centre before White completes it. After 3.exd5 Qxd5, Black's queen sits proudly on d5 — and here is the punchline of 2.c3: White CANNOT play the natural Nc3 to chase her, because a pawn already stands on c3. White loses the tempo he would normally gain against an early ...Qxd5 (compare the Scandinavian, where Nc3 hits the queen at once). Black develops smoothly and equalises. 2...Nf6 is the other good move; ...d5 is the most direct.",
+        "text": "The principled reply: 2...d5! Strike the centre before White completes it. After 3.exd5 Qxd5, Black's queen sits proudly on d5, and here is the punchline of 2.c3: White CANNOT play the natural Nc3 to chase her, because a pawn already stands on c3. White loses the tempo he would normally gain against an early ...Qxd5 (compare the Scandinavian, where Nc3 hits the queen at once). Black develops smoothly and equalises. 2...Nf6 is the other good move; ...d5 is the most direct.",
         "annotations": [
          {
           "kind": "arrow",
@@ -612,13 +612,13 @@
       {
        "uci": "c7c5",
        "coach": {
-        "text": "1...c5 — the Sicilian."
+        "text": "1...c5: the Sicilian."
        }
       },
       {
        "uci": "c2c3",
        "coach": {
-        "text": "2.c3 — the Alapin. White wants d4 with a big pawn centre and no Open-Sicilian theory.",
+        "text": "2.c3: the Alapin. White wants d4 with a big pawn centre and no Open-Sicilian theory.",
         "annotations": [
          {
           "kind": "highlight",
@@ -632,7 +632,7 @@
       {
        "uci": "d7d5",
        "coach": {
-        "text": "2...d5 — the principled strike. Hit e4 immediately, before White builds the centre with d4.",
+        "text": "2...d5: the principled strike. Hit e4 immediately, before White builds the centre with d4.",
         "annotations": [
          {
           "kind": "arrow",
@@ -647,13 +647,13 @@
       {
        "uci": "e4d5",
        "coach": {
-        "text": "3.exd5 — White must take; otherwise ...dxe4 leaves Black comfortable."
+        "text": "3.exd5: White must take; otherwise ...dxe4 leaves Black comfortable."
        }
       },
       {
        "uci": "d8d5",
        "coach": {
-        "text": "3...Qxd5 — recapture with the queen. Normally this is risky (the queen gets chased), but here it is excellent, because...",
+        "text": "3...Qxd5: recapture with the queen. Normally this is risky (the queen gets chased), but here it is excellent, because...",
         "annotations": [
          {
           "kind": "highlight",
@@ -667,7 +667,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "4.d4 — White still gets his centre pawn, but note what White CANNOT do: there is no Nc3 to hit the queen, because c3 is occupied. Black gains the tempo for free.",
+        "text": "4.d4, White still gets his centre pawn, but note what White CANNOT do: there is no Nc3 to hit the queen, because c3 is occupied. Black gains the tempo for free.",
         "annotations": [
          {
           "kind": "highlight",
@@ -682,19 +682,19 @@
       {
        "uci": "b8c6",
        "coach": {
-        "text": "4...Nc6 — develop and add a second attacker to d4, gaining time."
+        "text": "4...Nc6: develop and add a second attacker to d4, gaining time."
        }
       },
       {
        "uci": "g1f3",
        "coach": {
-        "text": "5.Nf3 — White defends d4 and develops."
+        "text": "5.Nf3: White defends d4 and develops."
        }
       },
       {
        "uci": "c8g4",
        "coach": {
-        "text": "5...Bg4 — pin the f3-knight against the queen and pressure d4. Black is fully developed-to-be, the queen is active, and equality is achieved with no memorised theory. THIS is how you meet the Alapin: ...d5, recapture with the queen, develop with tempo because c3 is in White's way.",
+        "text": "5...Bg4: pin the f3-knight against the queen and pressure d4. Black is fully developed-to-be, the queen is active, and equality is achieved with no memorised theory. THIS is how you meet the Alapin: ...d5, recapture with the queen, develop with tempo because c3 is in White's way.",
         "annotations": [
          {
           "kind": "arrow",
@@ -739,7 +739,7 @@
        ],
        "successLine": {
         "conceptId": "alapin-d5-break",
-        "text": "2...d5 — exactly the move (2...Nf6, hitting e4, is the other fine choice). You refuse to let White build the centre unopposed. After 3.exd5 Qxd5, White cannot gain time with Nc3, and you equalise comfortably.",
+        "text": "2...d5: exactly the move (2...Nf6, hitting e4, is the other fine choice). You refuse to let White build the centre unopposed. After 3.exd5 Qxd5, White cannot gain time with Nc3, and you equalise comfortably.",
         "annotations": [
          {
           "kind": "highlight",
@@ -757,7 +757,7 @@
        "conceptId": "alapin-d5-break",
        "coach": {
         "conceptId": "alapin-d5-break",
-        "text": "You are White now, and you have just played 3.exd5 Qxd5. In a normal Scandinavian you would gleefully play Nc3 here, hitting the queen and gaining a tempo. Try it — find the most natural developing move for your queen's knight, and feel the problem 2.c3 created for you.",
+        "text": "You are White now, and you have just played 3.exd5 Qxd5. In a normal Scandinavian you would gleefully play Nc3 here, hitting the queen and gaining a tempo. Try it. Find the most natural developing move for your queen's knight, and feel the problem 2.c3 created for you.",
         "annotations": [
          {
           "kind": "highlight",
@@ -774,7 +774,7 @@
        ],
        "successLine": {
         "conceptId": "alapin-d5-break",
-        "text": "Right — Nf3, d4, Be2 or Bc4 are all White can do; the knight on b1 has NO good developing square, because Nc3 is illegal (own pawn) and Nd2 blocks the bishop. That is the price of 2.c3: White's own structure denies him the tempo-gaining Nc3. Black equalises precisely because of this.",
+        "text": "Right: Nf3, d4, Be2 or Bc4 are all White can do; the knight on b1 has NO good developing square, because Nc3 is illegal (own pawn) and Nd2 blocks the bishop. That is the price of 2.c3: White's own structure denies him the tempo-gaining Nc3. Black equalises precisely because of this.",
         "annotations": [
          {
           "kind": "highlight",
@@ -785,7 +785,7 @@
         ]
        },
        "retryLine": {
-        "text": "Notice the trap White set for himself: Nc3 is illegal — White's own c3-pawn sits there. So just make a sound developing move instead: Nf3, d4, Be2 or Bc4. The lesson is that White cannot chase the queen with tempo."
+        "text": "Notice the trap White set for himself: Nc3 is illegal. White's own c3-pawn sits there. So just make a sound developing move instead: Nf3, d4, Be2 or Bc4. The lesson is that White cannot chase the queen with tempo."
        }
       }
      ]
@@ -808,7 +808,7 @@
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 c5 2.Nc3 — already different. White develops the knight to c3 and intends NOT to play d4.",
+        "text": "1.e4 c5 2.Nc3: already different. White develops the knight to c3 and intends NOT to play d4.",
         "annotations": [
          {
           "kind": "highlight",
@@ -822,26 +822,26 @@
       {
        "uci": "c7c5",
        "coach": {
-        "text": "1...c5 — the Sicilian, met by a closed treatment."
+        "text": "1...c5: the Sicilian, met by a closed treatment."
        }
       },
       {
        "uci": "b1c3",
        "coach": {
-        "text": "2.Nc3 — the Closed Sicilian's signature. The centre stays shut; this becomes a slow, strategic battle of opposite-wing plans.",
+        "text": "2.Nc3: the Closed Sicilian's signature. The centre stays shut; this becomes a slow, strategic battle of opposite-wing plans.",
         "conceptId": "closed-sicilian"
        }
       },
       {
        "uci": "b8c6",
        "coach": {
-        "text": "2...Nc6 — Black develops naturally, also keeping the centre flexible."
+        "text": "2...Nc6: Black develops naturally, also keeping the centre flexible."
        }
       },
       {
        "uci": "g2g3",
        "coach": {
-        "text": "3.g3 — White prepares Bg2, a long-range bishop on the a8-h1 diagonal that supports the e4-pawn and a future f5 push.",
+        "text": "3.g3: White prepares Bg2, a long-range bishop on the a8-h1 diagonal that supports the e4-pawn and a future f5 push.",
         "annotations": [
          {
           "kind": "arrow",
@@ -856,25 +856,25 @@
       {
        "uci": "g7g6",
        "coach": {
-        "text": "3...g6 — Black mirrors with his own fianchetto. The g7-bishop will rake the long diagonal toward White's queenside."
+        "text": "3...g6: Black mirrors with his own fianchetto. The g7-bishop will rake the long diagonal toward White's queenside."
        }
       },
       {
        "uci": "f1g2",
        "coach": {
-        "text": "4.Bg2 — develop the bishop. White's setup (Nc3, g3, Bg2, d3, f4, Nf3) is a reversed King's Indian — White will attack where his pawns point: the kingside."
+        "text": "4.Bg2: develop the bishop. White's setup (Nc3, g3, Bg2, d3, f4, Nf3) is a reversed King's Indian. White will attack where his pawns point: the kingside."
        }
       },
       {
        "uci": "f8g7",
        "coach": {
-        "text": "4...Bg7 — Black completes the mirror. But the symmetry is an illusion: each side will attack on a DIFFERENT wing."
+        "text": "4...Bg7: Black completes the mirror. But the symmetry is an illusion: each side will attack on a DIFFERENT wing."
        }
       },
       {
        "uci": "d2d3",
        "coach": {
-        "text": "5.d3 — modest, solid, supporting e4. White is in no hurry; the plan is f4, Nf3, O-O, then f5 to pry open the black king.",
+        "text": "5.d3: modest, solid, supporting e4. White is in no hurry; the plan is f4, Nf3, O-O, then f5 to pry open the black king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -890,13 +890,13 @@
       {
        "uci": "d7d6",
        "coach": {
-        "text": "5...d6 — Black supports e5/c5 and opens the c8-bishop's view. Now Black turns to HIS plan."
+        "text": "5...d6: Black supports e5/c5 and opens the c8-bishop's view. Now Black turns to HIS plan."
        }
       },
       {
        "uci": "f2f4",
        "coach": {
-        "text": "6.f4 — White grabs kingside space and readies f5. The pawns point right; that is where White attacks.",
+        "text": "6.f4: White grabs kingside space and readies f5. The pawns point right; that is where White attacks.",
         "annotations": [
          {
           "kind": "highlight",
@@ -910,7 +910,7 @@
       {
        "uci": "e7e6",
        "coach": {
-        "text": "6...e6 — Black prepares ...Nge7 (the knight avoids f3-blockades and heads for d4 or g6) and a queenside pawn storm. Black's coming plan: ...Rb8, ...b5-b4 to kick the c3-knight and open the b-file.",
+        "text": "6...e6: Black prepares ...Nge7 (the knight avoids f3-blockades and heads for d4 or g6) and a queenside pawn storm. Black's coming plan: ...Rb8, ...b5-b4 to kick the c3-knight and open the b-file.",
         "annotations": [
          {
           "kind": "arrow",
@@ -926,7 +926,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "7.Nf3 — develop and prepare to castle. We have a complete Closed Sicilian: White will roll f5 and pile pieces at the black king; Black will roll ...b5-b4 and pile pieces at the white queenside. A race. The faster, more accurate attacker wins. Memorise the picture: White right, Black left.",
+        "text": "7.Nf3: develop and prepare to castle. We have a complete Closed Sicilian: White will roll f5 and pile pieces at the black king; Black will roll ...b5-b4 and pile pieces at the white queenside. A race. The faster, more accurate attacker wins. Memorise the picture: White right, Black left.",
         "annotations": [
          {
           "kind": "arrow",
@@ -969,7 +969,7 @@
        ],
        "successLine": {
         "conceptId": "opposite-wing-plans",
-        "text": "f5! — the Closed Sicilian's signature attacking break. White prises open the f-file and the black kingside. After ...gxf5 (or ...exf5) lines open toward Black's king, and White's pieces — Qe1-h4, Bh6, Ng5 — pour in. Attack where your pawns point.",
+        "text": "f5!. The Closed Sicilian's signature attacking break. White prises open the f-file and the black kingside. After ...gxf5 (or ...exf5) lines open toward Black's king, and White's pieces (Qe1-h4, Bh6, Ng5) pour in. Attack where your pawns point.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1002,7 +1002,7 @@
        ],
        "successLine": {
         "conceptId": "opposite-wing-plans",
-        "text": "...b5! — Black's signature queenside break. Next comes ...b4, hitting the c3-knight, opening the b-file for the rook on b8, and rolling toward White's king. Each side attacks its own wing; the race is on. The player who is faster and more precise usually wins.",
+        "text": "...b5!. Black's signature queenside break. Next comes ...b4, hitting the c3-knight, opening the b-file for the rook on b8, and rolling toward White's king. Each side attacks its own wing; the race is on. The player who is faster and more precise usually wins.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1021,7 +1021,7 @@
      "kind": "puzzle",
      "title": "Cool-down: crack the king",
      "intro": {
-      "text": "Opposite-wing races are won by the sharper attacker. Each of these is a kingside breakthrough from a Sicilian-flavoured middlegame — find the blow that opens the king."
+      "text": "Opposite-wing races are won by the sharper attacker. Each of these is a kingside breakthrough from a Sicilian-flavoured middlegame. Find the blow that opens the king."
      },
      "puzzle": {
       "themes": [
@@ -1052,7 +1052,7 @@
        "conceptId": "smith-morra-gambit",
        "coach": {
         "conceptId": "smith-morra-gambit",
-        "text": "After 2.d4 cxd4 3.c3, White offers a second pawn. The idea: if 3...dxc3 4.Nxc3, White has TWO half-open files (c and d) for his rooks, a tempo lead, and the standard battery of Bc4 (hitting f7), Nf3, O-O, Qe2 and Rd1/Rc1 — all for the price of one pawn. The pressure on f7, e5, c7 and the d-file is real and fast. You must not panic and you must not be greedy: take the pawn, then defend precisely.",
+        "text": "After 2.d4 cxd4 3.c3, White offers a second pawn. The idea: if 3...dxc3 4.Nxc3, White has TWO half-open files (c and d) for his rooks, a tempo lead, and the standard battery of Bc4 (hitting f7), Nf3, O-O, Qe2 and Rd1/Rc1, all for the price of one pawn. The pressure on f7, e5, c7 and the d-file is real and fast. You must not panic and you must not be greedy: take the pawn, then defend precisely.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1076,7 +1076,7 @@
        "conceptId": "morra-defensive-setup",
        "coach": {
         "conceptId": "morra-defensive-setup",
-        "text": "Here is the antidote setup, the one every Sicilian player should know cold: ...d6, ...a6, ...e6, ...Nf6, ...Nc6, and crucially ...Be7 (not ...Bc5, which walks into tactics). The move ...a6 is golden: it stops Nb5 and Bb5 ideas and prepares ...b5 to blunt White's c4-bishop and gain queenside space. Black is solid, a pawn up, and ready to return the pawn at the right moment to kill White's initiative and reach a winning endgame. No heroics — just clean development and the ...a6/...e6/...Be7 wall.",
+        "text": "Here is the antidote setup, the one every Sicilian player should know cold: ...d6, ...a6, ...e6, ...Nf6, ...Nc6, and crucially ...Be7 (not ...Bc5, which walks into tactics). The move ...a6 is golden: it stops Nb5 and Bb5 ideas and prepares ...b5 to blunt White's c4-bishop and gain queenside space. Black is solid, a pawn up, and ready to return the pawn at the right moment to kill White's initiative and reach a winning endgame. No heroics: just clean development and the ...a6/...e6/...Be7 wall.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1098,7 +1098,7 @@
        "conceptId": "morra-defensive-setup",
        "coach": {
         "conceptId": "morra-defensive-setup",
-        "text": "One concrete warning that shows how brittle White's setup can be — the famous 'Siberian Trap'. The line is 1.e4 c5 2.d4 cxd4 3.c3 dxc3 4.Nxc3 e6 5.Nf3 Nc6 6.Bc4 Nf6 7.O-O Qc7 8.Qe2. Black's queen on c7 already eyes h2 down the b8-h2 diagonal. Now comes the key move: 8...Ng4!, adding a second attacker to h2. The whole point of the trap is the MATE on h2 — not any fork. Only White's f3-knight defends h2.",
+        "text": "One concrete warning that shows how brittle White's setup can be, the famous 'Siberian Trap'. The line is 1.e4 c5 2.d4 cxd4 3.c3 dxc3 4.Nxc3 e6 5.Nf3 Nc6 6.Bc4 Nf6 7.O-O Qc7 8.Qe2. Black's queen on c7 already eyes h2 down the b8-h2 diagonal. Now comes the key move: 8...Ng4!, adding a second attacker to h2. The whole point of the trap is the MATE on h2, not any fork. Only White's f3-knight defends h2.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1134,7 +1134,7 @@
        "conceptId": "morra-defensive-setup",
        "coach": {
         "conceptId": "morra-defensive-setup",
-        "text": "If White lashes out with 9.h3? to kick the knight, he walks into the trap: 9...Nd4!! The point is DEFLECTION, not a fork — the d4-knight attacks the queen on e2, and if 10.Nxd4 (or any capture of the d4-knight by the f3-knight), the only guard of h2 is gone and 10...Qh2 is checkmate. And 10.hxg4?? Nxe2+ simply wins the queen. White's pressure was a bluff: develop soundly, remember ...Qc7 + ...Ng4, and let the gambiteer be the one who pays.",
+        "text": "If White lashes out with 9.h3? to kick the knight, he walks into the trap: 9...Nd4!! The point is DEFLECTION, not a fork. The d4-knight attacks the queen on e2, and if 10.Nxd4 (or any capture of the d4-knight by the f3-knight), the only guard of h2 is gone and 10...Qh2 is checkmate. And 10.hxg4?? Nxe2+ simply wins the queen. White's pressure was a bluff: develop soundly, remember ...Qc7 + ...Ng4, and let the gambiteer be the one who pays.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1171,7 +1171,7 @@
        "conceptId": "smith-morra-gambit",
        "coach": {
         "conceptId": "smith-morra-gambit",
-        "text": "White has played 3.c3, offering the gambit pawn. The principled, critical reply is to ACCEPT — declining lets White have everything for nothing. Take the pawn; then we will defend.",
+        "text": "White has played 3.c3, offering the gambit pawn. The principled, critical reply is to ACCEPT. Declining lets White have everything for nothing. Take the pawn; then we will defend.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1186,7 +1186,7 @@
        ],
        "successLine": {
         "conceptId": "smith-morra-gambit",
-        "text": "3...dxc3 — accepted. After 4.Nxc3 White has his development lead and open files, and you have an extra pawn. The whole battle is now: can White's initiative justify the pawn? With accurate defence, no. Greedily declining or grabbing a second pawn carelessly is what gets Black mated; clean acceptance then solid development is the way.",
+        "text": "3...dxc3: accepted. After 4.Nxc3 White has his development lead and open files, and you have an extra pawn. The whole battle is now: can White's initiative justify the pawn? With accurate defence, no. Greedily declining or grabbing a second pawn carelessly is what gets Black mated; clean acceptance then solid development is the way.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1196,7 +1196,7 @@
         ]
        },
        "retryLine": {
-        "text": "Meet the gambit head-on: accept it with 3...dxc3. Declining (3...d3, 3...Nf6) hands White a free initiative. Take the pawn, then defend precisely — that is how the Morra is refuted."
+        "text": "Meet the gambit head-on: accept it with 3...dxc3. Declining (3...d3, 3...Nf6) hands White a free initiative. Take the pawn, then defend precisely. That is how the Morra is refuted."
        }
       },
       {
@@ -1218,7 +1218,7 @@
        ],
        "successLine": {
         "conceptId": "morra-defensive-setup",
-        "text": "...Be7 — the solid choice. The bishop is safe, the king castles next move, and Black's extra pawn starts to tell. The tempting ...Bc5 instead runs into tactics against f7 and the d-file pin; ...Be7 keeps everything bomb-proof. Sound, modest moves defuse the gambit.",
+        "text": "...Be7, the solid choice. The bishop is safe, the king castles next move, and Black's extra pawn starts to tell. The tempting ...Bc5 instead runs into tactics against f7 and the d-file pin; ...Be7 keeps everything bomb-proof. Sound, modest moves defuse the gambit.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1228,7 +1228,7 @@
         ]
        },
        "retryLine": {
-        "text": "Keep it solid. ...Be7 develops the bishop safely and prepares to castle. Avoid ...Bc5 here — it invites tactics on f7 and the open d-file. The Morra is beaten by calm, accurate development, not by counterattacking too early."
+        "text": "Keep it solid. ...Be7 develops the bishop safely and prepares to castle. Avoid ...Bc5 here: it invites tactics on f7 and the open d-file. The Morra is beaten by calm, accurate development, not by counterattacking too early."
        }
       }
      ]
@@ -1253,7 +1253,7 @@
        "conceptId": "boleslavsky-hole-d5",
        "coach": {
         "conceptId": "boleslavsky-hole-d5",
-        "text": "A typical Scheveningen structure: Black has pawns on d6 and e6 — the 'small centre'. They look modest, but together they restrain White and prepare the great freeing lever. The whole game Black has wanted to play ...d5 in one go. Here, with the d4-knight a touch loose and pieces lined up, the moment has come. ...d5! frees Black's game completely: it opens the position for Black's better-placed pieces and neutralises White's space. Recognising WHEN ...d5 works is the master skill of the Sicilian.",
+        "text": "A typical Scheveningen structure: Black has pawns on d6 and e6, the 'small centre'. They look modest, but together they restrain White and prepare the great freeing lever. The whole game Black has wanted to play ...d5 in one go. Here, with the d4-knight a touch loose and pieces lined up, the moment has come. ...d5! frees Black's game completely: it opens the position for Black's better-placed pieces and neutralises White's space. Recognising WHEN ...d5 works is the master skill of the Sicilian.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1280,7 +1280,7 @@
        "conceptId": "half-open-c-file",
        "coach": {
         "conceptId": "half-open-c-file",
-        "text": "After ...d5, look at the transformation. The centre opens, White's extra space evaporates, and every black piece — the c8-bishop, the f6-knight, the rook that will swing to c8 or d8 — breathes. If White takes 10.exd5 exd5 (or ...Nxd5), Black has an isolated but free d-pawn and active pieces; if White takes 10.e5, the knight jumps and Black has ...d4 ideas. Either way the half-open c-file and active pieces give Black full equality. THIS is the reward the Sicilian promised back in Lesson 1, finally cashed in.",
+        "text": "After ...d5, look at the transformation. The centre opens, White's extra space evaporates, and every black piece (the c8-bishop, the f6-knight, the rook that will swing to c8 or d8) breathes. If White takes 10.exd5 exd5 (or ...Nxd5), Black has an isolated but free d-pawn and active pieces; if White takes 10.e5, the knight jumps and Black has ...d4 ideas. Either way the half-open c-file and active pieces give Black full equality. THIS is the reward the Sicilian promised back in Lesson 1, finally cashed in.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1323,7 +1323,7 @@
        ],
        "successLine": {
         "conceptId": "boleslavsky-hole-d5",
-        "text": "...d5! — the Sicilian's golden break. In one move Black undermines e4, opens lines for his pieces, and erases White's space advantage. Whenever you can play ...d5 safely in the Open Sicilian, it is almost always the answer. The half-open c-file plus the ...d5 break are the two pillars of Black's whole strategy.",
+        "text": "...d5!. The Sicilian's golden break. In one move Black undermines e4, opens lines for his pieces, and erases White's space advantage. Whenever you can play ...d5 safely in the Open Sicilian, it is almost always the answer. The half-open c-file plus the ...d5 break are the two pillars of Black's whole strategy.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1342,7 +1342,7 @@
      "kind": "puzzle",
      "title": "Cool-down: Sicilian counterplay",
      "intro": {
-      "text": "Sicilian endings and middlegames reward the side whose pieces are more active. Find the strongest continuation in each — the kind of blow that the half-open c-file and active pieces set up."
+      "text": "Sicilian endings and middlegames reward the side whose pieces are more active. Find the strongest continuation in each. The kind of blow that the half-open c-file and active pieces set up."
      },
      "puzzle": {
       "themes": [
@@ -1371,7 +1371,7 @@
        "conceptId": "open-sicilian-d4",
        "coach": {
         "conceptId": "open-sicilian-d4",
-        "text": "You are White against the Sicilian and you want the main-line Open Sicilian — the fighting game with the strong d4-knight and a kingside initiative. Make the move that heads straight for it.",
+        "text": "You are White against the Sicilian and you want the main-line Open Sicilian. The fighting game with the strong d4-knight and a kingside initiative. Make the move that heads straight for it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1396,7 +1396,7 @@
         ]
        },
        "retryLine": {
-        "text": "For the Open Sicilian, develop and prepare the central break: 2.Nf3 (then 3.d4), or play 2.d4 at once. The Anti-Sicilians (2.c3, 2.Nc3) deliberately avoid this — but you want the main line here."
+        "text": "For the Open Sicilian, develop and prepare the central break: 2.Nf3 (then 3.d4), or play 2.d4 at once. The Anti-Sicilians (2.c3, 2.Nc3) deliberately avoid this, but you want the main line here."
        }
       },
       {
@@ -1420,7 +1420,7 @@
        ],
        "successLine": {
         "conceptId": "alapin-d5-break",
-        "text": "This is the Alapin, and ...d5 (or ...Nf6) is the answer: hit e4 before White builds his big centre, exploiting that c3 blocks White's own knight. Name the opening, recall the plan — that is the whole skill.",
+        "text": "This is the Alapin, and ...d5 (or ...Nf6) is the answer: hit e4 before White builds his big centre, exploiting that c3 blocks White's own knight. Name the opening, recall the plan: that is the whole skill.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1438,7 +1438,7 @@
        "conceptId": "smith-morra-gambit",
        "coach": {
         "conceptId": "smith-morra-gambit",
-        "text": "And this one: 2.d4 cxd4 3.c3. White is offering the Smith-Morra Gambit. What is the critical, principled response — the move that meets the gambit on its own terms?",
+        "text": "And this one: 2.d4 cxd4 3.c3. White is offering the Smith-Morra Gambit. What is the critical, principled response. The move that meets the gambit on its own terms?",
         "annotations": [
          {
           "kind": "arrow",
@@ -1453,7 +1453,7 @@
        ],
        "successLine": {
         "conceptId": "smith-morra-gambit",
-        "text": "3...dxc3 — accept the gambit, then defend with the ...a6/...e6/...Be7 wall and remember the Siberian motif (...Qc7 and ...Ng4, with ...Nd4 deflecting the defender of h2). You now know all three Anti-Sicilians and the Open Sicilian: recognise the opening, recall the plan, and you will never be lost against 1...c5's opponents.",
+        "text": "3...dxc3: accept the gambit, then defend with the ...a6/...e6/...Be7 wall and remember the Siberian motif (...Qc7 and ...Ng4, with ...Nd4 deflecting the defender of h2). You now know all three Anti-Sicilians and the Open Sicilian: recognise the opening, recall the plan, and you will never be lost against 1...c5's opponents.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1463,7 +1463,7 @@
         ]
        },
        "retryLine": {
-        "text": "This is the Smith-Morra. The critical test is to accept: 3...dxc3. Take the pawn, then develop soundly to refute the gambit — declining gives White a free initiative."
+        "text": "This is the Smith-Morra. The critical test is to accept: 3...dxc3. Take the pawn, then develop soundly to refute the gambit. Declining gives White a free initiative."
        }
       }
      ]
@@ -1472,7 +1472,7 @@
      "kind": "puzzle",
      "title": "Cool-down: finish the fight",
      "intro": {
-      "text": "One last set. Open, sharp, Sicilian-style positions — find the move that wins. You have earned the eye for them."
+      "text": "One last set. Open, sharp, Sicilian-style positions. Find the move that wins. You have earned the eye for them."
      },
      "puzzle": {
       "themes": [
@@ -1500,7 +1500,7 @@
      "To control e5 with a pawn, like 1...e5 does"
     ],
     "answerIndex": 1,
-    "explain": "The Sicilian fights for the centre from the side. The thematic ...cxd4 trades a wing pawn for a central pawn, leaving Black a half-open c-file and a central majority — an unbalanced, fighting game where Black plays for a win."
+    "explain": "The Sicilian fights for the centre from the side. The thematic ...cxd4 trades a wing pawn for a central pawn, leaving Black a half-open c-file and a central majority. An unbalanced, fighting game where Black plays for a win."
    },
    {
     "kind": "mc",
@@ -1509,7 +1509,7 @@
     "options": [
      "It lets Black's king escape to the queenside",
      "It gives Black a passed pawn immediately",
-     "It is the highway for Black's rooks and queen to pressure White's c3-knight and the c2-square — the engine of Black's queenside counterplay",
+     "It is the highway for Black's rooks and queen to pressure White's c3-knight and the c2-square, the engine of Black's queenside counterplay",
      "It blocks White's bishop on c1"
     ],
     "answerIndex": 2,
@@ -1520,13 +1520,13 @@
     "prompt": "Why is 2...d5 such an effective answer to the Alapin (2.c3)?",
     "fen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/2P5/PP1P1PPP/RNBQKBNR b KQkq - 0 2",
     "options": [
-     "Because after 3.exd5 Qxd5 White cannot play Nc3 to chase the queen — the c3-pawn is in the way, so Black develops with a free tempo",
+     "Because after 3.exd5 Qxd5 White cannot play Nc3 to chase the queen. The c3-pawn is in the way, so Black develops with a free tempo",
      "Because it wins a pawn by force",
      "Because it threatens immediate checkmate",
      "Because it pins White's knight to the king"
     ],
     "answerIndex": 0,
-    "explain": "2.c3 blocks White's own queen's knight. So after 2...d5 3.exd5 Qxd5, there is no Nc3 to harass the black queen with tempo (unlike the Scandinavian). Black develops freely and equalises — the built-in flaw of the Alapin."
+    "explain": "2.c3 blocks White's own queen's knight. So after 2...d5 3.exd5 Qxd5, there is no Nc3 to harass the black queen with tempo (unlike the Scandinavian). Black develops freely and equalises, the built-in flaw of the Alapin."
    },
    {
     "kind": "mc",
@@ -1539,7 +1539,7 @@
      "To castle queenside and abandon the centre"
     ],
     "answerIndex": 1,
-    "explain": "After Black's ...e5, the d5-square is a permanent hole. White manoeuvres a knight there and trades off its defenders. A white knight on d5 cannot be kicked by a pawn and dominates — which is exactly why Black's counter is the freeing ...d5 break."
+    "explain": "After Black's ...e5, the d5-square is a permanent hole. White manoeuvres a knight there and trades off its defenders. A white knight on d5 cannot be kicked by a pawn and dominates, which is exactly why Black's counter is the freeing ...d5 break."
    },
    {
     "kind": "play",
@@ -1552,25 +1552,25 @@
    },
    {
     "kind": "play",
-    "prompt": "1.e4 c5 2.Nf3 Nc6 3.d4. White is challenging your c5-pawn in the centre. It is Black's move — resolve the central tension the way the Sicilian demands.",
+    "prompt": "1.e4 c5 2.Nf3 Nc6 3.d4. White is challenging your c5-pawn in the centre. It is Black's move. Resolve the central tension the way the Sicilian demands.",
     "fen": "r1bqkbnr/pp1ppppp/2n5/2p5/3PP3/5N2/PPP2PPP/RNBQKB1R b KQkq - 0 3",
     "solutionUci": [
      "c5d4"
     ],
-    "explain": "3...cxd4 — a wing pawn for a central pawn (here via the 2...Nc6 move order). After 4.Nxd4 your c-file is half-open and your queenside counterplay can begin. Declining the trade lets White build a free big centre."
+    "explain": "3...cxd4: a wing pawn for a central pawn (here via the 2...Nc6 move order). After 4.Nxd4 your c-file is half-open and your queenside counterplay can begin. Declining the trade lets White build a free big centre."
    },
    {
     "kind": "play",
-    "prompt": "1.e4 c5 2.c3 d5 3.exd5 Qxd5 4.d4. White has his centre pawn, but his queen's knight has no comfortable square. It is Black's move — develop a piece toward d4 and gain time.",
+    "prompt": "1.e4 c5 2.c3 d5 3.exd5 Qxd5 4.d4. White has his centre pawn, but his queen's knight has no comfortable square. It is Black's move. Develop a piece toward d4 and gain time.",
     "fen": "rnb1kbnr/pp2pppp/8/2pq4/3P4/2P5/PP3PPP/RNBQKBNR b KQkq - 0 4",
     "solutionUci": [
      "b8c6"
     ],
-    "explain": "4...Nc6 develops with tempo, adding pressure to d4 — and White still cannot play the natural Nc3 to harass the queen, because c3 is occupied. That blocked knight is the whole point of meeting the Alapin with ...d5."
+    "explain": "4...Nc6 develops with tempo, adding pressure to d4, and White still cannot play the natural Nc3 to harass the queen, because c3 is occupied. That blocked knight is the whole point of meeting the Alapin with ...d5."
    },
    {
     "kind": "play",
-    "prompt": "Smith-Morra, a few moves on: 1.e4 c5 2.d4 cxd4 3.c3 dxc3 4.Nxc3 Nc6 5.Nf3 d6 6.Bc4 e6 7.O-O Nf6 8.Qe2. You are a pawn up. It is Black's move — make the small flank pawn move that shuts White's pieces out of b5 and prepares ...b5.",
+    "prompt": "Smith-Morra, a few moves on: 1.e4 c5 2.d4 cxd4 3.c3 dxc3 4.Nxc3 Nc6 5.Nf3 d6 6.Bc4 e6 7.O-O Nf6 8.Qe2. You are a pawn up. It is Black's move. Make the small flank pawn move that shuts White's pieces out of b5 and prepares ...b5.",
     "fen": "r1bqkb1r/pp3ppp/2nppn2/8/2B1P3/2N2N2/PP2QPPP/R1B2RK1 b kq - 3 8",
     "solutionUci": [
      "a7a6"
@@ -1579,12 +1579,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Smith-Morra middlegame (here White's bishop sits on d3). Black's queen on c7 already rakes the b8-h2 diagonal and a knight has hopped to g4, so two pieces eye h2 — guarded only by the f3-knight. White just played h3 to kick the g4-knight. It is Black's move: find the blow that wins.",
+    "prompt": "Smith-Morra middlegame (here White's bishop sits on d3). Black's queen on c7 already rakes the b8-h2 diagonal and a knight has hopped to g4, so two pieces eye h2. Guarded only by the f3-knight. White just played h3 to kick the g4-knight. It is Black's move: find the blow that wins.",
     "fen": "r1b1kb1r/ppqp1ppp/2n1p3/8/4P1n1/2NB1N1P/PP2QPP1/R1B2RK1 b kq - 0 9",
     "solutionUci": [
      "c6d4"
     ],
-    "explain": "...Nd4!! — deflection, not a fork. The knight attacks the queen on e2 to drag away h2's only guard. If White captures the d4-knight with the f3-knight, h2 falls and ...Qxh2# is mate (the g4-knight defends the queen). If instead hxg4, then ...Nxe2+ simply wins the queen. Every White reply here loses on the spot — the Siberian motif in a fresh dress."
+    "explain": "...Nd4!!, deflection, not a fork. The knight attacks the queen on e2 to drag away h2's only guard. If White captures the d4-knight with the f3-knight, h2 falls and ...Qxh2# is mate (the g4-knight defends the queen). If instead hxg4, then ...Nxe2+ simply wins the queen. Every White reply here loses on the spot, the Siberian motif in a fresh dress."
    },
    {
     "kind": "play",
@@ -1593,11 +1593,11 @@
     "solutionUci": [
      "f4f5"
     ],
-    "explain": "f4-f5 is the Closed Sicilian's signature attacking lever: it prises open lines toward the black king, after which Qe1-h4, Bh6 and Ng5 pour in. Attack where your pawns point — for White, the kingside. (Here Black has the ...Nf6 setup; the plan is the same.)"
+    "explain": "f4-f5 is the Closed Sicilian's signature attacking lever: it prises open lines toward the black king, after which Qe1-h4, Bh6 and Ng5 pour in. Attack where your pawns point, for White, the kingside. (Here Black has the ...Nf6 setup; the plan is the same.)"
    },
    {
     "kind": "play",
-    "prompt": "Scheveningen Sicilian, the 'small centre' on d6/e6. White has grabbed kingside space with f4 and tucked his king away. It is Black's move — find the single central pawn advance that opens the position for your better-placed pieces.",
+    "prompt": "Scheveningen Sicilian, the 'small centre' on d6/e6. White has grabbed kingside space with f4 and tucked his king away. It is Black's move. Find the single central pawn advance that opens the position for your better-placed pieces.",
     "fen": "r1bq1rk1/pp2bpp1/2nppn1p/8/3NPP2/2N1B2P/PPP1B1P1/R2Q1RK1 b - - 0 10",
     "solutionUci": [
      "d6d5"
@@ -1610,7 +1610,7 @@
     "fen": "rnbqkbnr/pp2pppp/3p4/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
     "lastMoveUci": "c5d4",
     "verdict": "correct",
-    "explain": "Correct — this is the whole point of the Sicilian. Black trades the flank c-pawn for White's central d-pawn, gaining the half-open c-file and a central majority. White recaptures 4.Nxd4 and we have the main-line tabiya."
+    "explain": "Correct: this is the whole point of the Sicilian. Black trades the flank c-pawn for White's central d-pawn, gaining the half-open c-file and a central majority. White recaptures 4.Nxd4 and we have the main-line tabiya."
    },
    {
     "kind": "judge",
@@ -1618,7 +1618,7 @@
     "fen": "r2qkbnr/pp2pppp/2np4/8/2B1P1b1/2N2N2/PP3PPP/R1BQK2R w KQkq - 2 7",
     "lastMoveUci": "c8g4",
     "verdict": "blunder",
-    "explain": "Blunder — it walks into the classic Morra shot 7.Bxf7+! Kxf7 8.Ng5+ (forking the king and the loose g4-bishop) and 9.Qxg4: White regains the gambit pawn, wins the bishop, and strips Black's king bare. This is exactly why the Morra antidote is the modest ...a6/...e6/...Be7 wall, NOT loose, tactical bishop sorties. Develop soundly and keep the king safe; let the gambiteer prove his pawn."
+    "explain": "Blunder: it walks into the classic Morra shot 7.Bxf7+! Kxf7 8.Ng5+ (forking the king and the loose g4-bishop) and 9.Qxg4: White regains the gambit pawn, wins the bishop, and strips Black's king bare. This is exactly why the Morra antidote is the modest ...a6/...e6/...Be7 wall, NOT loose, tactical bishop sorties. Develop soundly and keep the king safe; let the gambiteer prove his pawn."
    },
    {
     "kind": "judge",
@@ -1626,7 +1626,7 @@
     "fen": "rnbqkb1r/1p3ppp/p2p4/4p3/4n3/1NN5/PPP1BPPP/R1BQK2R w KQkq - 0 8",
     "lastMoveUci": "f6e4",
     "verdict": "blunder",
-    "explain": "Blunder — the e4-pawn was defended by the knight on c3. White simply plays 8.Nxe4 and wins a clean piece for the pawn. Always count defenders before grabbing a 'free' centre pawn; in the Sicilian the e4-pawn is usually guarded by Nc3."
+    "explain": "Blunder: the e4-pawn was defended by the knight on c3. White simply plays 8.Nxe4 and wins a clean piece for the pawn. Always count defenders before grabbing a 'free' centre pawn; in the Sicilian the e4-pawn is usually guarded by Nc3."
    },
    {
     "kind": "judge",
@@ -1634,7 +1634,7 @@
     "fen": "1rbq1rk1/p3npbp/2npp1p1/1pp5/4PP2/2NP1NP1/PPP3BP/R1BQ1RK1 w - - 0 10",
     "lastMoveUci": "b7b5",
     "verdict": "correct",
-    "explain": "Correct — this is exactly Black's plan in the Closed Sicilian. While White attacks on the kingside with f5, Black storms the queenside with ...b5-b4, hitting the c3-knight and prising open the b-file. Each side attacks where its pawns point; speed decides the race."
+    "explain": "Correct: this is exactly Black's plan in the Closed Sicilian. While White attacks on the kingside with f5, Black storms the queenside with ...b5-b4, hitting the c3-knight and prising open the b-file. Each side attacks where its pawns point; speed decides the race."
    }
   ]
  },

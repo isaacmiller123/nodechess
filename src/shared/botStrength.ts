@@ -1,4 +1,4 @@
-// Measured bot strength — the SINGLE SOURCE OF TRUTH for the Elo a bot game is
+// Measured bot strength: the SINGLE SOURCE OF TRUTH for the Elo a bot game is
 // rated at (vs-bot Glicko updates in main) and shown at (level/persona UI
 // subtitles in the renderer). src/main/ratings/botStrength.ts re-exports this
 // module for main-process consumers; renderer code imports it via @shared.
@@ -8,7 +8,7 @@
 // weakening (MultiPV softmax pick model) whose NOMINAL level labels are only
 // approximations. Engine-vs-engine calibration (scripts/calibrate-weak.mjs)
 // measured the sub-floor bands and found them consistently STRONGER than their
-// labels — up to ~+270 Elo at the 1200 band. Rating a user's game against the
+// labels: up to ~+270 Elo at the 1200 band. Rating a user's game against the
 // nominal label therefore corrupted the vs-bot Glicko; everything must rate and
 // display through measuredElo() instead.
 //
@@ -16,7 +16,7 @@
 // anchor = same binary at native UCI_Elo 1320, depth 8; 95% CI ≈ ±150 Elo):
 //   current ("new") pick model:  800→926   1000→1208   1200→1470
 //                                400, 600 → 0/32 vs the anchor (censored ≤600)
-//   pre-recalibration ("old") model, for reference — historical games were
+//   pre-recalibration ("old") model, for reference. Historical games were
 //   played against it: 600→723   800→850   1000→1157   1200→1575.
 //   Old-vs-new differences are within the harness CI except at 600, so ONE
 //   curve (the current model's) is used both forward and for the v8 history
@@ -41,7 +41,7 @@ export interface RatedBotConfig {
  *  - 100..600: below the anchor's resolving power (0/32 score vs 1320 ⇒ the
  *    measurement only bounds them at ≤600); values are the bound + a monotone
  *    interpolation beneath it.
- *  - 1319: extrapolated from the measured 1000→1200 slope — the sub-floor model
+ *  - 1319: extrapolated from the measured 1000→1200 slope. The sub-floor model
  *    does NOT converge to native 1320 strength at the boundary; it overshoots.
  */
 export const MEASURED_WEAK_ANCHORS: ReadonlyArray<readonly [number, number]> = [
@@ -69,16 +69,16 @@ function interpolate(elo: number): number {
 }
 
 /**
- * The measured playing strength of a bot config — the Elo that vs-bot Glicko
+ * The measured playing strength of a bot config: the Elo that vs-bot Glicko
  * updates MUST use and that strength subtitles MUST show.
  *  - engine at >= ENGINE_ELO_FLOOR: native UCI_Elo is its own calibrated label.
  *  - engine below the floor: the calibration curve above (rounded to 10s).
- *  - persona: modernElo/peakElo is already an honest strength estimate —
- *    passthrough (persona moves are produced by selectMove capped near that).
- *  - maia: the net's NOMINAL training band IS the measurement — each maia-<elo>
+ *  - persona: modernElo/peakElo is already an honest strength estimate.
+ *    Passthrough (persona moves are produced by selectMove capped near that).
+ *  - maia: the net's NOMINAL training band IS the measurement. Each maia-<elo>
  *    net was trained to predict moves of players at that lichess rating and
  *    plays within a few dozen Elo of it at nodes=1 (CSSLab's published
- *    move-match evals) — passthrough, never the sub-floor weak curve.
+ *    move-match evals): passthrough, never the sub-floor weak curve.
  */
 export function measuredElo(config: RatedBotConfig): number {
   if (config.kind === 'persona' || config.kind === 'maia') return Math.round(config.elo)

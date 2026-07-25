@@ -1,15 +1,15 @@
-// personas.move on the web — the port of src/main/personas/select.ts:
+// personas.move on the web. The port of src/main/personas/select.ts:
 // style-weighted MultiPV selection with the persona's strength capped near its
 // modern-era Elo. The selection math (classifyMove / styleScore / tolerance /
 // pick) is ported verbatim and exported pure for the headless suite; the
 // engine access runs on the SHARED play instance through the play chain
-// (desktop keeps a separate idle-reaped persona process — on the web a third
+// (desktop keeps a separate idle-reaped persona process; on the web a third
 // 128 MB wasm instance isn't worth it, and every play-chain caller re-asserts
 // its own options before searching, so sharing is safe).
 //
 // The persona catalog + opening books load lazily from the SAME committed
 // resources the desktop reads (resources/personas/personas.json + books.json,
-// ~36 KB + ~64 KB as their own chunks). Photos (6 MB) are NOT loaded — move
+// ~36 KB + ~64 KB as their own chunks). Photos (6 MB) are NOT loaded. Move
 // selection only needs style/strength numbers.
 
 import { Chess } from 'chessops/chess'
@@ -31,7 +31,7 @@ export function clampElo(elo: number): number {
   return Math.max(ELO_MIN, Math.min(ELO_MAX, Math.round(elo)))
 }
 
-/** Hard per-search ceiling (desktop PERSONA_SEARCH_TIMEOUT_MS) — the renderer
+/** Hard per-search ceiling (desktop PERSONA_SEARCH_TIMEOUT_MS): the renderer
  *  falls back to a random legal move if this rejects, so a turn never hangs. */
 const PERSONA_SEARCH_TIMEOUT_MS = 30_000
 
@@ -260,7 +260,7 @@ export function evalTolerancePawns(style: PersonaStyle): number {
   return 0.2 + 1.0 * Math.max(aggression, risk)
 }
 
-/** The pure selection over assembled candidates — desktop selectOnEngine's
+/** The pure selection over assembled candidates: desktop selectOnEngine's
  *  tolerance filter + style-score argmax (ties resolve toward lower rank). */
 export function pickStyledMove(
   style: PersonaStyle,
@@ -345,7 +345,7 @@ export function loadPersonaCatalog(): Promise<Map<string, PersonaLite>> {
   return catalog
 }
 
-/** books.json: { personaId: { epd: [uci, ...] } } — only that player's moves. */
+/** books.json: { personaId: { epd: [uci, ...] } }. Only that player's moves. */
 type Book = Record<string, Record<string, string[]>>
 
 let books: Promise<Book> | null = null
@@ -456,7 +456,7 @@ export function buildPersonaMove(): Api['personas']['move'] {
 
     return serializePlay(async () => {
       const engine = await pool.getPlay()
-      // Drain any abandoned search to idle before touching options — same
+      // Drain any abandoned search to idle before touching options. Same
       // discipline as engine:play.
       await engine.stop()
       engine.setOption('UCI_LimitStrength', true)

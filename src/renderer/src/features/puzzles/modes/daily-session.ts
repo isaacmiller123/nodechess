@@ -14,7 +14,7 @@ import {
 import { useSound } from '../../../sound'
 
 // ============================================================================
-// SLICE C — Daily solver hook.  ★ OWNED BY THE DAILY BUILDER ★
+// SLICE C: Daily solver hook.  ★ OWNED BY THE DAILY BUILDER ★
 //
 // A focused, single-puzzle solver for the Daily mode board. Mirrors the proven
 // lead-in -> solving -> auto-reply idiom of usePuzzleSession, but stripped to one
@@ -53,7 +53,7 @@ export interface DailySolver {
   hintFrom: Key | undefined
   hintTo: Key | undefined
   revealSan: string | null
-  /** True once the user has taken any assist (hint/retry) this run — clears firstTry. */
+  /** True once the user has taken any assist (hint/retry) this run. Clears firstTry. */
   assisted: boolean
   onUserMove: (orig: Key, dest: Key) => void
   /** Restart the same puzzle for practice (does NOT re-report the outcome). */
@@ -67,7 +67,7 @@ function promoRole(uci: string): Role | undefined {
 
 /**
  * Drive the board for a single daily puzzle. `onComplete` fires exactly once per
- * load — the FIRST time the puzzle is finished (solved or failed) — carrying the
+ * load: the FIRST time the puzzle is finished (solved or failed). Carrying the
  * outcome the caller should persist. Subsequent retries replay locally without
  * firing it again.
  */
@@ -268,7 +268,7 @@ export function useDailySolver(
     [phase, puzzle, fen, schedule, play, playMove, finish]
   )
 
-  // ---- Retry (same puzzle, local practice — does NOT re-report) ----
+  // ---- Retry (same puzzle, local practice does NOT re-report) ----
   const retry = useCallback(() => {
     if (!puzzle) return
     assistedRef.current = true

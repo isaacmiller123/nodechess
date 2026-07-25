@@ -1,8 +1,8 @@
-// Hex — hand-rolled 11x11 GameSpec with union-find connection detection
+// Hex: hand-rolled 11x11 GameSpec with union-find connection detection
 // (docs/GAMES-PLATFORM-SPEC.md, small games).
 //
 // Codec: a move is the target cell 'a1'..'k11' (file a–k = column left→right,
-// rank 1–11 = row; a1 bottom-left as drawn), or the literal 'swap' — legal
+// rank 1–11 = row; a1 bottom-left as drawn), or the literal 'swap'. Legal
 // ONLY as the second player's first move when init({ swap: true }).
 //
 // White moves first and connects the LEFT edge (a-file) to the RIGHT edge
@@ -11,7 +11,7 @@
 // Hex cannot end in a draw (Hex theorem); result stays null until an edge-to-
 // edge chain exists.
 //
-// Swap (pie) rule: 'swap' steals the opening move by TRANSPOSING it — the
+// Swap (pie) rule: 'swap' steals the opening move by TRANSPOSING it. The
 // first stone at (row, col) is removed and the second player gets a stone at
 // (col, row) (the mirror across the short diagonal, so its strength is
 // preserved relative to black's edges); the first player is to move again.
@@ -125,7 +125,7 @@ export const HEX_SPEC: GameSpec<HexState> = {
   kind: 'hex',
   family: 'grid',
   title: 'Hex',
-  tagline: 'Connect your two edges. Someone always does — draws are impossible.',
+  tagline: 'Connect your two edges. Someone always does. Draws are impossible.',
   players: ['white', 'black'],
   board: { layout: 'cells', files: HEX_N, ranks: HEX_N },
   flipPolicy: 'none',

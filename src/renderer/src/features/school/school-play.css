@@ -1,6 +1,6 @@
 /* ==========================================================================
-   School PLAY polish — move strip, hint ladder, Viktor persona, board-cue
-   theming. Complements school.css (owned elsewhere — nothing here restyles
+   School PLAY polish. Move strip, hint ladder, Viktor persona, board-cue
+   theming. Complements school.css (owned elsewhere; nothing here restyles
    its selectors); imported by segments.tsx so every School surface gets it.
    Design tokens only (tokens.css).
    ========================================================================== */
@@ -118,7 +118,7 @@
   animation-duration: 1.6s;
 }
 
-/* Status chip in the header — visible feedback that he is thinking/speaking. */
+/* Status chip in the header: visible feedback that he is thinking/speaking. */
 .viktor-status {
   margin-left: auto;
   font-size: var(--fs-xs);
@@ -140,7 +140,7 @@
   }
 }
 
-/* Speech bubble with a tail toward the portrait. Viktor TALKS — the text types
+/* Speech bubble with a tail toward the portrait. Viktor TALKS: the text types
    in (ViktorPanel typewriter); clicking mid-line completes it. */
 .viktor-bubble {
   position: relative;
@@ -215,7 +215,7 @@
 
 /* ------------------------ Annotation label pills ------------------------ */
 /* Readable HTML labels positioned over the board (BoardFrame). Chessground's
-   own shape labels shrink multi-word text to dust — these do not. */
+   own shape labels shrink multi-word text to dust. These do not. */
 .school-ann-labels {
   position: absolute;
   inset: 0;

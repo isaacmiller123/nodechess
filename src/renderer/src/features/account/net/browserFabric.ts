@@ -1,15 +1,15 @@
-// A6 M1 Lane A — the browser accounts fabric: a FabricEndpoint (spec §4,
+// A6 M1 Lane A. The browser accounts fabric: a FabricEndpoint (spec §4,
 // src/shared/accounts/witness/types.ts:325) over trystero + NATIVE WebRTC. This
-// is the app's LIVE accounts transport on ALL THREE platforms — the Electron
+// is the app's LIVE accounts transport on ALL THREE platforms. The Electron
 // desktop renderer, the web build, and the phone browser all boot the same
 // renderer, whose Chromium/WebView carries a native RTCPeerConnection, so no
 // werift polyfill is ever needed in the app itself.
 //
 // It is `createTrysteroFabric` (server/operator/peer.ts:192-261) ported MINUS
 // two operator-only lines from its joinRoom config:
-//   1. `rtcPolyfill: werift.RTCPeerConnection` (peer.ts:204) — the renderer has
+//   1. `rtcPolyfill: werift.RTCPeerConnection` (peer.ts:204). The renderer has
 //      native WebRTC; werift is a Node-only polyfill.
-//   2. `passive: true` (peer.ts:203) — the operator is an always-on witness that
+//   2. `passive: true` (peer.ts:203). The operator is an always-on witness that
 //      never initiates churn; a browser CLIENT must be ACTIVE to reach peers,
 //      opponents, and witnesses (the proven live mp path, rtcTransport.ts, is
 //      likewise not passive). `passive` is left configurable, defaulting false.
@@ -40,7 +40,7 @@ import {
 import { resolveIceServers } from './iceConfig'
 import { resolveNostrRelays } from './relayConfig'
 
-/** trystero app namespace for the accounts fabric — distinct from the mp game
+/** trystero app namespace for the accounts fabric: distinct from the mp game
  *  rooms (rtcTransport.ts APP_ID 'chess-sharp-mp-v3'). The operator peer must
  *  join with the SAME appId + roomId (+ password) to share this fabric; export
  *  the defaults so the lead can pass them to startOperatorPeer (M2/ops).
@@ -66,7 +66,7 @@ interface FabricRequestAction {
 }
 
 /**
- * The minimal trystero Room surface `createBrowserFabric` uses — declared
+ * The minimal trystero Room surface `createBrowserFabric` uses, declared
  * structurally (a subset of trystero's `Room`) so a headless fake room can be
  * injected in unit tests and a real `joinRoom()` result is assignable to it.
  */
@@ -86,7 +86,7 @@ export interface FabricRoom {
 }
 
 export interface BrowserFabricOpts {
-  /** This endpoint's nodeId (= sha256(rootPub), distance.ts nodeIdOf) —
+  /** This endpoint's nodeId (= sha256(rootPub), distance.ts nodeIdOf).
    *  FabricEndpoint.nodeId. */
   nodeId: NodeId
   /** trystero app namespace (default FABRIC_APP_ID). Must match the operator
@@ -95,7 +95,7 @@ export interface BrowserFabricOpts {
   /** Fabric room id (default FABRIC_ROOM_DEFAULT). Ignored when `room` is
    *  injected. */
   roomId?: string
-  /** Optional room password — E2E-encrypts trystero session descriptions.
+  /** Optional room password: E2E-encrypts trystero session descriptions.
    *  Ignored when `room` is injected. */
   password?: string
   /** Presence staleness horizon advertised in directory() (default
@@ -108,7 +108,7 @@ export interface BrowserFabricOpts {
    *  posture). Defaults FALSE for a browser client, which must actively reach
    *  peers/witnesses. Ignored when `room` is injected. */
   passive?: boolean
-  /** Injected trystero room — omit in production (built via joinRoom with
+  /** Injected trystero room: omit in production (built via joinRoom with
    *  native WebRTC). Unit tests inject a fake so the frame/dispatch logic runs
    *  headless with no relay. */
   room?: FabricRoom
@@ -117,7 +117,7 @@ export interface BrowserFabricOpts {
 /**
  * Build a browser-hosted FabricEndpoint. Peers are addressed by trystero
  * peerId; a nodeId->peerId map is learned from verified presence gossip. Full
- * key-distance routing is the A3 overlay layered ON TOP of this transport — the
+ * key-distance routing is the A3 overlay layered ON TOP of this transport. The
  * fabric here only moves canonical bytes by nodeId.
  *
  * Synchronous: native WebRTC needs no async polyfill load, so `joinRoom` is
@@ -135,7 +135,7 @@ export function createBrowserFabric(opts: BrowserFabricOpts): FabricEndpoint {
   const presence = new Map<NodeId, SignedPresence>()
   const peerOfNode = new Map<NodeId, string>()
 
-  // Presence gossip (trystero message action) — learn nodeId->peerId and
+  // Presence gossip (trystero message action): learn nodeId->peerId and
   // populate the directory. verifyPresence runs inside ingestPresence.
   const presenceAction = room.makeAction(ANNOUNCE_NS, {
     kind: 'message',
@@ -190,7 +190,7 @@ export function createBrowserFabric(opts: BrowserFabricOpts): FabricEndpoint {
 }
 
 /**
- * Build the real trystero room over native WebRTC — createTrysteroFabric's room
+ * Build the real trystero room over native WebRTC, createTrysteroFabric's room
  * construction (peer.ts:199-207) MINUS `rtcPolyfill` and `passive:true` (see the
  * file header). Only reached in production; tests inject `opts.room`.
  */
@@ -213,7 +213,7 @@ function joinBrowserRoom(opts: BrowserFabricOpts): FabricRoom {
 }
 
 /** Ingest a gossiped presence record: verify its signature, keep newest-per-node,
- *  and learn its nodeId->peerId (peer.ts:279-291). Never throws — a malformed or
+ *  and learn its nodeId->peerId (peer.ts:279-291). Never throws. A malformed or
  *  bad-signature record is dropped by verifyPresence before any field access. */
 function ingestPresence(
   presence: Map<NodeId, SignedPresence>,

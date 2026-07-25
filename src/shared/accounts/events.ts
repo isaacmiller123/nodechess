@@ -1,4 +1,4 @@
-// Chain events — zod v4 schemas mirroring types.ts EXACTLY, plus the
+// Chain events: zod v4 schemas mirroring types.ts EXACTLY, plus the
 // id/sign/verify primitives every other accounts module builds on.
 // (spec: docs/ACCOUNTS-SPEC.md §2, contract: ./types.ts)
 //
@@ -37,7 +37,7 @@ const zTs = z.int().min(0)
 // Payload schemas (one per A1 event type, all .strict())
 // ---------------------------------------------------------------------------
 
-/** Control chars, zero-width chars, bidi/paragraph separators — never in names. */
+/** Control chars, zero-width chars, bidi/paragraph separators: never in names. */
 const NAME_FORBIDDEN = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028\u2029\u2060\ufeff]/
 
 /** Display-form name: NAME_MIN..NAME_MAX chars, trimmed, no control/zero-width. */
@@ -68,7 +68,7 @@ export const zRevokePayload = z.strictObject({
   pub: zB64u32,
 })
 
-/** Profile field writes — keys restricted to PROFILE_FIELDS (types.ts). */
+/** Profile field writes. Keys restricted to PROFILE_FIELDS (types.ts). */
 export const zProfileFields = z.strictObject({
   bio: z.string().max(BIO_MAX).optional(),
   avatar: z.string().max(AVATAR_B64_MAX_CHARS).optional(),
@@ -90,13 +90,13 @@ export const zCheckpointPayload = z.strictObject({
 /**
  * A ckpt SignedEvent, validated by a NON-RECURSIVE schema (body pinned to a
  * ckpt payload). This exists so a segment's `oppCkpt` does NOT reference the
- * general zSignedEvent — which, via the segment payload's own oppCkpt, would
+ * general zSignedEvent, which, via the segment payload's own oppCkpt, would
  * be mutually recursive and let an attacker nest segment-in-oppCkpt to any
  * depth, overflowing zod's safeParse stack on untrusted input (a verifier
  * must fail closed, not throw). A real oppCkpt IS a ckpt event, so pinning the
  * type here is both the correct shape and the recursion bound (a ckpt payload
  * carries no event-typed field). `wit` reuses zWitnessAttestation (a straight,
- * acyclic reference — z.lazy only handles its forward declaration below).
+ * acyclic reference: z.lazy only handles its forward declaration below).
  */
 export const zCkptEvent = z.strictObject({
   body: z.strictObject({
@@ -114,7 +114,7 @@ export const zCkptEvent = z.strictObject({
   wit: z.array(z.lazy(() => zWitnessAttestation)).optional(),
 })
 
-/** A3 game segment (§3) — see storage/types.ts SegmentPayload for the field
+/** A3 game segment (§3): see storage/types.ts SegmentPayload for the field
  * contract. oppCkpt is the opponent's cosigned ckpt event, validated by the
  * non-recursive zCkptEvent above (bounds untrusted-input recursion depth). */
 export const zSegmentHeads = z.strictObject({
@@ -148,14 +148,14 @@ export const zSegmentPayload = z.strictObject({
   tc: z.strictObject({ baseMs: z.int().min(0).max(86_400_000), incMs: z.int().min(0).max(3_600_000) }).optional(),
   // A4 review fix (A4-02): certs proving the embedded oppCkpt's signing key
   // belongs to the opponent root when it is a device key (recursion-bounded,
-  // like commend certs; z.lazy only for the forward declaration — zCertEvent
+  // like commend certs; z.lazy only for the forward declaration: zCertEvent
   // is defined below zSegmentPayload). Absent when the oppCkpt is root-signed.
   oppCerts: z.array(z.lazy(() => zCertEvent)).max(8).optional(),
 })
 
 /**
  * A cert SignedEvent, validated by a NON-RECURSIVE schema (body pinned to a
- * cert payload) — the same recursion-bounding pattern as zCkptEvent. Used
+ * cert payload): the same recursion-bounding pattern as zCkptEvent. Used
  * where cert events ride INSIDE another payload (commend certs): a cert
  * payload carries no event-typed field, so nesting depth is bounded.
  */
@@ -175,10 +175,10 @@ export const zCertEvent = z.strictObject({
   wit: z.array(z.lazy(() => zWitnessAttestation)).optional(),
 })
 
-/** A4 conduct event (§6b) — see types.ts ConductPayload for semantics.
+/** A4 conduct event (§6b). See types.ts ConductPayload for semantics.
  * A4 review fix (A4-13): 'rematch-accept' additionally carries the
  * COUNTERPARTY's signature (sig by key over rematchBytes, certs proving
- * key∈opp when not root-signed) — a unilateral self-claim never counts. */
+ * key∈opp when not root-signed): a unilateral self-claim never counts. */
 export const zConductPayload = z
   .strictObject({
     kind: z.enum(['abort', 'noshow', 'rematch-accept']),
@@ -202,7 +202,7 @@ export const zConductPayload = z
     path: ['certs'],
   })
 
-/** A4 commendation (§6b) — see types.ts CommendPayload. Certs are inline,
+/** A4 commendation (§6b): see types.ts CommendPayload. Certs are inline,
  * recursion-bounded cert events of the COMMENDER (body.root === opp). */
 export const zCommendPayload = z.strictObject({
   game: zB64u32,
@@ -212,15 +212,15 @@ export const zCommendPayload = z.strictObject({
   certs: z.array(zCertEvent).max(8).optional(),
 })
 
-/** A4 PIN anchor (§1 seam 3) — see types.ts PinAnchorPayload. */
+/** A4 PIN anchor (§1 seam 3): see types.ts PinAnchorPayload. */
 export const zPinAnchorPayload = z.strictObject({
   record: zB64u32,
   gen: z.int().min(0),
 })
 
-/** A6 friend edge (§3/§10) — see types.ts FriendPayload. Certs are inline,
+/** A6 friend edge (§3/§10): see types.ts FriendPayload. Certs are inline,
  * recursion-bounded cert events of the PEER (body.root === peer), present
- * exactly when the countersigning key is not the peer root itself — the
+ * exactly when the countersigning key is not the peer root itself, the
  * commend pattern, but schema-enforceable here because `key` and `peer` are
  * both payload fields. Countersig VERIFICATION is social/friends.ts's fold
  * rule (a schema cannot check signatures); an in-chain add with a forged
@@ -246,8 +246,8 @@ export const zFriendPayload = z
     path: ['certs'],
   })
 
-/** A5 pairing record — see types.ts PairingPayload. A7 adds the OPTIONAL
- * serving-witness attest (A4-02/A4-10 closure) — additive: legacy records
+/** A5 pairing record: see types.ts PairingPayload. A7 adds the OPTIONAL
+ * serving-witness attest (A4-02/A4-10 closure), additive: legacy records
  * without it still parse, and the strict shapes refuse any other extension. */
 export const zPairingPayload = z.strictObject({
   game: zB64u32,
@@ -266,7 +266,7 @@ export const zPairingPayload = z.strictObject({
     .optional(),
 })
 
-/** A5 anticheat self-ban — see types.ts SelfBanPayload. */
+/** A5 anticheat self-ban: see types.ts SelfBanPayload. */
 export const zSelfBanPayload = z.strictObject({
   kind: z.literal('anticheat'),
   ladder: z.string().min(1).max(64),
@@ -311,7 +311,7 @@ export const LANE_FOR: Record<EventType, Lane> = {
 // ---------------------------------------------------------------------------
 
 /**
- * Structural body shape WITHOUT per-type payload validation — used by chain
+ * Structural body shape WITHOUT per-type payload validation: used by chain
  * loading so a chain carrying a bad payload still loads and verifyChain can
  * report 'bad-payload' instead of the loader throwing.
  */
@@ -335,11 +335,11 @@ export const zEventBody = zEventBodyCore.superRefine((b, ctx) => {
       message: `event type '${b.type}' belongs in lane '${LANE_FOR[b.type]}'`,
       path: ['lane'],
     })
-  // Certificates are ALWAYS root-signed (spec §1) — a device-signed cert is
+  // Certificates are ALWAYS root-signed (spec §1). A device-signed cert is
   // not a weaker cert, it is an invalid payload.
   if (b.type === 'cert' && b.key !== b.root)
     ctx.addIssue({ code: 'custom', message: 'cert events must be signed by the root key', path: ['key'] })
-  // A friend edge has two DISTINCT endpoints (spec §3/§10) — a self-edge is
+  // A friend edge has two DISTINCT endpoints (spec §3/§10). A self-edge is
   // meaningless and refused outright, not left to the fold.
   if (b.type === 'friend' && (b.payload as { peer?: unknown }).peer === b.root)
     ctx.addIssue({ code: 'custom', message: 'friend event peer must not be the chain root', path: ['payload'] })
@@ -348,7 +348,7 @@ export const zEventBody = zEventBodyCore.superRefine((b, ctx) => {
     for (const issue of res.error.issues)
       ctx.addIssue({
         code: 'custom',
-        // STABLE text only — the sub-issue's code + path, never zod's
+        // STABLE text only: the sub-issue's code + path, never zod's
         // free-form `message`: these strings reach VerifyError.detail and
         // therefore the parity digest, and zod's prose drifts across minors.
         message: `payload invalid: ${issue.code} at ${issue.path.map(String).join('.') || '$'}`,
@@ -358,7 +358,7 @@ export const zEventBody = zEventBodyCore.superRefine((b, ctx) => {
 
 /**
  * STABLE rendering of a zod issue for VerifyError.detail: composed ONLY from
- * the issue `code` and `path` — never zod's free-text `message`, which can
+ * the issue `code` and `path`, never zod's free-text `message`, which can
  * change under a zod minor bump and would shift the parity digest of invalid
  * chains. 'custom' issues carry OUR OWN fixed messages (the superRefine rules
  * above) and pass through verbatim.
@@ -397,7 +397,7 @@ export const zSignedEvent = z.strictObject({
 // id / sign / verify
 // ---------------------------------------------------------------------------
 
-/** sha256(canonicalBytes(body)) as b64u — the id every `prev` points at. */
+/** sha256(canonicalBytes(body)) as b64u: the id every `prev` points at. */
 export function eventId(body: EventBody): EventId {
   return toB64u(canonicalHash(body))
 }
@@ -411,7 +411,7 @@ export function signBody(body: EventBody, priv: Uint8Array): SignedEvent {
 /** ed25519 verify of ev.sig by ev.body.key over canonicalBytes(body). Never throws. */
 export function verifyEventSig(ev: SignedEvent): boolean {
   // canonicalBytes can throw on a malformed body (e.g. a non-safe-integer
-  // payload) — a verifier must fail closed, not throw, on untrusted input.
+  // payload). A verifier must fail closed, not throw, on untrusted input.
   let msg: Uint8Array
   try {
     msg = canonicalBytes(ev.body)
@@ -422,7 +422,7 @@ export function verifyEventSig(ev: SignedEvent): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// Head helpers (shared by certs/chain/checkpoint — linkage math in ONE place)
+// Head helpers (shared by certs/chain/checkpoint, linkage math in ONE place)
 // ---------------------------------------------------------------------------
 
 export interface Head {

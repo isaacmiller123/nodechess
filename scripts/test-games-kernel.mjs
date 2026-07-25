@@ -10,7 +10,7 @@
 // third check, racing-kings goal, antichess last-piece win, KOTH center,
 // horde destruction, fool's-mate checkmate), and illegal move → null.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -49,10 +49,10 @@ await build({
   platform: 'node',
   jsx: 'automatic',
   // games/ffish.ts resolves the WASM asset via a Vite '?url' import; headless
-  // bundles keep it external (never executed in node — tests pass wasmBinary).
+  // bundles keep it external (never executed in node; tests pass wasmBinary).
   external: ['*?url'],
   // board renderers reachable from registry.ts pull in CSS (e.g. shudan's
-  // goban.css via games/boards/GoBoard.tsx) — drop it for headless node
+  // goban.css via games/boards/GoBoard.tsx). Drop it for headless node
   loader: { '.css': 'empty' },
   alias: { '@shared': resolve(ROOT, 'src/shared'), '@': resolve(ROOT, 'src/renderer/src') },
   logLevel: 'silent'
@@ -243,7 +243,7 @@ try {
   eq(base.moves.length, 0, 'kernel: play() never mutates the input state')
   eq(chess.serializeOptions({ fen: 'x' }), '{"fen":"x"}', 'kernel: serializeOptions is stable JSON')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

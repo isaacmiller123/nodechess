@@ -1,29 +1,29 @@
-// SoundManager — offline-first chess sound effects for the renderer.
+// SoundManager: offline-first chess sound effects for the renderer.
 //
 // Design decisions:
 //   * Three selectable sound themes (settings.soundTheme):
-//       'standard' — the Lichess open-source "standard" set (see
+//       'standard': the Lichess open-source "standard" set (see
 //                    ../assets/sounds/ATTRIBUTION.md for source + license);
-//       'classic'  — a chess.com-flavored pack synthesized offline by
+//       'classic':   a chess.com-flavored pack synthesized offline by
 //                    scripts/gen-sounds.mjs (deep wooden thocks);
-//       'real'     — physically-layered wood sounds from the same script, with
+//       'real':      physically-layered wood sounds from the same script, with
 //                    THREE variants per event; the manager picks a different
 //                    variant per play so rapid moves don't sound machine-gun
 //                    identical.
 //   * Samples are bundled as base64 data: URLs via import.meta.glob(?inline).
 //     The packaged app loads the renderer over file:// (see main/window.ts),
-//     where fetch() of emitted asset URLs is not allowed — inlining sidesteps
+//     where fetch() of emitted asset URLs is not allowed. Inlining sidesteps
 //     that with zero IPC and keeps the app fully offline.
 //   * Synthesis fallback: every event also has a WebAudio recipe. If a theme
 //     has no sample for an event or a sample fails to decode, the recipe
-//     plays instead — sound never goes silent because an asset is missing.
+//     plays instead. Sound never goes silent because an asset is missing.
 //   * Autoplay policies (Chromium / Electron) suspend an AudioContext created
 //     before a user gesture. We lazily create the context and resume it on the
 //     first user gesture; until then play() is a silent no-op. (Decoding works
 //     fine on a suspended context, so themes preload eagerly.)
 //
 // The manager is intentionally decoupled from React and from window.api: it is
-// a plain singleton-friendly class (the SoundTheme import below is type-only —
+// a plain singleton-friendly class (the SoundTheme import below is type-only,
 // erased at runtime). The useSound hook wraps it for components.
 
 import type { SoundTheme } from '../state/settings'
@@ -39,7 +39,7 @@ export type SoundName =
   | 'lowTime'
   | 'puzzleSolved'
   | 'puzzleFailed'
-  // Games-platform events (docs/GAMES-PLATFORM-SPEC.md) — synthesized by
+  // Games-platform events (docs/GAMES-PLATFORM-SPEC.md): synthesized by
   // scripts/gen-game-sounds.mjs into assets/sounds/games/ (shared across the
   // three themes; a theme dir may override any of them with its own file).
   | 'goStone' // slate stone snapped onto a kaya goban
@@ -99,7 +99,7 @@ export function readSoundEnabledFromSettings(): boolean {
   }
 }
 
-/** Default master volume — MUST match `DEFAULTS.soundVolume` in state/settings.tsx
+/** Default master volume MUST match `DEFAULTS.soundVolume` in state/settings.tsx
  *  so a fresh install sounds the same before and after the first React render. */
 const DEFAULT_VOLUME = 0.7
 
@@ -117,7 +117,7 @@ export function readSoundVolumeFromSettings(): number {
   }
 }
 
-/** Default sound theme — MUST match `DEFAULTS.soundTheme` in state/settings.tsx. */
+/** Default sound theme MUST match `DEFAULTS.soundTheme` in state/settings.tsx. */
 const DEFAULT_THEME: SoundTheme = 'standard'
 
 /** Read the `soundTheme` pref from the shared settings localStorage key, so the
@@ -136,7 +136,7 @@ export function readSoundThemeFromSettings(): SoundTheme {
 
 // A synthesized recipe: a short blip built from one or more oscillator partials
 // shaped by a simple attack/decay envelope. Tuned to read as crisp UI ticks,
-// not musical notes — deliberately understated to match the app's polish.
+// not musical notes: deliberately understated to match the app's polish.
 // These are the FALLBACK voices: they play when a theme ships no sample for an
 // event or the sample fails to decode (and for the first hit while a sample is
 // still decoding), so audio never silently disappears.
@@ -170,7 +170,7 @@ interface Recipe {
 }
 
 const RECIPES: Record<SoundName, Recipe> = {
-  // move — soft, dry wooden "tock". Lowest, shortest, single triangle partial so
+  // move, soft, dry wooden "tock". Lowest, shortest, single triangle partial so
   // it stays unobtrusive under rapid play and reads plainly as "a piece moved".
   move: {
     partials: [{ type: 'triangle', freq: 300, toFreq: 196, gain: 1 }],
@@ -178,7 +178,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.085,
     peak: 0.5
   },
-  // capture — harder, grittier knock. A square sub-tone adds a percussive thud
+  // capture, harder, grittier knock. A square sub-tone adds a percussive thud
   // the plain move lacks, and a quick bright triangle "click" rides on top.
   capture: {
     partials: [
@@ -189,7 +189,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.13,
     peak: 0.55
   },
-  // check — bright, attention-getting two-tone in a high register (clear fifth),
+  // check. Bright, attention-getting two-tone in a high register (clear fifth),
   // the second note delayed so it reads as a deliberate "ding-ding" alert.
   check: {
     partials: [
@@ -200,7 +200,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.2,
     peak: 0.5
   },
-  // castle — low rolling "thunk-thunk": two staggered triangle hits suggest the
+  // castle: low rolling "thunk-thunk": two staggered triangle hits suggest the
   // king and rook settling. Deliberately bassy so it never reads like a capture.
   castle: {
     partials: [
@@ -212,7 +212,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.22,
     peak: 0.5
   },
-  // promote — celebratory rising triad (C5-E5-G5-ish). Sequential sine notes give
+  // promote: celebratory rising triad (C5-E5-G5-ish). Sequential sine notes give
   // an unmistakable "level up" flourish distinct from the single-note move/check.
   promote: {
     partials: [
@@ -225,7 +225,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.36,
     peak: 0.45
   },
-  // gameStart — warm ascending perfect-fourth fanfare (A4 -> D5). Two clean sine
+  // gameStart: warm ascending perfect-fourth fanfare (A4 -> D5). Two clean sine
   // notes, gentle and inviting; lower and rounder than the puzzleSolved cue.
   gameStart: {
     partials: [
@@ -237,7 +237,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.34,
     peak: 0.42
   },
-  // gameEnd — settled descending resolve (G4 -> C4) with a soft low body. Reads
+  // gameEnd: settled descending resolve (G4 -> C4) with a soft low body. Reads
   // as a calm "that's over", clearly the inverse of the gameStart rise.
   gameEnd: {
     partials: [
@@ -249,7 +249,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.44,
     peak: 0.45
   },
-  // lowTime — tense, dry high tick. Square wave with a slight downward bend so a
+  // lowTime: tense, dry high tick. Square wave with a slight downward bend so a
   // repeated train of these feels like an urgent countdown clock.
   lowTime: {
     partials: [{ type: 'square', freq: 920, toFreq: 760, gain: 0.7 }],
@@ -257,7 +257,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.09,
     peak: 0.4
   },
-  // puzzleSolved — pleasant, brighter-than-gameStart success arpeggio: a rising
+  // puzzleSolved. Pleasant, brighter-than-gameStart success arpeggio: a rising
   // major triad (C5-E5-G5) capped by a high octave sparkle. Triangle bodies give
   // it a chime-like shimmer that clearly says "correct!".
   puzzleSolved: {
@@ -271,7 +271,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.46,
     peak: 0.46
   },
-  // puzzleFailed — soft, non-harsh error: a gentle descending minor second
+  // puzzleFailed. Soft, non-harsh error: a gentle descending minor second
   // (F4 -> E4-ish) on a mellow triangle. Lower and rounder than the check alert,
   // deliberately understated so a wrong answer never feels punishing.
   puzzleFailed: {
@@ -286,7 +286,7 @@ const RECIPES: Record<SoundName, Recipe> = {
   },
   // --- games-platform fallbacks (samples ship in assets/sounds/games/; these
   // --- only voice the first hit while decoding, or if an asset ever breaks).
-  // goStone — hard glassy clack over a deep board 'pok'.
+  // goStone. Hard glassy clack over a deep board 'pok'.
   goStone: {
     partials: [
       { type: 'triangle', freq: 2800, toFreq: 2200, gain: 0.35, dur: 0.03 },
@@ -296,7 +296,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.12,
     peak: 0.55
   },
-  // discFlip — two quick light ticks.
+  // discFlip. Two quick light ticks.
   discFlip: {
     partials: [
       { type: 'triangle', freq: 1400, toFreq: 1100, gain: 0.7, dur: 0.03 },
@@ -306,14 +306,14 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.1,
     peak: 0.45
   },
-  // discPlace — dull felt-damped tap, lower and softer than a chess move.
+  // discPlace. Dull felt-damped tap, lower and softer than a chess move.
   discPlace: {
     partials: [{ type: 'triangle', freq: 240, toFreq: 160, gain: 1 }],
     attack: 0.002,
     duration: 0.08,
     peak: 0.48
   },
-  // discDrop — three descending ticks then a landing knock.
+  // discDrop. Three descending ticks then a landing knock.
   discDrop: {
     partials: [
       { type: 'triangle', freq: 1800, gain: 0.3, delay: 0, dur: 0.02 },
@@ -325,7 +325,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.3,
     peak: 0.5
   },
-  // pieceSlideCapture — quick downward swoosh into a tap.
+  // pieceSlideCapture. Quick downward swoosh into a tap.
   pieceSlideCapture: {
     partials: [
       { type: 'triangle', freq: 900, toFreq: 320, gain: 0.4, dur: 0.11 },
@@ -335,14 +335,14 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.22,
     peak: 0.5
   },
-  // penStroke — soft high squeak with a slight downward bend.
+  // penStroke. Soft high squeak with a slight downward bend.
   penStroke: {
     partials: [{ type: 'sine', freq: 1500, toFreq: 1150, gain: 1 }],
     attack: 0.02,
     duration: 0.13,
     peak: 0.3
   },
-  // shogiPiece — sharper, brighter snap than the western move.
+  // shogiPiece. Sharper, brighter snap than the western move.
   shogiPiece: {
     partials: [
       { type: 'triangle', freq: 1700, toFreq: 1300, gain: 0.4, dur: 0.025 },
@@ -352,7 +352,7 @@ const RECIPES: Record<SoundName, Recipe> = {
     duration: 0.1,
     peak: 0.55
   },
-  // gameStartGong — soft low gong swell.
+  // gameStartGong. Soft low gong swell.
   gameStartGong: {
     partials: [
       { type: 'sine', freq: 165, gain: 1, dur: 0.7 },
@@ -366,14 +366,14 @@ const RECIPES: Record<SoundName, Recipe> = {
 }
 
 // ---------------------------------------------------------------------------
-// Sample registry — every file under assets/sounds/<theme>/ ships in the
+// Sample registry: every file under assets/sounds/<theme>/ ships in the
 // renderer bundle as a base64 data: URL (`?inline`). File name convention:
 //   <event>.mp3|wav          single take        (standard/, classic/)
-//   <event>.<n>.wav          variant n of many  (real/ — 3 takes per event)
+//   <event>.<n>.wav          variant n of many  (real/: 3 takes per event)
 //
 // assets/sounds/games/ is a special pseudo-theme: samples for the games
 // platform (goStone, discFlip, ...) shared by EVERY theme. A real theme dir
-// may override any game event by shipping its own file for it — theme files
+// may override any game event by shipping its own file for it. Theme files
 // always win over the shared pool (see urlsFor).
 // ---------------------------------------------------------------------------
 
@@ -412,7 +412,7 @@ for (const modulePath of Object.keys(SAMPLE_MODULES).sort()) {
  * Per-theme event redirects for events a pack deliberately ships no file for.
  * The Lichess standard set has no castle/check/promote sounds (its Check.mp3 is
  * a symlink to Silence upstream) and plays the same "dong" (GenericNotify) for
- * game start and end — mirror that instead of silently dropping to synthesis.
+ * game start and end. Mirror that instead of silently dropping to synthesis.
  */
 const THEME_ALIASES: Partial<Record<SoundTheme, Partial<Record<SoundName, SoundName>>>> = {
   standard: { castle: 'move', check: 'move', promote: 'move', gameEnd: 'gameStart' }
@@ -572,8 +572,8 @@ export class SoundManager {
   }
 
   /**
-   * Audition a theme (used by the Settings pickers): plays the given events —
-   * default a move then a capture — with THAT theme's samples, without touching
+   * Audition a theme (used by the Settings pickers): plays the given events.
+   * Default a move then a capture. With THAT theme's samples, without touching
    * the active theme. Waits for decodes, so the first press is already
    * representative; a newer preview cancels an older one's remaining sounds.
    */
@@ -691,7 +691,7 @@ export class SoundManager {
     return pick.buffer
   }
 
-  /** Start (or join) decoding one sample. Resolves null on failure — which is
+  /** Start (or join) decoding one sample. Resolves null on failure, which is
    *  cached so a bad asset costs one attempt, not one per play. */
   private ensureDecoded(url: string): Promise<AudioBuffer | null> {
     const done = this.decoded.get(url)
@@ -717,7 +717,7 @@ export class SoundManager {
     return task
   }
 
-  /** Kick off decodes for every sample in a theme — plus the shared games/
+  /** Kick off decodes for every sample in a theme, plus the shared games/
    *  pool every theme falls back to (idempotent, fire-and-forget). */
   private preloadTheme(theme: SoundTheme): void {
     if (!this.ensureContext()) return
@@ -737,7 +737,7 @@ export class SoundManager {
     const now = ctx.currentTime
     const peak = Math.max(recipe.peak, 0.0002)
 
-    // Master bus for the whole sound — a single shared output node that we tear
+    // Master bus for the whole sound: a single shared output node that we tear
     // down once the longest partial has rung out.
     const bus = ctx.createGain()
     bus.gain.setValueAtTime(peak, now)

@@ -26,7 +26,7 @@ import { useRushSession, RUSH_VARIANTS, type RushVariant } from './rush-session'
 import './rush.css'
 
 // ============================================================================
-// SLICE B — Puzzle Rush / Storm (timed).  ★ OWNED BY THE RUSH BUILDER ★
+// SLICE B: Puzzle Rush / Storm (timed).  ★ OWNED BY THE RUSH BUILDER ★
 //
 // Variant picker -> live solve (board + HUD) -> results card, plus a personal-
 // best leaderboard and recent-run history. The whole clock-driven solve loop
@@ -182,7 +182,7 @@ function RushLobby(props: {
             <Timer size={18} aria-hidden />
             <h2>Puzzle Rush</h2>
           </div>
-          <p className="muted small">Solve against the clock — difficulty ramps as you climb.</p>
+          <p className="muted small">Solve against the clock. Difficulty ramps as you climb.</p>
         </header>
 
         <div className="rush-variant-grid" role="radiogroup" aria-label="Rush variant">
@@ -209,7 +209,7 @@ function RushLobby(props: {
                 </span>
                 <span className="rush-variant-best">
                   <Trophy size={12} aria-hidden />
-                  {best > 0 ? best : '—'}
+                  {best > 0 ? best : '·'}
                 </span>
               </button>
             )
@@ -233,7 +233,7 @@ function RushLobby(props: {
 
         {!apiReady && (
           <p className="muted small rush-preview-note">
-            Preview mode — connect to the desktop app to load puzzles.
+            Preview mode. Connect to the desktop app to load puzzles.
           </p>
         )}
       </section>
@@ -430,7 +430,7 @@ function RushResultCard(props: {
         <ResultStat
           icon={<Gauge size={16} aria-hidden />}
           label="Hardest solved"
-          value={s.topRating > 0 ? s.topRating : '—'}
+          value={s.topRating > 0 ? s.topRating : '·'}
         />
         {s.durationMs > 0 && (
           <ResultStat
@@ -491,7 +491,7 @@ function RushLeaderboard({ bests }: { bests: RushBest[] }): JSX.Element {
                   <Icon size={15} aria-hidden />
                   {RUSH_VARIANTS[b.mode].label}
                 </span>
-                <span className="rush-board-best">{b.runs > 0 ? b.best : '—'}</span>
+                <span className="rush-board-best">{b.runs > 0 ? b.best : '·'}</span>
                 <span className="rush-board-runs muted small">
                   {b.runs} {b.runs === 1 ? 'run' : 'runs'}
                 </span>
@@ -500,7 +500,7 @@ function RushLeaderboard({ bests }: { bests: RushBest[] }): JSX.Element {
           })}
         </ul>
       ) : (
-        <p className="muted small rush-empty">No runs yet — your bests will show up here.</p>
+        <p className="muted small rush-empty">No runs yet. Your bests will show up here.</p>
       )}
     </section>
   )

@@ -69,7 +69,7 @@ export function AnnotationsLayer({ boardEl, orientation, store }: AnnotationsLay
       const orig = keyAt(e)
       if (!orig) return
       // Capture-phase + stopPropagation so chessground's own (ephemeral) drawing
-      // never starts — we own annotations and persist them per node.
+      // never starts. We own annotations and persist them per node.
       e.preventDefault()
       e.stopPropagation()
       dragging = true

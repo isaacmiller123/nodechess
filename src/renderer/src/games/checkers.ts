@@ -1,4 +1,4 @@
-// Checkers wave — GameSpec adapters for the draughts family
+// Checkers wave: GameSpec adapters for the draughts family
 // (docs/GAMES-PLATFORM-SPEC.md §Phases P2):
 //
 //   - 'checkers'      American checkers / English draughts, 8x8, over
@@ -7,23 +7,23 @@
 //                     (MPL; FMJD rules). The library was AUDITED before trust
 //                     (scripts/test-checkers.mjs): majority capture
 //                     (longestCapture keeps only maximum-piece sequences,
-//                     quantity rule — kings count the same as men), flying-king
+//                     quantity rule: kings count the same as men), flying-king
 //                     multi-jumps, backwards man captures, Turkish-strike
 //                     semantics (captured pieces stay on the board during the
 //                     sequence and may not be jumped twice) and promotion only
 //                     when the move ENDS on the back row are all correct.
 //                     One flaw: its move() applies the FIRST move matching
-//                     from/to, so ambiguous capture paths cannot be selected —
-//                     this adapter therefore uses the library for move
+//                     from/to, so ambiguous capture paths cannot be selected.
+//                     This adapter therefore uses the library for move
 //                     GENERATION only and applies moves itself (which also
 //                     gives us the immutable-state style the kernel requires).
 //
-// MOVE CODEC (canonical, numeric square notation — both variants):
+// MOVE CODEC (canonical, numeric square notation; both variants):
 //   - Squares are the standard 1-based dark-square numbers, top-left to
 //     bottom-right along each rank pair:
-//       American:      PDN/WCDF 1..32 — Black (first mover) starts on 1..12
+//       American:      PDN/WCDF 1..32, Black (first mover) starts on 1..12
 //                      at the top, White on 21..32 at the bottom.
-//       International: FMJD 1..50 — Black starts on 1..20 at the top, White
+//       International: FMJD 1..50, Black starts on 1..20 at the top, White
 //                      (first mover) on 31..50 at the bottom.
 //   - Quiet move:      'from-to'                e.g. '11-15', '32-28'
 //   - Capture:         'from x landing x ...'   e.g. '11x18x25', '28x19x10'
@@ -38,9 +38,9 @@
 //     capture AND no man advance).
 //   - International: FMJD 25-move rule (50 consecutive plies of king-only,
 //     capture-free play) and threefold repetition of the position with the
-//     same side to move — both tracked in the state this spec carries.
+//     same side to move. Both tracked in the state this spec carries.
 //     TODO(P2w2): FMJD endgame limits (16-move rule for 1K+2 vs 1K; 5-move
-//     rule for tiny king endings) need material-aware counters — add when the
+//     rule for tiny king endings) need material-aware counters. Add when the
 //     session layer surfaces adjudication UI.
 
 import { DraughtsPlayer, DraughtsStatus } from 'rapid-draughts'
@@ -68,7 +68,7 @@ export interface AmericanCheckersState {
   readonly moves: readonly string[]
 }
 
-/** Position builder — squares are PDN 1..32. Defaults to the standard start. */
+/** Position builder: squares are PDN 1..32. Defaults to the standard start. */
 export interface AmericanCheckersInitOptions {
   blackMen?: number[]
   blackKings?: number[]
@@ -188,7 +188,7 @@ const sameSet = (a: readonly number[], b: readonly number[]): boolean =>
 /**
  * Encode a rapid-draughts move as the codec string. Capture chains are
  * reconstructed by DFS over the capture set (the library only reports
- * origin/destination/captures) — landings must be empty squares (the vacated
+ * origin/destination/captures). Landings must be empty squares (the vacated
  * origin counts as empty, enabling king loops back onto it).
  */
 function encodeAmericanMove(m: DraughtsMove1D, occupied: ReadonlySet<number>): string {
@@ -242,7 +242,7 @@ function findAmericanMove(game: EnglishDraughtsGame, parsed: ParsedMove): Draugh
 
 /**
  * Codec string ('11-15' / '11x18x25') for a rapid-draughts library move that is
- * legal in `s` — games/bots.ts resolves alphaBeta engine moves through this.
+ * legal in `s`: games/bots.ts resolves alphaBeta engine moves through this.
  * Returns null when the library move doesn't match any legal move of `s`.
  */
 export function americanMoveToCodec(s: AmericanCheckersState, m: DraughtsMove1D): string | null {
@@ -319,7 +319,7 @@ export const AMERICAN_CHECKERS_SPEC: GameSpec<AmericanCheckersState> = {
   kind: 'checkers',
   family: 'draughts',
   title: 'Checkers',
-  tagline: 'American checkers — jump, chain, and crown your kings.',
+  tagline: 'American checkers: jump, chain, and crown your kings.',
   players: ['black', 'white'], // Black (dark) moves first
   board: { layout: 'cells', files: 8, ranks: 8 },
   flipPolicy: 'rotate',
@@ -490,7 +490,7 @@ export const INTL_CHECKERS_SPEC: GameSpec<IntlCheckersState> = {
   kind: 'checkers-intl',
   family: 'draughts',
   title: 'International Draughts',
-  tagline: '10×10 draughts — flying kings and majority capture.',
+  tagline: '10×10 draughts: flying kings and majority capture.',
   players: ['white', 'black'], // White moves first (FMJD)
   board: { layout: 'cells', files: 10, ranks: 10 },
   flipPolicy: 'rotate',
@@ -504,7 +504,7 @@ export const INTL_CHECKERS_SPEC: GameSpec<IntlCheckersState> = {
 }
 
 // ===========================================================================
-// Board read-model helpers (games/boards/CheckersBoard.tsx) — presentation
+// Board read-model helpers (games/boards/CheckersBoard.tsx), presentation
 // only, no rules authority. Squares are the 1-based codec numbers.
 // ===========================================================================
 

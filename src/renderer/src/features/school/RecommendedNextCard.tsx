@@ -4,19 +4,19 @@ import type { RecommendedChapter } from '@shared/types'
 import './school-home.css'
 
 // ============================================================================
-// FEATURE 2 surface — Viktor's weakness-driven "Recommended next".
+// FEATURE 2 surface: Viktor's weakness-driven "Recommended next".
 //
 // Reads window.api.school.recommend() -> { recommended: RecommendedChapter | null }
 // and renders one polished call-to-action card pointing at the chapter Viktor
 // thinks you should take next. The whole card is a button: clicking opens that
 // chapter via onOpenChapter(chapterId).
 //
-// The `reason` is name-based and human (NEVER an internal Elo) — we present it as
+// The `reason` is name-based and human (NEVER an internal Elo). We present it as
 // a quoted line from Viktor. The weak concepts that pulled the chapter up are shown
 // as display-name chips beneath it, so the learner sees *why* it's next.
 //
 // Renders nothing when there's no recommendation (all caught up / all locked / no
-// desktop bridge) — the home simply omits the card rather than showing a shell.
+// desktop bridge): the home simply omits the card rather than showing a shell.
 // ============================================================================
 
 export interface RecommendedNextCardProps {
@@ -49,7 +49,7 @@ export function RecommendedNextCard({ onOpenChapter }: RecommendedNextCardProps)
     }
   }, [])
 
-  // No recommendation (all caught up, all locked, or no bridge) — render nothing.
+  // No recommendation (all caught up, all locked, or no bridge). Render nothing.
   if (!loaded || !rec) return null
 
   // Cap the visible weak-concept chips so the compact header surface never sprawls.

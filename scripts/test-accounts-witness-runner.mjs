@@ -4,7 +4,7 @@
 //   node scripts/test-accounts-witness-runner.mjs
 //
 // Same in-process mock-room transport as scripts/test-mp-v6.mjs (the v6 witness
-// gate) — two REAL MpNetSession ends (host + guest, both `signing`) plus a REAL
+// gate): two REAL MpNetSession ends (host + guest, both `signing`) plus a REAL
 // `witnessRunner` joined to the same room as the third peer. Unlike test-mp-v6
 // (which hand-pumps a scripted WitnessCore), this drives the runner BODY: it
 // joins, announces `hello{role:'witness'}`, mirrors the host stream into a
@@ -12,14 +12,14 @@
 //
 // Identities use root ≠ device-key (unlike test-mp-v6's root===key idents) so
 // the runner's device-key resolution (participants + observed host hello) is
-// genuinely exercised — the mirrored start carries only ROOTS.
+// genuinely exercised: the mirrored start carries only ROOTS.
 //
 // Covered:
 //   1. RATED game: seat + follow (kind/tc + pairing='embedder-verified'), wclk
 //      cadence + sig, BOTH players surface the wclk (broadcast + both-verify),
 //      wend signed WITH the rated binding verifies, buildWitnessedResult carries
 //      kind/tc + verifies. (Also empirically documents the mpSession rated-wend
-//      surfacing gap — see notesForLead.)
+//      surfacing gap. See notesForLead.)
 //   2. UNRATED signed game: BOTH players surface the wend via onWitnessStream
 //      (the literal "witness emits a valid wend both players verify"), and
 //      buildWitnessedResult is well-formed.
@@ -28,7 +28,7 @@
 //   4. Casual/unsigned play is UNAFFECTED: an unsigned host never seats the
 //      runner, never mirrors, so the runner produces nothing and the game flows.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green; any failure prints
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green; any failure prints
 // and exits 1. Clean exit (no leaked timers/handles).
 
 import { build } from 'esbuild'
@@ -137,7 +137,7 @@ function makeMockPair() {
       })
       return { received, peerId: joined.peerId, transport: joined.transport, leave: () => joined.transport.close() }
     },
-    /** The witness's transport factory — joins the SAME room as host/guest. */
+    /** The witness's transport factory. Joins the SAME room as host/guest. */
     witnessFactory: (_roomCode, listeners) => room.join(listeners).transport,
     room,
   }
@@ -175,7 +175,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
   process.exit(0)
 }
 
@@ -187,11 +187,11 @@ async function run(outdir) {
   ok(typeof MpNetSession === 'function', 'mpSession.ts bundled & MpNetSession exported')
 
   // The lane under test. Type-only imports (mpSession/accounts types) erase, so
-  // this bundles light — no trystero, no DOM (proves it is headless-testable).
+  // this bundles light: no trystero, no DOM (proves it is headless-testable).
   const wrOut = resolve(outdir, 'witnessRunner.mjs')
   await bundle(resolve(ROOT, 'src/renderer/src/features/account/net/witnessRunner.ts'), wrOut)
   const wrSrc = (await import('node:fs')).readFileSync(wrOut, 'utf8')
-  ok(!/from\s*["']trystero/.test(wrSrc), 'witnessRunner bundle pulls in NO transport (trystero) — injected')
+  ok(!/from\s*["']trystero/.test(wrSrc), 'witnessRunner bundle pulls in NO transport (trystero), injected')
   ok(!/from\s*["']node:/.test(wrSrc), 'witnessRunner bundle has no node: import')
   const { witnessRunner } = await import(pathToFileURL(wrOut).href)
   ok(typeof witnessRunner === 'function', 'witnessRunner.ts bundled & witnessRunner exported')
@@ -333,7 +333,7 @@ async function run(outdir) {
       ),
       'wclk signature verifies over witnessClockBytes',
     )
-    // BOTH players surfaced the (verified) wclk — broadcast + both-seat + both-verify.
+    // BOTH players surfaced the (verified) wclk. Broadcast + both-seat + both-verify.
     await waitEvent(t.hw, (m) => m.t === 'wclk' && m.ply === 3, { label: 'host surfaced wclk' })
     await waitEvent(t.gw, (m) => m.t === 'wclk' && m.ply === 3, { label: 'guest surfaced wclk' })
     ok(true, 'both players surfaced the wclk via onWitnessStream')
@@ -350,8 +350,8 @@ async function run(outdir) {
     eq(wend.reason, 'resign', 'wend reason is the shared resign convention')
     eq(wend.plies, 4, 'wend covers 4 plies')
 
-    // The rated wend verifies WITH the re-derived binding (kind/tc/players/reason)
-    // — the exact wstream sig both players' SegmentPayload.wstream carries.
+    // The rated wend verifies WITH the re-derived binding (kind/tc/players/reason),
+    // the exact wstream sig both players' SegmentPayload.wstream carries.
     const res = t.runner.result()
     ok(res, 'runner.result() present after terminal')
     const binding = { kind: 'chess', tc: RATED_TC, players: { w: HOST_I.root, b: GUEST_I.root }, reason: 'resign' }
@@ -385,12 +385,12 @@ async function run(outdir) {
     )
 
     // Empirical: the rated wend does NOT currently surface via onWitnessStream
-    // (mpSession verifies it binding-less — Lane C gap, see notesForLead). The
+    // (mpSession verifies it binding-less; Lane C gap, see notesForLead). The
     // binding-less wclk DID surface (asserted above), so seating/broadcast work.
     const ratedWendSurfaced = t.hw.some((m) => m.t === 'wend') || t.gw.some((m) => m.t === 'wend')
     console.log(
       `    (info) rated wend surfaced via onWitnessStream: ${ratedWendSurfaced} ` +
-        `— mpSession must re-derive the binding for players to collect it`,
+        `(mpSession must re-derive the binding for players to collect it)`,
     )
     stopTrio(t)
   }
@@ -413,7 +413,7 @@ async function run(outdir) {
 
     const wend = t.emitted.find((m) => m.t === 'wend')
     ok(wend, 'runner emitted a wend (unrated)')
-    // Legacy (binding-less) wend — mpSession surfaces it, so BOTH players verify.
+    // Legacy (binding-less) wend: mpSession surfaces it, so BOTH players verify.
     const hWend = await waitEvent(t.hw, (m) => m.t === 'wend', { label: 'host surfaced wend' })
     const gWend = await waitEvent(t.gw, (m) => m.t === 'wend', { label: 'guest surfaced wend' })
     eq(hWend.sig, wend.sig, 'host surfaced the exact wend the runner broadcast')
@@ -484,7 +484,7 @@ async function run(outdir) {
 
     await host.sendMove('e2e4')
     await waitEvent(ge, (e) => e.type === 'move' && e.uci === 'e2e4', { label: 'unsigned move relayed' })
-    // The move on the wire is byte-identical v5 (no sig) — the runner never
+    // The move on the wire is byte-identical v5 (no sig). The runner never
     // disturbed it, and never received a start (no mirror), so it produced nothing.
     const mvRaw = [...pair.room.wires].reverse().find((w) => wire.parseWireMsg(w.text)?.t === 'move')
     ok(!('sig' in JSON.parse(mvRaw.text)), 'unsigned move stays v5-shaped (no sig) with the runner present')

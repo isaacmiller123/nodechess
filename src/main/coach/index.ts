@@ -1,5 +1,5 @@
 /**
- * Local coaching engine — public surface (docs/content-coaching.md §3).
+ * Local coaching engine: public surface (docs/content-coaching.md §3).
  *
  * explainMove(): classify the played move by Win% drop, diff the board, detect
  * motifs from the engine PV (best move) and the played continuation, then fill a
@@ -237,7 +237,7 @@ function narratePv(start: Chess, pvUci: string[], maxPlies = 6): string {
     count++
   }
   if (sans.length <= 1) return ''
-  // skip the first (it's the best move already named) — narrate the follow-up.
+  // skip the first (it's the best move already named). Narrate the follow-up.
   const follow = sans.slice(1).join(' ')
   return ` After ${follow}.`
 }

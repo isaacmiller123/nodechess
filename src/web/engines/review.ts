@@ -1,13 +1,13 @@
-// Client-side full-game review — the web port of src/main/review/review.ts
+// Client-side full-game review. The web port of src/main/review/review.ts
 // minus the DB: same mainline walk, same MultiPV-2 fixed-depth analysis per
 // position (on the shared ANALYSIS instance), same mover-POV Win%/accuracy/
 // classification/comment pipeline, same per-side summaries and Elo bands.
 // Persistence goes through the injected ReviewStore (localStorage logged out,
-// HTTP logged in — the client agent's stores).
+// HTTP logged in: the client agent's stores).
 //
 // The math/classification modules are imported DIRECTLY from the desktop
-// source — src/main/analysis/accuracy.ts and estElo.ts are electron-free by
-// design ("no engine, no DB, no Electron") — so web and desktop reviews can
+// source: src/main/analysis/accuracy.ts and estElo.ts are electron-free by
+// design ("no engine, no DB, no Electron"), so web and desktop reviews can
 // never drift. Only the orchestration (this file) is re-implemented, because
 // desktop review.ts imports UciEngine (child_process) and the DB.
 //
@@ -105,7 +105,7 @@ export type AnalyzeFn = (fen: string, depth: number, multipv: number) => Promise
 
 /**
  * Analyze a single FEN to fixed depth; resolve once `bestmove` arrives with
- * the latest line per multipv index — desktop analyzeFen verbatim, including
+ * the latest line per multipv index: desktop analyzeFen verbatim, including
  * the depth-scaled hard ceiling so a wedged search can never hang the review.
  */
 export function analyzeFen(
@@ -209,7 +209,7 @@ function buildComment(a: {
         a.sacrificedRole ? `the ${ROLE_NAME[a.sacrificedRole] ?? 'piece'}` : 'material'
       } is the strongest move here.`
     case 'Great':
-      return `${playedSan} is a great find — the only good move in the position.`
+      return `${playedSan} is a great find. The only good move in the position.`
     case 'Best':
       return `${playedSan} is the best move.`
     case 'Excellent':
@@ -223,7 +223,7 @@ function buildComment(a: {
     case 'Inaccuracy':
       return `${playedSan} is an inaccuracy. ${bestSan} was best.${allowsMate}`
     case 'Miss':
-      return `${playedSan} misses the chance — ${bestSan} was much stronger.${missedMate}`
+      return `${playedSan} misses the chance: ${bestSan} was much stronger.${missedMate}`
     case 'Mistake':
       return `${playedSan} is a mistake. ${bestSan} was best.${allowsMate}${
         ref ? ` The problem: ${ref}.` : ''
@@ -259,7 +259,7 @@ let openingsTable: Promise<Record<string, OpeningInfo>> | null = null
 
 function loadOpenings(): Promise<Record<string, OpeningInfo>> {
   if (!openingsTable) {
-    // Same module id webApi.ts lazy-loads — vite dedupes it into one chunk.
+    // Same module id webApi.ts lazy-loads: vite dedupes it into one chunk.
     openingsTable = import('../../../resources/openings/openings.json')
       .then((m) => (m.default ?? m) as Record<string, OpeningInfo>)
       .catch(() => ({}))
@@ -351,7 +351,7 @@ export async function reviewGame(opts: ReviewGameOptions): Promise<GameReview> {
       afterPos.play(playedMove)
       fenAfter = makeFen(afterPos.toSetup())
       if (afterPos.isCheckmate()) {
-        // mover delivered mate — the best practical outcome by definition.
+        // mover delivered mate. The best practical outcome by definition.
         playedEval = { cp: null, mate: 1 }
         playedPv = [m.uci]
         isBest = true
@@ -419,7 +419,7 @@ export async function reviewGame(opts: ReviewGameOptions): Promise<GameReview> {
       prevOppFinalBadge
     })
 
-    // 5) Factual comment (engine data only — no motif guessing).
+    // 5) Factual comment (engine data only: no motif guessing).
     const comment = buildComment({
       badge,
       playedSan: m.san,
@@ -532,14 +532,14 @@ function sideSummary(
 export const engineAnalyze: AnalyzeFn = (fen, depth, multipv) =>
   serializeAnalysis(async () => {
     const eng = await pool.getAnalysis()
-    // Drain any in-flight (e.g. infinite analysis-board) search first — same
+    // Drain any in-flight (e.g. infinite analysis-board) search first. Same
     // discipline as engine:analyze; the board re-issues its search afterwards.
     await eng.stop()
     return analyzeFen(eng, fen, depth, multipv)
   })
 
 /** Resolve a stored game's PGN via the installed web Api (localStorage archive
- *  logged out, server bridge logged in) — the web stand-in for desktop's
+ *  logged out, server bridge logged in): the web stand-in for desktop's
  *  games.repo getGame. */
 async function pgnForGame(gameId: number): Promise<string> {
   const api = typeof window !== 'undefined' ? window.api : undefined
@@ -548,7 +548,7 @@ async function pgnForGame(gameId: number): Promise<string> {
   if (!game) throw new Error(`review:run: game ${gameId} not found`)
   if (game.game_kind !== 'chess') {
     throw new Error(
-      `review:run: game ${gameId} is a '${game.game_kind}' game — the chess review engine only reviews standard chess`
+      `review:run: game ${gameId} is a '${game.game_kind}' game: the chess review engine only reviews standard chess`
     )
   }
   return game.pgn
@@ -560,7 +560,7 @@ export function buildReviewApi(store: ReviewStore): Api['review'] {
     // environments fall back to webApi's W1 coming-online copy.
     throw new Error('web review layer unavailable: no Worker/WebAssembly in this environment')
   }
-  // Only one review at a time (shared analysis engine, heavy CPU) — desktop
+  // Only one review at a time (shared analysis engine, heavy CPU). Desktop
   // review.ipc.ts single-flight semantics, message-compatible (PlacementFlow
   // matches 'already in progress' by substring).
   let reviewing = false
@@ -603,7 +603,7 @@ export function buildReviewApi(store: ReviewStore): Api['review'] {
           }
         })
         // Persist through the store (it also marks per-side accuracy on the
-        // game row — both web store implementations do, mirroring desktop's
+        // game row: both web store implementations do, mirroring desktop's
         // setGameAccuracy). A pgn-only review is ephemeral, like desktop.
         let reviewId: number | null = resolvedGameId
         if (resolvedGameId != null) {
@@ -613,7 +613,7 @@ export function buildReviewApi(store: ReviewStore): Api['review'] {
         return { reviewId, review }
       } finally {
         // The single-flight flag clears ONLY when the run settles (including an
-        // aborted one) — never out-of-band.
+        // aborted one): never out-of-band.
         reviewing = false
         if (reviewAbort === abort) reviewAbort = null
       }
@@ -656,7 +656,7 @@ export function buildPerfApi(store: ReviewStore): Api['perf'] {
       const { white, black } = cached.review
       // Desktop prefers the game row's user_color; the web store has no game
       // row access, so this uses desktop's own fallback: whichever side
-      // actually has analyzed moves (white first) — documented divergence.
+      // actually has analyzed moves (white first). Documented divergence.
       const side = white.moves > 0 ? white : black
       const band = estimateElo(side.accuracy, Math.max(1, side.moves), side.acpl)
       return { est: band.est, low: band.low, high: band.high, accuracy: band.accuracy }

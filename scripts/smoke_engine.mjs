@@ -12,7 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PLAT = process.platform === 'win32' ? 'win' : process.platform === 'darwin' ? 'mac' : 'linux'
 const BIN = process.platform === 'win32' ? 'stockfish.exe' : 'stockfish'
 const EXE = path.join(__dirname, '..', 'resources', 'engine', PLAT, BIN)
-// Giuoco Piano, Black to move — a rich middlegame with clear top lines.
+// Giuoco Piano, Black to move. A rich middlegame with clear top lines.
 const FEN = 'r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3'
 
 const proc = spawn(EXE, [], { stdio: ['pipe', 'pipe', 'pipe'] })

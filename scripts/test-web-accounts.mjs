@@ -5,18 +5,18 @@
 // Four jobs, no browser required (the REAL browser gate is
 // scripts/test-web-accounts-browser.mjs):
 //
-//  1. BUNDLE PARITY — the shared accounts tree is bundled TWICE from one
+//  1. BUNDLE PARITY: the shared accounts tree is bundled TWICE from one
 //     fixture entry (esbuild platform=node and platform=browser, esm both,
 //     nothing stubbed: zero node built-ins in the tree IS the assertion),
 //     both bundles run under this node process, and every emitted digest
 //     (argon2 seed, tag, chain bytes, verify digest) must be byte-identical
 //     field by field AND match the goldens recorded from the stage-1 suites.
-//  2. BUILTIN LEAK SCAN — the browser bundle text must contain no require()
+//  2. BUILTIN LEAK SCAN. The browser bundle text must contain no require()
 //     of node builtins and no 'node:' imports.
-//  3. KEYRING — MemoryKeyStore, StorageLikeKeyStore (over a localStorage-
+//  3. KEYRING: MemoryKeyStore, StorageLikeKeyStore (over a localStorage-
 //     shaped fake), and the Keyring account/chain persistence rules
 //     (namespacing, seed opt-in, remove-account-keeps-chain).
-//  4. WEB GLUE — src/web/accounts.ts bundled with stubbed localStorage +
+//  4. WEB GLUE, src/web/accounts.ts bundled with stubbed localStorage +
 //     navigator: createAccount / signIn (never creates!) / signOut /
 //     exportMnemonic / exportKeyfile / verifyOwnChain semantics.
 //
@@ -87,10 +87,10 @@ async function main() {
   try {
     await run(outdir)
   } finally {
-    // cleanup on failure paths too — a crashed run must not leak temp dirs
+    // cleanup on failure paths too. A crashed run must not leak temp dirs
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -115,7 +115,7 @@ async function run(outdir) {
     ok(!/\bfrom\s*["']node:/.test(text), "browser bundle text carries no 'node:' import specifiers")
   }
 
-  console.log('\n· running BOTH bundles under node (argon2id runs twice — a few seconds) …')
+  console.log('\n· running BOTH bundles under node (argon2id runs twice, a few seconds) …')
   const nodeMod = await import(pathToFileURL(nodeOut).href)
   const browserMod = await import(pathToFileURL(browserOut).href)
   const rNode = await nodeMod.runFixture()
@@ -301,7 +301,7 @@ async function run(outdir) {
 
   const fakeLS = makeFakeStorage()
   globalThis.localStorage = fakeLS
-  // node ≥21 defines globalThis.navigator as getter-only — defineProperty it.
+  // node ≥21 defines globalThis.navigator as getter-only: defineProperty it.
   const FIXED_UA =
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
   Object.defineProperty(globalThis, 'navigator', {
@@ -339,9 +339,9 @@ async function run(outdir) {
     eq(vr.witnessedHeight, 0, 'witnessed lane is just the genesis')
     const dupe = await throwsAsync(
       () => G.createAccount('testuser', 'correct horse battery staple'),
-      'createAccount refuses an existing (foldedName, tag) pair — same name + same password',
+      'createAccount refuses an existing (foldedName, tag) pair, same name + same password',
     )
-    ok(dupe && /sign in instead/.test(String(dupe.message)), 'the refusal directs to signIn')
+    ok(dupe && /sign in instead/i.test(String(dupe.message)), 'the refusal directs to signIn')
   }
 
   console.log('\n· exports (mnemonic + keyfile) …')
@@ -528,7 +528,7 @@ async function run(outdir) {
     eq(fakeLS.getItem(chainKey), chainBytesBefore, '… and deliberately preserved the chain')
     const e = await throwsAsync(() => G.createAccount('GhostUser', 'spooky password 999'),
       'createAccount refuses to overwrite the surviving append-only chain')
-    ok(e && /sign in instead/.test(String(e.message)), 'the refusal directs to signIn')
+    ok(e && /sign in instead/i.test(String(e.message)), 'the refusal directs to signIn')
     eq(fakeLS.getItem(chainKey), chainBytesBefore, 'chain bytes are bit-identical after the refused create')
     eq(await G.keyring().getAccount('ghostuser'), null, 'the refused create persisted no record')
   }

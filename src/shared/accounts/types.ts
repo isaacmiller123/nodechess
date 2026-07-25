@@ -1,5 +1,5 @@
-// Decentralized accounts — shared type contract (spec: docs/ACCOUNTS-SPEC.md v1.1,
-// parameters: docs/ACCOUNTS-PARAMS.md). Types only — implementations live in the
+// Decentralized accounts. Shared type contract (spec: docs/ACCOUNTS-SPEC.md v1.1,
+// parameters: docs/ACCOUNTS-PARAMS.md). Types only: implementations live in the
 // sibling modules. Everything in src/shared/accounts must be platform-neutral:
 // no `node:` imports, no DOM globals (this tree typechecks under BOTH
 // tsconfig.node.json and tsconfig.web.json).
@@ -23,7 +23,7 @@ export const KEY_PURPOSE = { device: 0, session: 1, context: 2 } as const
 export type KeyPurpose = (typeof KEY_PURPOSE)[keyof typeof KEY_PURPOSE]
 
 export interface Identity {
-  /** 32-byte argon2id output — THE root secret. Never serialized unencrypted except keyfile export. */
+  /** 32-byte argon2id output: THE root secret. Never serialized unencrypted except keyfile export. */
   seed: Uint8Array
   rootPriv: Uint8Array
   rootPub: Uint8Array
@@ -58,10 +58,10 @@ export type Lane = 'w' | 'p'
  *  profile  p  LWW profile field write. payload: ProfilePayload
  *  ckpt     w  checkpoint (§2). payload: CheckpointPayload
  *  segment  w  entanglement game segment (§3, A3). payload: SegmentPayload
- *              (storage/types.ts) — pairwise-countersigned transcript digest,
+ *              (storage/types.ts): pairwise-countersigned transcript digest,
  *              both heads, witness stream sig, opponent ckpt + profile
- *              snapshot. Deleting one breaks the owner's own hash chain —
- *              that is the retention mechanism (§5 layer 1).
+ *              snapshot. Deleting one breaks the owner's own hash chain.
+ *              That is the retention mechanism (§5 layer 1).
  *  conduct  w  witnessed conduct fact not derivable from segments (§6b, A4):
  *              an aborted game, a no-show, an accepted rematch. payload:
  *              ConductPayload. Appended by the subject's own compliant client
@@ -79,7 +79,7 @@ export type Lane = 'w' | 'p'
  *              bytes, inline certs when device-signed) or a unilateral
  *              'remove'. payload: FriendPayload. Countersig verification and
  *              the mutual-read rule live in social/friends.ts (a fold rule,
- *              like commends — an unverifiable add is ignored, never counted).
+ *              like commends. An unverifiable add is ignored, never counted).
  */
 export type EventType =
   | 'genesis'
@@ -97,7 +97,7 @@ export type EventType =
 
 /**
  * The signed body. `sig` (in SignedEvent) covers canonicalBytes(body).
- * The event hash (`id`) is sha256(canonicalBytes(body)) — signatures and
+ * The event hash (`id`) is sha256(canonicalBytes(body)). Signatures and
  * witness attestations attach OUTSIDE the hash so countersigning never
  * changes linkage.
  *
@@ -115,19 +115,19 @@ export interface EventBody extends CanonicalObject {
   v: 1
   lane: Lane
   type: EventType
-  /** Chain owner's root pubkey — binds the event to the account. */
+  /** Chain owner's root pubkey. Binds the event to the account. */
   root: B64u
   /** Signing pubkey: the root itself or a certified child. */
   key: B64u
   height: number
-  /** Absent (not null) at chain starts — cjson has no null. */
+  /** Absent (not null) at chain starts. Cjson has no null. */
   prev?: B64u
   /** Author-claimed unix ms. Witnessed time attaches via attestation (A2). */
   ts: number
   payload: CanonicalObject
 }
 
-/** Reserved for A2 — shape fixed now so chain storage doesn't migrate. */
+/** Reserved for A2: shape fixed now so chain storage doesn't migrate. */
 export interface WitnessAttestation extends CanonicalObject {
   /** Witness pubkey. */
   w: B64u
@@ -143,7 +143,7 @@ export interface SignedEvent {
   body: EventBody
   /** ed25519 by body.key over canonicalBytes(body). */
   sig: B64u
-  /** Witness countersignatures — empty until A2. */
+  /** Witness countersignatures. Empty until A2. */
   wit?: WitnessAttestation[]
 }
 
@@ -151,19 +151,19 @@ export interface SignedEvent {
  * A VERIFIER's read-time eligibility view (A4 review fixes A4-03/05/14):
  * given a witness/cosigner SIGNING key (the `w` of a WitnessAttestation or a
  * segment's wstream.wkey), is that key one the verifier currently recognizes
- * as an ELIGIBLE fabric witness (§4 floors — resolved by the caller through
+ * as an ELIGIBLE fabric witness (§4 floors: resolved by the caller through
  * its own NodeDirectory / gossip memory, witness/eligibility.ts)? Signature
  * validity alone is NOT eligibility: any sybil can mint valid-signing keys,
  * so every evidence layer that EARNS score from attestations or cosignatures
  * (mm/trust.ts trustEvidenceOf, ratings/reputation.ts repEvidenceOf,
- * ratings/fold.ts ratingEvidenceOf — the A4-02 vouched-rating layer) counts a
+ * ratings/fold.ts ratingEvidenceOf. The A4-02 vouched-rating layer) counts a
  * key only when this predicate accepts it. The predicate is verifier-LOCAL
- * read-time context — it must never reach a fold or any checkpoint-embedded
+ * read-time context: it must never reach a fold or any checkpoint-embedded
  * state (the A4-04 determinism invariant).
  */
 export type WitnessEligibility = (w: B64u) => boolean
 
-/** sha256(canonicalBytes(body)) as B64u — the id every `prev` points at. */
+/** sha256(canonicalBytes(body)) as B64u: the id every `prev` points at. */
 export type EventId = B64u
 
 // --- payloads ---------------------------------------------------------------
@@ -209,16 +209,16 @@ export interface ConductPayload extends CanonicalObject {
   game: B64u
   /** Counterparty root. */
   opp: B64u
-  /** Finished game a rematch-accept follows — required for 'rematch-accept'. */
+  /** Finished game a rematch-accept follows. Required for 'rematch-accept'. */
   prior?: B64u
 }
 
 /**
- * A4 commendation (§6b) — lives in the RECIPIENT's chain. `sig` is the
+ * A4 commendation (§6b): lives in the RECIPIENT's chain. `sig` is the
  * commender's ed25519 over canonical commend bytes (ratings/conduct.ts
  * commendBytes: {v:1, t:'commend', game, from: opp, to: root}) under `key`;
  * `certs` carry the commender's root-signed cert events proving `key` belongs
- * to `opp` (absent when root-signed) — verifiable with no recursion into the
+ * to `opp` (absent when root-signed): verifiable with no recursion into the
  * commender's chain. The fold accepts at most one per (opp, game) and only
  * when a segment for `game` naming `opp` is in-chain.
  */
@@ -251,7 +251,7 @@ export interface PinAnchorPayload extends CanonicalObject {
  * game starts (the witness serves a rated game only when both pairings are
  * anchored). This makes abort/no-show omission self-executing evidence: a
  * pairing that is never settled by a later segment or conduct event for the
- * same `game` counts as misconduct in the reputation fold — the record is
+ * same `game` counts as misconduct in the reputation fold: the record is
  * already in your chain, so "forgetting" the abort is no longer possible.
  */
 export interface PairingPayload extends CanonicalObject {
@@ -266,7 +266,7 @@ export interface PairingPayload extends CanonicalObject {
   atWts: number
   /**
    * A7 (closes A4-02 + A4-10): the serving witness's attest over the
-   * counterparty's vouched rating + §4 head height at match time. OPTIONAL —
+   * counterparty's vouched rating + §4 head height at match time. OPTIONAL:
    * legacy pairing records stay byte-valid; absent ⇒ read-time evidence keeps
    * the embedded floor pin (the sound A4 representation). Shape + helpers:
    * witness/attest.ts PairingWitAttest. Read-time material only; no fold input.
@@ -282,7 +282,7 @@ export interface PairingPayload extends CanonicalObject {
 
 /**
  * A5 anticheat self-ban (§8/§9): appended by the compliant client when the
- * deterministic Tier-2 CONVICTION fires (A5-21, 2026-07-22: the 5σ line —
+ * deterministic Tier-2 CONVICTION fires (A5-21, 2026-07-22: the 5σ line;
  * the 3σ escalation obliges only deeper analysis, never a ban), BEFORE any
  * further witnessed-lane event. `verdict` digests the reproducible Tier-2
  * verdict record published into shard space; `window` names the K-window
@@ -301,7 +301,7 @@ export interface SelfBanPayload extends CanonicalObject {
 }
 
 /**
- * A6 friend edge (§3 "friendships are witnessed-lane entanglements", §10) —
+ * A6 friend edge (§3 "friendships are witnessed-lane entanglements", §10):
  * witnessed lane, in the SUBJECT's own chain. An 'add' asserts the edge WITH
  * the counterparty's proven consent: `sig` is the peer's ed25519 over
  * friendBytes({v:1, t:'friend', a, b}) (social/friends.ts; a/b = the two
@@ -309,13 +309,13 @@ export interface SelfBanPayload extends CanonicalObject {
  * one signature per party serves both chains) under `key`; `certs` carry the
  * PEER's root-signed cert events proving key ∈ peer when key !== peer (the
  * commend inline-cert pattern, recursion-bounded via events.ts zCertEvent).
- * A 'remove' is unilateral (§3) — the subject's own event signature is the
+ * A 'remove' is unilateral (§3): the subject's own event signature is the
  * whole authorization; it carries no countersig material.
  *
  * The RELATIONSHIP is the mutual read (social/friends.ts areFriends): friends
  * iff BOTH chains' latest edge state for the pair is a verified 'add'. A
  * replayed/stale countersignature can therefore never resurrect an edge the
- * peer removed — the peer's own chain outranks any material in yours (§0).
+ * peer removed: the peer's own chain outranks any material in yours (§0).
  */
 export interface FriendPayload extends CanonicalObject {
   action: 'add' | 'remove'
@@ -325,17 +325,17 @@ export interface FriendPayload extends CanonicalObject {
   key?: B64u
   /** 'add' only: peer countersignature over friendBytes (social/friends.ts). */
   sig?: B64u
-  /** 'add' only: peer cert events proving `key` — present iff key !== peer. */
+  /** 'add' only: peer cert events proving `key`. Present iff key !== peer. */
   certs?: CanonicalObject[]
 }
 
 export interface CheckpointPayload extends CanonicalObject {
-  /** Id of the previous checkpoint event — absent for the first checkpoint. */
+  /** Id of the previous checkpoint event. Absent for the first checkpoint. */
   prevCkpt?: B64u
   /** Witnessed-lane height this checkpoint covers through (inclusive). */
   through: number
   /**
-   * Fold snapshot at `through` — MUST embed the prior checkpoint's snapshot
+   * Fold snapshot at `through`. MUST embed the prior checkpoint's snapshot
    * digest (§2a) and equal exact recomputation over (prevThrough, through]
    * from the prior snapshot (§2b). A1 folds are structural (BasicFoldState);
    * A4 swaps in rating/trust/ban folds behind the same ChainFold interface.
@@ -344,7 +344,7 @@ export interface CheckpointPayload extends CanonicalObject {
   /** canonicalHash(state). */
   stateDigest: B64u
   // NOTE: M-of-N witness cosignatures (§2c) attach in A2 as a `cosig` member
-  // OUTSIDE the payload (like WitnessAttestation — countersigning must never
+  // OUTSIDE the payload (like WitnessAttestation; countersigning must never
   // change the event id). No field is missing here.
 }
 
@@ -373,7 +373,7 @@ export type VerifyErrorCode =
   | 'fork'
   | 'bad-checkpoint'
   | 'wrong-root'
-  /** A4 review fix (A4-09): one game may enter one chain once — a repeated
+  /** A4 review fix (A4-09): one game may enter one chain once. A repeated
    * segment game key is self-evident replay fraud. */
   | 'dup-game'
   /** A4 review fix (A4-01/02/08): a segment event whose own verification
@@ -406,7 +406,7 @@ export interface VerifyResult {
   profile: CanonicalObject
   /** Fold state at head under the A1 basic fold. */
   fold: CanonicalObject
-  /** canonicalHash over a stable projection of this result — the parity digest. */
+  /** canonicalHash over a stable projection of this result. The parity digest. */
   digest: B64u
 }
 
@@ -438,7 +438,7 @@ export interface ForkProof {
 
 /**
  * Minimal async KV the keyring persists through. Adapters: in-memory (tests),
- * web localStorage/IDB (src/web), node file (server/operator — lives outside
+ * web localStorage/IDB (src/web), node file (server/operator; lives outside
  * src/shared, which must stay platform-neutral).
  */
 export interface KeyStore {
@@ -450,7 +450,7 @@ export interface KeyStore {
 
 /**
  * What the keyring persists per account on a device. The ROOT SEED IS NOT
- * STORED by default — sign-in re-derives it; day-to-day witnessed-lane
+ * STORED by default: sign-in re-derives it; day-to-day witnessed-lane
  * signing uses the device child key. Storing the seed is an explicit opt-in
  * (keyfile semantics) so a stolen localStorage can cost at most the device
  * key, which a witnessed revocation retires (§1).
@@ -475,7 +475,7 @@ export interface Keyfile {
   kind: 'chess-sharp-keyfile'
   name: string
   tag: string
-  /** The 32-byte seed. Plaintext by design — this IS the lifeline (C-5). */
+  /** The 32-byte seed. Plaintext by design. This IS the lifeline (C-5). */
   seed: B64u
 }
 

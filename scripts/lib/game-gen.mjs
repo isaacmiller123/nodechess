@@ -7,7 +7,7 @@
 //  - bands >= NATIVE_FLOOR (1320): native UCI_LimitStrength/UCI_Elo, go
 //    movetime (the app's 1320+ bot path);
 //  - bands < 1320: the production sub-floor pick model (scripts/lib/
-//    weak-model.mjs — mirror of engine.ipc.ts), full-strength engine, short
+//    weak-model.mjs: mirror of engine.ipc.ts), full-strength engine, short
 //    MultiPV depth search + softmax/blunder pick;
 //  - random 6-ply "book" opening (uniform among depth-8 candidates within
 //    60cp of best) via a full-strength opening engine;

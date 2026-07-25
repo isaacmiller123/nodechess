@@ -1,11 +1,11 @@
-// Headless test for src/shared/accounts/judge/tier1.ts (phase A5 brick J2 —
+// Headless test for src/shared/accounts/judge/tier1.ts (phase A5 brick J2,
 // Tier-1 forensic signals).
 //
 //   node scripts/test-accounts-tier1.mjs
 //
 // Bundles the TS module on the fly with esbuild (alias @shared → src/shared,
 // same pattern as scripts/test-accounts-detmath.mjs). NO live engine: every
-// JudgeOutput here is a golden fixture — hand-constructed small MultiPV
+// JudgeOutput here is a golden fixture. Hand-constructed small MultiPV
 // outputs plus recorded-shape fixtures frozen as literals. Covers:
 //  (a) ACPL: mover-POV derivation, in-list same-snapshot scoring, the
 //      not-in-list ground-truth path, mate mapping/caps, POV for both colors,
@@ -21,19 +21,19 @@
 //  (c) complexityMicro: golden cases for every factor of the ported
 //      complexityMultiplier fold (gap bands, boundary bump, autopilot, probe
 //      cp map incl. mate→±1000, clamp),
-//  (d) clockForensicMicro: golden statistic values — proportional
+//  (d) clockForensicMicro: golden statistic values. Proportional
 //      (human-like) passes, uniform-fast-on-hard flagged, inversion flagged
 //      hardest, min-sample neutral, all-zero-think zero,
-//  (d2) A5-15: increment-aware think-time — honest sub-increment 3+2 play
+//  (d2) A5-15: increment-aware think-time. Honest sub-increment 3+2 play
 //      pre-fix bit-aliases to an instant bot at clockFitMicro=0; crediting the
 //      witness-signed incMs back recovers the true think, rescues the human to
 //      1e6 while the bot stays 0, default incMs byte-identical, incMs matrix,
 //  (d3) A5-16: clock inputs sourced from the accused's OWN prior snapshot
-//      (ply−2), never the opponent's ply−1 echo — an opponent zeroing its echo
+//      (ply−2), never the opponent's ply−1 echo: an opponent zeroing its echo
 //      of the accused's clock can no longer drive clockFitMicro to the maximal-
 //      suspicion 0 (framing defeated, record byte-identical); the second
 //      mover's opening reply is the single bounded ply−0-echo residual,
-//  (e) trajectoryMicro: exact OLS slopes, degenerate windows; A5-36 —
+//  (e) trajectoryMicro: exact OLS slopes, degenerate windows; A5-36:
 //      Tier1Record OPTIONALLY persists the slope per side when the caller
 //      supplies that account's prior acpl window (this game appended as newest);
 //      byte-identical when absent, per-side opt-in, fail-closed, no-window digest
@@ -47,14 +47,14 @@
 //      entry, nothing coerced),
 //  (i) A5-01: transcriptToJudgePositions (the canonical bare-fenBefore
 //      no-tail all-plies verdict surface; builder agreement across callers)
-//      and the tier1Record full-coverage rule — subset/gap/moves-path
+//      and the tier1Record full-coverage rule: subset/gap/moves-path
 //      JudgeOutputs rejected, full-coverage digest frozen byte-identical.
-//  (j) A5-37: the canonical fixed-node config gate — a Tier-2 (t2Nodes/
+//  (j) A5-37: the canonical fixed-node config gate. A Tier-2 (t2Nodes/
 //      t2MultiPv) or degenerate JudgeOutput carrying the SAME params digest is
 //      refused, each config field isolated, canonical-config record still
 //      ACCEPTED with a byte-identical digest (gate perturbs no accepted bit).
 //  (k) A5-06: the wrong-config record class is unmintable AND unverifiable
-//      end-to-end — the finding's literal nodes=1 output (multiPv/hashMb
+//      end-to-end: the finding's literal nodes=1 output (multiPv/hashMb
 //      canonical) is refused, the record COMMITS to config via `judge` (a
 //      nodes=1 output digests differently), so a verifier's own recompute
 //      re-runs the A5-37 gate; the record carries no config field, so the
@@ -125,7 +125,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
   )
   process.exit(failures ? 1 : 0)
 }
@@ -165,7 +165,7 @@ async function run(outdir) {
   // ply 0 (w): played d2d4 (in-list rank 2)         → loss 10, matched
   // ply 1 (b): played g8f6 (NOT in list; ground truth ply2 rank1 cp 60 →
   //            mover POV −60)                        → loss 35, NOT matched
-  // ply 2 (w): played e2e4 (in-list rank 4, cp 30 — same-snapshot, NOT the
+  // ply 2 (w): played e2e4 (in-list rank 4, cp 30; same-snapshot, NOT the
   //            ply-3 ground truth)                   → loss 30, matched
   // ply 3 (b): played d7d6 (in-list rank 2)         → loss 80, matched
   // ply 4 (w): best mate 2 (1900); played h2h3 → ground truth ply5 mate 1
@@ -193,7 +193,7 @@ async function run(outdir) {
   ]
 
   // ---- score maps ----------------------------------------------------------
-  console.log('\n— mate map + line cp maps (accuracy.ts / botTime ports) —')
+  console.log('\n· mate map + line cp maps (accuracy.ts / botTime ports)')
   eq(mateToCp(0), -2100, 'mateToCp(0) → −2100 (already mated, ported branch)')
   eq(mateToCp(1), 2000, 'mateToCp(1) → 2000')
   eq(mateToCp(-1), -2000, 'mateToCp(−1) → −2000')
@@ -211,7 +211,7 @@ async function run(outdir) {
   eq(probeLineCp({ move: 'e2e4', cp: -300 }), -300, 'probeLineCp passes in-band cp through')
 
   // ---- (a) ACPL derivation -------------------------------------------------
-  console.log('\n— ACPL: POV, in-list snapshot, ground truth, mate caps —')
+  console.log('\n· ACPL: POV, in-list snapshot, ground truth, mate caps')
   {
     const w = sideMoveScores(FIX_A, MOVES_A, 'w', 'w')
     const b = sideMoveScores(FIX_A, MOVES_A, 'b', 'w')
@@ -230,15 +230,15 @@ async function run(outdir) {
     // −(−320) = 320 → loss 0).
     ok(w.losses[1] === 30, 'ply-2 in-list move scored from its OWN line (computeIsBest S2 same-snapshot port)')
   }
-  eq(acplMicro([]), 0, 'acplMicro([]) = 0 (accuracy.ts acpl([]) port — consumers weight by scored)')
+  eq(acplMicro([]), 0, 'acplMicro([]) = 0 (accuracy.ts acpl([]) port: consumers weight by scored)')
   eq(acplMicro([1500]), 1_000_000_000, 'acplMicro re-applies the per-move 1000 cap')
   eq(acplMicro([0, 0, 7]), 2_333_333, 'acplMicro floor division')
 
   // ---- (b) score-equivalence window ---------------------------------------
-  console.log('\n— engine match: the ±scoreEquivCp equivalence window —')
+  console.log('\n· engine match: the ±scoreEquivCp equivalence window')
   eq(PARAMS_A5.scoreEquivCp, 15, 'PARAMS_A5.scoreEquivCp = 15')
   eq(isEngineMatched(100, [{ move: 'a2a3', cp: 100 }]), true, 'distance 0 matches')
-  eq(isEngineMatched(85, [{ move: 'a2a3', cp: 100 }]), true, 'distance 15 (low side) matches — inclusive boundary')
+  eq(isEngineMatched(85, [{ move: 'a2a3', cp: 100 }]), true, 'distance 15 (low side) matches: inclusive boundary')
   eq(isEngineMatched(115, [{ move: 'a2a3', cp: 100 }]), true, 'distance 15 (high side) matches')
   eq(isEngineMatched(84, [{ move: 'a2a3', cp: 100 }]), false, 'distance 16 does not match')
   eq(isEngineMatched(116, [{ move: 'a2a3', cp: 100 }]), false, 'distance 16 (high) does not match')
@@ -248,7 +248,7 @@ async function run(outdir) {
     'ANY line: matches the rank-3 line inside the window'
   )
   eq(isEngineMatched(1900, [{ move: 'a2a3', mate: 2 }]), true, 'mate line: same mate band matches')
-  eq(isEngineMatched(2000, [{ move: 'a2a3', mate: 2 }]), false, 'mate bands are 100cp apart — adjacent band conservatively unmatched')
+  eq(isEngineMatched(2000, [{ move: 'a2a3', mate: 2 }]), false, 'mate bands are 100cp apart, adjacent band conservatively unmatched')
   {
     // Not-in-list, WITHIN window (the matched direction of the ground-truth
     // path): played g1f3 ∉ list; ply-1 rank1 cp −25 (opp POV) → mover 25;
@@ -277,11 +277,11 @@ async function run(outdir) {
   eq(engineMatchMicro(10, 10), 1_000_000, 'engineMatchMicro saturates at 1e6')
 
   // ---- (b2) A5-14: any-line degeneration pinned + BEST-relative criterion --
-  console.log('\n— A5-14 [DEFERRED]: any-line degeneration + best-relative matchedBest —')
+  console.log('\n· A5-14 [DEFERRED]: any-line degeneration + best-relative matchedBest')
   // isEngineMatchedBest unit semantics: same ±15 window, rank-1 only.
   eq(isEngineMatchedBest(100, [{ move: 'a2a3', cp: 100 }]), true, 'best-window: distance 0 matches')
-  eq(isEngineMatchedBest(85, [{ move: 'a2a3', cp: 100 }]), true, 'best-window: distance 15 (low) matches — inclusive boundary')
-  eq(isEngineMatchedBest(115, [{ move: 'a2a3', cp: 100 }]), true, 'best-window: distance 15 (high) matches — live in BOTH directions')
+  eq(isEngineMatchedBest(85, [{ move: 'a2a3', cp: 100 }]), true, 'best-window: distance 15 (low) matches. Inclusive boundary')
+  eq(isEngineMatchedBest(115, [{ move: 'a2a3', cp: 100 }]), true, 'best-window: distance 15 (high) matches. Live in BOTH directions')
   eq(isEngineMatchedBest(84, [{ move: 'a2a3', cp: 100 }]), false, 'best-window: distance 16 does not match')
   eq(
     isEngineMatchedBest(-10, [{ move: 'a2a3', cp: 300 }, { move: 'b2b3', cp: 40 }, { move: 'c2c3', cp: 0 }]),
@@ -332,8 +332,8 @@ async function run(outdir) {
       'w'
     )
     eq(wIII.matched, 1, 'scenario (iii) CALIBRATED: fully-listed 3-legal position auto-matches even the worst move (950cp loss)')
-    eq(wIII.matchedBest, 0, 'scenario (iii) CORRECTED: the worst move is not best-matched — composition no longer forces matches')
-    // The window is LIVE for listed moves under the best criterion — and it
+    eq(wIII.matchedBest, 0, 'scenario (iii) CORRECTED: the worst move is not best-matched, composition no longer forces matches')
+    // The window is LIVE for listed moves under the best criterion, and it
     // is still never exact-move matching.
     const oneMove = (mv) => [{ ply: 0, move: mv, clockMs: { w: 60000, b: 60000 } }]
     const wIn = sideMoveScores(
@@ -350,7 +350,7 @@ async function run(outdir) {
       'w'
     )
     eq(wOut.matched, 1, 'in-list rank-2 at 16cp: any-line still certifies (self-match)')
-    eq(wOut.matchedBest, 0, 'in-list rank-2 at 16cp is NOT best-matched — the window now excludes listed moves (inert pre-A5-14)')
+    eq(wOut.matchedBest, 0, 'in-list rank-2 at 16cp is NOT best-matched. The window now excludes listed moves (inert pre-A5-14)')
     // Not-in-list co-best through the ground-truth path, ABOVE best: the
     // corrected criterion still absorbs engine variance both directions.
     const wCo = sideMoveScores(
@@ -380,7 +380,7 @@ async function run(outdir) {
   }
 
   // ---- unscored rule (c) ----------------------------------------------------
-  console.log('\n— unscored rule (c): no list hit, no ply+1 ground truth —')
+  console.log('\n· unscored rule (c): no list hit, no ply+1 ground truth')
   {
     const FIX_B = { ...FIX_A, positions: FIX_A.positions.slice(0, 5) } // plies 0..4
     const w = sideMoveScores(FIX_B, MOVES_A, 'w', 'w')
@@ -391,12 +391,12 @@ async function run(outdir) {
     eq(acplMicro(w.losses), 20_000_000, 'white acplMicro over scored moves only')
     eq(w.matched, 2, 'white matched 2/2')
     eq(engineMatchMicro(w.matched, w.scored), 1_000_000, 'match fraction over scored only')
-    eq(b.scored, 2, 'black ply-5 (no judged position under this fixture) simply not judged — scored 2')
+    eq(b.scored, 2, 'black ply-5 (no judged position under this fixture) simply not judged, scored 2')
     eq(b.unscored, 0, 'black unscored 0 (ply 3 is in-list)')
   }
 
   // ---- (c) complexityMicro goldens -----------------------------------------
-  console.log('\n— complexityMicro: ported fold goldens —')
+  console.log('\n· complexityMicro: ported fold goldens')
   const L = (cp1, cp2) => (cp2 === undefined ? [{ move: 'a2a3', cp: cp1 }] : [{ move: 'a2a3', cp: cp1 }, { move: 'b2b3', cp: cp2 }])
   eq(complexityMicro(L(30, 20)), 1_800_000, 'gap 10 (<15) → ×1.8')
   eq(complexityMicro(L(100, 80)), 1_885_000, 'gap 20 (<40) → ×1.45, |best|=100 boundary → ×1.3')
@@ -409,11 +409,11 @@ async function run(outdir) {
   eq(complexityMicro([{ move: 'a2a3', mate: -1 }, { move: 'b2b3', mate: -2 }]), 810_000, 'both losing mates → −1000 each: gap 0 → ×1.8, autopilot ×0.45')
   eq(complexityMicro(L(1500, 1500)), 810_000, 'cp clamped to 1000: gap 0 → ×1.8, autopilot ×0.45')
   eq(complexityMicro(L(100, 95)), 2_340_000, 'max reachable stack: ×1.8 then ×1.3 = 2.34e6 (≤ ceiling 4e6)')
-  eq(complexityMicro(L(-40, -50)), 1_800_000, 'negative-side gap uses max(0, top1−top2) — signalsFromProbe port')
+  eq(complexityMicro(L(-40, -50)), 1_800_000, 'negative-side gap uses max(0, top1−top2), signalsFromProbe port')
   eq(complexityMicro(L(-50, -40)), 2_340_000, 'inverted ranks floor gap at 0 (<15) and |−50| boundary bumps')
 
   // ---- (d) clockForensicMicro goldens --------------------------------------
-  console.log('\n— clockForensicMicro: think-time/complexity fit goldens —')
+  console.log('\n· clockForensicMicro: think-time/complexity fit goldens')
   const HARD = 1_800_000
   const EASY = 600_000
   const cAlt = [HARD, EASY, HARD, EASY, HARD, EASY, HARD, EASY, HARD, EASY]
@@ -463,7 +463,7 @@ async function run(outdir) {
   // BIT-ALIASED to an actual instant bot. Crediting the witness-signed incMs
   // back recovers the true think and breaks the aliasing: the human scores high,
   // the bot stays 0. Default incMs 0 ⇒ byte-identical to the pre-A5-15 record.
-  console.log('\n— A5-15: increment-aware clock forensics (honest fast play not flagged) —')
+  console.log('\n· A5-15: increment-aware clock forensics (honest fast play not flagged)')
   {
     const hard = (ply) => ({ ply, lines: [{ move: 'a2a3', cp: 20 }, { move: 'b2b3', cp: 10 }] }) // complexity 1.8e6
     const easy = (ply) => ({ ply, lines: [{ move: 'c2c3', cp: 500 }, { move: 'd2d3', cp: 200 }] }) // complexity 360k
@@ -497,7 +497,7 @@ async function run(outdir) {
     eq(
       JSON.stringify(clockSamplesForSide(FIX_INC, honest, 'w', 'w').map((s) => s.thinkMs)),
       JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0]),
-      'pre-fix (incMs 0): honest sub-increment thinks all clamp to 0 — the defect'
+      'pre-fix (incMs 0): honest sub-increment thinks all clamp to 0, the defect'
     )
     eq(
       JSON.stringify(clockSamplesForSide(FIX_INC, honest, 'w', 'w', INC).map((s) => s.thinkMs)),
@@ -506,10 +506,10 @@ async function run(outdir) {
     )
 
     // End-to-end aliasing proof. Pre-fix: honest 3+2 human and instant bot mint
-    // the BIT-IDENTICAL record — the value no later calibration can separate.
+    // the BIT-IDENTICAL record: the value no later calibration can separate.
     const honestLegacy = tier1Record('g', 'blitz', FIX_INC, honest, 'w')
     const botLegacy = tier1Record('g', 'blitz', FIX_INC, bot, 'w')
-    eq(honestLegacy.w.clockFitMicro, 0, 'pre-fix HONEST white → clockFitMicro 0 (maximal suspicion — false-fraud)')
+    eq(honestLegacy.w.clockFitMicro, 0, 'pre-fix HONEST white → clockFitMicro 0 (maximal suspicion: false-fraud)')
     eq(honestLegacy.b.clockFitMicro, 0, 'pre-fix HONEST black → clockFitMicro 0')
     eq(honestLegacy.w.clockN, 8, 'white clockN 8 (≥ CLOCK_MIN_SAMPLE, so the statistic speaks)')
     eq(
@@ -518,7 +518,7 @@ async function run(outdir) {
       'pre-fix ALIASING: honest human and instant bot mint the bit-identical Tier1Record'
     )
     // Post-fix (incMs = INC): the human is rescued to a proportional high fit;
-    // the bot (true think 0) stays pinned at 0 — aliasing broken.
+    // the bot (true think 0) stays pinned at 0, aliasing broken.
     const honestFix = tier1Record('g', 'blitz', FIX_INC, honest, 'w', INC)
     const botFix = tier1Record('g', 'blitz', FIX_INC, bot, 'w', INC)
     eq(honestFix.w.clockFitMicro, 1_000_000, 'fix HONEST white → clockFitMicro 1e6 (proportional, NOT flagged)')
@@ -527,12 +527,12 @@ async function run(outdir) {
     eq(botFix.w.clockFitMicro, 0, 'fix INSTANT BOT white → still 0 (a true 0ms think is NOT whitewashed)')
     ok(tier1Digest(honestFix) !== tier1Digest(botFix), 'fix breaks the aliasing: honest and bot now mint DISTINCT records')
 
-    // Byte-identical guard: incMs is a derivation INPUT, never stored — absent ≡
+    // Byte-identical guard: incMs is a derivation INPUT, never stored. Absent ≡
     // explicit 0, so every frozen record/digest stays untouched.
     eq(
       tier1Digest(tier1Record('g', 'blitz', FIX_INC, honest, 'w')),
       tier1Digest(tier1Record('g', 'blitz', FIX_INC, honest, 'w', 0)),
-      'incMs absent ≡ explicit incMs 0 — record bytes unchanged'
+      'incMs absent ≡ explicit incMs 0: record bytes unchanged'
     )
   }
 
@@ -545,7 +545,7 @@ async function run(outdir) {
   // honest play, framing defeated. The whitewash direction (a mover faking its
   // OWN complexity-proportional snapshots) needs the witness's wclk/wts elapsed
   // stream and is the documented out-of-lane residual.
-  console.log('\n— A5-16: own-clock sourcing defeats opponent-echo framing —')
+  console.log('\n· A5-16: own-clock sourcing defeats opponent-echo framing')
   {
     const hard = (ply) => ({ ply, lines: [{ move: 'a2a3', cp: 20 }, { move: 'b2b3', cp: 10 }] }) // complexity 1.8e6
     const easy = (ply) => ({ ply, lines: [{ move: 'c2c3', cp: 500 }, { move: 'd2d3', cp: 200 }] }) // complexity 360k
@@ -567,18 +567,18 @@ async function run(outdir) {
       return mv
     }
     const honest = build()
-    // FRAMING: the OPPONENT (Black, odd plies) signs clockMs.w = 1 — the echo of
+    // FRAMING: the OPPONENT (Black, odd plies) signs clockMs.w = 1. The echo of
     // White's clock it controls but does not OWN.
     const framed = honest.map((m) => (m.ply % 2 === 1 ? { ...m, clockMs: { w: 1, b: m.clockMs.b } } : m))
 
     // White's samples come from its own even-ply snapshots, so the tamper is
-    // inert — identical think times honest vs framed.
+    // inert: identical think times honest vs framed.
     const wThink = JSON.stringify([360, 1800, 360, 1800, 360, 1800, 360, 1800, 360])
     eq(JSON.stringify(clockSamplesForSide(FIX_F, honest, 'w', 'w').map((s) => s.thinkMs)), wThink, 'honest White think times (own ply−2 delta)')
     eq(
       JSON.stringify(clockSamplesForSide(FIX_F, framed, 'w', 'w').map((s) => s.thinkMs)),
       wThink,
-      'FRAMED White think times UNCHANGED — opponent echo tamper inert'
+      'FRAMED White think times UNCHANGED, opponent echo tamper inert'
     )
     // The tamper IS present and would have collapsed the pre-fix ply−1 derivation:
     eq(framed[1].clockMs.w, 1, 'framing present: Black zeroed its echo of White clock at ply 1')
@@ -587,11 +587,11 @@ async function run(outdir) {
     const honestRec = tier1Record('g', 'blitz', FIX_F, honest, 'w')
     const framedRec = tier1Record('g', 'blitz', FIX_F, framed, 'w')
     eq(honestRec.w.clockFitMicro, 1_000_000, 'honest White clockFitMicro 1e6 (proportional)')
-    eq(framedRec.w.clockFitMicro, 1_000_000, 'FRAMED White clockFitMicro STILL 1e6 — NOT driven to the maximal-suspicion 0')
+    eq(framedRec.w.clockFitMicro, 1_000_000, 'FRAMED White clockFitMicro STILL 1e6: NOT driven to the maximal-suspicion 0')
     eq(honestRec.w.clockN, 9, 'White clockN 9 (sampling geometry unchanged by the fix)')
     eq(tier1Digest(honestRec), tier1Digest(framedRec), 'framing the opponent echo cannot change the accused Tier1Record (byte-identical)')
 
-    // BOUNDED RESIDUAL — the second mover's opening reply (ply 1) has no own prior
+    // BOUNDED RESIDUAL: the second mover's opening reply (ply 1) has no own prior
     // snapshot and alone reads the ply−0 echo. An opponent tampering ONLY that
     // echo changes at most that ONE sample and cannot force the T=0 extreme.
     const b0Tampered = honest.map((m) => (m.ply === 0 ? { ...m, clockMs: { w: m.clockMs.w, b: 1 } } : m))
@@ -599,7 +599,7 @@ async function run(outdir) {
     const tamperB = clockSamplesForSide(FIX_F, b0Tampered, 'b', 'w').map((s) => s.thinkMs)
     eq(JSON.stringify(honestB), JSON.stringify([500, 500, 500, 500, 500, 500, 500, 500, 500, 500]), 'honest Black think times (uniform 500)')
     eq(tamperB[0], 0, 'ply−0 echo tamper zeroes the Black ply-1 sample only')
-    eq(JSON.stringify(tamperB.slice(1)), JSON.stringify(honestB.slice(1)), 'every Black sample after ply 1 uses own snapshots — unaffected by the echo tamper')
+    eq(JSON.stringify(tamperB.slice(1)), JSON.stringify(honestB.slice(1)), 'every Black sample after ply 1 uses own snapshots, unaffected by the echo tamper')
     ok(
       clockForensicMicro(clockSamplesForSide(FIX_F, b0Tampered, 'b', 'w')) > 0,
       'a single tampered opening sample cannot drive clockFitMicro to the maximal-suspicion 0'
@@ -607,7 +607,7 @@ async function run(outdir) {
   }
 
   // ---- (e) trajectoryMicro --------------------------------------------------
-  console.log('\n— trajectoryMicro: OLS slope goldens —')
+  console.log('\n· trajectoryMicro: OLS slope goldens')
   eq(trajectoryMicro([100_000_000, 90_000_000, 80_000_000]), -10_000_000, 'falling ACPL → slope −10e6 (strengthening)')
   eq(trajectoryMicro([10_000_000, 20_000_000, 40_000_000]), 15_000_000, 'rising ACPL → slope +15e6')
   eq(trajectoryMicro([50_000_000, 50_000_000, 50_000_000, 50_000_000]), 0, 'flat window → 0')
@@ -627,7 +627,7 @@ async function run(outdir) {
   }
 
   // ---- (f) Tier1Record end-to-end + determinism ----------------------------
-  console.log('\n— Tier1Record: recorded-shape 20-ply fixture (bot white, human black) —')
+  console.log('\n· Tier1Record: recorded-shape 20-ply fixture (bot white, human black)')
   // Fixture C: 20 plies, all judged. Hard plies (gap<15 ⇒ complexity 1.8e6):
   // 0,1,4,5,8,9,12,13,16,17. Easy plies (gap 300, |best| 500 ⇒ 360000):
   // 2,3,6,7,10,11,14,15,18,19. White spends a uniform 400ms (bot pacing);
@@ -688,7 +688,7 @@ async function run(outdir) {
     eq(
       JSON.stringify(Object.keys(recC.w)),
       JSON.stringify(['scored', 'unscored', 'acplMicro', 'matched', 'matchMicro', 'clockFitMicro', 'clockN']),
-      'Tier1Side key set frozen — matchedBest stays sideMoveScores-level (A5-14 deferral, record shape unchanged)'
+      'Tier1Side key set frozen: matchedBest stays sideMoveScores-level (A5-14 deferral, record shape unchanged)'
     )
     ok(!('matchedBest' in recC.w) && !('matchedBest' in recC.b), 'matchedBest not in the digest-bound record')
   }
@@ -700,7 +700,7 @@ async function run(outdir) {
   {
     const recA = tier1Record('game-a', 'rapid', FIX_A, MOVES_A, 'w')
     eq(recA.w.clockFitMicro, CLOCK_NEUTRAL_MICRO, 'short game: white clock stat neutral under min sample')
-    eq(recA.w.clockN, 2, 'white clockN 2 (plies 2, 4 — ply 0 has no prior snapshot)')
+    eq(recA.w.clockN, 2, 'white clockN 2 (plies 2, 4: ply 0 has no prior snapshot)')
     eq(recA.b.clockN, 3, 'black clockN 3 (plies 1, 3, 5)')
     ok(tier1Digest(recA) !== tier1Digest(recC), 'different games → different digests')
   }
@@ -715,14 +715,14 @@ async function run(outdir) {
 
   // ---- (f2) A5-36: strength-trajectory persistence in Tier1Record ----------
   // Pre-fix the §8 strength-trajectory slope was computed + unit-tested (§(e)
-  // above) but persisted in NO record and read by NO consumer — the smurf /
+  // above) but persisted in NO record and read by NO consumer. The smurf /
   // rapid-improvement channel was absent from every verdict. tier1Record now
   // OPTIONALLY persists it per side when the caller supplies that account's
   // prior acpl window; this game's acplMicro is appended as the newest point.
   // Absent ⇒ the field is omitted (codec skips undefined) ⇒ byte-identical
   // record, so NO frozen tier1Digest moved. VERDICT consumption (a σ-per-slope
   // weight into the Tier-2 z / trust T) is DEFERRED to J4/J6 calibration.
-  console.log('\n— A5-36: trajectory persisted per side (byte-safe, per-side opt-in, DEFERRED weight) —')
+  console.log('\n· A5-36: trajectory persisted per side (byte-safe, per-side opt-in, DEFERRED weight)')
   {
     const FROZEN_NOWIN = 'chzY1umBfAfE9M6Ce6u_73xtvCaMEIwOK7dw_mKVm-8'
     // No window ⇒ no field, and the pre-A5-36 digest is untouched.
@@ -735,12 +735,12 @@ async function run(outdir) {
     eq(
       tier1Digest(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, undefined)),
       FROZEN_NOWIN,
-      'priorAcplMicros absent ≡ explicit undefined — bytes unchanged'
+      'priorAcplMicros absent ≡ explicit undefined: bytes unchanged'
     )
     eq(
       tier1Digest(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, {})),
       FROZEN_NOWIN,
-      'empty priorAcplMicros object (no sides) ≡ no field either side — bytes unchanged'
+      'empty priorAcplMicros object (no sides) ≡ no field either side, bytes unchanged'
     )
 
     // The finding's exact failure scenario: an account whose per-game ACPL
@@ -750,8 +750,8 @@ async function run(outdir) {
     const PRIOR_W = [200_000_000, 180_000_000, 160_000_000]
     const recW = tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, { w: PRIOR_W })
     ok('trajectoryMicro' in recW.w, 'w side (window supplied) persists the trajectory slope')
-    ok(!('trajectoryMicro' in recW.b), 'b side (no window) omits it — per-side opt-in is independent')
-    eq(recW.w.trajectoryMicro, -17_000_000, 'persisted slope −17e6 (falling ACPL → strengthening — the finding scenario, now visible in the record)')
+    ok(!('trajectoryMicro' in recW.b), 'b side (no window) omits it: per-side opt-in is independent')
+    eq(recW.w.trajectoryMicro, -17_000_000, 'persisted slope −17e6 (falling ACPL → strengthening: the finding scenario, now visible in the record)')
     eq(recW.w.acplMicro, 150_000_000, 'this game acpl still 150e6 (core fields untouched by the append)')
     ok(tier1Digest(recW) !== FROZEN_NOWIN, 'window record digest DIFFERS from the no-window digest (the field changed the bytes)')
     eq(tier1Digest(recW), 'GQCr2JGq_ScZAHyBcRLw17zd0kiQYLQMKeLu6ka7h30', 'A5-36 window-record tier1Digest frozen (NEW golden, this file only)')
@@ -762,16 +762,16 @@ async function run(outdir) {
     eq(
       recW.w.trajectoryMicro,
       trajectoryMicro([...PRIOR_W, recC.w.acplMicro]),
-      'persisted slope === trajectoryMicro(window ++ this-game acpl) — the deterministic J4 consumption map'
+      'persisted slope === trajectoryMicro(window ++ this-game acpl), the deterministic J4 consumption map'
     )
 
     // Sign both ways: a RISING window (weakening) persists a positive slope.
     const recRise = tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, { w: [100_000_000, 120_000_000, 140_000_000] })
-    eq(recRise.w.trajectoryMicro, 17_000_000, 'rising ACPL window → +17e6 (weakening — sign is live both directions)')
+    eq(recRise.w.trajectoryMicro, 17_000_000, 'rising ACPL window → +17e6 (weakening: sign is live both directions)')
 
     // A 1-game prior window (⇒ 2-point slope) and an empty prior window (⇒ n=1)
     // both persist a defined field (the caller opted in), the latter as 0.
-    eq(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, { w: [] }).w.trajectoryMicro, 0, 'empty window (n=1 with this game) persists 0 — opting in still emits the field')
+    eq(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, { w: [] }).w.trajectoryMicro, 0, 'empty window (n=1 with this game) persists 0, opting in still emits the field')
     eq(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w', 0, { w: [170_000_000] }).w.trajectoryMicro, -20_000_000, 'single prior 170e6 vs this 150e6 → slope −20e6 (two-point difference)')
 
     // Fail-closed matrix for the new input (nothing silently coerced).
@@ -784,7 +784,7 @@ async function run(outdir) {
   }
 
   // ---- (g) Tier1Anchors -----------------------------------------------------
-  console.log('\n— Tier1Anchors: provisional shape + expectation interp —')
+  console.log('\n· Tier1Anchors: provisional shape + expectation interp')
   eq(TIER1_ANCHORS_PROVISIONAL.v, 1, 'provisional anchors v1')
   eq(TIER1_ANCHORS_PROVISIONAL.nodes, PARAMS_A5.t1Nodes, 'anchors target the t1 node count')
   eq(TIER1_ANCHORS_PROVISIONAL.multiPv, PARAMS_A5.t1MultiPv, 'anchors target the t1 MultiPV')
@@ -802,7 +802,7 @@ async function run(outdir) {
   ok(TIER1_ANCHORS_PROVISIONAL.sigmaAcplMicro > 0, 'sigmaAcplMicro positive')
 
   // ---- (h) fail-closed malformed-input matrix ------------------------------
-  console.log('\n— fail-closed matrix (Tier1InputError on every entry) —')
+  console.log('\n· fail-closed matrix (Tier1InputError on every entry)')
   const T1 = Tier1InputError
   const rec = () => tier1Record('g', 'l', FIX_A, MOVES_A, 'w')
   ok(!!rec(), 'sanity: the well-formed baseline builds')
@@ -979,7 +979,7 @@ async function run(outdir) {
   throwsT1(() => tier1Record('g', 'l', FIX_A, MOVES_A, 'w', -1), 'tier1Record: negative incMs rejected fail-closed', T1)
 
   // ---- (i) A5-01: canonical judging surface + full-coverage record rule ----
-  console.log('\n— A5-01: transcriptToJudgePositions + tier1Record coverage rule —')
+  console.log('\n· A5-01: transcriptToJudgePositions + tier1Record coverage rule')
   {
     // The normative builder: every ply 0..n−1, bare fenBefore, no tail, no
     // moves-path. Two independent callers over the same (moves, fenBeforeOf)
@@ -1006,7 +1006,7 @@ async function run(outdir) {
   // cherry-picked-subset escalation evasion):
   throwsT1(
     () => tier1Record('g', 'l', { ...FIX_A, positions: [FIX_A.positions[0], FIX_A.positions[2]] }, MOVES_A),
-    'cherry-picked subset (plies {0,2} of 6) REJECTED — was accepted pre-fix with empty signals',
+    'cherry-picked subset (plies {0,2} of 6) REJECTED: was accepted pre-fix with empty signals',
     T1
   )
   throwsT1(
@@ -1033,25 +1033,25 @@ async function run(outdir) {
   eq(
     tier1Digest(tier1Record('game-c', 'blitz', FIX_C, MOVES_C, 'w')),
     'chzY1umBfAfE9M6Ce6u_73xtvCaMEIwOK7dw_mKVm-8',
-    'full-coverage record still ACCEPTED — tier1Digest byte-identical to the pre-fix frozen value'
+    'full-coverage record still ACCEPTED: tier1Digest byte-identical to the pre-fix frozen value'
   )
 
   // ---- (j) A5-37: canonical fixed-node config gate -------------------------
   // PARAMS_A5_DIGEST pins BOTH tiers' rule set at once, so a Tier-2
   // (t2Nodes/t2MultiPv) or degenerate JudgeOutput carries the SAME params echo
-  // and slipped through tier1Record's old sole config gate — minting a
+  // and slipped through tier1Record's old sole config gate, minting a
   // well-formed "Tier-1" record whose matchMicro/acpl are computed at the wrong
   // search width and then z-scored against the 200k/MPV4-fit anchors. The gate
   // now requires config === judgeConfigForTier(1) (nodes/multiPv/hashMb) and
   // rejects every mismatch fail-closed. (The record commits to the whole
   // JudgeOutput via `judge`, so a verifier's own recompute re-runs this gate.)
-  console.log('\n— A5-37: canonical fixed-node config gate —')
+  console.log('\n· A5-37: canonical fixed-node config gate')
   {
-    const CFG_NEEDLE = 'not the Tier-1 config' // gate message — proves THIS gate fired
+    const CFG_NEEDLE = 'not the Tier-1 config' // gate message: proves THIS gate fired
     // FIX_A re-stamped with a non-canonical config; params echo untouched (the
     // exact params-digest indistinguishability the finding cites). multiPv/hashMb
     // overrides stay ≥ FIX_A's 4 lines so checkJudgeOutput's line-count check
-    // passes and the CONFIG gate — not another check — is the rejecter.
+    // passes and the CONFIG gate (not another check) is the rejecter.
     const withCfg = (over) => ({ ...FIX_A, config: { ...CFG, ...over } })
     const throwsCfg = (over, label) => {
       let err = null
@@ -1095,7 +1095,7 @@ async function run(outdir) {
 
   // ---- (k) A5-06: wrong-config record class unmintable AND unverifiable -----
   // A5-37 (§(j)) closed the code hole and pinned the Tier-2 / degenerate output
-  // at MINT; A5-06 is the test-coverage residual — the two regressions §(j)
+  // at MINT; A5-06 is the test-coverage residual. The two regressions §(j)
   // does not carry. (1) The finding's LITERAL scenario: judged at nodes=1
   // ("near-random lines") with multiPv/hashMb left CANONICAL to look compliant
   // (§(j)'s nodes=1 case bundles MPV6/Hash1), isolating the nodes gate at the
@@ -1103,20 +1103,20 @@ async function run(outdir) {
   // drops the config … no suite contains an assertion that could ever flag this
   // record class"): the Tier1Record body carries no raw nodes/multiPv, but it
   // COMMITS to the whole JudgeOutput (config included) via `judge` =
-  // judgeOutputDigest(out), so config is never erased from the verdict trail —
-  // a nodes=1 output digests DIFFERENTLY, and because a producer's mint and a
+  // judgeOutputDigest(out), so config is never erased from the verdict trail.
+  // A nodes=1 output digests DIFFERENTLY, and because a producer's mint and a
   // verifier's recompute are the SAME tier1Record(out) call, that recompute
   // re-runs the A5-37 gate and throws. The class is thus both unmintable and
   // unreproducible; the record carries no config field, so the Tier-2 layer has
-  // nothing to (and nothing it could) re-check — the mkRec "no config" note is
+  // nothing to (and nothing it could) re-check, the mkRec "no config" note is
   // subsumed by this mint/recompute boundary, not a live gap.
-  console.log('\n— A5-06: wrong-config record class unmintable + unverifiable (end-to-end) —')
+  console.log('\n· A5-06: wrong-config record class unmintable + unverifiable (end-to-end)')
   {
     const OUT_N1 = { ...FIX_A, config: { ...CFG, nodes: 1 } }
     // (1) The finding's literal failure scenario, mintable pre-A5-37.
     throwsT1(
       () => tier1Record('g', 'l', OUT_N1, MOVES_A, 'w'),
-      'nodes=1 near-random output (multiPv/hashMb canonical) REJECTED — the finding scenario, mintable pre-A5-37',
+      'nodes=1 near-random output (multiPv/hashMb canonical) REJECTED, the finding scenario, mintable pre-A5-37',
       Tier1InputError
     )
     // (2) End-to-end: the record COMMITS to config through `judge`.
@@ -1128,15 +1128,15 @@ async function run(outdir) {
     )
     ok(
       judgeOutputDigest(OUT_N1) !== judgeOutputDigest(FIX_A),
-      'config is covered by the judge digest — the nodes=1 output digests DIFFERENTLY (config recoverable/enforceable at recompute, never silently erased)'
+      'config is covered by the judge digest. The nodes=1 output digests DIFFERENTLY (config recoverable/enforceable at recompute, never silently erased)'
     )
     // The recompute over OUT_N1 (asserted throwing above) IS the flag the
     // finding says no suite has; the record itself carries no config field, so
-    // the (nodes,multiPv) contract lives at THIS mint/recompute boundary — there
+    // the (nodes,multiPv) contract lives at THIS mint/recompute boundary. There
     // is nothing for the Tier-2 layer / mkRec to (or that could) re-check.
     ok(
       !('config' in recCanon),
-      'Tier1Record carries no config field — the (nodes,multiPv) contract lives at the tier1 mint/recompute boundary, not the record body (mkRec end-to-end note subsumed)'
+      'Tier1Record carries no config field. The (nodes,multiPv) contract lives at the tier1 mint/recompute boundary, not the record body (mkRec end-to-end note subsumed)'
     )
   }
 }

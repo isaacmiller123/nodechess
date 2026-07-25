@@ -2,19 +2,19 @@
  "id": "ch30-sicilian-main",
  "band": "30",
  "order": 30,
- "title": "The Sicilian Defence — Main Lines",
+ "title": "The Sicilian Defence: Main Lines",
  "subtitle": "Najdorf, Dragon and Scheveningen: the great Open Sicilians, where both kings race to attack first",
  "estMinutes": 60,
  "concepts": [
   {
    "id": "open-sicilian",
    "name": "The Open Sicilian",
-   "short": "1.e4 c5 2.Nf3 then 3.d4 cxd4 4.Nxd4. White trades a flank c-pawn for a central d-pawn and gets an extra centre pawn and a big lead in development; Black gets the half-open c-file and a pawn majority in the centre. The fight is unbalanced from move four — exactly why both sides play it."
+   "short": "1.e4 c5 2.Nf3 then 3.d4 cxd4 4.Nxd4. White trades a flank c-pawn for a central d-pawn and gets an extra centre pawn and a big lead in development; Black gets the half-open c-file and a pawn majority in the centre. The fight is unbalanced from move four. Exactly why both sides play it."
   },
   {
    "id": "asymmetry",
    "name": "Opposite-wing races",
-   "short": "Because the pawns are unbalanced, the two sides usually attack on opposite wings — White storms the kingside, Black the queenside down the half-open c-file. Whoever's attack arrives first wins. Speed beats material: you do not stop to defend, you race."
+   "short": "Because the pawns are unbalanced, the two sides usually attack on opposite wings. White storms the kingside, Black the queenside down the half-open c-file. Whoever's attack arrives first wins. Speed beats material: you do not stop to defend, you race."
   },
   {
    "id": "d5-break",
@@ -23,8 +23,8 @@
   },
   {
    "id": "najdorf",
-   "name": "The Najdorf — 5...a6",
-   "short": "The most respected defence in chess: 5...a6 makes a luft for nothing flashy — it stops Nb5 and Bb5, and prepares ...e5 or ...e6 with ...b5 expansion on the queenside. Flexible, deeply analysed, and the choice of Fischer and Kasparov."
+   "name": "The Najdorf, 5...a6",
+   "short": "The most respected defence in chess: 5...a6 makes a luft for nothing flashy. It stops Nb5 and Bb5, and prepares ...e5 or ...e6 with ...b5 expansion on the queenside. Flexible, deeply analysed, and the choice of Fischer and Kasparov."
   },
   {
    "id": "english-attack",
@@ -33,18 +33,18 @@
   },
   {
    "id": "dragon",
-   "name": "The Dragon — ...g6",
-   "short": "Black fianchettoes: ...g6 and ...Bg7, the bishop raking the long diagonal a1–h8 straight at White's queenside and centre. Sharpest of all Sicilians — Black's dragon-bishop is a monster, but the kingside dark squares are thin."
+   "name": "The Dragon: ...g6",
+   "short": "Black fianchettoes: ...g6 and ...Bg7, the bishop raking the long diagonal a1–h8 straight at White's queenside and centre. Sharpest of all Sicilians: Black's dragon-bishop is a monster, but the kingside dark squares are thin."
   },
   {
    "id": "yugoslav",
    "name": "The Yugoslav Attack",
-   "short": "White's antidote to the Dragon: Be3, Qd2, Bc4 or f3, O-O-O, then h4-h5 to rip open the h-file and trade Black's dragon-bishop with Bh6. 'Open the h-file, sac the exchange on c3, mate' — the most analysed attacking plan in chess."
+   "short": "White's antidote to the Dragon: Be3, Qd2, Bc4 or f3, O-O-O, then h4-h5 to rip open the h-file and trade Black's dragon-bishop with Bh6. 'Open the h-file, sac the exchange on c3, mate', the most analysed attacking plan in chess."
   },
   {
    "id": "exchange-sac",
-   "name": "...Rxc3 — the exchange sacrifice",
-   "short": "The signature Dragon (and Najdorf) idea: Black gives a rook for the c3-knight. It shatters White's queenside pawns, removes the defender of e4/d5, and bares the c-file at White's king on c1. A positional sacrifice — you give material to make the attack arrive first."
+   "name": "...Rxc3: the exchange sacrifice",
+   "short": "The signature Dragon (and Najdorf) idea: Black gives a rook for the c3-knight. It shatters White's queenside pawns, removes the defender of e4/d5, and bares the c-file at White's king on c1. A positional sacrifice. You give material to make the attack arrive first."
   },
   {
    "id": "scheveningen",
@@ -57,13 +57,13 @@
    "id": "l1-why-open-sicilian",
    "title": "Why the Open Sicilian Fights",
    "kind": "concept",
-   "summary": "The structural bargain of 1.e4 c5: White's central pawn and development against Black's half-open c-file and central majority — and why that imbalance creates opposite-wing races.",
+   "summary": "The structural bargain of 1.e4 c5: White's central pawn and development against Black's half-open c-file and central majority, and why that imbalance creates opposite-wing races.",
    "segments": [
     {
      "kind": "puzzle",
      "title": "Warm-up: the half-open c-file bites",
      "intro": {
-      "text": "Before theory, feel the Sicilian's heartbeat. In each of these, an attack has broken through against an exposed king. Find the strongest blow — this is what every line in this chapter is racing toward."
+      "text": "Before theory, feel the Sicilian's heartbeat. In each of these, an attack has broken through against an exposed king. Find the strongest blow. This is what every line in this chapter is racing toward."
      },
      "puzzle": {
       "themes": [
@@ -79,13 +79,13 @@
      "kind": "model",
      "title": "The Open Sicilian, move by move",
      "intro": {
-      "text": "1.e4 c5. Black does not copy with 1...e5 — he answers the centre from the side. I will show you the moves that DEFINE the Open Sicilian and, more importantly, the bargain each side strikes. Understand the bargain and every later line makes sense."
+      "text": "1.e4 c5. Black does not copy with 1...e5. He answers the centre from the side. I will show you the moves that DEFINE the Open Sicilian and, more importantly, the bargain each side strikes. Understand the bargain and every later line makes sense."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — White claims the centre as always.",
+        "text": "1.e4: White claims the centre as always.",
         "annotations": [
          {
           "kind": "arrow",
@@ -99,7 +99,7 @@
       {
        "uci": "c7c5",
        "coach": {
-        "text": "1...c5 — the Sicilian. Black does NOT contest e4 head-on. Instead the c-pawn controls d4 from the side and prepares to swap itself for White's d-pawn. The point: Black wants an UNBALANCED game where he plays for a win, not a symmetric draw.",
+        "text": "1...c5: the Sicilian. Black does NOT contest e4 head-on. Instead the c-pawn controls d4 from the side and prepares to swap itself for White's d-pawn. The point: Black wants an UNBALANCED game where he plays for a win, not a symmetric draw.",
         "annotations": [
          {
           "kind": "arrow",
@@ -119,7 +119,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "2.Nf3 — develop, control d4 and e5, and prepare the central break d4.",
+        "text": "2.Nf3: develop, control d4 and e5, and prepare the central break d4.",
         "annotations": [
          {
           "kind": "circle",
@@ -132,7 +132,7 @@
       {
        "uci": "d7d6",
        "coach": {
-        "text": "2...d6 — a flexible move. It supports a future ...e5 and opens the c8-bishop's diagonal once ...e6 or ...e5 is played. This is the gateway to the Najdorf, Dragon and Scheveningen all at once.",
+        "text": "2...d6: a flexible move. It supports a future ...e5 and opens the c8-bishop's diagonal once ...e6 or ...e5 is played. This is the gateway to the Najdorf, Dragon and Scheveningen all at once.",
         "annotations": [
          {
           "kind": "highlight",
@@ -145,7 +145,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "3.d4 — THE Open Sicilian move. White challenges in the centre. Black must take, or White gets a huge pawn centre for free.",
+        "text": "3.d4: THE Open Sicilian move. White challenges in the centre. Black must take, or White gets a huge pawn centre for free.",
         "annotations": [
          {
           "kind": "arrow",
@@ -166,7 +166,7 @@
       {
        "uci": "c5d4",
        "coach": {
-        "text": "3...cxd4 — Black trades his flank c-pawn for White's central d-pawn. Here is the bargain: Black gives up a centre pawn presence but in return gets the HALF-OPEN c-FILE (his rook will hammer c2/c3) and a central pawn majority. White gets an extra centre pawn and faster development.",
+        "text": "3...cxd4: Black trades his flank c-pawn for White's central d-pawn. Here is the bargain: Black gives up a centre pawn presence but in return gets the HALF-OPEN c-FILE (his rook will hammer c2/c3) and a central pawn majority. White gets an extra centre pawn and faster development.",
         "annotations": [
          {
           "kind": "highlight",
@@ -180,7 +180,7 @@
       {
        "uci": "f3d4",
        "coach": {
-        "text": "4.Nxd4 — White recaptures with the knight, landing it on a beautiful central square where it eyes b5, f5, e6 and c6. White is slightly ahead in development with more central space. The position is unbalanced and rich — neither side can simplify to a dull draw. This is why the Sicilian is the most popular reply to 1.e4 at every level.",
+        "text": "4.Nxd4: White recaptures with the knight, landing it on a beautiful central square where it eyes b5, f5, e6 and c6. White is slightly ahead in development with more central space. The position is unbalanced and rich. Neither side can simplify to a dull draw. This is why the Sicilian is the most popular reply to 1.e4 at every level.",
         "annotations": [
          {
           "kind": "circle",
@@ -200,7 +200,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — develop and attack e4, forcing White to defend the centre.",
+        "text": "4...Nf6: develop and attack e4, forcing White to defend the centre.",
         "annotations": [
          {
           "kind": "arrow",
@@ -214,7 +214,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "5.Nc3 — defend e4 by developing. We have reached the great crossroads of the Open Sicilian. Black's NEXT move chooses the whole battle: 5...a6 (Najdorf), 5...g6 (Dragon), or 5...e6 (Scheveningen). Three doors, one position. The rest of this chapter walks through each.",
+        "text": "5.Nc3: defend e4 by developing. We have reached the great crossroads of the Open Sicilian. Black's NEXT move chooses the whole battle: 5...a6 (Najdorf), 5...g6 (Dragon), or 5...e6 (Scheveningen). Three doors, one position. The rest of this chapter walks through each.",
         "annotations": [
          {
           "kind": "circle",
@@ -246,7 +246,7 @@
      "kind": "teach",
      "title": "Why the kings attack on opposite wings",
      "intro": {
-      "text": "The unbalanced pawns dictate the strategy. Let me show you WHY the Sicilian becomes a race — and why, in a race, you do not stop to defend."
+      "text": "The unbalanced pawns dictate the strategy. Let me show you WHY the Sicilian becomes a race, and why, in a race, you do not stop to defend."
      },
      "steps": [
       {
@@ -274,7 +274,7 @@
       {
        "fen": "2rq1rk1/pp1bppbp/3p1np1/8/3NP3/1BN1BP2/PPPQ2PP/2KR3R w - - 4 13",
        "coach": {
-        "text": "A typical race: White has castled queenside and is about to push g4-g5, h4-h5 at Black's king; Black has a rook on c8 and will play ...a5-a4, ...b5-b4 at White's king. Each side is one tempo from breaking through. In such positions you do NOT spend a move defending — that hands the enemy the race. You push your OWN attack and count moves. Speed beats material.",
+        "text": "A typical race: White has castled queenside and is about to push g4-g5, h4-h5 at Black's king; Black has a rook on c8 and will play ...a5-a4, ...b5-b4 at White's king. Each side is one tempo from breaking through. In such positions you do NOT spend a move defending. That hands the enemy the race. You push your OWN attack and count moves. Speed beats material.",
         "annotations": [
          {
           "kind": "arrow",
@@ -308,7 +308,7 @@
       {
        "fen": "r1bqk2r/1p2bppp/p1nppn2/8/3NP3/2N1B3/PPP1BPPP/R2QK2R b KQkq - 2 8",
        "coach": {
-        "text": "And the great equaliser for Black: the ...d5 break. Black's pawns on d6/e6 are coiled to spring ...d5 in a single move. If Black ever gets ...d5 in cleanly, his cramped position opens with full equality — the half-open c-file plus a freed centre. White's whole strategy is to PREVENT ...d5; Black's is to ENGINEER it. Keep this lever in mind through every line that follows.",
+        "text": "And the great equaliser for Black: the ...d5 break. Black's pawns on d6/e6 are coiled to spring ...d5 in a single move. If Black ever gets ...d5 in cleanly, his cramped position opens with full equality, the half-open c-file plus a freed centre. White's whole strategy is to PREVENT ...d5; Black's is to ENGINEER it. Keep this lever in mind through every line that follows.",
         "annotations": [
          {
           "kind": "arrow",
@@ -352,7 +352,7 @@
         "g1f3"
        ],
        "successLine": {
-        "text": "2.Nf3 — develop and prepare d4. Black answers 2...d6, and now you can open the centre.",
+        "text": "2.Nf3: develop and prepare d4. Black answers 2...d6, and now you can open the centre.",
         "annotations": [
          {
           "kind": "circle",
@@ -362,7 +362,7 @@
         ]
        },
        "retryLine": {
-        "text": "Develop the king's knight to f3 — it controls d4 and readies the central break.",
+        "text": "Develop the king's knight to f3. It controls d4 and readies the central break.",
         "annotations": [
          {
           "kind": "arrow",
@@ -376,7 +376,7 @@
       {
        "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
        "coach": {
-        "text": "You have reached it: 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. The knight sits proud on d4, you lead in development, and the centre is yours. The Open Sicilian is on the board. Black to choose his weapon — but the structure is set.",
+        "text": "You have reached it: 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. The knight sits proud on d4, you lead in development, and the centre is yours. The Open Sicilian is on the board. Black to choose his weapon, but the structure is set.",
         "annotations": [
          {
           "kind": "circle",
@@ -397,7 +397,7 @@
         "e7e6"
        ],
        "successLine": {
-        "text": "Exactly — 5...a6 is the Najdorf, 5...g6 the Dragon, 5...e6 the Scheveningen. Each is a door into the rest of this chapter. You have built the Open Sicilian from move one.",
+        "text": "Exactly: 5...a6 is the Najdorf, 5...g6 the Dragon, 5...e6 the Scheveningen. Each is a door into the rest of this chapter. You have built the Open Sicilian from move one.",
         "annotations": [
          {
           "kind": "highlight",
@@ -443,7 +443,7 @@
   },
   {
    "id": "l2-najdorf",
-   "title": "The Najdorf — 5...a6",
+   "title": "The Najdorf, 5...a6",
    "kind": "opening",
    "summary": "The most respected defence in chess. The quiet ...a6 controls b5, prepares ...e5 and ...b5, and gives Black a flexible, deeply analysed position.",
    "segments": [
@@ -451,14 +451,14 @@
      "kind": "model",
      "title": "The Najdorf mainline, move by move",
      "intro": {
-      "text": "5...a6 looks like nothing — a tiny pawn move on the edge. It is the choice of Fischer and Kasparov. We pick up after 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. Watch what that 'nothing' move actually does: I will explain the PURPOSE behind every move of the main line."
+      "text": "5...a6 looks like nothing. A tiny pawn move on the edge. It is the choice of Fischer and Kasparov. We pick up after 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. Watch what that 'nothing' move actually does: I will explain the PURPOSE behind every move of the main line."
      },
      "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
      "line": [
       {
        "uci": "a7a6",
        "coach": {
-        "text": "5...a6 — the Najdorf. A prophylactic move: it denies White's pieces the b5-square (no Nb5 hitting d6, no Bb5 pin). It also prepares ...b5, gaining queenside space and supporting a future ...d5 break. Quiet, but every bit of it has a job.",
+        "text": "5...a6: the Najdorf. A prophylactic move: it denies White's pieces the b5-square (no Nb5 hitting d6, no Bb5 pin). It also prepares ...b5, gaining queenside space and supporting a future ...d5 break. Quiet, but every bit of it has a job.",
         "annotations": [
          {
           "kind": "highlight",
@@ -478,7 +478,7 @@
       {
        "uci": "c1e3",
        "coach": {
-        "text": "6.Be3 — the English Attack setup. White develops the bishop and prepares Qd2, f3 and O-O-O, aiming to castle queenside and storm the kingside. This is White's most aggressive and popular modern try.",
+        "text": "6.Be3: the English Attack setup. White develops the bishop and prepares Qd2, f3 and O-O-O, aiming to castle queenside and storm the kingside. This is White's most aggressive and popular modern try.",
         "annotations": [
          {
           "kind": "circle",
@@ -492,7 +492,7 @@
       {
        "uci": "e7e5",
        "coach": {
-        "text": "6...e5 — the thematic Najdorf strike. Black kicks the d4-knight and grabs central space. The cost: it leaves a hole on d5 and a backward d6-pawn. The reward: Black gains time and central presence. This sharp imbalance is the Najdorf's soul.",
+        "text": "6...e5: the thematic Najdorf strike. Black kicks the d4-knight and grabs central space. The cost: it leaves a hole on d5 and a backward d6-pawn. The reward: Black gains time and central presence. This sharp imbalance is the Najdorf's soul.",
         "annotations": [
          {
           "kind": "arrow",
@@ -511,7 +511,7 @@
       {
        "uci": "d4b3",
        "coach": {
-        "text": "7.Nb3 — the knight retreats to a useful square (not f3, which blocks the f-pawn White wants for f3). From b3 it eyes a5 and c5 and stays flexible. Notice ...a6 already paid off: the knight could not go to b5.",
+        "text": "7.Nb3: the knight retreats to a useful square (not f3, which blocks the f-pawn White wants for f3). From b3 it eyes a5 and c5 and stays flexible. Notice ...a6 already paid off: the knight could not go to b5.",
         "annotations": [
          {
           "kind": "arrow",
@@ -525,7 +525,7 @@
       {
        "uci": "c8e6",
        "coach": {
-        "text": "7...Be6 — Black develops the problem bishop and controls d5, the very square White wants to occupy. The fight for d5 is the strategic core of the Najdorf: if White plants a knight there unchallenged, Black is squeezed; if Black holds d5 and eventually plays ...d5, he is fine.",
+        "text": "7...Be6: Black develops the problem bishop and controls d5, the very square White wants to occupy. The fight for d5 is the strategic core of the Najdorf: if White plants a knight there unchallenged, Black is squeezed; if Black holds d5 and eventually plays ...d5, he is fine.",
         "annotations": [
          {
           "kind": "arrow",
@@ -545,7 +545,7 @@
       {
        "uci": "d1d2",
        "coach": {
-        "text": "8.Qd2 — connecting toward queenside castling and supporting Be3. White builds his attacking battery: Qd2, then O-O-O, then f3 and g4.",
+        "text": "8.Qd2: connecting toward queenside castling and supporting Be3. White builds his attacking battery: Qd2, then O-O-O, then f3 and g4.",
         "annotations": [
          {
           "kind": "arrow",
@@ -560,7 +560,7 @@
       {
        "uci": "b8d7",
        "coach": {
-        "text": "8...Nbd7 — Black develops the last knight toward c5 and b6, supporting the queenside expansion and the ...d5 break. Both sides now complete their setups and race: White castles queenside and pushes g4-g5-h4; Black plays ...b5-b4 and ...d5. The faster attack wins. This is the Najdorf — the most fought-over opening in the history of the game.",
+        "text": "8...Nbd7: Black develops the last knight toward c5 and b6, supporting the queenside expansion and the ...d5 break. Both sides now complete their setups and race: White castles queenside and pushes g4-g5-h4; Black plays ...b5-b4 and ...d5. The faster attack wins. This is the Najdorf. The most fought-over opening in the history of the game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -584,7 +584,7 @@
      "kind": "teach",
      "title": "What ...a6 quietly prevents",
      "intro": {
-      "text": "Beginners ask: why spend a whole move on a rook-pawn? Let me show you the concrete problems ...a6 solves — without it, Black is already in trouble."
+      "text": "Beginners ask: why spend a whole move on a rook-pawn? Let me show you the concrete problems ...a6 solves. Without it, Black is already in trouble."
      },
      "steps": [
       {
@@ -611,7 +611,7 @@
       {
        "fen": "rnbqkb1r/1p2pppp/p2p1n2/4p3/4P3/1NN1B3/PPP2PPP/R2QKB1R b KQkq - 1 7",
        "coach": {
-        "text": "After 6.Be3 e5 7.Nb3, see the trade-off of 6...e5. Black has more space and chased the knight, but d5 is now a permanent hole and d6 is backward on a half-open file. Black accepts these weaknesses because his pieces are active and ...b5, ...Be6 and ...Nbd7 all fight to control d5 anyway. Dynamic compensation for static weakness — the eternal Sicilian bargain.",
+        "text": "After 6.Be3 e5 7.Nb3, see the trade-off of 6...e5. Black has more space and chased the knight, but d5 is now a permanent hole and d6 is backward on a half-open file. Black accepts these weaknesses because his pieces are active and ...b5, ...Be6 and ...Nbd7 all fight to control d5 anyway. Dynamic compensation for static weakness: the eternal Sicilian bargain.",
         "annotations": [
          {
           "kind": "highlight",
@@ -643,7 +643,7 @@
       {
        "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
        "coach": {
-        "text": "1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. You are Black at the great crossroads. Play the Najdorf move — the quiet pawn push that controls b5 and prepares queenside expansion.",
+        "text": "1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. You are Black at the great crossroads. Play the Najdorf move. The quiet pawn push that controls b5 and prepares queenside expansion.",
         "annotations": [
          {
           "kind": "highlight",
@@ -686,7 +686,7 @@
       {
        "fen": "rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N1B3/PPP2PPP/R2QKB1R b KQkq - 1 6",
        "coach": {
-        "text": "6.Be3 — White heads for the English Attack. Strike in the centre: play the thematic Najdorf pawn break that kicks the d4-knight and seizes central space.",
+        "text": "6.Be3: White heads for the English Attack. Strike in the centre: play the thematic Najdorf pawn break that kicks the d4-knight and seizes central space.",
         "annotations": [
          {
           "kind": "highlight",
@@ -699,7 +699,7 @@
         "e7e5"
        ],
        "successLine": {
-        "text": "6...e5! Black hits the knight and grabs space. Yes, it concedes the d5-square — but Black's active pieces fight for d5 in return. This sharp, principled imbalance is the Najdorf at its purest.",
+        "text": "6...e5! Black hits the knight and grabs space. Yes, it concedes the d5-square, but Black's active pieces fight for d5 in return. This sharp, principled imbalance is the Najdorf at its purest.",
         "annotations": [
          {
           "kind": "arrow",
@@ -710,7 +710,7 @@
         ]
        },
        "retryLine": {
-        "text": "The thematic Najdorf break is ...e5 — push the e-pawn two squares to attack the d4-knight and take central space.",
+        "text": "The thematic Najdorf break is ...e5. Push the e-pawn two squares to attack the d4-knight and take central space.",
         "annotations": [
          {
           "kind": "arrow",
@@ -745,20 +745,20 @@
    "id": "l3-dragon",
    "title": "The Dragon & the Yugoslav Attack",
    "kind": "variation",
-   "summary": "Black fianchettoes with ...g6 and ...Bg7. White answers with the Yugoslav Attack — castle queenside, push h4-h5, trade the dragon-bishop, mate. The sharpest race in chess.",
+   "summary": "Black fianchettoes with ...g6 and ...Bg7. White answers with the Yugoslav Attack. Castle queenside, push h4-h5, trade the dragon-bishop, mate. The sharpest race in chess.",
    "segments": [
     {
      "kind": "model",
      "title": "The Dragon and the Yugoslav, move by move",
      "intro": {
-      "text": "The Dragon: Black's bishop goes to g7 and rakes the long diagonal at White's queenside. White's reply is the most feared attacking plan in all of chess — the Yugoslav Attack. We pick up after 5.Nc3. Watch both armies build for the race, and understand WHY each move points where it does."
+      "text": "The Dragon: Black's bishop goes to g7 and rakes the long diagonal at White's queenside. White's reply is the most feared attacking plan in all of chess. The Yugoslav Attack. We pick up after 5.Nc3. Watch both armies build for the race, and understand WHY each move points where it does."
      },
      "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
      "line": [
       {
        "uci": "g7g6",
        "coach": {
-        "text": "5...g6 — the Dragon. Black prepares to fianchetto the dark-squared bishop. Its name comes from the pawn skeleton (d6-e7-f7-g6-h7) resembling a dragon — and from its ferocity.",
+        "text": "5...g6: the Dragon. Black prepares to fianchetto the dark-squared bishop. Its name comes from the pawn skeleton (d6-e7-f7-g6-h7) resembling a dragon, and from its ferocity.",
         "annotations": [
          {
           "kind": "highlight",
@@ -772,7 +772,7 @@
       {
        "uci": "c1e3",
        "coach": {
-        "text": "6.Be3 — White begins the Yugoslav setup: bishop to e3, then f3, Qd2, O-O-O, and the kingside pawn storm.",
+        "text": "6.Be3, White begins the Yugoslav setup: bishop to e3, then f3, Qd2, O-O-O, and the kingside pawn storm.",
         "annotations": [
          {
           "kind": "circle",
@@ -786,7 +786,7 @@
       {
        "uci": "f8g7",
        "coach": {
-        "text": "6...Bg7 — the dragon-bishop is born. From g7 it eyes the long diagonal a1-h8, straight through the centre at White's queenside, where White intends to castle. This bishop is the best piece on the board — and White's whole plan is to neutralise it.",
+        "text": "6...Bg7: the dragon-bishop is born. From g7 it eyes the long diagonal a1-h8, straight through the centre at White's queenside, where White intends to castle. This bishop is the best piece on the board, and White's whole plan is to neutralise it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -807,7 +807,7 @@
       {
        "uci": "f2f3",
        "coach": {
-        "text": "7.f3 — the keystone of the Yugoslav. It defends e4 so that g4 can follow, AND it blunts the dragon-bishop and the d5-square. Now White's king's pawns are free to storm: g4-g5 and h4-h5.",
+        "text": "7.f3: the keystone of the Yugoslav. It defends e4 so that g4 can follow, AND it blunts the dragon-bishop and the d5-square. Now White's king's pawns are free to storm: g4-g5 and h4-h5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -827,7 +827,7 @@
       {
        "uci": "e8g8",
        "coach": {
-        "text": "7...O-O — Black castles into the coming storm. This is the Dragon's gamble: both kings will be attacked, and it is a pure race. Black is NOT being careless — he will counterattack down the c-file faster than White can mate. Usually.",
+        "text": "7...O-O: Black castles into the coming storm. This is the Dragon's gamble: both kings will be attacked, and it is a pure race. Black is NOT being careless. He will counterattack down the c-file faster than White can mate. Usually.",
         "annotations": [
          {
           "kind": "highlight",
@@ -840,7 +840,7 @@
       {
        "uci": "d1d2",
        "coach": {
-        "text": "8.Qd2 — connect for O-O-O and support Be3, readying Bh6 to trade off the dragon-bishop. Every White piece is being aimed at the black king.",
+        "text": "8.Qd2: connect for O-O-O and support Be3, readying Bh6 to trade off the dragon-bishop. Every White piece is being aimed at the black king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -855,7 +855,7 @@
       {
        "uci": "b8c6",
        "coach": {
-        "text": "8...Nc6 — Black develops with pressure on d4 and prepares ...Rc8 and the thematic ...Rxc3 exchange sacrifice. Notice how Black's pieces ALL flow toward White's queenside king.",
+        "text": "8...Nc6: Black develops with pressure on d4 and prepares ...Rc8 and the thematic ...Rxc3 exchange sacrifice. Notice how Black's pieces ALL flow toward White's queenside king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -870,7 +870,7 @@
       {
        "uci": "f1c4",
        "coach": {
-        "text": "9.Bc4 — the main line. The bishop eyes f7 and, crucially, guards d5 — White does NOT want Black to free himself with ...d5. Control of d5 is the difference between a White attack and a Black equaliser.",
+        "text": "9.Bc4: the main line. The bishop eyes f7 and, crucially, guards d5. White does NOT want Black to free himself with ...d5. Control of d5 is the difference between a White attack and a Black equaliser.",
         "annotations": [
          {
           "kind": "arrow",
@@ -890,7 +890,7 @@
       {
        "uci": "c8d7",
        "coach": {
-        "text": "9...Bd7 — develop, connect the rooks, and prepare ...Rc8 and ...Ne5-c4 hitting White's queenside. The board is now set for the most analysed race in chess: White plays O-O-O and h4-h5xg6, prying open the h-file; Black plays ...Rc8, ...Ne5, and ...Rxc3, smashing the pawn cover of White's king. Tempo for tempo, blow for blow. Whoever is one move faster wins the game.",
+        "text": "9...Bd7: develop, connect the rooks, and prepare ...Rc8 and ...Ne5-c4 hitting White's queenside. The board is now set for the most analysed race in chess: White plays O-O-O and h4-h5xg6, prying open the h-file; Black plays ...Rc8, ...Ne5, and ...Rxc3, smashing the pawn cover of White's king. Tempo for tempo, blow for blow. Whoever is one move faster wins the game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -941,7 +941,7 @@
       {
        "fen": "2rq1rk1/pp1bppbp/3p1np1/8/2BNP3/2N1BP2/PPPQ2PP/2KR3R b - - 6 11",
        "coach": {
-        "text": "Black's plan, step one: the exchange sacrifice ...Rxc3. Black gives a rook for the c3-knight. Madness? No — it is the heart of the Dragon. It shatters White's queenside pawns (now b2 and the king are bare), removes the knight guarding e4 and d5, and the dragon-bishop on g7 plus the c-file rook crash into the white king. Black gives MATERIAL to make his attack arrive FIRST. Speed beats material — the chapter's law, made concrete.",
+        "text": "Black's plan, step one: the exchange sacrifice ...Rxc3. Black gives a rook for the c3-knight. Madness? No: it is the heart of the Dragon. It shatters White's queenside pawns (now b2 and the king are bare), removes the knight guarding e4 and d5, and the dragon-bishop on g7 plus the c-file rook crash into the white king. Black gives MATERIAL to make his attack arrive FIRST. Speed beats material: the chapter's law, made concrete.",
         "annotations": [
          {
           "kind": "arrow",
@@ -968,7 +968,7 @@
       {
        "fen": "3q1rk1/pp1bppbp/3p1np1/8/3NP3/2p1BP2/PPPQ2PP/2KR3R w - - 0 12",
        "coach": {
-        "text": "After ...Rxc3 bxc3, look at White's king: the b- and c-pawns are wrecked, the c-file is a highway, and the dragon-bishop on g7 stares down the long diagonal at the bare squares near c1. Black, a rook for a knight down on paper, has full compensation and a powerful attack with ...Qa5, ...Rc8 and ...Qxc3. THIS is why the Dragon is so feared — and why White must race on the kingside without ever pausing to grab the second rook.",
+        "text": "After ...Rxc3 bxc3, look at White's king: the b- and c-pawns are wrecked, the c-file is a highway, and the dragon-bishop on g7 stares down the long diagonal at the bare squares near c1. Black, a rook for a knight down on paper, has full compensation and a powerful attack with ...Qa5, ...Rc8 and ...Qxc3. THIS is why the Dragon is so feared, and why White must race on the kingside without ever pausing to grab the second rook.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1004,7 +1004,7 @@
       {
        "fen": "rnbqk2r/pp1pppbp/3p1np1/8/3NP3/2N1B3/PPP2PPP/R2QKB1R w KQkq - 3 7",
        "coach": {
-        "text": "You are White against the Dragon: 5...g6 6.Be3 Bg7. Play the keystone of the Yugoslav Attack — the pawn move that defends e4, blunts the dragon-bishop, and clears the way for g4-g5.",
+        "text": "You are White against the Dragon: 5...g6 6.Be3 Bg7. Play the keystone of the Yugoslav Attack. The pawn move that defends e4, blunts the dragon-bishop, and clears the way for g4-g5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1029,7 +1029,7 @@
         ]
        },
        "retryLine": {
-        "text": "The Yugoslav keystone is f3 — it defends e4 and prepares the g4-g5 pawn storm. Push the f-pawn one square.",
+        "text": "The Yugoslav keystone is f3. It defends e4 and prepares the g4-g5 pawn storm. Push the f-pawn one square.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1042,7 +1042,7 @@
       {
        "fen": "2rq1rk1/pp1bppbp/3p1np1/8/3NP3/2N1BP2/PPPQ2PP/2KR3R b - - 6 11",
        "coach": {
-        "text": "Now you are Black, deep in the Yugoslav. White has castled queenside, his king on c1 behind b2/c2 pawns guarded by the c3-knight. Play the Dragon's signature blow — give the exchange to smash the king's cover.",
+        "text": "Now you are Black, deep in the Yugoslav. White has castled queenside, his king on c1 behind b2/c2 pawns guarded by the c3-knight. Play the Dragon's signature blow. Give the exchange to smash the king's cover.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1073,7 +1073,7 @@
         ]
        },
        "retryLine": {
-        "text": "The Dragon's signature idea is ...Rxc3 — take the c3-knight with the rook to shatter White's pawns and open the c-file at his king.",
+        "text": "The Dragon's signature idea is ...Rxc3. Take the c3-knight with the rook to shatter White's pawns and open the c-file at his king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1106,7 +1106,7 @@
   },
   {
    "id": "l4-scheveningen",
-   "title": "The Scheveningen & Taimanov — the Small Centre",
+   "title": "The Scheveningen & Taimanov: the Small Centre",
    "kind": "variation",
    "summary": "Black builds a restrained 'small centre' with pawns on d6 and e6, flexible and solid, ready to uncoil with ...d5 or ...b5. The Taimanov cousin delays ...d6 to keep ...d5 in one move.",
    "segments": [
@@ -1114,14 +1114,14 @@
      "kind": "model",
      "title": "The Scheveningen setup, move by move",
      "intro": {
-      "text": "Not every Sicilian is a kingside bloodbath. The Scheveningen is the restrained, resilient choice — a 'small centre' of pawns on d6 and e6 that gives up nothing and waits to strike with ...d5 or ...b5. We pick up after 5.Nc3. Watch Black build a low, flexible wall."
+      "text": "Not every Sicilian is a kingside bloodbath. The Scheveningen is the restrained, resilient choice, a 'small centre' of pawns on d6 and e6 that gives up nothing and waits to strike with ...d5 or ...b5. We pick up after 5.Nc3. Watch Black build a low, flexible wall."
      },
      "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
      "line": [
       {
        "uci": "e7e6",
        "coach": {
-        "text": "5...e6 — the Scheveningen. Black builds the small centre: pawns on d6 and e6. Unlike the Najdorf's ...e5 (which left a hole on d5), ...e6 keeps d5 firmly guarded and the structure compact. No weaknesses, no holes — just a low, flexible wall ready to spring ...d5 or ...b5.",
+        "text": "5...e6: the Scheveningen. Black builds the small centre: pawns on d6 and e6. Unlike the Najdorf's ...e5 (which left a hole on d5), ...e6 keeps d5 firmly guarded and the structure compact. No weaknesses, no holes: just a low, flexible wall ready to spring ...d5 or ...b5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1145,7 +1145,7 @@
       {
        "uci": "f1e2",
        "coach": {
-        "text": "6.Be2 — the Classical setup. White develops modestly and will castle kingside (safer than the Yugoslav's queenside castle). Against the solid Scheveningen, White often plays a slower, space-based game rather than an all-out storm.",
+        "text": "6.Be2: the Classical setup. White develops modestly and will castle kingside (safer than the Yugoslav's queenside castle). Against the solid Scheveningen, White often plays a slower, space-based game rather than an all-out storm.",
         "annotations": [
          {
           "kind": "circle",
@@ -1158,7 +1158,7 @@
       {
        "uci": "f8e7",
        "coach": {
-        "text": "6...Be7 — modest, solid development. The bishop supports the kingside and prepares to castle. No fianchetto, no fireworks — the Scheveningen wins by resilience.",
+        "text": "6...Be7: modest, solid development. The bishop supports the kingside and prepares to castle. No fianchetto, no fireworks: the Scheveningen wins by resilience.",
         "annotations": [
          {
           "kind": "circle",
@@ -1171,7 +1171,7 @@
       {
        "uci": "e1g1",
        "coach": {
-        "text": "7.O-O — White castles kingside. Note the difference from the Dragon: with both kings on the SAME wing, this is far less of a suicidal race and more of a manoeuvring fight for the central breaks.",
+        "text": "7.O-O: White castles kingside. Note the difference from the Dragon: with both kings on the SAME wing, this is far less of a suicidal race and more of a manoeuvring fight for the central breaks.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1184,7 +1184,7 @@
       {
        "uci": "e8g8",
        "coach": {
-        "text": "7...O-O — Black castles too. Both kings safe on the kingside. Now the game revolves around two levers: White's f4-f5 or e4-e5 space gains, and Black's freeing ...d5 or queenside ...a6/...b5 expansion.",
+        "text": "7...O-O: Black castles too. Both kings safe on the kingside. Now the game revolves around two levers: White's f4-f5 or e4-e5 space gains, and Black's freeing ...d5 or queenside ...a6/...b5 expansion.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1197,7 +1197,7 @@
       {
        "uci": "f2f4",
        "coach": {
-        "text": "8.f4 — White grabs kingside space and prepares f5 or e5 to cramp Black. White's edge is space; Black's trump is the coiled ...d5 break that, if it lands, equalises at a stroke.",
+        "text": "8.f4: White grabs kingside space and prepares f5 or e5 to cramp Black. White's edge is space; Black's trump is the coiled ...d5 break that, if it lands, equalises at a stroke.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1216,7 +1216,7 @@
       {
        "uci": "b8c6",
        "coach": {
-        "text": "8...Nc6 — develop and pressure d4, completing a textbook Scheveningen. The position is balanced and rich: White has space, Black has solidity and the ...d5 lever. This restrained, fight-from-a-crouch character is exactly why Kasparov made the Scheveningen a cornerstone of his Black repertoire.",
+        "text": "8...Nc6: develop and pressure d4, completing a textbook Scheveningen. The position is balanced and rich: White has space, Black has solidity and the ...d5 lever. This restrained, fight-from-a-crouch character is exactly why Kasparov made the Scheveningen a cornerstone of his Black repertoire.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1238,7 +1238,7 @@
     },
     {
      "kind": "teach",
-     "title": "The ...d5 break — Black's whole point",
+     "title": "The ...d5 break. Black's whole point",
      "intro": {
       "text": "Everything in the Scheveningen (and the Taimanov, and half the Najdorf) is built around one move: ...d5. Let me show you what makes it so powerful, and the Taimanov move-order trick that keeps it in reserve."
      },
@@ -1246,7 +1246,7 @@
       {
        "fen": "r1bq1rk1/pp2bppp/2nppn2/8/3NPP2/2N5/PPP1B1PP/R1BQ1RK1 b - - 1 8",
        "coach": {
-        "text": "The Scheveningen's coiled spring. Black's pawns on d6 and e6 are cramped — but they are AIMED. The instant Black can play ...d5 safely, the centre bursts open: the d-file and Black's pieces come alive, the half-open c-file does its work, and the cramp vanishes. White spends real effort (Nc3, Bc4, f3) keeping d5 under guard precisely BECAUSE one clean ...d5 equalises. Hold this image: the small centre is not passive, it is loaded.",
+        "text": "The Scheveningen's coiled spring. Black's pawns on d6 and e6 are cramped, but they are AIMED. The instant Black can play ...d5 safely, the centre bursts open: the d-file and Black's pieces come alive, the half-open c-file does its work, and the cramp vanishes. White spends real effort (Nc3, Bc4, f3) keeping d5 under guard precisely BECAUSE one clean ...d5 equalises. Hold this image: the small centre is not passive, it is loaded.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1267,7 +1267,7 @@
       {
        "fen": "r1bqkb1r/1p1p1ppp/p1n1pn2/8/3NP3/2N5/PPP2PPP/R1BQKB1R w KQkq - 0 7",
        "coach": {
-        "text": "The Taimanov move-order trick (reached via ...Nc6, ...e6, ...a6, ...Qc7). Black has NOT yet committed to ...d6 — so when he plays ...d5, it goes in a SINGLE move (...d7-d5), not the two-stage ...d6 then ...d5. Saving that tempo can mean ...d5 lands before White is ready to stop it. The Taimanov is the Scheveningen's flexible twin: same small-centre spirit, but ...d5 held in reserve as a one-move thunderbolt.",
+        "text": "The Taimanov move-order trick (reached via ...Nc6, ...e6, ...a6, ...Qc7). Black has NOT yet committed to ...d6, so when he plays ...d5, it goes in a SINGLE move (...d7-d5), not the two-stage ...d6 then ...d5. Saving that tempo can mean ...d5 lands before White is ready to stop it. The Taimanov is the Scheveningen's flexible twin: same small-centre spirit, but ...d5 held in reserve as a one-move thunderbolt.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1297,7 +1297,7 @@
       {
        "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
        "coach": {
-        "text": "1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. You are Black. Play the Scheveningen move — the pawn that completes the solid 'small centre' alongside d6 and keeps d5 firmly defended.",
+        "text": "1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. You are Black. Play the Scheveningen move: the pawn that completes the solid 'small centre' alongside d6 and keeps d5 firmly defended.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1316,7 +1316,7 @@
         "e7e6"
        ],
        "successLine": {
-        "text": "5...e6! The Scheveningen small centre: pawns on d6 and e6, no holes, fully flexible. Unlike the Najdorf's ...e5, this keeps d5 guarded and the structure compact — solid and coiled for ...d5.",
+        "text": "5...e6! The Scheveningen small centre: pawns on d6 and e6, no holes, fully flexible. Unlike the Najdorf's ...e5, this keeps d5 guarded and the structure compact, solid and coiled for ...d5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1331,7 +1331,7 @@
         ]
        },
        "retryLine": {
-        "text": "The Scheveningen completes the small centre with ...e6 — push the e-pawn one square to sit beside d6 and guard d5.",
+        "text": "The Scheveningen completes the small centre with ...e6: push the e-pawn one square to sit beside d6 and guard d5.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1344,7 +1344,7 @@
       {
        "fen": "r1bq1rk1/1p2bppp/p1nppn2/8/3NP3/1BN1B3/PPP1QPPP/R4RK1 b - - 1 11",
        "coach": {
-        "text": "A well-developed Scheveningen. Black is fully mobilised and the centre is firmly under control — d5 is no longer covered enough by White to stop it. Uncoil the spring: play the freeing central break that opens the position and equalises at a stroke.",
+        "text": "A well-developed Scheveningen. Black is fully mobilised and the centre is firmly under control: d5 is no longer covered enough by White to stop it. Uncoil the spring: play the freeing central break that opens the position and equalises at a stroke.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1358,7 +1358,7 @@
         "d6d5"
        ],
        "successLine": {
-        "text": "11...d5! The break the whole structure was built for. The centre opens and Black's cramped pieces spring to life. After 12.exd5 exd5 (or ...Nxd5) Black has free, active development and a fully playable game — the cramp is gone. This single freeing move is the Scheveningen's reason for existing.",
+        "text": "11...d5! The break the whole structure was built for. The centre opens and Black's cramped pieces spring to life. After 12.exd5 exd5 (or ...Nxd5) Black has free, active development and a fully playable game. The cramp is gone. This single freeing move is the Scheveningen's reason for existing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1369,7 +1369,7 @@
         ]
        },
        "retryLine": {
-        "text": "The freeing break is ...d5 — push the d-pawn two squares to open the centre and equalise.",
+        "text": "The freeing break is ...d5. Push the d-pawn two squares to open the centre and equalise.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1386,7 +1386,7 @@
      "kind": "puzzle",
      "title": "Cool-down: punish the loose Sicilian centre",
      "intro": {
-      "text": "When a Sicilian player gets the ...d5 break in — or White's space over-extends — tactics erupt in the centre. Find the strongest move."
+      "text": "When a Sicilian player gets the ...d5 break in (or White's space over-extends) tactics erupt in the centre. Find the strongest move."
      },
      "puzzle": {
       "themes": [
@@ -1410,13 +1410,13 @@
      "kind": "teach",
      "title": "Three rules of the race",
      "intro": {
-      "text": "When both kings are attacked on opposite wings, ordinary chess wisdom inverts. Material matters less; tempo matters most. Here are the three rules that win these positions — they apply to the Najdorf, the Dragon, and every sharp Sicilian."
+      "text": "When both kings are attacked on opposite wings, ordinary chess wisdom inverts. Material matters less; tempo matters most. Here are the three rules that win these positions. They apply to the Najdorf, the Dragon, and every sharp Sicilian."
      },
      "steps": [
       {
        "fen": "1r1q1rk1/3bppbp/p2p1np1/1p6/3NP3/1BN1BP2/PPPQ2PP/1K1R3R w - - 2 14",
        "coach": {
-        "text": "Rule one: COUNT the race. Black needs moves (...b4, ...a5-a4, ...Rxc3) to reach White's king; White needs moves (g4-g5, h4-h5, hxg6) to reach Black's. Before every move, ask: 'Who arrives first?' If you are ahead in the count, push your OWN attack and ignore his threats. If you are behind, you must either speed up or, only then, defend. The count — not your nerves — decides.",
+        "text": "Rule one: COUNT the race. Black needs moves (...b4, ...a5-a4, ...Rxc3) to reach White's king; White needs moves (g4-g5, h4-h5, hxg6) to reach Black's. Before every move, ask: 'Who arrives first?' If you are ahead in the count, push your OWN attack and ignore his threats. If you are behind, you must either speed up or, only then, defend. The count (not your nerves) decides.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1438,7 +1438,7 @@
       {
        "fen": "2rq1rk1/1p1bppbp/p2p1np1/8/3NP2P/2N1BP2/PPPQ2P1/2KR3R w - - 0 13",
        "coach": {
-        "text": "Rule two: don't waste moves defending — PRISE OPEN THE FILE. White's winning method is h4-h5 and then hxg6, ripping open the h-file in front of Black's king. The attack is not the pawns themselves; it is the OPEN LINE the pawns create for the rooks and queen. Same for Black on the c-file. A pawn storm's purpose is to open a road for the heavy pieces. Never stop the storm to grab a pawn.",
+        "text": "Rule two: don't waste moves defending. PRISE OPEN THE FILE. White's winning method is h4-h5 and then hxg6, ripping open the h-file in front of Black's king. The attack is not the pawns themselves; it is the OPEN LINE the pawns create for the rooks and queen. Same for Black on the c-file. A pawn storm's purpose is to open a road for the heavy pieces. Never stop the storm to grab a pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1465,7 +1465,7 @@
       {
        "fen": "2rq1rk1/1p1bpp1p/p2p1npB/7P/3NP3/2N2P2/PPPQ2P1/2KR3R b - - 1 14",
        "coach": {
-        "text": "Rule three: trade the key DEFENDER, then strike. White has played Bh6 to swap the dragon-bishop — Black's best defender of the dark squares around his king. Once it is gone, hxg6 and Qh6 mate down the dark squares. The mirror image for Black: ...Rxc3 removes the knight defending White's king. In a race, a sacrifice that removes the enemy's key defender is almost always worth it, because it makes YOUR attack arrive first. Material is just fuel for tempo.",
+        "text": "Rule three: trade the key DEFENDER, then strike. White has played Bh6 to swap the dragon-bishop. Black's best defender of the dark squares around his king. Once it is gone, hxg6 and Qh6 mate down the dark squares. The mirror image for Black: ...Rxc3 removes the knight defending White's king. In a race, a sacrifice that removes the enemy's key defender is almost always worth it, because it makes YOUR attack arrive first. Material is just fuel for tempo.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1495,13 +1495,13 @@
      "kind": "guided",
      "title": "Race, don't retreat",
      "intro": {
-      "text": "In each position you are winning the race — if you keep pushing. Resist the urge to defend. Find the move that prises open the enemy king or removes its defender."
+      "text": "In each position you are winning the race. If you keep pushing. Resist the urge to defend. Find the move that prises open the enemy king or removes its defender."
      },
      "steps": [
       {
        "fen": "2rq1rk1/1p1bppbp/p2p1np1/8/3NP2P/2N1BP2/PPPQ2P1/2KR3R w - - 0 13",
        "coach": {
-        "text": "White in a Yugoslav race. Black will come on the c-file, but you are a move faster on the h-file. Don't pause to defend — keep ramming the h-pawn to open the h-file in front of Black's king.",
+        "text": "White in a Yugoslav race. Black will come on the c-file, but you are a move faster on the h-file. Don't pause to defend. Keep ramming the h-pawn to open the h-file in front of Black's king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1515,7 +1515,7 @@
         "h4h5"
        ],
        "successLine": {
-        "text": "13.h5! Straight ahead. Next comes hxg6, tearing open the h-file for the rook and queen. You do not defend your queenside; you race. The first attack to break through wins — and yours is one tempo ahead.",
+        "text": "13.h5! Straight ahead. Next comes hxg6, tearing open the h-file for the rook and queen. You do not defend your queenside; you race. The first attack to break through wins, and yours is one tempo ahead.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1539,7 +1539,7 @@
       {
        "fen": "3q1rk1/1p1bppbp/p2p1np1/8/3NP3/2P1BP2/P1PQ2PP/2KR3R b - - 0 13",
        "coach": {
-        "text": "You are Black: you have already sacrificed the exchange with ...Rxc3, and White has recaptured bxc3, baring his king. The c-file and the long diagonal both point at c1. Bring the queen into the attack with tempo — hit the wrecked c3-pawn and eye the king.",
+        "text": "You are Black: you have already sacrificed the exchange with ...Rxc3, and White has recaptured bxc3, baring his king. The c-file and the long diagonal both point at c1. Bring the queen into the attack with tempo. Hit the wrecked c3-pawn and eye the king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1559,7 +1559,7 @@
         "d8a5"
        ],
        "successLine": {
-        "text": "13...Qa5! The queen swings to the queenside, attacking the c3-pawn and the king behind it, with ...Rc8 to follow. The exchange sacrifice has done its work: White's king has no pawn cover and Black's pieces flood in with full compensation and the initiative. Black is for choice — this is the whole point of the Dragon.",
+        "text": "13...Qa5! The queen swings to the queenside, attacking the c3-pawn and the king behind it, with ...Rc8 to follow. The exchange sacrifice has done its work: White's king has no pawn cover and Black's pieces flood in with full compensation and the initiative. Black is for choice. This is the whole point of the Dragon.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1604,13 +1604,13 @@
    "id": "l6-review",
    "title": "Putting It Together",
    "kind": "practice",
-   "summary": "Build the Open Sicilian, choose your weapon at the great crossroads, and drill the three signature ideas — then a final mixed set from real Sicilian middlegames.",
+   "summary": "Build the Open Sicilian, choose your weapon at the great crossroads, and drill the three signature ideas. Then a final mixed set from real Sicilian middlegames.",
    "segments": [
     {
      "kind": "guided",
      "title": "From move one to your chosen weapon",
      "intro": {
-      "text": "No hints about which system — just build the Open Sicilian from the start and choose your door at the crossroads. The structure you have learned this chapter, in your own hands."
+      "text": "No hints about which system: just build the Open Sicilian from the start and choose your door at the crossroads. The structure you have learned this chapter, in your own hands."
      },
      "steps": [
       {
@@ -1630,7 +1630,7 @@
         "g1f3"
        ],
        "successLine": {
-        "text": "2.Nf3 — develop and ready d4. Black plays 2...d6.",
+        "text": "2.Nf3: develop and ready d4. Black plays 2...d6.",
         "annotations": [
          {
           "kind": "circle",
@@ -1654,7 +1654,7 @@
       {
        "fen": "rnbqkbnr/pp2pppp/3p4/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
        "coach": {
-        "text": "2...d6 3.d4 cxd4 — Black has traded on d4 and you must recapture. Take back toward the centre with the piece that lands on the Sicilian's best square.",
+        "text": "2...d6 3.d4 cxd4: Black has traded on d4 and you must recapture. Take back toward the centre with the piece that lands on the Sicilian's best square.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1668,7 +1668,7 @@
         "f3d4"
        ],
        "successLine": {
-        "text": "4.Nxd4 — the knight reaches its ideal central post. After 4...Nf6 5.Nc3 you are at the great crossroads, ready to choose Najdorf, Dragon or Scheveningen.",
+        "text": "4.Nxd4: the knight reaches its ideal central post. After 4...Nf6 5.Nc3 you are at the great crossroads, ready to choose Najdorf, Dragon or Scheveningen.",
         "annotations": [
          {
           "kind": "circle",
@@ -1692,7 +1692,7 @@
       {
        "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
        "coach": {
-        "text": "The crossroads: 4...Nf6 5.Nc3. Choose your weapon. Play the Najdorf (...a6), the Dragon (...g6), or the Scheveningen (...e6) — and remember what each one commits to.",
+        "text": "The crossroads: 4...Nf6 5.Nc3. Choose your weapon. Play the Najdorf (...a6), the Dragon (...g6), or the Scheveningen (...e6), and remember what each one commits to.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1718,7 +1718,7 @@
         "e7e6"
        ],
        "successLine": {
-        "text": "A sound choice. ...a6 prepares ...e5/...b5 (Najdorf), ...g6 fianchettoes for the Yugoslav race (Dragon), ...e6 builds the small centre (Scheveningen). You have built the Open Sicilian and chosen your battlefield with understanding — not memory.",
+        "text": "A sound choice. ...a6 prepares ...e5/...b5 (Najdorf), ...g6 fianchettoes for the Yugoslav race (Dragon), ...e6 builds the small centre (Scheveningen). You have built the Open Sicilian and chosen your battlefield with understanding, not memory.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1754,7 +1754,7 @@
      "kind": "puzzle",
      "title": "Cool-down: mixed Sicilian middlegames",
      "intro": {
-      "text": "A final mixed set from sharp Sicilian positions — kingside storms, queenside breakthroughs, central tactics. Everything this chapter trained, in one drill."
+      "text": "A final mixed set from sharp Sicilian positions, kingside storms, queenside breakthroughs, central tactics. Everything this chapter trained, in one drill."
      },
      "puzzle": {
       "themes": [
@@ -1783,14 +1783,14 @@
      "Black equalises immediately with a symmetric position"
     ],
     "answerIndex": 2,
-    "explain": "...cxd4 swaps a flank pawn for a central one. Black concedes White an extra centre pawn and faster development, but in return gets the half-open c-file (his rook hammers c2/c3) and a central majority — an unbalanced game where Black plays for a win, not a draw."
+    "explain": "...cxd4 swaps a flank pawn for a central one. Black concedes White an extra centre pawn and faster development, but in return gets the half-open c-file (his rook hammers c2/c3) and a central majority. An unbalanced game where Black plays for a win, not a draw."
    },
    {
     "kind": "mc",
     "prompt": "Because the Sicilian's pawns are unbalanced, the two sides usually attack on opposite wings. What is the single most important principle for playing such a race?",
     "options": [
      "Defend your own king first, then attack",
-     "Count the race and keep pushing your own attack — speed beats material; don't waste moves defending",
+     "Count the race and keep pushing your own attack: speed beats material; don't waste moves defending",
      "Trade as many pieces as possible to reach an endgame",
      "Always grab any material the opponent offers"
     ],
@@ -1811,12 +1811,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Open Sicilian, a different move-order: 1.e4 c5 2.Nf3 Nc6 3.d4 cxd4. White to recapture on d4 — choose the recapture that gives the best piece.",
+    "prompt": "Open Sicilian, a different move-order: 1.e4 c5 2.Nf3 Nc6 3.d4 cxd4. White to recapture on d4. Choose the recapture that gives the best piece.",
     "fen": "r1bqkbnr/pp1ppppp/2n5/8/3pP3/5N2/PPP2PPP/RNBQKB1R w KQkq - 0 4",
     "solutionUci": [
      "f3d4"
     ],
-    "explain": "4.Nxd4 — recapturing with the knight lands it on the Sicilian's ideal central square, eyeing b5, f5, e6 and c6 and keeping the queen safe at home. The same defining recapture as the main line, reached here via 2...Nc6 instead of 2...d6."
+    "explain": "4.Nxd4: recapturing with the knight lands it on the Sicilian's ideal central square, eyeing b5, f5, e6 and c6 and keeping the queen safe at home. The same defining recapture as the main line, reached here via 2...Nc6 instead of 2...d6."
    },
    {
     "kind": "play",
@@ -1825,16 +1825,16 @@
     "solutionUci": [
      "a7a6"
     ],
-    "explain": "6...a6 — the same Najdorf prophylaxis, here reached via a Scheveningen move-order. It denies White both Nb5 (hitting d6) and Bb5+, and prepares ...b5 expansion. The humble rook-pawn move that every Najdorf and Scheveningen player relies on."
+    "explain": "6...a6: the same Najdorf prophylaxis, here reached via a Scheveningen move-order. It denies White both Nb5 (hitting d6) and Bb5+, and prepares ...b5 expansion. The humble rook-pawn move that every Najdorf and Scheveningen player relies on."
    },
    {
     "kind": "play",
-    "prompt": "Najdorf: 5...a6 6.f3 (an English-Attack move-order). Black to move at his thematic moment — strike in the centre against the d4-knight.",
+    "prompt": "Najdorf: 5...a6 6.f3 (an English-Attack move-order). Black to move at his thematic moment. Strike in the centre against the d4-knight.",
     "fen": "rnbqkb1r/1p2pppp/p2p1n2/8/3NP3/2N2P2/PPP3PP/R1BQKB1R b KQkq - 0 6",
     "solutionUci": [
      "e7e5"
     ],
-    "explain": "6...e5! — the thematic Najdorf strike, here against the 6.f3 move-order. It kicks the d4-knight and seizes central space. It concedes the d5-square, but Black's active pieces (...Be6, ...Nbd7, ...b5) fight for d5 in return — the Najdorf's sharp imbalance."
+    "explain": "6...e5!. The thematic Najdorf strike, here against the 6.f3 move-order. It kicks the d4-knight and seizes central space. It concedes the d5-square, but Black's active pieces (...Be6, ...Nbd7, ...b5) fight for d5 in return, the Najdorf's sharp imbalance."
    },
    {
     "kind": "play",
@@ -1843,23 +1843,23 @@
     "solutionUci": [
      "f2f3"
     ],
-    "explain": "7.f3 — the Yugoslav keystone, here against the 2...Nc6 Dragon move-order. It guards e4 (so g4 can follow), dulls the g7-bishop's long diagonal, and frees the g- and h-pawns to storm. Same idea, different move-order."
+    "explain": "7.f3: the Yugoslav keystone, here against the 2...Nc6 Dragon move-order. It guards e4 (so g4 can follow), dulls the g7-bishop's long diagonal, and frees the g- and h-pawns to storm. Same idea, different move-order."
    },
    {
     "kind": "mc",
     "prompt": "In the Yugoslav Dragon, Black's signature idea is the exchange sacrifice ...Rxc3 (rook takes the c3-knight). When it is well-timed, WHY is giving a whole rook for a knight worth it?",
     "options": [
      "It wins a pawn and reaches a better endgame",
-     "It shatters White's queenside pawns and removes a key defender, so Black's attack down the c-file and long diagonal arrives first — material is traded for speed",
+     "It shatters White's queenside pawns and removes a key defender, so Black's attack down the c-file and long diagonal arrives first. Material is traded for speed",
      "It forces White to give back the exchange immediately",
      "It is a desperate try only used when Black is already losing"
     ],
     "answerIndex": 1,
-    "explain": "...Rxc3 is a positional sacrifice: after bxc3 White's b- and c-pawns are wrecked, the knight that guarded e4/d5 is gone, and the c-file plus the g7-bishop's long diagonal point at White's bared king. Black gives material to make his attack arrive first — speed beats material. It is sound only when Black's attack is genuinely faster, not as a reflex."
+    "explain": "...Rxc3 is a positional sacrifice: after bxc3 White's b- and c-pawns are wrecked, the knight that guarded e4/d5 is gone, and the c-file plus the g7-bishop's long diagonal point at White's bared king. Black gives material to make his attack arrive first, speed beats material. It is sound only when Black's attack is genuinely faster, not as a reflex."
    },
    {
     "kind": "play",
-    "prompt": "Black to move at the crossroads: 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. Choose and play the Scheveningen weapon — the system built on a restrained, hole-free small centre.",
+    "prompt": "Black to move at the crossroads: 1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3. Choose and play the Scheveningen weapon. The system built on a restrained, hole-free small centre.",
     "fen": "rnbqkb1r/pp2pppp/3p1n2/8/3NP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 2 5",
     "solutionUci": [
      "e7e6"
@@ -1868,12 +1868,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Taimanov Sicilian: White has just traded on c6 (Nxc6 bxc6), loosening his grip on d5, and his pieces are off the centre. Black to move — find the freeing central pawn break.",
+    "prompt": "Taimanov Sicilian: White has just traded on c6 (Nxc6 bxc6), loosening his grip on d5, and his pieces are off the centre. Black to move. Find the freeing central pawn break.",
     "fen": "r1b2rk1/2q1bppp/p1pppn2/8/4PP2/2N1B3/PPP1B1PP/R3QR1K b - - 1 12",
     "solutionUci": [
      "d6d5"
     ],
-    "explain": "12...d5! — the freeing break, here in a Taimanov where White's Nxc6 has weakened his control of d5. The centre opens and Black's pieces spring to life with comfortable equality. This is the move the whole small-centre structure exists to play, the instant d5 is no longer adequately held."
+    "explain": "12...d5!. The freeing break, here in a Taimanov where White's Nxc6 has weakened his control of d5. The centre opens and Black's pieces spring to life with comfortable equality. This is the move the whole small-centre structure exists to play, the instant d5 is no longer adequately held."
    },
    {
     "kind": "judge",
@@ -1889,7 +1889,7 @@
     "fen": "rnbqkb1r/1p2pppp/p2p1n2/1N6/4P3/2N5/PPP2PPP/R1BQKB1R b KQkq - 1 6",
     "lastMoveUci": "d4b5",
     "verdict": "blunder",
-    "explain": "This is precisely what 5...a6 prevented. Black plays 6...axb5, and although White regains the pawn with Bxb5+ (or Nxb5), he is left down a knight for a pawn — the b5 jump simply loses material because ...a6 took away the square. Spend a tempo on prophylaxis (...a6) and you slam this door for good."
+    "explain": "This is precisely what 5...a6 prevented. Black plays 6...axb5, and although White regains the pawn with Bxb5+ (or Nxb5), he is left down a knight for a pawn. The b5 jump simply loses material because ...a6 took away the square. Spend a tempo on prophylaxis (...a6) and you slam this door for good."
    },
    {
     "kind": "judge",
@@ -1905,7 +1905,7 @@
     "fen": "2rq1rk1/pp1bppb1/3p1npp/4n3/3NP3/1BN1BP2/PPPQ2PP/1K1R3R w - - 0 13",
     "lastMoveUci": "h7h6",
     "verdict": "blunder",
-    "explain": "Two sins in one. First, in an opposite-wing race you do not stop to defend when you are AHEAD — the wasted tempo lets White's storm catch up. Worse, ...h6 weakens the dark squares: White answers 13.Bxh6! Bxh6 14.Qxh6, ripping open the king and turning a position where Black was better into a winning White attack. Count the race and keep pushing — and never loosen your own king for free."
+    "explain": "Two sins in one. First, in an opposite-wing race you do not stop to defend when you are AHEAD. The wasted tempo lets White's storm catch up. Worse, ...h6 weakens the dark squares: White answers 13.Bxh6! Bxh6 14.Qxh6, ripping open the king and turning a position where Black was better into a winning White attack. Count the race and keep pushing, and never loosen your own king for free."
    }
   ]
  },

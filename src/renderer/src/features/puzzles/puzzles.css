@@ -1,4 +1,4 @@
-/* Puzzles trainer — local styles. Tokens only; reuses shared classes
+/* Puzzles trainer: local styles. Tokens only; reuses shared classes
    (.board-area .board-stage .board-wrap .board-controls .panel .pad .btn
    .icon-btn .eval-chip .num .muted .small .analysis-sidebar). */
 
@@ -308,7 +308,7 @@
 }
 
 /* ============================================================
-   Coach (on-demand) — shared CoachHint component styles.
+   Coach (on-demand): shared CoachHint component styles.
    Namespaced .coachhint-* (mirrors play.css; identical rules so
    loading both stylesheets is harmless). shared app.css untouched.
    ============================================================ */

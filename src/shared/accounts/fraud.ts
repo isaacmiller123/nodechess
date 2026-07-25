@@ -1,7 +1,7 @@
 // Fork proofs (spec §2/§4): two distinct signed witnessed-lane bodies by one
 // root sharing one prev are self-authenticating fraud. A proof carries the
 // two events plus the root-signed certs proving each signing key belongs to
-// the root — verifiable by anyone, with no context beyond the proof itself.
+// the root: verifiable by anyone, with no context beyond the proof itself.
 //
 // Platform-neutral: no `node:` imports, no DOM globals.
 

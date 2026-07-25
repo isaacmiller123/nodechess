@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// Web engine layer suite (web port W2 — src/web/engines, docs/WEB-PORT-SPEC.md).
+// Web engine layer suite (web port W2, src/web/engines, docs/WEB-PORT-SPEC.md).
 //
 //   node scripts/test-web-engines.mjs
 //
 // Headless coverage of everything that doesn't need a browser:
-//   1. UCI protocol goldens (parseInfo/parseBestmove/goArgs — desktop parity).
+//   1. UCI protocol goldens (parseInfo/parseBestmove/goArgs; desktop parity).
 //   2. engine:play level→strategy routing goldens (maia/elo/uciElo/skill/
 //      default precedence, the 1320 floor boundary) + fairy level/variant
 //      mapping goldens + FEN anti-smuggling guards.
@@ -20,9 +20,9 @@
 //      + the real persona catalog/book resources load.
 //   7. REAL Fairy-Stockfish WASM under Node (the package runs headless):
 //      evalVariant for chess + a variant + a Variant Lab custom ini, and
-//      playVariant — through the actual createEngineApi factory.
+//      playVariant: through the actual createEngineApi factory.
 //
-// The chess (stockfish-18-lite) worker builds cannot run under Node — the
+// The chess (stockfish-18-lite) worker builds cannot run under Node. The
 // browser-level verification of those is the lead's job per the contract.
 // Exit 1 on any failure.
 
@@ -66,7 +66,7 @@ execSync(
 globalThis.window = globalThis
 // The factories gate on Worker+WASM support at construction (engineless
 // environments must fall into webApi's W1 fallbacks). Node genuinely has
-// workers — expose the constructor so section 7 can build the real engine api;
+// workers: expose the constructor so section 7 can build the real engine api;
 // the chess Worker paths are never exercised here (browser-verified by the lead).
 globalThis.Worker = (await import('node:worker_threads')).Worker
 
@@ -79,7 +79,7 @@ function check(name, cond, detail) {
     console.log(`  ok  ${name}`)
   } else {
     failures++
-    console.error(`FAIL  ${name}${detail !== undefined ? ` — ${detail}` : ''}`)
+    console.error(`FAIL  ${name}${detail !== undefined ? `, ${detail}` : ''}`)
   }
 }
 function close(a, b, eps = 1e-9) {
@@ -236,7 +236,7 @@ console.log('\n[3] sub-1320 weak-play model parity')
   const strong1250 = spread(1250)
   check('Elo 100 wanders off the best move', weak100.best < 2200, JSON.stringify(weak100))
   // At 1250 the calibrated softmax (T=170, knee~292) holds best ~63% of the
-  // time against an 80cp-gap rival — assert the band, not a folk expectation.
+  // time against an 80cp-gap rival: assert the band, not a folk expectation.
   check('Elo 1250 leans on the best move', strong1250.best > 2200, JSON.stringify(strong1250))
   check('Elo 100 plays worse moves more often than 1250', weak100.bad > strong1250.bad)
   const panic1000 = spread(1000, true)
@@ -519,14 +519,14 @@ console.log('\n[7] Fairy-Stockfish WASM (real engine, Node)')
     check('playVariant level out of range throws', badLevel === 'engine: level out of range')
   } catch (err) {
     failures++
-    console.error('FAIL  fairy wasm integration —', err)
+    console.error('FAIL  fairy wasm integration:', err)
   }
 
   // playGo / estimateGo: honest desktop-only BotUnavailableError.
   const goErr = await api.playGo({ size: 9, komi: 5.5, moves: [], level: 1 }).then(() => null, (e) => e)
   check(
     'playGo rejects with BotUnavailableError + web copy',
-    goErr && goErr.name === 'BotUnavailableError' && goErr.message === 'Go bots are coming to the web — available today in the desktop app.',
+    goErr && goErr.name === 'BotUnavailableError' && goErr.message === 'Go bots are coming to the web, available today in the desktop app.',
     goErr && `${goErr.name}: ${goErr.message}`
   )
   const estErr = await api.estimateGo({ size: 9, komi: 5.5, moves: [] }).then(() => null, (e) => e)

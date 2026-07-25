@@ -3,7 +3,7 @@
  "band": "31",
  "order": 31,
  "title": "Minor-Piece Endgames",
- "subtitle": "Bishop vs. knight, the good and bad bishop, opposite-coloured bishops, knight vs. pawns, and the fortress — the minor pieces in their endings.",
+ "subtitle": "Bishop vs. knight, the good and bad bishop, opposite-coloured bishops, knight vs. pawns, and the fortress, the minor pieces in their endings.",
  "estMinutes": 64,
  "concepts": [
   {
@@ -14,12 +14,12 @@
   {
    "id": "good-bad-bishop",
    "name": "Good vs. Bad Bishop",
-   "short": "A bishop hemmed in behind its OWN pawns (fixed on its colour) is a bad bishop — a tall pawn. Fix the enemy pawns on the bishop's colour to make it bad, and keep your own pawns off your bishop's colour."
+   "short": "A bishop hemmed in behind its OWN pawns (fixed on its colour) is a bad bishop, a tall pawn. Fix the enemy pawns on the bishop's colour to make it bad, and keep your own pawns off your bishop's colour."
   },
   {
    "id": "opp-bishops",
    "name": "Opposite-Coloured Bishops",
-   "short": "Bishops on opposite colours never trade and never guard the same square — a famous drawing tendency. To win you usually need TWO connected passers far apart, or a second front the lone bishop cannot cover."
+   "short": "Bishops on opposite colours never trade and never guard the same square, a famous drawing tendency. To win you usually need TWO connected passers far apart, or a second front the lone bishop cannot cover."
   },
   {
    "id": "knight-vs-pawns",
@@ -34,13 +34,13 @@
   {
    "id": "outflank-minor",
    "name": "King & Piece Together",
-   "short": "A minor piece almost never wins alone — the king is the senior partner. Centralize the king, let the piece restrain, and convert with both working as one."
+   "short": "A minor piece almost never wins alone. The king is the senior partner. Centralize the king, let the piece restrain, and convert with both working as one."
   }
  ],
  "lessons": [
   {
    "id": "ch31-l1-bishop-vs-knight",
-   "title": "Bishop vs. Knight — Who Is Better?",
+   "title": "Bishop vs. Knight, Who Is Better?",
    "kind": "concept",
    "summary": "The oldest argument in chess: when the long-range bishop beats the knight, and when the knight turns the tables.",
    "segments": [
@@ -48,7 +48,7 @@
      "kind": "puzzle",
      "title": "Warm-up: minor-piece endings",
      "intro": {
-      "text": "We open the endgame catalogue's most subtle chapter — the minor pieces, alone with the kings. Three warm-ups from real bishop endings. Find the precise move; the difference between a win and a draw here is a single tempo."
+      "text": "We open the endgame catalogue's most subtle chapter, the minor pieces, alone with the kings. Three warm-ups from real bishop endings. Find the precise move; the difference between a win and a draw here is a single tempo."
      },
      "puzzle": {
       "themes": [
@@ -68,7 +68,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "First, why the bishop is so often the better piece. Look at it. From f3 it strikes the full length of two diagonals in a single move — it touches both wings at once. A knight on f3 would need three or four hops to reach the queenside. When the pawns are spread across BOTH sides of the board, the bishop's reach is decisive: it stops a passer on one wing while its king works the other. Speed across the whole board — that is the bishop's gift.",
+        "text": "First, why the bishop is so often the better piece. Look at it. From f3 it strikes the full length of two diagonals in a single move. It touches both wings at once. A knight on f3 would need three or four hops to reach the queenside. When the pawns are spread across BOTH sides of the board, the bishop's reach is decisive: it stops a passer on one wing while its king works the other. Speed across the whole board: that is the bishop's gift.",
         "annotations": [
          {
           "kind": "circle",
@@ -101,7 +101,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "Now the same square, a knight instead. From f3 it reaches only the eight marked squares — and not one of them touches the queenside. To get from f3 to a-file it needs f3-d4-b5-a-something, three or four moves. The knight is a sprinter that must zig-zag; the bishop a glider. This is the heart of it: on a board with play on BOTH wings, give me the bishop.",
+        "text": "Now the same square, a knight instead. From f3 it reaches only the eight marked squares, and not one of them touches the queenside. To get from f3 to a-file it needs f3-d4-b5-a-something, three or four moves. The knight is a sprinter that must zig-zag; the bishop a glider. This is the heart of it: on a board with play on BOTH wings, give me the bishop.",
         "annotations": [
          {
           "kind": "circle",
@@ -156,7 +156,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "But the knight has its day. Here every pawn sits on ONE wing — no second front to exploit. The pawns are fixed, and a one-wing, fixed-pawn structure is the knight's home: it hops from square to square into outposts and attacks squares of either colour, while the bishop has no second front to use its reach on. The bishop is hemmed in by its own colour and can only watch one set of squares. The rule is not 'bishop is better' — it is: an open board with play on BOTH wings favours the bishop; a single-wing, fixed, or blocked structure favours the knight.",
+        "text": "But the knight has its day. Here every pawn sits on ONE wing, no second front to exploit. The pawns are fixed, and a one-wing, fixed-pawn structure is the knight's home: it hops from square to square into outposts and attacks squares of either colour, while the bishop has no second front to use its reach on. The bishop is hemmed in by its own colour and can only watch one set of squares. The rule is not 'bishop is better'. It is: an open board with play on BOTH wings favours the bishop; a single-wing, fixed, or blocked structure favours the knight.",
         "annotations": [
          {
           "kind": "circle",
@@ -207,7 +207,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "Black's f-pawn is one step from queening on f1. A knight on c8 would need three or four hops and could never arrive in time — but your bishop crosses the board in one move. Find the bishop move that controls f1 and freezes the pawn forever.",
+        "text": "Black's f-pawn is one step from queening on f1. A knight on c8 would need three or four hops and could never arrive in time, but your bishop crosses the board in one move. Find the bishop move that controls f1 and freezes the pawn forever.",
         "annotations": [
          {
           "kind": "circle",
@@ -226,7 +226,7 @@
        ],
        "successLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "Exactly — the bishop drops onto h3 and guards f1 along the f1-g2-h3 diagonal, from a distance no knight could match. (The a6-f1 diagonal is blocked here by Black's own king on b5, which is exactly why Ba6 fails — only h3 reaches f1.) The pawn is frozen; it can never promote on a square your bishop watches. That long-range stop is precisely why the bishop shines against passed pawns.",
+        "text": "Exactly: the bishop drops onto h3 and guards f1 along the f1-g2-h3 diagonal, from a distance no knight could match. (The a6-f1 diagonal is blocked here by Black's own king on b5, which is exactly why Ba6 fails; only h3 reaches f1.) The pawn is frozen; it can never promote on a square your bishop watches. That long-range stop is precisely why the bishop shines against passed pawns.",
         "annotations": [
          {
           "kind": "arrow",
@@ -238,7 +238,7 @@
        },
        "retryLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "Not that. The pawn promotes on f1 — you must put the bishop on a diagonal that controls f1, so that ...f1=Q is simply met by capture. Find a bishop move that hits f1."
+        "text": "Not that. The pawn promotes on f1: you must put the bishop on a diagonal that controls f1, so that ...f1=Q is simply met by capture. Find a bishop move that hits f1."
        }
       }
      ]
@@ -247,7 +247,7 @@
      "kind": "puzzle",
      "title": "Cool-down: the knight's endings",
      "intro": {
-      "text": "Now the other side of the coin — knight endgames, where the short-stepper shows its teeth in closed and one-wing play. Three to finish."
+      "text": "Now the other side of the coin: knight endgames, where the short-stepper shows its teeth in closed and one-wing play. Three to finish."
      },
      "puzzle": {
       "themes": [
@@ -290,7 +290,7 @@
        "conceptId": "good-bad-bishop",
        "coach": {
         "conceptId": "good-bad-bishop",
-        "text": "Here is the picture you must learn to read at a glance. Both sides have a LIGHT-squared bishop and four pawns — material is dead level. But look where each bishop's OWN pawns sit. Black's pawns are on d5, e6, f7, g6 — light squares, every one. They are its bishop's prison bars: the c8-bishop can never defend them and bumps into its own men. White's pawns sit on b4, d4, f4, h4 — DARK squares, all of them — so the f1-bishop has the whole light highway free. Black's is the BAD bishop, a 'tall pawn'; White's is the good one. Same material, opposite fortunes.",
+        "text": "Here is the picture you must learn to read at a glance. Both sides have a LIGHT-squared bishop and four pawns. Material is dead level. But look where each bishop's OWN pawns sit. Black's pawns are on d5, e6, f7, g6, light squares, every one. They are its bishop's prison bars: the c8-bishop can never defend them and bumps into its own men. White's pawns sit on b4, d4, f4, h4 (DARK squares, all of them) so the f1-bishop has the whole light highway free. Black's is the BAD bishop, a 'tall pawn'; White's is the good one. Same material, opposite fortunes.",
         "annotations": [
          {
           "kind": "circle",
@@ -330,7 +330,7 @@
        "conceptId": "good-bad-bishop",
        "coach": {
         "conceptId": "good-bad-bishop",
-        "text": "Why does level material lose for Black? Because the bad bishop cannot guard two fronts. White breaks with b4-b5 to make a queenside passer; to stop it the lone bad bishop must run to the queenside — and the instant it does, the kingside light squares f5, g4, h5 fall to the good bishop and the white king. A bad bishop is glued to one job and leaves a whole colour complex undefended. The lesson cuts both ways: keep YOUR pawns OFF your bishop's colour so it stays mobile, and fix the ENEMY'S pawns ON their bishop's colour to entomb it. The bishop's colour is the whole story.",
+        "text": "Why does level material lose for Black? Because the bad bishop cannot guard two fronts. White breaks with b4-b5 to make a queenside passer; to stop it the lone bad bishop must run to the queenside, and the instant it does, the kingside light squares f5, g4, h5 fall to the good bishop and the white king. A bad bishop is glued to one job and leaves a whole colour complex undefended. The lesson cuts both ways: keep YOUR pawns OFF your bishop's colour so it stays mobile, and fix the ENEMY'S pawns ON their bishop's colour to entomb it. The bishop's colour is the whole story.",
         "annotations": [
          {
           "kind": "arrow",
@@ -367,7 +367,7 @@
        "conceptId": "good-bad-bishop",
        "coach": {
         "conceptId": "good-bad-bishop",
-        "text": "Your turn with the better side — same material, but a bad enemy bishop. The way to beat a bad bishop is to give it TWO jobs at once. Open a front far from where it sits: thrust the queenside pawn forward and make a passer the bad bishop must chase, leaving the kingside light squares for your king and good bishop. Make the break.",
+        "text": "Your turn with the better side, same material, but a bad enemy bishop. The way to beat a bad bishop is to give it TWO jobs at once. Open a front far from where it sits: thrust the queenside pawn forward and make a passer the bad bishop must chase, leaving the kingside light squares for your king and good bishop. Make the break.",
         "annotations": [
          {
           "kind": "circle",
@@ -391,7 +391,7 @@
        ],
        "successLine": {
         "conceptId": "good-bad-bishop",
-        "text": "b5. A passer is born, and the bad c8-bishop must hurry to the queenside to hold it. The moment it does, your king strides into f5 and g4 and the good bishop mops up the light pawns. The bad bishop cannot be in two places — that is what a colour-bound piece costs. Same material, but Black is lost.",
+        "text": "b5. A passer is born, and the bad c8-bishop must hurry to the queenside to hold it. The moment it does, your king strides into f5 and g4 and the good bishop mops up the light pawns. The bad bishop cannot be in two places. That is what a colour-bound piece costs. Same material, but Black is lost.",
         "annotations": [
          {
           "kind": "arrow",
@@ -409,7 +409,7 @@
        },
        "retryLine": {
         "conceptId": "good-bad-bishop",
-        "text": "Give the bad bishop a second job. It is stuck defending the kingside light pawns — so open a front on the OTHER wing. Push your b-pawn to b5 to make a queenside passer it must also stop."
+        "text": "Give the bad bishop a second job. It is stuck defending the kingside light pawns, so open a front on the OTHER wing. Push your b-pawn to b5 to make a queenside passer it must also stop."
        }
       }
      ]
@@ -418,7 +418,7 @@
      "kind": "puzzle",
      "title": "Cool-down: convert the better bishop",
      "intro": {
-      "text": "Bishop endings from real games. The win often hinges on whose bishop is the freer — find the move that uses yours."
+      "text": "Bishop endings from real games. The win often hinges on whose bishop is the freer. Find the move that uses yours."
      },
      "puzzle": {
       "themes": [
@@ -433,7 +433,7 @@
   },
   {
    "id": "ch31-l3-opp-bishops",
-   "title": "Opposite-Coloured Bishops — the Great Drawing Margin",
+   "title": "Opposite-Coloured Bishops: the Great Drawing Margin",
    "kind": "concept",
    "summary": "The famous draw: two pawns up can be nothing. To win you need two passers far apart, or a second front the lone bishop cannot cover.",
    "segments": [
@@ -441,7 +441,7 @@
      "kind": "puzzle",
      "title": "Warm-up: bishop endings",
      "intro": {
-      "text": "The strangest rule in the endgame: with bishops of opposite colour, an extra pawn — sometimes two — can be a dead draw. First three warm-ups, then we learn why, and when the draw breaks."
+      "text": "The strangest rule in the endgame: with bishops of opposite colour, an extra pawn (sometimes two) can be a dead draw. First three warm-ups, then we learn why, and when the draw breaks."
      },
      "puzzle": {
       "themes": [
@@ -461,7 +461,7 @@
        "conceptId": "opp-bishops",
        "coach": {
         "conceptId": "opp-bishops",
-        "text": "White is a clean pawn up and the e5-pawn wants to run to e8. Yet this is a textbook DRAW. The reason: White's bishop is LIGHT-squared (c2), Black's is DARK-squared (g7). They are on OPPOSITE colours — they never trade and never fight for the same square. The pawn's path runs e5-e6-e7-e8; the square e7 is DARK. Black's dark bishop parks on e7 (or any dark square guarding it) and blockades the pawn forever. The light bishop can never evict a dark bishop from a dark square. One bishop cannot fight on a colour it cannot touch.",
+        "text": "White is a clean pawn up and the e5-pawn wants to run to e8. Yet this is a textbook DRAW. The reason: White's bishop is LIGHT-squared (c2), Black's is DARK-squared (g7). They are on OPPOSITE colours. They never trade and never fight for the same square. The pawn's path runs e5-e6-e7-e8; the square e7 is DARK. Black's dark bishop parks on e7 (or any dark square guarding it) and blockades the pawn forever. The light bishop can never evict a dark bishop from a dark square. One bishop cannot fight on a colour it cannot touch.",
         "annotations": [
          {
           "kind": "circle",
@@ -486,7 +486,7 @@
        "conceptId": "opp-bishops",
        "coach": {
         "conceptId": "opp-bishops",
-        "text": "The drawing recipe in one picture: the defender BLOCKADES on the COLOUR OF HIS OWN BISHOP. Black's dark bishop steps to e7 and stands square in the pawn's path on a dark square. The pawn is frozen on e5 — it can never reach e8, because to pass it must cross e7, and the white light bishop can never challenge that dark blockade. The defender's whole job: bishop in front on its own colour, king nearby. With a single passer, that is enough to draw — almost always.",
+        "text": "The drawing recipe in one picture: the defender BLOCKADES on the COLOUR OF HIS OWN BISHOP. Black's dark bishop steps to e7 and stands square in the pawn's path on a dark square. The pawn is frozen on e5. It can never reach e8, because to pass it must cross e7, and the white light bishop can never challenge that dark blockade. The defender's whole job: bishop in front on its own colour, king nearby. With a single passer, that is enough to draw, almost always.",
         "annotations": [
          {
           "kind": "circle",
@@ -512,7 +512,7 @@
        "conceptId": "opp-bishops",
        "coach": {
         "conceptId": "opp-bishops",
-        "text": "Now how the draw BREAKS — and here it is, on the board. White has TWO passers, the a-pawn and the f-pawn, FAR apart, both on light squares the black dark bishop can never touch. The lone bishop and king simply cannot stop both: chase the a-pawn and the f-pawn runs; sit on the f-pawn and the a-pawn queens. The defender is stretched across the whole board and snaps. This is exactly what one passer could never do. The rule to carry away: ONE passer draws; TWO well-separated passers win. To win, open a SECOND front; to draw, keep the battle to one.",
+        "text": "Now how the draw BREAKS, and here it is, on the board. White has TWO passers, the a-pawn and the f-pawn, FAR apart, both on light squares the black dark bishop can never touch. The lone bishop and king simply cannot stop both: chase the a-pawn and the f-pawn runs; sit on the f-pawn and the a-pawn queens. The defender is stretched across the whole board and snaps. This is exactly what one passer could never do. The rule to carry away: ONE passer draws; TWO well-separated passers win. To win, open a SECOND front; to draw, keep the battle to one.",
         "annotations": [
          {
           "kind": "highlight",
@@ -548,14 +548,14 @@
     },
     {
      "kind": "guided",
-     "title": "Hold the draw — blockade on your colour",
+     "title": "Hold the draw, blockade on your colour",
      "steps": [
       {
        "fen": "8/8/2k5/2b1P3/4K3/8/2B5/8 b - - 0 1",
        "conceptId": "opp-bishops",
        "coach": {
         "conceptId": "opp-bishops",
-        "text": "Take the DEFENDER'S side now — you are Black, a pawn down, but this is a draw if you know the rule. The white e-pawn must travel e5-e6-e7-e8, and e7 is a DARK square. Step your dark-squared bishop in front of the pawn, onto its blockade square, where the light bishop can never drive it off. Find the move that stops the pawn cold.",
+        "text": "Take the DEFENDER'S side now. You are Black, a pawn down, but this is a draw if you know the rule. The white e-pawn must travel e5-e6-e7-e8, and e7 is a DARK square. Step your dark-squared bishop in front of the pawn, onto its blockade square, where the light bishop can never drive it off. Find the move that stops the pawn cold.",
         "annotations": [
          {
           "kind": "circle",
@@ -579,7 +579,7 @@
        ],
        "successLine": {
         "conceptId": "opp-bishops",
-        "text": "Be7 — the perfect blockade. The bishop plants itself on the dark square in the pawn's path; the pawn is frozen on e5 forever, because to advance it must cross e7, and a light bishop can never challenge a dark square. The king walks home and the game is a dead draw. THAT is the opposite-bishop miracle — a pawn down, yet impregnable.",
+        "text": "Be7: the perfect blockade. The bishop plants itself on the dark square in the pawn's path; the pawn is frozen on e5 forever, because to advance it must cross e7, and a light bishop can never challenge a dark square. The king walks home and the game is a dead draw. THAT is the opposite-bishop miracle, a pawn down, yet impregnable.",
         "annotations": [
          {
           "kind": "circle",
@@ -596,7 +596,7 @@
        },
        "retryLine": {
         "conceptId": "opp-bishops",
-        "text": "Blockade on your OWN colour. The pawn's path crosses the dark square e7 — march your dark bishop directly in front, onto e7, where the white light bishop can never touch it."
+        "text": "Blockade on your OWN colour. The pawn's path crosses the dark square e7: march your dark bishop directly in front, onto e7, where the white light bishop can never touch it."
        }
       }
      ]
@@ -605,7 +605,7 @@
      "kind": "puzzle",
      "title": "Cool-down: bishop endings",
      "intro": {
-      "text": "More from the bishop endings — some win, some are the famous draw. Read the board: is there a second front, or only one?"
+      "text": "More from the bishop endings: some win, some are the famous draw. Read the board: is there a second front, or only one?"
      },
      "puzzle": {
       "themes": [
@@ -620,15 +620,15 @@
   },
   {
    "id": "ch31-l4-knight-vs-pawns",
-   "title": "Knight vs. Pawns — the Short-Stepper at the Edge",
+   "title": "Knight vs. Pawns, the Short-Stepper at the Edge",
    "kind": "concept",
-   "summary": "A knight can blockade a passer from in front — but the rook-pawn is its nightmare, and a pawn on the seventh can outrun it.",
+   "summary": "A knight can blockade a passer from in front, but the rook-pawn is its nightmare, and a pawn on the seventh can outrun it.",
    "segments": [
     {
      "kind": "puzzle",
      "title": "Warm-up: knight endings",
      "intro": {
-      "text": "The knight is a curious blockader — superb in the centre, helpless at the rim. Three knight-ending warm-ups, then the rules of knight-versus-pawn."
+      "text": "The knight is a curious blockader. Superb in the centre, helpless at the rim. Three knight-ending warm-ups, then the rules of knight-versus-pawn."
      },
      "puzzle": {
       "themes": [
@@ -648,7 +648,7 @@
        "conceptId": "knight-vs-pawns",
        "coach": {
         "conceptId": "knight-vs-pawns",
-        "text": "Burn this in: a knight has the HARDEST time with a ROOK-PAWN. Why? A knight needs to lose a tempo or triangulate to adjust — but a knight CANNOT lose a single move, and at the edge of the board it has only half its squares. The a2-pawn is one step from a1. The knight on f3 cannot reach a1 or control it in time, and there is no room on the a-file's edge for the knight to manoeuvre. Against a centre pawn the knight copes; against the a- or h-pawn it is forever a step slow.",
+        "text": "Burn this in: a knight has the HARDEST time with a ROOK-PAWN. Why? A knight needs to lose a tempo or triangulate to adjust, but a knight CANNOT lose a single move, and at the edge of the board it has only half its squares. The a2-pawn is one step from a1. The knight on f3 cannot reach a1 or control it in time, and there is no room on the a-file's edge for the knight to manoeuvre. Against a centre pawn the knight copes; against the a- or h-pawn it is forever a step slow.",
         "annotations": [
          {
           "kind": "circle",
@@ -673,7 +673,7 @@
        "conceptId": "knight-vs-pawns",
        "coach": {
         "conceptId": "knight-vs-pawns",
-        "text": "A CENTRE or bishop-pawn is a different story — the knight handles it. The rule for stopping a runner: get the knight IN FRONT of the pawn or onto a square that controls its queening square, NOT chasing from behind. From g3 the knight hops to e2: from there it eyes c1, the pawn's promotion square. Now ...c2 changes nothing — e2 still covers c1, and ...c1=Q is simply taken. In front, controlling the queening square — that is how a knight stops a pawn.",
+        "text": "A CENTRE or bishop-pawn is a different story, the knight handles it. The rule for stopping a runner: get the knight IN FRONT of the pawn or onto a square that controls its queening square, NOT chasing from behind. From g3 the knight hops to e2: from there it eyes c1, the pawn's promotion square. Now ...c2 changes nothing: e2 still covers c1, and ...c1=Q is simply taken. In front, controlling the queening square: that is how a knight stops a pawn.",
         "annotations": [
          {
           "kind": "circle",
@@ -699,7 +699,7 @@
        "conceptId": "knight-vs-pawns",
        "coach": {
         "conceptId": "knight-vs-pawns",
-        "text": "And the knight's other weakness: a pawn on the SEVENTH, supported, can be unstoppable, because the knight cannot block the queening square AND stay safe at the same time. But notice the saving grace here — the knight sits right on d1, the queening square itself, a perfect blockade in front of the d2-pawn. A knight planted ON the square the pawn wants is the firmest blockade of all: the pawn can never advance, and the knight serenely holds the door shut. The rule: blockade in front, and never let an enemy pawn reach the seventh unopposed.",
+        "text": "And the knight's other weakness: a pawn on the SEVENTH, supported, can be unstoppable, because the knight cannot block the queening square AND stay safe at the same time. But notice the saving grace here: the knight sits right on d1, the queening square itself, a perfect blockade in front of the d2-pawn. A knight planted ON the square the pawn wants is the firmest blockade of all: the pawn can never advance, and the knight serenely holds the door shut. The rule: blockade in front, and never let an enemy pawn reach the seventh unopposed.",
         "annotations": [
          {
           "kind": "circle",
@@ -725,7 +725,7 @@
        "conceptId": "knight-vs-pawns",
        "coach": {
         "conceptId": "knight-vs-pawns",
-        "text": "Black's c-pawn wants to run to c1. Do not chase it from behind — leap the knight to the square that COVERS its queening square c1, so the pawn can advance but never promote. One move.",
+        "text": "Black's c-pawn wants to run to c1. Do not chase it from behind. Leap the knight to the square that COVERS its queening square c1, so the pawn can advance but never promote. One move.",
         "annotations": [
          {
           "kind": "circle",
@@ -749,7 +749,7 @@
        ],
        "successLine": {
         "conceptId": "knight-vs-pawns",
-        "text": "Ne2 — exactly. The knight now guards c1 and even attacks the c3-pawn. Push ...c2 and the knight still covers c1; ...c1=Q is met by Nxc1. The knight stops the pawn by controlling the queening square from in front, never by racing it from behind. Remember: a centre-pawn the knight can hold — only the rook-pawn truly defeats it.",
+        "text": "Ne2: exactly. The knight now guards c1 and even attacks the c3-pawn. Push ...c2 and the knight still covers c1; ...c1=Q is met by Nxc1. The knight stops the pawn by controlling the queening square from in front, never by racing it from behind. Remember: a centre-pawn the knight can hold, only the rook-pawn truly defeats it.",
         "annotations": [
          {
           "kind": "circle",
@@ -766,7 +766,7 @@
        },
        "retryLine": {
         "conceptId": "knight-vs-pawns",
-        "text": "Get in FRONT, not behind. The pawn queens on c1 — find the knight leap that controls c1. From g3, which jump lands on a square eyeing c1?"
+        "text": "Get in FRONT, not behind. The pawn queens on c1: find the knight leap that controls c1. From g3, which jump lands on a square eyeing c1?"
        }
       }
      ]
@@ -775,7 +775,7 @@
      "kind": "puzzle",
      "title": "Cool-down: knight endings",
      "intro": {
-      "text": "Knight endings from real games. The knight's strength is the fork and the blockade — find the move that uses it."
+      "text": "Knight endings from real games. The knight's strength is the fork and the blockade. Find the move that uses it."
      },
      "puzzle": {
       "themes": [
@@ -790,7 +790,7 @@
   },
   {
    "id": "ch31-l5-fortress",
-   "title": "The Fortress — When Material Cannot Win",
+   "title": "The Fortress: When Material Cannot Win",
    "kind": "concept",
    "summary": "The wrong bishop and the rook-pawn, and the locked wall: positions where an extra piece or pawn is powerless.",
    "segments": [
@@ -818,7 +818,7 @@
        "conceptId": "fortress",
        "coach": {
         "conceptId": "fortress",
-        "text": "The most famous fortress in chess. White has an extra bishop AND a passed h-pawn one step from queening — overwhelming, surely. But look at the colours. The pawn is a ROOK-PAWN; it promotes on h8, a DARK square. White's bishop is LIGHT. So White has the WRONG bishop: it can never control h8, and it can never drive the black king out of the corner. With the black king on h8, White cannot make a single bit of progress. An extra piece and pawn — and it is a DEAD DRAW.",
+        "text": "The most famous fortress in chess. White has an extra bishop AND a passed h-pawn one step from queening, overwhelming, surely. But look at the colours. The pawn is a ROOK-PAWN; it promotes on h8, a DARK square. White's bishop is LIGHT. So White has the WRONG bishop: it can never control h8, and it can never drive the black king out of the corner. With the black king on h8, White cannot make a single bit of progress. An extra piece and pawn, and it is a DEAD DRAW.",
         "annotations": [
          {
           "kind": "circle",
@@ -843,7 +843,7 @@
        "conceptId": "fortress",
        "coach": {
         "conceptId": "fortress",
-        "text": "Here is the heart of the draw. The pawn sits on h7, the black king on h8. White cannot bring his king to g6 — that would be STALEMATE, for Black has no move and is not in check. And the bishop, light-squared, can never cover the dark h8 to evict the king. So White is stuck: the king cannot approach without stalemating, and the wrong bishop can never help. A whole extra piece and pawn, frozen by a single dark square the bishop cannot touch. THAT is a fortress: material that cannot convert.",
+        "text": "Here is the heart of the draw. The pawn sits on h7, the black king on h8. White cannot bring his king to g6. That would be STALEMATE, for Black has no move and is not in check. And the bishop, light-squared, can never cover the dark h8 to evict the king. So White is stuck: the king cannot approach without stalemating, and the wrong bishop can never help. A whole extra piece and pawn, frozen by a single dark square the bishop cannot touch. THAT is a fortress: material that cannot convert.",
         "annotations": [
          {
           "kind": "circle",
@@ -868,7 +868,7 @@
        "conceptId": "fortress",
        "coach": {
         "conceptId": "fortress",
-        "text": "A fortress of a different kind — the locked wall across the WHOLE width of the board. Black is a whole bishop up, yet cannot win. Every pawn is jammed head-to-head — a4 against a5, c4 against c5, e4 against e5, g4 against g5 — so not one pawn can ever move or be captured, and not one can be taken without losing its neighbour's support. But heed the real condition: a wall alone is NOT enough. It holds only because it ALSO denies Black's king any way IN. The only gaps are the b-, d-, f- and h-files, and every entry square sits one step in front of a white pawn — b5, d5, f5, h5 are ALL guarded twice over by the a4/c4/e4/g4 pawns. The black king can never set foot on a single one of them, so it can never cross to the fourth rank. And to stop any king-and-bishop probing on the back ranks, White's king simply mirrors from d2, meeting the black king head-on. The extra bishop has no target and no breakthrough: there is simply no entry square. THAT is what makes a wall hold — no infiltration route, not merely locked pawns.",
+        "text": "A fortress of a different kind: the locked wall across the WHOLE width of the board. Black is a whole bishop up, yet cannot win. Every pawn is jammed head-to-head (a4 against a5, c4 against c5, e4 against e5, g4 against g5) so not one pawn can ever move or be captured, and not one can be taken without losing its neighbour's support. But heed the real condition: a wall alone is NOT enough. It holds only because it ALSO denies Black's king any way IN. The only gaps are the b-, d-, f- and h-files, and every entry square sits one step in front of a white pawn: b5, d5, f5, h5 are ALL guarded twice over by the a4/c4/e4/g4 pawns. The black king can never set foot on a single one of them, so it can never cross to the fourth rank. And to stop any king-and-bishop probing on the back ranks, White's king simply mirrors from d2, meeting the black king head-on. The extra bishop has no target and no breakthrough: there is simply no entry square. THAT is what makes a wall hold, no infiltration route, not merely locked pawns.",
         "annotations": [
          {
           "kind": "highlight",
@@ -907,14 +907,14 @@
     },
     {
      "kind": "guided",
-     "title": "Run to the corner — hold the draw",
+     "title": "Run to the corner: hold the draw",
      "steps": [
       {
        "fen": "6k1/7P/5K2/3B4/8/8/8/8 b - - 0 1",
        "conceptId": "fortress",
        "coach": {
         "conceptId": "fortress",
-        "text": "You are Black, down a bishop and a pawn, and the h7-pawn even gives check — but this is the wrong-bishop fortress, and it is a DRAW if you find the one right square. The pawn would queen on h8, a dark square the light bishop can never guard. There is only one king move that holds: step INTO the corner the wrong bishop cannot defend. Find it.",
+        "text": "You are Black, down a bishop and a pawn, and the h7-pawn even gives check, but this is the wrong-bishop fortress, and it is a DRAW if you find the one right square. The pawn would queen on h8, a dark square the light bishop can never guard. There is only one king move that holds: step INTO the corner the wrong bishop cannot defend. Find it.",
         "annotations": [
          {
           "kind": "circle",
@@ -938,7 +938,7 @@
        ],
        "successLine": {
         "conceptId": "fortress",
-        "text": "Kh8 — into the fortress. From the corner you simply shuffle out and back. White can never bring his king to g6 to help, because that is stalemate, and the light bishop can never cover the dark h8 to push you out. A bishop AND a pawn down — yet a dead draw, won by reaching the one corner the wrong bishop cannot touch. Had you played Kf8 instead, h8=Q would have queened with check and White wins — only the corner saves you.",
+        "text": "Kh8: into the fortress. From the corner you simply shuffle out and back. White can never bring his king to g6 to help, because that is stalemate, and the light bishop can never cover the dark h8 to push you out. A bishop AND a pawn down, yet a dead draw, won by reaching the one corner the wrong bishop cannot touch. Had you played Kf8 instead, h8=Q would have queened with check and White wins, only the corner saves you.",
         "annotations": [
          {
           "kind": "circle",
@@ -949,7 +949,7 @@
        },
        "retryLine": {
         "conceptId": "fortress",
-        "text": "Into the corner, not away from it. You are in check from the h7-pawn; Kf8 loses at once to h8=Q+. The only square that draws is h8 itself — the dark corner the white light bishop can never guard. Step there."
+        "text": "Into the corner, not away from it. You are in check from the h7-pawn; Kf8 loses at once to h8=Q+. The only square that draws is h8 itself. The dark corner the white light bishop can never guard. Step there."
        }
       }
      ]
@@ -958,7 +958,7 @@
      "kind": "puzzle",
      "title": "Cool-down: defensive resources",
      "intro": {
-      "text": "Hold the line. Each of these is about the precise drawing or saving move — a blockade, a fortress, a perpetual idea. Find it."
+      "text": "Hold the line. Each of these is about the precise drawing or saving move, a blockade, a fortress, a perpetual idea. Find it."
      },
      "puzzle": {
       "themes": [
@@ -1001,7 +1001,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "Remember the rook-pawn — the knight's nightmare. Here it is the BISHOP's friend. The a-pawn promotes on a8, a LIGHT square, and this is a light-squared bishop on d5: the RIGHT bishop. It already guards a8 from afar. So the pawn simply marches a6-a7-a8 and queens, the bishop covering the square the whole way. A knight could never escort a rook-pawn like this — it would lose tempi at the edge. The bishop's long reach turns the very pawn that defeats the knight into an easy win.",
+        "text": "Remember the rook-pawn, the knight's nightmare. Here it is the BISHOP's friend. The a-pawn promotes on a8, a LIGHT square, and this is a light-squared bishop on d5: the RIGHT bishop. It already guards a8 from afar. So the pawn simply marches a6-a7-a8 and queens, the bishop covering the square the whole way. A knight could never escort a rook-pawn like this. It would lose tempi at the edge. The bishop's long reach turns the very pawn that defeats the knight into an easy win.",
         "annotations": [
          {
           "kind": "circle",
@@ -1027,7 +1027,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "The bishop's second weapon: DOMINATION. The knight has strayed to the rim on a8 — and from that corner it has only two escape squares, b6 and c7. Look how they are sealed: the bishop on e5 covers c7 down the diagonal, and the king on c6 covers b6. The knight cannot move — it is trapped on the edge. Now the h-pawn marches and queens while the knight stands frozen; sweep it up with Bxa8 whenever you like. A bishop and king fence a rim knight off its few squares, and a single passer then decides. Never let your knight wander to the edge against a bishop.",
+        "text": "The bishop's second weapon: DOMINATION. The knight has strayed to the rim on a8, and from that corner it has only two escape squares, b6 and c7. Look how they are sealed: the bishop on e5 covers c7 down the diagonal, and the king on c6 covers b6. The knight cannot move. It is trapped on the edge. Now the h-pawn marches and queens while the knight stands frozen; sweep it up with Bxa8 whenever you like. A bishop and king fence a rim knight off its few squares, and a single passer then decides. Never let your knight wander to the edge against a bishop.",
         "annotations": [
          {
           "kind": "circle",
@@ -1070,7 +1070,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "Your light bishop on d5 already guards the queening square a8. Nothing can stop the pawn — so simply march it forward. Push the passer one step closer to its coronation.",
+        "text": "Your light bishop on d5 already guards the queening square a8. Nothing can stop the pawn, so simply march it forward. Push the passer one step closer to its coronation.",
         "annotations": [
          {
           "kind": "circle",
@@ -1090,7 +1090,7 @@
        ],
        "successLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "a7 — and next move a8=Q, the bishop guarding the square so the new queen cannot be prevented. The right bishop escorts a rook-pawn home with no trouble at all. Contrast the knight, which loses the same pawn to its own clumsiness at the edge. Match the bishop to the pawn's queening colour, and the win is trivial.",
+        "text": "a7, and next move a8=Q, the bishop guarding the square so the new queen cannot be prevented. The right bishop escorts a rook-pawn home with no trouble at all. Contrast the knight, which loses the same pawn to its own clumsiness at the edge. Match the bishop to the pawn's queening colour, and the win is trivial.",
         "annotations": [
          {
           "kind": "circle",
@@ -1107,7 +1107,7 @@
        },
        "retryLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "The bishop already covers a8 — you need only advance the pawn. Push it from a6 toward promotion."
+        "text": "The bishop already covers a8. You need only advance the pawn. Push it from a6 toward promotion."
        }
       }
      ]
@@ -1132,7 +1132,7 @@
   },
   {
    "id": "ch31-l7-practice-boss",
-   "title": "Putting It Together — Drill and Convert",
+   "title": "Putting It Together: Drill and Convert",
    "kind": "practice",
    "summary": "Drill the five ideas in mixed positions, then convert a superior minor-piece endgame against the engine.",
    "segments": [
@@ -1140,7 +1140,7 @@
      "kind": "puzzle",
      "title": "Warm-up: mixed minor-piece endings",
      "intro": {
-      "text": "Everything now, together. Three mixed minor-piece endings to warm the hands — read each: good or bad bishop, opposite colours, knight blockade, fortress?"
+      "text": "Everything now, together. Three mixed minor-piece endings to warm the hands. Read each: good or bad bishop, opposite colours, knight blockade, fortress?"
      },
      "puzzle": {
       "themes": [
@@ -1185,7 +1185,7 @@
        ],
        "successLine": {
         "conceptId": "opp-bishops",
-        "text": "The dark bishop stays on the long a1-h8 diagonal, eyeing g7 — the dark square the g-pawn must cross. The pawn is frozen, because a light-squared enemy can never evict a dark bishop from a dark square. (Note: g7 is the cleanest blockade; but do NOT play ...Bf6 — the pawn simply takes it with gxf6.) One passer, opposite bishops: a draw. You have the recipe now.",
+        "text": "The dark bishop stays on the long a1-h8 diagonal, eyeing g7. The dark square the g-pawn must cross. The pawn is frozen, because a light-squared enemy can never evict a dark bishop from a dark square. (Note: g7 is the cleanest blockade; but do NOT play ...Bf6. The pawn simply takes it with gxf6.) One passer, opposite bishops: a draw. You have the recipe now.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1197,7 +1197,7 @@
        },
        "retryLine": {
         "conceptId": "opp-bishops",
-        "text": "Blockade on your own colour. The pawn's path crosses the dark square g7 — plant your dark bishop on g7, or keep it anywhere on the a1-h8 diagonal that still controls g7. (Not f6 — gxf6 wins the bishop.)"
+        "text": "Blockade on your own colour. The pawn's path crosses the dark square g7: plant your dark bishop on g7, or keep it anywhere on the a1-h8 diagonal that still controls g7. (Not f6; gxf6 wins the bishop.)"
        }
       },
       {
@@ -1205,7 +1205,7 @@
        "conceptId": "knight-vs-pawns",
        "coach": {
         "conceptId": "knight-vs-pawns",
-        "text": "Black's e-pawn runs for e1. Don't chase from behind — leap the knight to the square that controls the queening square e1, stopping the pawn cold from in front.",
+        "text": "Black's e-pawn runs for e1. Don't chase from behind. Leap the knight to the square that controls the queening square e1, stopping the pawn cold from in front.",
         "annotations": [
          {
           "kind": "circle",
@@ -1224,7 +1224,7 @@
        ],
        "successLine": {
         "conceptId": "knight-vs-pawns",
-        "text": "Ng2 — the knight guards e1. The pawn can push to e2, but ...e1=Q is simply met by Nxe1. A centre-pawn the knight holds with ease by controlling the queening square from in front. Only the rook-pawn would have beaten it.",
+        "text": "Ng2: the knight guards e1. The pawn can push to e2, but ...e1=Q is simply met by Nxe1. A centre-pawn the knight holds with ease by controlling the queening square from in front. Only the rook-pawn would have beaten it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1236,7 +1236,7 @@
        },
        "retryLine": {
         "conceptId": "knight-vs-pawns",
-        "text": "Control the queening square e1. From f4 the knight hops to g2, which covers e1 — find that leap."
+        "text": "Control the queening square e1. From f4 the knight hops to g2, which covers e1. Find that leap."
        }
       },
       {
@@ -1244,7 +1244,7 @@
        "conceptId": "bishop-vs-knight",
        "coach": {
         "conceptId": "bishop-vs-knight",
-        "text": "The right bishop and a rook-pawn. Your light bishop on d5 already guards the queening square a8. Escort the pawn home — advance it.",
+        "text": "The right bishop and a rook-pawn. Your light bishop on d5 already guards the queening square a8. Escort the pawn home, advance it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1264,7 +1264,7 @@
        ],
        "successLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "a7, and a8=Q follows with the bishop guarding the square. Match the bishop to the queening colour and the rook-pawn — the knight's nemesis — becomes a free win.",
+        "text": "a7, and a8=Q follows with the bishop guarding the square. Match the bishop to the queening colour and the rook-pawn (the knight's nemesis) becomes a free win.",
         "annotations": [
          {
           "kind": "circle",
@@ -1275,7 +1275,7 @@
        },
        "retryLine": {
         "conceptId": "bishop-vs-knight",
-        "text": "The bishop already covers a8 — just push the pawn forward toward promotion."
+        "text": "The bishop already covers a8. Just push the pawn forward toward promotion."
        }
       }
      ]
@@ -1288,7 +1288,7 @@
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "bishop-vs-knight",
-      "text": "Now prove the chapter over the board. You are White, a clean pawn up with a bishop against a lone king — and crucially, pawns on BOTH wings. This is the bishop's dream: its long reach lets it support the queenside majority while still guarding the kingside. The plan is the chapter in miniature. Advance your b- and c-pawns to make a passer, using the bishop to cover its queening square from afar — the long-range escort no knight could manage. Bring the king up as the senior partner. Keep your pawns off your bishop's colour so it stays the good bishop, and never let Black blockade. King and bishop as one — convert it. Begin."
+      "text": "Now prove the chapter over the board. You are White, a clean pawn up with a bishop against a lone king, and crucially, pawns on BOTH wings. This is the bishop's dream: its long reach lets it support the queenside majority while still guarding the kingside. The plan is the chapter in miniature. Advance your b- and c-pawns to make a passer, using the bishop to cover its queening square from afar. The long-range escort no knight could manage. Bring the king up as the senior partner. Keep your pawns off your bishop's colour so it stays the good bishop, and never let Black blockade. King and bishop as one: convert it. Begin."
      }
     }
    ]
@@ -1319,7 +1319,7 @@
      "A bishop of the same colour as the enemy's; avoid trading"
     ],
     "answerIndex": 1,
-    "explain": "A bad bishop is blocked by its own pawns sitting on its colour — a 'tall pawn'. Fix the enemy pawns on their bishop's colour to make it bad, and keep your own pawns off your bishop's colour. The bad bishop abandons a whole colour complex to the enemy king."
+    "explain": "A bad bishop is blocked by its own pawns sitting on its colour, a 'tall pawn'. Fix the enemy pawns on their bishop's colour to make it bad, and keep your own pawns off your bishop's colour. The bad bishop abandons a whole colour complex to the enemy king."
    },
    {
     "kind": "mc",
@@ -1338,12 +1338,12 @@
     "prompt": "A knight is defending against a passed pawn. Which pawn is its worst nightmare, and how should it blockade?",
     "options": [
      "A central pawn; blockade from behind",
-     "The rook-pawn (a- or h-pawn); the knight loses tempi at the edge — blockade other pawns from IN FRONT, controlling the queening square",
+     "The rook-pawn (a- or h-pawn); the knight loses tempi at the edge. Blockade other pawns from IN FRONT, controlling the queening square",
      "A bishop-pawn; blockade from the side",
      "Any pawn on the fourth rank; chase it from behind"
     ],
     "answerIndex": 1,
-    "explain": "A knight cannot lose a tempo and has only half its squares at the rim, so the rook-pawn defeats it. Against other pawns it copes by getting in front and controlling the queening square — never chasing from behind."
+    "explain": "A knight cannot lose a tempo and has only half its squares at the rim, so the rook-pawn defeats it. Against other pawns it copes by getting in front and controlling the queening square, never chasing from behind."
    },
    {
     "kind": "play",
@@ -1353,7 +1353,7 @@
      "g8h7",
      "g8a2"
     ],
-    "explain": "The b-pawn queens on b1, a light square. Swing the bishop onto the long b1-h7 diagonal — Bh7 (or Ba2) controls b1 in a single move, so ...b1=Q is simply captured. Any other move and ...b1=Q queens and wins. The long-range stop no knight could match."
+    "explain": "The b-pawn queens on b1, a light square. Swing the bishop onto the long b1-h7 diagonal. Bh7 (or Ba2) controls b1 in a single move, so ...b1=Q is simply captured. Any other move and ...b1=Q queens and wins. The long-range stop no knight could match."
    },
    {
     "kind": "judge",
@@ -1361,7 +1361,7 @@
     "fen": "8/7P/8/8/5k2/2B5/8/4K3 b - - 0 1",
     "lastMoveUci": "h6h7",
     "verdict": "correct",
-    "explain": "Correct — and winning. The h-pawn queens on h8, a DARK square, and the c3-bishop is dark-squared: the RIGHT bishop, guarding h8 down the long diagonal. So the pawn marches home, h8=Q with the bishop covering the square. Match the bishop to the queening colour and a rook-pawn — the knight's nemesis — wins itself. (A LIGHT bishop here would be the wrong one, and it would be a draw.)"
+    "explain": "Correct, and winning. The h-pawn queens on h8, a DARK square, and the c3-bishop is dark-squared: the RIGHT bishop, guarding h8 down the long diagonal. So the pawn marches home, h8=Q with the bishop covering the square. Match the bishop to the queening colour and a rook-pawn (the knight's nemesis) wins itself. (A LIGHT bishop here would be the wrong one, and it would be a draw.)"
    },
    {
     "kind": "play",
@@ -1370,7 +1370,7 @@
     "solutionUci": [
      "b8a8"
     ],
-    "explain": "The a-pawn queens on a8, a LIGHT square the white dark-squared bishop can never guard — the wrong bishop. The lone saving move is Ka8, into the corner: White's king cannot approach without stalemating, and the bishop can never evict you. Kc8 instead loses at once to a8=Q+. A piece and a pawn down, yet a dead draw — by reaching the one corner the wrong bishop cannot touch."
+    "explain": "The a-pawn queens on a8, a LIGHT square the white dark-squared bishop can never guard, the wrong bishop. The lone saving move is Ka8, into the corner: White's king cannot approach without stalemating, and the bishop can never evict you. Kc8 instead loses at once to a8=Q+. A piece and a pawn down, yet a dead draw. By reaching the one corner the wrong bishop cannot touch."
    },
    {
     "kind": "judge",
@@ -1378,7 +1378,7 @@
     "fen": "8/2b1k3/2P5/3K4/8/8/8/5B2 w - - 0 1",
     "lastMoveUci": "f4c7",
     "verdict": "correct",
-    "explain": "Correct — Bc7 blockades the pawn on the dark square c7, square in its path. With opposite bishops the white light-squared bishop can never evict it, so the pawn is frozen and the game is a draw. Blockade on your own colour: the model defensive move."
+    "explain": "Correct: Bc7 blockades the pawn on the dark square c7, square in its path. With opposite bishops the white light-squared bishop can never evict it, so the pawn is frozen and the game is a draw. Blockade on your own colour: the model defensive move."
    },
    {
     "kind": "judge",
@@ -1386,7 +1386,7 @@
     "fen": "8/3k2b1/P7/5P2/2K5/3B4/8/8 b - - 0 1",
     "lastMoveUci": "a5a6",
     "verdict": "correct",
-    "explain": "Correct — and winning. With two passers far apart, the lone dark bishop cannot stop both: it must chase one while the other runs. Advancing the a-pawn opens the second front, and Black is stretched to breaking point. One passer would draw; two well-separated passers win."
+    "explain": "Correct, and winning. With two passers far apart, the lone dark bishop cannot stop both: it must chase one while the other runs. Advancing the a-pawn opens the second front, and Black is stretched to breaking point. One passer would draw; two well-separated passers win."
    },
    {
     "kind": "judge",
@@ -1394,7 +1394,7 @@
     "fen": "8/8/4K3/8/2k5/3p4/5N2/8 b - - 0 1",
     "lastMoveUci": "h3f2",
     "verdict": "correct",
-    "explain": "Correct — Nf2 stops the pawn from IN FRONT by controlling the queening square d1. The pawn may reach d2, but ...d1=Q is met by Nxd1. A centre-pawn the knight holds with ease this way; only the rook-pawn, where the knight loses tempi at the rim, would have outrun it."
+    "explain": "Correct: Nf2 stops the pawn from IN FRONT by controlling the queening square d1. The pawn may reach d2, but ...d1=Q is met by Nxd1. A centre-pawn the knight holds with ease this way; only the rook-pawn, where the knight loses tempi at the rim, would have outrun it."
    },
    {
     "kind": "judge",
@@ -1402,7 +1402,7 @@
     "fen": "2b3k1/5p2/4p1p1/1P1p4/3P1P1P/6K1/8/5B2 b - - 0 1",
     "lastMoveUci": "b4b5",
     "verdict": "correct",
-    "explain": "Correct — this wins. The bad c8-bishop is glued to defending its own light pawns; opening a second front with b5 gives it a job it cannot also do. It must run to the queenside to stop the passer, and the white king and good bishop harvest the kingside. A bad bishop cannot cover two wings at once."
+    "explain": "Correct: this wins. The bad c8-bishop is glued to defending its own light pawns; opening a second front with b5 gives it a job it cannot also do. It must run to the queenside to stop the passer, and the white king and good bishop harvest the kingside. A bad bishop cannot cover two wings at once."
    },
    {
     "kind": "judge",
@@ -1410,7 +1410,7 @@
     "fen": "2k5/P7/1K6/4B3/8/8/8/8 w - - 1 2",
     "lastMoveUci": "b8c8",
     "verdict": "blunder",
-    "explain": "A blunder that loses on the spot. The only draw was Ka8, staying in the corner the wrong (dark) bishop can never contest — there White can never approach without stalemating. By stepping to c8, Black allows a8=Q+, promoting with check, and White wins. A dead draw thrown away in one move."
+    "explain": "A blunder that loses on the spot. The only draw was Ka8, staying in the corner the wrong (dark) bishop can never contest. There White can never approach without stalemating. By stepping to c8, Black allows a8=Q+, promoting with check, and White wins. A dead draw thrown away in one move."
    },
    {
     "kind": "judge",
@@ -1418,7 +1418,7 @@
     "fen": "7n/8/5K2/P2B4/1k6/8/8/8 w - - 0 1",
     "lastMoveUci": "g6h8",
     "verdict": "blunder",
-    "explain": "A blunder that throws away a holdable game. With the knight active (it could have stayed on g6 or jumped to f4) Black coordinates king and knight to corral the a-pawn and draw. By burying the knight on h8 it strands itself: from the corner it has only f7 and g6, and both are sealed — the d5-bishop and the f6-king cover f7, the king covers g6. The knight is frozen, so the a-pawn marches a6-a7-a8 (the bishop guarding a8 the whole way) and queens. Never let a knight wander to the edge against a bishop."
+    "explain": "A blunder that throws away a holdable game. With the knight active (it could have stayed on g6 or jumped to f4) Black coordinates king and knight to corral the a-pawn and draw. By burying the knight on h8 it strands itself: from the corner it has only f7 and g6, and both are sealed. The d5-bishop and the f6-king cover f7, the king covers g6. The knight is frozen, so the a-pawn marches a6-a7-a8 (the bishop guarding a8 the whole way) and queens. Never let a knight wander to the edge against a bishop."
    }
   ]
  },

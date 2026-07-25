@@ -130,7 +130,7 @@
 
 /* Flat 2-color board themes (override chessground's embedded brown SVG).
    A conic-gradient tile = a 2x2 checker; background-size 25% repeats it into the
-   full 8x8 grid. (light at top-left = a8, dark at a1 — standard orientation.) */
+   full 8x8 grid. (light at top-left = a8, dark at a1, standard orientation.) */
 .board-wrap[class*='board-'] cg-board {
   background-color: var(--sq-light);
   background-image: conic-gradient(
@@ -164,7 +164,7 @@
   bottom: auto;
   top: 0;
 }
-/* Neutral state: engine off or before the first line — no number, dimmed. */
+/* Neutral state: engine off or before the first line, no number, dimmed. */
 .eval-bar.eval-empty {
   opacity: 0.5;
 }
@@ -374,7 +374,7 @@
 }
 
 /* ============================================================
-   Move list — chess.com-style notation TABLE (panels/MoveList.tsx).
+   Move list, chess.com-style notation TABLE (panels/MoveList.tsx).
    Number gutter + White column + Black column, one row per full
    move; analysis variations interrupt the table as indented inline
    blocks under the row where they branch. Serves Play, Analysis
@@ -506,7 +506,7 @@
   user-select: none;
 }
 
-/* Legacy inline move tokens — now used ONLY by the Openings trainer's
+/* Legacy inline move tokens: now used ONLY by the Openings trainer's
    "Line" panel (OpeningsView), which flows moves as inline text. */
 .move {
   display: inline;

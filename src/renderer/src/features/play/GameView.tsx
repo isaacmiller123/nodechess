@@ -33,7 +33,7 @@ export interface GameViewBanner {
   outcomeForUser: 'win' | 'loss' | 'draw'
   delta?: number
   newRating?: number
-  /** Post-game accuracy % (0–100) — reserved teaser slot on the banner. */
+  /** Post-game accuracy % (0–100). Reserved teaser slot on the banner. */
   accuracy?: number
   /** Overrides the banner headline (used by Over-the-board, where there is no
    *  "you": e.g. "White wins"). Absent = the default You won/lost/Draw copy. */
@@ -43,7 +43,7 @@ export interface GameViewBanner {
 export interface GameViewProps {
   /** Over-the-board (two humans on one screen): the board is movable for the
    *  side to MOVE (not a fixed `userColor`), and the Coach panel is hidden.
-   *  Everything else — chips, clocks, takeback, banner — is driven by the props
+   *  Everything else (chips, clocks, takeback, banner) is driven by the props
    *  the caller already maps to board sides. Defaults to false (vs engine). */
   otb?: boolean
   fen: string
@@ -97,7 +97,7 @@ export interface GameViewProps {
   hintsEnabled: boolean
   /** Online live game: the "New game" control is a local-play affordance that
    *  would abandon the session, so it is hidden while the game is undecided
-   *  (Leave — with its own confirm — is the exit). Post-banner is unaffected
+   *  (Leave, with its own confirm, is the exit). Post-banner is unaffected
    *  (the banner owns New game / Rematch). Defaults to false (local play). */
   onlineLive?: boolean
   /** Freeze board input regardless of turn (online: peer away / left). The
@@ -201,7 +201,7 @@ export function GameView({
     onResign()
   }
 
-  // Coach "was that move good?" must judge the USER's move — not the engine's
+  // Coach "was that move good?" must judge the USER's move. Not the engine's
   // instant reply (which would be tree.current). Walk back to the most recent
   // move made by the user's color (white = odd ply, black = even ply).
   const userIsWhite = userColor === 'white'
@@ -228,7 +228,7 @@ export function GameView({
     <div className={`play-view${deepThink && thinking && !over ? ' is-deepthink' : ''}`}>
       <div className="play-board-area">
         <PlayerChip
-          // OTB: the top player is a human too — render a user chip (no engine
+          // OTB: the top player is a human too. Render a user chip (no engine
           // avatar / thinking dots). vs engine/persona keeps the engine chip.
           kind={otb ? 'user' : 'engine'}
           name={opponentName}
@@ -341,7 +341,7 @@ export function GameView({
                     <Flag size={14} /> Resign
                   </button>
                   {/* Online live game: no in-game "New game" (it would abandon the
-                      session with no result — the online Leave path handles exit
+                      session with no result, and the online Leave path handles exit
                       with a confirm). Local play keeps it. */}
                   {!onlineLive && (
                     <button className="btn ghost play-newgame" onClick={onNewGame} title="New game">

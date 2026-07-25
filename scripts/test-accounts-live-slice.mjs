@@ -1,4 +1,4 @@
-// THE A6 M1 SLICE PROOF — one signed, witnessed, RATED game lands in BOTH
+// THE A6 M1 SLICE PROOF: one signed, witnessed, RATED game lands in BOTH
 // players' chains, headless over MockFabric (spec §3 entanglement, §4 write
 // lease, §6 ladders). This is Lane E's acceptance test: the vertical slice of
 // the §1 acceptance test at the smallest scale, with injected fakes instead of
@@ -7,9 +7,9 @@
 //   node scripts/test-accounts-live-slice.mjs
 //
 // The cast (all on ONE in-process MockFabric bus, test-accounts-fabric style):
-//   • host  (white) — a fresh decentralized account, signed in
-//   • guest (black) — a fresh decentralized account, signed in
-//   • witness       — a third machine running witnessServe (NEITHER player)
+//   • host  (white): a fresh decentralized account, signed in
+//   • guest (black): a fresh decentralized account, signed in
+//   • witness:        a third machine running witnessServe (NEITHER player)
 //
 // The flow, end to end, exactly as the live app will run it:
 //   1. host + guest each publish a SIGNED pre-game snapshot; each verifies the
@@ -17,7 +17,7 @@
 //      FRESH accounts ⇒ each snapshot correctly OMITS its checkpoint (§6 young
 //      -opponent seeds path).
 //   2. a real WitnessCore (the pure §3 brain) follows the signed move chain and
-//      signs the terminal stream — the `wstream` both players embed.
+//      signs the terminal stream, the `wstream` both players embed.
 //   3. each player runs buildAndPublishSegment (segmentWriter.ts): gather a
 //      write lease from the canonical witness set (1-witness ⇒ threshold floors
 //      to 1), append the `segment` under it with the witness's non-player
@@ -69,7 +69,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -90,8 +90,8 @@ async function run(M) {
   const seedBytes = (b) => Uint8Array.from({ length: 32 }, (_, i) => (b * 7 + i) & 0xff)
 
   // A player: fresh account chain (genesis + device-0 cert) + a fabric endpoint.
-  // Signs moves + its segment with the certified DEVICE key, identifies by ROOT
-  // — exactly the deviceSigningKey() shape Lane C threads into mp.
+  // Signs moves + its segment with the certified DEVICE key, identifies by ROOT.
+  // Exactly the deviceSigningKey() shape Lane C threads into mp.
   function makePlayer(fabric, seedRoot, seedDev, name) {
     const root = kp(seedRoot)
     const device = kp(seedDev)
@@ -206,7 +206,7 @@ async function run(M) {
   console.log('\n· 4. each player writes + witnesses its own segment (segmentWriter.ts) …')
   // ==========================================================================
   // The witness runner (Lane D) seeds each player's genesis head into its cache
-  // from the pre-game heads — simulated here so the witness can admit the append.
+  // from the pre-game heads: simulated here so the witness can admit the append.
   await witness.handle.seedHead(host.root.pubB, { id: A.witnessedHeadOf(host.chain.events).id, height: 0 })
   await witness.handle.seedHead(guest.root.pubB, { id: A.witnessedHeadOf(guest.chain.events).id, height: 0 })
 
@@ -253,7 +253,7 @@ async function run(M) {
   ok(hostAtts.length >= 1 && hostAtts.every((a) => W.verifyAttestation(a, A.eventId(hostRes.event.body))), 'the host segment carries ≥1 valid witness attestation')
   ok((guestRes.event.wit ?? []).length >= 1, 'the guest segment carries ≥1 valid witness attestation')
 
-  // The a4 fold moved BOTH ladders off the 1200 seed — winner up, loser down.
+  // The a4 fold moved BOTH ladders off the 1200 seed. Winner up, loser down.
   const hostBlitz = hostRes.fold.fold.ladders[LADDER]
   const guestBlitz = guestRes.fold.fold.ladders[LADDER]
   ok(hostBlitz && hostBlitz.n === 1, 'host Blitz ladder folded exactly 1 rated game')
@@ -268,7 +268,7 @@ async function run(M) {
   ok(saved.get(host.root.pubB) === hostRes.chain && saved.get(guest.root.pubB) === guestRes.chain, 'both chains were persisted through the injected saveChain port')
 
   // ==========================================================================
-  console.log('\n· 6. honest degradation — no reachable witness ⇒ insufficient-witnesses (C-10) …')
+  console.log('\n· 6. honest degradation, no reachable witness ⇒ insufficient-witnesses (C-10) …')
   // ==========================================================================
   const barren = new W.MockFabric() // a fabric where NO witness ever announced
   const soloEp = barren.endpoint(host.nodeId)
@@ -281,10 +281,10 @@ async function run(M) {
     wts: NOW,
   })
   eq(degraded.ok, false, 'with no witness reachable the writer does NOT append')
-  eq(degraded.reason, 'insufficient-witnesses', 'it degrades honestly (never a dead grant) — the rated-play boundary')
+  eq(degraded.reason, 'insufficient-witnesses', 'it degrades honestly (never a dead grant), the rated-play boundary')
 
   // ==========================================================================
-  console.log('\n· 7. tamper boundaries — snapshot signature + opp binding …')
+  console.log('\n· 7. tamper boundaries, snapshot signature + opp binding …')
   // ==========================================================================
   const goodSnap = pregame.signPreGameSnapshot(
     { game: GAME, root: host.root.pubB, key: host.device.pubB, opp: guest.root.pubB, head: A.witnessedHeadOf(host.chain.events).id, height: 0, profile: { name: 'Hosty' }, ts: NOW },

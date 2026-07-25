@@ -1,7 +1,7 @@
-// A2 fabric — the CLIENT / WITNESS / MEMBER protocol flows over a FabricEndpoint
+// A2 fabric: the CLIENT / WITNESS / MEMBER protocol flows over a FabricEndpoint
 // (spec §1 PIN, §4 write lease + witnessed events). This module COMPOSES the
 // built pieces (attest.ts, lease.ts, cache.ts, pin.ts, oprf.ts) into the wire
-// choreography; it introduces NO new crypto — every signature, hash, blind,
+// choreography; it introduces NO new crypto, every signature, hash, blind,
 // evaluation, and verdict is one of the primitives those modules already own.
 //
 // GENERATION paths (a client requesting a lease, blinding a PIN) take injected
@@ -85,7 +85,7 @@ import type {
 } from './types'
 
 // ---------------------------------------------------------------------------
-// Wire helpers — the transport moves CanonicalObjects; these cast at the seam.
+// Wire helpers: the transport moves CanonicalObjects; these cast at the seam.
 // ---------------------------------------------------------------------------
 
 function asMsg<T>(v: T): CanonicalObject {
@@ -123,7 +123,7 @@ function onSafe(
   })
 }
 
-/** The `fuse-check` handler — identical for witnesses and members: return the
+/** The `fuse-check` handler, identical for witnesses and members: return the
  * held fuse record + whether it is active on the responder's own clock. */
 function serveFuseCheck(fabric: FabricEndpoint, fuseOf: (root: B64u) => FuseRecord | null, wts: () => number): void {
   onSafe(fabric, 'fuse-check', async (_from, payload) => {
@@ -134,7 +134,7 @@ function serveFuseCheck(fabric: FabricEndpoint, fuseOf: (root: B64u) => FuseReco
 }
 
 // ---------------------------------------------------------------------------
-// PIN success proof (pinKey-signed) — a composition of ed25519 over cjson bytes,
+// PIN success proof (pinKey-signed), a composition of ed25519 over cjson bytes,
 // NOT a new primitive.
 // ---------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ function verifyPinSuccess(sig: B64u, root: B64u, evalNonce: B64u, wts: number, p
 }
 
 // ===========================================================================
-// WITNESS — serves lease-grant / attest / cosign-ckpt / head / fuse-check.
+// WITNESS: serves lease-grant / attest / cosign-ckpt / head / fuse-check.
 // ===========================================================================
 
 export interface WitnessIdentity {
@@ -179,28 +179,28 @@ export interface WitnessDeps {
   timeWindowMs: number
   /** Full lease validity check (threshold + eligibility over the canonical set).
    * When a witness holds the subject's chain facts (via A3 replication) it wires
-   * verifyLease here — chainauth.makeChainLeaseCheck builds it (A4 seam 2);
+   * verifyLease here, chainauth.makeChainLeaseCheck builds it (A4 seam 2);
    * without it the witness enforces only the context-free ≥1-valid-grant floor
    * in admitEvent. */
   verifyLease?: (lease: Lease) => boolean
-  /** A4 seam 4 — authenticated device ownership at grant: the subject's
+  /** A4 seam 4, authenticated device ownership at grant: the subject's
    * chain-derived device facts (chainauth.deviceOwnershipFromChain over the
    * A3-replicated chain), or null when the witness holds no verified chain for
    * the root. With facts, a grant is signed only for a CERTIFIED, UNREVOKED
    * child of the root (revocation wins); without, the A2 attribution-only
-   * behavior remains and the response is LABELED path:'attributed' — never a
+   * behavior remains and the response is LABELED path:'attributed', never a
    * silent blind-sign upgrade. */
   ownershipOf?: (root: B64u) => DeviceOwnership | null | Promise<DeviceOwnership | null>
-  /** A5-17 (A7) — the witness's view of the subject's highest RATED-game
+  /** A5-17 (A7): the witness's view of the subject's highest RATED-game
    * ordinal on a ladder (from its A3-replicated chain), used by the
    * salt-grant signing-time discipline. Absent ⇒ the witness refuses to
-   * serve salt grants at all (fail closed — the same deliberate-thinness
+   * serve salt grants at all (fail closed, the same deliberate-thinness
    * class as verifyLease/ownershipOf: the embedder wires the chain view). */
   ratedOrdinalOf?: (root: B64u, ladder: string) => number | null | Promise<number | null>
 }
 
 export interface WitnessServeHandle {
-  /** Seed the cached head for a root (bootstrapping from gossip — e.g. the
+  /** Seed the cached head for a root (bootstrapping from gossip, e.g. the
    * genesis head learned when the account was first witnessed). */
   seedHead(root: B64u, head: HeadRef): Promise<void>
   headOf(root: B64u): Promise<HeadRef | null>
@@ -224,7 +224,7 @@ export function witnessServe(
 
   // A4 seam 4 (closes the A3-residual blind-sign): with deps.ownershipOf wired
   // to the A3-replicated chain, the grantor AUTHENTICATES the requesting device
-  // before signing — a certified, unrevoked child of the root (revocation wins,
+  // before signing, a certified, unrevoked child of the root (revocation wins,
   // §1). For roots the witness holds no verified chain for, the A2 behavior is
   // kept EXACTLY (fuse check, then sign) but the response carries
   // path:'attributed' so the degradation is surfaced, never silent; the
@@ -246,15 +246,15 @@ export function witnessServe(
   onSafe(fabric, 'lease-grant', serveGrant)
   onSafe(fabric, 'lease-renew', serveGrant)
 
-  // A5-17 CLOSED at the witness (A7) — salt-grant SIGNING-TIME DISCIPLINE.
+  // A5-17 CLOSED at the witness (A7): salt-grant SIGNING-TIME DISCIPLINE.
   // A witness signs window w's salt grant ONLY when: (a) it has a chain view
-  // (deps.ratedOrdinalOf wired — else refuse everything, fail closed); (b) its
+  // (deps.ratedOrdinalOf wired, else refuse everything, fail closed); (b) its
   // view shows the subject's rated ordinal on that ladder at ≥ w·K−1, i.e. the
   // window-CLOSING game is already on-chain (§7b: the salt is uncomputable
   // before the games it perturbs); (c) the request carries the post-game
-  // anchor (A5-18 consensus-path duty — anchorless grants are refused, so a
+  // anchor (A5-18 consensus-path duty, anchorless grants are refused, so a
   // pre-signing witness has nothing valid to pre-sign); (d) no active fuse.
-  // The grant's wts is the WITNESS's own clock at signing — window-close
+  // The grant's wts is the WITNESS's own clock at signing, window-close
   // witnessed time, never the requester's claim.
   onSafe(fabric, 'salt-grant', async (_from, payload) => {
     const { root, ladder, window: windowIndex, anchor } = fromMsg<{
@@ -312,7 +312,7 @@ export function witnessServe(
     })
     const tail = run.catch(() => undefined)
     attestChain.set(root, tail)
-    // Evict once settled if still the tail — the map holds only in-flight chains,
+    // Evict once settled if still the tail, the map holds only in-flight chains,
     // so an unauthenticated attest flood over many roots can't grow it unbounded.
     void tail.then(() => {
       if (attestChain.get(root) === tail) attestChain.delete(root)
@@ -351,7 +351,7 @@ export function witnessServe(
 }
 
 // ===========================================================================
-// MEMBER — serves pin-provision / pin-eval / pin-prove / pin-report /
+// MEMBER: serves pin-provision / pin-eval / pin-prove / pin-report /
 // pin-handoff / fuse-check for the tOPRF committee.
 // ===========================================================================
 
@@ -364,15 +364,15 @@ export interface MemberIdentity {
 export interface MemberDeps {
   wts: () => number
   fuseOf?: (root: B64u) => FuseRecord | null
-  /** RNG for the DLEQ nonce when a member proves its partial honest. Optional —
+  /** RNG for the DLEQ nonce when a member proves its partial honest. Optional,
    * without it, members prove deterministically. */
   dleqRng?: Rng
   /** Max age (ms, member clock) a `pin-prove` SUCCESS PROOF's wts may be from now
-   * (§1 "within the session window"). Default 5 min — generous for clock skew,
+   * (§1 "within the session window"). Default 5 min, generous for clock skew,
    * still bounded. This gates ONLY the success proof; the fuse trippedWts window
    * is the §4 witnessed-time window (PARAMS_A2.timeWindowMs), independent of this. */
   sessionWindowMs?: number
-  /** A4 seam 3 — chain-authoritative PIN anchoring: resolve the subject's
+  /** A4 seam 3, chain-authoritative PIN anchoring: resolve the subject's
    * NEWEST verified 'pin' anchor (chainauth.verifiedPinAnchor over a chain the
    * member holds via A3 replication, or resolved through the viewer/overlay).
    * null ⇒ no chain resolvable ⇒ the A2 pinKey-gated co-signature gate remains
@@ -399,25 +399,25 @@ interface MemberShare {
   scalar: bigint
   commitment: B64u
   pinPub: B64u
-  /** id of the PIN record this share was provisioned under — binds pin-fuse-sign
+  /** id of the PIN record this share was provisioned under, binds pin-fuse-sign
    * to the member's OWN provisioned context (a fuse for a record it doesn't hold
    * a share under can't co-opt its signature). */
   pinRecord: EventId
   /** The record's committee (A4 seam 1: whose counter reports count). Empty
-   * for a bare direct provision — then convergence adds nothing and every
+   * for a bare direct provision, then convergence adds nothing and every
    * count-bearing decision reduces to the A2 own-counter behavior. */
   committee: NodeId[]
   /** Provision generation for this root: 0 at first enrollment, +1 per
    * accepted handoff re-provision (tags this member's counter reports). */
   gen: number
   counter: PinCounterState
-  /** A4 seam 1 — converged gossip memory: the (gen, fails)-maximal VERIFIED
+  /** A4 seam 1, converged gossip memory: the (gen, fails)-maximal VERIFIED
    * signed counter report per committee peer. Bounded by committee size. */
   reports: Map<NodeId, SignedCounterReport>
   /** Misbehavior evidence collected while merging (regressing signed pairs). */
   evidence: CounterRegression[]
   /** Recent issued eval nonces (bounded). A nonce is REMOVED on a proven success,
-   * so its presence means "issued and not yet spent" — one set covers both replay
+   * so its presence means "issued and not yet spent", one set covers both replay
    * protection and the rate window, with no unbounded `succeeded` set. */
   issued: Set<B64u>
   evalCount: number
@@ -438,7 +438,7 @@ export interface MemberServeHandle {
     opts?: { committee?: readonly NodeId[]; gen?: number },
   ): void
   counter(root: B64u): PinCounterState
-  /** A4 seam 1 — one gossip round: exchange signed counter reports with every
+  /** A4 seam 1, one gossip round: exchange signed counter reports with every
    * committee peer ('pin-counter-sync'), merge the verified responses, and
    * return this member's CONVERGED effective count for the root. Unreachable
    * peers are skipped (their last merged report still counts). */
@@ -472,14 +472,14 @@ export function memberServe(
     )
 
   /** Advertised-key join from TRUSTED presence (the same basis pin-provision
-   * uses for the old committee — a node can only announce for a nodeId derived
+   * uses for the old committee, a node can only announce for a nodeId derived
    * from a root it controls, so it cannot spoof a peer's key binding). */
   const advertisedKey = (w: NodeId): B64u | undefined => fabric.directory().nodes.get(w)?.body.key
 
   /** Verify + merge incoming reports for a share: current-committee members
    * only, signature under the advertised key, monotonic (gen, fails) merge;
    * regressing signed pairs are retained as misbehavior evidence. Junk merges
-   * nothing — a requester can only ever RAISE the converged count with real
+   * nothing, a requester can only ever RAISE the converged count with real
    * signatures, or lower nothing by omission (conservative both ways). */
   const mergeIncoming = (root: B64u, s: MemberShare, incoming: unknown): void => {
     if (!Array.isArray(incoming) || s.committee.length === 0) return
@@ -497,7 +497,7 @@ export function memberServe(
   }
 
   /** The member's converged effective count: never below its OWN monotonic
-   * counter (ground truth — exactly the A2 floor), lifted by the converged
+   * counter (ground truth, exactly the A2 floor), lifted by the converged
    * statistic over the merged verified report set (counters.ts header math). */
   const convergedOf = (root: B64u, s: MemberShare): number => {
     const own = memberFails(s.counter)
@@ -511,13 +511,13 @@ export function memberServe(
       newRecord: SignedPinRecord
       i: number
       share: B64u
-      /** Re-provision (handoff) bundle — REQUIRED iff newRecord.payload.prev is set. */
+      /** Re-provision (handoff) bundle, REQUIRED iff newRecord.payload.prev is set. */
       oldRecord?: SignedPinRecord
       handoff?: HandoffAuth
     }>(payload)
 
     // 1. The record must be genuinely root-signed + well-formed. (A password
-    //    thief HOLDS the root key, so a root signature alone is NOT enough — the
+    //    thief HOLDS the root key, so a root signature alone is NOT enough, the
     //    already-provisioned + handoff gates below are what stop him.)
     if (!verifyPinRecord(p.newRecord).ok) return asMsg({ error: 'bad-pin-record' })
     const nr = p.newRecord.payload
@@ -525,7 +525,7 @@ export function memberServe(
     const newId = pinRecordId(nr)
 
     // 2. This member must actually be listed at index i, and its share must lie
-    //    on the published commitment (Feldman) — else it cannot serve correct
+    //    on the published commitment (Feldman), else it cannot serve correct
     //    partials and would only self-DoS.
     if (!Number.isInteger(p.i) || p.i < 1 || p.i > nr.committee.length) return asMsg({ error: 'bad-index' })
     if (nr.committee[p.i - 1] !== id.nodeId) return asMsg({ error: 'not-in-committee' })
@@ -534,7 +534,7 @@ export function memberServe(
       return asMsg({ error: 'share-commitment-mismatch' })
 
     // 3. Re-provision gate. A member that ALREADY holds a share for this root
-    //    must NOT accept an initial-shaped (no-prev) record — that is exactly how
+    //    must NOT accept an initial-shaped (no-prev) record, that is exactly how
     //    a root-key holder would reset the fuse to zero by re-dealing a fresh
     //    committee. Any re-provision of a known root MUST set prev and pass the
     //    handoff. Only a genuine first enrollment takes the no-prev path.
@@ -543,10 +543,10 @@ export function memberServe(
     if (existing) {
       if (nr.prev === undefined) return asMsg({ error: 'already-provisioned-needs-handoff' })
     }
-    // A4 seam 3 — chain-authoritative anchoring: resolve the subject's newest
+    // A4 seam 3: chain-authoritative anchoring: resolve the subject's newest
     // VERIFIED 'pin' anchor when this member can (A3 replication / overlay).
     const anchor = deps.anchorOf ? await deps.anchorOf(root) : null
-    // A chain-anchored account can never take the initial-shaped path — even at
+    // A chain-anchored account can never take the initial-shaped path, even at
     // a FRESH member holding no local share: the anchor proves a committee
     // already exists, which is exactly the reset a root-key thief would deal.
     if (nr.prev === undefined && anchor !== null) return asMsg({ error: 'chain-anchored-needs-handoff' })
@@ -557,7 +557,7 @@ export function memberServe(
       if (pinRecordId(p.oldRecord.payload) !== nr.prev) return asMsg({ error: 'old-record-not-prev' })
       // Old-committee key bindings come from TRUSTED presence (a node can only
       // announce for a nodeId derived from a root IT controls, so it cannot spoof
-      // another committee member's nodeId) — never from the request.
+      // another committee member's nodeId), never from the request.
       const dir = fabric.directory()
       const keyOf = new Map<NodeId, B64u>()
       for (const w of p.oldRecord.payload.committee) {
@@ -578,7 +578,7 @@ export function memberServe(
       })
       if (!hv.ok) return asMsg({ error: 'bad-handoff', detail: hv.errors })
       // A4 seam 3 (closes the A3 residual): with a resolved anchor, the
-      // presented oldRecord MUST be the account's REAL current record — a
+      // presented oldRecord MUST be the account's REAL current record, a
       // captured stale/foreign record cannot authorize a re-provision. With no
       // chain resolvable the A2 co-signature gate above remains the live
       // authority, and the response says so ('cosig-fallback').
@@ -588,7 +588,7 @@ export function memberServe(
       startFails = nr.carriedFails ?? 0
     }
     // A member re-provisioned into an OVERLAPPING committee must never LOSE its
-    // own accumulated failures — floor the starting count by what it already
+    // own accumulated failures, floor the starting count by what it already
     // holds, CONVERGED (A4 seam 1: its merged view, never below its own local).
     if (existing) startFails = Math.max(startFails, convergedOf(root, existing))
 
@@ -613,29 +613,29 @@ export function memberServe(
     const { root, blinded } = fromMsg<{ root: B64u; blinded: B64u }>(payload)
     const s = ensure(root)
     if (!s) return asMsg({ error: 'not-provisioned' })
-    // An honest member refuses to serve — and does NOT increment — while a fuse
+    // An honest member refuses to serve (and does NOT increment) while a fuse
     // bans the root (§1): the witnessed zone is closed, so deriving the pinKey is
     // pointless, and serving would let the ban window pile up failures against
-    // the refill-by-R cooling-off. This is where the committee enforces the fuse
-    // — NOT a single member's unverified word on a client-side gate.
+    // the refill-by-R cooling-off. This is where the committee enforces the fuse,
+    // NOT a single member's unverified word on a client-side gate.
     const evalFuse = fuseOf(root)
     if (evalFuse && isFuseActive(evalFuse, deps.wts())) return asMsg({ error: 'fuse-active' })
     // The blinded element must decode to a canonical ristretto point BEFORE we
-    // count it — a junk (non-point) request must not consume a counter increment.
+    // count it, a junk (non-point) request must not consume a counter increment.
     try {
       pointFromBytes(fromB64u(blinded))
     } catch {
       return asMsg({ error: 'bad-blinded' })
     }
-    // Every served evaluation increments the counter (C-2) — the rate limit.
+    // Every served evaluation increments the counter (C-2), the rate limit.
     s.counter = applyEval(s.counter)
     s.evalCount += 1
-    // deterministic, per (root, key, count) — a stable, injective nonce.
+    // deterministic, per (root, key, count), a stable, injective nonce.
     const evalNonce = toB64u(sha256(canonicalBytes({ root, key: id.key, count: s.evalCount })))
     boundedAdd(s.issued, evalNonce, MAX_ISSUED_NONCES)
     const partial = memberBlindEvaluate(s.scalar, blinded)
     // ALWAYS attach a DLEQ proof binding the partial to this member's published
-    // shareCommitment — the client's verifiability check is not optional (a
+    // shareCommitment, the client's verifiability check is not optional (a
     // faulty/malicious member's wrong partial must be detectable, spec §1). The
     // deterministic prover needs no RNG, so the operator peer proves too; an
     // injected dleqRng only overrides the nonce source (reproducible suites).
@@ -671,12 +671,12 @@ export function memberServe(
     return asMsg({ report })
   })
 
-  // A4 seam 1 — counter-report gossip: merge the (verified) reports the caller
+  // A4 seam 1, counter-report gossip: merge the (verified) reports the caller
   // pushes, answer with everything held plus this member's own fresh report.
   // One kind gives both push and pull, so peers converge by exchanging; the
   // aggregator (tripFuseIfDue) pulls with an empty push. Publishing under the
   // account key into overlay space is a byte-transport variant of the same
-  // records — the fabric exchange is the wave-1b dissemination path.
+  // records, the fabric exchange is the wave-1b dissemination path.
   onSafe(fabric, 'pin-counter-sync', async (_from, payload) => {
     const p = fromMsg<{ root: B64u; reports?: unknown }>(payload)
     const s = ensure(p.root)
@@ -687,20 +687,20 @@ export function memberServe(
 
   // Co-sign a fuse trip ONLY on the strength of THIS member's OWN monotonic
   // failure counter for THIS root. A fuse is real iff ≥ pinT members each
-  // independently confirm their own count crossed the threshold — so it cannot be
+  // independently confirm their own count crossed the threshold, so it cannot be
   // forged with an attacker-supplied committee, cross-root-replayed reports, or a
   // far-future trip time. Nothing about the count is taken from the requester.
   onSafe(fabric, 'pin-fuse-sign', async (_from, payload) => {
     const p = fromMsg<{
       body: { v: 1; root: B64u; fails: number; trippedWts: number; expiryWts: number; pinRecord: EventId; params: B64u }
-      /** A4 seam 1: the aggregator's merged report set — verified + merged
+      /** A4 seam 1: the aggregator's merged report set, verified + merged
        * before this member computes its converged count. Optional; only real
        * signatures can raise the count, omission only lowers it. */
       reports?: unknown
     }>(payload)
     const s = ensure(p.body.root)
     if (!s) return asMsg({ error: 'not-provisioned' })
-    // The fuse must target the SAME PIN record this member holds a share under —
+    // The fuse must target the SAME PIN record this member holds a share under:
     // a fuse for a record I wasn't provisioned for can't co-opt my signature.
     if (p.body.pinRecord !== s.pinRecord) return asMsg({ error: 'pin-record-mismatch' })
     const now = deps.wts()
@@ -711,18 +711,18 @@ export function memberServe(
     const canon = fuseRecordBody(p.body.root, p.body.fails, p.body.trippedWts, p.body.pinRecord)
     if (p.body.expiryWts !== canon.expiryWts || p.body.params !== canon.params || p.body.v !== 1)
       return asMsg({ error: 'malformed-fuse-body' })
-    // trippedWts must be ~now on MY clock (diversity-bound witnessed time, §4) —
+    // trippedWts must be ~now on MY clock (diversity-bound witnessed time, §4):
     // no far-future ban window.
     if (Math.abs(now - p.body.trippedWts) > PARAMS_A2.timeWindowMs)
       return asMsg({ error: 'trippedWts-out-of-window' })
     // Self-qualify against a threshold the MEMBER derives from its OWN state, not
     // the requester's. The cycle floor comes from the member's held (expired)
-    // fuse — the next trip needs pinRefill more than the last one — so a requester
+    // fuse (the next trip needs pinRefill more than the last one), so a requester
     // cannot understate the trip index to re-ban at 100 after a refill (the
     // counter is monotonically ≥ 100 post-trip). No trips value is trusted.
     const threshold =
       held && held.body.root === p.body.root ? held.body.fails + PARAMS_A2.pinRefill : PARAMS_A2.pinLifetimeFails
-    // A4 seam 1: qualify on the CONVERGED count — the member's own monotonic
+    // A4 seam 1: qualify on the CONVERGED count, the member's own monotonic
     // counter merged with the verified committee report set (requester-supplied
     // reports merged first; only real member signatures count), so a guesser
     // who SPREADS across rotating quorums can no longer hold every member's
@@ -740,7 +740,7 @@ export function memberServe(
   })
 
   // Co-sign a committee handoff ONLY when the requester proves PIN knowledge (a
-  // session against the pinPub THIS member holds — a password thief without the
+  // session against the pinPub THIS member holds, a password thief without the
   // PIN cannot produce it) AND the carried count is ≥ this member's CONVERGED
   // count (A4 seam 1: so ≥ pinT signatures force carriedFails ≥ the effective
   // count even against a guesser who spread across rotating quorums, §1).
@@ -751,7 +751,7 @@ export function memberServe(
     if (!p.session || !verifyPinSession(p.session, s.pinPub)) return asMsg({ error: 'bad-session' })
     if (p.session.body.purpose !== 'committee-handoff' || p.session.body.root !== p.root)
       return asMsg({ error: 'bad-session-scope' })
-    // The session must authorize THIS specific new record — no replay to another.
+    // The session must authorize THIS specific new record: no replay to another.
     if (p.session.body.record !== p.newPinRecord) return asMsg({ error: 'session-record-mismatch' })
     mergeIncoming(p.root, s, p.reports)
     if (p.carriedFails < convergedOf(p.root, s)) return asMsg({ error: 'carried-below-my-count' })
@@ -794,7 +794,7 @@ export function memberServe(
           })
           mergeIncoming(root, s, res.reports)
         } catch {
-          // unreachable peer — its last merged report (if any) still counts
+          // unreachable peer, its last merged report (if any) still counts
         }
       }
       return convergedOf(root, s)
@@ -813,7 +813,7 @@ export function memberServe(
 }
 
 // ===========================================================================
-// CLIENT — request a lease, append a witnessed event, run a PIN evaluation.
+// CLIENT: request a lease, append a witnessed event, run a PIN evaluation.
 // ===========================================================================
 
 export interface RequestLeaseOpts {
@@ -832,7 +832,7 @@ export interface RequestLeaseOpts {
   nowMs: number
   /** Takeover session reference (different device); pass to embed body.takeover.
    *  PIN lane for accounts with an active PIN record, root lane for those
-   *  without — the account's own state decides, not the caller. */
+   *  without: the account's own state decides, not the caller. */
   takeover?: TakeoverAuth
 }
 
@@ -842,9 +842,9 @@ export type RequestLeaseResult =
 
 /**
  * Gather grants from the account's canonical witness set until the effective
- * threshold — min(tLease, |witnessSet|), floored at 1 — is met. Honest
+ * threshold (min(tLease, |witnessSet|), floored at 1) is met. Honest
  * degradation: if fewer than the threshold reachable eligible witnesses grant,
- * returns {ok:false, reason:'insufficient-witnesses'} — never a dead grant that
+ * returns {ok:false, reason:'insufficient-witnesses'}, never a dead grant that
  * would fail verifyLease (the 2-user rated-play boundary, spec §4/C-10).
  */
 /** A7 (A5-17): request an anchored salt grant from one witness. The witness
@@ -896,7 +896,7 @@ export async function clientRequestLease(opts: RequestLeaseOpts): Promise<Reques
       seen.add(g.w)
       grants.push(g)
     } catch {
-      // Unreachable witness — skip; honest degradation handles the shortfall.
+      // Unreachable witness: skip; honest degradation handles the shortfall.
     }
   }
 
@@ -916,7 +916,7 @@ export interface AppendWitnessedOpts {
   ts: number
   epoch: number
   witnessSet: readonly NodeId[]
-  /** Both players' nodeIds — a rated event needs ≥1 attestation from a witness
+  /** Both players' nodeIds, a rated event needs ≥1 attestation from a witness
    * that is NEITHER player (spec §4). */
   players: ReadonlySet<NodeId>
   /** Minimum non-player attestations required (default 1). */
@@ -1000,7 +1000,7 @@ export interface PinVerifyOpts {
   rng?: Rng
   /**
    * Verify each member's DLEQ proof against its published shareCommitment.
-   * Defaults to TRUE — the committee's verifiability is not optional; a member
+   * Defaults to TRUE, the committee's verifiability is not optional; a member
    * without a valid proof is treated as faulty and skipped (the t-of-n gather
    * routes around it). Only a test that deliberately exercises the unverified
    * path should pass false.
@@ -1014,13 +1014,13 @@ export type PinVerifyResult =
 
 /**
  * Run one committee PIN evaluation, T-of-N (spec §1): blind, then query committee
- * members IN ORDER until `t` of them return a valid, DLEQ-verified partial —
+ * members IN ORDER until `t` of them return a valid, DLEQ-verified partial,
  * routing around any member that is unreachable, errors, fails its proof, or
  * refuses because a fuse bans the root. Combine those t partials, finalize,
  * derive the pinKey. On a correct PIN (derived pinPub == the committee's pinPub)
  * prove success back to exactly the members whose partials were used (net-zero
  * counter contribution). A wrong PIN still consumed one evaluation at each
- * queried member — that IS the rate limit that eventually trips the fuse.
+ * queried member, that IS the rate limit that eventually trips the fuse.
  *
  * Gathering the FIRST t responders (not a fixed prefix of the committee) is what
  * makes this a real threshold: a single down or faulty member can no longer deny
@@ -1032,7 +1032,7 @@ export type PinVerifyResult =
  * genuinely banned account cannot reach t partials (≤ n−t members would serve).
  * A single member cannot forge a ban (it can only make itself one skipped node)
  * nor hide one (≥ t honest members still refuse). `fuse-active` is surfaced only
- * as a reason when the quorum could not be reached — never as a unilateral deny.
+ * as a reason when the quorum could not be reached, never as a unilateral deny.
  */
 export async function pinVerifyFlow(opts: PinVerifyOpts): Promise<PinVerifyResult> {
   const { fabric, root, committee } = opts
@@ -1051,10 +1051,10 @@ export async function pinVerifyFlow(opts: PinVerifyOpts): Promise<PinVerifyResul
     try {
       res = await req(fabric, m, 'pin-eval', { root, blinded: blind.blinded })
     } catch {
-      continue // unreachable member — route around it
+      continue // unreachable member: route around it
     }
     // A member refusing because a fuse bans the root: note it, but one member's
-    // word is NOT decisive — keep gathering. We surface it as a reason only if
+    // word is NOT decisive. Keep gathering. We surface it as a reason only if
     // the honest quorum also can't be reached (below).
     if (res.error === 'fuse-active') {
       sawFuseActive = true
@@ -1091,14 +1091,14 @@ export async function pinVerifyFlow(opts: PinVerifyOpts): Promise<PinVerifyResul
   const pinPubB = toB64u(pinKey.pub)
   if (pinPubB !== committee.pinPub) return { ok: false, reason: 'wrong-pin', pinPub: pinPubB }
 
-  // Correct PIN — prove success to exactly the members we used (net-zero).
+  // Correct PIN: prove success to exactly the members we used (net-zero).
   for (const u of used) {
     const sig = signPinSuccess(root, u.evalNonce, opts.wts, pinKey.priv)
     try {
       await req(fabric, u.member, 'pin-prove', { root, evalNonce: u.evalNonce, wts: opts.wts, sig })
     } catch {
-      /* Best-effort. A dropped success proof leaves that eval UNcredited — a
-         residual +1 fail at that member — which biases toward a false ban, not
+      /* Best-effort. A dropped success proof leaves that eval UNcredited, a
+         residual +1 fail at that member, which biases toward a false ban, not
          toward bypassing one. The member still accepts the unspent nonce, so a
          later session can re-prove it (client-side nonce persistence: A6). */
     }
@@ -1117,7 +1117,7 @@ export async function collectAttemptReports(
   members: readonly NodeId[],
   keyOf: (w: NodeId) => B64u | undefined,
 ): Promise<PinAttemptReport[]> {
-  // Query members concurrently — reports have no per-request cost (unlike evals),
+  // Query members concurrently, reports have no per-request cost (unlike evals),
   // so there is no reason to pay N round-trips serially. Promise.all preserves
   // input order, so the reduced result stays deterministic.
   const results = await Promise.all(
@@ -1140,7 +1140,7 @@ export async function collectAttemptReports(
   return results.filter((r): r is PinAttemptReport => r !== null)
 }
 
-// --- Fuse trip (spec §1) — the live rate-limit enforcement -----------------
+// --- Fuse trip (spec §1), the live rate-limit enforcement -----------------
 
 export interface TripFuseOpts {
   fabric: FabricEndpoint
@@ -1152,25 +1152,25 @@ export interface TripFuseOpts {
   keyOf: ReadonlyMap<NodeId, B64u>
   /** Trip timestamp (aggregator clock; the co-signed body carries it). */
   wts: number
-  /** The account's current held fuse (expired, or none) — sets the cycle floor
+  /** The account's current held fuse (expired, or none), sets the cycle floor
    * exactly as each member does in pin-fuse-sign (heldFuse.body.fails + pinRefill,
    * else pinLifetimeFails), so the aggregator's due-check agrees with the committee
    * and never wastes a round trying a trip the members will refuse. */
   heldFuse?: FuseRecord | null
   /** Co-signatures required (default pinT). */
   minSigs?: number
-  /** Pre-held VERIFIED counter reports seeding the converged set (optional —
+  /** Pre-held VERIFIED counter reports seeding the converged set (optional,
    * e.g. reports pulled from overlay records under the account key). */
   reports?: readonly SignedCounterReport[]
 }
 
 /**
  * Establish the committee-effective failure count from the members' SIGNED,
- * MONOTONIC, gen-tagged counter reports — pulled via 'pin-counter-sync' from
+ * MONOTONIC, gen-tagged counter reports, pulled via 'pin-counter-sync' from
  * every member, verified against their advertised keys, merged, and reduced
  * with the CONVERGED anti-spreading statistic (counters.ts, A4 seam 1: a
  * guesser spreading across rotating quorums can no longer hold the count below
- * the true guess total) — and, if it reaches the current cycle's fuse
+ * the true guess total), and, if it reaches the current cycle's fuse
  * threshold, gather ≥ minSigs committee co-signatures on a threshold-signed
  * fuse record. The merged report set rides the pin-fuse-sign payload so each
  * co-signer converges to the same view before self-qualifying; a member still
@@ -1200,7 +1200,7 @@ export async function tripFuseIfDue(opts: TripFuseOpts): Promise<FuseRecord | nu
         const res = await req<{ reports?: unknown; error?: string }>(opts.fabric, w, 'pin-counter-sync', { root: opts.root })
         return res.reports
       } catch {
-        return null // unreachable member — its report may still arrive via peers
+        return null // unreachable member: its report may still arrive via peers
       }
     }),
   )
@@ -1208,14 +1208,14 @@ export async function tripFuseIfDue(opts: TripFuseOpts): Promise<FuseRecord | nu
   const reportSet = [...merged.values()]
   const effective = convergedEffectiveCount(reportSet, opts.committee, PARAMS_A2.pinT)
   // The due-threshold is the SAME floor each member derives from the account's
-  // held fuse — so the aggregator never tries a trip the committee would refuse.
+  // held fuse, so the aggregator never tries a trip the committee would refuse.
   const threshold =
     opts.heldFuse && opts.heldFuse.body.root === opts.root
       ? opts.heldFuse.body.fails + PARAMS_A2.pinRefill
       : PARAMS_A2.pinLifetimeFails
   if (effective < threshold) return null
 
-  // 2. gather ≥ minSigs independent co-signatures (concurrently — signing has no
+  // 2. gather ≥ minSigs independent co-signatures (concurrently, signing has no
   //    per-request cost); each member self-qualifies on its own CONVERGED count
   //    (the merged report set rides along) + PIN-record binding inside
   //    pin-fuse-sign.

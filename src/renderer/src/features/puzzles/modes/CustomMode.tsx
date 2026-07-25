@@ -21,7 +21,7 @@ import type { ThemeCount } from '@shared/types'
 import { Board } from '../../../board/Board'
 import { pieceSetClass } from '../../../board/pieceSets'
 import { useSettings } from '../../../state/settings'
-// Shared 3-stage hint UI from the classic trainer (read-only imports — the
+// Shared 3-stage hint UI from the classic trainer (read-only imports; the
 // components live in the puzzles feature root and are reused verbatim).
 import { HintLadder } from '../HintLadder'
 import { HintArrow } from '../HintArrow'
@@ -40,7 +40,7 @@ import {
 import './custom.css'
 
 // ============================================================================
-// SLICE A — Themed / Custom training.  ★ OWNED BY THE CUSTOM-TRAINING BUILDER ★
+// SLICE A: Themed / Custom training.  ★ OWNED BY THE CUSTOM-TRAINING BUILDER ★
 //
 // Deliberate-practice trainer: configure a fixed set (themes + difficulty band +
 // length), drill it on a board with live progress + streak, then read an
@@ -80,7 +80,7 @@ function SetupScreen({ session }: { session: Session }): JSX.Element {
       .themes()
       .then((r) => {
         if (cancelled) return
-        // Most-common themes first — the picker reads as a "popular tactics" menu.
+        // Most-common themes first: the picker reads as a "popular tactics" menu.
         const sorted = [...(r?.themes ?? [])].sort((a, b) => b.count - a.count)
         setThemes(sorted)
       })
@@ -132,7 +132,7 @@ function SetupScreen({ session }: { session: Session }): JSX.Element {
 
       {!apiReady && (
         <div className="panel pad muted small custom-preview-note">
-          Preview mode — connect to the desktop app to load puzzles.
+          Preview mode. Connect to the desktop app to load puzzles.
         </div>
       )}
 
@@ -566,7 +566,7 @@ function SolvePrompt({ session: s, userColor }: { session: Session; userColor: s
               The move was <strong className="num">{s.correctSan}</strong>.
             </>
           ) : (
-            'Keep going — the set continues.'
+            'Keep going.'
           )}
         </span>
       </div>
@@ -597,7 +597,7 @@ function SolvePrompt({ session: s, userColor }: { session: Session; userColor: s
     return (
       <div className="panel pad custom-prompt is-keeptrying">
         <span className="custom-prompt-title">
-          <RotateCcw size={16} aria-hidden /> Recorded as failed — keep trying
+          <RotateCcw size={16} aria-hidden /> Recorded as failed. Keep trying.
         </span>
         <span className="custom-prompt-sub">
           Take your time and find the move for {userColor === 'white' ? 'White' : 'Black'}.
@@ -683,7 +683,7 @@ function SummaryScreen({
             <SummaryStat
               icon={<Clock size={16} aria-hidden />}
               label="Avg / puzzle"
-              value={summary.total > 0 ? formatDuration(Math.round(summary.totalMs / summary.total)) : '—'}
+              value={summary.total > 0 ? formatDuration(Math.round(summary.totalMs / summary.total)) : '·'}
             />
           </div>
         </div>

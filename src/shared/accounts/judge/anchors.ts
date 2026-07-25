@@ -1,10 +1,10 @@
-// A5 J3 — estElo anchors REFIT AT THE JUDGE'S OWN CONFIG (spec §8 Tier-1: the
+// A5 J3, estElo anchors REFIT AT THE JUDGE'S OWN CONFIG (spec §8 Tier-1: the
 // shipped depth-12 MultiPV-2 fit does not transfer; the judge path needs
-// anchors fitted at its fixed-node config). Consumed ONLY by the judge path —
+// anchors fitted at its fixed-node config). Consumed ONLY by the judge path:
 // analysis/play keeps the shipped depth-12 fit (src/main/analysis/estElo.ts).
 //
 // Provenance (fully reproducible):
-//   corpus  scripts/data/judge-elo-corpus.jsonl — 176 games / 352 rows, played
+//   corpus  scripts/data/judge-elo-corpus.jsonl: 176 games / 352 rows, played
 //           at known strengths by scripts/gen-judge-corpus.mjs (shared
 //           game-generation machinery with the shipped corpus) and analyzed
 //           through the REAL judge core: judgeGame() over the pinned-WASM Node
@@ -19,7 +19,7 @@
 //
 // Every value is an INTEGER (milli-/micro-units) per the accounts
 // integers-only convention. The params digest below is the PARAMS_A5_DIGEST
-// the corpus was judged under — a LITERAL, not a live import, so a later
+// the corpus was judged under. A LITERAL, not a live import, so a later
 // params change can never silently re-tag this fitted artifact (the suite
 // compares it against the current digest and fails loudly on drift).
 //
@@ -41,7 +41,7 @@ export type JudgeFitKnot = {
 
 /**
  * The full judge-config estElo fit (scripts/data/judge-elo-fit.json) in
- * integer form — the judge-path equivalent of the constants estElo.ts inlines
+ * integer form: the judge-path equivalent of the constants estElo.ts inlines
  * from the shipped depth-12 fit. Model shape is fit-elo-model.mjs's:
  * PAV-monotonized per-band calibration curves inverted to feature→Elo, blend
  * slopes summing to 1, bounded short-game shrink, structural opponent slope.
@@ -126,36 +126,36 @@ export const JUDGE_ELO_FIT: JudgeEloFit = {
 }
 
 /**
- * J6 — the MEASURED Tier-2 anchor bundle (replaces J4's provisional
+ * J6. The MEASURED Tier-2 anchor bundle (replaces J4's provisional
  * placeholder): per-elo engine-match expectation + σ_match, and an ACPL
  * expectation curve + σ_acpl measured on the EXACT statistic the Tier-2
- * z-estimator consumes (tier1.ts Tier1Record acplMicro/matchMicro — integer
+ * z-estimator consumes (tier1.ts Tier1Record acplMicro/matchMicro; integer
  * floors, tier1 mate map, unscored final move), which differs measurably from
  * the review-math acpl the J3 estElo fit was built on (that curve shows a
  * +15.9cp mean bias on this statistic; TIER1_ANCHORS_JUDGE stays the estElo
  * anchor set, THIS bundle feeds Tier-2 windows and T).
  *
- * Provenance (fully reproducible — test-judge-calibration.mjs recomputes
+ * Provenance (fully reproducible: test-judge-calibration.mjs recomputes
  * every integer in the bundle below from the corpus and fails on any drift):
- *   corpus  scripts/data/judge-calib-corpus.jsonl family=honest — 176 games /
+ *   corpus  scripts/data/judge-calib-corpus.jsonl family=honest: 176 games /
  *           352 scored sides at known strengths (bands 400..2700, self/cross
  *           schedule, scripts/gen-cheater-corpus.mjs --family honest,
  *           2026-07-21), judged via judgeGame() over the pinned-WASM Node
  *           adapter at judgeConfigForTier(1) = 200_000 nodes MultiPV 4
- *           Hash 16, positions = every fenBefore (no terminal tail — the
+ *           Hash 16, positions = every fenBefore (no terminal tail: the
  *           production Tier-1 surface).
  *   fit     per-band mean acplMicro/matchMicro, weighted-PAV monotonized
  *           (acpl nonincreasing, match nondecreasing in elo), residual σ over
  *           all 352 sides through the EXACT tier1/tier2 floor-division
  *           interpolation (expectedAcplMicro / expectedMatchMicro).
  *   honest  max trailing-30 z over the corpus = 1.482σ (split-half held-out
- *           2.123σ; exact micro 1_482_160 / 2_123_366) — margin to the 3.0
+ *           2.123σ; exact micro 1_482_160 / 2_123_366): margin to the 3.0
  *           escalation trigger ≥ 1.51σ in-sample, ≥ 0.87σ held-out (the
  *           binding figure: 876_634 micro-σ). Re-measured 2026-07-22 from
  *           the committed corpus via the committed suite, identical across
  *           runs (A5-34; the prior 1.884σ / 1.932σ / ≥ 1.07σ figures did
  *           not reproduce). CAUTION: the suite PRINTS these z stats but
- *           asserts only z < 3.0σ — it does not pin them; re-run
+ *           asserts only z < 3.0σ: it does not pin them; re-run
  *           test-judge-calibration.mjs rather than citing this comment when
  *           tightening zEscalateMicro or signing off the honest-FPR margin.
  */
@@ -182,7 +182,7 @@ export const TIER2_ANCHORS_JUDGE: Tier2Anchors = {
     ],
     sigmaAcplMicro: 28_807_746,
     fit:
-      'J6 measured 2026-07-21 — corpus scripts/data/judge-calib-corpus.jsonl (honest, ' +
+      'J6 measured 2026-07-21: corpus scripts/data/judge-calib-corpus.jsonl (honest, ' +
       '176 games / 352 sides, judged at 200000 nodes MultiPV 4 Hash 16, params ' +
       'kkHGACUeDBJMna7_bCYZS3FD9TuRU5vv8GW4KCM4shU), Tier1Record-statistic ACPL curve',
   },
@@ -203,7 +203,7 @@ export const TIER2_ANCHORS_JUDGE: Tier2Anchors = {
   ],
   sigmaMatchMicro: 62_335,
   fit:
-    'J6 measured 2026-07-21 — corpus scripts/data/judge-calib-corpus.jsonl (honest, ' +
+    'J6 measured 2026-07-21: corpus scripts/data/judge-calib-corpus.jsonl (honest, ' +
     '176 games / 352 sides, gen-cheater-corpus --family honest), judged at 200000 nodes ' +
     'MultiPV 4 Hash 16 under params kkHGACUeDBJMna7_bCYZS3FD9TuRU5vv8GW4KCM4shU; ' +
     'per-band weighted-PAV means + residual σ via the exact floor interpolation ' +
@@ -212,7 +212,7 @@ export const TIER2_ANCHORS_JUDGE: Tier2Anchors = {
 
 /**
  * The J2 Tier1Anchors set fitted at the judge config (supersedes
- * TIER1_ANCHORS_PROVISIONAL on the judge path) — the elo→expected-ACPL curve
+ * TIER1_ANCHORS_PROVISIONAL on the judge path): the elo→expected-ACPL curve
  * is the judge fit's PAV-monotonized log(1+acpl)→Elo calibration knots
  * inverted via acpl = e^la − 1 (the same construction tier1.ts documents for
  * its provisional set, now from judge-config data). sigmaAcplMicro is the
@@ -220,18 +220,18 @@ export const TIER2_ANCHORS_JUDGE: Tier2Anchors = {
  * 352 corpus rows, evaluated with tier1.ts expectedAcplMicro's floor-division
  * interpolation.
  *
- * ROLE (A5-33): the estElo anchor set ONLY — spec §8 Tier-1's judge-config
+ * ROLE (A5-33): the estElo anchor set ONLY, spec §8 Tier-1's judge-config
  * estElo refit. It must NEVER be injected as a Tier-2 ACPL anchor
  * (Tier2Anchors.acpl): it was fit on the review-math ACPL of the estElo
  * corpus, and J6 measured it at +15.9cp mean bias on the Tier1Record
  * statistic the Tier-2 z-estimator consumes (the calibration suite's J3
- * cross-check recomputes this) — as Tier2Anchors.acpl it deflates honest
+ * cross-check recomputes this): as Tier2Anchors.acpl it deflates honest
  * devAcpl below zero, blunting detection and desyncing any evaluator from
  * the canonical escalation/T trigger. Tier-2 windows and T feed ONLY from
  * TIER2_ANCHORS_JUDGE above (tier2.ts header contract). checkTier2Anchors is
  * shape-only BY DESIGN (receipts re-verify historic verdicts under the
- * digest-pinned bundle they carry), so this role rule — also carried in the
- * `fit` tag below so it travels with the value — is the binding guard.
+ * digest-pinned bundle they carry), so this role rule is the binding guard. It
+ * is also carried in the `fit` tag below, so it travels with the value.
  */
 export const TIER1_ANCHORS_JUDGE: Tier1Anchors = {
   v: 1,
@@ -250,9 +250,9 @@ export const TIER1_ANCHORS_JUDGE: Tier1Anchors = {
   ],
   sigmaAcplMicro: 21_902_355,
   fit:
-    'J3 judge-config refit 2026-07-21 — corpus scripts/data/judge-elo-corpus.jsonl ' +
+    'J3 judge-config refit 2026-07-21: corpus scripts/data/judge-elo-corpus.jsonl ' +
     '(176 games / 352 rows, judged at 200000 nodes MultiPV 4 Hash 16, params ' +
     'kkHGACUeDBJMna7_bCYZS3FD9TuRU5vv8GW4KCM4shU), fit scripts/data/judge-elo-fit.json ' +
-    '(holdout MAE 296.4 with-opp / 331.8 no-opp); estElo-only — must not feed Tier-2/T ' +
+    '(holdout MAE 296.4 with-opp / 331.8 no-opp); estElo-only: must not feed Tier-2/T ' +
     '(J6: +15.9cp bias on the Tier1Record statistic; the only Tier-2/T bundle is TIER2_ANCHORS_JUDGE)',
 }

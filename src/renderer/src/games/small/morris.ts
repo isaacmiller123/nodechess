@@ -1,4 +1,4 @@
-// Nine Men's Morris — hand-rolled GameSpec (docs/GAMES-PLATFORM-SPEC.md).
+// Nine Men's Morris: hand-rolled GameSpec (docs/GAMES-PLATFORM-SPEC.md).
 //
 // Board: the 24 standard points named on a 7x7 grid (a1..g7):
 //   a7----d7----g7

@@ -1,18 +1,18 @@
 // The operator's always-awake peer (spec §11 two integrations + §4 C-10).
 // node-only (server/**), OUTSIDE src/shared so it may use node APIs. It is just
 // another eligible node under the §4 rules: it runs witnessServe + memberServe,
-// holds ZERO authority, and is removable — its only privilege is being awake, so
+// holds ZERO authority, and is removable. Its only privilege is being awake, so
 // the 2-user rated-play window is negligible (never truth, never data).
 //
 // Two integrations (§11), both behind the platform-neutral FabricEndpoint so
 // MockFabric (suites) and TrysteroFabric (production) are swappable:
-//   (a) TrysteroFabric — a FabricEndpoint over trystero with werift's
+//   (a) TrysteroFabric: a FabricEndpoint over trystero with werift's
 //       RTCPeerConnection as the Node WebRTC polyfill (passive, always-on),
 //   (b) the pinned canonical judge, held as the shared JudgeEngine adapter
 //       (server/judge/nodeAdapter.ts over the A2 harness), constructed +
 //       content-hash-verified at startup as witness-of-last-resort. Tier-2 duty
 //       drives this handle ONLY through judgeGame (spec §8: ONE canonical judge
-//       surface) — never the raw A2 analyseFixedNodes protocol, whose
+//       surface): never the raw A2 analyseFixedNodes protocol, whose
 //       per-position TT clear + parse rules are a different bit surface. A2
 //       wired it; running Tier-2 is A5 (mounted at A6).
 //
@@ -42,7 +42,7 @@ import type { B64u } from '@shared/accounts'
 import type { JudgeEngine } from '@shared/accounts/judge'
 import { newNodeJudgeEngine } from '../judge/nodeAdapter.js'
 
-/** The operator peer's own identity — a normal account's root + device keypair. */
+/** The operator peer's own identity. A normal account's root + device keypair. */
 export interface OperatorIdentity {
   /** Account root pubkey (b64u). nodeId = sha256(root). */
   rootPub: B64u
@@ -53,7 +53,7 @@ export interface OperatorIdentity {
 }
 
 export interface JudgeConfig {
-  /** Default true — construct + content-hash-verify the pinned judge at startup.
+  /** Default true: construct + content-hash-verify the pinned judge at startup.
    * A resolution failure degrades to "no live judge" (the peer still witnesses). */
   enabled?: boolean
   enginePath?: string
@@ -87,7 +87,7 @@ export interface OperatorPeer {
   readonly member: MemberServeHandle
   /** The last-resort Tier-2 capability as the CANONICAL judge surface (spec
    * §8): the shared JudgeEngine adapter, to be driven ONLY through judgeGame.
-   * Deliberately NOT the raw A2 JudgeInstance — its analyseFixedNodes protocol
+   * Deliberately NOT the raw A2 JudgeInstance: its analyseFixedNodes protocol
    * (per-position TT clear, divergent parse rules) cannot reproduce the
    * judgeOutputDigest canonical verifiers compute over a multi-position game. */
   readonly judge?: JudgeEngine
@@ -99,7 +99,7 @@ export interface OperatorPeer {
 /**
  * Boot the operator peer: verify the judge binary is the pinned blob, register
  * the witness + member handlers on the fabric, and announce presence. Returns a
- * handle the host can stop. The peer never gates on the judge — a missing/
+ * handle the host can stop. The peer never gates on the judge: a missing/
  * mismatched engine only costs the last-resort Tier-2 capability, never its
  * witness/committee duties.
  */
@@ -109,9 +109,9 @@ export async function startOperatorPeer(opts: StartOperatorPeerOpts): Promise<Op
 
   const fabric = opts.fabric ?? (await createTrysteroFabric(opts))
 
-  // (b) Judge: the canonical §8 surface — newNodeJudgeEngine content-hash-gates
+  // (b) Judge: the canonical §8 surface, newNodeJudgeEngine content-hash-gates
   // (typed JudgeWasmHashError, no opt-out) BEFORE spawning, and the wrapped
-  // newInstance re-verifies at spawn. Best-effort — the peer witnesses
+  // newInstance re-verifies at spawn. Best-effort. The peer witnesses
   // regardless (spec §11: witness-of-last-resort, not a hard dependency).
   let judge: JudgeEngine | undefined
   const jc = opts.judge ?? {}
@@ -169,7 +169,7 @@ export async function startOperatorPeer(opts: StartOperatorPeerOpts): Promise<Op
 }
 
 // ---------------------------------------------------------------------------
-// (a) TrysteroFabric — thin FabricEndpoint over trystero + werift.
+// (a) TrysteroFabric: thin FabricEndpoint over trystero + werift.
 // ---------------------------------------------------------------------------
 
 // Loosely typed on purpose: trystero's public types reference DOM globals
@@ -185,7 +185,7 @@ const ANNOUNCE_NS = 'presence'
 /**
  * Build a passive (always-on witness) TrysteroFabric. Peers are addressed by
  * their trystero peerId; a nodeId→peerId map is learned from presence
- * announcements. Full key-distance routing is A3's overlay — here the operator
+ * announcements. Full key-distance routing is A3's overlay. Here the operator
  * simply serves whoever reaches it, which is exactly the witness-of-last-resort
  * role. Never invoked by CI (the smoke injects a MockFabric).
  */
@@ -212,7 +212,7 @@ export async function createTrysteroFabric(opts: StartOperatorPeerOpts): Promise
   const presence = new Map<NodeId, SignedPresence>()
   const peerOfNode = new Map<NodeId, string>()
 
-  // Presence gossip (trystero 0.25 message action) — learn nodeId→peerId and
+  // Presence gossip (trystero 0.25 message action): learn nodeId→peerId and
   // populate the directory. makeAction returns an object; onMessage(data, ctx).
   const presenceAction = room.makeAction(ANNOUNCE_NS, {
     kind: 'message',

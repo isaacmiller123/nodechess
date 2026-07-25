@@ -7,12 +7,12 @@
 // script answers one operational question: from THIS machine, right now, can we
 // reach enough of that infrastructure for a game to connect?
 //
-//   1. NOSTR RELAYS — the exact default relay list trystero ships (imported from
+//   1. NOSTR RELAYS: the exact default relay list trystero ships (imported from
 //      the installed package, never hard-coded here, so it can't drift). For each
-//      we open a WebSocket (node 26 has a global WebSocket — no `ws` dep), send a
+//      we open a WebSocket (node 26 has a global WebSocket, no `ws` dep), send a
 //      minimal Nostr REQ, and count it reachable on ANY frame back (EVENT / EOSE /
 //      NOTICE / anything). 5s timeout, all in parallel.
-//   2. TURN HOSTS — the TURN hostnames parsed straight out of rtcTransport.ts's
+//   2. TURN HOSTS: the TURN hostnames parsed straight out of rtcTransport.ts's
 //      ICE_SERVERS. We can't do a real TURN allocation without a UDP/ICE stack, so
 //      we TCP-probe host:443 and host:80 (a TURN server listening there answers the
 //      TCP handshake). 4s timeout each.
@@ -38,7 +38,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
 // 10s (not 5s): node's global WebSocket negotiates HTTP/2 and its TLS handshakes
-// to these relays are slow under parallel load — a raw TCP connect is instant but
+// to these relays are slow under parallel load. A raw TCP connect is instant but
 // the TLS+WS upgrade routinely takes 2–6s here. The app holds relays open
 // persistently so a slow first handshake is a non-issue; 5s produced false
 // "down"s for relays that are genuinely reachable (verified by hand). TURN is a
@@ -57,7 +57,7 @@ try {
   console.error(`Could not import trystero/nostr defaultRelayUrls: ${e.message}`)
 }
 if (RELAYS.length === 0) {
-  console.error('No Nostr relay URLs found — is trystero installed? Aborting.')
+  console.error('No Nostr relay URLs found. Is trystero installed? Aborting.')
   process.exit(1)
 }
 
@@ -105,7 +105,7 @@ function probeRelay(url) {
     }
     ws.onopen = () => {
       // Minimal Nostr REQ: ask for one kind-0 (metadata) event. Any relay answers
-      // with an EVENT and/or an EOSE — we only need a single frame to prove reach.
+      // with an EVENT and/or an EOSE: we only need a single frame to prove reach.
       try {
         ws.send(JSON.stringify(['REQ', 'chk', { kinds: [0], limit: 1 }]))
       } catch {
@@ -189,6 +189,6 @@ if (relaysOk >= 2) {
   console.log('✅ Signaling is viable from this machine (≥2 relays reachable).')
   process.exit(0)
 } else {
-  console.log('❌ Fewer than 2 Nostr relays reachable — signaling may fail from this network.')
+  console.log('❌ Fewer than 2 Nostr relays reachable: signaling may fail from this network.')
   process.exit(1)
 }

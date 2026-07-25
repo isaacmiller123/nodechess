@@ -1,4 +1,4 @@
-// Headless test for src/shared/accounts/judge/tier2.ts (phase A5 brick J4 —
+// Headless test for src/shared/accounts/judge/tier2.ts (phase A5 brick J4;
 // Tier-2: salted K-windows, Regan aggregation, the deterministic escalation
 // trigger, verdict/suppression records, self-ban + fold bans + pairing/
 // display ban surfaces).
@@ -8,7 +8,7 @@
 // Bundles the TS modules on the fly with esbuild (alias @shared → src/shared,
 // same pattern as scripts/test-accounts-tier1.mjs). NO live engine: every
 // Tier1Record here is a synthetic literal (the estimator consumes recorded
-// integer signals — engine work happened upstream in J1/J2). Covers:
+// integer signals: engine work happened upstream in J1/J2). Covers:
 //  (a) commit-reveal salt: saltBodyHash golden, lease.ts grantBytes
 //      convention parity, windowSalt goldens (recomputable-after: identical
 //      re-derivation; unpredictable-before proxy: different windows/grant
@@ -41,7 +41,7 @@
 //      receipt, 'verdict'-kind tie to the record's own window, tamper
 //      matrix), tier2VerdictKey/verdictRow,
 //  (f) self-ban helpers: schema-validated payload, expiry, due-now rule,
-//  (g) fold bans: selfban events fold into a4-v1 bans — expiry DERIVED from
+//  (g) fold bans: selfban events fold into a4-v1 bans. Expiry DERIVED from
 //      the event ts + §9 term and folded MONOTONICALLY (a convict cannot
 //      self-un-ban; A5-22/A5-08), bounded to PLAYED ladders (A5-38),
 //      malformed/personal-lane ignored; ban-free chains keep byte-identical
@@ -125,14 +125,17 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
 
 // ---- goldens (recorded from a green run 2026-07-21; determinism anchors) ----
+// anchorsDigest re-recorded 2026-07-25: the bundle's `fit` provenance strings
+// were repunctuated (no em dashes), which moves the canonical hash. Every
+// integer in the bundle is unchanged, and both esbuild bundles still agree.
 const GOLDEN = {
-  anchorsDigest: 'yJAizF4WR4J-zCcfyQ-ScHo946rl-qQN8eHb1I-jtGY',
+  anchorsDigest: 'mkAFC0PKOo0ZAAZNfbdsjrReZ089Zpwo31c6dkxUG50',
   saltBodyHashW1: 'EMf1-1qjkbb-VpnC_aTY_sEmtuyQ82P8cTCqJ39-q2Q',
   saltW1: 'UmqAcUJGZjz-2_9q9_REOPCo6gEsFcfBhlhXQxA34nE',
   saltW1A: 'Ikj5Aje9NFc1hiTc64XNY_P7JBFSH3fHQjnQ4d8pgWw', // A5-17 anchored window-1 salt (pinned 2026-07-22)
@@ -153,14 +156,14 @@ const GOLDEN = {
   escAtIndex: 31,
   escZ: 3_411_623,
   // A5-21: the same 25-inno→blat chain's EARLIEST trailing-K window at the 5σ
-  // CONVICTION line (zThresholdMicro) — the §8 self-ban anchor (10 blat games).
+  // CONVICTION line (zThresholdMicro). The §8 self-ban anchor (10 blat games).
   convAtIndex: 34,
   convZ: 5_109_979,
-  // J7 lifetime goldens — hand-computed: zLife(W) = floor(Σz·1000/isqrt(W·1e6)).
+  // J7 lifetime goldens, hand-computed: zLife(W) = floor(Σz·1000/isqrt(W·1e6)).
   windowZCap: 23_043_875, // idiv(59·3e6·1000, isqrt(59e6)=7681) + 1
   zLife2x26: 3_677_510, // floor(5.2e9 / isqrt(2e6)=1414)
   zLife3x26: 4_503_464, // floor(7.8e9 / isqrt(3e6)=1732)
-  zLife4x26: 5_200_000, // floor(10.4e9 / isqrt(4e6)=2000) — exact
+  zLife4x26: 5_200_000, // floor(10.4e9 / isqrt(4e6)=2000). Exact
   zLifeMix3: 1_732_101, // floor(3e9 / 1732)
   zLifeMet3: 7_168_926, // floor(3·4_138_860·1000 / 1732)
 }
@@ -199,7 +202,7 @@ async function run(outdir) {
   // frozen as a fixture): the estimator is anchor-INJECTED, so this suite
   // exercises the exact arithmetic against fixed knots while the MEASURED
   // judge-config bundle (anchors.ts TIER2_ANCHORS_JUDGE, J6) is covered by
-  // scripts/test-judge-calibration.mjs. Do not "update" these values — the
+  // scripts/test-judge-calibration.mjs. Do not "update" these values: the
   // z/dev goldens below are bit-frozen against them.
   const A = {
     v: 1,
@@ -214,7 +217,7 @@ async function run(outdir) {
       { elo: 2700, matchMicro: 660_000 },
     ],
     sigmaMatchMicro: 120_000,
-    fit: '[J3-REFIT-PENDING] hand-set match-rate placeholder at (t1Nodes, t1MultiPv) — must not feed T',
+    fit: '[J3-REFIT-PENDING] hand-set match-rate placeholder at (t1Nodes, t1MultiPv). Must not feed T',
   }
   const inno = (i) => ({ rec: mkRec(`inno-${i}`, 52_000_000, 470_000), side: 'w', elo: 1500 })
   const blat = (i) => ({ rec: mkRec(`blat-${i}`, 8_000_000, 900_000), side: 'w', elo: 1500 })
@@ -257,7 +260,7 @@ async function run(outdir) {
   ok(
     hashMod.toB64u(m.windowSalt(mkReveal(1, [0, 1]), { tLease: 2 })) !==
       hashMod.toB64u(m.windowSalt(mkReveal(1, [1, 2]), { tLease: 2 })),
-    'different grant subsets ⇒ different salts on the reveal-defined (no-witnessSet) fallback — pinned by witnessSet in §1a (A5-18)',
+    'different grant subsets ⇒ different salts on the reveal-defined (no-witnessSet) fallback, pinned by witnessSet in §1a (A5-18)',
   )
   // grant order in the reveal must NOT matter (canonical sort by w)
   const rShuffled = { ...r1, grants: [r1.grants[2], r1.grants[0], r1.grants[1]] }
@@ -323,7 +326,7 @@ async function run(outdir) {
   eq(
     m.saltOffset(hashMod.fromB64u(audA.salt)),
     m.saltOffset(hashMod.fromB64u(audB.salt)),
-    '… hence the SAME saltOffset / window boundary — no cross-auditor partition split (A4-04 class closed)',
+    '… hence the SAME saltOffset / window boundary: no cross-auditor partition split (A4-04 class closed)',
   )
   // a ≥threshold subset OMITTING a designated (small-NodeId) grantor is refused:
   // the assembler cannot drop a pinned witness to shift off(w)
@@ -339,20 +342,20 @@ async function run(outdir) {
   const wOther = hashMod.toB64u(hashMod.ed25519.getPublicKey(new Uint8Array(32).fill(99)))
   const outReveal = { ...reveal18(5, desig), grants: [...reveal18(5, desig).grants, m.signSaltGrant(ROOTB, LAD, 5, wOther, wOther, new Uint8Array(32).fill(99), 9_000)] }
   ok(!m.verifySaltReveal(outReveal, opt18).ok, 'a reveal carrying ANY out-of-set grant is still invalid (strict, exactly verifyLease)')
-  // CONTRAST — WITHOUT a witnessSet the salt is reveal-defined (NOT grind-proof):
+  // CONTRAST, WITHOUT a witnessSet the salt is reveal-defined (NOT grind-proof):
   // the very subsets that agree above now disagree (the residual the header names)
   const grindA = hashMod.toB64u(m.windowSalt(reveal18(5, [...desig, rest[0]]), { tLease: TL }))
   const grindB = hashMod.toB64u(m.windowSalt(reveal18(5, [...desig, ...rest]), { tLease: TL }))
   ok(grindA !== grindB, 'WITHOUT witnessSet the same window admits DIFFERENT salts per subset (the grind the witnessSet path closes)')
 
   // ==== 1b. A5-17: post-game anchor makes the frontier uncomputable-before ===
-  // The defect: saltBody committed only to {v,t,scheme,root,ladder,window} —
-  // every field fixed at account creation — so windowSalt(w), off(w) and the
+  // The defect: saltBody committed only to {v,t,scheme,root,ladder,window}.
+  // Every field fixed at account creation, so windowSalt(w), off(w) and the
   // whole future partition were derivable at t=0 from a threshold of grants
   // (an honest witness could even pre-sign all future windows). §7b requires
   // the frontier to be NOT locally predictable BEFORE the games are played.
   // The fix folds an OPTIONAL post-game `anchor` (a 32-byte commitment to chain
-  // state fixed only after the games preceding b(w) are played — the embedder
+  // state fixed only after the games preceding b(w) are played. The embedder
   // binds the rated-game key at ordinal w·K−1) into the SIGNED salt body, so
   // the witness's message does not exist until that game is chained, and
   // SaltVerifyOpts.requireAnchor makes the consensus/verdict path refuse any
@@ -382,12 +385,12 @@ async function run(outdir) {
   ok(saltA2 !== saltA, 'a different post-game anchor ⇒ a different salt (unpredictable before the anchor game is chained)')
   ok(
     m.saltOffset(hashMod.fromB64u(saltA)) !== m.saltOffset(hashMod.fromB64u(saltA2)),
-    '… hence a different off(1) — the K-window frontier MOVES with post-game chain state, not a line fixed at account creation',
+    '… hence a different off(1): the K-window frontier MOVES with post-game chain state, not a line fixed at account creation',
   )
   // the anchor is BOUND into every grant signature: a post-hoc swap invalidates
   const swapped = { ...rA, anchor: ANCHOR2 } // grants signed over ANCHOR; field claims ANCHOR2
   ok(!m.verifySaltReveal(swapped, { tLease: 2 }).ok, 'a post-hoc anchor swap ⇒ every grant fails verifyGrantSig ⇒ reveal rejected (unforgeable)')
-  // requireAnchor gate — the consensus/verdict path refuses an anchorless reveal
+  // requireAnchor gate: the consensus/verdict path refuses an anchorless reveal
   const needA = m.verifySaltReveal(mkReveal(1), { tLease: 2, requireAnchor: true })
   ok(!needA.ok, 'requireAnchor: an anchorless (predictable-before) reveal is REFUSED on the consensus path')
   ok(needA.errors.some((e) => e.includes('requireAnchor') && e.includes('unpredictable-before')), '… with the deterministic §7b error')
@@ -482,7 +485,7 @@ async function run(outdir) {
 
   const v1g = m.windowVerdict([blat(0)], A)
   eq(v1g.zMicro, GOLDEN.zBlat1, 'single maximally-blatant game: z = exactly the 3σ cap')
-  ok(!v1g.convicted, 'NO SINGLE GAME CONVICTS — structurally impossible (cap)')
+  ok(!v1g.convicted, 'NO SINGLE GAME CONVICTS: structurally impossible (cap)')
   ok(v1g.escalate, 'a single capped game CAN meet the escalation trigger (deeper analysis only)')
   const v2g = m.windowVerdict(w30(blat).slice(0, 2), A)
   eq(v2g.zMicro, GOLDEN.zBlat2, 'two maximally-blatant games: exact zMicro')
@@ -514,12 +517,12 @@ async function run(outdir) {
   // rdMicro ABSENT is byte-identical legacy (all goldens above unaffected).
   console.log('\n· A5-02 regression: rdMicro upper-confidence strength (real TIER2_ANCHORS_JUDGE) …')
   const AJ = m.TIER2_ANCHORS_JUDGE
-  // Honest true-2700 signals — the J6 corpus honest-2700 band means the
+  // Honest true-2700 signals: the J6 corpus honest-2700 band means the
   // finding reproduced with (acpl 25.22cp, match 0.9388).
   const H_ACPL = 25_222_111
   const H_MATCH = 938_809
   // Deterministic fresh-account climb (the finding's sustained-lag model:
-  // display enters game 29 at ~2030 while RD stays placement-high — a young
+  // display enters game 29 at ~2030 while RD stays placement-high. A young
   // opponent pool carries little rating information, so lag persists exactly
   // while RD is large).
   const eloAt = (i) => (i < 10 ? 1200 + 60 * i : 1800 + 12 * (i - 10))
@@ -542,8 +545,8 @@ async function run(outdir) {
     vHonNew.zMicro < PARAMS_A5.zEscalateMicro && !vHonNew.escalate && !vHonNew.convicted,
     `rd-PRESENT path: the same honest games stay below the escalation trigger (z = ${vHonNew.zMicro} < 3e6)`,
   )
-  // Settled honest account (RD at the floor ≈ 30): z essentially unchanged —
-  // the J6-calibrated honest-holdout FPR is preserved (shift is ≤ 0.3σ and
+  // Settled honest account (RD at the floor ≈ 30): z essentially unchanged.
+  // The J6-calibrated honest-holdout FPR is preserved (shift is ≤ 0.3σ and
   // DOWNWARD, so it cannot mint new false positives).
   const settled = (tag, rd) =>
     Array.from({ length: 30 }, (_, i) => ({
@@ -557,11 +560,11 @@ async function run(outdir) {
   console.log(`    settled honest 2500: z(no rd) = ${vSetOld.zMicro}, z(RD 30) = ${vSetNew.zMicro}`)
   ok(
     Math.abs(vSetNew.zMicro - vSetOld.zMicro) <= 300_000 && vSetNew.zMicro <= vSetOld.zMicro,
-    `settled account (RD floor 30): |Δz| ≤ 0.3σ and non-positive (${vSetOld.zMicro} → ${vSetNew.zMicro}) — calibrated FPR preserved`,
+    `settled account (RD floor 30): |Δz| ≤ 0.3σ and non-positive (${vSetOld.zMicro} → ${vSetNew.zMicro}), calibrated FPR preserved`,
   )
   ok(!vSetNew.escalate && !vSetNew.convicted, 'settled honest account: still no flags with rdMicro supplied')
   // Full-engine cheater (acpl 0, match 1.0) with the SAME high-RD climb must
-  // STILL convict within one window — the fix opens no cheating hole.
+  // STILL convict within one window: the fix opens no cheating hole.
   const vCheat = m.windowVerdict(climb('a502-c', 0, 1_000_000, true), AJ)
   console.log(`    full-engine cheater, same high RD: z = ${vCheat.zMicro}`)
   ok(
@@ -588,7 +591,7 @@ async function run(outdir) {
   eq(m.WINDOW_Z_CAP_MICRO, GOLDEN.windowZCap, 'structural window-z bound golden (±3σ cap · √WINDOW_ENTRIES_MAX)')
   const lvMet1 = m.lifetimeVerdict([GOLDEN.zMet30])
   eq(lvMet1.zLifeMicro, GOLDEN.zMet30, 'W=1 degeneracy: z_life ≡ the window z bit-for-bit (isqrt(1e6) = 1000)')
-  ok(lvMet1.escalate && !lvMet1.convicted, 'W=1 metered: escalate-not-convict — the SAME thresholds, no new dials')
+  ok(lvMet1.escalate && !lvMet1.convicted, 'W=1 metered: escalate-not-convict. The SAME thresholds, no new dials')
   eq(m.lifetimeVerdict([GOLDEN.zInno30]).zLifeMicro, GOLDEN.zInno30, 'W=1 degeneracy holds for a negative window z')
   const met26 = 2_600_000 // the §7(a) gap: sustained just-under-escalation metering
   const lv2 = m.lifetimeVerdict([met26, met26])
@@ -599,7 +602,7 @@ async function run(outdir) {
   ok(lv3.escalate && !lv3.convicted, 'W=3 still under conviction')
   const lv4 = m.lifetimeVerdict([met26, met26, met26, met26])
   eq(lv4.zLifeMicro, GOLDEN.zLife4x26, 'sustained 2.6σ, W=4: exact zLifeMicro (2.6·√4 = 5.2, exact)')
-  ok(lv4.convicted, 'sustained 2.6σ CONVICTS at W=4 — the §7(a) closure')
+  ok(lv4.convicted, 'sustained 2.6σ CONVICTS at W=4: the §7(a) closure')
   eq(lv4.windows, 4, 'windows echoes W')
   eq(m.lifetimeVerdict([3_000_000, -3_000_000]).zLifeMicro, 0, 'mixed-sign windows cancel (honest drift does not accumulate)')
   const lvMix = m.lifetimeVerdict([5_000_000, -1_000_000, -1_000_000])
@@ -635,21 +638,21 @@ async function run(outdir) {
   eq(esc.game, `blat-${GOLDEN.escAtIndex}`, 'the K-window-completing game key (the §8 deadline anchor)')
   eq(esc.zMicro, GOLDEN.escZ, 'trailing-K zMicro at the firing point golden')
   // A5-21: the SAME chain also crosses the 5σ CONVICTION line three windows
-  // later — reported independently under `conviction` (the §8 self-ban
+  // later: reported independently under `conviction` (the §8 self-ban
   // anchor), while atIndex/zMicro stay the 3σ escalation firing.
   ok(esc.conviction !== undefined, 'A5-21: the blatant chain reaches the 5σ conviction line')
   eq(esc.conviction?.atIndex, GOLDEN.convAtIndex, 'A5-21: earliest CONVICTING trailing-K index golden (34, not the 3σ index 31)')
-  eq(esc.conviction?.game, `blat-${GOLDEN.convAtIndex}`, 'A5-21: the conviction-completing game key — THE §8 self-ban deadline anchor')
+  eq(esc.conviction?.game, `blat-${GOLDEN.convAtIndex}`, 'A5-21: the conviction-completing game key, THE §8 self-ban deadline anchor')
   eq(esc.conviction?.zMicro, GOLDEN.convZ, 'A5-21: zMicro at the conviction point golden (≥ zThresholdMicro)')
   ok(esc.conviction?.lifetime === undefined, 'A5-21: no lifetime conviction on the 3-arg call')
   const esc2 = m.escalationDue(games, records, A)
   eq(JSON.stringify(esc2), JSON.stringify(esc), 'escalationDue is deterministic (same inputs ⇒ same bits)')
   // A5-21: a chain truncated BEFORE the conviction crossing escalates but
-  // carries NO conviction — the [3σ,5σ) band obliges deeper analysis only.
+  // carries NO conviction. The [3σ,5σ) band obliges deeper analysis only.
   const escBand = m.escalationDue(games.slice(0, GOLDEN.convAtIndex), records, A)
   ok(escBand.due, 'A5-21: the escalation-band chain (max z 4.54σ < 5σ) still escalates')
   eq(escBand.atIndex, GOLDEN.escAtIndex, 'A5-21: …at the same earliest 3σ firing')
-  eq(escBand.conviction, undefined, 'A5-21: …but carries NO conviction — the 5σ line was never crossed')
+  eq(escBand.conviction, undefined, 'A5-21: …but carries NO conviction. The 5σ line was never crossed')
   eq(m.escalationDue(games.slice(0, K - 1), records, A).due, false, 'fewer than K games ⇒ never due')
   const innoGames = []
   const innoRecs = new Map()
@@ -663,7 +666,7 @@ async function run(outdir) {
 
   // J7 + A5-20 regression: the closedWindowZs lifetime arm is evaluated
   // INDEPENDENTLY of trailing-K. A trailing-K firing must NOT silently discard
-  // an earlier-in-chain-order lifetime firing — doing so anchors the §8
+  // an earlier-in-chain-order lifetime firing: doing so anchors the §8
   // self-ban deadline too late (a provable-suppressor / consensus split).
   // Pre-fix this call returned esc verbatim (lifetime dropped); post-fix BOTH
   // arms are surfaced so the partition-holding caller can min by chain ordinal.
@@ -696,7 +699,7 @@ async function run(outdir) {
   eq(escLife.lifetime?.zLifeMicro, GOLDEN.zLife2x26, 'lifetime firing carries the exact zLifeMicro at that W')
   eq(escLife.atIndex, undefined, 'lifetime firing has no trailing-K anchor (the partition-holding caller maps window→ordinal)')
   // A5-21: the third closed window (9e6) pushes the lifetime statistic over
-  // the 5σ conviction line — reported under conviction.lifetime (earliest
+  // the 5σ conviction line: reported under conviction.lifetime (earliest
   // CONVICTING prefix W=3), while lifetime keeps the earliest ESCALATING
   // prefix (W=2). floor((2.6+2.6+9)e6·1000/isqrt(3e6)=1732) = 8_198_614.
   eq(escLife.conviction?.lifetime?.windows, 3, 'A5-21: earliest lifetime CONVICTION prefix (W=3) reported independently of the W=2 escalation')
@@ -705,13 +708,13 @@ async function run(outdir) {
   // ── A5-21 review pin: the conviction report is LOSSLESS BOTH-ARMS (the
   // A5-20 contract at the conviction line) and EARLIEST-prefix on each arm.
   // Both arms convict here: trailing-K at index 34 AND the metering lifetime
-  // at W=4 — neither may suppress the other (mutant M6: guarding the
+  // at W=4. Neither may suppress the other (mutant M6: guarding the
   // lifetime conviction on trailingKConv === undefined went undetected).
   const escBothConv = m.escalationDue(games, records, A, [met26, met26, met26, met26])
-  eq(escBothConv.conviction?.atIndex, GOLDEN.convAtIndex, 'A5-21: both-arms conviction — trailing-K anchor present')
-  eq(escBothConv.conviction?.zMicro, GOLDEN.convZ, 'A5-21: both-arms conviction — trailing-K z preserved')
-  eq(escBothConv.conviction?.lifetime?.windows, 4, 'A5-21: both-arms conviction — the lifetime conviction is NOT discarded when trailing-K also convicts')
-  eq(escBothConv.conviction?.lifetime?.zLifeMicro, GOLDEN.zLife4x26, 'A5-21: both-arms conviction — lifetime zLife preserved')
+  eq(escBothConv.conviction?.atIndex, GOLDEN.convAtIndex, 'A5-21: both-arms conviction, trailing-K anchor present')
+  eq(escBothConv.conviction?.zMicro, GOLDEN.convZ, 'A5-21: both-arms conviction, trailing-K z preserved')
+  eq(escBothConv.conviction?.lifetime?.windows, 4, 'A5-21: both-arms conviction. The lifetime conviction is NOT discarded when trailing-K also convicts')
+  eq(escBothConv.conviction?.lifetime?.zLifeMicro, GOLDEN.zLife4x26, 'A5-21: both-arms conviction. Lifetime zLife preserved')
   // Earliest CONVICTING prefix, not the last one evaluated (mutant M4:
   // removing the conviction scan's break reported the LAST convicting
   // prefix): with 6 metering windows supplied, W=4 is still the report.
@@ -719,7 +722,7 @@ async function run(outdir) {
   eq(escSixWin.conviction?.lifetime?.windows, 4, 'A5-21: EARLIEST convicting lifetime prefix (W=4) even with 6 closed windows supplied')
   eq(escSixWin.lifetime?.windows, 2, 'A5-21: …and the earliest ESCALATING prefix (W=2) is likewise stable')
   // ── A5-21 exact-boundary window (review finding: the inclusive ≥ at the
-  // conviction line had no fixture — an exclusive-comparator regression
+  // conviction line had no fixture. An exclusive-comparator regression
   // passed every suite). Crafted 30-game window: 10 blat (+3e6 capped) + 20
   // fills at dev −130_750 (acpl 52_963_763 @ elo 1500 / match 470k) ⇒
   // sumDev = 27_385_000 ⇒ z = floor(27_385_000_000/5477) = EXACTLY 5_000_000.
@@ -734,7 +737,7 @@ async function run(outdir) {
   eq(escBoundary.conviction?.zMicro, PARAMS_A5.zThresholdMicro, 'A5-21 boundary: conviction z = exactly the threshold')
   eq(escBoundary.atIndex, 29, 'A5-21 boundary: escalation and conviction fire in the SAME first evaluable window (both recorded)')
   // One micro-σ below: swap one fill for dev −130_751 (acpl 52_963_795) ⇒
-  // z = 4_999_999 — escalates, must NOT convict and must NOT mint suppression.
+  // z = 4_999_999: escalates, must NOT convict and must NOT mint suppression.
   const belowWin = [...boundaryWin.slice(0, 29), bfill(19, 52_963_795, 'bd-tune-low')]
   eq(m.aggregateZMicro(belowWin, A).zMicro, PARAMS_A5.zThresholdMicro - 1, 'A5-21 boundary: one-micro-below window z (fixture sanity)')
   const belowGames = belowWin.map((e) => ({ game: e.rec.game, side: e.side, elo: e.elo }))
@@ -743,7 +746,7 @@ async function run(outdir) {
   eq(escBelow.due, true, 'A5-21 boundary: one micro-σ below still escalates')
   eq(escBelow.conviction, undefined, 'A5-21 boundary: …but does NOT convict (exclusive below the line)')
   // ── A5-21 ratified validation domain: escalationDue is defined only over
-  // FULLY-well-formed inputs — a malformed record/window-z ANYWHERE fails
+  // FULLY-well-formed inputs: a malformed record/window-z ANYWHERE fails
   // closed, even beyond the first escalation crossing (pre-A5-21 the
   // early-break scan silently never examined that region; review finding
   // scan-1 ratified upfront full-domain validation).
@@ -821,7 +824,7 @@ async function run(outdir) {
   ok(!m.verifyTier2Verdict({ ...recChild, certs: undefined }, { entries: metEntries, anchors: A }).ok, 'child key without certs rejected')
   ok(!m.verifyTier2Verdict({ ...rec, certs: [cert] }, { entries: metEntries, anchors: A }).ok, 'pointless certs on a root-signed record rejected (fail closed)')
 
-  // tamper matrix — every mutation must flip verify to false
+  // tamper matrix. Every mutation must flip verify to false
   const mut = (body) => ({ ...rec, body: { ...rec.body, ...body } })
   ok(!m.verifyTier2Verdict(mut({ zMicro: rec.body.zMicro + 1 }), { entries: metEntries, anchors: A }).ok, 'tamper: zMicro+1 ⇒ verify false')
   ok(!m.verifyTier2Verdict(mut({ games: [...rec.body.games.slice(1), 'ghost'] }), { entries: metEntries, anchors: A }).ok, 'tamper: games list ⇒ verify false')
@@ -835,10 +838,10 @@ async function run(outdir) {
   ok(!m.verifyTier2Verdict(rec, { entries: w30(inno), anchors: A }).ok, 'inputs mismatch: different records ⇒ verify false (z does not recompute)')
   ok(!m.verifyTier2Verdict('junk', { entries: metEntries, anchors: A }).ok, 'non-record input ⇒ verify false, never a throw')
 
-  // suppression variant — A5-21: a suppression asserts the 5σ CONVICTION
+  // suppression variant, A5-21: a suppression asserts the 5σ CONVICTION
   // fired (owner decision 2026-07-22), so the canonical valid fixture is the
   // CONVICTING trailing-K window (index 34, z = 5.11σ), never the merely-
-  // escalating one (index 31, z = 3.41σ — kept below as the refusal fixture).
+  // escalating one (index 31, z = 3.41σ; kept below as the refusal fixture).
   const deadline = b64({ ev: 'first-witnessed-after' })
   const trailing = games.slice(GOLDEN.escAtIndex - K + 1, GOLDEN.escAtIndex + 1).map((g) => ({ rec: records.get(g.game), side: g.side, elo: g.elo }))
   const convicting = games.slice(GOLDEN.convAtIndex - K + 1, GOLDEN.convAtIndex + 1).map((g) => ({ rec: records.get(g.game), side: g.side, elo: g.elo }))
@@ -876,7 +879,7 @@ async function run(outdir) {
   })
   eq(m.tier2VerdictDigest(recLife2.body), m.tier2VerdictDigest(recLife.body), 'RECEIPTS: independent lifetime recompute ⇒ identical body bits')
   ok(m.tier2VerdictDigest(recLife.body) !== m.tier2VerdictDigest(rec.body), 'lifetime claim changes the body digest (it is signed evidence, not an annotation)')
-  // lifetime tamper matrix — every mutation flips verify to false
+  // lifetime tamper matrix: every mutation flips verify to false
   const mutLife = (life) => ({ ...recLife, body: { ...recLife.body, lifetime: { ...recLife.body.lifetime, ...life } } })
   ok(!m.verifyTier2Verdict(mutLife({ zLifeMicro: recLife.body.lifetime.zLifeMicro + 1 }), { entries: metEntries, anchors: A }).ok, 'tamper: lifetime zLifeMicro+1 ⇒ verify false')
   ok(!m.verifyTier2Verdict(mutLife({ windowZs: [GOLDEN.zMet30, GOLDEN.zMet30 + 1, GOLDEN.zMet30] }), { entries: metEntries, anchors: A }).ok, 'tamper: a windowZs entry ⇒ verify false (zLife no longer recomputes)')
@@ -899,17 +902,17 @@ async function run(outdir) {
     verdictWts: 1_800_000_000_001, deadlineEvent: deadline, signer: auditor, key: auditor, priv: auditorPriv,
     lifetimeWindowZs: [met26, met26],
   })
-  eq(suppLife.body.lifetime?.zLifeMicro, GOLDEN.zLife2x26, 'suppression lifetime evidence: derived zLifeMicro (no window tie — window is an ordinal here)')
+  eq(suppLife.body.lifetime?.zLifeMicro, GOLDEN.zLife2x26, 'suppression lifetime evidence: derived zLifeMicro (no window tie; window is an ordinal here)')
   ok(m.verifyTier2Verdict(suppLife, { entries: convicting, anchors: A }).ok, 'lifetime-bearing suppression verifies')
 
   // ==== A5-03 + A5-21: suppression must prove the CONVICTION fired ==========
   // (recomputed). A5-03 closed the never-escalated forgery; A5-21 (owner
-  // decision 2026-07-22 — honest players are never banned) re-anchored the
+  // decision 2026-07-22: honest players are never banned) re-anchored the
   // whole obligation on the 5σ conviction line, so the gate now refuses ANY
   // sub-conviction suppression, including genuinely-escalating [3σ,5σ)-band
   // windows. The builder throws on such inputs, so the verifier-side
   // negatives forge hand-signed records (schema-valid, correct
-  // digests/params/sig — ONLY the conviction condition is unmet).
+  // digests/params/sig: ONLY the conviction condition is unmet).
   const forgeSupp = (entries, extra = {}) => {
     const body = {
       v: 1,
@@ -929,7 +932,7 @@ async function run(outdir) {
     const sig = hashMod.toB64u(hashMod.ed25519.sign(codecMod.canonicalBytes(body), auditorPriv))
     return { body, signer: auditor, key: auditor, sig }
   }
-  const innoEntries = w30(inno) // honest full-K window, z = -551_207 ≪ 3e6 — never escalated
+  const innoEntries = w30(inno) // honest full-K window, z = -551_207 ≪ 3e6: never escalated
   const suppInno = forgeSupp(innoEntries)
   eq(suppInno.body.zMicro, GOLDEN.zInno30, 'A5-03 fixture: honest 30-entry window z golden (-0.55σ, sub-escalation)')
   const vSuppInno = m.verifyTier2Verdict(suppInno, { entries: innoEntries, anchors: A })
@@ -958,13 +961,13 @@ async function run(outdir) {
   ok(m.verifyTier2Verdict(supp, { entries: convicting, anchors: A }).ok, 'A5-03: genuinely-CONVICTING full-K suppression still builds + verifies')
   // ── A5-21 core regression: the [3σ,5σ) ESCALATION BAND never grounds a
   // suppression. `trailing` (the escalation firing, z = 3.41σ) was the VALID
-  // suppression fixture before the owner decision — an honest account whose
+  // suppression fixture before the owner decision: an honest account whose
   // window drifts into the band would have been provably "suppressing" for
   // not self-banning. Both mint paths now refuse it.
   const suppBand = forgeSupp(trailing)
-  eq(suppBand.body.zMicro, GOLDEN.escZ, 'A5-21 fixture: the escalation-band window z (3.41σ — escalated, NOT convicted)')
+  eq(suppBand.body.zMicro, GOLDEN.escZ, 'A5-21 fixture: the escalation-band window z (3.41σ; escalated, NOT convicted)')
   const vSuppBand = m.verifyTier2Verdict(suppBand, { entries: trailing, anchors: A })
-  ok(!vSuppBand.ok, 'A5-21: an escalation-band (3.41σ) full-K suppression is REJECTED — escalation alone never grounds a ban (was VALID pre-decision)')
+  ok(!vSuppBand.ok, 'A5-21: an escalation-band (3.41σ) full-K suppression is REJECTED. Escalation alone never grounds a ban (was VALID pre-decision)')
   ok(
     vSuppBand.errors.some((e) => e.includes('suppression conviction did not fire')),
     'A5-21: rejection carries the typed suppression-conviction error',
@@ -989,8 +992,8 @@ async function run(outdir) {
   const suppBelow = forgeSupp(belowWin)
   ok(!m.verifyTier2Verdict(suppBelow, { entries: belowWin, anchors: A }).ok, 'A5-21 boundary: …and a hand-forged one-micro-below suppression fails verify')
   // Lifetime path: a window that never convicted is a valid suppression IFF
-  // the recomputed lifetime statistic CONVICTS (zLife ≥ zThresholdMicro) —
-  // sustained metering (four 2.6σ windows, zLife 5.2e6 at W=4) still mints.
+  // the recomputed lifetime statistic CONVICTS (zLife ≥ zThresholdMicro).
+  // Sustained metering (four 2.6σ windows, zLife 5.2e6 at W=4) still mints.
   const suppLifeFired = m.makeTier2Verdict({
     kind: 'suppression', root: ROOTB, ladder: LAD, window: 5, entries: innoEntries, anchors: A,
     verdictWts: 1, deadlineEvent: deadline, signer: auditor, key: auditor, priv: auditorPriv,
@@ -999,8 +1002,8 @@ async function run(outdir) {
   eq(suppLifeFired.body.lifetime?.zLifeMicro, GOLDEN.zLife4x26, 'A5-21: the metering lifetime CONVICTS at W=4 (the J7 closure survives the re-anchor)')
   ok(m.verifyTier2Verdict(suppLifeFired, { entries: innoEntries, anchors: A }).ok, 'A5-03: lifetime-fired suppression (window sub-conviction, zLife ≥ 5σ) builds + verifies')
   const suppLifeSub = forgeSupp(innoEntries, { lifetime: { zLifeMicro: met26, windows: 1, windowZs: [met26] } }) // zLife(1) = 2_600_000 < 5e6
-  ok(!m.verifyTier2Verdict(suppLifeSub, { entries: innoEntries, anchors: A }).ok, 'A5-03: sub-conviction lifetime claim does NOT satisfy the conviction — rejected')
-  const suppLifeBand = forgeSupp(innoEntries, { lifetime: { zLifeMicro: GOLDEN.zLife2x26, windows: 2, windowZs: [met26, met26] } }) // 3.67σ — escalates, never convicts
+  ok(!m.verifyTier2Verdict(suppLifeSub, { entries: innoEntries, anchors: A }).ok, 'A5-03: sub-conviction lifetime claim does NOT satisfy the conviction, rejected')
+  const suppLifeBand = forgeSupp(innoEntries, { lifetime: { zLifeMicro: GOLDEN.zLife2x26, windows: 2, windowZs: [met26, met26] } }) // 3.67σ. Escalates, never convicts
   ok(!m.verifyTier2Verdict(suppLifeBand, { entries: innoEntries, anchors: A }).ok, 'A5-21: an ESCALATING (3.67σ) but sub-conviction lifetime claim is likewise REJECTED')
   throwsT2(
     () => m.makeTier2Verdict({ kind: 'suppression', root: ROOTB, ladder: LAD, window: 5, entries: innoEntries, anchors: A, verdictWts: 1, deadlineEvent: deadline, signer: auditor, key: auditor, priv: auditorPriv, lifetimeWindowZs: [met26] }),
@@ -1017,12 +1020,12 @@ async function run(outdir) {
   //  (1) The sub-conviction suppression rejection is ENFORCED by the A5-03 +
   //      A5-21 gate and exercised just above (suppInno / supp3 / suppBand /
   //      suppLifeSub). What was still unpinned is that `kind` ITSELF is
-  //      load-bearing — not merely the arithmetic: the SAME honest window
-  //      (w30(inno), z = −551_207 ≈ −0.55σ — the finding's exact shape) is a
+  //      load-bearing. Not merely the arithmetic: the SAME honest window
+  //      (w30(inno), z = −551_207 ≈ −0.55σ: the finding's exact shape) is a
   //      VALID plain 'verdict' yet an INVALID 'suppression'. A verdict only
   //      records the statistic; a suppression additionally asserts the §8
   //      CONVICTION FIRED (A5-21: "provable ONLY relative to the
-  //      deterministic conviction"), which this window disproves — so
+  //      deterministic conviction"), which this window disproves, so
   //      flipping ONLY the kind flips verify. This locks in the z ≥
   //      zThresholdMicro suppression check against silent regression.
   //  (2) The tamper matrix's header-claimed 'kind ⇒ verify false' case (now in
@@ -1039,18 +1042,18 @@ async function run(outdir) {
   )
   ok(
     !m.verifyTier2Verdict(suppInno, { entries: innoEntries, anchors: A }).ok,
-    'A5-07: … the SAME window signed as a SUPPRESSION is REJECTED — kind is load-bearing (§8 conviction never fired)',
+    'A5-07: … the SAME window signed as a SUPPRESSION is REJECTED. Kind is load-bearing (§8 conviction never fired)',
   )
   // `kind` lives INSIDE the signed body: a kind flip that stays schema-legal
   // (drop the deadline so 'verdict' is valid) still breaks the record signature
-  // even though the statistic recomputes identically — the rigorous integrity
+  // even though the statistic recomputes identically: the rigorous integrity
   // form of the matrix's 'kind ⇒ verify false' (idiom mirrors the lifetime-strip
   // tamper above).
   ok(
     !m.verifyTier2Verdict({ ...supp, body: { ...supp.body, kind: 'verdict', deadlineEvent: undefined } }, { entries: convicting, anchors: A }).ok,
     'A5-07: a schema-legal suppression→verdict kind flip still breaks the signature (kind is signed body, not an annotation)',
   )
-  // A valid suppression's entries ARE exactly a trailing-K window — the fixed
+  // A valid suppression's entries ARE exactly a trailing-K window. The fixed
   // geometry escalationDue fires on (supp3 above proves a ≠ reganK window is
   // refused even at z ≥ 5σ; these pin the positive side the suite never did).
   eq(convicting.length, K, 'A5-07: a valid suppression carries exactly a trailing-K window (entries.length === reganK)')
@@ -1080,32 +1083,32 @@ async function run(outdir) {
   eq(m.selfBanDueNow({ escalation: { due: false }, selfBanAppended: false }), false, 'selfBanDueNow: no trigger ⇒ nothing due')
   eq(m.selfBanDueNow({ escalation: { due: false }, selfBanAppended: true }), false, 'selfBanDueNow: vacuous selfban is not "due"')
 
-  // ── A5-21 [DECIDED 2026-07-22 — owner directive: an honest player is NEVER
+  // ── A5-21 [DECIDED 2026-07-22. Owner directive: an honest player is NEVER
   // banned]. The self-ban / suppression obligation anchors on the 5σ
-  // CONVICTION (escalation.conviction — either arm crossing zThresholdMicro);
+  // CONVICTION (escalation.conviction: either arm crossing zThresholdMicro);
   // the 3σ escalation obliges ONLY deeper analysis. Rationale: at a 3σ ban
   // gate the one-sided FPR is ≈1.35e-3/window, so an honest 1k/3k/10k-game
   // career eventually owes a false 90-day self-ban with probability
-  // ≈22.9%/57.9%/93.5% — the §0 false-fraud channel; at 5σ per-look FPR is
+  // ≈22.9%/57.9%/93.5%: the §0 false-fraud channel; at 5σ per-look FPR is
   // ≈2.9e-7, union-bounded < 3e-3 over 10^4 windows (§8 "astronomically
   // low"). These regressions pin the re-anchored wiring: flipping the gate
   // back to escalation.due turns every 'obliges NO ban' assertion here red.
   // The escalation-band chain (max z 4.54σ < 5σ): escalated, deeper analysis
-  // obliged — but NO ban obligation, ever.
+  // obliged, but NO ban obligation, ever.
   ok(escBand.due && escBand.conviction === undefined, 'A5-21: the escalation-band chain escalates without convicting (fixture sanity)')
   eq(
     m.selfBanDueNow({ escalation: escBand, selfBanAppended: false }),
     false,
-    'A5-21: NO self-ban obligation anywhere in the [3σ,5σ) escalation band — an honest account is never banned on escalation',
+    'A5-21: NO self-ban obligation anywhere in the [3σ,5σ) escalation band. An honest account is never banned on escalation',
   )
-  // ONE maximally-blatant game — a size-1 salted window at the +3σ cap —
+  // ONE maximally-blatant game (a size-1 salted window at the +3σ cap)
   // escalates the J7 lifetime arm at W=1 but can never convict: the ban
   // obligation no longer fires off a single game (the §8 structural
   // no-single-game rule now extends to the ban path).
   const escOneGame = m.escalationDue([], new Map(), A, [GOLDEN.zBlat1])
   ok(
     !m.lifetimeVerdict([GOLDEN.zBlat1]).convicted,
-    'A5-21: one capped game (W=1 lifetime) is NOT convicted — no single game convicts',
+    'A5-21: one capped game (W=1 lifetime) is NOT convicted, no single game convicts',
   )
   eq(escOneGame.due, true, 'A5-21: a single capped game still escalates (deeper analysis obliged)')
   eq(escOneGame.conviction, undefined, 'A5-21: …with NO conviction report')
@@ -1119,7 +1122,7 @@ async function run(outdir) {
   eq(esc.conviction?.game, `blat-${GOLDEN.convAtIndex}`, 'A5-21: trailing-K conviction carries the §8 deadline-anchoring game')
   eq(m.selfBanDueNow({ escalation: esc, selfBanAppended: false }), true, 'A5-21: trailing-K conviction + no selfban ⇒ the 90d obligation fires')
   // Lifetime arm: sustained metering (each window 2.6σ, individually
-  // sub-escalation) convicts at W=4 — the J7 closure still bans cheaters.
+  // sub-escalation) convicts at W=4: the J7 closure still bans cheaters.
   const escMeter = m.escalationDue([], new Map(), A, [met26, met26, met26, met26])
   eq(escMeter.lifetime?.windows, 2, 'A5-21: metering escalates at the earliest prefix W=2 (deeper analysis)')
   eq(escMeter.conviction?.lifetime?.windows, 4, 'A5-21: …and CONVICTS at W=4 (zLife 5.2e6 ≥ 5σ)')
@@ -1129,7 +1132,7 @@ async function run(outdir) {
   eq(m.selfBanDueNow({ escalation: escMeter, selfBanAppended: true }), false, 'A5-21: …settled once the selfban is appended')
 
   // ── A5-26: the 3σ ESCALATION line and the 5σ CONVICTION line are TWO distinct
-  // thresholds with DISTINCT consequences — an affirmative test of the module
+  // thresholds with DISTINCT consequences: an affirmative test of the module
   // header property "escalation only obliges deeper analysis, never convict".
   // §3/§3b pin the statistic flags at FIXTURE z-values (4.14σ metered, 3.0σ /
   // 5.19σ single/floor) and §6/A5-21 above pins the 5σ conviction-anchored
@@ -1137,14 +1140,14 @@ async function run(outdir) {
   // the escalation consequence (deeper analysis ONLY) from the conviction
   // consequences (`convicted` + the §8 self-ban obligation).
   // A5-21 DECIDED 2026-07-22: the ban obligation anchors on the 5σ
-  // conviction — the obligation-level assertions below pin the re-anchored
+  // conviction: the obligation-level assertions below pin the re-anchored
   // wiring (they flipped, deliberately, with the A5-21 block above).
   ok(
     PARAMS_A5.zEscalateMicro < PARAMS_A5.zThresholdMicro,
-    'A5-26: escalation line is STRICTLY below the conviction line — two distinct thresholds, never collapsed',
+    'A5-26: escalation line is STRICTLY below the conviction line, two distinct thresholds, never collapsed',
   )
   // W=1 lifetime is the identity zLifeMicro === the lone window z (isqrt(1e6) =
-  // 1000; §3b), so these hit EXACT statistic values astride each gate — a
+  // 1000; §3b), so these hit EXACT statistic values astride each gate. A
   // regression sliding either threshold onto the other flips exactly one of them.
   const zStat = (z) => m.lifetimeVerdict([z])
   const sBelowEsc = zStat(PARAMS_A5.zEscalateMicro - 1)
@@ -1152,20 +1155,20 @@ async function run(outdir) {
   const sOnEsc = zStat(PARAMS_A5.zEscalateMicro)
   ok(sOnEsc.escalate && !sOnEsc.convicted, 'A5-26: AT the 3σ line ⇒ escalation (deeper-analysis obligation) but NOT conviction')
   const sBelowConv = zStat(PARAMS_A5.zThresholdMicro - 1)
-  ok(sBelowConv.escalate && !sBelowConv.convicted, 'A5-26: one micro-σ below 5σ STILL only escalates — "escalation never convicts", locked at the top of the band')
+  ok(sBelowConv.escalate && !sBelowConv.convicted, 'A5-26: one micro-σ below 5σ STILL only escalates, "escalation never convicts", locked at the top of the band')
   const sOnConv = zStat(PARAMS_A5.zThresholdMicro)
-  ok(sOnConv.escalate && sOnConv.convicted, 'A5-26: AT the 5σ line ⇒ conviction — the distinct consequence the escalation line never produces (and conviction ⇒ escalation, never the reverse)')
+  ok(sOnConv.escalate && sOnConv.convicted, 'A5-26: AT the 5σ line ⇒ conviction. The distinct consequence the escalation line never produces (and conviction ⇒ escalation, never the reverse)')
   // CONSEQUENCE separation at the OBLIGATION level (A5-21 decided): one
   // micro-σ below 5σ still escalates (deeper analysis) but obliges NO ban;
-  // AT 5σ the conviction fires and THAT is what obliges the ban — the
+  // AT 5σ the conviction fires and THAT is what obliges the ban. The
   // obligation and the conviction are one line, across the whole band.
   const escTopOfBand = m.escalationDue([], new Map(), A, [PARAMS_A5.zThresholdMicro - 1])
-  eq(escTopOfBand.due, true, 'A5-26: escalationDue.due fires on the top-of-band (sub-conviction) statistic — deeper analysis obliged strictly below the conviction line')
+  eq(escTopOfBand.due, true, 'A5-26: escalationDue.due fires on the top-of-band (sub-conviction) statistic. Deeper analysis obliged strictly below the conviction line')
   eq(escTopOfBand.conviction, undefined, 'A5-26: …with no conviction one micro-σ below the 5σ line')
   eq(
     m.selfBanDueNow({ escalation: escTopOfBand, selfBanAppended: false }),
     false,
-    'A5-26: …and NO 90d self-ban obligation — the ban tracks the CONVICTION line, never escalation (A5-21 decided 2026-07-22)',
+    'A5-26: …and NO 90d self-ban obligation. The ban tracks the CONVICTION line, never escalation (A5-21 decided 2026-07-22)',
   )
   const escAtConv = m.escalationDue([], new Map(), A, [PARAMS_A5.zThresholdMicro])
   eq(escAtConv.conviction?.lifetime?.windows, 1, 'A5-26: AT the 5σ line the conviction fires (inclusive boundary, W=1 identity)')
@@ -1173,7 +1176,7 @@ async function run(outdir) {
   eq(
     m.selfBanDueNow({ escalation: escAtConv, selfBanAppended: false }),
     true,
-    'A5-26: …and the 90d self-ban obligation fires exactly there — obligation ≡ conviction',
+    'A5-26: …and the 90d self-ban obligation fires exactly there, obligation ≡ conviction',
   )
 
   // ==== 7. fold bans ========================================================
@@ -1183,7 +1186,7 @@ async function run(outdir) {
     sig: 'A'.repeat(86),
   })
   // A5-22: the fold DERIVES a self-ban's expiry from the selfban EVENT's
-  // witnessed ts + the §9 term (== tier2.selfBanExpiryWts) — NEVER the self-
+  // witnessed ts + the §9 term (== tier2.selfBanExpiryWts): NEVER the self-
   // asserted payload expiryWts. mkEv stamps ts = 1_000 + height.
   const untilOf = (ts) => m.selfBanExpiryWts(ts)
   const s0 = foldMod.a4Fold.init(ROOTB)
@@ -1192,7 +1195,7 @@ async function run(outdir) {
   // game in (a key of state.ladders). A real rated segment needs a witness sig
   // + an M-of-N-cosigned oppCkpt (heavy to synthesize here), so these fixtures
   // seed the ladders under test with ladderInit() (the §6 seed) as the faithful
-  // "prior rated games folded" precondition — the gate itself (unplayed ladders
+  // "prior rated games folded" precondition: the gate itself (unplayed ladders
   // never fold, bounding the map) is exercised directly by the A5-38 regression.
   const seedLadders = (st, ...lids) => ({
     ...st,
@@ -1204,8 +1207,8 @@ async function run(outdir) {
   const bansAfterGenesis = s.bans
   s = foldMod.a4Fold.step(s, mkEv(1, 'selfban', banPayload))
   eq(Object.keys(s.bans).length, 1, 'selfban folds into bans (one entry)')
-  eq(s.bans[LAD]?.until, untilOf(1_001), 'bans[ladder].until = DERIVED (event ts + §9 term) — NOT the self-asserted payload expiryWts (§0/§8/§9, A5-22)')
-  ok(s.bans[LAD]?.until !== banPayload.expiryWts, 'the self-asserted payload expiryWts (9_000_000) is IGNORED — expiry is derived, not trusted')
+  eq(s.bans[LAD]?.until, untilOf(1_001), 'bans[ladder].until = DERIVED (event ts + §9 term), NOT the self-asserted payload expiryWts (§0/§8/§9, A5-22)')
+  ok(s.bans[LAD]?.until !== banPayload.expiryWts, 'the self-asserted payload expiryWts (9_000_000) is IGNORED: expiry is derived, not trusted')
   eq(s.bans[LAD]?.window, 2, 'bans[ladder].window = convicting window')
   eq(s.bans[LAD]?.verdict, verdictDigest, 'bans[ladder].verdict = the Tier-2 verdict digest')
   eq(s.byType.selfban, 1, 'byType counts the selfban')
@@ -1242,7 +1245,7 @@ async function run(outdir) {
   // ---- A5-38 regression: `bans` is bounded to PLAYED ladders (no free-selfban
   // bloat). Pre-fix banStep inserted one entry per DISTINCT selfban ladder
   // string with no eviction, and zSelfBanPayload.ladder is any 1..64-char
-  // string never checked against a real ladder — so N witnessed selfbans with
+  // string never checked against a real ladder, so N witnessed selfbans with
   // N fabricated ladder strings grew `bans` to N entries, embedded verbatim in
   // every a4-v1 checkpoint viewers recompute and carry. The fix folds a selfban
   // ONLY for a ladder present in state.ladders (one the account has rated a game
@@ -1260,18 +1263,18 @@ async function run(outdir) {
   eq(
     Object.keys(g.bans).length,
     1,
-    `A5-38: ${NBLOAT} distinct fabricated-ladder selfbans add ZERO entries (pre-fix: +${NBLOAT}) — bounded to played ladders`,
+    `A5-38: ${NBLOAT} distinct fabricated-ladder selfbans add ZERO entries (pre-fix: +${NBLOAT}). Bounded to played ladders`,
   )
   ok(!Object.prototype.hasOwnProperty.call(g.bans, 'ghost-ladder-0'), 'A5-38: a fabricated/unplayed ladder never enters bans')
   ok(
     Object.keys(g.bans).length <= Object.keys(g.ladders).length,
-    'A5-38: |bans| ≤ |ladders| — the state-boundedness invariant (bans ⊆ the witness-bound ladders domain)',
+    'A5-38: |bans| ≤ |ladders|. The state-boundedness invariant (bans ⊆ the witness-bound ladders domain)',
   )
   eq(g.byType.selfban, 1 + NBLOAT, 'A5-38: the basic byType counter still ticks every selfban (only `bans` folding is gated, never the counters)')
   // a genuine self-ban on the PLAYED ladder still lands through the gate amid the bloat attempt
   g = foldMod.a4Fold.step(g, mkEv(2 + NBLOAT, 'selfban', { ...banPayload, ladder: LAD, window: 4 }))
   eq(Object.keys(g.bans).length, 1, 'A5-38: a real self-ban on the played ladder still folds through the gate (still one entry)')
-  eq(g.bans[LAD]?.window, 4, 'A5-38: … and updates it (monotonic extend by the later event ts) — the gate blocks only UNPLAYED ladders')
+  eq(g.bans[LAD]?.window, 4, 'A5-38: … and updates it (monotonic extend by the later event ts). The gate blocks only UNPLAYED ladders')
 
   // ---- A5-22 regression: derived + monotonic self-ban expiry (no self-un-ban)
   // The exact finding scenario: a convict appends a compliant selfban, then a
@@ -1286,14 +1289,14 @@ async function run(outdir) {
   const evAt = (h, ts, payload) => ({ body: { v: 1, lane: 'w', type: 'selfban', root: ROOTB, key: ROOTB, height: h, ts, payload }, sig: 'A'.repeat(86) })
   let a = seedLadders(foldMod.a4Fold.init(ROOTB), LAD)
   a = foldMod.a4Fold.step(a, mkEv(0, 'genesis', { params: b64({ p: 1 }), name: 'x' }))
-  // h1: the compliant self-ban — event ts == trigger, so the derived until
+  // h1: the compliant self-ban. Event ts == trigger, so the derived until
   // equals the compliant client's own selfBanExpiryWts(trigger).
   a = foldMod.a4Fold.step(a, evAt(1, TRIG, m.makeSelfBanPayload({ ladder: LAD, window: 2, expiryWts: compliantExpiry, verdictDigest })))
   eq(a.bans[LAD]?.until, compliantExpiry, 'compliant selfban: derived until == selfBanExpiryWts(trigger) (fold agrees with the compliant client)')
   eq(displayMod.displayState({ n: 120, r: 1_534_000_000 }, 'Blitz', a.bans[LAD], midSentence).state, 'banned', 'mid-sentence control: displayState = banned')
-  // h2: the un-ban attempt — a second selfban carrying expiryWts:0.
+  // h2: the un-ban attempt. A second selfban carrying expiryWts:0.
   const aAttack = foldMod.a4Fold.step(a, evAt(2, midSentence, { kind: 'anticheat', ladder: LAD, window: 0, expiryWts: 0, verdict: b64({ any: 'digest' }) }))
-  ok(aAttack.bans[LAD]?.until >= compliantExpiry, 'A5-22: {expiryWts:0} selfban does NOT zero the ban — expiry is derived, and max forbids shrinking (pre-fix: until=0)')
+  ok(aAttack.bans[LAD]?.until >= compliantExpiry, 'A5-22: {expiryWts:0} selfban does NOT zero the ban. Expiry is derived, and max forbids shrinking (pre-fix: until=0)')
   const dispAfter = displayMod.displayState({ n: 120, r: 1_534_000_000 }, 'Blitz', aAttack.bans[LAD], midSentence)
   eq(dispAfter.state, 'banned', 'A5-22: displayState STILL banned mid-sentence after the un-ban attempt (was placement pre-fix)')
   const convictView = { root: ROOTB, ladderId: LAD, ratingMicro: 1_534_000_000, rdMicro: 60_000_000, tMicro: 900_000, display: dispAfter, banUntilWts: aAttack.bans[LAD]?.until }
@@ -1307,10 +1310,10 @@ async function run(outdir) {
   eq(aEarlier.bans[LAD]?.window, 2, 'A5-22 monotonic: the losing selfban’s window/verdict are not adopted either')
 
   // ---- A5-08 regression: the un-ban path + the deterministic self-ban
-  // deadline — newest-wins ONLY under monotonic DERIVED expiry.
+  // deadline: newest-wins ONLY under monotonic DERIVED expiry.
   // A5-08 flagged that section 7's sole newest-wins coverage GREW the payload
-  // expiry (9M -> 12M) and asserted the ban grew — pinning the PRE-A5-22
-  // payload-driven "newest wins unconditionally" overwrite — while (1) the
+  // expiry (9M -> 12M) and asserted the ban grew, pinning the PRE-A5-22
+  // payload-driven "newest wins unconditionally" overwrite, while (1) the
   // adversarial direction (a second selfban that ERASES an active ban), (2) the
   // folded until vs selfBanExpiryWts(trigger) deadline check (the PIN-fuse
   // analogue), and (3) the payload-inert EXTEND direction had no test anywhere.
@@ -1321,11 +1324,11 @@ async function run(outdir) {
   const T8 = 1_700_000_000_000 // §8 trigger witnessed time
   let z8 = seedLadders(foldMod.a4Fold.init(ROOTB), LAD)
   z8 = foldMod.a4Fold.step(z8, mkEv(0, 'genesis', { params: b64({ p: 1 }), name: 'x' }))
-  // the compliant self-ban — its DERIVED until is exactly selfBanExpiryWts(ts)
+  // the compliant self-ban: its DERIVED until is exactly selfBanExpiryWts(ts)
   z8 = foldMod.a4Fold.step(z8, evAt(1, T8, { kind: 'anticheat', ladder: LAD, window: 2, expiryWts: m.selfBanExpiryWts(T8), verdict: verdictDigest }))
-  eq(z8.bans[LAD]?.until, m.selfBanExpiryWts(T8), 'A5-08: folded until == selfBanExpiryWts(trigger ts) — the deterministic §8/§9 deadline (the PIN-fuse-analogue check the fold-bans suite lacked)')
+  eq(z8.bans[LAD]?.until, m.selfBanExpiryWts(T8), 'A5-08: folded until == selfBanExpiryWts(trigger ts). The deterministic §8/§9 deadline (the PIN-fuse-analogue check the fold-bans suite lacked)')
   const mid8 = T8 + 30 * 86_400_000 // 30 days into the 90-day term
-  eq(displayMod.displayState({ n: 120, r: 1_534_000_000 }, 'Blitz', z8.bans[LAD], mid8).state, 'banned', 'A5-08: control — displayState banned 30d into the term')
+  eq(displayMod.displayState({ n: 120, r: 1_534_000_000 }, 'Blitz', z8.bans[LAD], mid8).state, 'banned', 'A5-08: control, displayState banned 30d into the term')
   // (1) the finding's LITERAL un-ban: a second selfban carrying expiryWts:1.
   const unban8 = foldMod.a4Fold.step(z8, evAt(2, mid8, { kind: 'anticheat', ladder: LAD, window: 0, expiryWts: 1, verdict: b64({ any: 'x' }) }))
   eq(unban8.bans[LAD]?.until, m.selfBanExpiryWts(mid8), 'A5-08: the un-ban selfban{expiryWts:1} folds until = selfBanExpiryWts(its event ts), NEVER the payload 1 (pre-fix: bans.until=1, ban erased)')
@@ -1334,17 +1337,17 @@ async function run(outdir) {
   const opp8 = { root: b64({ p: 'opp8' }), ladderId: LAD, ratingMicro: 1_540_000_000, rdMicro: 60_000_000, tMicro: 900_000, display: { state: 'ranked', rating: 1540 } }
   const pl8 = pairingMod.pairingLegal(conv8, opp8, mid8)
   ok(!pl8.legal && pl8.reason === 'banned', 'A5-08: pairingLegal STILL illegal (banned) after the un-ban attempt (pre-fix: legal)')
-  // (2) newest-wins ONLY under monotonic expiry — the ORIGINAL defect's own
+  // (2) newest-wins ONLY under monotonic expiry. The ORIGINAL defect's own
   // direction, inverted: a HUGE payload expiryWts with a NON-advancing event ts
   // must NOT extend the ban (pre-A5-22 `until := payload.expiryWts` would jump it
   // to the huge number). The payload is fully inert; only the DERIVED until wins.
   const huge8 = foldMod.a4Fold.step(z8, evAt(2, T8 - 10 * 86_400_000, { kind: 'anticheat', ladder: LAD, window: 9, expiryWts: 9_999_999_999_999, verdict: b64({ any: 'y' }) }))
-  eq(huge8.bans[LAD]?.until, m.selfBanExpiryWts(T8), 'A5-08: a selfban with a HUGE payload expiryWts but an EARLIER event ts does NOT extend the ban — newest-wins is gated on the DERIVED until, the payload number is inert')
+  eq(huge8.bans[LAD]?.until, m.selfBanExpiryWts(T8), 'A5-08: a selfban with a HUGE payload expiryWts but an EARLIER event ts does NOT extend the ban. Newest-wins is gated on the DERIVED until, the payload number is inert')
   eq(huge8.bans[LAD]?.window, 2, 'A5-08: … and the losing selfban window/verdict are not adopted (until/window/verdict move together)')
   // (3) first-wins on a TIE: an equal derived until (same event ts) is a no-op
-  // too — the `prev.until >= until` boundary (monotonic max, first-wins on tie).
+  // too: the `prev.until >= until` boundary (monotonic max, first-wins on tie).
   const tie8 = foldMod.a4Fold.step(z8, evAt(2, T8, { kind: 'anticheat', ladder: LAD, window: 7, expiryWts: 5, verdict: b64({ any: 'z' }) }))
-  eq(tie8.bans[LAD]?.window, 2, 'A5-08: an equal derived until (same event ts) does not overwrite — first-wins on tie (incumbent window/verdict kept)')
+  eq(tie8.bans[LAD]?.window, 2, 'A5-08: an equal derived until (same event ts) does not overwrite. First-wins on tie (incumbent window/verdict kept)')
 
   // ==== 8. pairingLegal honors bans =========================================
   console.log('\n· pairingLegal: active bans make pairing illegal …')
@@ -1397,7 +1400,7 @@ async function run(outdir) {
     JSON.stringify({ state: 'banned', until: AT + 1 }),
     'banned overrides placement too (the ban is the surface)',
   )
-  eq(JSON.stringify(displayMod.displayState(lState, 'Blitz', { until: AT + 1 })), JSON.stringify({ state: 'ranked', rating: 1534 }), 'ban without atWts is not evaluated (no ambient time — caller must pin the instant)')
+  eq(JSON.stringify(displayMod.displayState(lState, 'Blitz', { until: AT + 1 })), JSON.stringify({ state: 'ranked', rating: 1534 }), 'ban without atWts is not evaluated (no ambient time: caller must pin the instant)')
   const pv = displayMod.pairViewOf(ROOTB, LAD, lState, 900_000, 'Blitz', { until: AT + 1 }, AT)
   eq(pv.banUntilWts, AT + 1, 'pairViewOf carries banUntilWts from the fold ban')
   eq(pv.display.state, 'banned', 'pairViewOf display is banned at the pinned wts')

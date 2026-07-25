@@ -1,8 +1,8 @@
-// gameSounds — per-game default SoundName mapping for the games platform.
+// gameSounds: per-game default SoundName mapping for the games platform.
 //
 // NOTE FOR BOARD BUILDERS (P2 wave 2): this module is the single source of
 // truth for which sound a game's board plays. Do NOT hard-code SoundNames in
-// board components — look the kind up here (soundsFor(kind)) and play through
+// board components: look the kind up here (soundsFor(kind)) and play through
 // useSound()/getSoundManager() as usual. GameSpec.moveMeta(state, move) may
 // return an explicit `sound` for a specific move (e.g. othello marking a
 // flipping move as 'discFlip'); when it does, that wins over the defaults:
@@ -16,7 +16,7 @@
 // scripts/check-game-sounds.mjs) and resolve under ALL three sound themes;
 // a theme can override any of them by shipping its own file (see
 // SoundManager's shared-pool comment). Keys cover every GameKind in the
-// kernel union — including P2/P3 kinds not yet in the registry — so board
+// kernel union (including P2/P3 kinds not yet in the registry) so board
 // work never blocks on this file.
 
 import type { GameKind } from '../games/kernel'
@@ -39,7 +39,7 @@ const CHESS_LIKE: GameSoundMap = { place: 'move', capture: 'capture', win: 'game
 const DISC_CHESS: GameSoundMap = { place: 'discPlace', capture: 'capture', win: 'gameEnd' }
 
 const GAME_SOUNDS: Record<GameKind, GameSoundMap> = {
-  // chess family — chessops (P1)
+  // chess family. Chessops (P1)
   chess: CHESS_LIKE,
   chess960: CHESS_LIKE,
   crazyhouse: CHESS_LIKE,
@@ -49,7 +49,7 @@ const GAME_SOUNDS: Record<GameKind, GameSoundMap> = {
   threecheck: CHESS_LIKE,
   horde: CHESS_LIKE,
   racingkings: CHESS_LIKE,
-  // chess family — ffish (P2)
+  // chess family. Ffish (P2)
   xiangqi: DISC_CHESS,
   janggi: DISC_CHESS,
   makruk: CHESS_LIKE, // upright pieces, western-style set-down
@@ -69,7 +69,7 @@ const GAME_SOUNDS: Record<GameKind, GameSoundMap> = {
   tictactoe: { place: 'penStroke', capture: 'penStroke', win: 'gameEnd' } // no captures
 }
 
-/** Default sound mapping for a game. Total over GameKind — never undefined. */
+/** Default sound mapping for a game. Total over GameKind. Never undefined. */
 export function soundsFor(kind: GameKind): GameSoundMap {
   return GAME_SOUNDS[kind]
 }

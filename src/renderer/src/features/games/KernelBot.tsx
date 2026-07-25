@@ -1,10 +1,10 @@
 // vs Bot for every NON-chess kernel game (go, gomoku, othello, connect4, hex,
-// morris, tictactoe, checkers both) — the sibling of VariantBot (chess family)
+// morris, tictactoe, checkers both). The sibling of VariantBot (chess family)
 // built on the same seams: rules through the registry GameSpec, moves through
 // the games/bots.ts provider (KataGo GTP ipc for go, in-process searches for
 // the rest), board via the registry's lazy renderer. KernelOtb's extras carry
 // over: per-idiom color names, pass/swap buttons, go board sizes and go's
-// scoring phase (the bot defers to the human on dead-stone marking — mark, then
+// scoring phase (the bot defers to the human on dead-stone marking, mark, then
 // finalize on the board).
 //
 // Go's engine dependency is surfaced INLINE (spec task: not a dead toast): when
@@ -84,7 +84,7 @@ export function KernelBot({
   const [goByoId, setGoByoId] = useState('off')
   const [state, setState] = useState<unknown>(null)
   const [thinking, setThinking] = useState(false)
-  // A side lost on time (local go clocks) — terminal beside spec outcome.
+  // A side lost on time (local go clocks). Terminal beside spec outcome.
   const [timeLoss, setTimeLoss] = useState<PlayerColor | null>(null)
   const [clockEpoch, setClockEpoch] = useState(0)
   const [territoryOn, setTerritoryOn] = useState(false)
@@ -139,7 +139,7 @@ export function KernelBot({
   const isUserTurn =
     phase === 'playing' && !outcome && !goScoring && timeLoss === null && turn === userColor
 
-  // Local go clocks (both sides tick — the bot burns real think time too).
+  // Local go clocks (both sides tick; the bot burns real think time too).
   const goClockCfg = useMemo<GoClockConfig | null>(() => {
     if (!isGo) return null
     const mainMs = GO_MAIN_PRESETS.find((p) => p.id === goMainId)?.ms ?? 0
@@ -197,12 +197,12 @@ export function KernelBot({
         // cancelled/seq guards above drop stale replies). NEVER smuggle a
         // success flag out of a setState updater: React runs updaters during
         // render, and its eager fast path is skipped when another update
-        // (setThinking above) is already pending — so a flag read back
+        // (setThinking above) is already pending, so a flag read back
         // synchronously is ALWAYS false and the toast fired on every legal
         // bot reply (live packaged-app audit, 2026-07-07).
         const next = spec.play(state, mv)
         if (next) setState(next)
-        else onToast(`The bot offered an illegal move (${mv}) — try restarting.`)
+        else onToast(`The bot offered an illegal move (${mv}). Try restarting.`)
       })
       .catch((err) => {
         if (cancelled || seq !== gameSeq.current) return
@@ -210,11 +210,11 @@ export function KernelBot({
         setPhase('setup')
         if (err instanceof BotUnavailableError) {
           // Back on the setup card the availability probe re-runs and renders
-          // the inline install prompt — the toast is just the immediate why.
+          // the inline install prompt: the toast is just the immediate why.
           if (isGo) setEngineReady(false)
           onToast(err.message)
         } else {
-          onToast('The bot failed to move — try restarting the game.')
+          onToast('The bot failed to move. Try restarting the game.')
         }
       })
     return () => {
@@ -229,7 +229,7 @@ export function KernelBot({
     [isUserTurn, applyMove]
   )
 
-  // Go scoring actions (markdead/finalize) — proposed by the board, resolved
+  // Go scoring actions (markdead/finalize). Proposed by the board, resolved
   // through the GoSpec seam exactly like KernelOtb.
   const onAction = useCallback(
     (action: string) => {
@@ -267,11 +267,11 @@ export function KernelBot({
   const canSwap = isUserTurn && legal.includes('swap')
 
   const resultLabel = timeLoss
-    ? `${timeLoss === userColor ? 'Bot wins' : 'You win'} — time`
+    ? `${timeLoss === userColor ? 'Bot wins' : 'You win'} on time`
     : outcome &&
       (outcome.winner === null
-        ? `Draw — ${outcome.reason.replace(/-/g, ' ')}`
-        : `${outcome.winner === userColor ? 'You win' : 'Bot wins'} — ${outcome.reason.replace(/-/g, ' ')}`)
+        ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
+        : `${outcome.winner === userColor ? 'You win' : 'Bot wins'}: ${outcome.reason.replace(/-/g, ' ')}`)
 
   const over = outcome !== null || timeLoss !== null
 
@@ -392,8 +392,8 @@ export function KernelBot({
                     aria-pressed={goByoId === p.id}
                     title={
                       p.byo
-                        ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s — a move inside a period resets it`
-                        : 'No overtime — main time only'
+                        ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s. A move inside a period resets it.`
+                        : 'No overtime, main time only'
                     }
                     onClick={() => setGoByoId(p.id)}
                   >
@@ -428,18 +428,18 @@ export function KernelBot({
           </div>
 
           {engineReady === false ? (
-            // Web build: KataGo can't be downloaded here — no CTA, just the
+            // Web build: KataGo can't be downloaded here. No CTA, just the
             // honest status (matches bots.ts BotUnavailableError copy).
             <div className="vbot-install" role="status">
               {isWebBuild ? (
                 <p>
-                  Go bots are coming to the web — available today in the{' '}
+                  Go bots are coming to the web. Available today in the{' '}
                   <strong>desktop app</strong>.
                 </p>
               ) : (
                 <>
                   <p>
-                    Go bots run on <strong>KataGo</strong> — a small engine download that stays on this
+                    Go bots run on <strong>KataGo</strong>, a small engine download that stays on this
                     machine. Grab it once and every level (including the human-style ranks) unlocks.
                   </p>
                   {onOpenSettings ? (
@@ -526,7 +526,7 @@ export function KernelBot({
         <div className="votb-turn">
           <span className={`votb-turn-dot is-${turn}`} aria-hidden />
           {goScoring
-            ? 'Scoring — tap dead groups'
+            ? 'Scoring: tap dead groups'
             : over
               ? 'Game over'
               : isUserTurn
@@ -553,7 +553,7 @@ export function KernelBot({
         <BoardModeToggle kind={kind} />
         {canPass && (
           <button type="button" className="votb-btn" onClick={() => onUserMove('pass')}>
-            Pass{kind === 'othello' ? ' — no legal placement' : ''}
+            Pass{kind === 'othello' ? ' (no legal placement)' : ''}
           </button>
         )}
         {canSwap && (
@@ -568,8 +568,7 @@ export function KernelBot({
           Change level
         </button>
         <p className="votb-note">
-          {entry.title} vs bot — {provider.describe(level)}.
-          {isGo && ' Two passes end the game — then tap dead groups and finalize the score.'}
+          {entry.title} vs bot: {provider.describe(level)}.
         </p>
       </aside>
     </div>

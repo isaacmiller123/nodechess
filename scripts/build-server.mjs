@@ -4,7 +4,7 @@
 // Self-contained on purpose: fastify + @fastify/static live in
 // devDependencies (they must NOT ride into the desktop app that
 // electron-builder packages from `dependencies`), and the Docker runtime
-// stage copies only dist-web + dist-server + static trees — no node_modules.
+// stage copies only dist-web + dist-server + static trees: no node_modules.
 // CommonJS output because fastify's dependency graph is cjs-native and
 // esbuild bundles it losslessly that way (__dirname stays real).
 

@@ -25,7 +25,7 @@ PlayView-*.js
 resources/engine
 # The 2.1 GB puzzle DB is deliberately OUTSIDE the build context: by default it
 # is volume-mounted at runtime (docker-compose.yml → /puzzles + PUZZLES_PATH).
-# Baking it in does NOT require touching this file — the Dockerfile takes the
+# Baking it in does NOT require touching this file. The Dockerfile takes the
 # DB as a NAMED build context (immune to this ignore list):
 #   docker build --build-arg WITH_PUZZLES=true --build-context puzzles-db=resources/data .
 resources/data

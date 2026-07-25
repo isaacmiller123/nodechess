@@ -19,9 +19,9 @@
 
 /**
  * TRUE while the network-dependent surfaces render sample data (spec quality
- * gate: no dead buttons — fixture surfaces degrade visibly, never pretend to
+ * gate: no dead buttons. Fixture surfaces degrade visibly, never pretend to
  * be live). The mechanism: each fixture-rendering component gates on this
- * flag and mounts ./FixturePreviewBadge.tsx, which states "Sample data —
+ * flag and mounts ./FixturePreviewBadge.tsx, which states "Sample data:
  * awaiting network transport" in place. Grep for DEV_FIXTURE to find every
  * fixture surface; flips off with the overlay/witness transport work.
  * Typed `boolean` (not a literal) so the gates stay live conditionals.
@@ -67,7 +67,7 @@ export function shortB64u(v: string): string {
  * Build a UiLadder whose §6 `display` object IS the output of the SHARED
  * displayState() over the ladder's protocol state (A4-28). Fixtures never
  * author a display state, so no fixture can contradict the PARAMS_A4 reveal
- * thresholds (revealThreshold: 120/100/80/40) — placement/provisional/ranked
+ * thresholds (revealThreshold: 120/100/80/40), placement/provisional/ranked
  * and the `of` counts all come from the authority. `rating`/`rd` are display
  * Elo, stored micro (×10⁶); hidden ladders still carry a protocol rating so
  * the §6 bracket projection (mm/pairing bracketOf) has a real input.
@@ -162,7 +162,7 @@ export const MAILBOX: UiMailItem[] = [
     kind: 'rematch-invite',
     ts: MOCK_NOW - 4 * HOUR,
     priority: 'entangled',
-    note: 'Rapid, 10+5 — best of three?'
+    note: 'Rapid, 10+5: best of three?'
   },
   {
     id: 'mail-2',
@@ -378,7 +378,7 @@ export const PROFILES: Record<string, UiProfile> = {
     ladders: [
       uiLadder('Bullet', 0, 1200, 350),
       // Hidden protocol rating 1493 keeps the RatedLobby demo spillover on the
-      // SAME bracket rail as the signed-in Blitz 1478 (bracketOf: [800,1600) —
+      // SAME bracket rail as the signed-in Blitz 1478 (bracketOf: [800,1600),
       // pairingLegal rule 4; asserted in RatedLobby).
       uiLadder('Blitz', 23, 1493, 241),
       uiLadder('Rapid', 7, 1204, 305),
@@ -416,7 +416,7 @@ export const PROFILES: Record<string, UiProfile> = {
 
   // §12 C-12 / §5 floor: fewer than K_rec shard rows, a device-signed
   // revocation honored on device-attested evidence only, and the surfaced
-  // checkpoint below the cosigner threshold — the degraded view the spec
+  // checkpoint below the cosigner threshold: the degraded view the spec
   // requires rendered "degraded, self-healing, never silent". Exercises all
   // three A4 degradation carriers (path/revocationContested/mOfN).
   'adrift#P9GH3': {

@@ -51,9 +51,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — take the free piece",
+     "title": "Warm-up: take the free piece",
      "intro": {
-      "text": "Before the numbers, your hands. In each position a black piece sits undefended in your range — capture it. One move. This is the skill the whole chapter sharpens: material matters more than anything else you do below master level."
+      "text": "Before the numbers, your hands. In each position a black piece sits undefended in your range. Capture it. One move. This is the skill the whole chapter sharpens: material matters more than anything else you do below master level."
      },
      "puzzle": {
       "themes": [
@@ -102,7 +102,7 @@
        "conceptId": "piece-values",
        "coach": {
         "conceptId": "piece-values",
-        "text": "Chess is fought with an army, and every soldier has a price. Learn the numbers cold, because they tell you who is winning. A pawn is worth one. A knight, three. A bishop, three. A rook, five. The queen, nine — the great power, here on d4. And the king is beyond price: lose him and you lose everything. These values are the scale you weigh every capture on.",
+        "text": "Chess is fought with an army, and every soldier has a price. Learn the numbers cold, because they tell you who is winning. A pawn is worth one. A knight, three. A bishop, three. A rook, five. The queen, nine. The great power, here on d4. And the king is beyond price: lose him and you lose everything. These values are the scale you weigh every capture on.",
         "annotations": [
          {
           "kind": "circle",
@@ -118,7 +118,7 @@
        "conceptId": "piece-values",
        "coach": {
         "conceptId": "piece-values",
-        "text": "Picture the back rank as a price list. Rook five, queen nine, bishop three, knight three, the pawns one apiece. Notice that bishop and knight are equal in points — we call them both 'minor pieces', worth about three. The rook outweighs them: a rook for a minor piece wins you two points, what masters call winning the exchange. Hold these numbers in your head at all times.",
+        "text": "Picture the back rank as a price list. Rook five, queen nine, bishop three, knight three, the pawns one apiece. Notice that bishop and knight are equal in points: we call them both 'minor pieces', worth about three. The rook outweighs them: a rook for a minor piece wins you two points, what masters call winning the exchange. Hold these numbers in your head at all times.",
         "annotations": [
          {
           "kind": "highlight",
@@ -152,7 +152,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "Now the point of the numbers — trades. A trade is good when you give less than you get. Your queen is worth nine, his rook five. Take the rook with the queen here and he recaptures? You handed over nine to win five — you lost four points. A terrible trade. The queen does not swap herself for a rook. Give less, get more: that is the only rule of trading worth memorizing.",
+        "text": "Now the point of the numbers. Trades. A trade is good when you give less than you get. Your queen is worth nine, his rook five. Take the rook with the queen here and he recaptures? You handed over nine to win five. You lost four points. A terrible trade. The queen does not swap herself for a rook. Give less, get more: that is the only rule of trading worth memorizing.",
         "annotations": [
          {
           "kind": "circle",
@@ -165,7 +165,7 @@
           "from": "d1",
           "to": "d8",
           "color": "bad",
-          "label": "9 for 5 — bad"
+          "label": "9 for 5: bad"
          },
          {
           "kind": "highlight",
@@ -181,7 +181,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "Turn it around. Your rook is worth five; the knight on d5 is worth three. And this knight is guarded — the pawn on c6 sits behind it. So if you play Rxd5, the pawn answers cxd5: you gave a rook to win a knight, five for three, and threw away two points. A bad trade. The rule, plain and hard: never swap a big piece for a small one unless the count comes out in your favour. The queen and rook do not trade themselves down for less.",
+        "text": "Turn it around. Your rook is worth five; the knight on d5 is worth three. And this knight is guarded. The pawn on c6 sits behind it. So if you play Rxd5, the pawn answers cxd5: you gave a rook to win a knight, five for three, and threw away two points. A bad trade. The rule, plain and hard: never swap a big piece for a small one unless the count comes out in your favour. The queen and rook do not trade themselves down for less.",
         "annotations": [
          {
           "kind": "circle",
@@ -207,7 +207,7 @@
           "from": "d1",
           "to": "d5",
           "color": "bad",
-          "label": "Rxd5? cxd5 — 5 for 3"
+          "label": "Rxd5? cxd5, 5 for 3"
          }
         ]
        }
@@ -223,7 +223,7 @@
        "conceptId": "piece-values",
        "coach": {
         "conceptId": "piece-values",
-        "text": "Two black pieces hang at once, and the black king in the corner guards neither. The rook on d7 is worth five; the knight on h5 is worth three. Both are free — so take the greater. Weigh the numbers and capture the richer prize with your queen.",
+        "text": "Two black pieces hang at once, and the black king in the corner guards neither. The rook on d7 is worth five; the knight on h5 is worth three. Both are free, so take the greater. Weigh the numbers and capture the richer prize with your queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -249,7 +249,7 @@
        ],
        "successLine": {
         "conceptId": "piece-values",
-        "text": "Qxd7. Five points beats three — when both hang, the disciplined player always pockets the larger. A small habit, but over a career it wins games by the hundred.",
+        "text": "Qxd7. Five points beats three. When both hang, the disciplined player always pockets the larger. A small habit, but over a career it wins games by the hundred.",
         "annotations": [
          {
           "kind": "circle",
@@ -260,7 +260,7 @@
        },
        "retryLine": {
         "conceptId": "piece-values",
-        "text": "The knight is free, yes — but the rook on d7 is free too, and a rook is worth five to the knight's three. When both hang, take the bigger. Capture the rook."
+        "text": "The knight is free, yes, but the rook on d7 is free too, and a rook is worth five to the knight's three. When both hang, take the bigger. Capture the rook."
        }
       },
       {
@@ -294,7 +294,7 @@
        ],
        "successLine": {
         "conceptId": "piece-values",
-        "text": "Qxd5, check into the bargain. Three points, not one — you grabbed the knight, not the pawn. Always reach for the heaviest free piece on the board.",
+        "text": "Qxd5, check into the bargain. Three points, not one. You grabbed the knight, not the pawn. Always reach for the heaviest free piece on the board.",
         "annotations": [
          {
           "kind": "circle",
@@ -305,16 +305,16 @@
        },
        "retryLine": {
         "conceptId": "piece-values",
-        "text": "The pawn is free, but it is worth only one point. The knight on d5 is free and worth three. Take the bigger one — straight up the d-file."
+        "text": "The pawn is free, but it is worth only one point. The knight on d5 is free and worth three. Take the bigger one, straight up the d-file."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — free material, found",
+     "title": "Cool-down: free material, found",
      "intro": {
-      "text": "Close the lesson the way you will close countless games: see the undefended piece and take it. A touch harder now — the loose piece sits further off, so make the eye work for it."
+      "text": "Close the lesson the way you will close countless games: see the undefended piece and take it. A touch harder now: the loose piece sits further off, so make the eye work for it."
      },
      "puzzle": {
       "themes": [
@@ -373,9 +373,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — grab what's loose",
+     "title": "Warm-up: grab what's loose",
      "intro": {
-      "text": "Warm the eye on the pure case: a black piece sits undefended in your range. Find it and take it, one move each. Then we sharpen the question that turns a free capture into a habit — is it defended?"
+      "text": "Warm the eye on the pure case: a black piece sits undefended in your range. Find it and take it, one move each. Then we sharpen the question that turns a free capture into a habit. Is it defended?"
      },
      "puzzle": {
       "themes": [
@@ -424,7 +424,7 @@
        "conceptId": "is-it-defended",
        "coach": {
         "conceptId": "is-it-defended",
-        "text": "Here is the most profitable habit in beginner chess. Before you take anything, ask one question: is it defended? Look at this knight on g4, sitting on your queen's diagonal. Run your eye over every black piece — does any of them guard g4? Nothing. No pawn, no piece. It is utterly free. So you take it, and you are simply up a knight. Train yourself to ask 'is it defended?' before every single capture.",
+        "text": "Here is the most profitable habit in beginner chess. Before you take anything, ask one question: is it defended? Look at this knight on g4, sitting on your queen's diagonal. Run your eye over every black piece. Does any of them guard g4? Nothing. No pawn, no piece. It is utterly free. So you take it, and you are simply up a knight. Train yourself to ask 'is it defended?' before every single capture.",
         "annotations": [
          {
           "kind": "circle",
@@ -447,7 +447,7 @@
        "conceptId": "the-bait",
        "coach": {
         "conceptId": "the-bait",
-        "text": "Now the trap that punishes the greedy. This knight on a4 looks free — your queen's diagonal runs straight to it. But ask the question. Is it defended? Yes: the pawn on b5 guards it. Take the knight, Qxa4, and the pawn answers bxa4 — you have given a nine-point queen for a three-point knight. A disaster. A piece a pawn defends is not free; it is bait. Never snap off a defended piece with a bigger one.",
+        "text": "Now the trap that punishes the greedy. This knight on a4 looks free: your queen's diagonal runs straight to it. But ask the question. Is it defended? Yes: the pawn on b5 guards it. Take the knight, Qxa4, and the pawn answers bxa4. You have given a nine-point queen for a three-point knight. A disaster. A piece a pawn defends is not free; it is bait. Never snap off a defended piece with a bigger one.",
         "annotations": [
          {
           "kind": "circle",
@@ -477,7 +477,7 @@
        "conceptId": "take-the-free-piece",
        "coach": {
         "conceptId": "take-the-free-piece",
-        "text": "Put the two together. The knight on a4 is bait — the pawn on b5 guards it, leave it alone. But scan on. The rook on h5 sits all alone at the end of your queen's other diagonal, defended by nothing. That is the real prize. Pass over the trap, take the free rook. The lesson: do not grab the first capture you see — ask 'is it defended?' of each, and take the one that is truly free.",
+        "text": "Put the two together. The knight on a4 is bait. The pawn on b5 guards it, leave it alone. But scan on. The rook on h5 sits all alone at the end of your queen's other diagonal, defended by nothing. That is the real prize. Pass over the trap, take the free rook. The lesson: do not grab the first capture you see. Ask 'is it defended?' of each, and take the one that is truly free.",
         "annotations": [
          {
           "kind": "highlight",
@@ -490,7 +490,7 @@
           "from": "d1",
           "to": "h5",
           "color": "good",
-          "label": "Qxh5 — free"
+          "label": "Qxh5: free"
          }
         ]
        }
@@ -506,7 +506,7 @@
        "conceptId": "take-the-free-piece",
        "coach": {
         "conceptId": "take-the-free-piece",
-        "text": "Ask the question, then act. The knight on g4 stands on your queen's diagonal. Check it: does any black piece or pawn defend g4? Look carefully — nothing does. It is free. Capture it.",
+        "text": "Ask the question, then act. The knight on g4 stands on your queen's diagonal. Check it: does any black piece or pawn defend g4? Look carefully: nothing does. It is free. Capture it.",
         "annotations": [
          {
           "kind": "circle",
@@ -525,7 +525,7 @@
        ],
        "successLine": {
         "conceptId": "take-the-free-piece",
-        "text": "Qxg4, with check on top. Undefended and in range — you asked the question, got the answer, and won the knight clean. Up three points for nothing.",
+        "text": "Qxg4, with check on top. Undefended and in range: you asked the question, got the answer, and won the knight clean. Up three points for nothing.",
         "annotations": [
          {
           "kind": "circle",
@@ -536,7 +536,7 @@
        },
        "retryLine": {
         "conceptId": "is-it-defended",
-        "text": "Nothing guards the knight on g4, and your queen's diagonal runs straight to it. It is free — take it."
+        "text": "Nothing guards the knight on g4, and your queen's diagonal runs straight to it. It is free. Take it."
        }
       },
       {
@@ -544,7 +544,7 @@
        "conceptId": "the-bait",
        "coach": {
         "conceptId": "the-bait",
-        "text": "Two captures beckon — but only one is sound. The knight on a4 is defended by the pawn on b5: take it with the queen and you lose her for a knight. The rook on h5 is defended by nothing. Ask the question of each, refuse the bait, and take the piece that is genuinely free.",
+        "text": "Two captures beckon, but only one is sound. The knight on a4 is defended by the pawn on b5: take it with the queen and you lose her for a knight. The rook on h5 is defended by nothing. Ask the question of each, refuse the bait, and take the piece that is genuinely free.",
         "annotations": [
          {
           "kind": "circle",
@@ -570,7 +570,7 @@
        ],
        "successLine": {
         "conceptId": "take-the-free-piece",
-        "text": "Qxh5 — the free rook, five points, and your queen is safe. You saw that the knight was bait and the rook was the real gift. That is the whole skill: ask 'is it defended?' of every target, and take only what is truly loose.",
+        "text": "Qxh5: the free rook, five points, and your queen is safe. You saw that the knight was bait and the rook was the real gift. That is the whole skill: ask 'is it defended?' of every target, and take only what is truly loose.",
         "annotations": [
          {
           "kind": "circle",
@@ -581,16 +581,16 @@
        },
        "retryLine": {
         "conceptId": "the-bait",
-        "text": "If you took on a4 you walked into bxa4 — queen for a knight, a catastrophe. The pawn on b5 guards the knight. The rook on h5 is the undefended one. Take that instead."
+        "text": "If you took on a4 you walked into bxa4, queen for a knight, a catastrophe. The pawn on b5 guards the knight. The rook on h5 is the undefended one. Take that instead."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — win the loose piece",
+     "title": "Cool-down: win the loose piece",
      "intro": {
-      "text": "Clean one-movers from the same idea: an enemy piece hangs, you take it. Ask 'is it defended?' first, every time — then strike."
+      "text": "Clean one-movers from the same idea: an enemy piece hangs, you take it. Ask 'is it defended?' first, every time: then strike."
      },
      "puzzle": {
       "themes": [
@@ -634,15 +634,15 @@
   },
   {
    "id": "l3-good-trade-bad-trade",
-   "title": "Good Trade, Bad Trade — Exchanges",
+   "title": "Good Trade, Bad Trade, Exchanges",
    "kind": "positional",
-   "summary": "Weigh every exchange before you make it. Favourable, equal, or losing — the points tell you which, before you commit.",
+   "summary": "Weigh every exchange before you make it. Favourable, equal, or losing: the points tell you which, before you commit.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — count, then win the most",
+     "title": "Warm-up: count, then win the most",
      "intro": {
-      "text": "This lesson is about the arithmetic of trades, so warm up on the count. In each position a capture wins you material — but weigh the points first and take the heaviest prize. A minor piece that snaps off a loose rook has, in effect, won the exchange; reach for it."
+      "text": "This lesson is about the arithmetic of trades, so warm up on the count. In each position a capture wins you material, but weigh the points first and take the heaviest prize. A minor piece that snaps off a loose rook has, in effect, won the exchange; reach for it."
      },
      "puzzle": {
       "themes": [
@@ -692,7 +692,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "A trade is just two captures weighed against each other. Here is the best kind — a trade that is not even a trade. The black rook on h4 sits on your bishop's diagonal, undefended. Bxh4 wins five points and nothing comes back. When you give nothing and gain a rook, that is not a swap, it is a theft. Always look first for the capture that costs you nothing.",
+        "text": "A trade is just two captures weighed against each other. Here is the best kind. A trade that is not even a trade. The black rook on h4 sits on your bishop's diagonal, undefended. Bxh4 wins five points and nothing comes back. When you give nothing and gain a rook, that is not a swap, it is a theft. Always look first for the capture that costs you nothing.",
         "annotations": [
          {
           "kind": "circle",
@@ -704,7 +704,7 @@
           "from": "f2",
           "to": "h4",
           "color": "good",
-          "label": "Bxh4 — win 5"
+          "label": "Bxh4: win 5"
          }
         ]
        }
@@ -714,7 +714,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "Now an equal trade — rook for rook, five for five. The rooks face each other down the open d-file, and his king stands right beside d8. Play Rxd8 and the king answers Kxd8: you gave a rook, you got a rook, and the count has not moved a hair. That is the test from the last lesson, asked of a swap — d8 IS defended, by the king, so this is no free piece, only an even trade. Equal trades are not bad; they are a tool. Trade when you are ahead in material to simplify toward the win; trade to peel off a dangerous attacker. But never imagine an even swap changes the balance — it does not.",
+        "text": "Now an equal trade, rook for rook, five for five. The rooks face each other down the open d-file, and his king stands right beside d8. Play Rxd8 and the king answers Kxd8: you gave a rook, you got a rook, and the count has not moved a hair. That is the test from the last lesson, asked of a swap: d8 IS defended, by the king, so this is no free piece, only an even trade. Equal trades are not bad; they are a tool. Trade when you are ahead in material to simplify toward the win; trade to peel off a dangerous attacker. But never imagine an even swap changes the balance. It does not.",
         "annotations": [
          {
           "kind": "circle",
@@ -726,7 +726,7 @@
           "from": "d1",
           "to": "d8",
           "color": "info",
-          "label": "Rxd8 Kxd8 — 5 for 5"
+          "label": "Rxd8 Kxd8, 5 for 5"
          },
          {
           "kind": "arrow",
@@ -743,7 +743,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "And the trade you must never start — the losing one. Mark the difference from the bait of the last lesson: there a piece dangled and you were tempted to grab it. Here nothing of yours is attacked, nothing hangs — the swap would be one you begin yourself. Your rook is worth five; the bishop on a5 is worth three, and the pawn on b6 guards it. Play Rxa5 and bxa5 answers: you have volunteered a rook for a bishop and dropped two points for no reason at all. The lesson is not only 'don't take the bait' — it is 'never offer a swap that gives more than it gets.' Count before you initiate, every time.",
+        "text": "And the trade you must never start, the losing one. Mark the difference from the bait of the last lesson: there a piece dangled and you were tempted to grab it. Here nothing of yours is attacked, nothing hangs. The swap would be one you begin yourself. Your rook is worth five; the bishop on a5 is worth three, and the pawn on b6 guards it. Play Rxa5 and bxa5 answers: you have volunteered a rook for a bishop and dropped two points for no reason at all. The lesson is not only 'don't take the bait'. It is 'never offer a swap that gives more than it gets.' Count before you initiate, every time.",
         "annotations": [
          {
           "kind": "circle",
@@ -769,7 +769,7 @@
           "from": "a1",
           "to": "a5",
           "color": "bad",
-          "label": "Rxa5? bxa5 — 5 for 3"
+          "label": "Rxa5? bxa5, 5 for 3"
          }
         ]
        }
@@ -805,7 +805,7 @@
        ],
        "successLine": {
         "conceptId": "good-bad-trade",
-        "text": "Bxh4. A bishop worth three captures a rook worth five, and nothing recaptures — you are up the rook free and clear. The best 'trade' is the one where only one piece comes off the board, and it is theirs.",
+        "text": "Bxh4. A bishop worth three captures a rook worth five, and nothing recaptures. You are up the rook free and clear. The best 'trade' is the one where only one piece comes off the board, and it is theirs.",
         "annotations": [
          {
           "kind": "circle",
@@ -816,7 +816,7 @@
        },
        "retryLine": {
         "conceptId": "good-bad-trade",
-        "text": "The rook on h4 is undefended and sits on the bishop's diagonal from f2. Win it for nothing — Bxh4."
+        "text": "The rook on h4 is undefended and sits on the bishop's diagonal from f2. Win it for nothing, Bxh4."
        }
       },
       {
@@ -824,7 +824,7 @@
        "conceptId": "good-bad-trade",
        "coach": {
         "conceptId": "good-bad-trade",
-        "text": "A real exchange now — and this one is a recapture you walk into on purpose. The rook on c6 is defended by the pawn on b7, so Bxc6 is not a free piece: the pawn takes back, bxc6. But weigh it before you flinch. You give a bishop worth three and you win a rook worth five — that is two points in your pocket, what masters call winning the exchange. A swap is good when the count favours you, even when a piece comes back. Make the trade.",
+        "text": "A real exchange now, and this one is a recapture you walk into on purpose. The rook on c6 is defended by the pawn on b7, so Bxc6 is not a free piece: the pawn takes back, bxc6. But weigh it before you flinch. You give a bishop worth three and you win a rook worth five. That is two points in your pocket, what masters call winning the exchange. A swap is good when the count favours you, even when a piece comes back. Make the trade.",
         "annotations": [
          {
           "kind": "circle",
@@ -850,7 +850,7 @@
           "from": "f3",
           "to": "c6",
           "color": "good",
-          "label": "Bxc6 — win the exchange"
+          "label": "Bxc6: win the exchange"
          }
         ]
        },
@@ -859,7 +859,7 @@
        ],
        "successLine": {
         "conceptId": "good-bad-trade",
-        "text": "Bxc6, and after bxc6 you are up the exchange — a three-point bishop traded for a five-point rook, two points to the good. This is the difference from a free piece: here a man does come back, yet because you counted, the trade still wins. Good trades are the ones the arithmetic approves.",
+        "text": "Bxc6, and after bxc6 you are up the exchange. A three-point bishop traded for a five-point rook, two points to the good. This is the difference from a free piece: here a man does come back, yet because you counted, the trade still wins. Good trades are the ones the arithmetic approves.",
         "annotations": [
          {
           "kind": "circle",
@@ -870,16 +870,16 @@
        },
        "retryLine": {
         "conceptId": "good-bad-trade",
-        "text": "Yes, the b7 pawn guards the rook and will recapture — but do the sum. Bishop (3) for rook (5) wins you two points even after bxc6. That is winning the exchange. Play Bxc6."
+        "text": "Yes, the b7 pawn guards the rook and will recapture, but do the sum. Bishop (3) for rook (5) wins you two points even after bxc6. That is winning the exchange. Play Bxc6."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — win material in one",
+     "title": "Cool-down: win material in one",
      "intro": {
-      "text": "Real positions now, where a single clean capture nets you material. Some are a free piece, some a winning trade — in every case, count the points and take the one that puts you ahead."
+      "text": "Real positions now, where a single clean capture nets you material. Some are a free piece, some a winning trade. In every case, count the points and take the one that puts you ahead."
      },
      "puzzle": {
       "themes": [
@@ -924,15 +924,15 @@
   },
   {
    "id": "l4-dont-hang-your-own",
-   "title": "Don't Hang Your Own — Defend or Move to Safety",
+   "title": "Don't Hang Your Own: Defend or Move to Safety",
    "kind": "tactics",
    "summary": "The mirror skill. When your piece is attacked you have three saves: move it, defend it, or make a bigger threat.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — is theirs really free?",
+     "title": "Warm-up: is theirs really free?",
      "intro": {
-      "text": "Begin where we left off — take the loose enemy piece, one move each. Hold the question in mind, because we now turn it on yourself: before you grab theirs, make sure none of yours is hanging."
+      "text": "Begin where we left off. Take the loose enemy piece, one move each. Hold the question in mind, because we now turn it on yourself: before you grab theirs, make sure none of yours is hanging."
      },
      "puzzle": {
       "themes": [
@@ -981,7 +981,7 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "It is not enough to win their pieces; you must stop losing yours. When a piece of yours is attacked, you have exactly three answers — no more. The first and most common: move it to safety. Here the pawn on d6 attacks your knight on e5, and a pawn is worth far less than a knight — you cannot afford to leave it or trade it for a pawn. So you move it. Nc4, Nd3, Ng4, Nf3 — any safe square. Just get it out of the fire.",
+        "text": "It is not enough to win their pieces; you must stop losing yours. When a piece of yours is attacked, you have exactly three answers, no more. The first and most common: move it to safety. Here the pawn on d6 attacks your knight on e5, and a pawn is worth far less than a knight. You cannot afford to leave it or trade it for a pawn. So you move it. Nc4, Nd3, Ng4, Nf3: any safe square. Just get it out of the fire.",
         "annotations": [
          {
           "kind": "circle",
@@ -1011,13 +1011,13 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "The second answer: defend it. Your knight stands proudly on e4 — a magnificent central square, the kind of outpost you fight to keep. The bishop on b7 attacks it down the long diagonal, but mark the value: bishop and knight are both worth three, so a swap would be dead even. You could retreat the knight — yet every retreat drags it back to the rim and surrenders that fine post for nothing. Why give up the best square on the board? Brace it instead. Ra4 slides along the fourth rank and guards e4; now Bxe4 is met by Rxe4, three for three, and your knight sits on untouched. When the attacker is an equal and your piece is well placed, do not flee — prop it up. (The catch: defending only holds when the attacker is worth as much as your piece, or more. Against a mere pawn it is useless — then you must move.)",
+        "text": "The second answer: defend it. Your knight stands proudly on e4. A magnificent central square, the kind of outpost you fight to keep. The bishop on b7 attacks it down the long diagonal, but mark the value: bishop and knight are both worth three, so a swap would be dead even. You could retreat the knight, yet every retreat drags it back to the rim and surrenders that fine post for nothing. Why give up the best square on the board? Brace it instead. Ra4 slides along the fourth rank and guards e4; now Bxe4 is met by Rxe4, three for three, and your knight sits on untouched. When the attacker is an equal and your piece is well placed, do not flee, prop it up. (The catch: defending only holds when the attacker is worth as much as your piece, or more. Against a mere pawn it is useless. Then you must move.)",
         "annotations": [
          {
           "kind": "circle",
           "square": "e4",
           "color": "focus",
-          "label": "strong outpost — attacked"
+          "label": "strong outpost: attacked"
          },
          {
           "kind": "arrow",
@@ -1041,7 +1041,7 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "The third answer, the boldest: make a bigger threat. Your queen on d1 is attacked by the rook on d8 straight down the open file, and nothing else of his bears on her. You could simply slide her aside — a safe square exists. But look across the board: the black knight on g4 stands undefended, right on your queen's diagonal, and it does not touch your queen at all. So do not merely flee. Qxg4 answers the threat AND wins a free knight, leaving the d-file in the same breath. When retreating only saves the piece but striking saves it and wins material, you strike. Move, defend, or counter-attack — those are your three, and only three, ways out.",
+        "text": "The third answer, the boldest: make a bigger threat. Your queen on d1 is attacked by the rook on d8 straight down the open file, and nothing else of his bears on her. You could simply slide her aside. A safe square exists. But look across the board: the black knight on g4 stands undefended, right on your queen's diagonal, and it does not touch your queen at all. So do not merely flee. Qxg4 answers the threat AND wins a free knight, leaving the d-file in the same breath. When retreating only saves the piece but striking saves it and wins material, you strike. Move, defend, or counter-attack. Those are your three, and only three, ways out.",
         "annotations": [
          {
           "kind": "circle",
@@ -1061,7 +1061,7 @@
           "from": "d1",
           "to": "g4",
           "color": "good",
-          "label": "Qxg4 — escape and win a knight!"
+          "label": "Qxg4: escape and win a knight!"
          }
         ]
        }
@@ -1077,7 +1077,7 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "Your knight on e5 is attacked by the pawn on d6. A knight is worth three, a pawn one — you cannot trade it for the pawn, and you cannot defend your way out of a pawn's attack. The answer is the first of the three saves: move it. Any square out of the pawn's reach will do — c4, d3, g4, c6, the choice is yours. Just get the knight out of the fire.",
+        "text": "Your knight on e5 is attacked by the pawn on d6. A knight is worth three, a pawn one. You cannot trade it for the pawn, and you cannot defend your way out of a pawn's attack. The answer is the first of the three saves: move it. Any square out of the pawn's reach will do: c4, d3, g4, c6, the choice is yours. Just get the knight out of the fire.",
         "annotations": [
          {
           "kind": "circle",
@@ -1109,7 +1109,7 @@
        ],
        "successLine": {
         "conceptId": "three-saves",
-        "text": "Out of the pawn's reach, and your material is intact. Against a pawn's attack on a piece, moving is the only sound save — there is no defending a knight from a pawn, and no trading three points for one. So you move it, and the knight lives. (The one square to shun was f7, right beside his king — every other flight was fine.)",
+        "text": "Out of the pawn's reach, and your material is intact. Against a pawn's attack on a piece, moving is the only sound save. There is no defending a knight from a pawn, and no trading three points for one. So you move it, and the knight lives. (The one square to shun was f7, right beside his king; every other flight was fine.)",
         "annotations": [
          {
           "kind": "highlight",
@@ -1121,7 +1121,7 @@
        },
        "retryLine": {
         "conceptId": "three-saves",
-        "text": "You cannot defend a knight against a pawn — if the pawn takes it, you have lost three for one. Move the knight clear of the pawn. Any safe square will do (c4, d3, g4 …) — just not f7, beside his king."
+        "text": "You cannot defend a knight against a pawn. If the pawn takes it, you have lost three for one. Move the knight clear of the pawn. Any safe square will do (c4, d3, g4 …), just not f7, beside his king."
        }
       },
       {
@@ -1129,7 +1129,7 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "Your knight owns the centre on e4, and the bishop on b7 attacks it — but a bishop is worth three, the same as your knight, so a trade would be even. Don't waste that outpost by retreating to the edge. Hold the square: bring your rook to the fourth rank so it guards e4. Then any capture is just three for three, and your knight stays where it is strongest. Add the defender.",
+        "text": "Your knight owns the centre on e4, and the bishop on b7 attacks it, but a bishop is worth three, the same as your knight, so a trade would be even. Don't waste that outpost by retreating to the edge. Hold the square: bring your rook to the fourth rank so it guards e4. Then any capture is just three for three, and your knight stays where it is strongest. Add the defender.",
         "annotations": [
          {
           "kind": "circle",
@@ -1154,7 +1154,7 @@
        ],
        "successLine": {
         "conceptId": "three-saves",
-        "text": "Ra4 — the rook guards e4 along the fourth rank. Now Bxe4 is met by Rxe4, an even trade, and your knight keeps its commanding central post. Against an equal attacker you may defend instead of running — and when the piece is well placed, you should. Against a pawn you may not. Know which is which.",
+        "text": "Ra4: the rook guards e4 along the fourth rank. Now Bxe4 is met by Rxe4, an even trade, and your knight keeps its commanding central post. Against an equal attacker you may defend instead of running, and when the piece is well placed, you should. Against a pawn you may not. Know which is which.",
         "annotations": [
          {
           "kind": "circle",
@@ -1171,16 +1171,16 @@
        },
        "retryLine": {
         "conceptId": "three-saves",
-        "text": "The attacker is a bishop, worth the same as your knight — so a trade is even and you may defend rather than flee. Don't retreat the knight off its strong central square; guard it instead. Put the rook on the fourth rank, Ra4."
+        "text": "The attacker is a bishop, worth the same as your knight, so a trade is even and you may defend rather than flee. Don't retreat the knight off its strong central square; guard it instead. Put the rook on the fourth rank, Ra4."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — rescue your piece",
+     "title": "Cool-down: rescue your piece",
      "intro": {
-      "text": "Now the mirror drill. In each position a piece of yours is under attack by a pawn — leave it and it falls, and you cannot defend a piece from a pawn. Here the enemy has fenced off the bolt-holes, so just one square is truly safe. Find it and move the piece there."
+      "text": "Now the mirror drill. In each position a piece of yours is under attack by a pawn. Leave it and it falls, and you cannot defend a piece from a pawn. Here the enemy has fenced off the bolt-holes, so just one square is truly safe. Find it and move the piece there."
      },
      "puzzle": {
       "themes": [
@@ -1224,15 +1224,15 @@
   },
   {
    "id": "l5-free-material-mixed",
-   "title": "Free Material — Mixed Drill",
+   "title": "Free Material: Mixed Drill",
    "kind": "practice",
    "summary": "The two-sided habit, made whole. Every move, scan twice: their hanging pieces, and yours. Then prove it over the board.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — both sides of the board",
+     "title": "Warm-up: both sides of the board",
      "intro": {
-      "text": "The chapter in one drill, on fresh ground. Some positions hand you a free enemy piece — win it. Some put a piece of yours under a pawn's attack, with a single safe square open — move it there. Look both ways before every move, and play the right one."
+      "text": "The chapter in one drill, on fresh ground. Some positions hand you a free enemy piece: win it. Some put a piece of yours under a pawn's attack, with a single safe square open. Move it there. Look both ways before every move, and play the right one."
      },
      "puzzle": {
       "themes": [
@@ -1290,13 +1290,13 @@
        "conceptId": "two-sided-habit",
        "coach": {
         "conceptId": "two-sided-habit",
-        "text": "Here is the discipline that ties the whole chapter together. Before every move you make, you scan the board twice. First their side: is any enemy piece hanging for me to take? Here, yes — the knight on d4 sits undefended on my bishop's diagonal. Bxd4 wins it. See the free piece, take the free piece.",
+        "text": "Here is the discipline that ties the whole chapter together. Before every move you make, you scan the board twice. First their side: is any enemy piece hanging for me to take? Here, yes: the knight on d4 sits undefended on my bishop's diagonal. Bxd4 wins it. See the free piece, take the free piece.",
         "annotations": [
          {
           "kind": "circle",
           "square": "d4",
           "color": "good",
-          "label": "free — take it"
+          "label": "free: take it"
          },
          {
           "kind": "arrow",
@@ -1312,13 +1312,13 @@
        "conceptId": "two-sided-habit",
        "coach": {
         "conceptId": "two-sided-habit",
-        "text": "Then your own side: is any piece of mine hanging, about to be lost? Look — the pawn on d6 attacks my knight on e5. That is a piece in danger, and if I grab something of his and forget this, the pawn takes my knight: three points gone for one. So I must answer it, this move. The scan runs both ways, every time. Ask both questions — what can I win, and what must I save? The player who asks only the first loses pieces; the player who asks only the second wins none. Ask both, and you will outplay everyone at this level.",
+        "text": "Then your own side: is any piece of mine hanging, about to be lost? Look: the pawn on d6 attacks my knight on e5. That is a piece in danger, and if I grab something of his and forget this, the pawn takes my knight: three points gone for one. So I must answer it, this move. The scan runs both ways, every time. Ask both questions. What can I win, and what must I save? The player who asks only the first loses pieces; the player who asks only the second wins none. Ask both, and you will outplay everyone at this level.",
         "annotations": [
          {
           "kind": "circle",
           "square": "e5",
           "color": "focus",
-          "label": "my knight — attacked"
+          "label": "my knight: attacked"
          },
          {
           "kind": "arrow",
@@ -1334,14 +1334,14 @@
     },
     {
      "kind": "guided",
-     "title": "Win, or save — choose right",
+     "title": "Win, or save: choose right",
      "steps": [
       {
        "fen": "k7/8/8/8/3n4/8/8/B3K3 w - - 0 1",
        "conceptId": "take-the-free-piece",
        "coach": {
         "conceptId": "take-the-free-piece",
-        "text": "Scan their side first. The knight on d4 is undefended and sits on your bishop's long diagonal. This one is a gift — take it.",
+        "text": "Scan their side first. The knight on d4 is undefended and sits on your bishop's long diagonal. This one is a gift. Take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1371,7 +1371,7 @@
        },
        "retryLine": {
         "conceptId": "take-the-free-piece",
-        "text": "The knight on d4 is free and lies on the bishop's diagonal from a1. Take it — Bxd4."
+        "text": "The knight on d4 is free and lies on the bishop's diagonal from a1. Take it, Bxd4."
        }
       },
       {
@@ -1379,7 +1379,7 @@
        "conceptId": "three-saves",
        "coach": {
         "conceptId": "three-saves",
-        "text": "Now scan your own side. The pawn on e5 attacks your bishop on d4 — and the pawn on f6 guards e5, so snapping it off with Bxe5 only loses the bishop to fxe5. A bishop for a pawn is a ruin, and you cannot defend a piece against a pawn. So you do the one sound thing: move it. Slide the bishop to any safe square down its diagonal — the choice is yours.",
+        "text": "Now scan your own side. The pawn on e5 attacks your bishop on d4, and the pawn on f6 guards e5, so snapping it off with Bxe5 only loses the bishop to fxe5. A bishop for a pawn is a ruin, and you cannot defend a piece against a pawn. So you do the one sound thing: move it. Slide the bishop to any safe square down its diagonal. The choice is yours.",
         "annotations": [
          {
           "kind": "circle",
@@ -1415,7 +1415,7 @@
        ],
        "successLine": {
         "conceptId": "three-saves",
-        "text": "The bishop slips clear and your material holds. Any square on its diagonal was safe — there is no wrong way to run from a pawn, only the wrong choice of standing still. You looked at your own pieces, saw the threat, and answered it before it landed. That second scan saves you a piece a game.",
+        "text": "The bishop slips clear and your material holds. Any square on its diagonal was safe. There is no wrong way to run from a pawn, only the wrong choice of standing still. You looked at your own pieces, saw the threat, and answered it before it landed. That second scan saves you a piece a game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1427,7 +1427,7 @@
        },
        "retryLine": {
         "conceptId": "three-saves",
-        "text": "The pawn on e5 attacks your bishop, and the f6 pawn means Bxe5 just loses to fxe5. You cannot defend a piece from a pawn — so move it. Any safe square down the diagonal will do: Be3, Bc3, Bf2 …"
+        "text": "The pawn on e5 attacks your bishop, and the f6 pawn means Bxe5 just loses to fxe5. You cannot defend a piece from a pawn, so move it. Any safe square down the diagonal will do: Be3, Bc3, Bf2 …"
        }
       },
       {
@@ -1435,7 +1435,7 @@
        "conceptId": "two-sided-habit",
        "coach": {
         "conceptId": "two-sided-habit",
-        "text": "Last one. Run the scan one final time. Your side first: nothing of yours is attacked, your bishop sits safe on a1. Now their side: the rook on g7 stands at the far end of your long diagonal, guarded by nothing — the king in the corner is too far to help it. That is a free rook. Reach all the way across and take it.",
+        "text": "Last one. Run the scan one final time. Your side first: nothing of yours is attacked, your bishop sits safe on a1. Now their side: the rook on g7 stands at the far end of your long diagonal, guarded by nothing. The king in the corner is too far to help it. That is a free rook. Reach all the way across and take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1446,7 +1446,7 @@
           "kind": "highlight",
           "square": "g7",
           "color": "info",
-          "label": "R 5 — free"
+          "label": "R 5: free"
          },
          {
           "kind": "arrow",
@@ -1462,7 +1462,7 @@
        ],
        "successLine": {
         "conceptId": "two-sided-habit",
-        "text": "Bxg7. Your pieces were safe, theirs was not, and the long diagonal carried your bishop the length of the board to win a rook for nothing. Win their loose pieces, guard your own, and count the points — that is the whole of sound chess below master level. Now prove it over the board.",
+        "text": "Bxg7. Your pieces were safe, theirs was not, and the long diagonal carried your bishop the length of the board to win a rook for nothing. Win their loose pieces, guard your own, and count the points. That is the whole of sound chess below master level. Now prove it over the board.",
         "annotations": [
          {
           "kind": "circle",
@@ -1473,16 +1473,16 @@
        },
        "retryLine": {
         "conceptId": "two-sided-habit",
-        "text": "Scan both ways: nothing of yours hangs, and the rook on g7 is undefended on your bishop's long diagonal. Take the free rook — Bxg7."
+        "text": "Scan both ways: nothing of yours hangs, and the rook on g7 is undefended on your bishop's long diagonal. Take the free rook, Bxg7."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — free material under pressure",
+     "title": "Cool-down: free material under pressure",
      "intro": {
-      "text": "A last set, a little harder and all new. Win the loose piece, or move the attacked one to its single safe square — the scan tells you which. Trust it, then play the move."
+      "text": "A last set, a little harder and all new. Win the loose piece, or move the attacked one to its single safe square. The scan tells you which. Trust it, then play the move."
      },
      "puzzle": {
       "themes": [
@@ -1540,7 +1540,7 @@
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "two-sided-habit",
-      "text": "Now earn the chapter. You are White, a whole rook to the good — five clean points of extra force. That is a winning advantage, and your only job is not to throw it away. Three rules: never leave a piece hanging, take anything he gives you for free, and bring your rook and king forward to escort a pawn home and promote. Trade pieces if you like — every trade brings the bare-rook win closer — but check before each move that nothing of yours is loose. Convert it cleanly. Begin."
+      "text": "Now earn the chapter. You are White, a whole rook to the good. Five clean points of extra force. That is a winning advantage, and your only job is not to throw it away. Three rules: never leave a piece hanging, take anything he gives you for free, and bring your rook and king forward to escort a pawn home and promote. Trade pieces if you like (every trade brings the bare-rook win closer) but check before each move that nothing of yours is loose. Convert it cleanly. Begin."
      }
     }
    ]
@@ -1553,25 +1553,25 @@
     "kind": "mc",
     "prompt": "Your opponent leaves a knight undefended in your bishop's range. What should you do?",
     "options": [
-     "Take it — it is a free piece, worth three points",
+     "Take it: it is a free piece, worth three points",
      "Leave it; capturing is too risky",
      "Offer a trade of bishops first",
      "Move your king to safety instead"
     ],
     "answerIndex": 0,
-    "explain": "An undefended enemy piece in your range is free material. A knight is worth three points — take it. Winning free pieces decides most games below master level."
+    "explain": "An undefended enemy piece in your range is free material. A knight is worth three points. Take it. Winning free pieces decides most games below master level."
    },
    {
     "kind": "mc",
     "prompt": "A pawn you could capture is defended by another pawn. Capturing it with your queen would:",
     "options": [
      "Win a free pawn",
-     "Lose material — you would give a nine-point queen and the pawn recaptures",
+     "Lose material: you would give a nine-point queen and the pawn recaptures",
      "Be an equal trade",
      "Force checkmate"
     ],
     "answerIndex": 1,
-    "explain": "The pawn is defended, so it is bait, not a gift. Qxpawn is met by the recapture, and you have given a queen worth nine for a pawn worth one. A defended piece is not free — ask 'is it defended?' before every capture."
+    "explain": "The pawn is defended, so it is bait, not a gift. Qxpawn is met by the recapture, and you have given a queen worth nine for a pawn worth one. A defended piece is not free. Ask 'is it defended?' before every capture."
    },
    {
     "kind": "mc",
@@ -1583,7 +1583,7 @@
      "Promote a pawn somewhere else"
     ],
     "answerIndex": 3,
-    "explain": "The three saves are: move it, defend it, or counter-attack with a bigger threat. Promoting a pawn elsewhere does nothing about the attack on the bishop — it would simply be lost."
+    "explain": "The three saves are: move it, defend it, or counter-attack with a bigger threat. Promoting a pawn elsewhere does nothing about the attack on the bishop. It would simply be lost."
    },
    {
     "kind": "mc",
@@ -1595,23 +1595,23 @@
      "Your bishop (3) for the opponent's knight (3)"
     ],
     "answerIndex": 2,
-    "explain": "A good trade is one where you give less than you get. Knight (3) for rook (5) wins you two points — that is winning the exchange. The others either lose points or, at best, are equal."
+    "explain": "A good trade is one where you give less than you get. Knight (3) for rook (5) wins you two points. That is winning the exchange. The others either lose points or, at best, are equal."
    },
    {
     "kind": "mc",
-    "prompt": "You are a whole piece ahead. Your opponent offers to trade a pair of rooks, even — rook for rook. Trading is:",
+    "prompt": "You are a whole piece ahead. Your opponent offers to trade a pair of rooks, even, rook for rook. Trading is:",
     "options": [
-     "Bad — it throws away material",
-     "Good — an even trade keeps your extra piece while the board empties, bringing the win closer",
-     "A blunder — you should never trade when ahead",
-     "Risky — it hands the opponent winning chances"
+     "Bad: it throws away material",
+     "Good: an even trade keeps your extra piece while the board empties, bringing the win closer",
+     "A blunder: you should never trade when ahead",
+     "Risky: it hands the opponent winning chances"
     ],
     "answerIndex": 1,
-    "explain": "An even trade does not change the balance — so when you are ahead, swapping pieces off is exactly right: your extra piece looms larger on an emptier board, and there is less for the opponent to attack with. Trade pieces (not pawns) when you lead in material; it simplifies toward the win. The reverse is true when you are behind — then you avoid trades and keep pieces on to fight."
+    "explain": "An even trade does not change the balance, so when you are ahead, swapping pieces off is exactly right: your extra piece looms larger on an emptier board, and there is less for the opponent to attack with. Trade pieces (not pawns) when you lead in material; it simplifies toward the win. The reverse is true when you are behind. Then you avoid trades and keep pieces on to fight."
    },
    {
     "kind": "play",
-    "prompt": "Two black pieces hang — a rook on d6 and a bishop on g4 — and both lie on your queen's lines. Capture the one worth more.",
+    "prompt": "Two black pieces hang (a rook on d6 and a bishop on g4) and both lie on your queen's lines. Capture the one worth more.",
     "fen": "6k1/8/3r4/8/6b1/8/8/3QK3 w - - 0 1",
     "solutionUci": [
      "d1d6"
@@ -1625,26 +1625,26 @@
     "solutionUci": [
      "e5c6"
     ],
-    "explain": "Nxc6 captures the undefended bishop, three points for nothing. Nothing recaptures — pure profit. See the loose piece, take the loose piece."
+    "explain": "Nxc6 captures the undefended bishop, three points for nothing. Nothing recaptures: pure profit. See the loose piece, take the loose piece."
    },
    {
     "kind": "play",
-    "prompt": "Your bishop on h4 is attacked by the pawn on g5 — and that pawn is guarded by the pawn on f6, so you cannot take it. Move the bishop to a safe square.",
+    "prompt": "Your bishop on h4 is attacked by the pawn on g5, and that pawn is guarded by the pawn on f6, so you cannot take it. Move the bishop to a safe square.",
     "fen": "6k1/8/5p2/6p1/7B/8/8/4K3 w - - 0 1",
     "solutionUci": [
      "h4g3",
      "h4f2"
     ],
-    "explain": "You cannot defend a piece against a pawn — if the pawn takes, you lose three for one. And capturing back with Bxg5 only walks into fxg5, losing the bishop for a pawn. The sound save is to retreat the bishop down its diagonal: Bg3 or Bf2 both reach safety and keep your material intact."
+    "explain": "You cannot defend a piece against a pawn. If the pawn takes, you lose three for one. And capturing back with Bxg5 only walks into fxg5, losing the bishop for a pawn. The sound save is to retreat the bishop down its diagonal: Bg3 or Bf2 both reach safety and keep your material intact."
    },
    {
     "kind": "play",
-    "prompt": "Your bishop on h1 is attacked by the equal bishop on d5. Every square it could flee to stays on that same diagonal, and the d5 bishop is guarded by the pawn on e6 — so you cannot run and cannot take it. Save the bishop by adding a defender: drop your rook to the back rank to guard h1.",
+    "prompt": "Your bishop on h1 is attacked by the equal bishop on d5. Every square it could flee to stays on that same diagonal, and the d5 bishop is guarded by the pawn on e6, so you cannot run and cannot take it. Save the bishop by adding a defender: drop your rook to the back rank to guard h1.",
     "fen": "6k1/8/R3p3/3b4/8/8/4K3/7B w - - 0 1",
     "solutionUci": [
      "a6a1"
     ],
-    "explain": "The bishop is trapped in the corner: g2, f3 and e4 all stay on the d5 bishop's diagonal, and Bxd5 loses to exd5. But the attacker is only a bishop, equal in value — so you defend. Ra1 guards h1 along the back rank; now Bxh1 is met by Rxh1, three for three, and your material holds."
+    "explain": "The bishop is trapped in the corner: g2, f3 and e4 all stay on the d5 bishop's diagonal, and Bxd5 loses to exd5. But the attacker is only a bishop, equal in value, so you defend. Ra1 guards h1 along the back rank; now Bxh1 is met by Rxh1, three for three, and your material holds."
    },
    {
     "kind": "play",
@@ -1653,7 +1653,7 @@
     "solutionUci": [
      "c3e4"
     ],
-    "explain": "Nxe4 wins the rook for nothing — a knight worth three captures a rook worth five, and there is no recapture. You are up the exchange and a clear piece of material for free."
+    "explain": "Nxe4 wins the rook for nothing. A knight worth three captures a rook worth five, and there is no recapture. You are up the exchange and a clear piece of material for free."
    },
    {
     "kind": "judge",
@@ -1661,7 +1661,7 @@
     "fen": "6k1/8/8/8/2n5/8/4B3/4K3 w - - 1 2",
     "lastMoveUci": "d6c4",
     "verdict": "blunder",
-    "explain": "A blunder — the knight landed on c4 where the bishop on e2 simply takes it, Bxc4, winning a whole piece for nothing. Before you move a piece, check the square it lands on is not hanging."
+    "explain": "A blunder: the knight landed on c4 where the bishop on e2 simply takes it, Bxc4, winning a whole piece for nothing. Before you move a piece, check the square it lands on is not hanging."
    },
    {
     "kind": "judge",
@@ -1669,7 +1669,7 @@
     "fen": "6k1/5n2/8/4P3/8/8/8/4K3 w - - 1 2",
     "lastMoveUci": "d6f7",
     "verdict": "correct",
-    "explain": "Correct. The knight was attacked by a pawn, and against a pawn you must move the piece — defending is no use. Nf7 lands on a safe square out of the pawn's reach, and the material is saved."
+    "explain": "Correct. The knight was attacked by a pawn, and against a pawn you must move the piece. Defending is no use. Nf7 lands on a safe square out of the pawn's reach, and the material is saved."
    },
    {
     "kind": "judge",
@@ -1677,7 +1677,7 @@
     "fen": "5k2/8/8/8/4q3/3P4/8/4K3 w - - 0 2",
     "lastMoveUci": "e8e4",
     "verdict": "blunder",
-    "explain": "A blunder. The pawn on e4 was defended by the pawn on d3, so it was bait, not free. White answers dxe4 and wins the queen for a single pawn — a catastrophe. Never grab a defended piece with a bigger one."
+    "explain": "A blunder. The pawn on e4 was defended by the pawn on d3, so it was bait, not free. White answers dxe4 and wins the queen for a single pawn, a catastrophe. Never grab a defended piece with a bigger one."
    },
    {
     "kind": "judge",
@@ -1685,7 +1685,7 @@
     "fen": "6k1/8/8/8/8/r7/8/4K3 w - - 0 2",
     "lastMoveUci": "a8a3",
     "verdict": "correct",
-    "explain": "Correct. The white bishop on a3 was undefended and sat on the open a-file in the rook's range. Rxa3 wins it for free — taking loose enemy material is exactly right."
+    "explain": "Correct. The white bishop on a3 was undefended and sat on the open a-file in the rook's range. Rxa3 wins it for free. Taking loose enemy material is exactly right."
    }
   ]
  },

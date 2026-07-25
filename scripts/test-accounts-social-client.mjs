@@ -1,4 +1,4 @@
-// THE A6-M4 LANES L-presence-mail + L-friends SUITE — the LIVE social surface
+// THE A6-M4 LANES L-presence-mail + L-friends SUITE: the LIVE social surface
 // over the account peer overlay (src/renderer/src/features/account/net/socialClient.ts,
 // spec §3 friendships, §10 presence/mailbox/anti-spam, C-3), headless over an
 // in-process MockFabric network of REAL account peers.
@@ -9,14 +9,14 @@
 // social transport; the crypto and every admission/eviction decision are the
 // shared substrate (createSocialRelay / mailboxAdmit / mailboxDrain / the §10
 // edge fold), reused VERBATIM. This suite proves the WIRING:
-//   1. PRESENCE end to end over the live overlay — publish, freshest-wins across
+//   1. PRESENCE end to end over the live overlay. Publish, freshest-wins across
 //      two publishers, expiry reads offline, unknown reads offline (SC wrappers).
 //   2. THE §10 INVARIANT, LIVE THROUGH THE SC-INSTALLED RELAY: a friend request
 //      SURVIVES an offline recipient AND a sybil flood cannot evict it; it is
 //      delivered FIRST at sync, decodes as a verified §3 request, and the
 //      consent edge is countersigned + verifies + yields a MUTUALLY-READABLE
 //      edge (areFriends over both chains).
-//   3. mailbox anti-spam QUOTAS hold through the wiring — per-sender-root rate
+//   3. mailbox anti-spam QUOTAS hold through the wiring. Per-sender-root rate
 //      limit, per-recipient fair share, box cap, and the bad-sig/self/duplicate
 //      refusal matrix.
 //   4. the app-lifetime CONTROLLER: honest signed-out/no-peer states (no
@@ -67,7 +67,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -183,13 +183,13 @@ async function run(M) {
 
     st = await SC.fetchPresence(peers.get(relaySpecs[4].nodeId).overlay, Pk.pubB, clock.now + 2_000 + SC.SOCIAL_PRESENCE_TTL_MS + 1)
     eq(st, 'offline', 'past its ttl the claim reads offline (expiry at the caller’s witnessed time)')
-    eq(await SC.fetchPresence(anyPeer.overlay, kpOf('scl-nobody').pubB, clock.now), 'offline', 'an unknown root reads offline (fail closed — no negative presence)')
+    eq(await SC.fetchPresence(anyPeer.overlay, kpOf('scl-nobody').pubB, clock.now), 'offline', 'an unknown root reads offline (fail closed, no negative presence)')
   }
 
   // ==========================================================================
   console.log('\n· 2. THE §10 INVARIANT, LIVE: request survives offline recipient …')
   // ==========================================================================
-  const R = kpOf('scl-recipient') // OFFLINE until it syncs — no peer, no drain
+  const R = kpOf('scl-recipient') // OFFLINE until it syncs. No peer, no drain
   const signerR = { root: R.pubB, rootPriv: R.priv }
   {
     // Established E: a verified chain with 2 witnessed games vs R ⇒ edge 100_000.
@@ -200,10 +200,10 @@ async function run(M) {
 
     // E sends a §3 friend request to the OFFLINE recipient (rides the mailbox).
     const eSent = await SC.sendFriendRequest({ fabric: ePeer.fabric, node: ePeer.overlay, signer: eSpec.signer, peerRoot: R.pubB, nowMs: clock.now })
-    ok(eSent.offered > 0 && eSent.admitted === eSent.offered, `established root's request admitted at all ${eSent.offered} relays (recipient OFFLINE — the mailbox holds it)`)
+    ok(eSent.offered > 0 && eSent.admitted === eSent.offered, `established root's request admitted at all ${eSent.offered} relays (recipient OFFLINE; the mailbox holds it)`)
 
-    // The relays froze E's admission edge at the fold value — public signed data,
-    // never sender-asserted — which is exactly the SC-installed edge provider.
+    // The relays froze E's admission edge at the fold value. Public signed data,
+    // never sender-asserted, which is exactly the SC-installed edge provider.
     const rRelays = (await ePeer.overlay.lookup(SOC.mailboxKeyOfRoot(R.pubB))).filter((c) => c.nodeId !== ePeer.nodeId).slice(0, P_MBX.boxCap).map((c) => c.nodeId)
     const eId = (() => { // recover E's mail id from a relay box
       for (const id of rRelays) { const m = (relays.get(id).state().boxes[R.pubB] ?? []).find((x) => x.sender === eSpec.rootKp.pubB); if (m) return m.id }
@@ -211,9 +211,9 @@ async function run(M) {
     })()
     ok(eId !== null, 'E’s request is stored at R’s relays')
     const frozen = rRelays.map((id) => (relays.get(id).state().boxes[R.pubB] ?? []).find((m) => m.id === eId)?.edgeMicro)
-    ok(frozen.length > 0 && frozen.every((e) => e === 100_000), 'every relay froze E’s edge at the fold value 100_000 (2 witnessed games — relay-computed via SC’s edge provider)')
+    ok(frozen.length > 0 && frozen.every((e) => e === 100_000), 'every relay froze E’s edge at the fold value 100_000 (2 witnessed games, relay-computed via SC’s edge provider)')
 
-    // THE SYBIL FLOOD: 12 fresh roots, one request each — 12+1 > boxCap 8.
+    // THE SYBIL FLOOD: 12 fresh roots, one request each, 12+1 > boxCap 8.
     const sybils = Array.from({ length: 12 }, (_, i) => kpOf('scl-sybil-' + i))
     chains.set(sybils[0].pubB, genesisChain('syb0', sybils[0], 'Syb0')) // some with real (empty) chains,
     const sybilOutcomes = []
@@ -239,7 +239,7 @@ async function run(M) {
     // CONSENT: the consent edge is countersigned + verifies, and completes a
     // mutually-readable edge across both chains (the §3 round-trip, live).
     const addR = SC.consentToRequest(reqHalf, R.pubB)
-    ok(addR !== null && SOC.verifyFriendAdd(addR, R.pubB), 'consent derives R’s chain-appendable add — COUNTERSIGNED (carries E’s signature) and verifies')
+    ok(addR !== null && SOC.verifyFriendAdd(addR, R.pubB), 'consent derives R’s chain-appendable add. COUNTERSIGNED (carries E’s signature) and verifies')
     let cR = A.appendWitnessed(chains.get(R.pubB), R.priv, R.pubB, 'friend', addR, clock.now)
     chains.set(R.pubB, cR)
     // R mails the consent half back; E drains + adopts it into ITS add.
@@ -249,14 +249,14 @@ async function run(M) {
     const consentHalf = drainedE.map((d) => SC.readConsentHalf(d)).find((h) => h && h.from === R.pubB)
     ok(consentHalf != null, 'E drains R’s verified consent half')
     const addE = SC.adoptConsent(consentHalf, eSpec.rootKp.pubB, R.pubB)
-    ok(addE !== null && SOC.verifyFriendAdd(addE, eSpec.rootKp.pubB), 'E adopts the consent into ITS add — countersigned by R and verifies (expected-peer bound)')
+    ok(addE !== null && SOC.verifyFriendAdd(addE, eSpec.rootKp.pubB), 'E adopts the consent into ITS add: countersigned by R and verifies (expected-peer bound)')
     let cE = A.appendWitnessed(chains.get(eSpec.rootKp.pubB), eSpec.rootKp.priv, eSpec.rootKp.pubB, 'friend', addE, clock.now + 1)
     chains.set(eSpec.rootKp.pubB, cE)
 
     const vE = SOC.friendsOfChain(cE)
     const vR = SOC.friendsOfChain(cR)
     ok(vE !== null && vR !== null && SOC.areFriends(vE, vR), 'THE §3 EDGE IS LIVE: the round-trip yields a MUTUALLY-READABLE friendship (areFriends on both verified chains)')
-    // 600_000 friend + 2 witnessed games (2·50_000) = 700_000 — the full §10 fold.
+    // 600_000 friend + 2 witnessed games (2·50_000) = 700_000. The full §10 fold.
     eq(SOC.edgeMicroOfChains({ sender: eSpec.rootKp.pubB, recipient: R.pubB, senderChain: cE, recipientChain: cR, atWts: clock.now }), 700_000, 'the completed edge now feeds the §10 fold at friend (600_000) + 2 games (100_000) = 700_000')
 
     // A second sync finds the boxes cleared (drain actually drains).
@@ -269,7 +269,7 @@ async function run(M) {
   // ==========================================================================
   {
     // The quotas are enforced PER RELAY (each relay tracks its own per-sender
-    // windows + per-box shares); so — like the substrate suite — drive raw sends
+    // windows + per-box shares); so (like the substrate suite) drive raw sends
     // at ONE relay, which is precisely the handler SC.installSocialRelay created.
     const r0 = relaySpecs[0].nodeId
     const R3 = kpOf('scl-recip3')
@@ -307,7 +307,7 @@ async function run(M) {
   console.log('\n· 4. the app-lifetime SINGLETON: honest states + live accept …')
   // ==========================================================================
   {
-    // Honest signed-out surface with NO singleton live — never a fixture.
+    // Honest signed-out surface with NO singleton live. Never a fixture.
     const out = SC.getSocialClientState()
     eq(out.phase, 'signed-out', 'with no client live the singleton state is honestly signed-out')
     eq(out.friends.length, 0, 'signed-out friends list is empty (no fixture rows)')

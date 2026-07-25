@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// A5 J3 suite — the judge-config estElo refit artifacts. CHEAP: no engine, no
+// A5 J3 suite: the judge-config estElo refit artifacts. CHEAP: no engine, no
 // network; pure JSON/TS checks, safe for default CI runs.
 //
 //   node scripts/test-judge-fit.mjs
@@ -191,10 +191,10 @@ eq(F.hashMb, params.PARAMS_A5.hashMb, 'fit hashMb == PARAMS_A5.hashMb')
 eq(T.nodes, params.PARAMS_A5.t1Nodes, 'anchors nodes == PARAMS_A5.t1Nodes')
 eq(T.multiPv, params.PARAMS_A5.t1MultiPv, 'anchors multiPv == PARAMS_A5.t1MultiPv')
 // Digest-drift rule (lead decision, J7 aftermath): JUDGE_ANCHORS_PARAMS_DIGEST
-// is the FIT-TIME pin — a historical fact about the corpus's provenance, never
+// is the FIT-TIME pin. A historical fact about the corpus's provenance, never
 // rewritten. A PARAMS_A5 digest drift alone (e.g. an aggregation-rule row like
 // lifetimeScheme) does NOT invalidate the fit: the invariant that keeps
-// anchors valid is ENGINE-CONFIG IDENTITY (nodes/multiPv/hashMb/wasm hash) —
+// anchors valid is ENGINE-CONFIG IDENTITY (nodes/multiPv/hashMb/wasm hash):
 // nodes/multiPv/hashMb asserted field-by-field above, wasm hash via the
 // fit-time golden freeze below (A5-10). A drift that touches any of
 // those fields fails those assertions ⇒ re-fit J3. Drift stays visible:
@@ -208,7 +208,7 @@ if (anchors.JUDGE_ANCHORS_PARAMS_DIGEST !== params.PARAMS_A5_DIGEST)
 // standalone wasmSha256 field, and adding one is an anchors.ts/judge-elo-fit.json
 // re-fit surface outside this suite. So this suite FREEZES the fit-time wasm as
 // an independent golden literal (as test-judge-node freezes GOLDEN_WASM_SHA256)
-// and asserts the LIVE PARAMS_A5.judgeWasmSha256 still equals it — the drift
+// and asserts the LIVE PARAMS_A5.judgeWasmSha256 still equals it. The drift
 // rule's engine-identity leg, now genuinely binding. A judge-engine re-pin (new
 // build → new judgeWasmSha256 → PARAMS_A5_DIGEST drift) moves the live pin off
 // this freeze and FAILS here, forcing a J3 re-fit; pre-fix (A5-10) the leg read
@@ -221,10 +221,10 @@ const FIT_WASM_SHA256 = 'a8fbc05ec6920b56d7485826dcb02c5ffd2826bcbf751cf973046f2
 const wasmMatchesFit = (liveSha) => liveSha === FIT_WASM_SHA256
 ok(
   wasmMatchesFit(params.PARAMS_A5.judgeWasmSha256),
-  `live PARAMS_A5.judgeWasmSha256 == J3 fit-time wasm freeze (engine identity — a re-pin without a J3 re-fit fails here; got ${params.PARAMS_A5.judgeWasmSha256})`
+  `live PARAMS_A5.judgeWasmSha256 == J3 fit-time wasm freeze (engine identity; a re-pin without a J3 re-fit fails here; got ${params.PARAMS_A5.judgeWasmSha256})`
 )
 // A5-10 non-vacuity regression: the SAME comparator must REJECT a re-pinned
-// engine's sha256 — pre-fix this leg compared PARAMS_A5 to itself (always green).
+// engine's sha256: pre-fix this leg compared PARAMS_A5 to itself (always green).
 ok(
   !wasmMatchesFit('deadbeef'.repeat(8)),
   'A5-10 regression: a re-pinned judge wasm sha256 is REJECTED by the engine-identity guard (non-vacuous)'
@@ -304,6 +304,6 @@ ok(
 )
 
 console.log(
-  `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
+  `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
 )
 process.exit(failures ? 1 : 0)

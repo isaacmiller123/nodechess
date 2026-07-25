@@ -1,4 +1,4 @@
-// A6 M1 Lane A proof — the browser accounts fabric over an INJECTED fake room
+// A6 M1 Lane A proof: the browser accounts fabric over an INJECTED fake room
 // (no relay; deterministic + headless). Proves createBrowserFabric
 // (src/renderer/src/features/account/net/browserFabric.ts) is a faithful
 // FabricEndpoint:
@@ -13,7 +13,7 @@
 // former inline set with no override, and the C-11 override + operator-fallback
 // slot compose as specified.
 //
-// House style: esbuild-bundle on the fly (trystero external — the injected room
+// House style: esbuild-bundle on the fly (trystero external; the injected room
 // means joinRoom is never called), one-line asserts, exit(1) on any fail.
 //
 //   node scripts/test-accounts-browser-fabric.mjs
@@ -55,7 +55,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -69,7 +69,7 @@ async function run(outdir) {
     mainFields: ['module', 'main'], conditions: ['import', 'module', 'default'],
     alias: { '@shared': resolve(ROOT, 'src/shared') },
     // The injected fake room means createBrowserFabric never calls joinRoom, so
-    // trystero is never loaded at runtime — keep it external (no browser bundling).
+    // trystero is never loaded at runtime. Keep it external (no browser bundling).
     external: ['trystero'],
     absWorkingDir: ROOT, logLevel: 'warning',
   })
@@ -88,7 +88,7 @@ async function run(outdir) {
     )
 
   // ==========================================================================
-  console.log('\n· iceConfig — C-11 replaceable STUN/TURN (step 1) …')
+  console.log('\n· iceConfig: C-11 replaceable STUN/TURN (step 1) …')
   // ==========================================================================
   const original = [
     { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302'] },

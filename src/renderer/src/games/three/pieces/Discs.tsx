@@ -1,4 +1,4 @@
-// disc piece system — instanced lathe-turned pucks.
+// disc piece system. Instanced lathe-turned pucks.
 //   solid mode: per-instance lacquer colors (checkers, connect-four, morris),
 //               optional groove rings + king stacking (type === 'king').
 //   twoTone mode: one geometry, light top / dark underside via vertex colors;

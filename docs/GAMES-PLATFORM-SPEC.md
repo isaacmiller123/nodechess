@@ -1,4 +1,4 @@
-# Games Platform — binding spec (v1, foundations)
+# Games Platform: binding spec (v1, foundations)
 
 Multi-game library for nodechess: every game gets ONLINE (v3 P2P session, game-agnostic) + LOCAL
 OTB (accurate flip policy) + 5-level bots + an authored manual (rules + strategy) + Steam-grade
@@ -9,18 +9,18 @@ PARAMOUNT and gating, like docs/SCHOOL-SPEC.md's look bar.
 - Chess family rules: chessops (8 lichess variants) + ffish-es6 WASM (xiangqi/shogi/janggi/
   makruk/placement + runtime custom variants via variants.ini text).
 - Chess family 2D board: chessgroundx (replaces chessground app-wide; same API family).
-- Go: @sabaki/shudan (render; Preact — mount via preact island or preact/compat) + tenuki
+- Go: @sabaki/shudan (render; Preact, mounted via a preact island or preact/compat) + tenuki
   (rules: captures, superko, dead-stone marking, Chinese+Japanese scoring).
-- Checkers: draughtsground vendored from RoepStoep/lidraughts (AGPL — keep as an isolated
+- Checkers: draughtsground vendored from RoepStoep/lidraughts (AGPL; keep as an isolated
   vendored module with attribution; repo is public = compliant) + rapid-draughts (8×8 rules+AI,
-  MIT) + @jortvl/draughts (10×10 rules, MPL — audit majority-capture before trust).
+  MIT) + @jortvl/draughts (10×10 rules, MPL; audit majority-capture before trust).
 - Small games (othello, gomoku, connect4, hex, morris, TTT): hand-rolled rules + bots
-  (bitboard negamax/threat-eval; design refs only from unlicensed repos — NO code copying).
+  (bitboard negamax/threat-eval; design refs only from unlicensed repos, NO code copying).
 - Engines (native, spawned like Stockfish, per-platform artifacts in datasets ENGINE_ARTIFACTS):
   Fairy-Stockfish (all chess-family bots; Skill −20..20, UCI_Elo floor 500; VariantPath for
   custom variants; win-x64 official, mac-arm64 self-compiled), KataGo eigen (go; 5MB binary,
-  nets runtime-downloaded: b6c96 4.7MB, b10c128 13.8MB, b18 Human-SL 94.5MB — human-like levels
-  are the flagship), lc0 + Maia nets (human-like chess 1100–1900, nodes=1).
+  nets runtime-downloaded: b6c96 4.7MB, b10c128 13.8MB, b18 Human-SL 94.5MB, and the human-like
+  levels are the flagship), lc0 + Maia nets (human-like chess 1100–1900, nodes=1).
 - 3D/art: ONE shared react-three-fiber tabletop renderer. Poly Haven chess set (CC0, ship
   ~5–15MB GLB); ambientCG CC0 PBR textures for ALL boards (2D + 3D); Kadagaden xiangqi/janggi +
   Ka-hu shogi SVGs (CC-BY → credits screen; also rasterized as 3D disc/wedge decals); lichess
@@ -33,7 +33,7 @@ janggi, shogi, makruk, morris, custom-piece games (decal-token fallback). WON'T:
 2D is first-class for every game; 3D is a per-game toggle; WebGL failure auto-falls back to 2D.
 
 ## Architecture
-### Game kernel — src/renderer/src/games/kernel.ts
+### Game kernel: src/renderer/src/games/kernel.ts
 ```ts
 export interface GameSpec<S = unknown> {
   kind: GameKind                      // 'chess' | 'crazyhouse' | ... | 'go' | 'checkers-intl' | ...
@@ -57,24 +57,24 @@ manual id. Everything (library UI, online, OTB, bots) consumes the registry ONLY
 ### Wire v4 (game-agnostic online)
 PROTOCOL_VERSION = 4. MpGameConfig gains `game: { kind: string; options?: unknown }`
 (default chess). wire.ts move schema: uci regex → non-empty string ≤ 64 chars (kernel
-validates; HOST validates via GameSpec.play before relaying — authority unchanged). start/
+validates; HOST validates via GameSpec.play before relaying, so authority is unchanged). start/
 resync carry game kind+options. Session/clock/suspend/rematch logic UNCHANGED (game-agnostic
 already). onlineStore: board-specific bits (fen/chessops) move behind the kernel: store keeps
 `moves: string[]` + `gameState: S` via spec.play; terminal via spec.result. Chess stays the
 default so EXISTING online chess is untouched behaviorally (regression: test-mp suites green).
 
-### Bots — games/bots.ts
+### Bots: games/bots.ts
 `interface BotProvider { levels: 5; describe(level): string; move(s, level): Promise<string> }`
 Chess family → engine.ipc (Fairy-Stockfish; Maia levels where kind==='chess'); go → KataGo GTP
 ipc; checkers-8 → rapid-draughts alphaBeta; others → in-process workers. UI: one clean
 strength row (1–5) + optional "style" selector when multiple engines exist (e.g. chess:
-Classic (SF) / Human (Maia) / Weak-calibrated) — never more than two controls.
+Classic (SF) / Human (Maia) / Weak-calibrated). Never more than two controls.
 
 ### Library UI
 New top-level tab **Games** (rail icon): card grid (per-game live-board thumbnail, NOT stock
-icons), each card → game page with sub-tabs Play (Local OTB / vs Bot / Online — same trio as
+icons), each card → game page with sub-tabs Play (Local OTB / vs Bot / Online, the same trio as
 chess Play), Manual. Online reuses OnlineTab machinery parameterized by kind (host card shows
-the game name; join code works across games — start config carries kind; joiner UI renders it).
+the game name; join code works across games: start config carries kind; joiner UI renders it).
 Manuals: `resources/manuals/<kind>.md` (rules, how to read the board, 3 beginner principles,
 2 classic traps/patterns with diagrams) rendered in-app with board diagrams (FEN/position
 snippets rendered by the game's 2D board component, read-only).
@@ -90,15 +90,15 @@ snippets rendered by the game's 2D board component, read-only).
    the "Human" style for chess bots 1100–1900.
 
 ## Phases
-- **P1 foundations — DONE** (commit 1822c36): kernel + registry; wire v4 + store genericization
+- **P1 foundations: DONE** (commit 1822c36): kernel + registry; wire v4 + store genericization
   (chess regression green); Games tab shell + library cards; chess-variant wave via chessops
   (chess + 8 variants playable local+online+bots via existing SF path); bot side-quests
   (sub-1320 calibration + Maia groundwork) started.
-- **P2 — DONE** (commits 09015df, d985ece): ffish family (xiangqi/shogi/janggi/makruk +
+- **P2: DONE** (commits 09015df, d985ece): ffish family (xiangqi/shogi/janggi/makruk +
   placement), checkers both, go+gomoku (Shudan+tenuki), othello/c4/hex/morris/TTT; Fairy-SF +
   KataGo + lc0 published in datasets for BOTH platforms; manuals authored for all 22 games
   (scripts/test-manuals.mjs green).
-- **P3 — DONE except noted** (commits d552b10..2110058): 3D shared renderer + assets (Tabletop3D
+- **P3: DONE except noted** (commits d552b10..2110058): 3D shared renderer + assets (Tabletop3D
   lazy chunk, Poly Haven chess set, per-game 2D/3D toggle per the tier table) DONE; custom
   variant editor (Variant Lab: variants.ini builder UI + ffish.loadVariantConfig + Fairy-SF
   VariantPath) DONE; visual polish audits per game DONE (305bf3d). Open: CI runs

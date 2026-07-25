@@ -1,11 +1,11 @@
-// A2 fabric-core — signed presence + the observer-local NodeDirectory (spec §4:
-// "The lease, presence, and mailbox are ephemeral coordination state — expiring,
+// A2 fabric-core. Signed presence + the observer-local NodeDirectory (spec §4:
+// "The lease, presence, and mailbox are ephemeral coordination state, expiring,
 // reconstructible, no authority", C-3). Directories are LOCAL: every rule that
 // matters (thresholds, eligibility, diversity) is enforced on a record's
 // SIGNATURE SET, never on any one observer's directory, so view divergence
 // degrades liveness only, never safety.
 //
-// All functions are pure given `nowMs` — no Date.now(), no Math.random().
+// All functions are pure given `nowMs`. No Date.now(), no Math.random().
 // Platform-neutral: no `node:` imports, no DOM globals.
 
 import { z } from 'zod'
@@ -48,7 +48,7 @@ export function signPresence(body: PresenceBody, priv: Uint8Array): SignedPresen
 /**
  * Verify a presence record: strict shape + ed25519 signature by body.key over
  * canonicalBytes(body). Note this proves only that the advertised device key
- * signed the record — NOT that the key is certified under body.root (that is a
+ * signed the record. NOT that the key is certified under body.root (that is a
  * chain fact judged by eligibility.ts, which reads the node's chain). Never throws.
  */
 export function verifyPresence(sp: SignedPresence): boolean {

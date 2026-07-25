@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process'
 import { datasetsDir } from './paths'
 import { downloadVerified, type DownloadSpec } from './datasets.service'
 
-// Dataset group 'katago' — everything the Go bot needs (docs/GAMES-PLATFORM-SPEC.md
+// Dataset group 'katago': everything the Go bot needs (docs/GAMES-PLATFORM-SPEC.md
 // §Engines; verification: scripts/verify-katago.mjs):
 //   - the KataGo 1.16.5 engine, per-platform, spawned over GTP;
 //   - neural nets, platform-independent .bin.gz files KataGo loads directly.
@@ -14,20 +14,20 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 // platform (mac: Metal-backend binary + ~84 relocated Homebrew dylibs, all load
 // paths rewritten to @executable_path and ad-hoc re-signed; win: katago.exe +
 // its MSVC/libzip/OpenSSL DLLs), so the binary ships as ONE archive per
-// platform and the importer extracts it with the OS's own bsdtar — /usr/bin/tar
+// platform and the importer extracts it with the OS's own bsdtar. /usr/bin/tar
 // on macOS, %SystemRoot%\System32\tar.exe on Windows 10+ (reads .zip too).
 // Both archives also carry default_gtp.cfg, the config the GTP spawn uses.
 //
-// Layout on disk (per-user, writable — same root as the other datasets):
+// Layout on disk (per-user, writable; same root as the other datasets):
 //   <userData>/datasets/katago/katago[.exe]     (+ dylibs/DLLs + default_gtp.cfg)
 //   <userData>/datasets/katago/nets/<asset>.bin.gz
 //
 // Nets (all mirrored on our datasets release; verified 2026-07-06 by download
 // + sha256 against the originals):
-//   - kata-b6c96.bin.gz / kata-b10c128.bin.gz — g170 run, CC0 public domain
+//   - kata-b6c96.bin.gz / kata-b10c128.bin.gz, g170 run, CC0 public domain
 //     (https://katagoarchive.org/g170/LICENSE.txt). Small + fast on CPU/Metal;
 //     these power the ordinary strength levels.
-//   - kata-b18-humanv0.bin.gz — the Human-SL b18 net from the KataGo v1.15.0
+//   - kata-b18-humanv0.bin.gz: the Human-SL b18 net from the KataGo v1.15.0
 //     release (b18c384nbt-humanv0.bin.gz), the flagship human-like levels.
 //     94.5 MB, so it is a separate, optional item (`includeHuman`).
 
@@ -241,8 +241,8 @@ function missingItems(includeHuman: boolean): KatagoItem[] {
     if (!katagoNetInstalled(net.id)) {
       items.push({
         label: `KataGo net ${net.id}`,
-        // Mirror-first (our datasets release), upstream as fallback —
-        // identical bytes, one sha256 verifies either source.
+        // Mirror-first (our datasets release), upstream as fallback.
+        // Identical bytes, one sha256 verifies either source.
         url: `${RELEASE_BASE}/${net.asset}`,
         fallbackUrl: net.upstream,
         bytes: net.bytes,

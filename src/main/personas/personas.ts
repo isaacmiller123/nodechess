@@ -7,7 +7,7 @@
 // a real opening book of that player's documented repertoire (book.ts). The
 // renderer must frame them honestly: "plays in X's style," never "play as X."
 //
-// The catalog lives in resources/personas/personas.json — GENERATED from
+// The catalog lives in resources/personas/personas.json. GENERATED from
 // resources/personas/research.json by scripts/build-persona-data.mjs (edit
 // research.json, not personas.json). Portraits are merged at load time from
 // resources/personas/photos.json ({ id: { dataUri, attribution } }), produced by
@@ -16,7 +16,7 @@
 // is the repo resources dir; packaged builds ship under process.resourcesPath
 // (electron-builder extraResources "resources/personas" -> "personas").
 //
-// Missing/corrupt files must never crash the app — they degrade to an empty
+// Missing/corrupt files must never crash the app. They degrade to an empty
 // catalog (renderer shows "no personas") / photo-less personas.
 
 import { app } from 'electron'
@@ -85,7 +85,7 @@ function toPersona(row: PersonaRow, photos: Record<string, PhotoEntry>): Persona
       ? row.famousGameIds.filter((g): g is string => typeof g === 'string')
       : [],
     // Clock personality (bot time manager). Omitted/unknown values stay
-    // undefined — the renderer falls back to botTime's by-id map, then 'steady'.
+    // undefined. The renderer falls back to botTime's by-id map, then 'steady'.
     timeStyle:
       row.timeStyle === 'blitzer' || row.timeStyle === 'steady' || row.timeStyle === 'tanker'
         ? row.timeStyle

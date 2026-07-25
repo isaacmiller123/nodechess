@@ -1,21 +1,21 @@
-// detmath — deterministic dexp/dln for the ratings folds (ACCOUNTS-SPEC §6,
+// detmath: deterministic dexp/dln for the ratings folds (ACCOUNTS-SPEC §6,
 // §14 quality gates: same inputs → same BITS on node, every browser engine,
 // and workers).
 //
 // Determinism argument: ECMA-262 pins Number arithmetic to IEEE 754 binary64
 // with round-to-nearest-even, no extended intermediate precision and no FMA
-// contraction, and fixes expression evaluation order — so + − × ÷ (and
+// contraction, and fixes expression evaluation order, so + − × ÷ (and
 // Math.sqrt) are correctly rounded and bit-identical on every conforming
 // engine. Math.exp / Math.log / Math.pow are "implementation-approximated"
-// (ECMA-262 Math object notes) and may differ across engines — BANNED in fold
+// (ECMA-262 Math object notes) and may differ across engines: BANNED in fold
 // code; this module is the one sanctioned source of exp/ln. Everything below
-// is built from the basic ops in a fixed order, plus Math.floor (exact — it
+// is built from the basic ops in a fixed order, plus Math.floor (exact; it
 // introduces no rounding) and integer bit ops. Pure functions, platform-
 // neutral: no node:/DOM imports, no Date.now, no Math.random.
 //
 // Scheme + provenance: FDLIBM 5.3 (Sun Microsystems' reference libm, the
 // ancestor of musl's exp/log and of the fdlibm ports inside V8 / JSC /
-// SpiderMonkey) — e_exp.c and e_log.c. Constants and evaluation order are
+// SpiderMonkey): e_exp.c and e_log.c. Constants and evaluation order are
 // preserved verbatim so the published sub-ulp error analyses carry over:
 //   dexp: Cody–Waite reduction x = k·ln2 + r (ln2 split hi/lo, k by
 //         truncation of x/ln2 ± 0.5), degree-5 minimax polynomial for
@@ -26,11 +26,11 @@
 //         ln(m) = f − hfsq + s·(hfsq + R(s²)), degree-7 (odd) minimax
 //         polynomial, k·ln2 added via the same hi/lo split.
 // Both are < 1 ulp by fdlibm's analysis; measured against Math.exp/Math.log
-// the relative error is < 1e-15 over the Glicko-relevant ranges — far inside
+// the relative error is < 1e-15 over the Glicko-relevant ranges. Far inside
 // the ≤ 1e-12 budget (scripts/test-accounts-detmath.mjs asserts the bound and
 // freezes exact output bit patterns as golden vectors).
 //
-// Special values (deterministic propagation rule — mirrors IEEE 754 exp/log;
+// Special values (deterministic propagation rule: mirrors IEEE 754 exp/log;
 // asserted in the suite):
 //   dexp: NaN→NaN · +∞→+∞ · −∞→+0 · x > 709.782712893383973096 → +∞
 //         (overflow) · x < −745.13321910194110842 → +0 (underflow; the
@@ -58,7 +58,7 @@ const INV_LN2 = 1.44269504088896338700e0 // 1/ln2
 // 2^k for integer k ∈ [−1074, 1023] by binary exponentiation. Every
 // intermediate is an exact power of two (powers of two down to 2^−1074 are
 // exactly representable, and a product of two of them in range is exact), so
-// no rounding ever occurs — deterministic by construction.
+// no rounding ever occurs. Deterministic by construction.
 function pow2(k: number): number {
   let r = 1.0
   let b = k < 0 ? 0.5 : 2.0
@@ -85,7 +85,7 @@ const TWO_M28 = 3.7252902984619140625e-9 // 2^−28
 /**
  * Deterministic e^x. Relative error < 1 ulp vs true exp over all finite x
  * (fdlibm analysis); bit-identical on every conforming JS engine. Domain:
- * all of float64 — overflow to +∞ above 709.78…, graceful underflow through
+ * all of float64: overflow to +∞ above 709.78…, graceful underflow through
  * the subnormals to +0 below −745.13… . Specials per the header rule.
  */
 export function dexp(x: number): number {
@@ -99,7 +99,7 @@ export function dexp(x: number): number {
   if (ax < TWO_M28) return 1 + x // exp(x) = 1+x to > double precision
 
   // Cody–Waite: k = trunc(x/ln2 ± 0.5) (fdlibm casts to int, i.e. truncation
-  // toward zero — Math.floor on the negated value reproduces that exactly),
+  // toward zero: Math.floor on the negated value reproduces that exactly),
   // r = (x − k·LN2_HI) − k·LN2_LO. k·LN2_HI is exact (|k| ≤ 1025 and LN2_HI
   // has ≥ 20 trailing zero bits), so r carries ~double-extended accuracy.
   const t = INV_LN2 * x + (x > 0 ? 0.5 : -0.5)
@@ -118,7 +118,7 @@ export function dexp(x: number): number {
   // normal and the multiply is EXACT. k = 1024 (only near the overflow
   // threshold) splits off one doubling; k < −1021 (subnormal results) scales
   // in two steps so the single rounding into the subnormal range is the last
-  // op — correctly rounded, deterministic.
+  // op: correctly rounded, deterministic.
   if (k >= -1021) {
     if (k > 1023) return y * pow2(k - 1) * 2
     return y * pow2(k)
@@ -139,7 +139,7 @@ const SQRT2 = 1.4142135623730951 // nearest double to √2
 
 /**
  * Deterministic natural log. Relative error < 1 ulp vs true ln over all
- * positive finite x (fdlibm analysis) — covers the required (0, 1e12] and
+ * positive finite x (fdlibm analysis): covers the required (0, 1e12] and
  * the whole float64 range including subnormals; bit-identical on every
  * conforming JS engine. Specials per the header rule.
  */

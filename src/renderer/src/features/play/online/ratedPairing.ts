@@ -1,4 +1,4 @@
-// Rated online play — the pure seam between the Play surface and the A4 rating
+// Rated online play. The pure seam between the Play surface and the A4 rating
 // protocol: which ladder a clock rates in, and the exact public PairViews this
 // surface hands to mm/pairing. Nothing here reaches the matchmaking engine (and
 // therefore nothing pulls its trystero transport), which is what lets the
@@ -11,7 +11,7 @@ import { timeCategory, type RatedCategory } from '@shared/accounts/ratings/ladde
 import type { B64u } from '@shared/accounts/types'
 import { TIME_CONTROLS, timeControlCategory, type TimeControl } from '../timeControl'
 
-/** The registry kind every chess ladder folds under (matchmaking's MM_KIND —
+/** The registry kind every chess ladder folds under (matchmaking's MM_KIND;
  *  the ladder id both clients key their fold and their seek pool on). */
 export const RATED_KIND = 'chess'
 
@@ -19,7 +19,7 @@ export const RATED_KIND = 'chess'
  *  clock stream means no timing forensics, so those games are unrated (§6). */
 export const RATED_LADDERS: readonly RatedCategory[] = ['Bullet', 'Blitz', 'Rapid', 'Classical']
 
-/** `${kind}:${category}` — the fold key and PairView.ladderId (twin of the
+/** `${kind}:${category}`. The fold key and PairView.ladderId (twin of the
  *  matchmaking engine's ladderIdOf and of shared ladders.ts ladderId()). */
 export function ratedLadderId(key: RatedCategory): string {
   return `${RATED_KIND}:${key}`
@@ -61,8 +61,8 @@ export interface StruckPairing {
   ladderKey: RatedCategory
   hostView: PairView
   guestView: PairView
-  /** The protocol-pinned instant BOTH sides' trust was evaluated at (A4-16) —
-   *  the only legality-relevant clock; never the renderer's ambient now. */
+  /** The protocol-pinned instant BOTH sides' trust was evaluated at (A4-16).
+   *  The only legality-relevant clock; never the renderer's ambient now. */
   atWts: number
 }
 

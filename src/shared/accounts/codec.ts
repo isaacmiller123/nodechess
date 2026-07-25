@@ -1,30 +1,30 @@
-// cjson-v1 — the canonical serialization every signature and hash in the
+// cjson-v1: the canonical serialization every signature and hash in the
 // accounts system commits to (FROZEN-AT-GENESIS, docs/ACCOUNTS-PARAMS.md).
 //
 // Rules:
 //  - values: object | array | string | integer | boolean. Nothing else.
-//  - integers only: safe range, no -0, no floats — fractional quantities are
+//  - integers only: safe range, no -0, no floats. Fractional quantities are
 //    fixed-point integers upstream (e.g. rating micro-units).
 //  - no null and no undefined: absent means absent. The serializer THROWS on
-//    null/undefined/float/bigint/function/symbol — it never normalizes.
+//    null/undefined/float/bigint/function/symbol: it never normalizes.
 //  - object keys sorted by UTF-8 byte order; duplicate keys impossible by
 //    construction, rejected on parse.
 //  - strings must already be NFC; the serializer throws otherwise.
 //  - string escaping: exactly ", \, and control chars < 0x20; control chars
 //    use \b \t \n \f \r where defined, else \u00XX lowercase hex. No other
-//    escaping (no \/, no \uXXXX for printable chars) — one byte stream per
+//    escaping (no \/, no \uXXXX for printable chars): one byte stream per
 //    value on every engine.
 //  - output is UTF-8 bytes with no insignificant whitespace.
 //
 // Bytes (keys, sigs, hashes) are represented as base64url-no-pad strings by
-// schema convention (hash.ts toB64u) — the codec itself only sees strings.
+// schema convention (hash.ts toB64u): the codec itself only sees strings.
 
 import { sha256, utf8 } from './hash'
 
 export type CanonicalValue = string | number | boolean | CanonicalArray | CanonicalObject
 export type CanonicalArray = readonly CanonicalValue[]
 // `undefined` members are permitted by the TYPE (optional fields) and skipped
-// by the serializer — absent means absent. `undefined` inside arrays throws.
+// by the serializer: absent means absent. `undefined` inside arrays throws.
 export type CanonicalObject = { readonly [key: string]: CanonicalValue | undefined }
 
 export class CodecError extends Error {
@@ -108,7 +108,7 @@ function writeValue(v: unknown, path: string): string {
       for (const k of keys) {
         if (k.normalize('NFC') !== k) throw new CodecError('object key is not NFC', `${path}.${k}`)
         // '__proto__' survives canonical round-trip but is silently DROPPED by
-        // assignment-based copies (zod record parsing) — the byte layer and the
+        // assignment-based copies (zod record parsing): the byte layer and the
         // schema layer would disagree about what a body is. Never representable.
         if (k === '__proto__') throw new CodecError("'__proto__' is not a representable key", path)
       }
@@ -131,7 +131,7 @@ export function canonicalBytes(value: CanonicalValue): Uint8Array {
   return utf8(writeValue(value, ''))
 }
 
-/** sha256 over the canonical bytes — the hash every id/signature in the system uses. */
+/** sha256 over the canonical bytes: the hash every id/signature in the system uses. */
 export function canonicalHash(value: CanonicalValue): Uint8Array {
   return sha256(canonicalBytes(value))
 }

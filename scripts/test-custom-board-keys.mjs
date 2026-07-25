@@ -3,7 +3,7 @@
 // boards where two-digit ranks and j–l files actually occur: grand chess
 // (10×10, black back rank ON rank 10) and a painted 12×10 custom variant.
 //
-// CustomBoard is SEPARATE from ChessFamilyBoard/cgKeys — it renders its own
+// CustomBoard is SEPARATE from ChessFamilyBoard/cgKeys. It renders its own
 // grid and speaks full UCI square names ('a10'), so the chessgroundx ':'-rank
 // bug class cannot hit it, but a 4-char/single-digit assumption in its regex
 // or click codec would reproduce the same user-facing symptom (unmovable
@@ -20,7 +20,7 @@
 //
 //   node scripts/test-custom-board-keys.mjs
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -83,7 +83,7 @@ const {
   templateById
 } = mod
 
-/** Every move a position offers must survive the board's codec — a single
+/** Every move a position offers must survive the board's codec. A single
  *  unparseable move is an invisible/unmovable piece in the Lab. */
 function assertAllParse(moves, files, ranks, label) {
   const onBoard = (sq) => {
@@ -154,14 +154,14 @@ try {
   eq(g.fen.split(' ')[0].split('/').length, 10, 'grand start FEN has 10 rank rows')
   assertAllParse(grand.legalMoves(g), 10, 10, 'grand ply 0')
 
-  // One white move → black's turn: the a10/j10 rooks must be CLICKABLE — their
+  // One white move → black's turn: the a10/j10 rooks must be CLICKABLE. Their
   // moves' from must equal the square the click codec produces for that cell.
   g = grand.play(g, 'a3a4')
   ok(g !== null, 'grand: white a3a4 accepted')
   const blackMoves = grand.legalMoves(g)
   assertAllParse(blackMoves, 10, 10, 'grand ply 1 (black, back rank on 10)')
   const fromA10 = blackMoves.filter((m) => parseMove(m)?.from === squareName(0, 9))
-  ok(fromA10.length >= 1, `black a10 rook is clickable — ${fromA10.length} moves from squareName(0,9)`)
+  ok(fromA10.length >= 1, `black a10 rook is clickable: ${fromA10.length} moves from squareName(0,9)`)
   ok(fromA10.includes('a10a9'), 'a10a9 grouped under the a10 click origin')
   const rank10Froms = new Set(
     blackMoves.map((m) => parseMove(m)?.from).filter((f) => f && f.endsWith('10'))
@@ -214,7 +214,7 @@ try {
   const wMoves = wide.legalMoves(w0)
   assertAllParse(wMoves, 12, 10, '12×10 ply 0')
   const lFile = wMoves.filter((m) => parseMove(m)?.from === squareName(11, 1))
-  ok(lFile.length >= 1, `l2 pawn is clickable — ${lFile.length} moves from squareName(11,1)`)
+  ok(lFile.length >= 1, `l2 pawn is clickable: ${lFile.length} moves from squareName(11,1)`)
   const jKnight = wMoves.some((m) => parseMove(m)?.from === squareName(9, 0) || parseMove(m)?.from === squareName(10, 0))
   ok(jKnight, 'a j/k-file back-rank piece has moves (files beyond i are live)')
   // Black side: rank-10 back rank must be clickable after a white move.
@@ -226,7 +226,7 @@ try {
   ok(blackRank10.size >= 1, `12×10 black rank-10 origins clickable (${[...blackRank10].slice(0, 4).join(' ')}…)`)
   unregisterCustomVariant('cbk-wide')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

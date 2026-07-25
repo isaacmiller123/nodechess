@@ -34,7 +34,7 @@
   {
    "id": "catalan-fianchetto",
    "name": "The Catalan Bishop",
-   "short": "White plays d4, c4, Nf3, g3 and Bg2: a queen's-gambit with the bishop fianchettoed. That bishop on the long light diagonal is the soul of the opening — it pressures d5, b7 and the whole queenside."
+   "short": "White plays d4, c4, Nf3, g3 and Bg2: a queen's-gambit with the bishop fianchettoed. That bishop on the long light diagonal is the soul of the opening. It pressures d5, b7 and the whole queenside."
   },
   {
    "id": "catalan-pawn-pressure",
@@ -60,7 +60,7 @@
  "lessons": [
   {
    "id": "l1-flank-idea",
-   "title": "The Flank Idea — Surround the Centre",
+   "title": "The Flank Idea: Surround the Centre",
    "kind": "opening",
    "summary": "Assumes you know the Queen's Gambit, the King's Indian and Nimzo (ch 28), and basic opening principles. The unifying thought behind every opening this chapter: let White own the centre, then prove it is a weakness.",
    "segments": [
@@ -68,7 +68,7 @@
      "kind": "puzzle",
      "title": "Warm-up: punish the over-extended centre",
      "intro": {
-      "text": "First, WHY a hypermodern is willing to hand over the centre. A big pawn front that cannot be defended is not a wall — it is a row of targets. In each position the side to move strikes a loose central pawn or the exposed king behind one. One forcing shot each."
+      "text": "First, WHY a hypermodern is willing to hand over the centre. A big pawn front that cannot be defended is not a wall. It is a row of targets. In each position the side to move strikes a loose central pawn or the exposed king behind one. One forcing shot each."
      },
      "puzzle": {
       "themes": [
@@ -85,13 +85,13 @@
      "kind": "model",
      "title": "Two ways to fight 1.d4",
      "intro": {
-      "text": "I will not drill a single line yet — only the two great ideas of this chapter. Watch what Black, and then White, are really after."
+      "text": "I will not drill a single line yet. Only the two great ideas of this chapter. Watch what Black, and then White, are really after."
      },
      "line": [
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4. The queen's-pawn — solid, central, the move of patient players. You have met the head-on reply 1...d5 (the Queen's Gambit) and the King's Indian 1...Nf6 and ...g6. This chapter sharpens the hypermodern weapon: do not block the centre, bait it forward and break it."
+        "text": "1.d4. The queen's-pawn. Solid, central, the move of patient players. You have met the head-on reply 1...d5 (the Queen's Gambit) and the King's Indian 1...Nf6 and ...g6. This chapter sharpens the hypermodern weapon: do not block the centre, bait it forward and break it."
        }
       },
       {
@@ -118,7 +118,7 @@
        "uci": "c2c4",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "2.c4. White grabs a second centre file and prepares Nc3 with a broad pawn front — the most testing try. The c-pawn is the heart of every queen's-pawn opening; controlling d5 and supporting d4 is what c4 is for.",
+        "text": "2.c4. White grabs a second centre file and prepares Nc3 with a broad pawn front. The most testing try. The c-pawn is the heart of every queen's-pawn opening; controlling d5 and supporting d4 is what c4 is for.",
         "annotations": [
          {
           "kind": "highlight",
@@ -137,20 +137,20 @@
        "uci": "g7g6",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "2...g6. The bishop is heading to g7, to rake the long diagonal h8-a1 straight through White's centre and queenside. Now Black has a fork in the road: play ...Bg7 and ...d6 for a King's Indian wall, or strike the centre at once with ...d5 — the Grünfeld. We take the sharper road."
+        "text": "2...g6. The bishop is heading to g7, to rake the long diagonal h8-a1 straight through White's centre and queenside. Now Black has a fork in the road: play ...Bg7 and ...d6 for a King's Indian wall, or strike the centre at once with ...d5, the Grünfeld. We take the sharper road."
        }
       },
       {
        "uci": "b1c3",
        "coach": {
-        "text": "3.Nc3. White develops and braces for e4, building the big centre he wants: pawns on c4 and d4, soon e4. The old masters called this simply better. The hypermoderns disagreed — and now you learn why."
+        "text": "3.Nc3. White develops and braces for e4, building the big centre he wants: pawns on c4 and d4, soon e4. The old masters called this simply better. The hypermoderns disagreed, and now you learn why."
        }
       },
       {
        "uci": "d7d5",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "3...d5 — the Grünfeld. A thunderclap. Black strikes the centre the instant White commits the knight. If White takes, 4.cxd5 Nxd5, Black will pick off the c3-knight and then aim every piece at d4. The deal is blunt: I let you build a centre so that I can knock it down.",
+        "text": "3...d5: the Grünfeld. A thunderclap. Black strikes the centre the instant White commits the knight. If White takes, 4.cxd5 Nxd5, Black will pick off the c3-knight and then aim every piece at d4. The deal is blunt: I let you build a centre so that I can knock it down.",
         "annotations": [
          {
           "kind": "arrow",
@@ -172,14 +172,14 @@
     },
     {
      "kind": "teach",
-     "title": "The flank alternative — open with c4 or Nf3",
+     "title": "The flank alternative: open with c4 or Nf3",
      "steps": [
       {
        "fen": "rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq - 0 1",
        "conceptId": "english-reversed",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "There is another way to play the flank game — be the flank player yourself. 1.c4, the English, stakes a claim on d5 from the wing without committing the d-pawn. If Black answers 1...e5 it becomes a Sicilian with colours reversed, White a tempo up. Same hypermodern soul: control the centre with pieces and a half-flank pawn, occupy it only when it suits you.",
+        "text": "There is another way to play the flank game. Be the flank player yourself. 1.c4, the English, stakes a claim on d5 from the wing without committing the d-pawn. If Black answers 1...e5 it becomes a Sicilian with colours reversed, White a tempo up. Same hypermodern soul: control the centre with pieces and a half-flank pawn, occupy it only when it suits you.",
         "annotations": [
          {
           "kind": "highlight",
@@ -200,7 +200,7 @@
        "conceptId": "reti-flexibility",
        "coach": {
         "conceptId": "reti-flexibility",
-        "text": "1.Nf3 — the Réti — is the most flexible first move there is. White develops, stops ...e5, and keeps every pawn at home. He will fianchetto, watch which centre Black builds, and only then choose his own. Against ...d5 he can play c4 and undermine; against ...Nf6 he can transpose to a dozen systems. This is the modern flank: commit nothing until you must.",
+        "text": "1.Nf3 (the Réti) is the most flexible first move there is. White develops, stops ...e5, and keeps every pawn at home. He will fianchetto, watch which centre Black builds, and only then choose his own. Against ...d5 he can play c4 and undermine; against ...Nf6 he can transpose to a dozen systems. This is the modern flank: commit nothing until you must.",
         "annotations": [
          {
           "kind": "circle",
@@ -221,7 +221,7 @@
        "conceptId": "transposition",
        "coach": {
         "conceptId": "transposition",
-        "text": "And the great secret tying it all together: transposition. The c4, Nf3 and g3 openings flow into one another. This very position — a Grünfeld — can arise from 1.d4, from 1.c4, from 1.Nf3, in any order. A master picks the move-order that reaches the position he wants and side-steps the one he fears. Move-order IS strategy at this level.",
+        "text": "And the great secret tying it all together: transposition. The c4, Nf3 and g3 openings flow into one another. This very position (a Grünfeld) can arise from 1.d4, from 1.c4, from 1.Nf3, in any order. A master picks the move-order that reaches the position he wants and side-steps the one he fears. Move-order IS strategy at this level.",
         "annotations": [
          {
           "kind": "highlight",
@@ -247,7 +247,7 @@
   },
   {
    "id": "l2-grunfeld",
-   "title": "The Grünfeld — Give the Centre, Take the Centre",
+   "title": "The Grünfeld: Give the Centre, Take the Centre",
    "kind": "opening",
    "summary": "The Exchange Grünfeld mainline move by move: why White's big c3-d4-e4 centre is a target, not a fortress, and how Black's pieces converge on d4.",
    "segments": [
@@ -262,7 +262,7 @@
        "uci": "d2d4",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "1.d4 Nf6 2.c4 g6 3.Nc3 d5 — we pick up at the Grünfeld move. White's most principled reply is to accept the challenge and take."
+        "text": "1.d4 Nf6 2.c4 g6 3.Nc3 d5: we pick up at the Grünfeld move. White's most principled reply is to accept the challenge and take."
        }
       },
       {
@@ -293,7 +293,7 @@
        "uci": "d7d5",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "3...d5, the Grünfeld strike — hitting the centre the moment White commits the knight.",
+        "text": "3...d5, the Grünfeld strike: hitting the centre the moment White commits the knight.",
         "annotations": [
          {
           "kind": "arrow",
@@ -308,7 +308,7 @@
        "uci": "c4d5",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "4.cxd5 — the Exchange Variation, the main test. White removes the d5-pawn and clears the way to build a pawn centre with e4. He is saying: I will take everything you offer.",
+        "text": "4.cxd5: the Exchange Variation, the main test. White removes the d5-pawn and clears the way to build a pawn centre with e4. He is saying: I will take everything you offer.",
         "annotations": [
          {
           "kind": "highlight",
@@ -322,7 +322,7 @@
        "uci": "f6d5",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "4...Nxd5. The knight recaptures and lands on a fine central square — but it is not staying. Its real job is to trade itself for the c3-knight, smashing White's queenside pawns and gluing him to the defence of d4.",
+        "text": "4...Nxd5. The knight recaptures and lands on a fine central square, but it is not staying. Its real job is to trade itself for the c3-knight, smashing White's queenside pawns and gluing him to the defence of d4.",
         "annotations": [
          {
           "kind": "circle",
@@ -336,7 +336,7 @@
        "uci": "e2e4",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "5.e4. There it is — the big centre. Pawns on d4 and e4, soon c3. It looks magnificent. But fix this in your mind: a centre is only strong if it can ADVANCE. This one is about to be nailed down and besieged. The knight on d5 is kicked, so it does its job.",
+        "text": "5.e4. There it is, the big centre. Pawns on d4 and e4, soon c3. It looks magnificent. But fix this in your mind: a centre is only strong if it can ADVANCE. This one is about to be nailed down and besieged. The knight on d5 is kicked, so it does its job.",
         "annotations": [
          {
           "kind": "highlight",
@@ -370,7 +370,7 @@
        "uci": "b2c3",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "6.bxc3. Forced — and now White's queenside is a row of weaknesses: a doubled c-pawn, no b-pawn, and above all the d4-pawn propped up only by a pawn on c3. White has space; Black has a target. The rest of the opening is Black piling onto d4.",
+        "text": "6.bxc3. Forced, and now White's queenside is a row of weaknesses: a doubled c-pawn, no b-pawn, and above all the d4-pawn propped up only by a pawn on c3. White has space; Black has a target. The rest of the opening is Black piling onto d4.",
         "annotations": [
          {
           "kind": "highlight",
@@ -405,14 +405,14 @@
       {
        "uci": "f1c4",
        "coach": {
-        "text": "7.Bc4, the classical main line — the bishop eyes f7 and supports a future d5-push or e5. White develops fast, hoping his centre and space tell before Black's pressure bites."
+        "text": "7.Bc4, the classical main line: the bishop eyes f7 and supports a future d5-push or e5. White develops fast, hoping his centre and space tell before Black's pressure bites."
        }
       },
       {
        "uci": "c7c5",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "7...c5 — the hammer blow. Black attacks d4 directly with a pawn. Now d4 is hit by the c5-pawn and the g7-bishop, and defended only by the c3-pawn and the queen. Every Grünfeld plan runs through this ...c5 break.",
+        "text": "7...c5: the hammer blow. Black attacks d4 directly with a pawn. Now d4 is hit by the c5-pawn and the g7-bishop, and defended only by the c3-pawn and the queen. Every Grünfeld plan runs through this ...c5 break.",
         "annotations": [
          {
           "kind": "arrow",
@@ -431,14 +431,14 @@
       {
        "uci": "g1e2",
        "coach": {
-        "text": "8.Ne2 — note: Nf3 would block the bishop's defence of d4 and walk into ...Bg4, so White routes the knight to e2 instead, keeping the f-pawn and bishop free to guard the centre. Small move-order detail, large consequence."
+        "text": "8.Ne2, note: Nf3 would block the bishop's defence of d4 and walk into ...Bg4, so White routes the knight to e2 instead, keeping the f-pawn and bishop free to guard the centre. Small move-order detail, large consequence."
        }
       },
       {
        "uci": "b8c6",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "8...Nc6 — a third attacker on d4. The pressure mounts. Black does not rush to win the pawn; he keeps adding force until White must either push d5 (giving Black the d4-square and a fine knight) or watch the centre crumble.",
+        "text": "8...Nc6: a third attacker on d4. The pressure mounts. Black does not rush to win the pawn; he keeps adding force until White must either push d5 (giving Black the d4-square and a fine knight) or watch the centre crumble.",
         "annotations": [
          {
           "kind": "arrow",
@@ -459,7 +459,7 @@
        "uci": "e8g8",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "9...O-O. King to safety, the rook will swing to d8 or c8 to add to the pile on d4 and the half-open c-file. This is the model Grünfeld: White has the centre and space; Black has the better structure and a dozen ways to harass d4. Practice has shown it is fully equal — the hypermodern bargain paid in full.",
+        "text": "9...O-O. King to safety, the rook will swing to d8 or c8 to add to the pile on d4 and the half-open c-file. This is the model Grünfeld: White has the centre and space; Black has the better structure and a dozen ways to harass d4. Practice has shown it is fully equal. The hypermodern bargain paid in full.",
         "annotations": [
          {
           "kind": "highlight",
@@ -480,7 +480,7 @@
        "conceptId": "grunfeld-centre-target",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "Here is the tabiya a couple of moves on, after White has also castled. Look at d4: attacked by the c5-pawn, the c6-knight and the g7-bishop — three attackers — defended by c3, the e3-bishop and the queen. The count is even, but Black is the one applying pressure. A typical idea is ...Bg4, pinning the e2-knight to the queen and adding a FOURTH attacker on d4 by removing a defender. Watch how Black keeps loading the square.",
+        "text": "Here is the tabiya a couple of moves on, after White has also castled. Look at d4: attacked by the c5-pawn, the c6-knight and the g7-bishop (three attackers) defended by c3, the e3-bishop and the queen. The count is even, but Black is the one applying pressure. A typical idea is ...Bg4, pinning the e2-knight to the queen and adding a FOURTH attacker on d4 by removing a defender. Watch how Black keeps loading the square.",
         "annotations": [
          {
           "kind": "highlight",
@@ -503,7 +503,7 @@
        "conceptId": "grunfeld-centre-target",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "After ...Bg4 the e2-knight is pinned to White's queen on d1 and can no longer guard d4. Now ...cxd4 forces matters and keeps d4 under heavy fire — cxd4 Bxd4 hits the e3-bishop and leans on the pinned knight, and Black has full dynamic equality with the easier game. THIS is the Grünfeld dream: the centre that looked so proud is held together only by overworked defenders. Give the centre, take the centre.",
+        "text": "After ...Bg4 the e2-knight is pinned to White's queen on d1 and can no longer guard d4. Now ...cxd4 forces matters and keeps d4 under heavy fire: cxd4 Bxd4 hits the e3-bishop and leans on the pinned knight, and Black has full dynamic equality with the easier game. THIS is the Grünfeld dream: the centre that looked so proud is held together only by overworked defenders. Give the centre, take the centre.",
         "annotations": [
          {
           "kind": "arrow",
@@ -526,7 +526,7 @@
   },
   {
    "id": "l3-grunfeld-play",
-   "title": "Play the Grünfeld — the Three Key Moves",
+   "title": "Play the Grünfeld: the Three Key Moves",
    "kind": "variation",
    "summary": "Your hand on the pieces. Find the three moves that define the Grünfeld idea, then convert centre-pressure into won material in the cool-down.",
    "segments": [
@@ -539,7 +539,7 @@
        "conceptId": "grunfeld-idea",
        "coach": {
         "conceptId": "grunfeld-idea",
-        "text": "White has just played 4.cxd5. Black to move. Do not hesitate over the recapture — take back toward the centre, putting your knight on its best square, ready to leap into c3 next. Recapture on d5.",
+        "text": "White has just played 4.cxd5. Black to move. Do not hesitate over the recapture. Take back toward the centre, putting your knight on its best square, ready to leap into c3 next. Recapture on d5.",
         "annotations": [
          {
           "kind": "circle",
@@ -558,7 +558,7 @@
        ],
        "successLine": {
         "conceptId": "grunfeld-idea",
-        "text": "Nxd5. The knight sits proudly in the centre — but its destiny is c3. Black recaptures with the piece, not a pawn, precisely so he can trade it for the c3-knight and wreck White's structure.",
+        "text": "Nxd5. The knight sits proudly in the centre, but its destiny is c3. Black recaptures with the piece, not a pawn, precisely so he can trade it for the c3-knight and wreck White's structure.",
         "annotations": [
          {
           "kind": "highlight",
@@ -568,7 +568,7 @@
         ]
        },
        "retryLine": {
-        "text": "Recapture the pawn. The knight on f6 takes on d5, heading for its real job — the trade on c3 that smashes White's queenside."
+        "text": "Recapture the pawn. The knight on f6 takes on d5, heading for its real job. The trade on c3 that smashes White's queenside."
        }
       },
       {
@@ -576,7 +576,7 @@
        "conceptId": "grunfeld-centre-target",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "White has built his big centre with 5.e4, kicking your knight. This is the heartbeat of the Grünfeld: do not retreat — trade. Take the c3-knight and double White's pawns, leaving d4 weak and overworked.",
+        "text": "White has built his big centre with 5.e4, kicking your knight. This is the heartbeat of the Grünfeld: do not retreat. Trade. Take the c3-knight and double White's pawns, leaving d4 weak and overworked.",
         "annotations": [
          {
           "kind": "circle",
@@ -605,7 +605,7 @@
         ]
        },
        "retryLine": {
-        "text": "Don't retreat the knight — that wastes the whole idea. Capture on c3 to shatter White's queenside pawns and leave d4 weak."
+        "text": "Don't retreat the knight. That wastes the whole idea. Capture on c3 to shatter White's queenside pawns and leave d4 weak."
        }
       },
       {
@@ -613,7 +613,7 @@
        "conceptId": "grunfeld-centre-target",
        "coach": {
         "conceptId": "grunfeld-centre-target",
-        "text": "Your bishop already rakes d4 from g7. White has just developed 7.Bc4. Now strike the centre with a pawn — the break that turns slow pressure into a concrete attack on d4. Play the thematic pawn break.",
+        "text": "Your bishop already rakes d4 from g7. White has just developed 7.Bc4. Now strike the centre with a pawn. The break that turns slow pressure into a concrete attack on d4. Play the thematic pawn break.",
         "annotations": [
          {
           "kind": "arrow",
@@ -654,7 +654,7 @@
      "kind": "puzzle",
      "title": "Cool-down: collapse the centre",
      "intro": {
-      "text": "The Grünfeld pays off when an over-extended centre or a loose d4/e4 pawn cracks under pressure. Each of these is the moment of collapse — a fork, a pin or a clean win of the central pawn. Find the shot."
+      "text": "The Grünfeld pays off when an over-extended centre or a loose d4/e4 pawn cracks under pressure. Each of these is the moment of collapse. A fork, a pin or a clean win of the central pawn. Find the shot."
      },
      "puzzle": {
       "themes": [
@@ -671,9 +671,9 @@
   },
   {
    "id": "l4-benoni",
-   "title": "The Modern Benoni — Space for Dynamism",
+   "title": "The Modern Benoni: Space for Dynamism",
    "kind": "opening",
-   "summary": "Trade central space for a half-open e-file, a raking g7-bishop and a queenside pawn-majority. The Benoni player must stay active — passivity is fatal.",
+   "summary": "Trade central space for a half-open e-file, a raking g7-bishop and a queenside pawn-majority. The Benoni player must stay active. Passivity is fatal.",
    "segments": [
     {
      "kind": "model",
@@ -685,7 +685,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4 Nf6 2.c4 c5 — Black offers a different deal from the Grünfeld: instead of ...d5, he strikes with ...c5, daring White to push past."
+        "text": "1.d4 Nf6 2.c4 c5, Black offers a different deal from the Grünfeld: instead of ...d5, he strikes with ...c5, daring White to push past."
        }
       },
       {
@@ -719,7 +719,7 @@
        "uci": "d4d5",
        "coach": {
         "conceptId": "benoni-structure",
-        "text": "3.d5 — White advances, gaining space and locking the centre. This pawn on d5 is the Benoni wedge: it cramps Black but also fixes the structure, defining where each side will attack.",
+        "text": "3.d5: White advances, gaining space and locking the centre. This pawn on d5 is the Benoni wedge: it cramps Black but also fixes the structure, defining where each side will attack.",
         "annotations": [
          {
           "kind": "highlight",
@@ -755,7 +755,7 @@
        "uci": "e6d5",
        "coach": {
         "conceptId": "benoni-structure",
-        "text": "4...exd5 5.cxd5 — and the Modern Benoni structure is born: White pawns on d5 and e4 (soon), Black pawns on c5 and d6. The e-file is half-open for Black; the d5-pawn is a permanent feature, asset and target both.",
+        "text": "4...exd5 5.cxd5, and the Modern Benoni structure is born: White pawns on d5 and e4 (soon), Black pawns on c5 and d6. The e-file is half-open for Black; the d5-pawn is a permanent feature, asset and target both.",
         "annotations": [
          {
           "kind": "highlight",
@@ -789,7 +789,7 @@
        "uci": "e2e4",
        "coach": {
         "conceptId": "benoni-dynamics",
-        "text": "6.e4. White claims the centre and a big space edge — the classical Benoni picture. White's plan is simple and dangerous: prepare e4-e5 to blow open the centre while Black is cramped. Black must generate counterplay fast.",
+        "text": "6.e4. White claims the centre and a big space edge, the classical Benoni picture. White's plan is simple and dangerous: prepare e4-e5 to blow open the centre while Black is cramped. Black must generate counterplay fast.",
         "annotations": [
          {
           "kind": "highlight",
@@ -850,7 +850,7 @@
        "uci": "e8g8",
        "coach": {
         "conceptId": "benoni-dynamics",
-        "text": "8...O-O. The position is set. White has space and the e5-break; Black has the g7-bishop, the half-open e-file, and the queenside majority that powers the ...b5 break with ...a6 and ...Rb8. The Benoni is a fighting machine — sharp, double-edged, and unforgiving of passive play by either side.",
+        "text": "8...O-O. The position is set. White has space and the e5-break; Black has the g7-bishop, the half-open e-file, and the queenside majority that powers the ...b5 break with ...a6 and ...Rb8. The Benoni is a fighting machine. Sharp, double-edged, and unforgiving of passive play by either side.",
         "annotations": [
          {
           "kind": "highlight",
@@ -900,7 +900,7 @@
        "conceptId": "benoni-dynamics",
        "coach": {
         "conceptId": "benoni-dynamics",
-        "text": "Second, the KINGSIDE break ...f5, hitting e4 and opening lines toward White's king. But Black must time these carefully — if he sits still, White plays Nd2-c4 and e4-e5, and the cramped Black position is simply crushed. The Benoni motto: counterplay or death. Activity is not optional here; it is survival.",
+        "text": "Second, the KINGSIDE break ...f5, hitting e4 and opening lines toward White's king. But Black must time these carefully. If he sits still, White plays Nd2-c4 and e4-e5, and the cramped Black position is simply crushed. The Benoni motto: counterplay or death. Activity is not optional here; it is survival.",
         "annotations": [
          {
           "kind": "arrow",
@@ -924,7 +924,7 @@
   },
   {
    "id": "l5-benko",
-   "title": "The Benko Gambit — A Pawn for the Files",
+   "title": "The Benko Gambit: A Pawn for the Files",
    "kind": "variation",
    "summary": "The purest positional gambit in chess. Give a pawn on b5, take the half-open a- and b-files forever. The pressure outlasts the material.",
    "segments": [
@@ -932,13 +932,13 @@
      "kind": "model",
      "title": "The gambit and the bind",
      "intro": {
-      "text": "The Benko is the Benoni's wild cousin. Black gives a wing pawn — and very often never gets it back. What he gets instead is permanent, grinding pressure down two open files at White's queenside, the kind that wins endgames a whole pawn down. Watch the bargain."
+      "text": "The Benko is the Benoni's wild cousin. Black gives a wing pawn, and very often never gets it back. What he gets instead is permanent, grinding pressure down two open files at White's queenside, the kind that wins endgames a whole pawn down. Watch the bargain."
      },
      "line": [
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4 Nf6 2.c4 c5 3.d5 — the Benoni move-order, White pushing past."
+        "text": "1.d4 Nf6 2.c4 c5 3.d5: the Benoni move-order, White pushing past."
        }
       },
       {
@@ -969,7 +969,7 @@
        "uci": "b7b5",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "3...b5 — the Benko Gambit. Black offers the b-pawn. The idea is startlingly simple: when White takes, the a- and b-files crack open, and Black's rooks pour down them at White's queenside for the rest of the game.",
+        "text": "3...b5: the Benko Gambit. Black offers the b-pawn. The idea is startlingly simple: when White takes, the a- and b-files crack open, and Black's rooks pour down them at White's queenside for the rest of the game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -984,7 +984,7 @@
        "uci": "c4b5",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "4.cxb5 — White accepts (declining with 4.Nf3 or 4.a4 is also playable, but accepting is the principled test). White is a pawn up. Now Black sets about earning the compensation.",
+        "text": "4.cxb5: White accepts (declining with 4.Nf3 or 4.a4 is also playable, but accepting is the principled test). White is a pawn up. Now Black sets about earning the compensation.",
         "annotations": [
          {
           "kind": "highlight",
@@ -998,7 +998,7 @@
        "uci": "a7a6",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "4...a6 — the second offer. Black invites bxa6, opening BOTH the a-file and the b-file. He is not trying to win the pawn back; he is trying to open lines. This indifference to material is what makes the Benko so hard to meet.",
+        "text": "4...a6: the second offer. Black invites bxa6, opening BOTH the a-file and the b-file. He is not trying to win the pawn back; he is trying to open lines. This indifference to material is what makes the Benko so hard to meet.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1013,7 +1013,7 @@
        "uci": "b5a6",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "5.bxa6 — White grabs a second pawn but rips his own queenside wide open. (White can also decline with 5.b6 or 5.e3 to keep things closed.) Now Black recaptures and the bind begins.",
+        "text": "5.bxa6: White grabs a second pawn but rips his own queenside wide open. (White can also decline with 5.b6 or 5.e3 to keep things closed.) Now Black recaptures and the bind begins.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1027,7 +1027,7 @@
        "uci": "c8a6",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "5...Bxa6. The light-squared bishop recaptures and immediately points at White's e2/f1 — it will trade off White's good bishop or pin down the king. Black's whole army now has a clear address: ...Bxa6, ...Bg7, ...O-O, ...Nbd7, ...Qa5/...Rfb8 and ...Ra8 — every piece aimed at the a- and b-files.",
+        "text": "5...Bxa6. The light-squared bishop recaptures and immediately points at White's e2/f1. It will trade off White's good bishop or pin down the king. Black's whole army now has a clear address: ...Bxa6, ...Bg7, ...O-O, ...Nbd7, ...Qa5/...Rfb8 and ...Ra8. Every piece aimed at the a- and b-files.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1079,7 +1079,7 @@
        "conceptId": "benko-gambit",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "And here is the deepest point of the Benko: the pressure does not fade if pieces come off — it GROWS. In the endgame the extra white pawn on the kingside is hard to use, while Black's rooks on the open queenside files tie White in knots and often win back the pawn with interest. A gambit that gets BETTER as the game simplifies. That is why masters play a pawn down here without a flicker of worry.",
+        "text": "And here is the deepest point of the Benko: the pressure does not fade if pieces come off. It GROWS. In the endgame the extra white pawn on the kingside is hard to use, while Black's rooks on the open queenside files tie White in knots and often win back the pawn with interest. A gambit that gets BETTER as the game simplifies. That is why masters play a pawn down here without a flicker of worry.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1100,7 +1100,7 @@
   },
   {
    "id": "l6-catalan",
-   "title": "The Catalan — White's Long-Diagonal Bishop",
+   "title": "The Catalan: White's Long-Diagonal Bishop",
    "kind": "opening",
    "summary": "Now play the white side of the flank. A Queen's Gambit with the bishop fianchettoed to g2: the soul of the opening is that one bishop on the long light diagonal.",
    "segments": [
@@ -1108,7 +1108,7 @@
      "kind": "model",
      "title": "Building the Catalan",
      "intro": {
-      "text": "Switch seats — you are White now, and you are the one playing the flank. The Catalan blends the Queen's Gambit with a kingside fianchetto. One piece defines everything: the g2-bishop, raking the long light diagonal at d5, b7 and Black's whole queenside. Build it and feel its power."
+      "text": "Switch seats: you are White now, and you are the one playing the flank. The Catalan blends the Queen's Gambit with a kingside fianchetto. One piece defines everything: the g2-bishop, raking the long light diagonal at d5, b7 and Black's whole queenside. Build it and feel its power."
      },
      "line": [
       {
@@ -1126,7 +1126,7 @@
       {
        "uci": "c2c4",
        "coach": {
-        "text": "2.c4 e6 — a Queen's-Gambit-style centre. So far, nothing unusual."
+        "text": "2.c4 e6: a Queen's-Gambit-style centre. So far, nothing unusual."
        }
       },
       {
@@ -1138,7 +1138,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "3.Nf3, a flexible developing move that keeps the Catalan and the Queen's Gambit both on the table — a small move-order point you will exploit."
+        "text": "3.Nf3, a flexible developing move that keeps the Catalan and the Queen's Gambit both on the table. A small move-order point you will exploit."
        }
       },
       {
@@ -1151,7 +1151,7 @@
        "uci": "g2g3",
        "coach": {
         "conceptId": "catalan-fianchetto",
-        "text": "4.g3 — the Catalan move. Instead of developing the bishop to d3 or e2, White fianchettoes it to g2. From there it will aim straight down the long diagonal at d5 and b7, pressuring the centre and the queenside from afar.",
+        "text": "4.g3: the Catalan move. Instead of developing the bishop to d3 or e2, White fianchettoes it to g2. From there it will aim straight down the long diagonal at d5 and b7, pressuring the centre and the queenside from afar.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1171,7 +1171,7 @@
        "uci": "f1g2",
        "coach": {
         "conceptId": "catalan-fianchetto",
-        "text": "5.Bg2 — there it is, the Catalan bishop. Notice it is not blocked by anything: the long diagonal a8-h1 is clear, and the bishop pressures d5 and bears on b7. This is the most harmoniously placed piece in any opening you have learned. It will haunt Black for forty moves.",
+        "text": "5.Bg2: there it is, the Catalan bishop. Notice it is not blocked by anything: the long diagonal a8-h1 is clear, and the bishop pressures d5 and bears on b7. This is the most harmoniously placed piece in any opening you have learned. It will haunt Black for forty moves.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1199,7 +1199,7 @@
        "uci": "d5c4",
        "coach": {
         "conceptId": "catalan-pawn-pressure",
-        "text": "6...dxc4 — the Open Catalan. Black grabs the c4-pawn. A natural reaction: win a pawn and ask White to prove the compensation. But here is the Catalan secret — White is in no hurry to take it back.",
+        "text": "6...dxc4: the Open Catalan. Black grabs the c4-pawn. A natural reaction: win a pawn and ask White to prove the compensation. But here is the Catalan secret. White is in no hurry to take it back.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1220,7 +1220,7 @@
        "conceptId": "catalan-pawn-pressure",
        "coach": {
         "conceptId": "catalan-pawn-pressure",
-        "text": "Black is a pawn up on c4. The beginner grabs it back at once with Na3 or Qa4. The Catalan master does something subtler: he plays Qc2 and a4, develops, and lets the g2-bishop and the open centre do the work. The c4-pawn cannot be held by Black anyway — ...b5 to defend it weakens the long diagonal, exactly where White is strongest.",
+        "text": "Black is a pawn up on c4. The beginner grabs it back at once with Na3 or Qa4. The Catalan master does something subtler: he plays Qc2 and a4, develops, and lets the g2-bishop and the open centre do the work. The c4-pawn cannot be held by Black anyway: ...b5 to defend it weakens the long diagonal, exactly where White is strongest.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1266,22 +1266,22 @@
   },
   {
    "id": "l7-english-reti",
-   "title": "The English & the Réti — Flank First",
+   "title": "The English & the Réti: Flank First",
    "kind": "opening",
    "summary": "Open with 1.c4 or 1.Nf3: stake the centre from the wing, fianchetto, and occupy the middle only when it suits you. The reversed Sicilian and the flexible Réti.",
    "segments": [
     {
      "kind": "model",
-     "title": "The English — a reversed Sicilian, a tempo up",
+     "title": "The English: a reversed Sicilian, a tempo up",
      "intro": {
-      "text": "Now the pure flank openings, where White never even plays an early d4 or e4. 1.c4 fights for d5 from the wing. If Black answers 1...e5, the position is a Sicilian Defence with colours reversed — and White has the extra tempo. Watch how familiar the ideas feel from the other side."
+      "text": "Now the pure flank openings, where White never even plays an early d4 or e4. 1.c4 fights for d5 from the wing. If Black answers 1...e5, the position is a Sicilian Defence with colours reversed, and White has the extra tempo. Watch how familiar the ideas feel from the other side."
      },
      "line": [
       {
        "uci": "c2c4",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "1.c4 — the English Opening. White stakes a claim on d5 from the flank without committing a centre pawn. Flexible, sound, and a favourite of patient, positional players from Botvinnik to Carlsen.",
+        "text": "1.c4: the English Opening. White stakes a claim on d5 from the flank without committing a centre pawn. Flexible, sound, and a favourite of patient, positional players from Botvinnik to Carlsen.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1296,7 +1296,7 @@
        "uci": "e7e5",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "1...e5 — the most direct reply, claiming the centre White declined. Now look closely: this is a Sicilian Defence with the board flipped. White is playing the black Sicilian setup, a full move ahead. Every Sicilian plan you know is now a white weapon.",
+        "text": "1...e5: the most direct reply, claiming the centre White declined. Now look closely: this is a Sicilian Defence with the board flipped. White is playing the black Sicilian setup, a full move ahead. Every Sicilian plan you know is now a white weapon.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1310,7 +1310,7 @@
        "uci": "b1c3",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "2.Nc3 — the natural square, gripping d5 and e4. In Sicilian terms this is like Black's ...Nc6: White develops toward the centre and prepares the fianchetto.",
+        "text": "2.Nc3: the natural square, gripping d5 and e4. In Sicilian terms this is like Black's ...Nc6: White develops toward the centre and prepares the fianchetto.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1329,7 +1329,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "3.Nf3, attacking e5 and developing — the reversed-Sicilian knight."
+        "text": "3.Nf3, attacking e5 and developing: the reversed-Sicilian knight."
        }
       },
       {
@@ -1342,7 +1342,7 @@
        "uci": "g2g3",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "4.g3 — the signature English fianchetto. The g2-bishop will press d5 and the long diagonal, exactly as in the Catalan and the Réti. This bishop on g2 is the thread running through every flank opening in this chapter.",
+        "text": "4.g3: the signature English fianchetto. The g2-bishop will press d5 and the long diagonal, exactly as in the Catalan and the Réti. This bishop on g2 is the thread running through every flank opening in this chapter.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1356,7 +1356,7 @@
        "uci": "d7d5",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "4...d5 — Black strikes back in the centre, the most testing reply. He uses HIS extra central pawn to fight for space before White's bind sets in.",
+        "text": "4...d5: Black strikes back in the centre, the most testing reply. He uses HIS extra central pawn to fight for space before White's bind sets in.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1383,7 +1383,7 @@
        "uci": "f1g2",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "6.Bg2 — and the reversed Sicilian is in full swing. White will castle, play d3 or d4, and use the c-file and the long diagonal. It is a Dragon Sicilian with White a tempo up: the same ideas you fear as Black are now yours to wield, one move faster.",
+        "text": "6.Bg2, and the reversed Sicilian is in full swing. White will castle, play d3 or d4, and use the c-file and the long diagonal. It is a Dragon Sicilian with White a tempo up: the same ideas you fear as Black are now yours to wield, one move faster.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1398,14 +1398,14 @@
     },
     {
      "kind": "teach",
-     "title": "The Réti — commit to nothing",
+     "title": "The Réti: commit to nothing",
      "steps": [
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/8/5N2/PPPPPPPP/RNBQKB1R w KQkq - 0 2",
        "conceptId": "reti-flexibility",
        "coach": {
         "conceptId": "reti-flexibility",
-        "text": "1.Nf3 is the Réti — the most non-committal move in chess. Suppose Black plays 1...d5, grabbing the centre. The Réti player does not block it; he undermines it. He plays 2.c4, hitting d5 from the flank, then g3 and Bg2 to pressure it from afar. White invites Black to over-extend, then dismantles it — the hypermodern method exactly, but with White's extra tempo.",
+        "text": "1.Nf3 is the Réti. The most non-committal move in chess. Suppose Black plays 1...d5, grabbing the centre. The Réti player does not block it; he undermines it. He plays 2.c4, hitting d5 from the flank, then g3 and Bg2 to pressure it from afar. White invites Black to over-extend, then dismantles it: the hypermodern method exactly, but with White's extra tempo.",
         "annotations": [
          {
           "kind": "circle",
@@ -1486,7 +1486,7 @@
        "conceptId": "transposition",
        "coach": {
         "conceptId": "transposition",
-        "text": "Look at this Grünfeld position. Now ask: how did we get here? From 1.d4 Nf6 2.c4 g6 3.Nc3 d5 — yes. But also from 1.c4 Nf6 2.Nc3 g6 3.d4 d5 (an English that became a Grünfeld), or from 1.Nf3 d5 2.c4 g6 3.Nc3 Nf6 4.d4 (a Réti that became a Grünfeld). Same position, three different first moves. THIS is transposition: the openings are not separate boxes, they are doors into the same rooms.",
+        "text": "Look at this Grünfeld position. Now ask: how did we get here? From 1.d4 Nf6 2.c4 g6 3.Nc3 d5, yes. But also from 1.c4 Nf6 2.Nc3 g6 3.d4 d5 (an English that became a Grünfeld), or from 1.Nf3 d5 2.c4 g6 3.Nc3 Nf6 4.d4 (a Réti that became a Grünfeld). Same position, three different first moves. THIS is transposition: the openings are not separate boxes, they are doors into the same rooms.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1539,7 +1539,7 @@
        "conceptId": "transposition",
        "coach": {
         "conceptId": "transposition",
-        "text": "So here is the modern flank in one sentence: commit nothing until you must, and choose the move-order that gives you the position you understand best. The whole web — English, Réti, Catalan, Grünfeld, Benoni, Benko — is one connected system built on a single hypermodern truth: the centre is more easily controlled than occupied. Master the ideas, and the move-orders take care of themselves.",
+        "text": "So here is the modern flank in one sentence: commit nothing until you must, and choose the move-order that gives you the position you understand best. The whole web (English, Réti, Catalan, Grünfeld, Benoni, Benko) is one connected system built on a single hypermodern truth: the centre is more easily controlled than occupied. Master the ideas, and the move-orders take care of themselves.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1580,9 +1580,9 @@
   },
   {
    "id": "l9-recap-practice",
-   "title": "Recap — Know the Flank Move",
+   "title": "Recap: Know the Flank Move",
    "kind": "practice",
-   "summary": "One position from each opening. Show that you can find the move that defines it — the fianchetto, the undermining c4, the gambit's second offer.",
+   "summary": "One position from each opening. Show that you can find the move that defines it. The fianchetto, the undermining c4, the gambit's second offer.",
    "segments": [
     {
      "kind": "guided",
@@ -1608,7 +1608,7 @@
        ],
        "successLine": {
         "conceptId": "catalan-fianchetto",
-        "text": "g3! Next comes Bg2 and the Catalan bishop is born, raking the long light diagonal. That one bishop will pressure d5 and b7 for the rest of the game — the soul of the whole opening.",
+        "text": "g3! Next comes Bg2 and the Catalan bishop is born, raking the long light diagonal. That one bishop will pressure d5 and b7 for the rest of the game, the soul of the whole opening.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1619,7 +1619,7 @@
         ]
        },
        "retryLine": {
-        "text": "Think Catalan, not Queen's Gambit. The defining move is g3, preparing Bg2 on the long diagonal — not Bd3 or Be2."
+        "text": "Think Catalan, not Queen's Gambit. The defining move is g3, preparing Bg2 on the long diagonal. Not Bd3 or Be2."
        }
       },
       {
@@ -1627,7 +1627,7 @@
        "conceptId": "reti-flexibility",
        "coach": {
         "conceptId": "reti-flexibility",
-        "text": "You opened 1.Nf3 and Black grabbed the centre with 1...d5. White to move. Don't block the pawn — undermine it from the flank, the hypermodern way, hitting d5 with a pawn while keeping your own centre fluid. Play the Réti's signature challenge.",
+        "text": "You opened 1.Nf3 and Black grabbed the centre with 1...d5. White to move. Don't block the pawn. Undermine it from the flank, the hypermodern way, hitting d5 with a pawn while keeping your own centre fluid. Play the Réti's signature challenge.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1642,7 +1642,7 @@
        ],
        "successLine": {
         "conceptId": "reti-flexibility",
-        "text": "c4! The Réti undermining move. You attack d5 from the side and keep every option open — g3, Bg2, even a later d4 to transpose. You invite Black to over-extend, then dismantle it. Pure hypermodern method with White's extra tempo.",
+        "text": "c4! The Réti undermining move. You attack d5 from the side and keep every option open: g3, Bg2, even a later d4 to transpose. You invite Black to over-extend, then dismantle it. Pure hypermodern method with White's extra tempo.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1661,7 +1661,7 @@
        "conceptId": "english-reversed",
        "coach": {
         "conceptId": "english-reversed",
-        "text": "An English Opening — a reversed Sicilian, and you are a tempo up. White to move. Develop your king's bishop the way every flank opening in this chapter does: fianchetto it to bear down the long diagonal on d5. Play the preparatory move.",
+        "text": "An English Opening: a reversed Sicilian, and you are a tempo up. White to move. Develop your king's bishop the way every flank opening in this chapter does: fianchetto it to bear down the long diagonal on d5. Play the preparatory move.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1675,7 +1675,7 @@
        ],
        "successLine": {
         "conceptId": "english-reversed",
-        "text": "g3, heading for Bg2 — the same long-diagonal bishop as the Catalan and the Réti. In the reversed Sicilian this is your Dragon bishop, a full move ahead of where Black would have it. The fianchetto is the thread tying the whole flank together.",
+        "text": "g3, heading for Bg2: the same long-diagonal bishop as the Catalan and the Réti. In the reversed Sicilian this is your Dragon bishop, a full move ahead of where Black would have it. The fianchetto is the thread tying the whole flank together.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1694,7 +1694,7 @@
        "conceptId": "benko-gambit",
        "coach": {
         "conceptId": "benko-gambit",
-        "text": "The Benko Gambit: you played 3...b5 and White took, 4.cxb5. Black to move. Don't try to win the pawn back — that misses the point. Make the SECOND offer, the one that rips open both the a- and b-files for your rooks. Play the move that defines the Benko.",
+        "text": "The Benko Gambit: you played 3...b5 and White took, 4.cxb5. Black to move. Don't try to win the pawn back. That misses the point. Make the SECOND offer, the one that rips open both the a- and b-files for your rooks. Play the move that defines the Benko.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1708,7 +1708,7 @@
        ],
        "successLine": {
         "conceptId": "benko-gambit",
-        "text": "a6! Inviting bxa6 to open both files. You are not chasing the pawn — you are chasing the LINES. After ...Bxa6, ...Bg7, ...O-O and ...Rb8, every Black piece presses White's queenside, and the bind often outlives the missing pawn into a winning endgame.",
+        "text": "a6! Inviting bxa6 to open both files. You are not chasing the pawn. You are chasing the LINES. After ...Bxa6, ...Bg7, ...O-O and ...Rb8, every Black piece presses White's queenside, and the bind often outlives the missing pawn into a winning endgame.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1758,7 +1758,7 @@
      "Black avoids the centre entirely and attacks on the kingside"
     ],
     "answerIndex": 1,
-    "explain": "The Grünfeld is the hypermodern bargain: 3...d5 invites cxd5 and e4, White builds an imposing c3-d4-e4 centre, and Black then proves it is over-extended — ...Nxc3 wrecks the structure and ...Bg7, ...c5, ...Nc6 pile onto d4 until it collapses. Give the centre to take the centre."
+    "explain": "The Grünfeld is the hypermodern bargain: 3...d5 invites cxd5 and e4, White builds an imposing c3-d4-e4 centre, and Black then proves it is over-extended. ...Nxc3 wrecks the structure and ...Bg7, ...c5, ...Nc6 pile onto d4 until it collapses. Give the centre to take the centre."
    },
    {
     "kind": "mc",
@@ -1770,7 +1770,7 @@
      "Control of the centre with a big pawn chain"
     ],
     "answerIndex": 2,
-    "explain": "The Benko trades a pawn for permanent positional pressure: after ...a6 and bxa6 Bxa6, the a- and b-files open and every Black piece bears down on White's queenside. The pawn often never comes back — but the bind only grows as pieces are exchanged, frequently winning the endgame a pawn down."
+    "explain": "The Benko trades a pawn for permanent positional pressure: after ...a6 and bxa6 Bxa6, the a- and b-files open and every Black piece bears down on White's queenside. The pawn often never comes back, but the bind only grows as pieces are exchanged, frequently winning the endgame a pawn down."
    },
    {
     "kind": "mc",
@@ -1794,7 +1794,7 @@
      "Because it changes which side castles first"
     ],
     "answerIndex": 1,
-    "explain": "English, Réti, Catalan, Grünfeld and Benoni all bleed into one another by transposition — the same position can arise from 1.d4, 1.c4 or 1.Nf3. A master picks the move-order that steers into the structure he understands best while quietly closing the roads he fears. At this level, move-order IS strategy."
+    "explain": "English, Réti, Catalan, Grünfeld and Benoni all bleed into one another by transposition. The same position can arise from 1.d4, 1.c4 or 1.Nf3. A master picks the move-order that steers into the structure he understands best while quietly closing the roads he fears. At this level, move-order IS strategy."
    },
    {
     "kind": "play",
@@ -1803,11 +1803,11 @@
     "solutionUci": [
      "d5c3"
     ],
-    "explain": "...Nxc3! is the heartbeat of the Grünfeld. After bxc3 White has doubled c-pawns and a d4-pawn that becomes a permanent target. Retreating the knight would throw away the entire point of the opening — the knight's whole purpose was to trade itself for the wrecker on c3."
+    "explain": "...Nxc3! is the heartbeat of the Grünfeld. After bxc3 White has doubled c-pawns and a d4-pawn that becomes a permanent target. Retreating the knight would throw away the entire point of the opening. The knight's whole purpose was to trade itself for the wrecker on c3."
    },
    {
     "kind": "play",
-    "prompt": "Grünfeld Exchange: you have castled, your g7-bishop rakes d4, and White has set up Bc4 and Ne2. d4 is the weakness in White's position — how does Black turn that pressure into a concrete attack?",
+    "prompt": "Grünfeld Exchange: you have castled, your g7-bishop rakes d4, and White has set up Bc4 and Ne2. d4 is the weakness in White's position. How does Black turn that pressure into a concrete attack?",
     "fen": "rnbq1rk1/ppp1ppbp/6p1/8/2BPP3/2P5/P3NPPP/R1BQK2R b KQ - 3 8",
     "solutionUci": [
      "c7c5"
@@ -1830,7 +1830,7 @@
     "solutionUci": [
      "b7b5"
     ],
-    "explain": "3...b5 is the Benko Gambit. Black offers the b-pawn so that, after cxb5 a6 bxa6 Bxa6, both the a- and b-files crack open and Black's rooks and bishops pour down them at White's queenside — lasting pressure worth far more than the pawn."
+    "explain": "3...b5 is the Benko Gambit. Black offers the b-pawn so that, after cxb5 a6 bxa6 Bxa6, both the a- and b-files crack open and Black's rooks and bishops pour down them at White's queenside. Lasting pressure worth far more than the pawn."
    },
    {
     "kind": "play",
@@ -1839,25 +1839,25 @@
     "solutionUci": [
      "g2g3"
     ],
-    "explain": "g3 defines the Catalan. Next comes Bg2, putting the bishop on the long light diagonal where it pressures d5 and b7 for the rest of the game — the piece that gives White lasting pressure even a pawn down in the Open Catalan. Bd3 or Be2 would be a Queen's Gambit, not a Catalan."
+    "explain": "g3 defines the Catalan. Next comes Bg2, putting the bishop on the long light diagonal where it pressures d5 and b7 for the rest of the game. The piece that gives White lasting pressure even a pawn down in the Open Catalan. Bd3 or Be2 would be a Queen's Gambit, not a Catalan."
    },
    {
     "kind": "play",
-    "prompt": "Réti: 1.Nf3 d5 2.g3 Nf6 — you have kept your centre at home and fianchettoed. Black holds the centre with a pawn on d5. Play the hypermodern way: challenge that pawn without blocking it or committing your own centre.",
+    "prompt": "Réti: 1.Nf3 d5 2.g3 Nf6. You have kept your centre at home and fianchettoed. Black holds the centre with a pawn on d5. Play the hypermodern way: challenge that pawn without blocking it or committing your own centre.",
     "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/8/5NP1/PPPPPP1P/RNBQKB1R w KQkq - 0 3",
     "solutionUci": [
      "c2c4"
     ],
-    "explain": "c4 is the Réti's signature undermining move: it hits d5 from the flank while keeping White's own centre fluid and every option (Bg2, a later d4 transposition) open. The hypermodern method — invite the centre forward, then dismantle it — now with White's extra tempo. A pawn push like d4 or e4 would block, not undermine."
+    "explain": "c4 is the Réti's signature undermining move: it hits d5 from the flank while keeping White's own centre fluid and every option (Bg2, a later d4 transposition) open. The hypermodern method (invite the centre forward, then dismantle it) now with White's extra tempo. A pawn push like d4 or e4 would block, not undermine."
    },
    {
     "kind": "play",
-    "prompt": "Benko Gambit Accepted: you have already played ...g6 and ...Bg7, and White holds the extra b5-pawn. You are a pawn down — but the Benko player does not chase material here. Find the move that buys the lasting compensation.",
+    "prompt": "Benko Gambit Accepted: you have already played ...g6 and ...Bg7, and White holds the extra b5-pawn. You are a pawn down, but the Benko player does not chase material here. Find the move that buys the lasting compensation.",
     "fen": "rnbqk2r/p2pppbp/5np1/1PpP4/8/8/PP2PPPP/RNBQKBNR b KQkq - 1 5",
     "solutionUci": [
      "a7a6"
     ],
-    "explain": "...a6! invites bxa6, ripping open both the a- and b-files. Black is not trying to win the pawn back — he is chasing the open lines. After ...Bxa6 his rooks and bishops besiege White's queenside, the bind that defines the Benko. Trying to round up the b5-pawn directly would miss the entire point."
+    "explain": "...a6! invites bxa6, ripping open both the a- and b-files. Black is not trying to win the pawn back. He is chasing the open lines. After ...Bxa6 his rooks and bishops besiege White's queenside, the bind that defines the Benko. Trying to round up the b5-pawn directly would miss the entire point."
    },
    {
     "kind": "judge",
@@ -1865,7 +1865,7 @@
     "fen": "rnbqkb1r/ppp1pp1p/6p1/8/3PP3/2n5/PP3PPP/R1BQKBNR w KQkq - 0 6",
     "lastMoveUci": "d5c3",
     "verdict": "correct",
-    "explain": "Correct — this is the whole point of the Grünfeld. After White recaptures bxc3 he is saddled with doubled c-pawns and a d4-pawn that becomes a long-term target. Black willingly gives up his nice central knight to wreck the white structure."
+    "explain": "Correct: this is the whole point of the Grünfeld. After White recaptures bxc3 he is saddled with doubled c-pawns and a d4-pawn that becomes a long-term target. Black willingly gives up his nice central knight to wreck the white structure."
    },
    {
     "kind": "judge",
@@ -1873,7 +1873,7 @@
     "fen": "rnbqkb1r/pp3ppp/3p4/2pP4/4n3/2N5/PP3PPP/R1BQKBNR w KQkq - 0 7",
     "lastMoveUci": "f6e4",
     "verdict": "blunder",
-    "explain": "Blunder. The e4-pawn was defended by the knight on c3, and nothing of Black's defends e4. White simply plays Nxe4 and wins a whole piece for a pawn. In the Benoni Black must generate counterplay with ...b5 and ...f5 — not snatch a defended central pawn."
+    "explain": "Blunder. The e4-pawn was defended by the knight on c3, and nothing of Black's defends e4. White simply plays Nxe4 and wins a whole piece for a pawn. In the Benoni Black must generate counterplay with ...b5 and ...f5. Not snatch a defended central pawn."
    },
    {
     "kind": "judge",
@@ -1881,7 +1881,7 @@
     "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2P5/2N2NP1/PP1PPP1P/R1BQKB1R b KQkq - 0 4",
     "lastMoveUci": "g2g3",
     "verdict": "correct",
-    "explain": "Correct. 4.g3 prepares the main-line English fianchetto Bg2 — a reversed Sicilian Dragon with White a tempo up. The g2-bishop will pressure d5 along the long diagonal, the thread that runs through every flank opening in this chapter."
+    "explain": "Correct. 4.g3 prepares the main-line English fianchetto Bg2. A reversed Sicilian Dragon with White a tempo up. The g2-bishop will pressure d5 along the long diagonal, the thread that runs through every flank opening in this chapter."
    }
   ]
  },

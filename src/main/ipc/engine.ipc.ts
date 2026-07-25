@@ -54,7 +54,7 @@ const playSchema = z
       elo: z.number().int().min(100).max(3190).optional(),
       // Time-trouble knob from the bot time manager (renderer botStrength.ts
       // BotPlayLevel). Only the sub-floor weak path reads it: shallower search,
-      // hotter softmax, doubled blunder chance — strength genuinely collapses
+      // hotter softmax, doubled blunder chance: strength genuinely collapses
       // in a scramble. At 1320+ the caller's small movetime IS the collapse.
       panic: z.boolean().optional(),
       // "Human" style: play the maia-<level> lc0 net at nodes=1. Wins over every
@@ -79,7 +79,7 @@ const playSchema = z
 // Fairy-Stockfish plays every chess-family kind except standard chess (which
 // keeps the Stockfish path above). One long-lived engine (FairyStockfishPool)
 // is re-targeted per request via UCI_Variant; strength is a 1..5 level row
-// mapped to UCI_LimitStrength/UCI_Elo (Fairy-SF's floor is 500 — no sub-floor
+// mapped to UCI_LimitStrength/UCI_Elo (Fairy-SF's floor is 500; no sub-floor
 // weak model needed for variants) plus a per-level movetime.
 
 /** kind → the engine's UCI_Variant id ('chess960' is 'chess' + UCI_Chess960). */
@@ -112,7 +112,7 @@ const FAIRY_LEVELS = [
 // Variant FENs can't be chessops-validated (xiangqi/shogi/janggi dialects), so
 // the anti-smuggling guard is a character allowlist: one line, FEN alphabet
 // only (board letters/digits, '/', pockets '[]', shogi '+', check counts,
-// castling '-', spaces). The engine itself is the rules authority — a bogus
+// castling '-', spaces). The engine itself is the rules authority, a bogus
 // FEN yields 'bestmove (none)' or an ignored position, never extra commands.
 const VARIANT_FEN_RE = /^[A-Za-z0-9/\[\]+~.\- ]{1,160}$/
 
@@ -128,14 +128,14 @@ const playVariantSchema = z
 // ---- Replay-viewer eval (engine:evalVariant) ---------------------------------
 //
 // One bounded single-line Fairy-Stockfish search for the Library replay
-// viewer's eval bar: any chess-family kind — standard chess, the 13 routed
+// viewer's eval bar: any chess-family kind. Standard chess, the 13 routed
 // variants, or a Variant Lab custom ('custom-<id>'). Customs are resolved by
 // loading the SAVED variants.ini onto the engine via VariantPath (written to a
 // per-id file under userData; the ini's first [section] is the UCI_Variant).
 
 const evalVariantSchema = z
   .object({
-    // Built-in kinds or a custom slug — the resolver below is the authority.
+    // Built-in kinds or a custom slug. The resolver below is the authority.
     kind: z.string().min(1).max(64),
     fen: z.string().regex(VARIANT_FEN_RE),
     movetimeMs: z.number().int().min(50).max(2000).optional()
@@ -147,7 +147,7 @@ const evalVariantSchema = z
 const INI_SECTION_RE = /^\s*\[([A-Za-z0-9_-]+)(?::([A-Za-z0-9_-]+))?\]\s*$/m
 
 /** kind → { engine UCI_Variant id, chess960 flag, VariantPath for customs }.
- *  Throws on unknown kinds — the schema's string passthrough is NOT trust. */
+ *  Throws on unknown kinds. The schema's string passthrough is NOT trust. */
 function resolveEvalVariant(kind: string): {
   variant: string
   chess960: boolean
@@ -189,8 +189,8 @@ function writeVariantIni(id: string, iniText: string): string {
 /**
  * One bounded single-line search; resolves with the LAST scored info line
  * (side-to-move relative, UCI convention). Terminal positions ('bestmove
- * (none)', no info) resolve to {}. Every exit path detaches its listeners —
- * same discipline as collectCandidates above.
+ * (none)', no info) resolve to {}. Every exit path detaches its listeners.
+ * Same discipline as collectCandidates above.
  */
 function evalOnce(eng: UciEngine, fen: string, movetimeMs: number): Promise<EvalVariantResult> {
   return new Promise((resolve, reject) => {
@@ -238,7 +238,7 @@ function evalOnce(eng: UciEngine, fen: string, movetimeMs: number): Promise<Eval
 // The request carries the whole game (GTP replays move-by-move), in the go
 // codec that doubles as GTP's own vertex convention ('d4', 'i' skipped, rank 1
 // at the bottom, plus 'pass'); black moves first. The vertex regex is the
-// anti-smuggling guard — no free-form strings ever reach the engine's stdin.
+// anti-smuggling guard. No free-form strings ever reach the engine's stdin.
 const GO_VERTEX_RE = /^(?:pass|[a-hj-t](?:1[0-9]|[1-9]))$/
 
 const playGoSchema = z
@@ -262,13 +262,13 @@ const playGoSchema = z
 // full-strength MultiPV search, then pick among the engine's own candidate moves
 // with an Elo-scaled softmax over their centipawn scores, plus a small Elo-scaled
 // chance of a "human blunder" (a pick from the bottom half of the candidates).
-// Every move a weak bot plays is therefore a move the engine actually considered —
-// misplaced pieces and missed tactics, not the old uniform-random shuffles that
+// Every move a weak bot plays is therefore a move the engine actually considered.
+// Misplaced pieces and missed tactics, not the old uniform-random shuffles that
 // hung the queen one move and found a GM move the next.
 
 // NOTE: the pick model below (weakDepth/weakMultiPv/weakTemperature/
 // weakBlunderChance/blunderGapWindow/gapKnee/opening boost/pickWeakMove) is
-// mirrored in scripts/lib/weak-model.mjs — shared by the calibration harness
+// mirrored in scripts/lib/weak-model.mjs: shared by the calibration harness
 // (scripts/calibrate-weak.mjs) that measured these constants and the Elo-corpus
 // generator (scripts/gen-elo-corpus.mjs). Keep the two in sync when tuning.
 // TODO(P2): extract the pure pick model to src/main/engine/weakModel.ts and
@@ -318,7 +318,7 @@ function weakTemperature(elo: number): number {
 /**
  * Eval-gap knee (cp): softmax weight is exp(-(gap/T) * (1 + gap/knee)), so a
  * candidate that hangs material (large gap) is punished QUADRATICALLY, and the
- * knee shrinks with Elo — an 800 bot still drifts into -150cp moves but almost
+ * knee shrinks with Elo: an 800 bot still drifts into -150cp moves but almost
  * never plays the -600cp free-piece line the flat softmax used to allow, while
  * a 200 bot (huge knee) barely notices the difference.
  */
@@ -354,7 +354,7 @@ function weakBlunderChance(elo: number): number {
  *  - low bands: window is wide open upward (hanging the queen / mate-in-1 is in
  *    character for 400);
  *  - high bands: a "blunder" is a real mistake (~1-2 pawns / a tactic missed),
- *    not a free queen — 1200s lose games to pressure, not to q-hangs each game.
+ *    not a free queen: 1200s lose games to pressure, not to q-hangs each game.
  */
 function blunderGapWindow(elo: number): [number, number] {
   const min = lerpByElo(elo, 100, 60, 1300, 150)
@@ -386,7 +386,7 @@ interface WeakCandidate {
 
 /**
  * Eval-gap-aware softmax pick over candidates (sorted best-first): weight is
- * exp(-(gap/T) * (1 + gap/knee)) — a flat softmax near the top, quadratically
+ * exp(-(gap/T) * (1 + gap/knee)): a flat softmax near the top, quadratically
  * steeper for candidates that hang material (see gapKnee).
  */
 function softmaxPick(cands: WeakCandidate[], temperature: number, knee: number): string {
@@ -405,10 +405,10 @@ function softmaxPick(cands: WeakCandidate[], temperature: number, knee: number):
 }
 
 /**
- * The full sub-floor pick model over sorted-best-first candidates. Pure —
+ * The full sub-floor pick model over sorted-best-first candidates. Pure:
  * mirrored verbatim in scripts/lib/weak-model.mjs.
  *  1. Opening phase (fullmove small, position near-balanced): hotter softmax,
- *     no blunder roll — varied openings without instant self-destruction.
+ *     no blunder roll: varied openings without instant self-destruction.
  *  2. Blunder roll at the band's target rate: uniform pick from candidates
  *     inside the band's severity window.
  *  3. Otherwise: eval-gap-aware softmax.
@@ -478,7 +478,7 @@ function collectCandidates(
     // the renderer) forever.
     const timer = setTimeout(() => fail(new Error('weak-play search timeout')), 20000)
     // The caller's movetime budget is a SOFT cap: at the budget, `stop` the
-    // search — the engine answers with bestmove immediately and the pick runs
+    // search: the engine answers with bestmove immediately and the pick runs
     // over whatever completed candidate lines exist by then. On fast hardware
     // the depth search finishes first and nothing changes (calibration intact);
     // on slow hardware a sub-1320 bot no longer blows its clock on one move.
@@ -507,7 +507,7 @@ export async function weakPlay(
   panic = false,
   movetimeMs = WEAK_DEFAULT_MOVETIME_MS
 ): Promise<BestMove> {
-  // Full-strength search — honest candidate evals; the weakening is in the pick.
+  // Full-strength search: honest candidate evals; the weakening is in the pick.
   // (Skill Level explicitly reset in case a legacy `skill` request lowered it.)
   eng.setOption('UCI_LimitStrength', false)
   eng.setOption('Skill Level', 20)
@@ -557,7 +557,7 @@ function serialize<T>(fn: () => Promise<T>): Promise<T> {
 
 // engine:play calls all share one long-lived play engine. Serialize them (own
 // chain, independent of the analysis queue) so one call's stop/option/search
-// writes — and its temporarily attached info/bestmove listeners — can never
+// writes (and its temporarily attached info/bestmove listeners) can never
 // interleave with another call's and swallow the wrong bestmove.
 let playChain: Promise<unknown> = Promise.resolve()
 function serializePlay<T>(fn: () => Promise<T>): Promise<T> {
@@ -569,7 +569,7 @@ function serializePlay<T>(fn: () => Promise<T>): Promise<T> {
   return run
 }
 
-// engine:playVariant shares one long-lived Fairy-Stockfish engine — same
+// engine:playVariant shares one long-lived Fairy-Stockfish engine. Same
 // serialization discipline, own chain so variant bots never block chess bots.
 let fairyChain: Promise<unknown> = Promise.resolve()
 function serializeFairy<T>(fn: () => Promise<T>): Promise<T> {
@@ -581,7 +581,7 @@ function serializeFairy<T>(fn: () => Promise<T>): Promise<T> {
   return run
 }
 
-// engine:playGo replays whole games onto stateful GTP processes — serialize so
+// engine:playGo replays whole games onto stateful GTP processes. Serialize so
 // two concurrent requests can never interleave their replays on one engine.
 let goChain: Promise<unknown> = Promise.resolve()
 function serializeGo<T>(fn: () => Promise<T>): Promise<T> {
@@ -625,7 +625,7 @@ export function registerEngine(): void {
       // Drain any in-flight (infinite) search to idle BEFORE attaching this
       // search's listeners. Otherwise the previous search's stop-bestmove is
       // caught by our once('bestmove') below and immediately tears the new
-      // subscription down — the bug that froze analysis after the first move.
+      // subscription down: the bug that froze analysis after the first move.
       await eng.stop()
       const handleId = nextHandle++
       const sender: WebContents = e.sender
@@ -659,7 +659,7 @@ export function registerEngine(): void {
     serializePlay(async () => {
       const safe = safeFen(fen)
       if (level.maia !== undefined) {
-        // "Human" style: maia-<level> net at nodes=1 — the policy head IS the
+        // "Human" style: maia-<level> net at nodes=1. The policy head IS the
         // player, so the caller's limit is ignored on purpose (a deeper search
         // would make Maia SUPERhuman-shaped, defeating the point). Runs on its
         // own per-level lc0 process; the Stockfish play engine stays untouched.
@@ -671,7 +671,7 @@ export function registerEngine(): void {
       const eng = await pool.getPlay()
       // Drain any abandoned search (e.g. one whose waiter timed out) to idle
       // BEFORE attaching new listeners / starting a new search, so a stale
-      // bestmove can't be mistaken for ours — same discipline as engine:analyze.
+      // bestmove can't be mistaken for ours. Same discipline as engine:analyze.
       await eng.stop()
       // `elo` wins over the legacy knobs when present (shared/types.ts contract).
       if (level.elo !== undefined && level.elo < ENGINE_ELO_FLOOR) {
@@ -693,7 +693,7 @@ export function registerEngine(): void {
         eng.setOption('UCI_LimitStrength', false)
         eng.setOption('Skill Level', level.skill)
       } else {
-        // Neither given: never answer at full strength — cap to a club default.
+        // Neither given: never answer at full strength. Cap to a club default.
         eng.setOption('UCI_LimitStrength', true)
         eng.setOption('UCI_Elo', 1500)
       }
@@ -704,10 +704,10 @@ export function registerEngine(): void {
   handle('engine:playVariant', playVariantSchema, ({ kind, fen, level, movetimeMs }) =>
     serializeFairy(async () => {
       if (!fairyEngineInstalled()) {
-        throw new Error('Fairy-Stockfish is not installed — import the engines dataset first.')
+        throw new Error('Fairy-Stockfish is not installed, import the engines dataset first.')
       }
       const eng = await fairyPool.get(FAIRY_UCI_VARIANT[kind], kind === 'chess960')
-      // Drain any abandoned search to idle before touching options — same
+      // Drain any abandoned search to idle before touching options. Same
       // discipline as engine:play above.
       await eng.stop()
       const cfg = FAIRY_LEVELS[level - 1]
@@ -722,7 +722,7 @@ export function registerEngine(): void {
   handle('engine:playGo', playGoSchema, (req) =>
     serializeGo(async () => {
       if (!katagoAvailable()) {
-        throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+        throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
       }
       return { move: await katagoPool.play(req) }
     })
@@ -734,11 +734,11 @@ export function registerEngine(): void {
   handle('engine:evalVariant', evalVariantSchema, ({ kind, fen, movetimeMs }) =>
     serializeFairy(async (): Promise<EvalVariantResult> => {
       if (!fairyEngineInstalled()) {
-        throw new Error('Fairy-Stockfish is not installed — import the engines dataset first.')
+        throw new Error('Fairy-Stockfish is not installed, import the engines dataset first.')
       }
       const target = resolveEvalVariant(kind)
       const eng = await fairyPool.get(target.variant, target.chess960, target.variantPath)
-      await eng.stop() // drain any abandoned search — same discipline as playVariant
+      await eng.stop() // drain any abandoned search: same discipline as playVariant
       // Full strength for an honest eval (playVariant may have weakened it).
       eng.setOption('UCI_LimitStrength', false)
       return evalOnce(eng, fen, movetimeMs ?? 300)
@@ -761,7 +761,7 @@ export function registerEngine(): void {
     (req) =>
       serializeGo(async () => {
         if (!katagoAvailable()) {
-          throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+          throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
         }
         return katagoPool.estimate(req)
       })

@@ -53,7 +53,7 @@ export interface EditorSeed {
 }
 
 /**
- * The Variant Lab builder — board painter + rule panels on a live variants.ini
+ * The Variant Lab builder: board painter + rule panels on a live variants.ini
  * preview, validated through the real rules engine before save/play.
  */
 export function VariantEditor({
@@ -148,7 +148,7 @@ export function VariantEditor({
       let n = 2
       while (takenIds.includes(id)) id = `${base}-${n++}`
     }
-    // Raw mode can change the board size out from under the builder — trust the
+    // Raw mode can change the board size out from under the builder. Trust the
     // ini text (explicit maxFile/maxRank, else the parent's dims) for the
     // persisted card dims.
     let defFiles = files
@@ -270,13 +270,12 @@ export function VariantEditor({
               board={model.board}
               onChange={(board) => patch({ board })}
               disabled={boardLocked}
-              disabledNote={`${parent.label} defines its own start — the board is part of the rules you inherit.`}
+              disabledNote={`${parent.label} defines its own start. The board is part of the rules you inherit.`}
             />
           ) : (
             <div className="vl-rawonly-note" role="note">
               <Code2 size={18} aria-hidden />
-              This variant is hand-written ini — edit it in the Advanced panel. The painter needs a
-              builder-made variant.
+              This variant is hand-written ini. Edit it in the Advanced panel.
             </div>
           )}
         </section>
@@ -370,7 +369,7 @@ export function VariantEditor({
                         key={p.letter}
                         type="button"
                         className={`vl-pick${active ? ' is-active' : ''}`}
-                        title={`${p.name} — ${p.moves}${p.betza ? ` (Betza ${p.betza})` : ''}`}
+                        title={`${p.name}: ${p.moves}${p.betza ? ` (Betza ${p.betza})` : ''}`}
                         disabled={boardLocked}
                         onClick={() => {
                           const next = active
@@ -400,7 +399,7 @@ export function VariantEditor({
             >
               {advancedOpen ? <ChevronDown size={14} aria-hidden /> : <ChevronRight size={14} aria-hidden />}
               <Code2 size={14} aria-hidden />
-              Advanced — variants.ini
+              Advanced: variants.ini
               {rawMode && <span className="vl-raw-pill">raw mode</span>}
             </button>
             {advancedOpen && (
@@ -442,7 +441,7 @@ export function VariantEditor({
                   </>
                 )}
                 <p className="vl-panel-note">
-                  Fairy-Stockfish <code>variants.ini</code> syntax — fairy pieces use Betza notation
+                  Fairy-Stockfish <code>variants.ini</code> syntax: fairy pieces use Betza notation
                   (Amazon <code>QN</code>, Chancellor <code>RN</code>, Archbishop <code>BN</code>).
                 </p>
               </div>
@@ -462,7 +461,7 @@ export function VariantEditor({
             {validation.t === 'ok' && (
               <p className="vl-validation is-ok" role="status">
                 <CheckCircle2 size={15} aria-hidden />
-                Loads clean — {validation.moveCount} legal first moves.
+                Loads clean. {validation.moveCount} legal first moves.
               </p>
             )}
             {validation.t === 'bad' && (

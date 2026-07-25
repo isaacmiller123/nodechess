@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-// Web `Api` stub suite (web port W1 — docs/WEB-PORT-SPEC.md).
+// Web `Api` stub suite (web port W1, docs/WEB-PORT-SPEC.md).
 //
 //   node scripts/test-web-stub.mjs
 //
 // 1. SHAPE PARITY: the web implementation (src/web/webApi.ts) must expose the
 //    exact namespace.method surface the desktop preload (src/preload/api.ts)
-//    exposes — nothing missing, nothing extra. tsc guarantees each against the
+//    exposes: nothing missing, nothing extra. tsc guarantees each against the
 //    `Api` type; this guards the RUNTIME objects against drift (e.g. a method
 //    left off the literal that a loose cast would let through).
 // 2. BEHAVIOR CONTRACT: reads resolve their honest empty shapes, unavailable
@@ -43,7 +43,7 @@ writeFileSync(
 // Vite resolves `…?url` to an emitted asset path; nothing here does. The two
 // sql.js-httpvfs `?url` imports (src/web/data/chunkedDb.ts) are BARE package
 // specifiers, so leaving them external makes node resolve them relative to the
-// bundle — which lives in a temp dir with no node_modules — and the import
+// bundle (which lives in a temp dir with no node_modules) and the import
 // throws before a single assertion runs. Every other `?url` is a relative asset
 // node can at least locate. Stub the two to empty strings: this suite never
 // spawns the SQLite worker, and an empty URL is what an unconfigured host would
@@ -67,7 +67,7 @@ const preloadOut = bundle(
 )
 // platform=node (not browser) so the lazily-imported games tree resolves the
 // same way scripts/test-bots.mjs bundles it; '*?url' assets stay external and
-// CSS loads empty (never touched — the test only exercises webApi itself).
+// CSS loads empty (never touched: the test only exercises webApi itself).
 const webOut = bundle(
   'src/web/webApi.ts',
   'webApi.mjs',
@@ -210,7 +210,7 @@ check('games.listAll kind filter', goOnly.games.length === 1 && goOnly.kinds.len
 const fetched = await webApi.games.get(savedGame.gameId)
 check('games.get round-trips the row', fetched.game?.pgn === '1. e4 e5' && fetched.game?.reviewed === 0)
 
-// Openings lookup — must fail SOFT in bare node (the table chunk is a Vite
+// Openings lookup must fail SOFT in bare node (the table chunk is a Vite
 // asset; in the browser it resolves the real desktop table).
 const badFen = await webApi.openings.lookup('not a fen')
 check('openings.lookup invalid FEN → null', badFen.opening === null)

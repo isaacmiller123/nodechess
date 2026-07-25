@@ -443,7 +443,7 @@
     "peakElo": 2705,
     "peakYear": 1980,
     "modernElo": 2700,
-    "modernEloNote": "His calculation and initiative would still beat most 2700s, but engine-checked defenders refute many of his speculative sacrifices, and his fragile health limited consistency — roughly 2700 against today's field.",
+    "modernEloNote": "His calculation and initiative would still beat most 2700s, but engine-checked defenders refute many of his speculative sacrifices, and his fragile health limited consistency, roughly 2700 against today's field.",
     "styleDesc": "The 'Magician from Riga' sacrificed pieces for initiative and attack, dragging opponents into irrational complications where he calculated better than anyone alive. He played open Sicilians and the Ruy Lopez with White, and the King's Indian and Modern Benoni with Black. Endgames and quiet positions bored him; he steered every game toward chaos.",
     "timeStyle": "tanker",
     "bio": "Youngest world champion of his time, dethroning Botvinnik in 1960 at age 23 with an avalanche of sacrifices. Chronic kidney illness cut short his reign and dogged his career, yet he remained a top-10 player for three decades and set a record 95-game unbeaten streak in 1973-74. Universally beloved for his wit, chain-smoking bravado, and pure love of the game.",
@@ -498,7 +498,7 @@
     "peakYear": 1972,
     "modernElo": 2680,
     "modernEloNote": "Prophylaxis and defensive technique are exactly what engines vindicated, so his core skill ages well; a modest opening-theory gap and low ambition with White keep him near 2680 rather than higher.",
-    "styleDesc": "The supreme prophylactic player: he saw opponents' plans before they did and quietly strangled them, famously trading rook for minor piece in positional exchange sacrifices. With White he favored slow d4/c4 and flank systems (the Petrosian System vs the King's Indian, a3 vs the Queen's Indian); with Black the French, Caro-Kann and King's Indian. Almost impossible to beat — he lost fewer games than any champion of his era.",
+    "styleDesc": "The supreme prophylactic player: he saw opponents' plans before they did and quietly strangled them, famously trading rook for minor piece in positional exchange sacrifices. With White he favored slow d4/c4 and flank systems (the Petrosian System vs the King's Indian, a3 vs the Queen's Indian); with Black the French, Caro-Kann and King's Indian. Almost impossible to beat: he lost fewer games than any champion of his era.",
     "timeStyle": "steady",
     "bio": "'Iron Tigran', world champion 1963-1969, dethroned Botvinnik and defended against Spassky in 1966 before losing the rematch. An Armenian national hero, he redefined defense and prophylaxis as weapons and made the positional exchange sacrifice his personal trademark. Away from the board he was a candidate master at... backgammon jokes aside, an editor and beloved figure of Soviet chess.",
     "style": {
@@ -553,9 +553,9 @@
     "peakYear": 1957,
     "modernElo": 2670,
     "modernEloNote": "His harmony-based positional play and world-class endgame technique translate directly, but his pre-computer opening approach concedes ground to modern prep, landing him around 2670 today.",
-    "styleDesc": "Played by 'the hand's intuition' — smooth, harmonious piece placement, small accumulating advantages, and arguably the finest endgame technique of any world champion. With White he alternated the closed Ruy Lopez, English and Queen's Gambit; with Black his name is attached to variations of the Grünfeld, Slav, Caro-Kann and Ruy Lopez. Never forced matters, but punished the slightest disharmony.",
+    "styleDesc": "Played by 'the hand's intuition': smooth, harmonious piece placement, small accumulating advantages, and arguably the finest endgame technique of any world champion. With White he alternated the closed Ruy Lopez, English and Queen's Gambit; with Black his name is attached to variations of the Grünfeld, Slav, Caro-Kann and Ruy Lopez. Never forced matters, but punished the slightest disharmony.",
     "timeStyle": "steady",
-    "bio": "Seventh world champion (1957-58), he contested three straight title matches with Botvinnik and scored better than the patriarch across all 69 games. A trained baritone who nearly chose opera over chess, he reached the Candidates final again in 1984 at age 63 — the oldest finalist ever — losing only to young Kasparov. His career at the top spanned six decades.",
+    "bio": "Seventh world champion (1957-58), he contested three straight title matches with Botvinnik and scored better than the patriarch across all 69 games. A trained baritone who nearly chose opera over chess, he reached the Candidates final again in 1984 at age 63 (the oldest finalist ever) losing only to young Kasparov. His career at the top spanned six decades.",
     "style": {
       "aggression": 0.4,
       "risk": 0.3,
@@ -606,10 +606,10 @@
     "peakElo": 2690,
     "peakYear": 1971,
     "modernElo": 2690,
-    "modernEloNote": "The first truly universal champion — equally at home attacking or grinding — a style that ports cleanly to modern chess, though his famously relaxed attitude to preparation would cost him against today's prep machines.",
+    "modernEloNote": "The first truly universal champion (equally at home attacking or grinding) a style that ports cleanly to modern chess, though his famously relaxed attitude to preparation would cost him against today's prep machines.",
     "styleDesc": "The first 'universal player': he could sacrifice like Tal one day and squeeze like Petrosian the next, with a special gift for harmonious middlegame attacks. With White he mixed the Ruy Lopez, Closed Sicilian and even the King's Gambit at top level; with Black he trusted the Breyer Ruy Lopez and Tartakower Queen's Gambit. His intuition for the initiative in the middlegame was second to none.",
     "timeStyle": "steady",
-    "bio": "Tenth world champion (1969-1972), he beat Petrosian at the second attempt and then lost the 'Match of the Century' to Fischer in Reykjavik 1972 — the most famous chess match ever played. Charismatic and sportsmanlike (he applauded Fischer's game-6 masterpiece from the board), he emigrated to France in 1976 and remained a top player into the 1980s.",
+    "bio": "Tenth world champion (1969-1972), he beat Petrosian at the second attempt and then lost the 'Match of the Century' to Fischer in Reykjavik 1972: the most famous chess match ever played. Charismatic and sportsmanlike (he applauded Fischer's game-6 masterpiece from the board), he emigrated to France in 1976 and remained a top player into the 1980s.",
     "style": {
       "aggression": 0.65,
       "risk": 0.55,
@@ -636,7 +636,7 @@
         "event": "USSR Championship, Leningrad",
         "year": 1960,
         "result": "1-0",
-        "significance": "The most famous King's Gambit of the 20th century — 15.Nd6!! ignores a pawn promoting with check; the game inspired the chess scene in the Bond film 'From Russia with Love'.",
+        "significance": "The most famous King's Gambit of the 20th century, 15.Nd6!! ignores a pawn promoting with check; the game inspired the chess scene in the Bond film 'From Russia with Love'.",
         "movetext": "1. e4 e5 2. f4 exf4 3. Nf3 d5 4. exd5 Bd6 5. Nc3 Ne7 6. d4 O-O 7. Bd3 Nd7 8. O-O h6 9. Ne4 Nxd5 10. c4 Ne3 11. Bxe3 fxe3 12. c5 Be7 13. Bc2 Re8 14. Qd3 e2 15. Nd6 Nf8 16. Nxf7 exf1=Q+ 17. Rxf1 Bf5 18. Qxf5 Qd7 19. Qf4 Bf6 20. N3e5 Qe7 21. Bb3 Bxe5 22. Nxe5+ Kh7 23. Qe4+ 1-0"
       },
       {
@@ -645,7 +645,7 @@
         "event": "USSR vs Rest of the World, Belgrade",
         "year": 1970,
         "result": "0-1",
-        "significance": "A 17-move demolition of the world No. 3 featuring the immortal rook offer 14...Rh1!! — one of the greatest miniatures ever played.",
+        "significance": "A 17-move demolition of the world No. 3 featuring the immortal rook offer 14...Rh1!!. One of the greatest miniatures ever played.",
         "movetext": "1. b3 e5 2. Bb2 Nc6 3. c4 Nf6 4. Nf3 e4 5. Nd4 Bc5 6. Nxc6 dxc6 7. e3 Bf5 8. Qc2 Qe7 9. Be2 O-O-O 10. f4 Ng4 11. g3 h5 12. h3 h4 13. hxg4 hxg3 14. Rg1 Rh1 15. Rxh1 g2 16. Rf1 Qh4+ 17. Kd1 gxf1=Q+ 0-1"
       }
     ]
@@ -661,7 +661,7 @@
     "peakYear": 1972,
     "modernElo": 2770,
     "modernEloNote": "His engine-like accuracy, monomaniacal work ethic and 1970-72 dominance (125 points clear of No. 2) suggest he would absorb modern theory faster than anyone and remain a top-5 player, around 2770.",
-    "styleDesc": "Crystal-clear, ferociously precise chess: he took what the position offered — attack, endgame, or technique — and converted with machine-like accuracy. With White it was 1.e4 ('best by test'): the Ruy Lopez, the Exchange Ruy he revived, and the Fischer-Sozin Bc4 against the Najdorf. With Black he played the Najdorf (including the Poisoned Pawn) and King's Indian almost exclusively, and his repertoire, though narrow, was analyzed deeper than anyone's.",
+    "styleDesc": "Crystal-clear, ferociously precise chess: he took what the position offered (attack, endgame, or technique) and converted with machine-like accuracy. With White it was 1.e4 ('best by test'): the Ruy Lopez, the Exchange Ruy he revived, and the Fischer-Sozin Bc4 against the Najdorf. With Black he played the Najdorf (including the Poisoned Pawn) and King's Indian almost exclusively, and his repertoire, though narrow, was analyzed deeper than anyone's.",
     "timeStyle": "blitzer",
     "bio": "Eleventh world champion, the American who single-handedly broke Soviet hegemony by beating Taimanov and Larsen 6-0 each, then Spassky in Reykjavik 1972 at the height of the Cold War. US champion at 14, grandmaster at 15, author of the 11/11 US Championship and 'My 60 Memorable Games'. He forfeited the title in 1975 and vanished into a troubled seclusion, but his games remain a model of clarity.",
     "style": {
@@ -691,7 +691,7 @@
         "event": "Rosenwald Memorial, New York",
         "year": 1956,
         "result": "0-1",
-        "significance": "'The Game of the Century' — 13-year-old Fischer's queen sacrifice 17...Be6!! and windmill of discovered checks, the most famous American game ever played.",
+        "significance": "'The Game of the Century': 13-year-old Fischer's queen sacrifice 17...Be6!! and windmill of discovered checks, the most famous American game ever played.",
         "movetext": "1. Nf3 Nf6 2. c4 g6 3. Nc3 Bg7 4. d4 O-O 5. Bf4 d5 6. Qb3 dxc4 7. Qxc4 c6 8. e4 Nbd7 9. Rd1 Nb6 10. Qc5 Bg4 11. Bg5 Na4 12. Qa3 Nxc3 13. bxc3 Nxe4 14. Bxe7 Qb6 15. Bc4 Nxc3 16. Bc5 Rfe8+ 17. Kf1 Be6 18. Bxb6 Bxc4+ 19. Kg1 Ne2+ 20. Kf1 Nxd4+ 21. Kg1 Ne2+ 22. Kf1 Nc3+ 23. Kg1 axb6 24. Qb4 Ra4 25. Qxb6 Nxd1 26. h3 Rxa2 27. Kh2 Nxf2 28. Re1 Rxe1 29. Qd8+ Bf8 30. Nxe1 Bd5 31. Nf3 Ne4 32. Qb8 b5 33. h4 h5 34. Ne5 Kg7 35. Kg1 Bc5+ 36. Kf1 Ng3+ 37. Ke1 Bb4+ 38. Kd1 Bb3+ 39. Kc1 Ne2+ 40. Kb1 Nc3+ 41. Kc1 Rc2# 0-1"
       },
       {
@@ -725,9 +725,9 @@
     "peakYear": 1994,
     "modernElo": 2740,
     "modernEloNote": "His positional squeeze and conversion technique are timeless and he already proved himself into the mid-1990s (Linares 1994 at 2985 performance); slower calculation late in games versus modern pace costs him a little, around 2740.",
-    "styleDesc": "The boa constrictor: tiny improvements, total piece coordination, and merciless exploitation of one weakness — his opponents often resigned without knowing where they went wrong. With White he squeezed via the Ruy Lopez and later the Queen's Gambit and Nimzo with e3; with Black his Caro-Kann (4...Nd7 Karpov Variation), Zaitsev Ruy Lopez and Queen's Indian were nearly airtight. Rarely sacrificed, never bluffed, converted endgame edges like a machine.",
+    "styleDesc": "The boa constrictor: tiny improvements, total piece coordination, and merciless exploitation of one weakness. His opponents often resigned without knowing where they went wrong. With White he squeezed via the Ruy Lopez and later the Queen's Gambit and Nimzo with e3; with Black his Caro-Kann (4...Nd7 Karpov Variation), Zaitsev Ruy Lopez and Queen's Indian were nearly airtight. Rarely sacrificed, never bluffed, converted endgame edges like a machine.",
     "timeStyle": "steady",
-    "bio": "Twelfth world champion (1975-1985), he earned the crown when Fischer forfeited, then silenced doubters by dominating tournament chess for a decade and winning over 160 first prizes — the most of any player. His five title matches with Kasparov (1984-1990) are the fiercest rivalry in chess history, and his Linares 1994 victory (11/13) is often called the greatest tournament performance ever.",
+    "bio": "Twelfth world champion (1975-1985), he earned the crown when Fischer forfeited, then silenced doubters by dominating tournament chess for a decade and winning over 160 first prizes, the most of any player. His five title matches with Kasparov (1984-1990) are the fiercest rivalry in chess history, and his Linares 1994 victory (11/13) is often called the greatest tournament performance ever.",
     "style": {
       "aggression": 0.3,
       "risk": 0.2,
@@ -763,7 +763,7 @@
         "event": "Olympiad, Nice",
         "year": 1974,
         "result": "1-0",
-        "significance": "The definitive Spanish squeeze — 24.Ba7! seals the a-file and Black is slowly zugzwanged off the board; a textbook of prophylactic buildup.",
+        "significance": "The definitive Spanish squeeze, 24.Ba7! seals the a-file and Black is slowly zugzwanged off the board; a textbook of prophylactic buildup.",
         "movetext": "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 8. c3 O-O 9. h3 Na5 10. Bc2 c5 11. d4 Qc7 12. Nbd2 Nc6 13. d5 Nd8 14. a4 Rb8 15. axb5 axb5 16. b4 Nb7 17. Nf1 Bd7 18. Be3 Ra8 19. Qd2 Rfc8 20. Bd3 g6 21. Ng3 Bf8 22. Ra2 c4 23. Bb1 Qd8 24. Ba7 Ne8 25. Bc2 Nc7 26. Rea1 Qe7 27. Bb1 Be8 28. Ne2 Nd8 29. Nh2 Bg7 30. f4 f6 31. f5 g5 32. Bc2 Bf7 33. Ng3 Nb7 34. Bd1 h6 35. Bh5 Qe8 36. Qd1 Nd8 37. Ra3 Kf8 38. R1a2 Kg8 39. Ng4 Kf8 40. Ne3 Kg8 41. Bxf7+ Nxf7 42. Qh5 Nd8 43. Qg6 Kh8 44. Nh5 1-0"
       }
     ]
@@ -778,7 +778,7 @@
     "peakElo": 2851,
     "peakYear": 1999,
     "modernElo": 2820,
-    "modernEloNote": "He pioneered computer-assisted preparation and held the No. 1 spot for 20 years ending in 2005 — already effectively a modern player; only Carlsen-era endgame grinding and today's depth of prep shave a few points off his 2851 peak.",
+    "modernEloNote": "He pioneered computer-assisted preparation and held the No. 1 spot for 20 years ending in 2005. Already effectively a modern player; only Carlsen-era endgame grinding and today's depth of prep shave a few points off his 2851 peak.",
     "styleDesc": "Dynamic energy incarnate: deep opening preparation converted into raging initiative, pawn sacrifices for activity, and attacks calculated to the end. With White he wielded razor-sharp theory in the Najdorf English Attack, the Grünfeld Exchange and his revived Scotch; with Black the Najdorf/Scheveningen Sicilian, King's Indian and Grünfeld. He treated the opening as a weapon of intimidation and outworked every rival.",
     "timeStyle": "steady",
     "bio": "Thirteenth world champion (1985-2000) and the youngest ever at 22, he won five brutal matches against Karpov and stayed world No. 1 for two decades until retiring in 2005. His 1997 loss to Deep Blue marked a turning point for chess and AI, and his 2851 rating stood as the all-time record until Carlsen. Now a writer, coach and political activist.",
@@ -808,7 +808,7 @@
         "event": "Hoogovens, Wijk aan Zee",
         "year": 1999,
         "result": "1-0",
-        "significance": "'Kasparov's Immortal' — the rook sacrifice 24.Rxd4! launches a 15-move king hunt from d6 to b2, often voted the greatest game ever played.",
+        "significance": "'Kasparov's Immortal': the rook sacrifice 24.Rxd4! launches a 15-move king hunt from d6 to b2, often voted the greatest game ever played.",
         "movetext": "1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. Be3 Bg7 5. Qd2 c6 6. f3 b5 7. Nge2 Nbd7 8. Bh6 Bxh6 9. Qxh6 Bb7 10. a3 e5 11. O-O-O Qe7 12. Kb1 a6 13. Nc1 O-O-O 14. Nb3 exd4 15. Rxd4 c5 16. Rd1 Nb6 17. g3 Kb8 18. Na5 Ba8 19. Bh3 d5 20. Qf4+ Ka7 21. Rhe1 d4 22. Nd5 Nbxd5 23. exd5 Qd6 24. Rxd4 cxd4 25. Re7+ Kb6 26. Qxd4+ Kxa5 27. b4+ Ka4 28. Qc3 Qxd5 29. Ra7 Bb7 30. Rxb7 Qc4 31. Qxf6 Kxa3 32. Qxa6+ Kxb4 33. c3+ Kxc3 34. Qa1+ Kd2 35. Qb2+ Kd1 36. Bf1 Rd2 37. Rd7 Rxd7 38. Bxc4 bxc4 39. Qxh8 Rd3 40. Qa8 c3 41. Qa4+ Ke1 42. f4 f5 43. Kc1 Rd2 44. Qa7 1-0"
       },
       {
@@ -817,7 +817,7 @@
         "event": "World Championship (game 16), Moscow",
         "year": 1985,
         "result": "0-1",
-        "significance": "The 'octopus knight' on d3 — Kasparov's gambit and immortal blockading knight paralyze Karpov, the signature win of the match that made him champion.",
+        "significance": "The 'octopus knight' on d3: Kasparov's gambit and immortal blockading knight paralyze Karpov, the signature win of the match that made him champion.",
         "movetext": "1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 Nc6 5. Nb5 d6 6. c4 Nf6 7. N1c3 a6 8. Na3 d5 9. cxd5 exd5 10. exd5 Nb4 11. Be2 Bc5 12. O-O O-O 13. Bf3 Bf5 14. Bg5 Re8 15. Qd2 b5 16. Rad1 Nd3 17. Nab1 h6 18. Bh4 b4 19. Na4 Bd6 20. Bg3 Rc8 21. b3 g5 22. Bxd6 Qxd6 23. g3 Nd7 24. Bg2 Qf6 25. a3 a5 26. axb4 axb4 27. Qa2 Bg6 28. d6 g4 29. Qd2 Kg7 30. f3 Qxd6 31. fxg4 Qd4+ 32. Kh1 Nf6 33. Rf4 Ne4 34. Qxd3 Nf2+ 35. Rxf2 Bxd3 36. Rfd2 Qe3 37. Rxd3 Rc1 38. Nb2 Qf2 39. Nd2 Rxd1+ 40. Nxd1 Re1+ 0-1"
       }
     ]
@@ -832,8 +832,8 @@
     "peakElo": 2735,
     "peakYear": 2005,
     "modernElo": 2710,
-    "modernEloNote": "She peaked at world No. 8 in the engine era itself and beat Kasparov, Carlsen, Anand and Topalov in her prime, so her strength barely discounts — around 2710 against today's field.",
-    "styleDesc": "Uncompromising attacking chess built on ferocious tactics: she played 1.e4 virtually every game, dove into the sharpest open Sicilians, and hunted kings with sacrifices that stood up to engine scrutiny. With Black she trusted the Najdorf and King's Indian. Her motto was to always play for a win — draws by agreement barely existed in her games.",
+    "modernEloNote": "She peaked at world No. 8 in the engine era itself and beat Kasparov, Carlsen, Anand and Topalov in her prime, so her strength barely discounts, around 2710 against today's field.",
+    "styleDesc": "Uncompromising attacking chess built on ferocious tactics: she played 1.e4 virtually every game, dove into the sharpest open Sicilians, and hunted kings with sacrifices that stood up to engine scrutiny. With Black she trusted the Najdorf and King's Indian. Her motto was to always play for a win. Draws by agreement barely existed in her games.",
     "timeStyle": "blitzer",
     "bio": "The strongest female player in history by a huge margin, she refused women-only events, became a grandmaster at 15 (breaking Fischer's record) and reached world No. 8 with wins over eleven world champions, including Kasparov, Anand, Carlsen and Topalov. Raised in the famous Polgar sisters experiment in Budapest, she played in the male World Championship cycle and retired in 2014 to focus on chess education.",
     "style": {
@@ -871,7 +871,7 @@
         "event": "Russia vs Rest of the World (rapid), Moscow",
         "year": 2002,
         "result": "1-0",
-        "significance": "The first time a woman ever defeated the world's No. 1 player — a flawless Berlin endgame grind against Kasparov himself.",
+        "significance": "The first time a woman ever defeated the world's No. 1 player. A flawless Berlin endgame grind against Kasparov himself.",
         "movetext": "1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4 5. d4 Nd6 6. Bxc6 dxc6 7. dxe5 Nf5 8. Qxd8+ Kxd8 9. Nc3 h6 10. Rd1+ Ke8 11. h3 Be7 12. Ne2 Nh4 13. Nxh4 Bxh4 14. Be3 Bf5 15. Nd4 Bh7 16. g4 Be7 17. Kg2 h5 18. Nf5 Bf8 19. Kf3 Bg6 20. Rd2 hxg4+ 21. hxg4 Rh3+ 22. Kg2 Rh7 23. Kg3 f6 24. Bf4 Bxf5 25. gxf5 fxe5 26. Re1 Bd6 27. Bxe5 Kd7 28. c4 c5 29. Bxd6 cxd6 30. Re6 Rah8 31. Rexd6+ Kc8 32. R2d5 Rh3+ 33. Kg2 Rh2+ 34. Kf3 R2h3+ 35. Ke4 b6 36. Rc6+ Kb8 37. Rd7 Rh2 38. Ke3 Rf8 39. Rcc7 Rxf5 40. Rb7+ Kc8 41. Rdc7+ Kd8 42. Rxg7 Kc8 1-0"
       }
     ]
@@ -917,7 +917,7 @@
         "event": "Tata Steel Group A, Wijk aan Zee",
         "year": 2013,
         "result": "0-1",
-        "significance": "'Anand's Immortal' — a prepared Meran piece sacrifice that demolishes Aronian in 23 moves.",
+        "significance": "'Anand's Immortal': a prepared Meran piece sacrifice that demolishes Aronian in 23 moves.",
         "movetext": "1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 e6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3 Bd6 9. O-O O-O 10. Qc2 Bb7 11. a3 Rc8 12. Ng5 c5 13. Nxh7 Ng4 14. f4 cxd4 15. exd4 Bc5 16. Be2 Nde5 17. Bxg4 Bxd4+ 18. Kh1 Nxg4 19. Nxf8 f5 20. Ng6 Qf6 21. h3 Qxg6 22. Qe2 Qh5 23. Qd3 Be3"
       },
       {
@@ -944,7 +944,7 @@
     "modernEloNote": "Retired from classical chess in 2019; still plays elite-level rapid and online chess but classical rust and age put him a tier below today's top ten.",
     "styleDesc": "The great neutralizer: deep positional strategy, iron-clad structures and legendary endgame technique. Built the Berlin Wall that dethroned Kasparov, and with White squeezes wins from the Catalan, the Bb2/Nf3 systems and dry Nimzo lines where nothing seems to be happening until it is lost for the opponent. In his later career he paradoxically became one of the most creative attacking experimenters in the elite.",
     "timeStyle": "steady",
-    "bio": "The 14th World Champion, who beat Garry Kasparov in London 2000 — the only man to defeat Kasparov in a match — and held the classical title until 2007. Renowned as one of the deepest strategists in chess history and, since retiring, an influential (and provocative) commentator and coach.",
+    "bio": "The 14th World Champion, who beat Garry Kasparov in London 2000 (the only man to defeat Kasparov in a match) and held the classical title until 2007. Renowned as one of the deepest strategists in chess history and, since retiring, an influential (and provocative) commentator and coach.",
     "style": {
       "aggression": 0.35,
       "risk": 0.3,
@@ -995,8 +995,8 @@
     "peakElo": 2882,
     "peakYear": 2014,
     "modernElo": 2840,
-    "modernEloNote": "World No. 1 at 2841 on the June 2026 FIDE list — still clearly the strongest player alive despite abandoning the world championship cycle.",
-    "styleDesc": "The universal grinder: takes dry, 'equal' positions and squeezes water from stone with peerless endgame technique and zero-mistake pressure chess. Opening choices are deliberately varied and modest — quiet Italians, anti-Berlins, sidelines in every system — because he wants a playable middlegame, not a theory duel. When opponents overreach he punishes with sudden, exact tactics.",
+    "modernEloNote": "World No. 1 at 2841 on the June 2026 FIDE list. Still clearly the strongest player alive despite abandoning the world championship cycle.",
+    "styleDesc": "The universal grinder: takes dry, 'equal' positions and squeezes water from stone with peerless endgame technique and zero-mistake pressure chess. Opening choices are deliberately varied and modest (quiet Italians, anti-Berlins, sidelines in every system) because he wants a playable middlegame, not a theory duel. When opponents overreach he punishes with sudden, exact tactics.",
     "timeStyle": "blitzer",
     "bio": "The 16th World Champion (2013-2023), five-time title match winner and holder of the highest rating in history (2882). Widely considered the greatest player of all time, he gave up the classical title in 2023 out of boredom and continues to dominate every format, especially rapid and blitz.",
     "style": {
@@ -1026,7 +1026,7 @@
         "event": "Corus Group C, Wijk aan Zee",
         "year": 2004,
         "result": "1-0",
-        "significance": "13-year-old Magnus sacrifices everything and mates in 29 — the game that announced the 'Mozart of Chess'.",
+        "significance": "13-year-old Magnus sacrifices everything and mates in 29: the game that announced the 'Mozart of Chess'.",
         "movetext": "1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5 5. Ng3 Bg6 6. h4 h6 7. Nf3 Nd7 8. h5 Bh7 9. Bd3 Bxd3 10. Qxd3 e6 11. Bf4 Ngf6 12. O-O-O Be7 13. Ne4 Qa5 14. Kb1 O-O 15. Nxf6+ Nxf6 16. Ne5 Rad8 17. Qe2 c5 18. Ng6 fxg6 19. Qxe6+ Kh8 20. hxg6 Ng8 21. Bxh6 gxh6 22. Rxh6+ Nxh6 23. Qxe7 Nf7 24. gxf7 Kg7 25. Rd3 Rd6 26. Rg3+ Rg6 27. Qe5+ Kxf7 28. Qf5+ Rf6 29. Qd7#"
       },
       {
@@ -1050,8 +1050,8 @@
     "peakElo": 2816,
     "peakYear": 2015,
     "modernElo": 2790,
-    "modernEloNote": "World No. 3 at 2792 on the June 2026 FIDE list despite streaming full-time — arguably the best speed-chess player in history.",
-    "styleDesc": "Fearless tactical fighter raised on blitz: razor-sharp calculation, swindling defense, and total comfort in chaos. His King's Indian Defense wins are legendary — he willingly cedes space to launch all-out kingside pawn storms — while with White he keeps flexible Ruy/English setups and outplays people in mutual time pressure. The greatest practical player of his generation.",
+    "modernEloNote": "World No. 3 at 2792 on the June 2026 FIDE list despite streaming full-time, arguably the best speed-chess player in history.",
+    "styleDesc": "Fearless tactical fighter raised on blitz: razor-sharp calculation, swindling defense, and total comfort in chaos. His King's Indian Defense wins are legendary (he willingly cedes space to launch all-out kingside pawn storms) while with White he keeps flexible Ruy/English setups and outplays people in mutual time pressure. The greatest practical player of his generation.",
     "timeStyle": "blitzer",
     "bio": "Five-time US Champion, longtime world No. 2-3, and the dominant online blitz player of two decades. Reinvented himself as a streaming superstar with millions of followers while somehow keeping his classical rating at the very top, qualifying for multiple Candidates tournaments in his late 30s.",
     "style": {
@@ -1105,7 +1105,7 @@
     "peakYear": 2014,
     "modernElo": 2790,
     "modernEloNote": "World No. 2 at 2792 on the June 2026 FIDE list; the second-highest peak rating in history and Carlsen's closest classical rival for a decade.",
-    "styleDesc": "The ultimate preparation machine: enormous, engine-deep opening files backed by cold, precise calculation. Plays principled main lines — Ruy Lopez and slow Italians with White, the ultra-solid Petroff with Black — and beats elite opponents by simply out-analyzing them 25 moves deep. When the position demands it he attacks with surgical, fully-calculated violence rather than intuition.",
+    "styleDesc": "The ultimate preparation machine: enormous, engine-deep opening files backed by cold, precise calculation. Plays principled main lines (Ruy Lopez and slow Italians with White, the ultra-solid Petroff with Black) and beats elite opponents by simply out-analyzing them 25 moves deep. When the position demands it he attacks with surgical, fully-calculated violence rather than intuition.",
     "timeStyle": "steady",
     "bio": "American superstar who ran up a legendary 7/7 start at the 2014 Sinquefield Cup (a 3080 performance, the best tournament run ever) and challenged Carlsen for the world title in 2018, drawing all 12 classical games. Multiple-time US Champion and perennial Candidates contender.",
     "style": {
@@ -1159,7 +1159,7 @@
     "peakYear": 2018,
     "modernElo": 2720,
     "modernEloNote": "The 2023-2024 world champion has slid to the low 2700s amid health struggles and a long slump, well below his 2816 peak and 100-move unbeaten-streak form.",
-    "styleDesc": "Deeply solid, harmonious positional player with world-class defensive resilience — he once went 100 classical games unbeaten. Prefers Catalan and English structures with White and airtight Nimzo/QGD setups with Black, but hides a spectacular creative streak: when the moment comes he produces immortal-level attacking sequences with quiet, impossible-looking moves. Endgame precision and nerve under pressure are his trademarks.",
+    "styleDesc": "Deeply solid, harmonious positional player with world-class defensive resilience. He once went 100 classical games unbeaten. Prefers Catalan and English structures with White and airtight Nimzo/QGD setups with Black, but hides a spectacular creative streak: when the moment comes he produces immortal-level attacking sequences with quiet, impossible-looking moves. Endgame precision and nerve under pressure are his trademarks.",
     "timeStyle": "tanker",
     "bio": "The 17th World Champion (2023), first Chinese man to hold the title, winning an epic tiebreak against Nepomniachtchi with the courageous Rg6 rook lift. Three-time Chinese champion and former world No. 2 whose 100-game unbeaten streak stood as a modern record; lost the crown to Gukesh in 2024.",
     "style": {
@@ -1188,7 +1188,7 @@
         "event": "Chinese Chess League",
         "year": 2017,
         "result": "0-1",
-        "significance": "'Ding's Immortal' — a cascading queen-and-rook sacrifice king hunt voted among the greatest games of the decade.",
+        "significance": "'Ding's Immortal': a cascading queen-and-rook sacrifice king hunt voted among the greatest games of the decade.",
         "movetext": "1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. Nf3 O-O 5. Bg5 c5 6. e3 cxd4 7. Qxd4 Nc6 8. Qd3 h6 9. Bh4 d5 10. Rd1 g5 11. Bg3 Ne4 12. Nd2 Nc5 13. Qc2 d4 14. Nf3 e5 15. Nxe5 dxc3 16. Rxd8 cxb2+ 17. Ke2 Rxd8 18. Qxb2 Na4 19. Qc2 Nc3+ 20. Kf3 Rd4 21. h3 h5 22. Bh2 g4+ 23. Kg3 Rd2 24. Qb3 Ne4+ 25. Kh4 Be7+ 26. Kxh5 Kg7 27. Bf4 Bf5 28. Bh6+ Kh7 29. Qxb7 Rxf2 30. Bg5 Rh8 31. Nxf7 Bg6+ 32. Kxg4 Ne5+"
       },
       {
@@ -1212,7 +1212,7 @@
     "peakElo": 2794,
     "peakYear": 2024,
     "modernElo": 2760,
-    "modernEloNote": "The reigning world champion sits in the world top ten around 2750-2770 — phenomenal for a teenager, though a notch below Carlsen's outright strength.",
+    "modernEloNote": "The reigning world champion sits in the world top ten around 2750-2770. Phenomenal for a teenager, though a notch below Carlsen's outright strength.",
     "styleDesc": "Ferocious classical fighter with old-school ambition in every game: plays both 1.e4 and 1.d4, steers for rich, imbalanced middlegames, and simply refuses to take draws. His calculation depth and stamina in long grinding positions are extraordinary for his age, and his nerveless conversion of tiny endgame edges decided the world championship. As Black he counterattacks with the Najdorf and active piece play.",
     "timeStyle": "tanker",
     "bio": "The 18th and youngest-ever undisputed World Champion, defeating Ding Liren in Singapore 2024 at age 18 after winning the 2024 Candidates as its youngest victor. Chennai prodigy mentored in Viswanathan Anand's academy; anchored India's gold-medal Olympiad team in 2024 with a monster individual performance.",
@@ -1267,7 +1267,7 @@
     "peakYear": 2018,
     "modernElo": 2350,
     "modernEloNote": "Peak FIDE 2421 as an active IM around 2018; now mostly retired from serious OTB (rated ~2320) so honest current strength is roughly 2350 against today's field.",
-    "styleDesc": "Aggressive club-crusher chess: 1.e4 with the Vienna Gambit as a calling card, plus Italian piece storms and Evans Gambit-style romantic play aimed straight at the enemy king. With Black he champions the Caro-Kann — solid structure, then a sudden counterpunch — and the King's Indian. Loves forcing lines, traps and initiative; will burn material for an open king every time.",
+    "styleDesc": "Aggressive club-crusher chess: 1.e4 with the Vienna Gambit as a calling card, plus Italian piece storms and Evans Gambit-style romantic play aimed straight at the enemy king. With Black he champions the Caro-Kann (solid structure, then a sudden counterpunch) and the King's Indian. Loves forcing lines, traps and initiative; will burn material for an open king every time.",
     "timeStyle": "tanker",
     "bio": "The world's most-watched chess educator: New York IM turned YouTube superstar 'GothamChess' with over six million subscribers, whose recaps and 'Guess the Elo' series brought millions into the game during the chess boom. A genuinely strong player, he beat future-GM Hans Niemann over the board and authored the bestseller 'How to Win at Chess'.",
     "style": {
@@ -1306,7 +1306,7 @@
         "event": "Live Chess, Chess.com",
         "year": 2023,
         "result": "1-0",
-        "significance": "A signature Vienna Gambit demolition — the opening he made famous to millions of students.",
+        "significance": "A signature Vienna Gambit demolition: the opening he made famous to millions of students.",
         "movetext": "1. e4 e5 2. Nc3 Nf6 3. f4 d5 4. fxe5 Nxe4 5. Qf3 Nxc3 6. bxc3 Be7 7. d4 Be6 8. Bd3 c5 9. Ne2 c4 10. Bf5 O-O 11. O-O Qd7 12. Ng3 Nc6 13. Qg4 g6 14. Bh6 Rfe8 15. Rf2 Bf8 16. Qh4 Qd8 17. Bg5 Be7 18. Bxe6 fxe6 19. Rf7 h5 20. Nxh5 Kxf7 21. Rf1+ Kg8 22. Nf6+ Bxf6 23. Bxf6 Qxf6 24. exf6 Rf8 25. Qh6 Rf7 26. Qxg6+ Kf8 27. Rf3 Nd8 28. Rh3 Ke8 29. Rh8+ Kd7 30. Rxd8+ Rxd8 31. Qxf7+"
       }
     ]

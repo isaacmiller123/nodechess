@@ -4,7 +4,7 @@ import { useSettings } from '../../state/settings'
 import { isRegisteredGame } from '../../games/registry'
 import type { CatalogEntry } from './catalog'
 
-// Manual board diagrams — renders the ```position fences of the authored
+// Manual board diagrams: renders the ```position fences of the authored
 // manuals (resources/manuals/*.md) as real, rulebook-grade figures:
 //   • FEN payloads (chess family) → the game's own 2D board, read-only.
 //   • coordinate-DSL payloads (size/black/white/points/next) → a small SVG
@@ -86,7 +86,7 @@ function parseDsl(payload: string): DslPos | null {
 
 function captionOf(next: 'black' | 'white' | null, entry: CatalogEntry): string | null {
   if (!next) return null
-  // Games where the sides have thematic names keep generic Black/White — the
+  // Games where the sides have thematic names keep generic Black/White. The
   // manuals themselves use Black/White throughout.
   void entry
   return next === 'black' ? 'Black to play' : 'White to play'
@@ -514,6 +514,6 @@ export function ManualDiagram({ entry, payload }: { entry: CatalogEntry; payload
     }
   }
 
-  // Unrenderable payload: keep the manual clean — no raw text dumps.
+  // Unrenderable payload: keep the manual clean. No raw text dumps.
   return null
 }

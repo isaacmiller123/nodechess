@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// build-puzzle-chunks.mjs — turn the 2 GB bundled puzzle DB into a static,
+// build-puzzle-chunks.mjs: turn the 2 GB bundled puzzle DB into a static,
 // range-readable artifact for the serverless web target (Cloudflare Pages).
 //
 // Pages' free tier caps a file at 25 MiB and a site at 20,000 files, and gives
-// us no server at all — so the browser reads SQLite itself, over HTTP Range
+// us no server at all, so the browser reads SQLite itself, over HTTP Range
 // requests, through sql.js-httpvfs' chunked VFS (src/web/data/). That library
 // maps a byte range onto `<prefix><nnn>` split files, so all this script has to
 // produce is a byte-exact split plus the numbers the reader needs to plan its
@@ -13,7 +13,7 @@
 // range reading slow or impossible:
 //
 //  1. ROW ORDER. Desktop rows sit in CSV order, so the 24-row rating window
-//     that `nextPuzzle` reads is 24 rowid lookups scattered across 2 GB — 24
+//     that `nextPuzzle` reads is 24 rowid lookups scattered across 2 GB, 24
 //     round-trips over HTTP. We re-insert `puzzles` ordered by (Rating,
 //     PuzzleId) with an explicit ROW_NUMBER() rowid, which makes rowid the rank
 //     in that order. Rating windows become CONTIGUOUS rowid ranges: one range
@@ -23,7 +23,7 @@
 //     this invariant; it is verified below before anything is written.
 //
 //  2. FULL-TABLE AGGREGATES. `listThemes()` is a GROUP BY over 21M junction
-//     rows — hundreds of MB across the wire for 73 numbers. It is computed here
+//     rows: hundreds of MB across the wire for 73 numbers. It is computed here
 //     and shipped in the manifest instead.
 //
 // The junction table is rebuilt WITHOUT ROWID so its primary key IS its
@@ -46,7 +46,7 @@ import { DatabaseSync } from 'node:sqlite'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 // 24 MiB: comfortably under the 25 MiB (26,214,400 B) Pages limit, and an exact
-// multiple of every page size we allow — a SQLite page must never straddle two
+// multiple of every page size we allow. A SQLite page must never straddle two
 // split files, or a single-page request would need two HTTP round-trips (and
 // sql.js-httpvfs' range mapper does not stitch them).
 const DEFAULT_CHUNK_BYTES = 24 * 1024 * 1024
@@ -65,7 +65,7 @@ const DAILY_RATING_LO = 1200
 const DAILY_RATING_HI = 1800
 
 function usage() {
-  return `build-puzzle-chunks — split the puzzle DB into static, range-readable chunks
+  return `build-puzzle-chunks: split the puzzle DB into static, range-readable chunks
 
   --src <path>        source SQLite (default resources/data/puzzles.sqlite)
   --out <dir>         output directory (default dist-puzzles/)
@@ -149,7 +149,7 @@ async function main() {
     )
   }
   if (srcStat.size < 1_000_000) {
-    fail(`source database ${opts.src} is only ${srcStat.size} B — that is not the puzzle DB`)
+    fail(`source database ${opts.src} is only ${srcStat.size} B. That is not the puzzle DB`)
   }
 
   await mkdir(opts.out, { recursive: true })
@@ -170,7 +170,7 @@ async function main() {
   const dbStat = await stat(workPath)
   const chunkCount = Math.ceil(dbStat.size / opts.chunkBytes)
   if (chunkCount > PAGES_FILE_COUNT_LIMIT) {
-    fail(`${chunkCount} chunks exceeds the 20,000-file limit of Cloudflare Pages — raise --chunk-bytes`)
+    fail(`${chunkCount} chunks exceeds the 20,000-file limit of Cloudflare Pages. Raise --chunk-bytes`)
   }
 
   phase(`splitting ${fmtBytes(dbStat.size)} into ${chunkCount} chunks of ${opts.chunkBytes} B`)
@@ -199,7 +199,7 @@ async function main() {
   await writeFile(join(opts.out, MANIFEST_NAME), `${JSON.stringify(manifest)}\n`)
   // A self-ignoring output directory: this is a multi-GB build artifact and must
   // never reach git, whatever --out the operator picked.
-  await writeFile(join(opts.out, '.gitignore'), '# build artifact — never committed\n*\n')
+  await writeFile(join(opts.out, '.gitignore'), '# build artifact, never committed\n*\n')
 
   if (!opts.keepWork) await rm(workPath, { force: true })
 
@@ -254,7 +254,7 @@ function buildWebDb(opts, workPath) {
     // identical plan for `WHERE PuzzleId=?`. Column set + types match the
     // desktop schema exactly (scripts/build_puzzles_db.py) so the reader's rows
     // are the desktop's rows.
-    phase('rebuilding `puzzles` clustered by (Rating, PuzzleId) — several minutes')
+    phase('rebuilding `puzzles` clustered by (Rating, PuzzleId): several minutes')
     db.exec(`CREATE TABLE puzzles(
       PuzzleId TEXT NOT NULL, FEN TEXT NOT NULL, Moves TEXT NOT NULL,
       Rating INTEGER NOT NULL, RatingDeviation INTEGER, Popularity INTEGER,
@@ -277,7 +277,7 @@ function buildWebDb(opts, workPath) {
     // has to exclude the junction bytes to mean anything.
     const puzzleSectionBytes = one(db, 'PRAGMA page_count').page_count * opts.pageSize
 
-    phase('rebuilding `puzzle_themes` (WITHOUT ROWID: the key IS the storage) — several minutes')
+    phase('rebuilding `puzzle_themes` (WITHOUT ROWID: the key IS the storage), several minutes')
     db.exec(`CREATE TABLE puzzle_themes(
       Theme TEXT NOT NULL, Rating INTEGER NOT NULL, PuzzleId TEXT NOT NULL,
       PRIMARY KEY (Theme, Rating, PuzzleId)) WITHOUT ROWID`)
@@ -306,7 +306,7 @@ function buildWebDb(opts, workPath) {
 
     // ratingCumulative[i] = puzzles rated BELOW ratingMin + i. With rowid ==
     // rank in (Rating, PuzzleId) order, that is exactly the rowid of the last
-    // puzzle rated below ratingMin + i — which is how the reader turns any
+    // puzzle rated below ratingMin + i, which is how the reader turns any
     // rating band into a rowid range with no index descent at all.
     const span = ratingMax - ratingMin + 1
     const ratingCumulative = new Array(span + 1).fill(0)
@@ -348,7 +348,7 @@ function buildWebDb(opts, workPath) {
 function verifyClustering(db, puzzleCount, ratingMin, ratingCumulative) {
   const bounds = one(db, 'SELECT MIN(rowid) AS lo, MAX(rowid) AS hi FROM puzzles')
   if (bounds.lo !== 1 || bounds.hi !== puzzleCount) {
-    fail(`rowids are not 1..${puzzleCount} (got ${bounds.lo}..${bounds.hi}) — the clustered rebuild did not take`)
+    fail(`rowids are not 1..${puzzleCount} (got ${bounds.lo}..${bounds.hi}). The clustered rebuild did not take`)
   }
   const probe = db.prepare('SELECT rowid AS rowid, Rating, PuzzleId FROM puzzles WHERE rowid>=? ORDER BY rowid LIMIT 2')
   const step = Math.max(1, Math.floor(puzzleCount / 500))
@@ -356,7 +356,7 @@ function verifyClustering(db, puzzleCount, ratingMin, ratingCumulative) {
   for (let r = 1; r <= puzzleCount; r += step) {
     for (const row of probe.all(r)) {
       if (prev && (row.Rating < prev.Rating || (row.Rating === prev.Rating && row.PuzzleId < prev.PuzzleId))) {
-        fail(`row ${row.rowid} (${row.Rating}/${row.PuzzleId}) sorts before row ${prev.rowid} — table is not clustered`)
+        fail(`row ${row.rowid} (${row.Rating}/${row.PuzzleId}) sorts before row ${prev.rowid}. Table is not clustered`)
       }
       // The histogram must agree with where the row actually landed, or every
       // rowid the reader computes from it is off.

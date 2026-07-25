@@ -3,7 +3,7 @@
 // Bundles the REAL desktop ipc modules (esbuild aliases `electron` →
 // server/electron-shim.ts) so the web server serves the exact same
 // zod-validated handlers over POST /api/ipc/<channel>. server/index.cjs
-// require()s this bundle lazily at runtime (server/bridge.ts) — it is NOT
+// require()s this bundle lazily at runtime (server/bridge.ts). It is NOT
 // compiled into the server bundle, so the two build independently.
 //
 // EXCLUDED on purpose (never bundled server-side, per the build contract):
@@ -46,7 +46,7 @@ export function registerBridgeIpc(): void {
 }
 
 // The shim's collection/injection surface. Imported by path here AND aliased as
-// 'electron' by the build — esbuild resolves both to the same file, so this is
+// 'electron' by the build. Esbuild resolves both to the same file, so this is
 // the same module instance the ipc modules registered into.
 export { getRegisteredHandlers, setShimUserDataDir } from './electron-shim'
 export type { BridgeIpcEvent, BridgeIpcHandler } from './electron-shim'

@@ -1,4 +1,4 @@
-// A4 deterministic Glicko-2 (spec §6, brick 2a) — an EXACT port of the app's
+// A4 deterministic Glicko-2 (spec §6, brick 2a). An EXACT port of the app's
 // shipped src/main/rating/glicko2.ts (Glickman spec: same SCALE, same
 // RD_MIN/RD_MAX clamps, same Illinois regula-falsi volatility loop with the
 // 100-iteration cap and 1e-6 epsilon, same no-games RD-growth branch) with the
@@ -6,26 +6,26 @@
 //   Math.exp  → dexp        (fdlibm, bit-identical across engines)
 //   Math.log  → dln
 //   Math.pow(x, 2) → x·x    (basic op, correctly rounded)
-//   Math.PI   — an exact spec constant, kept
-//   Math.sqrt — a correctly-rounded IEEE-754 basic op, kept
+//   Math.PI:    an exact spec constant, kept
+//   Math.sqrt: a correctly-rounded IEEE-754 basic op, kept
 // Every other operation is + − × ÷ / min / max / abs in the SAME evaluation
 // order as the source file, so on identical double inputs every conforming JS
-// engine computes identical double outputs — and identical micro outputs.
+// engine computes identical double outputs, and identical micro outputs.
 //
 // ── MICRO-UNIT BOUNDARY (the fold's integer contract) ──────────────────────
 // Fold state is integers only (canonical codec rule), so the exported update
-// takes and returns {ratingMicro, rdMicro, volMicro} — fixed-point ×10⁶.
+// takes and returns {ratingMicro, rdMicro, volMicro}, fixed-point ×10⁶.
 //
-//   micro → double:  x = m / 1e6. ONE correctly-rounded IEEE division —
-//     deterministic by ECMA-262.
-//   double → micro:  m = Math.floor(x·1e6 + 0.5) — ROUND-HALF-UP. The multiply
+//   micro → double:  x = m / 1e6. ONE correctly-rounded IEEE division.
+//     Deterministic by ECMA-262.
+//   double → micro:  m = Math.floor(x·1e6 + 0.5), ROUND-HALF-UP. The multiply
 //     and add are correctly rounded, floor is exact, so the result is a pure
-//     function of the double x — and x itself is bit-identical everywhere
+//     function of the double x, and x itself is bit-identical everywhere
 //     (above). Chosen over Math.round for an explicit, self-documenting rule
 //     (Math.round is the same half-up on positives; the floor form also pins
 //     the negative-tie direction: toward +∞). Range: Glicko ratings/RDs/vols
 //     keep |x·1e6 + 0.5| far below 2^53, so the float result is the exact
-//     integer — no precision cliff.
+//     integer: no precision cliff.
 //
 // One SEGMENT = one single-game rating period: the fold calls the update with
 // exactly one game per segment (fold.ts); the games=[] RD-growth branch is
@@ -37,7 +37,7 @@
 import { PARAMS_A4 } from './params'
 import { dexp, dln } from './detmath'
 
-/** Glicko-2 scale constant — verbatim from src/main/rating/glicko2.ts. */
+/** Glicko-2 scale constant: verbatim from src/main/rating/glicko2.ts. */
 export const SCALE = 173.7178
 /** RD clamps (= PARAMS_A4.rdMin/rdMax = the shipped glicko2.ts 30/350). */
 const RD_MAX = PARAMS_A4.rdMax
@@ -46,7 +46,7 @@ const RD_MIN = PARAMS_A4.rdMin
 const TAU_DEFAULT = PARAMS_A4.tauMicro / 1_000_000
 
 // ---------------------------------------------------------------------------
-// Float core — the exact glicko2.ts math on detmath transcendentals
+// Float core: the exact glicko2.ts math on detmath transcendentals
 // ---------------------------------------------------------------------------
 
 export interface Glicko {
@@ -63,7 +63,7 @@ export interface Opponent {
 }
 
 /**
- * Deterministic float-level Glicko-2 update — glicko2Update ported verbatim
+ * Deterministic float-level Glicko-2 update: glicko2Update ported verbatim
  * (see header). Exposed for the suite's cross-check against the shipped
  * float implementation; fold code goes through glickoUpdateMicro.
  */
@@ -93,7 +93,7 @@ export function glicko2UpdateDet(p: Glicko, games: readonly Opponent[], tau = TA
   const v = 1 / vInv
   const delta = v * deltaSum
 
-  // Volatility via Illinois (regula falsi) — cap and epsilon verbatim.
+  // Volatility via Illinois (regula falsi). Cap and epsilon verbatim.
   const a = dln(p.vol * p.vol)
   const f = (x: number): number => {
     const ex = dexp(x)
@@ -140,7 +140,7 @@ export function glicko2UpdateDet(p: Glicko, games: readonly Opponent[], tau = TA
 // Micro-unit boundary
 // ---------------------------------------------------------------------------
 
-/** Integer micro-unit Glicko state (×10⁶) — the fold's ladder numbers. */
+/** Integer micro-unit Glicko state (×10⁶): the fold's ladder numbers. */
 export interface GlickoMicro {
   ratingMicro: number
   rdMicro: number
@@ -154,12 +154,12 @@ export interface OpponentMicro {
   score: number
 }
 
-/** double → micro: round-half-up, floor(x·1e6 + 0.5) — see header. */
+/** double → micro: round-half-up, floor(x·1e6 + 0.5). See header. */
 export function toMicro(x: number): number {
   return Math.floor(x * 1_000_000 + 0.5)
 }
 
-/** micro → double: one correctly-rounded IEEE division — see header. */
+/** micro → double: one correctly-rounded IEEE division. See header. */
 export function fromMicro(m: number): number {
   return m / 1_000_000
 }

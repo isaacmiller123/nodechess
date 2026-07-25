@@ -1,4 +1,4 @@
-// The web `Api['engine']` implementation — a channel-for-channel port of
+// The web `Api['engine']` implementation: a channel-for-channel port of
 // src/main/ipc/engine.ipc.ts onto the WASM pools (pools.ts):
 //   analyze/stop  → analysis instance, one active streaming subscription,
 //                   handleId increments, onLine/onBestmove fan-out.
@@ -6,7 +6,7 @@
 //                   desktop, including the calibrated sub-1320 weak-play model
 //                   (weakPlay.ts) and the legacy uciElo/skill knobs.
 //   playVariant   → Fairy-Stockfish; FAIRY_VARIANT_KINDS + 'custom-<id>'
-//                   (custom inis resolved via deps.getCustomVariantIni — the
+//                   (custom inis resolved via deps.getCustomVariantIni: the
 //                   web upgrade the build contract asks for; desktop routes
 //                   customs through the same engine via VariantPath).
 //   evalVariant   → one bounded single-line fairy search, side-to-move POV.
@@ -16,7 +16,7 @@
 //
 // The zod schemas guarding the desktop channels run in the main process; here
 // the same constraints are enforced inline (safeFen re-serialization, the
-// variant-FEN allowlist, level/movetime clamps) — cheap, and it keeps the
+// variant-FEN allowlist, level/movetime clamps): cheap, and it keeps the
 // engine's stdin-equivalent free of smuggled commands on both platforms.
 
 import { parseFen, makeFen } from 'chessops/fen'
@@ -56,8 +56,8 @@ export function safeFen(fen: string): string {
   return makeFen(setup.value)
 }
 
-/** Variant FENs can't be chessops-validated (xiangqi/shogi/janggi dialects) —
- *  character allowlist, one line, FEN alphabet only (desktop VARIANT_FEN_RE). */
+/** Variant FENs can't be chessops-validated (xiangqi/shogi/janggi dialects).
+ *  Character allowlist, one line, FEN alphabet only (desktop VARIANT_FEN_RE). */
 export const VARIANT_FEN_RE = /^[A-Za-z0-9/\[\]+~.\- ]{1,160}$/
 
 function checkLimit(limit: GoLimit): GoLimit {
@@ -111,7 +111,7 @@ export function resolvePlayStrategy(level: PlayLevel): PlayStrategy {
   if (level.skill !== undefined) {
     return { kind: 'skill', skill: intInRange(level.skill, 0, 20, 'skill') }
   }
-  // Neither given: never answer at full strength — cap to a club default.
+  // Neither given: never answer at full strength. Cap to a club default.
   return { kind: 'default', elo: 1500 }
 }
 
@@ -154,7 +154,7 @@ interface FairyTarget {
 }
 
 /** kind → fairy engine target. Built-in kinds, or 'custom-<id>' resolved
- *  through deps.getCustomVariantIni. Throws on unknown kinds — the desktop
+ *  through deps.getCustomVariantIni. Throws on unknown kinds. The desktop
  *  resolveEvalVariant contract. */
 async function resolveFairyTarget(kind: string, deps: WebEngineDeps): Promise<FairyTarget> {
   if (kind === 'chess') return { variant: 'chess', chess960: false }
@@ -234,7 +234,7 @@ async function goBotsDesktopOnly(): Promise<never> {
   // Lazy import: BotUnavailableError is the class the game UIs surface as a
   // toast (same pattern as webApi.ts botComingOnline).
   const { BotUnavailableError } = await import('@/games/bots')
-  throw new BotUnavailableError('Go bots are coming to the web — available today in the desktop app.')
+  throw new BotUnavailableError('Go bots are coming to the web, available today in the desktop app.')
 }
 
 // ---- Status probe ------------------------------------------------------------------
@@ -307,7 +307,7 @@ export function buildEngineApi(deps: WebEngineDeps): Api['engine'] {
         const eng = await pool.getAnalysis()
         clearActive()
         // Drain any in-flight (infinite) search to idle BEFORE attaching this
-        // search's listeners — otherwise the previous search's stop-bestmove
+        // search's listeners: otherwise the previous search's stop-bestmove
         // would immediately tear the new subscription down.
         await eng.stop()
         const handleId = nextHandle++
@@ -345,14 +345,14 @@ export function buildEngineApi(deps: WebEngineDeps): Api['engine'] {
         if (strategy.kind === 'maia') {
           // Honest desktop-only rejection: the Maia nets run on lc0, which has
           // no browser build here. status() reports lc0Ready false, so the
-          // renderer never offers the Human style on web — this is defensive.
+          // renderer never offers the Human style on web. This is defensive.
           throw new Error(
-            'The Human (Maia) style is desktop-only for now — lc0 does not run in the web app.'
+            'The Human (Maia) style is desktop-only for now: lc0 does not run in the web app.'
           )
         }
         const eng = await pool.getPlay()
         // Drain any abandoned search to idle BEFORE attaching new listeners /
-        // starting a new search — same discipline as desktop engine:play.
+        // starting a new search. Same discipline as desktop engine:play.
         await eng.stop()
         if (strategy.kind === 'weak') {
           // Below Stockfish's floor: calibrated engine-driven weakening. The
@@ -403,7 +403,7 @@ export function buildEngineApi(deps: WebEngineDeps): Api['engine'] {
         if (movetimeMs !== undefined) intInRange(movetimeMs, 50, 2000, 'movetimeMs')
         const target = await resolveFairyTarget(kind, deps)
         const eng = await fairyPool.get(target.variant, target.chess960, target.variantIni)
-        await eng.stop() // drain any abandoned search — same discipline as playVariant
+        await eng.stop() // drain any abandoned search: same discipline as playVariant
         // Full strength for an honest eval (playVariant may have weakened it).
         eng.setOption('UCI_LimitStrength', false)
         return evalOnce(eng, fen, movetimeMs ?? 300)
@@ -414,7 +414,7 @@ export function buildEngineApi(deps: WebEngineDeps): Api['engine'] {
       return {
         analysisReady: caps.chess,
         playReady: caps.chess,
-        // Maia/lc0 and KataGo are native binaries — desktop-only, honestly so.
+        // Maia/lc0 and KataGo are native binaries. Desktop-only, honestly so.
         lc0Ready: false,
         fairyReady: caps.fairy,
         katagoReady: false,

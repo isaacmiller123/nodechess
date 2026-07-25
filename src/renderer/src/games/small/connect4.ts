@@ -1,7 +1,7 @@
-// Connect Four — hand-rolled 7x6 bitboard GameSpec (docs/GAMES-PLATFORM-SPEC.md).
+// Connect Four: hand-rolled 7x6 bitboard GameSpec (docs/GAMES-PLATFORM-SPEC.md).
 //
 // Codec 'col4': a move is a single column digit '1'..'7' ('1' = leftmost
-// column). Gravity is implicit — the disc lands on the lowest empty row.
+// column). Gravity is implicit. The disc lands on the lowest empty row.
 //
 // Bitboard layout (the classic 7-rows-per-column trick): bit = col * 7 + row,
 // row 0 = bottom. Each column has a 7th (always empty) sentinel bit so the
@@ -109,7 +109,7 @@ export const CONNECT4_SPEC: GameSpec<Connect4State> = {
     return { capture: false, sound: 'move' }
   },
   /** Notation = the LANDING SQUARE 'd4' (column letter a–g + landing rank 1–6,
-   *  rank 1 at the bottom) — the codec's bare column digit tells a reader
+   *  rank 1 at the bottom). The codec's bare column digit tells a reader
    *  nothing about height. Documented kernel-wide in GameSpec.notate. */
   notate(s: Connect4State, move: string): string {
     if (!/^[1-7]$/.test(move)) return move

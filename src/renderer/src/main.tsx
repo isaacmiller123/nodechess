@@ -35,7 +35,7 @@ const params =
 const wantMock = params !== null && !window.api && params.has('mock')
 
 // Dev harness for the shared 3D tabletop (games/three/**): `?three=<kind>`
-// mounts the demo INSTEAD of the app (code-split — the three.js bundle never
+// mounts the demo INSTEAD of the app (code-split, the three.js bundle never
 // loads otherwise). See features/games/Three3DDemo.tsx.
 const threeDemoKind = params?.get('three') ?? null
 
@@ -75,7 +75,7 @@ if (threeDemoKind !== null) {
 }
 
 // Packaged-app CSP/WASM self-test (`?smoke-wasm=1`, set by main for the
-// --smoke-wasm launch — see smokeWasm.ts). Runs IN ADDITION to the normal
+// --smoke-wasm launch: see smokeWasm.ts). Runs IN ADDITION to the normal
 // mount above; code-split so the probe never loads in a real session.
 if (params?.has('smoke-wasm')) {
   import('./smokeWasm').then((m) => m.runSmokeWasm())

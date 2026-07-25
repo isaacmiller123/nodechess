@@ -97,7 +97,7 @@ const saveSchema = z.object({
 })
 
 export function registerReviewRoutes(app: FastifyInstance, api: Api, auth: AuthStore): void {
-  // Long games carry ~1 KB per ply of PV/comment data — allow more than the
+  // Long games carry ~1 KB per ply of PV/comment data. Allow more than the
   // 1 MiB default for this one route.
   app.post('/api/review/save', { bodyLimit: 8 * 1024 * 1024 }, async (req, reply) => {
     const user = requireUser(auth, req, reply)

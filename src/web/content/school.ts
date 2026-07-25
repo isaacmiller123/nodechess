@@ -2,7 +2,7 @@
 // school:chapters / school:chapter.
 //
 // The chapter FILES are the same JSON the desktop main process reads. What the
-// desktop does on top of them — decide which chapters are unlocked — is
+// desktop does on top of them (decide which chapters are unlocked) is
 // reproduced here from src/main/school/school.repo.ts chapterMetas(), because
 // that decision is progress-dependent and progress now lives on the client.
 //
@@ -31,7 +31,7 @@ interface ChapterIndexEntry {
 
 /** What the unlock rule needs to know about the learner. The web app has no
  *  server to ask, so the caller (webApi) assembles this from whatever local
- *  progress exists — today: placement is the gate and nothing is placed. */
+ *  progress exists, today: placement is the gate and nothing is placed. */
 export interface SchoolProgressView {
   placed: boolean
   estimatedElo: number | null
@@ -62,7 +62,7 @@ function index(): Promise<ChapterIndexEntry[]> {
  *
  * A chapter is UNLOCKED when the learner is placed AND either its eloFloor is
  * within the placement estimate, OR the PREVIOUS chapter is itself within the
- * estimate and cleared — so finishing your top chapter opens the next one, one
+ * estimate and cleared, so finishing your top chapter opens the next one, one
  * step above your placement. "Cleared" = completed, or its test passed, or all
  * its lessons done. Keep this in lockstep with school.repo.chapterMetas(): the
  * chain-link's within-estimate condition is load-bearing (spec §1), not an
@@ -97,7 +97,7 @@ export async function chapterMetas(progress: SchoolProgressView): Promise<School
 }
 
 /** Full chapter by id (segments, steps, coach lines), or null when unknown.
- *  eloFloor is stripped — spec §2.2a. */
+ *  eloFloor is stripped. Spec §2.2a. */
 export async function getChapter(id: string): Promise<SchoolChapter | null> {
   const known = await index()
   if (!known.some((c) => c.id === id)) return null

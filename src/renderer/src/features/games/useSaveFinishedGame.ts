@@ -1,12 +1,12 @@
 // One hook, five surfaces: archive every finished games-tab game
 // (KernelOtb/KernelBot, VariantOtb/VariantBot, editor PlayCustom) to the game
-// table — the platform foundation that makes every mode reviewable. The
+// table: the platform foundation that makes every mode reviewable. The
 // online/chess paths keep their own richer save flows (onlineStore.saveFinished,
 // PlayView.finishGame); this hook covers the LOCAL surfaces that used to drop
 // finished games on the floor.
 //
 // Mechanics: every kernel state carries its full move history, and states are
-// immutable — so the hook watches the live state, captures each fresh game's
+// immutable, so the hook watches the live state, captures each fresh game's
 // START state (moves.length === 0 ⇒ new game, also re-arming the save latch),
 // and on the first non-null result encodes the archive envelope
 // (games/archive.ts: verbatim codec moves + notateGame notation + replay
@@ -35,7 +35,7 @@ interface StateWithMoves {
 }
 
 /** `spec` may be null while a surface is still loading its rules engine
- *  (PlayCustom registers dynamically) — the hook is then inert, keeping the
+ *  (PlayCustom registers dynamically): the hook is then inert, keeping the
  *  call unconditional above early returns (hooks-before-returns, CLAUDE.md). */
 export function useSaveFinishedGame<S>(
   spec: GameSpec<S> | null,
@@ -63,7 +63,7 @@ export function useSaveFinishedGame<S>(
     if (!spec || !result || savedRef.current || state === null || startRef.current === null) return
     const moves = (state as StateWithMoves).moves ?? []
     if (moves.length === 0) return // a start position that is already terminal
-    savedRef.current = true // latched even on failure — never re-fire per game
+    savedRef.current = true // latched even on failure: never re-fire per game
     const n = namingRef.current
     const pgn = archiveFinishedGame({
       spec,

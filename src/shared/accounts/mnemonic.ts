@@ -1,7 +1,7 @@
-// Mnemonic + keyfile export — the lifeline (spec §1 recovery = none by
+// Mnemonic + keyfile export: the lifeline (spec §1 recovery = none by
 // design, C-5; params: BIP39 24 words encoding the 32-byte argon2id seed).
 //
-// NOTE this is entropyToMnemonic/mnemonicToEntropy — a bit-exact encoding of
+// NOTE this is entropyToMnemonic/mnemonicToEntropy, a bit-exact encoding of
 // the seed itself. It is NOT bip39's PBKDF2 seed stretch (mnemonicToSeed):
 // the argon2 seed goes in verbatim and comes back verbatim.
 import { entropyToMnemonic, mnemonicToEntropy, validateMnemonic } from '@scure/bip39'
@@ -31,11 +31,11 @@ export function mnemonicToSeed(words: string): Uint8Array {
 }
 
 // ---------------------------------------------------------------------------
-// Keyfile (plaintext by design — it IS the lifeline; UI copy states it plainly)
+// Keyfile (plaintext by design: it IS the lifeline; UI copy states it plainly)
 //
 // `kind` keeps its pre-rebrand spelling: keyfileSchema below matches it as a
 // literal, so renaming it would make every keyfile a user has already saved
-// fail to import — and a keyfile is the only way back into a lost account.
+// fail to import, and a keyfile is the only way back into a lost account.
 // Accepting a new spelling means accepting both, not swapping one for the other.
 // ---------------------------------------------------------------------------
 

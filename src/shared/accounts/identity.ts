@@ -1,4 +1,4 @@
-// Display identity — name#TAG (spec §1). TAG is self-derived from the root
+// Display identity, name#TAG (spec §1). TAG is self-derived from the root
 // pubkey fingerprint: no registry, no squatting; collisions disambiguate by
 // tag. Platform-neutral, deterministic.
 import { sha256, toBase32 } from './hash'
@@ -20,7 +20,7 @@ const TAG_RE = new RegExp(`^[A-Za-z2-7]{${TAG_LEN}}$`)
 /**
  * Parse 'name#TAG' → { name, tag } (tag canonicalized to uppercase), or null
  * if the shape is invalid: not exactly one '#', name outside 3–24 chars, or
- * tag not TAG_LEN base32 chars. The name is NOT normalized here — callers
+ * tag not TAG_LEN base32 chars. The name is NOT normalized here. Callers
  * feed it to normalizeUsername when they need the folded form.
  */
 export function parseHandle(s: string): { name: string; tag: string } | null {

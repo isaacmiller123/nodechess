@@ -49,7 +49,7 @@ function StrengthRow({
           <Icon size={16} aria-hidden />
           <span className="strength-label">{label}</span>
         </div>
-        <div className="strength-num muted">—</div>
+        <div className="strength-num muted">·</div>
         <div className="strength-band muted small">Not rated yet</div>
       </div>
     )

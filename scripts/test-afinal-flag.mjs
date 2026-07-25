@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// A-final switch suite (ACCOUNTS-SPEC §14 — lane 5, A6).
+// A-final switch suite (ACCOUNTS-SPEC §14: lane 5, A6).
 //
 //   node scripts/test-afinal-flag.mjs
 //
@@ -14,7 +14,7 @@
 //   - content plane (healthz, /api/ipc app:ping, statics) unaffected either
 //     way; /api/review stays a normal 401 (persistence plane, never 410).
 //   - default tiers: shipped bundles (build-server.mjs define) default ON;
-//     ad-hoc bundles without the define default OFF — the exact invariant
+//     ad-hoc bundles without the define default OFF: the exact invariant
 //     that keeps test-web-auth/-bridge/-server green untouched; env
 //     ACCOUNTS_DECENTRALIZED=0/1 overrides both ways (reversible flip).
 // Synthetic fixtures only; servers bind 127.0.0.1 on ephemeral ports.
@@ -41,7 +41,7 @@ function check(name, cond) {
 }
 
 // ---------------------------------------------------------------------------
-// Part A — pure resolution + gating functions (no server)
+// Part A: pure resolution + gating functions (no server)
 // ---------------------------------------------------------------------------
 
 const pureEntry = path.join(dir, 'pure-entry.mjs')
@@ -130,7 +130,7 @@ check('module constant: ACCOUNTS_DECENTRALIZED defaults true', W.ACCOUNTS_DECENT
 check("module constant: ACCOUNT_SYSTEM = 'decentralized'", W.ACCOUNT_SYSTEM === 'decentralized')
 
 // ---------------------------------------------------------------------------
-// Part B — the REAL server (test-web-auth harness style)
+// Part B: the REAL server (test-web-auth harness style)
 // ---------------------------------------------------------------------------
 
 // Fixture SPA root (the server refuses to boot without an index.html).
@@ -138,8 +138,8 @@ const webRoot = path.join(dir, 'dist-web')
 mkdirSync(webRoot, { recursive: true })
 writeFileSync(path.join(webRoot, 'index.html'), '<!doctype html><title>fixture</title>SPA-SHELL')
 
-// Bundle the server twice — SHIPPED (with the build-server.mjs define) and
-// AD-HOC (without, exactly how the pre-A-final suites bundle it) — plus the
+// Bundle the server twice: SHIPPED (with the build-server.mjs define) and
+// AD-HOC (without, exactly how the pre-A-final suites bundle it), plus the
 // real ipc bridge so the interim lifecycle + content plane are exercised.
 const serverShipped = path.join(dir, 'shipped', 'server.cjs')
 const serverAdhoc = path.join(dir, 'adhoc', 'server.cjs')
@@ -176,7 +176,7 @@ async function startServer(serverOut, envOverrides = {}) {
       HOST: '127.0.0.1',
       WEB_ROOT: webRoot,
       DATA_DIR: dataDir,
-      PUZZLES_PATH: path.join(dir, 'no-puzzles.sqlite'), // absent — degrades, irrelevant here
+      PUZZLES_PATH: path.join(dir, 'no-puzzles.sqlite'), // absent. Degrades, irrelevant here
       RESOURCES_ROOT: path.join(repoRoot, 'resources'),
       LOG_LEVEL: 'silent',
       NODE_ENV: 'development',
@@ -327,5 +327,5 @@ if (failures > 0) {
   console.error(`${failures}/${asserts} assertions FAILED`)
   process.exit(1)
 }
-console.log(`ALL GREEN — ${asserts} assertions (A-final flag: shipped default ON, ` +
+console.log(`ALL GREEN, ${asserts} assertions (A-final flag: shipped default ON, ` +
   `interim 410-gated, env-reversible, content plane untouched)`)

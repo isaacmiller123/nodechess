@@ -1,52 +1,52 @@
-// A6 M5 (lane L-t2) — LIVE ANTICHEAT Tier-2: the deterministic escalation
+// A6 M5 (lane L-t2), LIVE ANTICHEAT Tier-2: the deterministic escalation
 // trigger → Tier-2 deep analysis → 5σ conviction → self-ban appended BEFORE any
 // further witnessed event → verdict rows published/adopted over the running
 // AccountPeer overlay (spec §8 escalation/conviction, §9 ban term).
 //
 // The whole Tier-2 substrate is ALREADY BUILT + tested and this module
-// REIMPLEMENTS NONE OF IT — it COMPOSES it onto a live overlay node, exactly as
+// REIMPLEMENTS NONE OF IT: it COMPOSES it onto a live overlay node, exactly as
 // shardDuty.ts composes the §5 storage substrate and pinClient.ts composes the
 // §1 committee substrate:
 //
-//   · judge/tier2.ts    — escalationDue (the deterministic §8 trigger + the 5σ
+//   · judge/tier2.ts:     escalationDue (the deterministic §8 trigger + the 5σ
 //                         conviction report), makeTier2Verdict (reproducible
 //                         signed verdict), makeSelfBanPayload / selfBanExpiryWts
 //                         (§8 deadline / §9 term), selfBanDueNow (the gate).
-//   · judge/embed.ts    — banDeadline (the conviction-anchored §8 deadline min),
+//   · judge/embed.ts:     banDeadline (the conviction-anchored §8 deadline min),
 //                         suppressionScan (the read-time chain-side auditor),
 //                         publishVerdictRow / adoptVerdictRowJudge (A5-33 bind).
-//   · judge/transport.ts— the A3-overlay WRITE/READ index for verdict rows:
+//   · judge/transport.ts, the A3-overlay WRITE/READ index for verdict rows:
 //                         makeVerdictStoreValidator (+ merge), publishVerdicts,
 //                         fetchVerdictRow, verdictEvidence (adopt → §8 scan →
 //                         the injected pairingLegal/displayState ban input).
 //
 // The renderer-hosted layers here are:
-//   1. makeVerdictDutyGate  — the overlay STORE-ACCEPT gate for kind-'record'
+//   1. makeVerdictDutyGate:   the overlay STORE-ACCEPT gate for kind-'record'
 //      verdict rows (transport's makeVerdictStoreValidator), composed over the
 //      M3 storage gate so ONE validator/merge gates every kind. The lead hands
 //      {validator, merge} to startAccountPeer (see notesForLead).
-//   2. assessEscalation     — run the deterministic trigger on OUR OWN
+//   2. assessEscalation:      run the deterministic trigger on OUR OWN
 //      chain-derived rated-game window (the L-t1 judgeRunner/fold seam supplies
 //      the games + Tier1Records + closed-window zs); classify honest / escalate
 //      (3σ, deeper analysis only) / convicted (5σ, the ban anchor).
-//   3. buildConvictionVerdict + buildSelfBan — on OUR 5σ conviction, the
+//   3. buildConvictionVerdict + buildSelfBan: on OUR 5σ conviction, the
 //      reproducible verdict record over the convicting window + the §8/§9
 //      self-ban payload that references its digest.
-//   4. publishVerdictRows / fetchAndAdoptVerdicts / fetchBanEvidence — the live
+//   4. publishVerdictRows / fetchAndAdoptVerdicts / fetchBanEvidence. The live
 //      overlay put/get: publish OUR conviction under the accused key; adopt +
 //      re-verify OTHERS' rows (judge-anchor-pinned); run suppressionScan on a
 //      subject's chain to surface the injected ban evidence.
-//   5. createVerdictClient  — an app-lifetime controller the lead starts on
+//   5. createVerdictClient.   An app-lifetime controller the lead starts on
 //      sign-in: it self-audits our ladders, publishes+self-bans on conviction,
-//      and — critically — GATES every further witnessed append behind the §8
+//      and: critically: GATES every further witnessed append behind the §8
 //      self-ban (guardBeforeWitnessed), degrading honestly when the ban cannot
 //      yet be witnessed. The un-fixtured FairPlayTab/SelfBanDialog (lane L-ui)
 //      read its honest state.
 //
-// Honest degradation (spec C-8/§0): every scarcity — signed out, no peer, no
-// reachable carrier, no lease to witness the self-ban — is a typed NO-OP, never
+// Honest degradation (spec C-8/§0): every scarcity, signed out, no peer, no
+// reachable carrier, no lease to witness the self-ban, is a typed NO-OP, never
 // a crash and NEVER a false ban (a 3σ escalation obliges deeper analysis, never
-// a self-ban; only the deterministic 5σ conviction ever grounds one — A5-21).
+// a self-ban; only the deterministic 5σ conviction ever grounds one, A5-21).
 //
 // PLATFORM-SPECIFIC renderer hosting (it drives a live OverlayNode); every byte
 // is A5/A7 crypto from @shared, so src/shared/accounts stays pure. Clocks, the
@@ -123,7 +123,7 @@ export interface VerdictDutyGate {
  * verdict rows): a kind-'record' value shaped like a verdict row is accepted
  * only when every record passes the full context-free verification AND binds to
  * tier2VerdictKey(accusedRoot) === target; non-verdict values fall through to
- * `base`. Nothing here reimplements a verifier — it wires the one the transport
+ * `base`. Nothing here reimplements a verifier: it wires the one the transport
  * suite already proved, composing it over the M3 storage gate so the peer runs
  * ONE validator/merge for every kind (see notesForLead).
  */
@@ -139,11 +139,11 @@ export function makeVerdictDutyGate(opts: VerdictDutyGateOpts = {}): VerdictDuty
 }
 
 // ---------------------------------------------------------------------------
-// 2. The accused-side self-audit — the deterministic escalation trigger (§8)
+// 2. The accused-side self-audit: the deterministic escalation trigger (§8)
 // ---------------------------------------------------------------------------
 
 /**
- * One ladder's chain-derived Tier-2 window inputs — the L-t1 judgeRunner / a4
+ * One ladder's chain-derived Tier-2 window inputs: the L-t1 judgeRunner / a4
  * fold seam (INJECTED, never derived here). `games` is the ladder's
  * chain-ordered rated-game list with the accused's color + strength (elo/RD)
  * ENTERING each game; `records` are the Tier-1 outputs judgeRunner produced for
@@ -158,7 +158,7 @@ export interface LadderAudit {
   ladder: string
   games: readonly LadderGameRef[]
   records: ReadonlyMap<string, Tier1Record>
-  /** Closed salted windows' zMicro (chain order) — enables the lifetime arm. */
+  /** Closed salted windows' zMicro (chain order). Enables the lifetime arm. */
   closedWindowZs?: readonly number[]
   /** The partition-holding caller's map from a convicting closed-window count W
    *  to the chain ordinal b(W)−1 (banDeadline's lifetime-arm resolver). Required
@@ -168,7 +168,7 @@ export interface LadderAudit {
   anchors?: Tier2Anchors
 }
 
-/** honest = no trigger; escalate = 3σ (deeper analysis obliged, NEVER a ban —
+/** honest = no trigger; escalate = 3σ (deeper analysis obliged, NEVER a ban:
  *  A5-21); convicted = 5σ (the §8 self-ban / suppression anchor). */
 export type Disposition = 'honest' | 'escalate' | 'convicted'
 
@@ -188,7 +188,7 @@ export interface EscalationAssessment {
  * aggregate ≥ 3σ (escalation) and, independently, the earliest lifetime prefix
  * that escalates; each arm is ALSO scanned for the 5σ conviction line. On a
  * conviction, banDeadline resolves the §8 deadline anchor (the earliest firing
- * by chain ordinal — conviction-anchored ONLY, so an escalation-only verdict
+ * by chain ordinal: conviction-anchored ONLY, so an escalation-only verdict
  * never yields a deadline). Deterministic given (chain bytes, Tier1Records, salt
  * reveals). Throws only on a MALFORMED window (escalationDue/banDeadline fail
  * closed: an unjudged rated game is itself non-compliance, §8).
@@ -212,9 +212,9 @@ export function assessEscalation(audit: LadderAudit): EscalationAssessment {
 
 /** THE §8 gate condition, as a pure predicate (selfBanDueNow): once a conviction
  *  has fired on our chain and no self-ban for it has been appended, our NEXT
- *  witnessed-lane event MUST be the self-ban — appending ANY other witnessed
+ *  witnessed-lane event MUST be the self-ban. Appending ANY other witnessed
  *  event first is exactly what a suppression record proves. Escalation alone
- *  (3σ) never returns true (an honest player is never banned — A5-21). */
+ *  (3σ) never returns true (an honest player is never banned; A5-21). */
 export function selfBanBlocksWitnessed(assessment: EscalationAssessment, selfBanAppended: boolean): boolean {
   return selfBanDueNow({ escalation: assessment.verdict, selfBanAppended })
 }
@@ -236,7 +236,7 @@ export interface VerdictSigner {
 
 /** The convicting window sliced out for the verdict record. */
 export interface ConvictionWindow {
-  /** Metadata window index (informational — never verification-load-bearing).
+  /** Metadata window index (informational: never verification-load-bearing).
    *  For a trailing-K conviction, floor(ordinal / reganK). */
   window: number
   /** The window's entries (the reganK games ending at the conviction ordinal). */
@@ -257,7 +257,7 @@ function toEntry(g: LadderGameRef, records: ReadonlyMap<string, Tier1Record>): W
 /**
  * Slice the convicting window out of the audit for the verdict record. A
  * trailing-K conviction at chain ordinal `deadline.ordinal` names the full
- * reganK window ending there (games[ordinal−K+1 .. ordinal]) — exactly the
+ * reganK window ending there (games[ordinal−K+1 .. ordinal]), exactly the
  * window escalationDue aggregated. The lifetime arm names a SALTED window
  * (ordinal b(W)−1) whose entries the partition-holding embedder must supply; we
  * fail closed rather than guess it (the trailing-K arm is the primary path and
@@ -284,7 +284,7 @@ export interface BuildVerdictOpts {
   /** The computing party's witnessed-time claim (ranking/expiry math upstream). */
   verdictWts: number
   /** 'verdict' (default) or 'suppression' (needs deadlineEvent + a fired
-   *  conviction — the builder refuses a sub-5σ suppression). */
+   *  conviction. The builder refuses a sub-5σ suppression). */
   kind?: 'verdict' | 'suppression'
   /** SUPPRESSION only: the first witnessed-lane event after the completing game. */
   deadlineEvent?: B64u
@@ -356,7 +356,7 @@ export function buildSelfBan(o: { verdict: Tier2VerdictRecord; convictionWts: nu
  * slot (transport.publishVerdicts → embed.publishVerdictRow builds + key-binds
  * the row, then ONE overlay put offers it to the replicateK closest carriers,
  * each re-verifying through its own gate). Returns the slot key + the number of
- * true stores (0 is honest degradation: no reachable carrier — the conviction
+ * true stores (0 is honest degradation: no reachable carrier; the conviction
  * stays recomputable from chain bytes regardless). Throws (Tier2InputError) only
  * on builder misuse (empty recs / mixed accused roots).
  */
@@ -377,7 +377,7 @@ export interface AdoptVerdictsResult {
  * Fetch a subject's merged verdict row over the live overlay and adopt it
  * through the A5-33 judge-anchor-pinned path (fetchVerdictRow →
  * adoptVerdictRowJudge): EVERY record is re-verified against the caller's own
- * chain-derived window inputs (`entriesFor` — return null when a window is
+ * chain-derived window inputs (`entriesFor`. Return null when a window is
  * unavailable and that record is REJECTED, never adopted unverified, §0), and
  * only records computed under TIER2_ANCHORS_JUDGE are accepted. A missing row is
  * a typed no-adopt, never a throw.
@@ -402,8 +402,8 @@ export interface BanEvidenceResult {
 /**
  * The composed READ path for pairing/display (transport.verdictEvidence):
  * fetch the merged row, adopt it (judge-pinned), and run the §8 suppressionScan
- * on the subject's ALREADY-VERIFIED chain for every adopted 5σ-window-conviction
- * — surfacing the injected `ban` evidence (permanent on a proven suppression,
+ * on the subject's ALREADY-VERIFIED chain for every adopted 5σ-window-conviction,
+ * surfacing the injected `ban` evidence (permanent on a proven suppression,
  * §9) for displayState / pairingLegal. A 3σ escalation record, a sub-conviction
  * record, and a lifetime-only conviction all inject NOTHING (A5-21 + §0: the ban
  * rests on the reader's OWN recomputed window + its own chain-side absence scan,
@@ -449,7 +449,7 @@ export function scanChainForSuppression(
 export type VerdictClientPhase =
   | 'signed-out' // no controller live
   | 'clear' // every audited ladder honest
-  | 'flagged' // ≥1 ladder escalated (3σ) — deeper analysis only, NEVER a ban
+  | 'flagged' // ≥1 ladder escalated (3σ): deeper analysis only, NEVER a ban
   | 'convicted' // ≥1 ladder convicted (5σ), self-ban not yet witnessed
   | 'self-banned' // the §8 self-ban has been appended for every conviction
 
@@ -504,11 +504,11 @@ export interface VerdictClientDeps {
   getNode: () => OverlayNodeExt | null
   /** The computing party's signer (deviceSigningKey + chain certs), or null. */
   signer: () => VerdictSigner | null
-  /** The chain-derived Tier-2 window inputs for each of OUR rated ladders — the
+  /** The chain-derived Tier-2 window inputs for each of OUR rated ladders. The
    *  L-t1 judgeRunner / a4 fold seam. Empty ⇒ nothing to audit. */
   ladderAudits: () => Promise<readonly LadderAudit[]> | readonly LadderAudit[]
   /** Append the §8 self-ban on the WITNESSED lane (the lead wires
-   *  clientAppendWitnessed under the live lease + witness set — like the segment
+   *  clientAppendWitnessed under the live lease + witness set. Like the segment
    *  publisher). Returns whether it landed; an unwitnessable ban stays owed. */
   appendSelfBan: (build: SelfBanBuild) => Promise<{ ok: boolean; reason?: string }>
   /** Whether OUR chain already carries a self-ban for `ladder` (read from the a4
@@ -589,8 +589,8 @@ export function createVerdictClient(deps: VerdictClientDeps): VerdictClientHandl
     if (assessment.disposition !== 'convicted' || assessment.deadline === null)
       return { ladder: audit.ladder, disposition: assessment.disposition, deadline: assessment.deadline, selfBanAppended: false, verdictStored: 0 }
 
-    // 5σ conviction: build the reproducible verdict, publish it, and — unless a
-    // self-ban is already on our chain — append the §8 self-ban.
+    // 5σ conviction: build the reproducible verdict, publish it, and. Unless a
+    // self-ban is already on our chain. Append the §8 self-ban.
     const alreadyBanned = hasSelfBan(audit.ladder)
     let verdictStored = 0
     let selfBanAppended = alreadyBanned
@@ -616,7 +616,7 @@ export function createVerdictClient(deps: VerdictClientDeps): VerdictClientHandl
           const res = await deps.appendSelfBan(build)
           selfBanAppended = res.ok
           if (res.ok) log(`self-audit ${audit.ladder}: §8 self-ban appended (verdict ${build.verdictDigest.slice(0, 10)}…)`)
-          else log(`self-audit ${audit.ladder}: self-ban owed but not witnessed (${res.reason ?? 'unavailable'}) — witnessed writes wait (C-10)`)
+          else log(`self-audit ${audit.ladder}: self-ban owed but not witnessed (${res.reason ?? 'unavailable'}): witnessed writes wait (C-10)`)
         }
       } catch (e) {
         log(`self-audit ${audit.ladder}: conviction handling failed (${e instanceof Error ? e.message : String(e)})`)
@@ -690,7 +690,7 @@ export function subscribeVerdictClient(fn: () => void): () => void {
   }
 }
 
-/** The current verdict-client state — the singleton's, or the honest signed-out
+/** The current verdict-client state: the singleton's, or the honest signed-out
  *  default when none is live (no fixture, ever). */
 export function getVerdictClientState(): VerdictClientState {
   return singleton ? singleton.getState() : SIGNED_OUT_STATE

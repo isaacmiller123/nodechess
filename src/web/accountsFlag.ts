@@ -13,10 +13,10 @@
 //
 // The default is ON unconditionally: a build flips OFF only via an explicit
 // VITE_ACCOUNTS_DECENTRALIZED=0|false|off at vite build time. An unset or
-// unrecognized value stays ON — garbage never silently reverts the flip.
+// unrecognized value stays ON, garbage never silently reverts the flip.
 
 /** Parse one flag token; undefined = unset/unrecognized. Same grammar as
- *  server/afinal.ts parseFlagToken — keep them in lockstep. */
+ *  server/afinal.ts parseFlagToken. Keep them in lockstep. */
 export function parseFlagToken(raw: unknown): boolean | undefined {
   if (typeof raw === 'boolean') return raw
   if (typeof raw !== 'string') return undefined

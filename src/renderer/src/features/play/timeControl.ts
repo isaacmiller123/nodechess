@@ -1,4 +1,4 @@
-// Time-control model for Play. Pure data + tiny helpers — no React, no window.api.
+// Time-control model for Play. Pure data + tiny helpers: no React, no window.api.
 //
 // A TimeControl is either Unlimited (no clock) or a base/increment pair given in
 // the familiar "base+inc" chess notation (minutes base, seconds increment).
@@ -19,7 +19,7 @@ export interface TimeControl {
 const MIN = 60_000
 const SEC = 1_000
 
-// Curated presets — the lichess-style chip row. Unlimited stays the default so
+// Curated presets: the lichess-style chip row. Unlimited stays the default so
 // the no-clock experience is unchanged unless the user opts in. Order matters:
 // it is the visual order of the chips in TimeControlPicker.
 export const TIME_CONTROLS: TimeControl[] = [
@@ -53,8 +53,8 @@ export function isTimed(tc: TimeControl): boolean {
 
 // ---- Lichess-style CUSTOM step curves ---------------------------------------
 // The picker's custom sliders are index sliders over these arrays (not linear
-// ms sliders), so the low end has fine control and the high end takes big steps
-// — exactly lichess's feel.
+// ms sliders), so the low end has fine control and the high end takes big steps.
+// Exactly lichess's feel.
 
 /** Base-time steps in MINUTES (lichess "Minutes per side" curve). */
 export const CUSTOM_BASE_MINUTES: number[] = [

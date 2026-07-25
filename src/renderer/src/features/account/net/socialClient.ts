@@ -1,4 +1,4 @@
-// A6 M4 (lanes L-presence-mail + L-friends) — the LIVE social surface over the
+// A6 M4 (lanes L-presence-mail + L-friends): the LIVE social surface over the
 // AccountPeer overlay (spec §3 friendships, §10 presence/mailbox/anti-spam, C-3).
 // This is the renderer-hosted BODY around the pure, tested social transport in
 // src/shared/accounts/social/{transport,presence,mailbox,friends,edgeStrength}.ts:
@@ -6,7 +6,7 @@
 // mailbox RELAY for others, sends/drains store-and-forward mail with the §10
 // anti-spam quotas enforced end-to-end, and drives the §3 friend
 // request→countersigned-consent handshake over that mailbox. NO crypto and NO
-// admission/eviction logic is reimplemented here — every primitive is imported
+// admission/eviction logic is reimplemented here. Every primitive is imported
 // from the shared substrate and reused VERBATIM (createSocialRelay /
 // publishSocialPresence / fetchSocialPresence / sendSocialMail /
 // drainSocialMailbox / makeFriendRequestMail / makeFriendConsentMail /
@@ -19,18 +19,18 @@
 // Two layers, exactly the M4 pinClient shape:
 //   1. PURE, fabric/overlay-injected orchestration (installSocialRelay /
 //      publishOwnPresence / fetchPresence / sendFriendRequest / syncMailbox /
-//      consentToRequest / adoptConsent) — thin wrappers the headless suite
+//      consentToRequest / adoptConsent): thin wrappers the headless suite
 //      drives directly over a MockFabric network of real account peers.
 //   2. A UI-facing app-lifetime CONTROLLER (createSocialClient) + singleton the
 //      lead starts on sign-in next to the account peer; the un-fixtured
 //      PeopleTab reads its reactive state (useSocialClient / getSocialClientState)
 //      and drives it (runSendFriendRequest / runAcceptRequest / runSyncMailbox …).
-//      With no peer / signed out it reports an HONEST empty state — never a
+//      With no peer / signed out it reports an HONEST empty state, never a
 //      fixture, never a dead control.
 //
 // PLATFORM-SPECIFIC renderer hosting; src/shared/accounts stays pure. Presence,
 // mail envelopes, drain requests and friend halves are ALL account-ROOT-signed,
-// so — exactly like pinClient — the account root signer is INJECTED (never
+// so (exactly like pinClient) the account root signer is INJECTED (never
 // re-derived here): the suite passes a test root, production wires
 // `rootSigningKey()` via setSocialRootSignerProvider (see notesForLead). Clocks
 // are injected, defaulting to Date.now (renderer glue is where wall-clock lives);
@@ -72,13 +72,13 @@ import { getAccountPeer, type AccountPeer } from './peerService'
 
 // ---------------------------------------------------------------------------
 // Injected account-root signer (spec §3/§10: presence, mail envelopes, drain
-// requests and friend halves are all root-signed — same discipline as pinClient)
+// requests and friend halves are all root-signed, same discipline as pinClient)
 // ---------------------------------------------------------------------------
 
 /** The account root key material this client signs presence, mail envelopes,
  * drain requests and friend halves with. In production this is a
  * `rootSigningKey()` accessor on the web session (mirrors deviceSigningKey but
- * returns the root child — the SAME LEAD HOOK pinClient needs; see notesForLead);
+ * returns the root child: the SAME LEAD HOOK pinClient needs; see notesForLead);
  * in the suite it is a test keypair. `rootPriv` never leaves the client. */
 export interface SocialRootSigner {
   root: B64u
@@ -97,15 +97,15 @@ export function setSocialRootSignerProvider(fn: SocialRootSignerProvider | null)
 }
 
 // ---------------------------------------------------------------------------
-// Constants (C-3 coordination cadence — presence is ephemeral, §4/§11)
+// Constants (C-3 coordination cadence: presence is ephemeral, §4/§11)
 // ---------------------------------------------------------------------------
 
-/** Self-declared presence lifetime, ms — kept inside PARAMS_SOCIAL_PRESENCE's
+/** Self-declared presence lifetime, ms: kept inside PARAMS_SOCIAL_PRESENCE's
  * ttlMaxMs cap (5 min) so verifiers never refuse it; the controller re-announces
  * well inside this (heartbeat below). */
 export const SOCIAL_PRESENCE_TTL_MS = 240_000
 /** Production heartbeat: re-publish presence every 60 s (a live tab must refresh
- * it before the ttl lapses). Off by default — suites stay timer-free. */
+ * it before the ttl lapses). Off by default: suites stay timer-free. */
 export const SOCIAL_HEARTBEAT_MS = 60_000
 /** Production mailbox poll: drain relays every 45 s so requests arrive while the
  * recipient is online. Off by default. */
@@ -116,14 +116,14 @@ export const SOCIAL_SYNC_MS = 45_000
 // ===========================================================================
 
 export interface InstallRelayOpts {
-  /** Injected clock (ms) — stamps mail arrivals + drain windows. */
+  /** Injected clock (ms). Stamps mail arrivals + drain windows. */
   now: () => number
   /** The §10 edge fold the relay prioritizes with. Default:
    * makeChainEdgeProvider over `chainOf`. A missing/unverifiable chain folds to
-   * edge 0 inside the fold (fail closed) — safe, just no priority for that root. */
+   * edge 0 inside the fold (fail closed). Safe, just no priority for that root. */
   edgeMicroOf?: EdgeMicroProvider
   /** The relay's view of reconstructed chains (its C-1 cache / the overlay
-   * storage layer) — the source makeChainEdgeProvider derives edges from.
+   * storage layer). The source makeChainEdgeProvider derives edges from.
    * Default: `() => null` (every edge folds to 0: rate/cap/fair-share still hold;
    * see notesForLead to wire this to the live reconstruction cache). */
   chainOf?: (root: B64u) => Chain | null
@@ -135,7 +135,7 @@ export interface InstallRelayOpts {
  * Install THIS node's mailbox relay on its fabric endpoint (spec §10): every
  * signed-in client relays for others, exactly as every client is an eligible
  * witness/committee member (peerService). The relay calls the pure mailboxAdmit/
- * mailboxDrain at its boundary VERBATIM — this wrapper only supplies the clock
+ * mailboxDrain at its boundary VERBATIM: this wrapper only supplies the clock
  * and the edge fold. Registers `social-mail-send` / `social-mail-drain` handlers
  * (additive, disjoint from the overlay/witness/member kinds already served).
  */
@@ -153,7 +153,7 @@ export function installSocialRelay(fabric: FabricEndpoint, opts: InstallRelayOpt
  * Publish this account's presence claim to the overlay (spec §10). Root-signs a
  * fresh {status, ts, ttl} body (signSocialPresence) and stores it to the
  * replicateK closest nodes, each re-verifying through its own gate. Returns the
- * number of true stores (0 = no relays reachable yet — honest, not an error).
+ * number of true stores (0 = no relays reachable yet; honest, not an error).
  */
 export function publishOwnPresence(
   node: OverlayNode,
@@ -174,7 +174,7 @@ export function publishOwnPresence(
 
 /**
  * Fetch + verify a root's presence at witnessed time `nowWts`, projected to the
- * status enum. null-or-expired reads as 'offline' (fail closed) — there is no
+ * status enum. null-or-expired reads as 'offline' (fail closed). There is no
  * negative presence claim and no authority (C-3).
  */
 export async function fetchPresence(
@@ -188,7 +188,7 @@ export async function fetchPresence(
 
 /**
  * Offer a §3 friend REQUEST to `peerRoot` over the mailbox (survives an offline
- * recipient — the relays hold it until the recipient next syncs). The half rides
+ * recipient: the relays hold it until the recipient next syncs). The half rides
  * under the account ROOT key (key === selfRoot, no certs needed) and the
  * envelope is root-signed; both are makeFriendRequestMail's job. Refusals are
  * honest degradation in the returned per-relay outcomes.
@@ -235,7 +235,7 @@ export function sendFriendConsent(o: {
  * Sync this account's mailbox: sign one root-authenticated drain request and
  * union its relays' verified boxes, in the §10 priority order (established +
  * earliest first). Each returned DrainedMail is re-verified against this root by
- * the substrate — a malicious relay can drop/reorder but never inject.
+ * the substrate: a malicious relay can drop/reorder but never inject.
  */
 export function syncMailbox(o: {
   fabric: FabricEndpoint
@@ -250,7 +250,7 @@ export function syncMailbox(o: {
   })
 }
 
-/** Read a drained mail as a verified friend REQUEST half (or null — wrong kind,
+/** Read a drained mail as a verified friend REQUEST half (or null; wrong kind,
  * forged, cross-pair-replayed, or third-party-smuggled all fail closed here). */
 export function readRequestHalf(m: DrainedMail): FriendHalf | null {
   return readFriendMail(m.mail, MAIL_KIND_FRIEND_REQUEST)
@@ -265,7 +265,7 @@ export function readConsentHalf(m: DrainedMail): FriendHalf | null {
  * CONSENT step (recipient of a request): validate the requester's half against
  * SELF and return the FriendPayload the recipient appends to ITS OWN chain (the
  * witnessed-lane 'friend' add). null = the half does not verify / does not bind
- * to self. The returned payload is guaranteed to satisfy verifyFriendAdd — the
+ * to self. The returned payload is guaranteed to satisfy verifyFriendAdd, the
  * "countersigned + verifies" property is structural, not asserted.
  */
 export function consentToRequest(request: FriendHalf, selfRoot: B64u): FriendPayload | null {
@@ -298,22 +298,22 @@ export function priorityOfEdge(edgeMicro: number): MailPriority {
 export type SocialClientPhase =
   | 'signed-out' // no controller / no root signer available
   | 'no-peer' // signed in but the account peer isn't up
-  | 'live' // peer up — presence/mailbox/friends over the live overlay
+  | 'live' // peer up: presence/mailbox/friends over the live overlay
 
 export type FriendPresence = SocialStatus | 'offline'
 
 /** One friend row: a countersigned edge in the OWN chain (friendsOf fold), with
  * live presence overlaid. `label` is a short root handle until a name resolves
- * (see resolveName) — never a fabricated display name. */
+ * (see resolveName). Never a fabricated display name. */
 export interface SocialFriendView {
   root: B64u
   label: string
   /** Resolved display name (best-effort, via resolveName), or null. */
   name: string | null
   presence: FriendPresence
-  /** Every §3 edge carries two signatures — folded adds are countersigned. */
+  /** Every §3 edge carries two signatures. Folded adds are countersigned. */
   countersigned: boolean
-  /** Author-claimed ts of the deciding 'friend' add (display metadata only —
+  /** Author-claimed ts of the deciding 'friend' add (display metadata only;
    * the fold's height is the ordering authority), or null. */
   since: number | null
 }
@@ -337,7 +337,7 @@ export interface SocialClientState {
   status: SocialStatus
   friends: SocialFriendView[]
   requests: SocialRequestView[]
-  /** Relays that admitted this account's last presence publish — the honest
+  /** Relays that admitted this account's last presence publish, the honest
    * "mailbox reachable" signal (0 ⇒ the social surface is degraded, not broken). */
   presenceReplicas: number
   busy: 'idle' | 'syncing' | 'sending' | 'accepting' | 'refreshing'
@@ -367,7 +367,7 @@ export interface StartSocialClientOpts {
   /** Load this account's own chain (for the friendsOf fold). Default: none →
    * the friends list stays empty (honest) until the lead wires loadOwnChain. */
   loadChain?: () => Promise<Chain | null>
-  /** Append a witnessed-lane 'friend' add/remove to the own chain — the §3
+  /** Append a witnessed-lane 'friend' add/remove to the own chain. The §3
    * countersigned edge write. Wired by the lead to the M2 lease+appendWitnessed
    * path (returns true once it lands). Absent ⇒ the edge is still countersigned
    * and mailed, and the UI reports the honest "writes when a witness is
@@ -401,7 +401,7 @@ export interface SocialClientHandle {
   sendRequest(peerRoot: B64u): Promise<SendResult>
   /** Accept an incoming request by mail id (countersign + mail consent back). */
   acceptRequest(id: string): Promise<SendResult>
-  /** Decline an incoming request (drop it locally — ephemeral, C-3). */
+  /** Decline an incoming request (drop it locally; ephemeral, C-3). */
   declineRequest(id: string): void
   /** Remove a friend (unilateral signed witnessed event, §3). */
   removeFriend(peerRoot: B64u): Promise<SendResult>
@@ -431,14 +431,14 @@ export function createSocialClient(opts: StartSocialClientOpts): SocialClientHan
   let syncing = false
   // A STRICTLY-monotonic drain timestamp per client: the relay refuses a drain
   // whose ts is ≤ the last it accepted for this recipient (replay protection), so
-  // two syncs inside one wall-clock ms — or under a coarse/frozen test clock —
+  // two syncs inside one wall-clock ms (or under a coarse/frozen test clock)
   // would have the second refused. Bumping past the last used ts keeps every
   // real sync effective while preserving the substrate's replay guard.
   let lastDrainTs = 0
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined
   let syncTimer: ReturnType<typeof setInterval> | undefined
 
-  // Roots we have an outstanding OUTGOING request to — a consent from one of
+  // Roots we have an outstanding OUTGOING request to. A consent from one of
   // these auto-adopts into an edge; a "consent" from anyone else is treated as
   // an incoming request (substrate rule: an unsolicited signed half IS a request).
   const pendingOutgoing = new Set<B64u>()
@@ -478,7 +478,7 @@ export function createSocialClient(opts: StartSocialClientOpts): SocialClientHan
   }
 
   /** Ensure this node's relay is installed on the live peer fabric (idempotent
-   * per fabric — a peer swap re-installs). */
+   * per fabric. A peer swap re-installs). */
   const ensureRelay = (peer: AccountPeer): void => {
     if (relay && relayFabric === peer.fabric) return
     relay?.close()
@@ -583,7 +583,7 @@ export function createSocialClient(opts: StartSocialClientOpts): SocialClientHan
             if (landed) pendingOutgoing.delete(consent.from)
           }
         } else {
-          // An unsolicited signed half is, per the substrate, a REQUEST — surface it.
+          // An unsolicited signed half is, per the substrate, a REQUEST, surface it.
           recordIncoming(dm, consent)
         }
       }
@@ -595,9 +595,9 @@ export function createSocialClient(opts: StartSocialClientOpts): SocialClientHan
   }
 
   const recordIncoming = (dm: DrainedMail, half: FriendHalf): void => {
-    // Already a confirmed friend? Then this is a duplicate/stale request — ignore.
+    // Already a confirmed friend? Then this is a duplicate/stale request. Ignore.
     if (state.friends.some((f) => f.root === half.from)) return
-    // Key by the canonical mail id (sha256 of the envelope) — collision-free and
+    // Key by the canonical mail id (sha256 of the envelope). Collision-free and
     // stable across re-drains, the action handle the UI accepts against.
     incoming.set(mailId(dm.mail.body), {
       from: half.from,
@@ -608,7 +608,7 @@ export function createSocialClient(opts: StartSocialClientOpts): SocialClientHan
   }
 
   /** Append a friend edge via the injected witnessed-write hook (honest false
-   * when no hook / no witness — the caller degrades, never crashes). */
+   * when no hook / no witness. The caller degrades, never crashes). */
   const appendEdge = async (payload: FriendPayload, peerRoot: B64u): Promise<boolean> => {
     if (!opts.appendFriendEdge) return false
     try {
@@ -764,7 +764,7 @@ export function subscribeSocialClient(fn: () => void): () => void {
   }
 }
 
-/** The current social-client state — the singleton's, or the honest signed-out
+/** The current social-client state: the singleton's, or the honest signed-out
  * default when none is live (a stable reference between changes, for
  * useSyncExternalStore; NEVER a fixture). */
 export function getSocialClientState(): SocialClientState {

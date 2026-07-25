@@ -1,15 +1,15 @@
-// THE A6-M5 LANE (L-t2) SUITE — LIVE TIER-2 ANTICHEAT over a MockFabric overlay
+// THE A6-M5 LANE (L-t2) SUITE: LIVE TIER-2 ANTICHEAT over a MockFabric overlay
 // (spec §8 escalation/conviction, §9 ban term). Module:
 //   src/renderer/src/features/account/net/verdictClient.ts
 //
 //   node scripts/test-accounts-verdict-client.mjs
 //
 // verdictClient COMPOSES the frozen Tier-2 substrate (judge/{tier2,embed,
-// transport}.ts — all proven in test-accounts-tier2/embed/verdict-transport)
+// transport}.ts: all proven in test-accounts-tier2/embed/verdict-transport)
 // onto a LIVE AccountPeer overlay; it reimplements no crypto, so this suite
 // proves the WIRING end to end, fabric-suite style, exactly as it runs in the
 // browser:
-//   1. assessEscalation — the deterministic §8 trigger on OUR own chain-derived
+//   1. assessEscalation. The deterministic §8 trigger on OUR own chain-derived
 //      window: a blatant window CONVICTS (5σ, deadline resolved), an honest
 //      window is clear, a metering window ESCALATES (3σ) but is NEVER convicted
 //      (A5-21: escalation obliges deeper analysis, never a ban);
@@ -23,7 +23,7 @@
 //   4. suppressionScan / verdictEvidence over the live overlay: a kept-playing
 //      accused is SUPPRESSED (permanent ban injected), a compliant self-ban
 //      discharges (no ban), a not-yet-due accused is pending;
-//   5. createVerdictClient — the controller self-audits, publishes + self-bans
+//   5. createVerdictClient: the controller self-audits, publishes + self-bans
 //      on conviction, and GATES a further witnessed append behind the §8
 //      self-ban (guardBeforeWitnessed), degrading honestly when the ban cannot
 //      be witnessed; an honest/escalated account never blocks and never bans.
@@ -71,7 +71,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -132,7 +132,7 @@ async function run(M) {
   const selfSigner = { root: accused.pubB, key: accused.pubB, priv: accused.priv }
 
   // ==========================================================================
-  console.log('\n· 1. assessEscalation — the deterministic §8 trigger (pure) …')
+  console.log('\n· 1. assessEscalation, the deterministic §8 trigger (pure) …')
   // ==========================================================================
   const convAudit = makeAudit(accused.pubB, 'cheat', ...BLATANT)
   const honestAudit = makeAudit(accused.pubB, 'fair', ...HONEST)
@@ -182,7 +182,7 @@ async function run(M) {
   eq(sb.payload.expiryWts, sb.expiryWts, '… carried in the payload')
 
   // ==========================================================================
-  console.log('\n· 3. THE LIVE SLICE — publish → fetch → adopt over a 16-node overlay …')
+  console.log('\n· 3. THE LIVE SLICE. Publish → fetch → adopt over a 16-node overlay …')
   // ==========================================================================
   const fabric = new W.MockFabric()
   const mkNode = (tag, kp = kpOf(`vc-ov-${tag}`)) => {
@@ -219,7 +219,7 @@ async function run(M) {
   // §0: the SAME row refuted by an honest player's real inputs adopts NOTHING.
   const honestEntries = win.entries.map((e) => ({ ...e, rec: mkRec(e.rec.game, ...HONEST) }))
   const adRefute = await VC.fetchAndAdoptVerdicts({ node: peerNode.node, subjectRoot: accused.pubB, entriesFor: () => honestEntries })
-  eq(adRefute.adopt.ok, false, '§0: mismatched (honest) inputs refute the z claim — nothing adopts (no forgery)')
+  eq(adRefute.adopt.ok, false, '§0: mismatched (honest) inputs refute the z claim. Nothing adopts (no forgery)')
   eq(adRefute.adopt.adopted.length, 0, '… zero records adopted on refutation')
 
   // An HONEST window is NEVER published: its slot is empty over the network.
@@ -231,7 +231,7 @@ async function run(M) {
   // ==========================================================================
   console.log('\n· 4. suppressionScan / verdictEvidence over the live overlay …')
   // ==========================================================================
-  // Synthetic accused chains (chain-shaped for the §8 absence scan — it consumes
+  // Synthetic accused chains (chain-shaped for the §8 absence scan; it consumes
   // the reader's ALREADY-VERIFIED chain; sigs are verifyChain's, not the scan's).
   const mkChain = (root) => {
     let h = 0
@@ -284,7 +284,7 @@ async function run(M) {
   }
   {
     // A COMPLIANT accused: real 5σ window, but the next witnessed event IS the
-    // self-ban — §0: no suppression, no injected ban (the fold owns the term).
+    // self-ban, §0: no suppression, no injected ban (the fold owns the term).
     const compliantAccused = kpOf('vc-compliant')
     const cSigner = { root: compliantAccused.pubB, key: compliantAccused.pubB, priv: compliantAccused.priv }
     const cAudit = makeAudit(compliantAccused.pubB, 'cc', ...BLATANT)
@@ -299,12 +299,12 @@ async function run(M) {
       entriesFor: (rec) => (rec.body.root === compliantAccused.pubB ? cWin.entries : null), chainEvents: chainC,
     })
     eq(evC.evidence.adopt.adopted.length, 1, 'the compliant client’s own conviction adopts (public data)')
-    eq(evC.evidence.ladders[LAD]?.suppressed, false, '§0: the reader’s scan finds the COMPLIANT self-ban — no suppression')
+    eq(evC.evidence.ladders[LAD]?.suppressed, false, '§0: the reader’s scan finds the COMPLIANT self-ban, no suppression')
     eq(T.banEvidenceOf(evC.evidence, LAD), undefined, '… so transport injects NO ban (an honest self-banned client is not defamed)')
   }
 
   // ==========================================================================
-  console.log('\n· 5. createVerdictClient — the self-audit + §8 witnessed-append gate …')
+  console.log('\n· 5. createVerdictClient, the self-audit + §8 witnessed-append gate …')
   // ==========================================================================
   // A mock witnessed self-ban APPEND seam (the lead wires clientAppendWitnessed
   // under the live lease). It records what it was asked to append.

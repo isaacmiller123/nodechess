@@ -11,7 +11,7 @@ export interface ViktorPanelProps {
   children?: React.ReactNode
   /** When true, Viktor is intentionally silent (e.g. during the boss game). */
   silent?: boolean
-  /** When true, Viktor is working (engine thinking, debrief loading) — an
+  /** When true, Viktor is working (engine thinking, debrief loading). An
    *  animated ellipsis replaces the line. */
   thinking?: boolean
   /** Explicit mood accent on the card. When absent it is derived from the
@@ -25,7 +25,7 @@ export interface ViktorPanelProps {
 const PLEASED_RE =
   /^(good\b|yes\b|precisely|exactly|correct\b|well played|a clean win|the win is yours|strong work|solved|acceptable|sound enough|playable|reasonable)/i
 const STERN_RE =
-  /^(no\b|no[ —,]|that is a blunder|a mistake|careless|not the cleanest|not quite|not yet|stop\.|you lost the thread|you were not watching|wrong\b|hm\.)/i
+  /^(no\b|no[ ,]|that is a blunder|a mistake|careless|not the cleanest|not quite|not yet|stop\.|you lost the thread|you were not watching|wrong\b|hm\.)/i
 
 /** Derive a tone from Viktor's line (after any "Move 12." debrief prefix). */
 export function deriveViktorTone(text: string): ViktorTone {
@@ -35,7 +35,7 @@ export function deriveViktorTone(text: string): ViktorTone {
   return 'neutral'
 }
 
-/** Hand-drawn Viktor: stern old-school master — bald, grey beard, spectacles.
+/** Hand-drawn Viktor: stern old-school master. Bald, grey beard, spectacles.
  *  Single-color line art in currentColor so it inherits the avatar chip's
  *  token-driven color in both themes. */
 function ViktorPortrait(): JSX.Element {
@@ -60,7 +60,7 @@ function ViktorPortrait(): JSX.Element {
       {/* ears */}
       <path d="M20.4 28.6 C18 28.4 17.6 32.8 20.9 33.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <path d="M43.6 28.6 C46 28.4 46.4 32.8 43.1 33.4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      {/* stern brows — angled down toward the bridge, clear of the rims */}
+      {/* stern brows: angled down toward the bridge, clear of the rims */}
       <path d="M21.4 22.8 L28.2 25" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
       <path d="M42.6 22.8 L35.8 25" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
       {/* spectacles */}
@@ -104,9 +104,9 @@ function Dots(): JSX.Element {
  * The lesson instruction card (chess.com-Lessons style): Viktor's portrait and
  * title at the top, the teaching line as the body (with a fast text-reveal when
  * it changes), and a pinned action footer. The card border tints by Viktor's
- * mood — pleased or stern — when one is set or derivable from the line.
+ * mood (pleased or stern) when one is set or derivable from the line.
  */
-/** Characters revealed per 16ms tick — fast enough to never drag on long lines,
+/** Characters revealed per 16ms tick: fast enough to never drag on long lines,
  *  slow enough that Viktor visibly SPEAKS rather than pasting a slide. */
 const TYPE_CHARS_PER_TICK = 3
 
@@ -206,7 +206,7 @@ export function ViktorPanel({
             </p>
           ) : silent ? (
             <p className="lesson-text muted">
-              Viktor watches in silence. Play your game — we talk after.
+              Viktor watches in silence. Play your game. We talk after.
             </p>
           ) : line ? (
             // aria-label carries the FULL line so screen readers never wait on

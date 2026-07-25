@@ -3,18 +3,18 @@
  "band": "32",
  "order": 32,
  "title": "Attacking with Opposite-Side Castling",
- "subtitle": "When the kings sit on opposite wings, the game becomes a race — storm, sacrifice, and don't blink",
+ "subtitle": "When the kings sit on opposite wings, the game becomes a race. Storm, sacrifice, and don't blink",
  "estMinutes": 52,
  "concepts": [
   {
    "id": "pawn-storm",
    "name": "The pawn storm",
-   "short": "When your king is on the other wing, your pawns are free to charge the enemy king — push them to rip open his shelter."
+   "short": "When your king is on the other wing, your pawns are free to charge the enemy king. Push them to rip open his shelter."
   },
   {
    "id": "the-race",
    "name": "The race (count the tempi)",
-   "short": "Both sides attack; whoever's storm lands FIRST wins. Don't defend — count moves and make sure you're one ahead."
+   "short": "Both sides attack; whoever's storm lands FIRST wins. Don't defend. Count moves and make sure you're one ahead."
   },
   {
    "id": "open-the-file",
@@ -24,7 +24,7 @@
   {
    "id": "sac-the-shield",
    "name": "Sacrificing to strip the shield",
-   "short": "Give up a piece to demolish the pawns in front of the enemy king — the bare king is worth more than the material."
+   "short": "Give up a piece to demolish the pawns in front of the enemy king. The bare king is worth more than the material."
   },
   {
    "id": "defend-under-fire",
@@ -37,19 +37,19 @@
    "id": "l1-why-storm",
    "title": "Opposite Wings, Opposite Plans",
    "kind": "concept",
-   "summary": "With kings castled on opposite sides, your attacking pawns no longer expose your own king — so you storm.",
+   "summary": "With kings castled on opposite sides, your attacking pawns no longer expose your own king, so you storm.",
    "segments": [
     {
      "kind": "teach",
      "title": "Why the storm is free",
      "intro": {
-      "text": "Everything in this chapter follows from one fact. When both kings castle the SAME side, pushing the pawns in front of your king to attack would expose your own king too — so you hesitate. When the kings sit on OPPOSITE wings, that brake is gone. Your kingside pawns can charge the enemy king while your own king sleeps safely on the queenside, and his queenside pawns charge yours. The game becomes a pure race."
+      "text": "Everything in this chapter follows from one fact. When both kings castle the SAME side, pushing the pawns in front of your king to attack would expose your own king too, so you hesitate. When the kings sit on OPPOSITE wings, that brake is gone. Your kingside pawns can charge the enemy king while your own king sleeps safely on the queenside, and his queenside pawns charge yours. The game becomes a pure race."
      },
      "steps": [
       {
        "fen": "r2q1rk1/pp1bppbp/2np1np1/8/3NP3/1BN1BP2/PPPQ2PP/2KR3R w - - 0 11",
        "coach": {
-        "text": "A textbook opposite-castled middlegame — the Sicilian Dragon. White's king is on c1 (castled long); Black's is on g8 (castled short). Now look at the pawns. White's h- and g-pawns sit far from his own king on c1, so he can throw them at Black's king with no risk to himself. Black's a- and b-pawns sit far from his king on g8, so he storms the queenside. Each side attacks where the ENEMY king lives, using the pawns their OWN king doesn't need.",
+        "text": "A textbook opposite-castled middlegame: the Sicilian Dragon. White's king is on c1 (castled long); Black's is on g8 (castled short). Now look at the pawns. White's h- and g-pawns sit far from his own king on c1, so he can throw them at Black's king with no risk to himself. Black's a- and b-pawns sit far from his king on g8, so he storms the queenside. Each side attacks where the ENEMY king lives, using the pawns their OWN king doesn't need.",
         "annotations": [
          {
           "kind": "highlight",
@@ -82,7 +82,7 @@
       {
        "fen": "r2q1rk1/p2bppbp/2np1np1/1p6/3NP2P/1BN1BP2/PPPQ2P1/2KR3R w - b6 0 13",
        "coach": {
-        "text": "A few moves on. White has played h4 (heading for h5 to crack open the h-file), Black has played ...b5 (heading for ...b4 to drive my knight from c3 and open the b-file). Neither side spends a tempo on defence — every pawn move is a punch. This is the heart of the chapter: when the kings are split, you do not trade blows, you race. The slow defender gets mated first.",
+        "text": "A few moves on. White has played h4 (heading for h5 to crack open the h-file), Black has played ...b5 (heading for ...b4 to drive my knight from c3 and open the b-file). Neither side spends a tempo on defence. Every pawn move is a punch. This is the heart of the chapter: when the kings are split, you do not trade blows, you race. The slow defender gets mated first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -116,13 +116,13 @@
      "kind": "guided",
      "title": "Pick the storming pawn",
      "intro": {
-      "text": "Your king is on c1. Black's is on g8. Start the storm — push the pawn that attacks his king without weakening yours."
+      "text": "Your king is on c1. Black's is on g8. Start the storm. Push the pawn that attacks his king without weakening yours."
      },
      "steps": [
       {
        "fen": "r2q1rk1/pp1bppbp/2np1np1/8/3NP3/1BN1BP2/PPPQ2PP/2KR3R w - - 0 11",
        "coach": {
-        "text": "Which pawn lunge opens a road to g8? Push it one square — the lever that leads to h5 and the h-file. (Either the h- or g-pawn begins the storm; lead with the h-pawn.)",
+        "text": "Which pawn lunge opens a road to g8? Push it one square. The lever that leads to h5 and the h-file. (Either the h- or g-pawn begins the storm; lead with the h-pawn.)",
         "annotations": [
          {
           "kind": "highlight",
@@ -144,11 +144,11 @@
         "g2g4"
        ],
        "successLine": {
-        "text": "Good — h4 (or g4) begins the storm. Your king on c1 feels none of it. Next comes h5, prising open the h-file straight at his king. Pawns farthest from your own king do the attacking.",
+        "text": "Good: h4 (or g4) begins the storm. Your king on c1 feels none of it. Next comes h5, prising open the h-file straight at his king. Pawns farthest from your own king do the attacking.",
         "conceptId": "pawn-storm"
        },
        "retryLine": {
-        "text": "Defend nothing — attack. The pawns far from YOUR king (the h- and g-pawns) are the ones to throw at his king on g8. Push the h-pawn.",
+        "text": "Defend nothing. Attack. The pawns far from YOUR king (the h- and g-pawns) are the ones to throw at his king on g8. Push the h-pawn.",
         "conceptId": "pawn-storm"
        }
       }
@@ -158,7 +158,7 @@
      "kind": "puzzle",
      "title": "Cool-down: feel the kingside attack",
      "intro": {
-      "text": "A first taste of the finish these storms create. The enemy king's shelter is already cracked — find the blow that exploits it."
+      "text": "A first taste of the finish these storms create. The enemy king's shelter is already cracked. Find the blow that exploits it."
      },
      "puzzle": {
       "themes": [
@@ -173,21 +173,21 @@
   },
   {
    "id": "l2-the-race",
-   "title": "The Race — Count the Tempi",
+   "title": "The Race: Count the Tempi",
    "kind": "concept",
-   "summary": "Both kings are under fire. The win goes to whoever arrives first — so count moves and never waste one defending.",
+   "summary": "Both kings are under fire. The win goes to whoever arrives first, so count moves and never waste one defending.",
    "segments": [
     {
      "kind": "teach",
      "title": "One tempo decides everything",
      "intro": {
-      "text": "In a same-side game a slow move costs you a little space. In an opposite-castled race a slow move costs you the GAME, because the other king is burning at the same rate. The discipline is brutal: count how many moves YOUR attack needs to land, count how many HIS needs, and make sure you're ahead. If you're ahead, don't touch your own defence — keep punching."
+      "text": "In a same-side game a slow move costs you a little space. In an opposite-castled race a slow move costs you the GAME, because the other king is burning at the same rate. The discipline is brutal: count how many moves YOUR attack needs to land, count how many HIS needs, and make sure you're ahead. If you're ahead, don't touch your own defence. Keep punching."
      },
      "steps": [
       {
        "fen": "2r2rk1/pp1bppbp/3p1np1/q5B1/3NP2P/2N2P2/PPPQ2P1/1K1R3R w - - 0 16",
        "coach": {
-        "text": "Count. White needs h5, then hxg6 to pry open the h-file and bring the rook crashing in — a couple of clean moves to real danger. Black's queen on a5 eyes a2, his rook is on the open c-file, his break is ...b5-b4. He looks fast. But it is WHITE to move, and the storm is one tempo further along. The instinct to fear is going PASSIVE — drifting, shuffling, defending threats that aren't there yet — because that hands Black the initiative. Feed your attack: push.",
+        "text": "Count. White needs h5, then hxg6 to pry open the h-file and bring the rook crashing in. A couple of clean moves to real danger. Black's queen on a5 eyes a2, his rook is on the open c-file, his break is ...b5-b4. He looks fast. But it is WHITE to move, and the storm is one tempo further along. The instinct to fear is going PASSIVE (drifting, shuffling, defending threats that aren't there yet) because that hands Black the initiative. Feed your attack: push.",
         "annotations": [
          {
           "kind": "arrow",
@@ -220,7 +220,7 @@
       {
        "fen": "2r2rk1/pp1bppbp/3p1np1/q5BP/3NP3/2N2P2/PPPQ2P1/1K1R3R b - - 0 16",
        "coach": {
-        "text": "h5! The lever sets up hxg6 to tear open the h-file, with the rook on h1 already loaded behind it. White spent his tempo ATTACKING, not on a nervous shuffle. The rule to carve into memory: when your storm is faster, keep feeding it — a single prophylactic move can be right, but PASSIVITY never is. Punch first, ask questions never.",
+        "text": "h5! The lever sets up hxg6 to tear open the h-file, with the rook on h1 already loaded behind it. White spent his tempo ATTACKING, not on a nervous shuffle. The rule to carve into memory: when your storm is faster, keep feeding it. A single prophylactic move can be right, but PASSIVITY never is. Punch first, ask questions never.",
         "annotations": [
          {
           "kind": "highlight",
@@ -242,15 +242,15 @@
     },
     {
      "kind": "guided",
-     "title": "Don't blink — keep racing",
+     "title": "Don't blink: keep racing",
      "intro": {
-      "text": "You are ahead in the race. The board tempts you to spend a move on king safety. Refuse it — play the move that drives your attack forward."
+      "text": "You are ahead in the race. The board tempts you to spend a move on king safety. Refuse it: play the move that drives your attack forward."
      },
      "steps": [
       {
        "fen": "2r2rk1/pp1bppbp/3p1np1/q5B1/3NP2P/2N2P2/PPPQ2P1/1K1R3R w - - 0 16",
        "coach": {
-        "text": "Black threatens ideas on the queenside, but it is your move and your storm is faster. Play the pawn lever that tears open the h-file — do NOT retreat the king.",
+        "text": "Black threatens ideas on the queenside, but it is your move and your storm is faster. Play the pawn lever that tears open the h-file. Do NOT retreat the king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -271,11 +271,11 @@
         "h4h5"
        ],
        "successLine": {
-        "text": "h5! The lever drives at g6 to pry open the h-file, and your rook on h1 is already loaded behind it. You spent your tempo on the ATTACK and kept the initiative — that is how you stay ahead in the race.",
+        "text": "h5! The lever drives at g6 to pry open the h-file, and your rook on h1 is already loaded behind it. You spent your tempo on the ATTACK and kept the initiative. That is how you stay ahead in the race.",
         "conceptId": "the-race"
        },
        "retryLine": {
-        "text": "Drifting into passive shuffling hands Black the initiative and his queenside storm rolls. When your attack is faster, feed it — push h5 to open lines at his king.",
+        "text": "Drifting into passive shuffling hands Black the initiative and his queenside storm rolls. When your attack is faster, feed it. Push h5 to open lines at his king.",
         "conceptId": "the-race"
        }
       }
@@ -301,9 +301,9 @@
   },
   {
    "id": "l3-open-the-file",
-   "title": "Open the File — the Pawn Lever",
+   "title": "Open the File, the Pawn Lever",
    "kind": "tactics",
-   "summary": "A storm that doesn't open a line is just a pawn walk. The lever — a pawn that trades — is what gives your rooks a road in.",
+   "summary": "A storm that doesn't open a line is just a pawn walk. The lever (a pawn that trades) is what gives your rooks a road in.",
    "segments": [
     {
      "kind": "teach",
@@ -343,7 +343,7 @@
       {
        "fen": "2r2rk1/pp1bpp1p/3p1nP1/6B1/3NP3/2N2P2/PPPQ2P1/1K1R3R b - - 0 18",
        "coach": {
-        "text": "hxg6 played. After ...hxg6, the h-file is wide open and Rh8 hits down it at the king; after ...fxg6, Black's king loses the f7-pawn and the long diagonal and f-file open up. Either recapture wrecks the shelter. Without this lever the rook on h1 was a spectator — the trade turned it into the executioner. THIS is why we storm: not to push wood, but to force a file open.",
+        "text": "hxg6 played. After ...hxg6, the h-file is wide open and Rh8 hits down it at the king; after ...fxg6, Black's king loses the f7-pawn and the long diagonal and f-file open up. Either recapture wrecks the shelter. Without this lever the rook on h1 was a spectator. The trade turned it into the executioner. THIS is why we storm: not to push wood, but to force a file open.",
         "annotations": [
          {
           "kind": "highlight",
@@ -367,13 +367,13 @@
      "kind": "guided",
      "title": "Play the lever",
      "intro": {
-      "text": "Your storm has reached the enemy's pawns. Don't admire it — fire the lever that opens a file at his king."
+      "text": "Your storm has reached the enemy's pawns. Don't admire it. Fire the lever that opens a file at his king."
      },
      "steps": [
       {
        "fen": "2r2rk1/pp1bpp1p/3p1np1/6BP/3NP3/2N2P2/PPPQ2P1/1K1R3R w - - 0 18",
        "coach": {
-        "text": "The h-pawn on h5 meets g6. Capture — force a recapture and open a road for your rook on h1.",
+        "text": "The h-pawn on h5 meets g6. Capture. Force a recapture and open a road for your rook on h1.",
         "annotations": [
          {
           "kind": "arrow",
@@ -392,7 +392,7 @@
         "conceptId": "open-the-file"
        },
        "retryLine": {
-        "text": "Don't just push or reposition — the pawn has to TRADE to open the line. Take on g6.",
+        "text": "Don't just push or reposition. The pawn has to TRADE to open the line. Take on g6.",
         "conceptId": "open-the-file"
        }
       }
@@ -420,19 +420,19 @@
    "id": "l4-sac-the-shield",
    "title": "Sacrifice to Strip the Shield",
    "kind": "tactics",
-   "summary": "When a file or diagonal is one pawn from opening, give up material to blow that pawn away — the bare king repays you.",
+   "summary": "When a file or diagonal is one pawn from opening, give up material to blow that pawn away, the bare king repays you.",
    "segments": [
     {
      "kind": "teach",
      "title": "Material for a naked king",
      "intro": {
-      "text": "The storm has done its work and only the enemy king's last pawns stand between you and mate. This is where the pawn lever graduates into the PIECE sacrifice: you give up a rook, a knight, even the queen, to tear the final pawn away and drag the king into the open. The rule from the sacrifice chapter still governs — only sacrifice if the king truly cannot survive. Here is a clean one."
+      "text": "The storm has done its work and only the enemy king's last pawns stand between you and mate. This is where the pawn lever graduates into the PIECE sacrifice: you give up a rook, a knight, even the queen, to tear the final pawn away and drag the king into the open. The rule from the sacrifice chapter still governs: only sacrifice if the king truly cannot survive. Here is a clean one."
      },
      "steps": [
       {
        "fen": "r1b2rk1/ppp2ppp/2np4/b5q1/2B5/BN2RQ2/P4PPP/R5K1 w - - 10 18",
        "coach": {
-        "text": "White's rook on e3 and bishop on c4 are aimed at the king on g8; the only thing in the way is the f7-pawn and the rook on f8 guarding the back rank. The quiet approach gets nowhere. But Qxf7+! rips out the shield pawn WITH check. Black must give up the rook — …Rxf7 — and the f8-rook is dragged off the back rank. (The king-flight …Kh8 loses on the spot to Qxf8#.)",
+        "text": "White's rook on e3 and bishop on c4 are aimed at the king on g8; the only thing in the way is the f7-pawn and the rook on f8 guarding the back rank. The quiet approach gets nowhere. But Qxf7+! rips out the shield pawn WITH check. Black must give up the rook (…Rxf7) and the f8-rook is dragged off the back rank. (The king-flight …Kh8 loses on the spot to Qxf8#.)",
         "annotations": [
          {
           "kind": "arrow",
@@ -460,7 +460,7 @@
       {
        "fen": "r1b3k1/ppp2rpp/2np4/b5q1/2B5/BN2R3/P4PPP/R5K1 w - - 0 19",
        "coach": {
-        "text": "Re8+! and it is mate — the rook arrives on the back rank, the bishop on c4 covers f7 so the king cannot run, and the rook on f7 had to leave g8's only guard. A whole queen for a forced mate. That is the trade you make when the king is one pawn from naked: count to the mate FIRST, then give whatever it costs.",
+        "text": "Re8+! and it is mate. The rook arrives on the back rank, the bishop on c4 covers f7 so the king cannot run, and the rook on f7 had to leave g8's only guard. A whole queen for a forced mate. That is the trade you make when the king is one pawn from naked: count to the mate FIRST, then give whatever it costs.",
         "annotations": [
          {
           "kind": "arrow",
@@ -490,13 +490,13 @@
      "kind": "guided",
      "title": "Tear the shield away",
      "intro": {
-      "text": "The king's last pawn is all that holds. You have checked to the end and it mates. Pay the price — sacrifice."
+      "text": "The king's last pawn is all that holds. You have checked to the end and it mates. Pay the price, sacrifice."
      },
      "steps": [
       {
        "fen": "r1b2rk1/ppp2ppp/2np4/b5q1/2B5/BN2RQ2/P4PPP/R5K1 w - - 10 18",
        "coach": {
-        "text": "The bishop on c4 and rook on e3 already point at g8. Remove the f7-pawn with check and deflect the f8-rook — the mate is Re8 next.",
+        "text": "The bishop on c4 and rook on e3 already point at g8. Remove the f7-pawn with check and deflect the f8-rook. The mate is Re8 next.",
         "annotations": [
          {
           "kind": "arrow",
@@ -521,7 +521,7 @@
         "conceptId": "sac-the-shield"
        },
        "retryLine": {
-        "text": "Slow moves let Black consolidate. The f7-pawn is the shield — blow it off WITH CHECK so Black must recapture and abandon g8. Take on f7 with the queen.",
+        "text": "Slow moves let Black consolidate. The f7-pawn is the shield. Blow it off WITH CHECK so Black must recapture and abandon g8. Take on f7 with the queen.",
         "conceptId": "sac-the-shield"
        }
       }
@@ -531,7 +531,7 @@
      "kind": "puzzle",
      "title": "Cool-down: pay to open the king",
      "intro": {
-      "text": "Each needs a sacrifice that demolishes the king's cover. Confirm the follow-up is mating before you give the material — then give it."
+      "text": "Each needs a sacrifice that demolishes the king's cover. Confirm the follow-up is mating before you give the material. Then give it."
      },
      "puzzle": {
       "themes": [
@@ -555,13 +555,13 @@
      "kind": "teach",
      "title": "Don't hand him a hook",
      "intro": {
-      "text": "Half of opposite-castling is being on the receiving end. The losing reflex is to 'make luft' by pushing the pawns in front of your king — ...h6, ...g6 — exactly the pawns the storm wants to hit. Every pawn you push is a HOOK: a target his h- or g-pawn can lever against to rip the file open a move sooner. Three defensive laws: (1) keep your shield pawns STILL, (2) trade off his attacking pieces, (3) answer a wing storm with a blow in the CENTRE."
+      "text": "Half of opposite-castling is being on the receiving end. The losing reflex is to 'make luft' by pushing the pawns in front of your king (...h6, ...g6) exactly the pawns the storm wants to hit. Every pawn you push is a HOOK: a target his h- or g-pawn can lever against to rip the file open a move sooner. Three defensive laws: (1) keep your shield pawns STILL, (2) trade off his attacking pieces, (3) answer a wing storm with a blow in the CENTRE."
      },
      "steps": [
       {
        "fen": "r1bq1rk1/pp2ppbp/2np1np1/8/3NP3/2N1BP2/PPPQ2PP/2KR1B1R b - - 4 9",
        "coach": {
-        "text": "The Sicilian Dragon, Yugoslav Attack — you are Black, about to be stormed. White's king is on c1, and h4-h5 with hxg6 is coming to crack your king on g8. The reflex ...h6 or ...g6 only hands White a hook to lever the file open faster. Instead, hit the CENTRE while his king sits on c1: ...d5! The pawn strikes the e4-pawn — the head of White's centre — and frees the bishop on c8. This is THE thematic Dragon break, and it is Black's strongest move here.",
+        "text": "The Sicilian Dragon, Yugoslav Attack. You are Black, about to be stormed. White's king is on c1, and h4-h5 with hxg6 is coming to crack your king on g8. The reflex ...h6 or ...g6 only hands White a hook to lever the file open faster. Instead, hit the CENTRE while his king sits on c1: ...d5! The pawn strikes the e4-pawn (the head of White's centre) and frees the bishop on c8. This is THE thematic Dragon break, and it is Black's strongest move here.",
         "annotations": [
          {
           "kind": "arrow",
@@ -596,7 +596,7 @@
       {
        "fen": "r1bq1rk1/pp2ppbp/2n3p1/3n4/3N4/2N1BP2/PPPQ2PP/2KR1B1R w - - 0 11",
        "coach": {
-        "text": "...d5 exd5 Nxd5 reached. By opening the centre Black has forced trades exactly where White's king lives. The knight stands proud on d5 hitting the c3-knight and the e3-bishop; the c8-bishop is unleashed; the c-file is half-open toward c1. White's kingside storm has lost its target — Black has changed the subject and is the one striking near the enemy king now. The centre counter blunts the attack AND fuels a counter-storm. Defence here is not passive; it is a faster punch through the middle.",
+        "text": "...d5 exd5 Nxd5 reached. By opening the centre Black has forced trades exactly where White's king lives. The knight stands proud on d5 hitting the c3-knight and the e3-bishop; the c8-bishop is unleashed; the c-file is half-open toward c1. White's kingside storm has lost its target. Black has changed the subject and is the one striking near the enemy king now. The centre counter blunts the attack AND fuels a counter-storm. Defence here is not passive; it is a faster punch through the middle.",
         "annotations": [
          {
           "kind": "highlight",
@@ -627,7 +627,7 @@
      "kind": "guided",
      "title": "Counter in the centre",
      "intro": {
-      "text": "You're Black, the h-pawn is coming. Don't push your king's pawns and don't sit still — strike the middle."
+      "text": "You're Black, the h-pawn is coming. Don't push your king's pawns and don't sit still, strike the middle."
      },
      "steps": [
       {
@@ -654,11 +654,11 @@
         "d6d5"
        ],
        "successLine": {
-        "text": "...d5! The textbook defence: a wing storm answered in the centre. The e4-pawn is hit, the centre cracks open right where White's king lives, and after exd5 Nxd5 your knight grabs a great outpost and the c8-bishop comes free. You didn't push your king's pawns — you changed the subject.",
+        "text": "...d5! The textbook defence: a wing storm answered in the centre. The e4-pawn is hit, the centre cracks open right where White's king lives, and after exd5 Nxd5 your knight grabs a great outpost and the c8-bishop comes free. You didn't push your king's pawns. You changed the subject.",
         "conceptId": "defend-under-fire"
        },
        "retryLine": {
-        "text": "Pushing ...h6 or ...g5 just gives White a hook to lever open. Sitting still loses the race. The answer to a flank attack is a CENTRAL break — play ...d5.",
+        "text": "Pushing ...h6 or ...g5 just gives White a hook to lever open. Sitting still loses the race. The answer to a flank attack is a CENTRAL break. Play ...d5.",
         "conceptId": "defend-under-fire"
        }
       }
@@ -668,7 +668,7 @@
      "kind": "puzzle",
      "title": "Cool-down: the only move",
      "intro": {
-      "text": "You're under attack and one move holds — block, trade, or counter. Find the defence the position demands."
+      "text": "You're under attack and one move holds. Block, trade, or counter. Find the defence the position demands."
      },
      "puzzle": {
       "themes": [
@@ -683,22 +683,22 @@
   },
   {
    "id": "l6-the-race-decided",
-   "title": "Model Game — The Race, Decided by One Tempo",
+   "title": "Model Game: The Race, Decided by One Tempo",
    "kind": "tactics",
    "summary": "Watch a full opposite-castling race: Black storms, but White's attack lands first by a single move.",
    "segments": [
     {
      "kind": "model",
-     "title": "Black storms — White arrives first",
+     "title": "Black storms: White arrives first",
      "intro": {
-      "text": "Everything you've learned in one position. White's king is on c1, Black's on g8 — opposite wings. Black's queenside storm has reached b4-a4 and looks terrifying. But it is Black to move, and his next punch is one tempo too slow. Watch White's kingside attack crash through first. THIS is why we count tempi."
+      "text": "Everything you've learned in one position. White's king is on c1, Black's on g8, opposite wings. Black's queenside storm has reached b4-a4 and looks terrifying. But it is Black to move, and his next punch is one tempo too slow. Watch White's kingside attack crash through first. THIS is why we count tempi."
      },
      "fen": "2r2rk1/4bpp1/2q1p1p1/3pB3/pp6/5P1R/PPPQ2PP/2KR4 b - - 3 21",
      "line": [
       {
        "uci": "b4b3",
        "coach": {
-        "text": "...b3 — Black fires his lever to rip open the b-file at White's king. A move from his dream. But it's only a THREAT; it hasn't opened anything yet. White doesn't have to answer it — he has a faster, FORCING blow.",
+        "text": "...b3: Black fires his lever to rip open the b-file at White's king. A move from his dream. But it's only a THREAT; it hasn't opened anything yet. White doesn't have to answer it. He has a faster, FORCING blow.",
         "annotations": [
          {
           "kind": "arrow",
@@ -720,7 +720,7 @@
       {
        "uci": "h3h8",
        "coach": {
-        "text": "Rxh8+!! The rook sacrifices itself to strip the king's last shelter and drag him onto the h-file. Forcing — check must be answered NOW, so Black's ...b3 never gets a follow-up. The race is over the instant you start checking.",
+        "text": "Rxh8+!! The rook sacrifices itself to strip the king's last shelter and drag him onto the h-file. Forcing: check must be answered NOW, so Black's ...b3 never gets a follow-up. The race is over the instant you start checking.",
         "annotations": [
          {
           "kind": "arrow",
@@ -742,7 +742,7 @@
       {
        "uci": "g8h8",
        "coach": {
-        "text": "...Kxh8 — forced; the king is hauled into the open, exactly where we want him. Note Black would LOVE to play ...bxc2 instead, but he can't: a check outranks his whole queenside attack. Forcing moves win races.",
+        "text": "...Kxh8: forced; the king is hauled into the open, exactly where we want him. Note Black would LOVE to play ...bxc2 instead, but he can't: a check outranks his whole queenside attack. Forcing moves win races.",
         "annotations": [
          {
           "kind": "highlight",
@@ -757,7 +757,7 @@
       {
        "uci": "d2h6",
        "coach": {
-        "text": "Qh6+! The queen joins with check, driving the king back to g8. Every move a check — Black is never given the move he needs. The bishop on e5 already controls the long diagonal toward g7.",
+        "text": "Qh6+! The queen joins with check, driving the king back to g8. Every move a check. Black is never given the move he needs. The bishop on e5 already controls the long diagonal toward g7.",
         "annotations": [
          {
           "kind": "arrow",
@@ -780,7 +780,7 @@
       {
        "uci": "h8g8",
        "coach": {
-        "text": "...Kg8 — the only square. The net is closed: queen on h6, bishop raking g7, and the king has no flight. One move from the end.",
+        "text": "...Kg8: the only square. The net is closed: queen on h6, bishop raking g7, and the king has no flight. One move from the end.",
         "annotations": [
          {
           "kind": "highlight",
@@ -800,7 +800,7 @@
       {
        "uci": "h6g7",
        "coach": {
-        "text": "Qxg7#. The bishop on e5 guards the queen, the king cannot take or flee, and the f-pawn can't help. Black's b-pawn sits one square from glory on b3 — a full tempo short. White stormed, levered, sacrificed, and mated while the enemy attack was still loading. The race goes to whoever counts.",
+        "text": "Qxg7#. The bishop on e5 guards the queen, the king cannot take or flee, and the f-pawn can't help. Black's b-pawn sits one square from glory on b3, a full tempo short. White stormed, levered, sacrificed, and mated while the enemy attack was still loading. The race goes to whoever counts.",
         "annotations": [
          {
           "kind": "highlight",
@@ -830,7 +830,7 @@
   },
   {
    "id": "l7-practice",
-   "title": "Practice — Crash Through",
+   "title": "Practice: Crash Through",
    "kind": "practice",
    "summary": "Three king-hunts to solve under your own steam: strip the shield with a sacrifice and finish.",
    "segments": [
@@ -838,7 +838,7 @@
      "kind": "puzzle",
      "title": "Warm-up: open the king",
      "intro": {
-      "text": "Prime the pattern. Each position has a king one move from disaster — find the blow."
+      "text": "Prime the pattern. Each position has a king one move from disaster. Find the blow."
      },
      "puzzle": {
       "themes": [
@@ -905,7 +905,7 @@
      "kind": "puzzle",
      "title": "Cool-down: finish them",
      "intro": {
-      "text": "One more set, a touch sharper. Same job — crack the king and mate."
+      "text": "One more set, a touch sharper. Same job: crack the king and mate."
      },
      "puzzle": {
       "themes": [
@@ -921,9 +921,9 @@
   },
   {
    "id": "l8-boss",
-   "title": "The Boss — Win the Race",
+   "title": "The Boss: Win the Race",
    "kind": "practice",
-   "summary": "An opposite-castled middlegame. You have the kingside storm — out-race the engine to its king.",
+   "summary": "An opposite-castled middlegame. You have the kingside storm, out-race the engine to its king.",
    "segments": [
     {
      "kind": "boss",
@@ -932,14 +932,14 @@
      "bossEngineElo": 1750,
      "bossUserColor": "white",
      "bossIntro": {
-      "text": "Your king is on c1, the enemy's on g8 — opposite wings, so this is a race. You play White. The plan is everything you've learned: storm with h4-h5, fire the lever hxg6, sacrifice if the king is one pawn from naked, and DON'T waste tempi defending when your attack is faster. If the engine counter-storms the queenside, meet it with the centre or just keep punching — checks and threats first. Count to the mate and go. Win the race."
+      "text": "Your king is on c1, the enemy's on g8. Opposite wings, so this is a race. You play White. The plan is everything you've learned: storm with h4-h5, fire the lever hxg6, sacrifice if the king is one pawn from naked, and DON'T waste tempi defending when your attack is faster. If the engine counter-storms the queenside, meet it with the centre or just keep punching. Checks and threats first. Count to the mate and go. Win the race."
      }
     },
     {
      "kind": "puzzle",
      "title": "Victory lap",
      "intro": {
-      "text": "One last set to seal the chapter. Strip the shield, count to mate, and finish — the way a race is won."
+      "text": "One last set to seal the chapter. Strip the shield, count to mate, and finish: the way a race is won."
      },
      "puzzle": {
       "themes": [
@@ -974,7 +974,7 @@
     "prompt": "In an opposite-castled race, what decides the game?",
     "options": [
      "Whoever has more material",
-     "Whoever's attack arrives FIRST — count the tempi and stay one move ahead",
+     "Whoever's attack arrives FIRST: count the tempi and stay one move ahead",
      "Whoever defends most carefully",
      "Whoever controls the centre with pieces"
     ],
@@ -1003,7 +1003,7 @@
      "Promoting a pawn during the attack"
     ],
     "answerIndex": 1,
-    "explain": "Pushing alone opens nothing. The lever — h5xg6, b4xc3 — forces a capture and opens the line your rooks need."
+    "explain": "Pushing alone opens nothing. The lever (h5xg6, b4xc3) forces a capture and opens the line your rooks need."
    },
    {
     "kind": "play",
@@ -1012,7 +1012,7 @@
     "solutionUci": [
      "g6h7"
     ],
-    "explain": "gxh7+! The storming pawn captures into the shelter, and after …Nxh7 Qxh7# the queen mates. The far-flung pawn ripped the last cover off his king — exactly what the storm was for."
+    "explain": "gxh7+! The storming pawn captures into the shelter, and after …Nxh7 Qxh7# the queen mates. The far-flung pawn ripped the last cover off his king. Exactly what the storm was for."
    },
    {
     "kind": "play",
@@ -1021,7 +1021,7 @@
     "solutionUci": [
      "h5h6"
     ],
-    "explain": "Qxh6+! The queen sacrifices itself to tear away the last shield pawn — after …gxh6 Rxh6# the rook delivers mate. Count to the end, then pay the price."
+    "explain": "Qxh6+! The queen sacrifices itself to tear away the last shield pawn, after …gxh6 Rxh6# the rook delivers mate. Count to the end, then pay the price."
    },
    {
     "kind": "play",
@@ -1030,7 +1030,7 @@
     "solutionUci": [
      "e5e4"
     ],
-    "explain": "…e4! Don't touch your shield pawns — strike the middle. The pawn hits the d3-bishop, rips the centre open while White's king sits on c1, and turns the defender into the attacker. A wing storm is best met by a counter through the centre."
+    "explain": "…e4! Don't touch your shield pawns, strike the middle. The pawn hits the d3-bishop, rips the centre open while White's king sits on c1, and turns the defender into the attacker. A wing storm is best met by a counter through the centre."
    },
    {
     "kind": "play",
@@ -1048,7 +1048,7 @@
     "solutionUci": [
      "h6h7"
     ],
-    "explain": "Qh7#. The open h-file delivers the heavy piece straight to the king — exactly what the storm was for."
+    "explain": "Qh7#. The open h-file delivers the heavy piece straight to the king. Exactly what the storm was for."
    },
    {
     "kind": "play",
@@ -1065,7 +1065,7 @@
     "fen": "r2q1r1k/pb4pp/1p1bBpN1/3p4/P2PnR2/2P1P3/2Q3PP/R1B3K1 b - - 3 18",
     "lastMoveUci": "e5g6",
     "verdict": "correct",
-    "explain": "Correct — it is forced mate. The knight checks from g6 and the bishop on e6 covers g8, so the king cannot run: …hxg6 is forced, prising the h-file wide open, and the rook lifts to Rh4#. A whole knight to strip the last shield pawn and crash a rook down the opened file — exactly the trade the storm was built for."
+    "explain": "Correct: it is forced mate. The knight checks from g6 and the bishop on e6 covers g8, so the king cannot run: …hxg6 is forced, prising the h-file wide open, and the rook lifts to Rh4#. A whole knight to strip the last shield pawn and crash a rook down the opened file. Exactly the trade the storm was built for."
    },
    {
     "kind": "judge",
@@ -1073,7 +1073,7 @@
     "fen": "r3nr1k/2q4p/pp5Q/2pPppN1/P1B5/2P4P/1P6/R6K w - - 2 27",
     "lastMoveUci": "g7e8",
     "verdict": "blunder",
-    "explain": "A blunder — it abandons g7. White mates at once with Qf8#. When your king is bare, removing a defender from its squares is fatal."
+    "explain": "A blunder: it abandons g7. White mates at once with Qf8#. When your king is bare, removing a defender from its squares is fatal."
    },
    {
     "kind": "judge",
@@ -1081,7 +1081,7 @@
     "fen": "1r2r1k1/3nbp1p/p1q1p1p1/3pR2Q/3B4/3B4/PPP2PPP/R5K1 w - - 0 16",
     "lastMoveUci": "g7g6",
     "verdict": "blunder",
-    "explain": "A blunder — the push is a hook. White mates by force: Qxh7+! Kxh7 Rh5+ Kg8 Rh8#. Never advance the pawns in front of your stormed king; they only hand the attacker a target to smash."
+    "explain": "A blunder: the push is a hook. White mates by force: Qxh7+! Kxh7 Rh5+ Kg8 Rh8#. Never advance the pawns in front of your stormed king; they only hand the attacker a target to smash."
    }
   ],
   "passThreshold": 0.7

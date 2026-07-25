@@ -1,7 +1,7 @@
 // Shared localStorage key for PuzzlesView's active mode tab.
 //
 // Lives in its own tiny module (rather than PuzzlesView.tsx) so Home cards can
-// deep-link a tab — write a mode, then navigate — WITHOUT statically importing
+// deep-link a tab: write a mode, then navigate. WITHOUT statically importing
 // the lazily-loaded PuzzlesView chunk into the main bundle.
 
 /** Puzzle modes persisted under MODE_KEY. `train` is the classic adaptive

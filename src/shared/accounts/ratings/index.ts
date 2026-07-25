@@ -1,4 +1,4 @@
-// A4 ratings tree — barrel (bricks 1a detmath, 1c conduct/reputation, 2a
+// A4 ratings tree: barrel (bricks 1a detmath, 1c conduct/reputation, 2a
 // ladders/glicko/fold/display + the lead-owned params). Additive re-exports
 // only; every module stays importable directly.
 export * from './params'

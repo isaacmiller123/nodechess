@@ -1,11 +1,11 @@
 // Wire v6 witness core (spec §3 entanglement): the witness-side game follower
 // as a PURE state machine, plus the player-side incremental move-chain
-// verifier mpSession uses — ONE implementation of the chain rule on both ends
+// verifier mpSession uses. ONE implementation of the chain rule on both ends
 // of the wire. This module is the mp↔accounts bridge: it MAY import
 // segment.ts (the single source of signature truth); wire.ts stays standalone.
 //
 // Platform-neutral like wire.ts: ZERO node imports, no DOM globals, no ambient
-// time or randomness — the witness's clock is INJECTED (`now`), so the module
+// time or randomness: the witness's clock is INJECTED (`now`), so the module
 // bundles into the renderer, a future witness daemon, and bare-node tests
 // unchanged. Nothing here touches a transport: feed(msg) returns the messages
 // to `emit` and the caller sends them.
@@ -53,7 +53,7 @@ type MpResult = '1-0' | '0-1' | '1/2-1/2'
 
 /**
  * A4 ladder binding (§6): derive the (kind, tc) pair a game rates under from
- * the wire v6 session config — the SAME config both players and the witness
+ * the wire v6 session config: the SAME config both players and the witness
  * received in the mirrored `start`. Wire tc names (initialMs/incrementMs) map
  * onto the segment/ladder names (baseMs/incMs); an absent game selector is
  * chess (the wire v4 rule). Math.round is defensive only: the wire schema
@@ -116,7 +116,7 @@ export class MoveChainVerifier {
   check(ply: number, move: string, clockMs: SigClock, sig: B64u): string | null {
     if (ply !== this.list.length) return `out-of-order ply ${ply} (expected ${this.list.length})`
     // moveSigBytes → canonicalBytes THROWS on an unencodable clock (non-safe
-    // integer, -0, NaN — the wire clock schema is float-permissive for the
+    // integer, -0, NaN: the wire clock schema is float-permissive for the
     // unsigned v5 path, so a signed move can still carry e.g. 1e21). Fail
     // CLOSED: a bad move is a verification failure the caller tears down on,
     // never an uncaught crash on the signed inbound path.
@@ -141,10 +141,10 @@ export class MoveChainVerifier {
 
   /** Advance the chain head with a move whose signature the caller ALREADY
    *  verified via check() against THIS same head with no intervening mutation
-   *  (the host peeks a guest move before commit, then advances it after — the
+   *  (the host peeks a guest move before commit, then advances it after; the
    *  commit doesn't touch the chain). Skips the redundant ed25519 verify but
    *  still enforces ply order defensively. Returns the failure reason or null.
-   *  NEVER call this on an unchecked move — it does not verify the signature. */
+   *  NEVER call this on an unchecked move. It does not verify the signature. */
   advanceChecked(ply: number, move: string, clockMs: SigClock, sig: B64u): string | null {
     if (ply !== this.list.length) return `out-of-order ply ${ply} (expected ${this.list.length})`
     this.list.push({ ply, move, clockMs: { w: clockMs.w, b: clockMs.b }, sig })
@@ -174,7 +174,7 @@ export interface WitnessCoreOpts {
   wkey: B64u
   /** b64u witness account root (rides in the WitnessedResultRecord). */
   wroot: B64u
-  /** Injected wall clock (unix ms) — the witness's OWN time authority. */
+  /** Injected wall clock (unix ms). The witness's OWN time authority. */
   now: () => number
   /** Countersign the clock stream every this many verified plies. */
   wclkEveryPlies?: number
@@ -185,13 +185,13 @@ export interface WitnessGameInit {
   gameId: number
   /** The host-minted global game key (start.gameKey). */
   gameKey: B64u
-  /** Both players' identities by color — roots from start.players, device
+  /** Both players' identities by color: roots from start.players, device
    *  signing keys from the players' hellos. */
   players: { w: { root: B64u; key: B64u }; b: { root: B64u; key: B64u } }
   /** Which color moves first (config.game.firstMover; chess = 'w'). */
   firstMover?: 'w' | 'b'
   /** A4 ladder binding (§6) the witness observed in the session config
-   *  (ladderFromConfig(start.config)) — folded into the witness's terminal
+   *  (ladderFromConfig(start.config)). Folded into the witness's terminal
    *  wend signature AND the witnessed result, so the segment author cannot
    *  claim a different ladder than the witness saw. BOTH set on rated games;
    *  absent = legacy/unrated, byte-identical to the pre-A4 signatures. The
@@ -199,20 +199,20 @@ export interface WitnessGameInit {
    *  poisons the follower). */
   kind?: string
   tc?: { baseMs: number; incMs: number }
-  /** A5 J5 pairing anchors (spec §3/§8; review deferral A4-12 — the
+  /** A5 J5 pairing anchors (spec §3/§8; review deferral A4-12. The
    *  anchoring contract in accounts ratings/conduct.ts): a witness serves a
    *  RATED game only when BOTH players' witnessed 'pairing' events for this
    *  game key have been seen countersigned. Division of labor, same as
    *  `players` (roots/keys come from hellos, the core cross-checks the
    *  mirrored start): verifying the pairing EVENTS (event signatures +
-   *  witness attestations in each player's chain) is the EMBEDDER's job —
-   *  it holds the chain context; the core enforces CONSISTENCY, poisoning
+   *  witness attestations in each player's chain) is the EMBEDDER's job.
+   *  It holds the chain context; the core enforces CONSISTENCY, poisoning
    *  on feed('start'/'rematchStart') when the anchors are absent on a rated
    *  game or contradict the session's gameKey / kind / tc / player roots
    *  (the 2c/F1 poison pattern). Pass the two anchor payloads by the color
    *  of the player whose chain carries each, or the literal
    *  'embedder-verified' when the embedder has already cross-checked them.
-   *  Ignored on unrated games (no kind/tc) — the legacy flow stays
+   *  Ignored on unrated games (no kind/tc). The legacy flow stays
    *  byte-identical. */
   pairing?: 'embedder-verified' | { w: PairingPayload; b: PairingPayload }
 }
@@ -236,13 +236,13 @@ interface WitnessTerminal {
 /**
  * Follows one signed game move-by-move: verifies each move's sig + chain
  * incrementally, countersigns the clock stream every `wclkEveryPlies` plies,
- * and on a terminal — a gameOver/resign/flag carrying a VALID esig, or a flag
- * it observed itself (tick) from clocks it countersigned — signs the stream
+ * and on a terminal: a gameOver/resign/flag carrying a VALID esig, or a flag
+ * it observed itself (tick) from clocks it countersigned: signs the stream
  * end and can build the §3 witnessed result for both players' chains.
  *
  * A chain violation POISONS the follower: the witness refuses to countersign
  * anything further for that game (every later feed returns the sticky error).
- * A merely-invalid terminal does NOT poison — the witness may still adjudicate
+ * A merely-invalid terminal does NOT poison. The witness may still adjudicate
  * an observed flag (the rage-quit path).
  */
 export class WitnessCore {
@@ -255,7 +255,7 @@ export class WitnessCore {
   private g: WitnessGameInit | null = null
   private verifier: MoveChainVerifier | null = null
   /** Each side's OWN last self-signed remaining clock (ms), or null before that
-   *  side has moved. tick() times the to-move side against ITS OWN value only —
+   *  side has moved. tick() times the to-move side against ITS OWN value only,
    *  never the opponent's echo of it. The mover controls BOTH fields of the
    *  clock it signs (the witness sees the guest's claimed clocks verbatim), so
    *  trusting the opponent's echo let a mover zero the honest player's clock and
@@ -275,7 +275,7 @@ export class WitnessCore {
   private drawSigned: { w: boolean; b: boolean } = { w: false, b: false }
   /** The result named by a DECISIVE terminal whose esig was absent/invalid
    *  (recorded WITHOUT poisoning, so a pure rage-quit tick can still adjudicate).
-   *  Once set, tick() must never finalize a CONTRADICTING decisive result — else
+   *  Once set, tick() must never finalize a CONTRADICTING decisive result. Else
    *  a loser who omits its esig lets tick() flag the to-move WINNER (finding D). */
   private claimedDecisive: MpResult | null = null
 
@@ -317,7 +317,7 @@ export class WitnessCore {
   /** The A4 rated binding for the terminal wend signature, or undefined for a
    *  legacy/unrated game (⇒ every signature stays the exact pre-A4 byte
    *  shape). On a rated game (init named kind/tc) the witness binds the FULL
-   *  set — kind/tc from init, players from the session's roots by color, and
+   *  set: kind/tc from init, players from the session's roots by color, and
    *  the adjudicated terminal `reason` (A4-01/A4-08: color, opp and reason
    *  were self-asserted in the segment payload before this). */
   private binding(reason: string): RatedBinding | undefined {
@@ -331,7 +331,7 @@ export class WitnessCore {
   }
 
   /** The §3 witnessed result record (rage-quit denial), or null pre-terminal.
-   *  Carries the ladder binding when the game has one — witness-signed, so it
+   *  Carries the ladder binding when the game has one. Witness-signed, so it
    *  adjudicates the ladder too. */
   buildWitnessedResult(): WitnessedResultRecord | null {
     if (!this.g || !this.terminal) return null
@@ -358,11 +358,11 @@ export class WitnessCore {
     switch (msg.t) {
       case 'start':
       case 'rematchStart':
-        // Consistency only — the caller inits explicitly. A different (or
+        // Consistency only: the caller inits explicitly. A different (or
         // absent) game key means we are NOT following this game: poison.
         if (msg.gameKey !== this.g.gameKey) return this.poison('start does not carry our game key')
         // A4: when init named a ladder binding, the mirrored start's config
-        // must derive the SAME (kind, tc) — the witness signs those values
+        // must derive the SAME (kind, tc). The witness signs those values
         // into its wend, so a contradicting config means it is not observing
         // the game it thinks it is. (rematchStart carries no config; the
         // rematch reuses the session config.)
@@ -378,12 +378,12 @@ export class WitnessCore {
         // check above: the witness signs the player roots BY COLOR into its
         // wend, so a mirrored start/rematchStart naming different roots (or a
         // different color assignment) than init means it is not observing the
-        // game it thinks it is — poison, never countersign.
+        // game it thinks it is, poison, never countersign.
         if (msg.players !== undefined) {
           if (msg.players.w !== this.g.players.w.root || msg.players.b !== this.g.players.b.root)
             return this.poison('start players contradict the witness binding')
         }
-        // A5 J5 (A4-12): a RATED session must be pairing-anchored — both
+        // A5 J5 (A4-12): a RATED session must be pairing-anchored. Both
         // players' witnessed 'pairing' events, consistent with everything
         // this witness is about to sign. Absent or contradicting anchors ⇒
         // poison (same 2c pattern as the ladder/players checks above).
@@ -395,7 +395,7 @@ export class WitnessCore {
         return { ok: true }
 
       case 'move': {
-        if (msg.gameId !== this.g.gameId) return { ok: true } // stale game — ignore
+        if (msg.gameId !== this.g.gameId) return { ok: true } // stale game: ignore
         if (msg.sig === undefined) return this.poison(`unsigned move at ply ${msg.ply} in a signed game`)
         const clock = sigClock(msg.clockMs)
         const err = this.verifier.accept(msg.ply, msg.uci, clock, msg.sig)
@@ -431,7 +431,7 @@ export class WitnessCore {
         return { ok: true }
 
       default:
-        return { ok: true } // clock/draw/heartbeat chatter — nothing to countersign
+        return { ok: true } // clock/draw/heartbeat chatter: nothing to countersign
     }
   }
 
@@ -439,14 +439,14 @@ export class WitnessCore {
    * Observed-flag check (the §3 rage-quit closer): from the clocks the witness
    * itself countersigned, the side to move has flagged once more witness time
    * passed since the last verified move than that side had remaining. Plain
-   * Fischer only (byo-yomi adjudication is an A6 refinement — see report).
+   * Fischer only (byo-yomi adjudication is an A6 refinement; see report).
    * Call periodically; emits the wend when a flag is observed.
    */
   tick(nowWts?: number): WitnessFeedResult {
     if (!this.g || !this.verifier || this.terminal || this.aborted || this.poisonedWith) return { ok: true }
     // A decisive terminal was already claimed (esig absent/invalid, so not
     // finalized): the game's direction is asserted. Do NOT let an observed flag
-    // finalize a possibly-contradicting result — better to leave no witnessed
+    // finalize a possibly-contradicting result: better to leave no witnessed
     // result than to flag the winner (finding D). A pure rage-quit (no terminal
     // at all) leaves claimedDecisive null, so tick still adjudicates it.
     if (this.claimedDecisive !== null) return { ok: true }
@@ -460,7 +460,7 @@ export class WitnessCore {
     const toMove = this.verifier.moverOf(this.verifier.plies)
     // Time the to-move side against ITS OWN last self-signed clock. null = that
     // side has not moved yet (incl. a first-move no-show), so there is no
-    // self-signed budget and the witness cannot adjudicate a flag — that case is
+    // self-signed budget and the witness cannot adjudicate a flag. That case is
     // an ABORT the host watchdog + witness abort-mirror close, not a loss.
     const budget = this.ownClock[toMove]
     if (budget === null) return { ok: true }
@@ -476,10 +476,10 @@ export class WitnessCore {
   }
 
   /**
-   * A5 J5 pairing-anchor consistency (rated games only — the caller gates on
+   * A5 J5 pairing-anchor consistency (rated games only, the caller gates on
    * kind/tc). Returns the poison reason, or null when the anchors hold:
    * each anchor names THIS game key, the ladder binding the witness will
-   * sign (kind/tc), and — cross-wise — the OTHER player's root as its opp
+   * sign (kind/tc), and (cross-wise) the OTHER player's root as its opp
    * (the white player's chain pairs against the black root and vice versa,
    * which also pins each pairing to a distinct chain: two copies of one
    * player's pairing can never satisfy both seats). 'embedder-verified'
@@ -511,7 +511,7 @@ export class WitnessCore {
    * A terminal wire message. Signature rules by result kind, both rooted in the
    * identity-blindness of witnessEndBytes (it covers only game/result/plies/
    * transcript, never the signer), so any accepted key is a FULL authorization.
-   * Player esigs are verified over the LEGACY (ladder-less) end-bytes — that is
+   * Player esigs are verified over the LEGACY (ladder-less) end-bytes. That is
    * what mpSession.signTerminal signs: the player's countersignature vouches
    * for the RESULT + transcript; the ladder (kind/tc) is the WITNESS's own
    * authority, covered only by its wend signature (A4 §6 binding).
@@ -519,7 +519,7 @@ export class WitnessCore {
    *  - DECISIVE (1-0 / 0-1): only the LOSER's device key. Accepting either key
    *    (as the first version did) let a winner mint a witness-blessed loss for
    *    the opponent (black sends resign{by:'white'} with BLACK's own 0-1 esig).
-   *    The loser's countersignature — or its absence — IS the §3 rage-quit
+   *    The loser's countersignature, or its absence, IS the §3 rage-quit
    *    pivot. An absent/invalid esig is NOT poison (an observed flag can still
    *    adjudicate a pure rage-quit) but it DOES record the claimed result so
    *    tick() can never later finalize a CONTRADICTING one (finding D: a loser
@@ -527,10 +527,10 @@ export class WitnessCore {
    *  - DRAW (1/2-1/2): neither party is a loser whose lone sig suffices, and
    *    accepting a single key let a losing player unilaterally escape into a
    *    witness-blessed draw (finding C). A draw is witnessed only once BOTH
-   *    players have countersigned it — a losing player can produce only its own
+   *    players have countersigned it. A losing player can produce only its own
    *    esig. The two esigs arrive across the host's own mirror + its forward of
    *    the peer's gameOver (board draws: both engines detect it; agreed draws:
-   *    both sides sign — see mpSession acceptDraw / drawAccept).
+   *    both sides sign. See mpSession acceptDraw / drawAccept).
    */
   private onTerminal(result: MpResult, reason: string, esig: string | undefined, wts: number): WitnessFeedResult {
     if (!this.g || !this.verifier) return { ok: false, error: 'witness not initialized' }
@@ -554,14 +554,14 @@ export class WitnessCore {
     return this.finalize(result, reason, wts)
   }
 
-  /** A 1/2-1/2 terminal — witnessed only once BOTH players' esigs are in. */
+  /** A 1/2-1/2 terminal: witnessed only once BOTH players' esigs are in. */
   private onDrawTerminal(result: MpResult, reason: string, esig: string | undefined, wts: number): WitnessFeedResult {
     if (!this.g || !this.verifier) return { ok: false, error: 'witness not initialized' }
     if (esig === undefined) return { ok: false, error: 'draw terminal lacks a countersignature' }
     const transcript = transcriptDigest(this.g.gameKey, this.verifier.moves, result, reason)
     const bytes = witnessEndBytes(this.g.gameKey, result, this.verifier.plies, transcript)
     // Which player countersigned this draw? (The reason string is cosmetic to
-    // the security property — a loser can produce only ITS OWN esig regardless.)
+    // the security property. A loser can produce only ITS OWN esig regardless.)
     let signer: 'w' | 'b' | null = null
     if (verifySigB64u(esig, bytes, this.g.players.w.key)) signer = 'w'
     else if (verifySigB64u(esig, bytes, this.g.players.b.key)) signer = 'b'
@@ -575,8 +575,8 @@ export class WitnessCore {
     if (!this.g || !this.verifier) return { ok: false, error: 'witness not initialized' }
     const plies = this.verifier.plies
     const transcript = transcriptDigest(this.g.gameKey, this.verifier.moves, result, reason)
-    // A4: the witness's OWN terminal signature covers the full rated binding
-    // — kind/tc (ladder authority), players by color and the adjudicated
+    // A4: the witness's OWN terminal signature covers the full rated binding.
+    // kind/tc (ladder authority), players by color and the adjudicated
     // reason (A4-01/A4-08: verifySegmentEvent requires a rated-shaped
     // segment's wstream sig to cover ALL of these values). The wire `wend`
     // message shape is unchanged (v6 schema is frozen); receivers re-derive

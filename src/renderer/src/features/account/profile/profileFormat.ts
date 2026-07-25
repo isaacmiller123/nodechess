@@ -3,12 +3,12 @@
 // Relative times take the evaluation instant EXPLICITLY (complete-3): a
 // surface rendering REAL chain data passes Date.now() at render; fixture-only
 // surfaces pass MOCK_NOW (mock/fixtures) so preview copy stays stable across
-// sessions and test runs. No default — every caller states its clock.
+// sessions and test runs. No default: every caller states its clock.
 
 export const HOUR = 3_600_000
 export const DAY = 86_400_000
 
-/** Wordy staleness for "last witnessed activity" (§10) — years for the long-gone. */
+/** Wordy staleness for "last witnessed activity" (§10). Years for the long-gone. */
 export function relativeWts(ts: number, nowMs: number): string {
   const diff = Math.max(0, nowMs - ts)
   const min = Math.floor(diff / 60_000)

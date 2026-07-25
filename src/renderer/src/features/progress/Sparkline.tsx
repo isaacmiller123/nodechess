@@ -19,7 +19,7 @@ export default function Sparkline({
 }: SparklineProps): JSX.Element | null {
   if (points.length === 0) return null
 
-  // Single point can't form a line — render a flat baseline dot.
+  // Single point can't form a line. Render a flat baseline dot.
   const pad = 4
   const innerW = width - pad * 2
   const innerH = height - pad * 2

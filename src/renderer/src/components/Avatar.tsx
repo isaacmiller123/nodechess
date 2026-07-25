@@ -11,7 +11,7 @@ export function UserAvatar({ src, name, size = 30 }: { src: string | null; name:
   )
 }
 
-// Generic opponent avatar (a chess piece) — placeholder until per-persona art.
+// Generic opponent avatar (a chess piece): placeholder until per-persona art.
 export function EngineAvatar({ label = 'Opponent', size = 30 }: { label?: string; size?: number }) {
   return (
     <span

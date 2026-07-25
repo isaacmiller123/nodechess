@@ -1,10 +1,10 @@
-// Shared 3D tabletop renderer — public surface.
+// Shared 3D tabletop renderer: public surface.
 //
 // Consumers (GamePage wave-2, dev harness) import from HERE only; internals
 // (piece systems, board generators, motion controller) may reshuffle freely.
-// Load this module lazily (React.lazy / dynamic import) — it pulls three.js.
+// Load this module lazily (React.lazy / dynamic import): it pulls three.js.
 //
-// Exceptions (import DIRECTLY, never through this index — they are three-free
+// Exceptions (import DIRECTLY, never through this index; they are three-free
 // so eager 2D code can use them without pulling the chunk): ./webgl (support
 // probe), ./types (contract types), ./theater (Replay Theater choreography).
 

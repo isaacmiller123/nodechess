@@ -1,9 +1,9 @@
-// nodechess seed — desktop shell.
+// nodechess seed: desktop shell.
 //
 // The desktop seed node is the SAME program as seed.nodechess.com: this process
 // exists only to host the built `dist-seed` bundle in a window and keep it
-// alive. There is no IPC surface, no preload bridge and no node integration —
-// the page is ordinary web code that talks to the network over WebRTC, exactly
+// alive. There is no IPC surface, no preload bridge and no node integration.
+// The page is ordinary web code that talks to the network over WebRTC, exactly
 // as it does in a browser tab. Keeping it that way means there is one seed
 // implementation to reason about, not two.
 //
@@ -41,7 +41,7 @@ function createWindow(): void {
 
   win.once('ready-to-show', () => win?.show())
 
-  // Closing hides to the tray instead of quitting — the swarm keeps serving.
+  // Closing hides to the tray instead of quitting: the swarm keeps serving.
   win.on('close', (e) => {
     if (quitting) return
     e.preventDefault()

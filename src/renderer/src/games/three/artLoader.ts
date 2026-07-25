@@ -1,12 +1,12 @@
 // games-art loader contract for the 3D tabletop.
 //
-// Art lives in resources/games-art/ (owned by the art pipeline — this module
+// Art lives in resources/games-art/ (owned by the art pipeline; this module
 // only READS). PBR sets follow textures/<name>_{color,normal,roughness}.jpg.
 // Resolution order for the base URL:
 //   1. explicit `artBaseUrl` prop on <Tabletop3D>
 //   2. resolver installed via setGamesArtResolver() (app wiring, wave 2)
 //   3. window.__gamesArtBase (dev/preview harnesses set this)
-// When nothing resolves — or any file 404s — callers keep their procedural
+// When nothing resolves (or any file 404s) callers keep their procedural
 // fallback materials, so the renderer is fully standalone.
 
 import * as THREE from 'three'

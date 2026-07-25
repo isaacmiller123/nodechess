@@ -1,5 +1,5 @@
 /* ============================================================
-   Progress / My games — feature-scoped styles. Tokens only.
+   Progress / My games: feature-scoped styles. Tokens only.
    ============================================================ */
 
 .progress-view {
@@ -619,7 +619,7 @@
   outline-offset: -2px;
 }
 
-/* Result chip — local copy (self-contained; matches home semantics) */
+/* Result chip: local copy (self-contained; matches home semantics) */
 .games-table .result-chip {
   display: inline-block;
   min-width: 48px;

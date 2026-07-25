@@ -124,11 +124,11 @@ export default function GamesTable({ onOpenGame }: GamesTableProps): JSX.Element
                       : undefined
                   }
                 >
-                  <td className="col-date num">{date || '—'}</td>
+                  <td className="col-date num">{date || '·'}</td>
                   <td className="col-opp">
                     <span className="opp-label">{opponentLabelOf(g)}</span>
                   </td>
-                  <td className="col-elo num">{elo || '—'}</td>
+                  <td className="col-elo num">{elo || '·'}</td>
                   <td className="col-color">
                     {color ? (
                       <span className={`color-dot ${color}`} aria-hidden />
@@ -139,7 +139,7 @@ export default function GamesTable({ onOpenGame }: GamesTableProps): JSX.Element
                     <span className={`result-chip ${kind}`}>{resultChipLabel(kind)}</span>
                   </td>
                   <td className="col-acc num">
-                    {acc != null ? formatAccuracy(acc) : <span className="muted">—</span>}
+                    {acc != null ? formatAccuracy(acc) : <span className="muted">·</span>}
                   </td>
                 </tr>
               )

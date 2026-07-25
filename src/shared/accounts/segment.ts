@@ -2,7 +2,7 @@
 // transcript digest, the witness stream signatures, and the 'segment'
 // witnessed-lane event builders/verifiers. ONE definition consumed by BOTH the
 // storage layer (segments, pointers, reconstruction) and wire v6 (mpSession's
-// signed move messages) — the wire and the chain must agree on these bytes.
+// signed move messages). The wire and the chain must agree on these bytes.
 //
 // Conventions are A1's: cjson-v1 canonical bytes, sha256 ids, ed25519
 // signatures, base64url-no-pad strings. Pure + platform-neutral: no `node:`
@@ -23,7 +23,7 @@ import type {
 } from './storage/types'
 
 // ---------------------------------------------------------------------------
-// Game key — the value every per-move signature covers
+// Game key: the value every per-move signature covers
 // ---------------------------------------------------------------------------
 
 /**
@@ -39,9 +39,9 @@ export interface GameKeySeed extends CanonicalObject {
   /** Player roots by color. */
   w: B64u
   b: B64u
-  /** Host-supplied 32-byte nonce, b64u (from the host's CSPRNG — injected). */
+  /** Host-supplied 32-byte nonce, b64u (from the host's CSPRNG; injected). */
   nonce: B64u
-  /** Host-claimed start time (unix ms) — informational, witness time rules. */
+  /** Host-claimed start time (unix ms). Informational, witness time rules. */
   ts: number
 }
 
@@ -54,7 +54,7 @@ export function gameKey(seed: GameKeySeed): B64u {
 // ---------------------------------------------------------------------------
 
 /** One signed move: the mover signs (game, ply, move, clocks, prev move sig).
- * The RECEIVER's next move signs over this move's sig via `prev` — that is
+ * The RECEIVER's next move signs over this move's sig via `prev`. That is
  * the pairwise countersigning: neither side can alter or drop an interior
  * move without breaking the other's chain of signatures. */
 export interface SignedMove extends CanonicalObject {
@@ -68,7 +68,7 @@ export interface SignedMove extends CanonicalObject {
 }
 
 /** The exact bytes a mover signs for ply `ply`. `prev` is the PREVIOUS ply's
- * sig — absent only at ply 0. */
+ * sig. Absent only at ply 0. */
 export function moveSigBytes(
   game: B64u,
   ply: number,
@@ -119,7 +119,7 @@ export function verifyMoveChain(
     if (m.ply !== i) return i
     const mover = (i % 2 === 0) === (firstMover === 'w') ? 'w' : 'b'
     // Fail CLOSED like MoveChainVerifier.check: moveSigBytes → canonicalBytes
-    // THROWS on an unencodable clock (non-safe integer, -0, NaN — the wire
+    // THROWS on an unencodable clock (non-safe integer, -0, NaN; the wire
     // clock schema is float-permissive), so an untrusted transcript (overlay /
     // A6 reconstruction) must reject the ply, never propagate a RangeError out
     // of this documented byte-deterministic verifier.
@@ -180,9 +180,9 @@ export function witnessClockBytes(
 
 /**
  * A4 rated binding (§6) folded into the terminal witness signature: the
- * (kind, tc) pair naming which ladder the game rates in, plus — A4 review
- * fixes A4-01/A4-08 — the player ROOTS by color and the termination reason.
- * OPTIONAL and field-wise — a field is covered only when present, and when ALL
+ * (kind, tc) pair naming which ladder the game rates in, plus. A4 review
+ * fixes A4-01/A4-08: the player ROOTS by color and the termination reason.
+ * OPTIONAL and field-wise: a field is covered only when present, and when ALL
  * are absent the signed bytes are EXACTLY the pre-A4 legacy shape
  * `{v:1, t:'wend', g, result, plies, transcript}` (byte-asserted in
  * scripts/test-mp-v6.mjs), so every existing signature stays valid.
@@ -195,7 +195,7 @@ export function witnessClockBytes(
  *    relabeled a win by flipping `color` or swapping `opp`);
  *  - reason closes reason-lying (A4-08: disconnect/abandon vs resign feeds
  *    the reputation misconduct axes and the 0.30-weight trust completion
- *    term — self-asserted before this binding).
+ *    term: self-asserted before this binding).
  */
 export interface RatedBinding {
   kind?: string
@@ -206,10 +206,10 @@ export interface RatedBinding {
   reason?: string
 }
 
-/** @deprecated Pre-review name — the binding now also covers players/reason. */
+/** @deprecated Pre-review name: the binding now also covers players/reason. */
 export type LadderBinding = RatedBinding
 
-/** Terminal witness signature bytes — what SegmentPayload.wstream.sig covers.
+/** Terminal witness signature bytes: what SegmentPayload.wstream.sig covers.
  * `binding` absent (or ALL fields absent) ⇒ EXACT legacy bytes; each present
  * field is folded into the signed bytes (cjson-v1 sorted keys). */
 export function witnessEndBytes(
@@ -266,7 +266,7 @@ export function makeWitnessedResult(
   wkey: B64u,
   // Spelled out (not Omit<WitnessedResultBody,'v'>): the CanonicalObject index
   // signature makes Omit collapse the named properties. kind/tc are the A4
-  // ladder binding (LadderBinding) — absent ⇒ EXACT legacy body bytes, so
+  // ladder binding (LadderBinding): absent ⇒ EXACT legacy body bytes, so
   // pre-A4 records and their signatures stay valid.
   body: {
     game: B64u
@@ -306,7 +306,7 @@ export const zWitnessedResultBody = z.strictObject({
   transcript: zB64u32,
   plies: z.int().min(0).max(4096),
   wts: z.int().min(0),
-  // A4 ladder binding — same bounds as events.ts zSegmentPayload. Absent =
+  // A4 ladder binding: same bounds as events.ts zSegmentPayload. Absent =
   // legacy/unrated; when present the record's signature covers them.
   kind: z.string().min(1).max(32).optional(),
   tc: z
@@ -332,7 +332,7 @@ export interface MakeSegmentOpts {
    * `opp` when the embedded checkpoint is device-signed. */
   oppCerts?: SignedEvent[]
   oppProfile: ProfileSnapshot
-  /** A4 ladder binding (§6) — both present on rated segments. */
+  /** A4 ladder binding (§6). Both present on rated segments. */
   kind?: string
   tc?: { baseMs: number; incMs: number }
 }
@@ -369,7 +369,7 @@ export type SegmentVerifyError =
 
 /** ACCOUNTS-PARAMS §Witness fabric checkpoint diversity bound: cosigners must
  * span ≥ 3 distinct /16 key-space prefixes. Two b64u chars = the top 12 bits
- * of the signing key — the self-contained proxy for the fabric's nodeId
+ * of the signing key: the self-contained proxy for the fabric's nodeId
  * prefix bucket (a standalone verifier has no key→nodeId join to consult).
  * Exported: the read-time eligibility evidence layers (mm/trust.ts
  * trustEvidenceOf, ratings/reputation.ts repEvidenceOf, ratings/fold.ts
@@ -377,14 +377,14 @@ export type SegmentVerifyError =
  * subset (A4-03/05/14, A4-02). */
 export const OPP_CKPT_PREFIX_DIVERSITY_MIN = 3
 
-/** ratings/fold.ts A4_FOLD_ID, restated locally — importing fold.ts here
+/** ratings/fold.ts A4_FOLD_ID, restated locally. Importing fold.ts here
  * would close the cycle segment → fold → segment (same pattern as
  * attestationSigOk). Byte-equality with the fold id is asserted in
  * scripts/test-accounts-ratings.mjs. */
 const A4_FOLD_ID_LOCAL = 'a4-v1'
 
 /** ed25519 check of one WitnessAttestation over canonicalBytes({e, epoch, w,
- * wts}) — the exact byte contract of witness/attest.ts attestBytes (types.ts
+ * wts}): the exact byte contract of witness/attest.ts attestBytes (types.ts
  * WitnessAttestation doc). Re-stated locally because importing witness/attest
  * here would close the cycle segment → attest → checkpoint → ratings/fold →
  * segment. Never throws (canonicalBytes can throw on malformed numbers). */
@@ -400,10 +400,10 @@ function attestationSigOk(att: WitnessAttestation, id: EventId): boolean {
 
 /**
  * A4 review fix (A4-02, foundation for A4-05/06): verify the EMBEDDED opponent
- * checkpoint entirely from the segment payload — self-contained, fail-closed,
+ * checkpoint entirely from the segment payload: self-contained, fail-closed,
  * NO recursion into the opponent's chain.
  *
- * WHAT THIS CHECK IS — AND IS NOT (A4-02 completion, stated honestly): it
+ * WHAT THIS CHECK IS, AND IS NOT (A4-02 completion, stated honestly): it
  * proves STRUCTURE and PROVENANCE (root-binding, signatures, ≥M distinct
  * prefix-diverse cosigners), which makes an embedded checkpoint expensive to
  * malform and root-bound to the named opponent. It CANNOT prove roster
@@ -414,21 +414,21 @@ function attestationSigOk(att: WitnessAttestation, id: EventId): boolean {
  * score-RAISING consumption of these cosigners happens at read time under
  * the verifier's own WitnessEligibility predicate (trustEvidenceOf,
  * repEvidenceOf, ratingEvidenceOf). This gate's role is (i) the fail-hard
- * embed discipline — an author who embeds an unverifiable checkpoint loses
- * the whole segment — and (ii) the shared structural floor the read-time
+ * embed discipline: an author who embeds an unverifiable checkpoint loses
+ * the whole segment, and (ii) the shared structural floor the read-time
  * eligibility judgments build on.
  *
  * True only when ALL of:
  *
  *  (a) oppCkpt is a shape-valid witnessed-lane 'ckpt' event whose
- *      body.root === p.opp (the checkpoint is OF the named opponent — the
+ *      body.root === p.opp (the checkpoint is OF the named opponent; the
  *      A4-06 binding: a borrowed checkpoint of some other real account can
  *      never proxy for a differently-named opp);
  *  (b) its event signature verifies AND the signing key is authorized: either
  *      the opp root itself, or proven the opp's child by a root-signed cert
  *      event in p.oppCerts (certs.ts isRootSignedCert). BOUNDARY, stated
  *      honestly: a REVOKE of that device key lives on the opponent's chain and
- *      cannot be seen inline — a revoked-but-certified key still passes here.
+ *      cannot be seen inline. A revoked-but-certified key still passes here.
  *      That window is closed by §6's one-level audit / fork-detection gossip,
  *      not by this standalone check;
  *  (c) ≥ PARAMS_A2.ckptM cosigner attestations ride in oppCkpt.wit, EVERY one
@@ -438,7 +438,7 @@ function attestationSigOk(att: WitnessAttestation, id: EventId): boolean {
  *      are the only player identity visible inline), spanning
  *      ≥ OPP_CKPT_PREFIX_DIVERSITY_MIN distinct 2-char b64u key prefixes (the
  *      §Witness-fabric /16 diversity bound). The wit list rides INSIDE the
- *      segment-owner-signed payload, so it is not relay-malleable here — the
+ *      segment-owner-signed payload, so it is not relay-malleable here. The
  *      embedder curates it, and one malformed entry fails the whole check;
  *  (d) sanity on the self-claimed numbers other folds read: payload.through
  *      and body.height are safe integers ≥ 0;
@@ -447,22 +447,22 @@ function attestationSigOk(att: WitnessAttestation, id: EventId): boolean {
  *      a4-v1 fold (state.f === 'a4-v1'). A rated player's checkpoint IS
  *      a4-v1 (chain.ts / checkpoint.ts REQUIRE it once rated segments exist),
  *      so presenting a pre-rated basic-v1 checkpoint for a RATED opponent is
- *      never honest necessity — it was the seed-washing dial: ratings read
+ *      never honest necessity. It was the seed-washing dial: ratings read
  *      seeds (1200/350) from a basic-v1 state while trust read a full
  *      established-opponent proxy from the same bytes. An opponent whose
  *      history is genuinely unrated is represented honestly by OMITTING
  *      oppCkpt (the §6 young-opponent seeds path). Unbound (legacy/casual)
  *      segments are out of §6 scope and keep accepting any state shape.
- *      A4-10 CLOSED (A7): when the caller supplies `attestedHeadHeight` — the
+ *      A4-10 CLOSED (A7): when the caller supplies `attestedHeadHeight`. The
  *      pairing record's serving-witness attest of the opponent's current §4
  *      head height (witness/attest.ts PairingWitAttest, verified by the
- *      caller) — this check bounds oppCkpt.payload.through against that
+ *      caller). This check bounds oppCkpt.payload.through against that
  *      witness-signed height: a checkpoint claiming to fold PAST the
  *      attested head is stale-or-fabricated and is refused. Without the
  *      param (legacy callers, no pairing attest) behavior is unchanged and
  *      the §2/§6 one-level audit remains the stale-state backstop.
  *
- * Returns false on ANY malformation — never throws.
+ * Returns false on ANY malformation. Never throws.
  */
 export function verifyEmbeddedOppCkpt(
   p: SegmentPayload,
@@ -525,15 +525,15 @@ export function verifyEmbeddedOppCkpt(
 /**
  * Verify what a segment event can prove ABOUT ITSELF, with no chain context:
  * the event signature, the witness terminal signature over (game, result,
- * plies, transcript — plus kind/tc/players/reason when the segment is
- * rated-shaped: the A4 rated binding), opp ≠ owner, and — when present — the
+ * plies, transcript, plus kind/tc/players/reason when the segment is
+ * rated-shaped: the A4 rated binding), opp ≠ owner, and (when present) the
  * full verifyEmbeddedOppCkpt check on the embedded opponent checkpoint.
  * Chain-context rules (linkage, cert of the signing key, attestations) are
  * verifyChain's / the witness layer's job, not duplicated here.
  */
 export function verifySegmentEvent(ev: SignedEvent): SegmentVerifyError | null {
   if (ev.body.type !== 'segment' || ev.body.lane !== 'w') return 'not-segment'
-  // Fail CLOSED on a malformed payload (the module invariant — see
+  // Fail CLOSED on a malformed payload (the module invariant; see
   // verifyEventSig / verifyWitnessedResult): a valid ed25519 signature over a
   // shape-invalid payload must return a typed error, never throw. This is the
   // designated standalone entry point for untrusted, overlay-delivered segment
@@ -541,7 +541,7 @@ export function verifySegmentEvent(ev: SignedEvent): SegmentVerifyError | null {
   // every field dereference below. The try/catch is a backstop: zSegmentPayload
   // is now bounded-depth (oppCkpt = zCkptEvent, non-recursive), but a deeply
   // nested value smuggled through a ckpt's free-form `state` could still
-  // overflow the codec stack in a later verify — a RangeError here must still
+  // overflow the codec stack in a later verify. A RangeError here must still
   // read as 'bad-payload', never propagate.
   try {
     if (!zSegmentPayload.safeParse(ev.body.payload).success) return 'bad-payload'
@@ -553,14 +553,14 @@ export function verifySegmentEvent(ev: SignedEvent): SegmentVerifyError | null {
   if (p.opp === ev.body.root) return 'opp-is-self'
   // A4 rated binding (§6, review fixes A4-01/A4-08): a kind/tc-bearing
   // (rated-shaped) segment is valid ONLY if the witness terminal signature
-  // covers end-bytes including kind, tc, players AND reason — the binding is
+  // covers end-bytes including kind, tc, players AND reason. The binding is
   // ATOMIC: rated ⇔ fully bound. `players` is derived from the payload's own
   // (root, opp, color), so the witness's signature simultaneously enforces
-  // players[p.color] === ev.body.root and players[other] === p.opp — a
+  // players[p.color] === ev.body.root and players[other] === p.opp. A
   // flipped color, a swapped opp, a relabeled reason, a value mismatch, a
   // half-binding, or a legacy (partial) wstream sig on a rated-shaped segment
   // all fail here as 'bad-ladder-binding'. Segments without kind/tc verify
-  // over the EXACT legacy bytes and keep the 'bad-wstream' taxonomy — pre-A4
+  // over the EXACT legacy bytes and keep the 'bad-wstream' taxonomy: pre-A4
   // behavior byte-for-byte.
   const bound = p.kind !== undefined || p.tc !== undefined
   const players =
@@ -578,7 +578,7 @@ export function verifySegmentEvent(ev: SignedEvent): SegmentVerifyError | null {
     return bound ? 'bad-ladder-binding' : 'bad-wstream'
   // A4 review fix (A4-02): a PRESENT oppCkpt must pass the full embedded-
   // checkpoint check. Fail-HARD (the segment, not just the checkpoint) rather
-  // than fail-to-seeds: the segment AUTHOR chose to embed it — letting an
+  // than fail-to-seeds: the segment AUTHOR chose to embed it. Letting an
   // unverifiable checkpoint silently downgrade to 1200/350 seeds would give a
   // forger a free retry surface (embed garbage, keep the game, hide the
   // attempt) and hide real fraud from every verifier. An honest author embeds

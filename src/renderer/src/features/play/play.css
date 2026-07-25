@@ -1,5 +1,5 @@
 /* ============================================================
-   Play vs Engine — feature-local styles.
+   Play vs Engine, feature-local styles.
    Only tokens.css variables + existing shared classes are used;
    no shared CSS files are edited. All new classes are namespaced
    under .play-* / .setup-* to avoid collisions.
@@ -682,7 +682,7 @@
 }
 
 /* ============================================================
-   Assistance panel (Play vs a bot) — hint ladder + live helper
+   Assistance panel (Play vs a bot). Hint ladder + live helper
    toggles. Namespaced .assist-*; tokens only. The dot colors
    deliberately reuse the board-annotation brush tokens so each
    readout matches the arrow it describes on the board.
@@ -870,7 +870,7 @@
 }
 
 /* ============================================================
-   Coach (on-demand) — shared CoachHint component styles.
+   Coach (on-demand): shared CoachHint component styles.
    Namespaced .coachhint-* so they never collide with shared or
    other-feature CSS. Mirrored in puzzles.css (component is used
    in both features and shared app.css must not be edited).
@@ -967,9 +967,9 @@
 }
 
 /* ----------------------------------------------------------------------------
-   Bot time manager (GameView-owned, additive — see PlayView/botTime.ts).
+   Bot time manager (GameView-owned, additive: see PlayView/botTime.ts).
    Deep think: when the bot allocates a long think (>= ~8s), .play-view gains
-   .is-deepthink and the opponent's thinking dots slow down and warm up — a calm
+   .is-deepthink and the opponent's thinking dots slow down and warm up, a calm
    "settling in for a big think" read instead of the usual quick pulse, and the
    chip itself (PlayerChip `deepThink` prop) adds a quiet "thinking deeply…"
    caption beside them.

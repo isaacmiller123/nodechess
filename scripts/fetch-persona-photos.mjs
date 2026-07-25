@@ -10,7 +10,7 @@
 //   { [personaId]: { dataUri: "data:image/jpeg;base64,...", attribution: "<name>, via Wikimedia Commons" } }
 // which src/main/personas/personas.ts merges into the catalog at load time.
 //
-// Failures are skipped and logged — the script NEVER crashes and never writes a
+// Failures are skipped and logged: the script NEVER crashes and never writes a
 // broken file; personas without a photo simply stay photo-less (photo: null).
 //
 // Run: node scripts/fetch-persona-photos.mjs
@@ -83,7 +83,7 @@ async function main() {
   for (const p of research) {
     if (!p?.id || typeof p.photoCommonsFile !== 'string' || p.photoCommonsFile.length === 0) {
       skipped++
-      console.log(`SKIP  ${p?.id ?? '?'} — no photoCommonsFile`)
+      console.log(`SKIP  ${p?.id ?? '?'}: no photoCommonsFile`)
       continue
     }
     try {
@@ -93,7 +93,7 @@ async function main() {
       console.log(`OK    ${p.id.padEnd(12)} ${p.photoCommonsFile} (~${kb} KB)`)
     } catch (e) {
       failed++
-      console.log(`FAIL  ${p.id.padEnd(12)} ${p.photoCommonsFile} — ${e.message}`)
+      console.log(`FAIL  ${p.id.padEnd(12)} ${p.photoCommonsFile}, ${e.message}`)
     }
   }
 

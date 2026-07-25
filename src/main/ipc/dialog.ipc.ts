@@ -1,8 +1,8 @@
 // Generic "save bytes via the OS save dialog" seam (dialog:saveFile).
 //
 // First consumer: Replay Theater's .webm export (renderer records the 3D
-// canvas with MediaRecorder and hands the finished bytes here). Kept generic —
-// name/filter/extension come from the caller — so future exports (PGN, SGF,
+// canvas with MediaRecorder and hands the finished bytes here). Kept generic:
+// name/filter/extension come from the caller, so future exports (PGN, SGF,
 // screenshots) reuse the same channel. The renderer never sees a filesystem
 // path picker; main owns the dialog + the write.
 
@@ -28,13 +28,13 @@ const saveFileSchema = z
   })
   .strict()
 
-/** Videos dir when the OS has one, else Downloads — never throws. */
+/** Videos dir when the OS has one, else Downloads. Never throws. */
 function defaultDir(): string {
   for (const name of ['videos', 'downloads'] as const) {
     try {
       return app.getPath(name)
     } catch {
-      /* some platforms lack the folder — try the next */
+      /* some platforms lack the folder: try the next */
     }
   }
   return app.getPath('home')

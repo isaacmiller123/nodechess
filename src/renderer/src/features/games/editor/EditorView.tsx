@@ -39,7 +39,7 @@ function rowToDef(row: CustomVariantRow): CustomVariantDef {
 }
 
 /**
- * The Variant Lab — gallery of saved custom variants, a template picker for
+ * The Variant Lab: gallery of saved custom variants, a template picker for
  * new ones, the builder, and local OTB play. Everything a user needs to invent
  * a chess variant and play it thirty seconds later.
  */
@@ -123,7 +123,7 @@ export default function EditorView({ onExit }: { onExit(): void }): JSX.Element 
           </button>
           <div>
             <h2 className="vl-title">Start from a template</h2>
-            <p className="vl-sub">Every template is playable as-is — pick one and bend it.</p>
+            <p className="vl-sub">Every template is playable as-is. Pick one and bend it.</p>
           </div>
         </header>
         <div className="vl-template-grid">
@@ -162,7 +162,7 @@ export default function EditorView({ onExit }: { onExit(): void }): JSX.Element 
             <FlaskConical size={20} aria-hidden /> Variant Lab
           </h2>
           <p className="vl-sub">
-            Invent your own chess — thirty pawns, Amazon queens, exploding captures, any board the
+            Invent your own chess: thirty pawns, Amazon queens, exploding captures, any board the
             engine can hold. Built on real Fairy-Stockfish rules.
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function EditorView({ onExit }: { onExit(): void }): JSX.Element 
           <Sparkles size={26} aria-hidden />
           <h3>No variants yet</h3>
           <p>
-            Start from a template — the 30 Pawns Army takes about ten seconds to make and a lifetime
+            Start from a template. The 30 Pawns Army takes about ten seconds to make and a lifetime
             to master.
           </p>
           <button type="button" className="vl-btn is-primary" onClick={() => setMode({ t: 'templates' })}>

@@ -1,6 +1,6 @@
 /* ============================================================
    Non-chess game boards (games/boards/*). Look bar: chess.com /
-   lichess grade — real materials, soft shadows, purposeful motion.
+   lichess grade: real materials, soft shadows, purposeful motion.
    Colors are self-contained (boards are physical objects, not
    theme surfaces); chrome around them uses app tokens.
    ============================================================ */
@@ -93,7 +93,7 @@
   filter: brightness(1.1);
 }
 
-/* Capture counters (go move play) — in flow BELOW the board so they never
+/* Capture counters (go move play). In flow BELOW the board so they never
    cover coordinates or stones (they used to float over the top-right corner) */
 .goboard-caps {
   display: flex;
@@ -121,7 +121,7 @@
 }
 .goboard-dot.is-black {
   background: radial-gradient(circle at 35% 30%, #555, #111 70%);
-  /* light ring — a black-bordered black dot disappears on dark themes */
+  /* light ring. A black-bordered black dot disappears on dark themes */
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
 .goboard-dot.is-white {
@@ -170,7 +170,7 @@
   box-shadow: inset 0 0 0 100vmax rgba(155, 199, 0, 0.28);
 }
 /* Selection/targets live on the DARK squares (#7d4a24): the chessground
-   dark-green values vanish there — use the lime family (as last-move) so
+   dark-green values vanish there: use the lime family (as last-move) so
    they read like lichess highlights on a dark board. */
 .ck-sq.is-selected {
   box-shadow: inset 0 0 0 100vmax rgba(155, 199, 0, 0.45);
@@ -648,7 +648,7 @@
   fill: rgba(255, 255, 255, 0.16);
 }
 .mor-hint-dot {
-  /* placement phase paints EVERY empty node — keep it a whisper, not polka
+  /* placement phase paints EVERY empty node: keep it a whisper, not polka
      dots (r overrides the SVG attribute; geometry props are CSS in SVG2) */
   fill: rgba(255, 231, 150, 0.38);
   r: 6px;

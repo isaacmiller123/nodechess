@@ -1,4 +1,4 @@
-// A6 M2 — the LIVE write-lease lifecycle (spec §4 write lease, epochs, takeover).
+// A6 M2: the LIVE write-lease lifecycle (spec §4 write lease, epochs, takeover).
 //
 // A witnessed-lane append (a 'pairing' before a rated game, a 'segment' after)
 // is legal ONLY under a live lease: a record signed by a threshold T_lease of the
@@ -8,27 +8,27 @@
 // gathers + holds + renews that lease around one rated game, and enforces the
 // single-writer discipline the spec names:
 //
-//   • acquire()  — probe the canonical set's current epoch (the `head` request),
+//   • acquire():   probe the canonical set's current epoch (the `head` request),
 //     gather grants at the right monotonic epoch via clientRequestLease (at
-//     1-witness scale the threshold floors to 1 — C-10, honest degradation), and
+//     1-witness scale the threshold floors to 1: C-10, honest degradation), and
 //     hold the returned Lease. A FRESH account starts at epoch 1.
-//   • heartbeat  — re-sign the SAME epoch with a fresh grantedWts every
+//   • heartbeat:   re-sign the SAME epoch with a fresh grantedWts every
 //     leaseHeartbeatMs (a same-device renewal; verifyLease admits it, slash.ts
 //     treats it as a crash-recovery renewal, never a double-grant), so the lease
 //     never lapses mid-game.
 //   • a SECOND device of the same account, seeing a different device holds the
-//     current live lease, is refused 'playing-elsewhere' — the honest client
+//     current live lease, is refused 'playing-elsewhere': the honest client
 //     never grabs a conflicting same-epoch lease (that would be a slashable
 //     same-epoch double-grant). It surfaces the wait instead of forking the lane.
-//   • PIN-gated takeover — once the prior lease is dead (expiry frees takeover),
+//   • PIN-gated takeover: once the prior lease is dead (expiry frees takeover),
 //     a different device acquires the NEXT epoch carrying a PIN-gated session
 //     (types.ts PinSession, purpose 'lease-takeover', epoch-bound). verifyLease
 //     admits a takeover only with a strictly higher epoch AND that session, so a
 //     session captured at one epoch cannot be replayed at a later one.
 //
-// It COMPOSES the tested substrate — clientRequestLease / canonicalWitnessSet /
+// It COMPOSES the tested substrate: clientRequestLease / canonicalWitnessSet /
 // pinSessionId (witness fabric), verifyLease + slash.adjudicate are the read-time
-// judges the suite runs against — and re-implements no crypto. Platform-specific
+// judges the suite runs against, and re-implements no crypto. Platform-specific
 // renderer hosting (it drives a live FabricEndpoint + a wall-clock heartbeat);
 // `src/shared/accounts` stays pure. The fabric, chain view, clock and heartbeat
 // timer are INJECTED so the whole lifecycle runs headless exactly as in the app.
@@ -56,7 +56,7 @@ import type {
 // Identity + dependencies
 // ---------------------------------------------------------------------------
 
-/** THIS device's signing identity — exactly `accounts.deviceSigningKey()`. */
+/** THIS device's signing identity: exactly `accounts.deviceSigningKey()`. */
 export interface LeaseRunnerIdentity {
   /** Account root (b64u). `nodeId = sha256(root)`. */
   root: B64u
@@ -73,7 +73,7 @@ export interface LeaseRunnerDeps {
   fabric: FabricEndpoint
   /** THIS device's signing identity. */
   identity: LeaseRunnerIdentity
-  /** THIS player's own account chain (re-read each acquire — a second device
+  /** THIS player's own account chain (re-read each acquire; a second device
    *  reads the SYNCED chain to see whose device wrote the current head). */
   chain: () => Chain
   /** Chain-derived witness summaries keyed by nodeId (peerService/overlay). Empty
@@ -81,7 +81,7 @@ export interface LeaseRunnerDeps {
    *  boundary, C-10). Default: empty. */
   summaries?: () => ReadonlyMap<NodeId, ChainSummary>
   /** The subject summary for eligibility (entanglement distance). Default: a
-   *  minimal subject (no entangled roots) — correct for the small-population
+   *  minimal subject (no entangled roots): correct for the small-population
    *  slice; M3 wires the real entanglement window. */
   subject?: () => SubjectSummary
   /** Wall clock (ms). Default Date.now. */
@@ -93,7 +93,7 @@ export interface LeaseRunnerDeps {
   /** Lease TTL ms. Default PARAMS_A2.leaseTtlMs. */
   ttlMs?: number
   /** Heartbeat-renew interval ms. Default PARAMS_A2.leaseHeartbeatMs. `<= 0`
-   *  disables the internal timer — a headless suite drives `heartbeat()`. */
+   *  disables the internal timer: a headless suite drives `heartbeat()`. */
   heartbeatMs?: number
   /**
    * Mint a takeover session authorizing THIS device at `epoch`. Supplied by the
@@ -102,7 +102,7 @@ export interface LeaseRunnerDeps {
    * signs with the root key it already holds from sign-in.
    *
    * This is what makes SIGNING IN ON A SECOND DEVICE work. Without it acquire()
-   * refuses forever with 'playing-elsewhere' — the first device holds the lane
+   * refuses forever with 'playing-elsewhere': the first device holds the lane
    * and nothing can ever take it, so the second device can never append.
    * Returns null when no session can be minted unattended (the honest refusal).
    */
@@ -130,8 +130,8 @@ export type AcquireResult =
   | { ok: true; lease: Lease; witnessSet: NodeId[]; epoch: number; takeover: boolean }
   | { ok: false; reason: AcquireFailReason; heldBy?: B64u; observedEpoch?: number }
 
-/** 'playing-elsewhere' — a different device holds the live lease and no takeover
- *  was authorized (honest refusal, never a fork). 'insufficient-witnesses' — no
+/** 'playing-elsewhere': a different device holds the live lease and no takeover
+ *  was authorized (honest refusal, never a fork). 'insufficient-witnesses'. No
  *  reachable eligible witness granted (C-10 honest degradation: the rated button
  *  waits). Others surface a clientRequestLease reason verbatim. */
 export type AcquireFailReason = 'playing-elsewhere' | 'insufficient-witnesses' | string
@@ -171,7 +171,7 @@ export interface LeaseRunner {
   /** Whether a live (non-expired) lease is currently held. */
   held(): boolean
   /** Probe the canonical set + synced chain for the current lease state (no
-   *  mutation) — the UI reads this to render "playing elsewhere" honestly. */
+   *  mutation): the UI reads this to render "playing elsewhere" honestly. */
   probe(): Promise<LeaseStateView>
   /** Drop the held lease + stop the heartbeat (game over / sign-out). Idempotent.
    *  The epoch high-water mark is retained so the next acquire never regresses. */
@@ -225,7 +225,7 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
   }
 
   /** The highest-height witnessed-lane event = the current head (its `key` is the
-   *  device that wrote it — how a second device sees another device is active). */
+   *  device that wrote it. How a second device sees another device is active). */
   function headEvent(chain: Chain): SignedEvent | null {
     let best: SignedEvent | null = null
     for (const ev of chain.events) {
@@ -248,7 +248,7 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
         if (head && typeof head.epoch === 'number' && Number.isSafeInteger(head.epoch))
           max = Math.max(max ?? 0, head.epoch)
       } catch {
-        // unreachable witness — skip (honest degradation)
+        // unreachable witness: skip (honest degradation)
       }
     }
     return max
@@ -310,15 +310,15 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
     const state = await probe()
 
     // The live witnessed head was authored by a DIFFERENT device ⇒ that device
-    // holds (or held) the current lease. Never grab a conflicting lease — a
+    // holds (or held) the current lease. Never grab a conflicting lease: a
     // same-epoch double-grant is slashable; the honest client waits.
     const foreignHolder = state.writer !== null && state.writer !== myKey
     if (foreignHolder) {
       const nextEpoch = Math.max(state.epoch ?? 0, heldEpoch) + 1
       let auth = opts?.takeover ?? null
 
-      // "Expiry frees takeover" (§4). When the holder's lease is plainly DEAD —
-      // its head is older than a full TTL — a second device may claim the lane
+      // "Expiry frees takeover" (§4). When the holder's lease is plainly DEAD.
+      // Its head is older than a full TTL. A second device may claim the lane
       // unattended, which is exactly the sign-in-elsewhere case. A LIVE holder is
       // still refused below: that is a real concurrent session, not a handoff.
       if (!auth && deps.mintTakeover && staleHolder(state)) {
@@ -343,12 +343,12 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
     // writer, so I must not gather (it could double-grant against the real holder).
     // Refuse until synced (honest; M3 chain replication resolves it).
     if (state.epoch !== null && state.writer === null) {
-      log(`lease acquire deferred: witnesses report epoch ${state.epoch} my chain has no head for — behind`)
+      log(`lease acquire deferred: witnesses report epoch ${state.epoch} my chain has no head for, behind`)
       return { ok: false, reason: 'behind', observedEpoch: state.epoch }
     }
 
     // Fresh account (no witnessed append: epoch null) ⇒ epoch 1; or I AM the head
-    // writer ⇒ a same-device renewal/continuation at the observed epoch — never
+    // writer ⇒ a same-device renewal/continuation at the observed epoch. Never
     // below my retained high-water mark (a witness that merely lost its cache
     // cannot roll the fence backward).
     const epoch = state.epoch === null ? Math.max(1, heldEpoch) : Math.max(state.epoch, heldEpoch)
@@ -358,8 +358,8 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
   async function heartbeat(): Promise<boolean> {
     if (!lease) return false
     const epoch = lease.body.epoch
-    // A renewal is a same-device re-grant at the SAME epoch (never a takeover) —
-    // the session is only needed to ACQUIRE a takeover epoch, not to hold it.
+    // A renewal is a same-device re-grant at the SAME epoch (never a takeover).
+    // The session is only needed to ACQUIRE a takeover epoch, not to hold it.
     const res = await gather(epoch)
     if (!res.ok) {
       log(`lease heartbeat failed: ${res.reason}`)

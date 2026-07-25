@@ -1,4 +1,4 @@
-# nodechess — Roadmap & future-work reminders
+# nodechess: Roadmap & future-work reminders
 
 > Running list of everything still to do, so nothing gets lost between sessions.
 > Status per the owner (2026-06-30): the whole thing is **~60% there**.
@@ -19,8 +19,8 @@
       manuals 222, bots 176, bots-ui 24, board3d 27, mp 215, mp-store 147.
 - [ ] **Games platform residuals.** (1) CI (`.github/workflows/build.yml`) typechecks + builds +
       packages on windows-latest + macos-latest but does not yet run the game suites (spec P3
-      wants suites in CI on both OSes — needs a Windows-verified run before wiring in). (2) No
-      tagged release contains the games platform yet (v1.0.1 predates it) — tag once pushed.
+      wants suites in CI on both OSes. Needs a Windows-verified run before wiring in). (2) No
+      tagged release contains the games platform yet (v1.0.1 predates it). Tag once pushed.
       (3) `src/main/window.ts` TODO(packaging): move loadFile → registered `app://` protocol;
       PROD_CSP already allows `file:` for the extraResources games-art so art survives the move.
 - [x] **Removed the old Lessons tab → folded into the School.** Deleted the `Lessons` nav tab,
@@ -37,7 +37,7 @@
       eval-graph marker leaking out of variations; review accuracy now persists to the game row so the
       Progress accuracy column fills; perf:estimate returns YOUR side not a 2-player average; mate-0
       mis-scoring; move-list autoscroll; loaded-game header strip; responsive layout; MultiPV persists;
-      inline FEN errors. (Owner said "more to do from there" — awaiting next direction.)
+      inline FEN errors. (Owner said "more to do from there". Awaiting next direction.)
 
 - [x] **Full-project audit-and-fix pass (2026-07-02).** 6 subsystem auditors → triage → 6 fixers →
       integration verify: 47 verified defects fixed (3 critical: dead SRS/streak systems, custom mode
@@ -67,31 +67,31 @@
       first-move grace (white move1 debits 0, no increment; abort watchdog replaces the pre-move flag);
       flags ride their own message with insufficient-material draw adjudication; monotonic clocks,
       lag compensation, heartbeat self-stall forgiveness, suspend/resume with speed-scaled reconnect
-      grace, symmetric rematch. **Test coverage (builder-tests):** `scripts/test-mp.mjs` — v3 session
+      grace, symmetric rematch. **Test coverage (builder-tests):** `scripts/test-mp.mjs` is the v3 session
       suite, **215 assertions** over every §2 rule (mock-pair transport with peer re-join, injected
-      third peer, send-error + controllable delivery); `scripts/test-mp-store.mjs` — store against a
+      third peer, send-error + controllable delivery); `scripts/test-mp-store.mjs` runs the store against a
       mocked mp (esbuild-aliased), **112 assertions** (optimistic-move rollback, K-vs-heavy
       insufficient-material flag→draw, save-once, peerAway board-freeze, sole `mp.leave()` caller); and
       the two-window Electron E2E harness (`scratchpad/mp-e2e-v3`) drives the REAL session over live
       Nostr relays: first-move grace (no debit while idle), Fischer debit+increment with guest clock
       acks, a real 15s flag delivered as `flag` (not resign) with the loser at 0, and the no-move
-      abort path — all PASS.
+      abort path. All PASS.
 
 ## ⏳ Deferred (needs a decision or owner action)
-- [x] **Mac Stockfish engine — upload to the release.** DONE 2026-07-06 (Fix A): uploaded
+- [x] **Mac Stockfish engine: upload to the release.** DONE 2026-07-06 (Fix A): uploaded
       `resources/engine/mac/stockfish` as `stockfish-sf18-mac-arm64` (sha256 matches the
-      `ENGINE_ARTIFACTS` row; a stray asset literally named `stockfish` — an earlier upload that
-      kept the raw filename, which the importer never matched — was deleted). Fresh Mac installs
+      `ENGINE_ARTIFACTS` row; a stray asset literally named `stockfish` was deleted, an earlier
+      upload that kept the raw filename and the importer never matched). Fresh Mac installs
       can now import the engine. The same pass published the whole games-platform engine set
       (Fairy-Stockfish 14, lc0 0.32.1, KataGo 1.16.5 + Go nets, Maia weights mirror) for BOTH
-      platforms — see the asset table in docs/DATASETS.md.
+      platforms. See the asset table in docs/DATASETS.md.
 - [ ] **chess.com 1:1 puzzle-rating rework.** Behavior-match their puzzle rating model. (The puzzle
       team flagged this as design-forked and left the Glicko-2 ladder intact; Rush deliberately
       doesn't move it.)
 - [ ] **Proactive in-game Viktor coaching.** Viktor narrates at instructive moments during live play
       (the `narrate` path is built but not wired into a live game loop).
 
-## 🔜 Next major system — decentralized accounts (spec locked 2026-07-14)
+## 🔜 Next major system: decentralized accounts (spec locked 2026-07-14)
 - [ ] **docs/ACCOUNTS-SPEC.md** is the binding spec: database-less accounts (entangled personal
       chains + witnesses + client-side deterministic anticheat + trust-width matchmaking).
       Build phases A1–A6 defined in §14; open parameters in §13. Supersedes the interim
@@ -99,34 +99,34 @@
       trainer (SRS opening drills), shareable game/profile links, one-click rematch everywhere,
       networking-resilience polish pass.
 
-## 🔭 Post-A-final — P2P self-sufficiency ("Bitcoin-grade bootstrap", owner directive 2026-07-21)
+## 🔭 Post-A-final: P2P self-sufficiency ("Bitcoin-grade bootstrap", owner directive 2026-07-21)
 - [ ] **Owner's goal, recorded verbatim in spirit:** the accounts/network substrate should stand on
-      its own like Bitcoin does — no reliance on third-party rendezvous (Nostr relays, public
+      its own like Bitcoin does. No reliance on third-party rendezvous (Nostr relays, public
       TURN) beyond first contact, and the substrate should be product-agnostic enough to
-      "translate to any platform or idea." NOT to be built now — after the rest (A5, A6, A-final)
-      is finished. The current Nostr/TURN + operator-peer bootstrap is accepted for the interim
+      "translate to any platform or idea." NOT to be built now, only after the rest (A5, A6,
+      A-final) is finished. The current Nostr/TURN + operator-peer bootstrap is accepted for the interim
       (spec C-11 already mandates replaceability).
 - [ ] Sketch of the robust design (to be spec'd properly when picked up):
-      1. **Peer address book** — persist known-good peers per device; on startup, redial them
+      1. **Peer address book**: persist known-good peers per device; on startup, redial them
          before touching any external rendezvous (Bitcoin's addrman pattern).
-      2. **User-base-as-infrastructure** — the DESKTOP app can accept inbound connections
+      2. **User-base-as-infrastructure**: the DESKTOP app can accept inbound connections
          (listening socket + UPnP/NAT-PMP attempt): any reachable user self-advertises as a
          beacon; beacons do signaling introductions AND peer-relay (TURN-equivalent) for
-         NAT-stuck peers. The operator peer stops being special — it's just one more beacon.
-      3. **Beacon seeds shipped in releases** — a signed, per-release list of long-lived community
+         NAT-stuck peers. The operator peer stops being special. It's just one more beacon.
+      3. **Beacon seeds shipped in releases**: a signed, per-release list of long-lived community
          beacons baked into the binary (Bitcoin's DNS-seed pattern), so a fresh install can join
          with zero third-party services.
-      4. **In-overlay introductions** — once connected to anyone, all further rendezvous rides the
+      4. **In-overlay introductions**: once connected to anyone, all further rendezvous rides the
          overlay itself (FabricEndpoint already abstracts transport for this).
-      5. **Substrate extraction** — keep src/shared/accounts/** game-agnostic (it already is:
+      5. **Substrate extraction**: keep src/shared/accounts/** game-agnostic (it already is:
          segments carry a kind string; the judge is a pluggable verdict fn) so the identity/chain/
          witness/storage stack can be lifted into any future product.
 - [ ] **Web port.** The renderer is already React/TS; the blockers are the Electron-only main process
-      (node:sqlite DBs, local Stockfish, IPC). Path: replace IPC with a server/WASM backend —
-      Stockfish.wasm in-browser for the engine, a hosted DB/API for puzzles/games. Notes in session.
+      (node:sqlite DBs, local Stockfish, IPC). Path: replace IPC with a server/WASM backend, use
+      Stockfish.wasm in-browser for the engine, and host a DB/API for puzzles/games. Notes in session.
 
 ## ✅ Done (for reference)
-- **Internet multiplayer (2026-07-02):** play any two computers anywhere — one player hosts and gets a
+- **Internet multiplayer (2026-07-02):** play any two computers anywhere. One player hosts and gets a
   code like `A1B2C-D3E4F`, the other enters it and connects, across NATs/countries, with no user-run
   server and no port forwarding. Replaces the old same-LAN WebSocket transport entirely. Built on WebRTC
   data channels in the renderer (Chromium `RTCPeerConnection`), peer discovery via **trystero** (Nostr
@@ -139,11 +139,11 @@
 - Viktor coach; board-centric lesson UI; chapter tests.
 - Placement game → internal-Elo estimate → name-based chapter unlock (Elo never shown), shipped.
 - Old Lessons tab removed → School; Famous folded into Analysis; Analysis own-game-review fixed.
-- **Puzzles trainer finished (DB v5):** 4 modes — Train (adaptive), Custom/Themed (pick themes+
+- **Puzzles trainer finished (DB v5):** 4 modes: Train (adaptive), Custom/Themed (pick themes+
   difficulty+length → focused set + accuracy-ring summary), Rush/Storm (rush3/rush5/storm/survival,
   prefetched queue + climbing band + lives/clock HUD, own high-score), Daily (deterministic daily +
   local streak + cross-mode stats + history). Rush doesn't move the Glicko ladder.
-- **School ideas built (DB v6):** (1) test P1 polish — `recordTest` is now server-authoritative on
+- **School ideas built (DB v6):** (1) test P1 polish: `recordTest` is now server-authoritative on
   pass/fail, fail-both resets the whole chapter (keeps best_pct), multi-ply "play the opening out"
   supported; (2) weakness-driven "recommended next chapter" (name-based, never Elo); (3) SM-2-lite
   spaced repetition of concepts (concept_srs + a "reviews due" drill); (4) daily lesson + local-day

@@ -1,7 +1,7 @@
 // Art credits for the games platform (resources/games-art/**). CC-BY assets
 // REQUIRE user-facing attribution, so Settings must surface this (render
 // GAMES_ART_CREDITS as a list, or GAMES_ART_CREDITS_TEXT as one string).
-// Full per-file detail + license links live in docs/CREDITS.md — keep the two
+// Full per-file detail + license links live in docs/CREDITS.md. Keep the two
 // in sync when assets change.
 
 export interface ArtCredit {
@@ -72,5 +72,5 @@ export const GAMES_ART_CREDITS: readonly ArtCredit[] = [
 
 /** One-line-per-asset attribution block for the Settings credits screen. */
 export const GAMES_ART_CREDITS_TEXT: string = GAMES_ART_CREDITS.map(
-  (c) => `${c.asset} — ${c.author} (${c.license}) — ${c.url}`
+  (c) => `${c.asset}, ${c.author} (${c.license}), ${c.url}`
 ).join('\n')

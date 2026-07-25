@@ -11,10 +11,10 @@ export interface EnginePanelProps {
   enabled: boolean
   multipv: number
   figurineMode: boolean
-  /** Stockfish binary not on disk (useEngineReady) — show the install CTA
+  /** Stockfish binary not on disk (useEngineReady): show the install CTA
    *  instead of "analyzing…" at depth 0 forever. */
   engineMissing?: boolean
-  /** engine:analyze rejection (useAnalysis.error) — surfaced when the engine
+  /** engine:analyze rejection (useAnalysis.error). Surfaced when the engine
    *  IS installed but failed (crash/broken binary). */
   error?: string | null
   /** Deep link to Settings → Datasets for the install CTA. */
@@ -66,7 +66,7 @@ export function EnginePanel(props: EnginePanelProps) {
         )}
         {enabled && !engineMissing && error != null && (
           <div className="muted small pad" role="alert">
-            Engine failed to start — {error}
+            Engine failed to start: {error}
           </div>
         )}
         {enabled && !unavailable && lines.length === 0 && (

@@ -1,4 +1,4 @@
-// THE A3 AUTHENTICATED-POINTERS SUITE — brick 4 (spec §5 "authenticated
+// THE A3 AUTHENTICATED-POINTERS SUITE: brick 4 (spec §5 "authenticated
 // pointer records / closes index poisoning"; docs/ACCOUNTS-SPEC.md).
 //
 //   node scripts/test-accounts-pointers.mjs
@@ -14,7 +14,7 @@
 //      wrong-params/mismatched headers, zod/malformed input;
 //   3. store gate: full verification + key binding, all-or-nothing rows,
 //      non-'pointers' kinds fall through to base;
-//   4. cap-overflow flood: deterministic per-key cap — honest segment/shard
+//   4. cap-overflow flood: deterministic per-key cap. Honest segment/shard
 //      pointers survive a sybil chain-pointer flood in EVERY arrival order,
 //      attacker excess truncated, merged rows byte-deterministic;
 //   5. end-to-end overlay round-trip: publish → enumerate → verified contact
@@ -50,13 +50,13 @@ export * as S from '@shared/accounts/storage'
 export * as SEG from '@shared/accounts/segment'
 `
 
-// Golden pointer key for the fixed seed 'ptr-gold-subject' — byte-determinism
+// Golden pointer key for the fixed seed 'ptr-gold-subject': byte-determinism
 // anchor across node + browser bundles (recorded from a green run; any change
 // to the tag, hashing, or b64u breaks this everywhere at once).
 const GOLDEN_POINTER_KEY = 'KMDHDnp6FhxhOqCD3eFx3IAMm5eBPn0LfbGHZlHTCOw'
 
 // The pointer decision core bundled twice (platform node vs browser) and driven
-// through one scripted mint/verify/fold/sheet sequence — the transcripts must
+// through one scripted mint/verify/fold/sheet sequence. The transcripts must
 // match byte-for-byte (the "verifiers byte-deterministic in a browser bundle"
 // hard rule), and the browser bundle must carry zero node built-ins.
 const PARITY_ENTRY = `
@@ -172,7 +172,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -270,7 +270,7 @@ async function run(M) {
   // ==========================================================================
   {
     // Static guard: the pointer module is platform-neutral + byte-deterministic
-    // (no ambient time / randomness / timers / node builtins) — the browser
+    // (no ambient time / randomness / timers / node builtins): the browser
     // parity digest exercises one scripted path, so it cannot catch a regression
     // in an unexercised branch; this source-regex guard covers every branch.
     const src = readFileSync(resolve(ROOT, 'src/shared/accounts/storage/pointers.ts'), 'utf8')
@@ -427,13 +427,13 @@ async function run(M) {
   const gate = S.makePointerStoreValidator({ directory: () => dir, nowMs: () => NOW, shard: GEO, capPerKey: 8 })
   const from = dirNodes[0].nodeId
   ok(gate.validator(from, target, 'pointers', { v: 1, ptrs: [ptrO1, ptrShard] }), 'a fully-valid row is accepted under the subject pointer key')
-  ok(!gate.validator(from, subjectNodeId, 'pointers', { v: 1, ptrs: [ptrO1] }), 'the SAME row under the wrong key (subject nodeId) is refused — key binding')
+  ok(!gate.validator(from, subjectNodeId, 'pointers', { v: 1, ptrs: [ptrO1] }), 'the SAME row under the wrong key (subject nodeId) is refused, key binding')
   ok(!gate.validator(from, target, 'pointers', { v: 1, ptrs: [ptrO1, { body: ptrO1.body, sig: flip(ptrO1.sig) }] }), 'one bad record poisons the row → all-or-nothing refusal')
   ok(!gate.validator(from, target, 'pointers', { v: 1, ptrs: [] }), 'an empty row is refused')
   ok(!gate.validator(from, target, 'pointers', { v: 1, ptrs: Array(9).fill(ptrO1) }), 'a row larger than capPerKey is refused outright')
   ok(!gate.validator(from, target, 'pointers', { v: 2, ptrs: [ptrO1] }), 'a foreign row version is refused')
   ok(gate.validator(from, target, 'record', { v: 1 }), "kind 'record' falls through to the default base (accepted)")
-  ok(!gate.validator(from, target, 'shard', { v: 1 }), "kind 'shard' falls through to the default base (refused — compose with the shard gate)")
+  ok(!gate.validator(from, target, 'shard', { v: 1 }), "kind 'shard' falls through to the default base (refused, compose with the shard gate)")
 
   // ==========================================================================
   console.log('\n· 4. cap-overflow flood: honest pointers survive deterministically …')
@@ -489,7 +489,7 @@ async function run(M) {
     const dupHolders = new Set(dupRow.ptrs.map((p) => p.body.holder))
     ok(dupHolders.has(carrier.root.pubB) && dupHolders.has(carrier2.root.pubB), 'both DISTINCT carriers survive a tight cap; the duplicate re-publish is what gets truncated')
 
-    // Defect F/H: the OTHER flood direction — a SINGLE real entanglement partner
+    // Defect F/H: the OTHER flood direction. A SINGLE real entanglement partner
     // minting cap-many ts-VARIANTS of its ONE segment pointer. Segments outrank
     // shard/chain (kindRank), so pre-fix the variants filled the whole cap and
     // evicted every honest shard+chain pointer. The (holder,hash) dedup collapses
@@ -514,14 +514,14 @@ async function run(M) {
 
     const SKEW = S.POINTER_TS_SKEW_MS
     // A genuinely NEWER entanglement of the subject: owner-signed at a far-later
-    // ts, freshly attested — real recency, not a re-countersigned old event.
+    // ts, freshly attested: real recency, not a re-countersigned old event.
     const freshTs = T0 + 5 * SKEW
     const builtFresh = A.appendWitnessed(chainX, devX.priv, devX.pubB, 'segment', segPayload('fresh', friend.pubB, 'Friend'), freshTs)
     const segFreshRaw = builtFresh.events[builtFresh.events.length - 1]
     const segFresh = { ...segFreshRaw, wit: [W.makeAttestation(A.eventId(segFreshRaw.body), 0, wit.pubB, wit.priv, freshTs + 10)] }
 
     // Defect G: cap eviction ranks by the AUTHORITY-BOUNDED effTs, never the raw
-    // holder-claimed ts — so a huge lying ts on an OLD proof cannot win a scarce
+    // holder-claimed ts, so a huge lying ts on an OLD proof cannot win a scarce
     // retention slot over a holder whose PROOF is genuinely fresher (a newer
     // owner-signed head, not just a fresher countersignature on the same head).
     {
@@ -539,13 +539,13 @@ async function run(M) {
       const tightChain = S.makePointerMerge({ capPerKey: 1, shard: GEO })
       const row = tightChain(tightChain(null, { v: 1, ptrs: [liar] }, 'pointers', target), { v: 1, ptrs: [honest] }, 'pointers', target)
       eq(row.ptrs.length, 1, 'a tight cap keeps one chain pointer')
-      eq(canon(row.ptrs[0]), canon(honest), 'the genuinely-fresher holder survives — the fold ranks by authority-bounded effTs, not the raw ts lie (defect G)')
+      eq(canon(row.ptrs[0]), canon(honest), 'the genuinely-fresher holder survives. The fold ranks by authority-bounded effTs, not the raw ts lie (defect G)')
     }
 
-    // ROUND 2 — proofWts is authority-bounded: a holder INJECTS a self-signed
+    // ROUND 2, proofWts is authority-bounded: a holder INJECTS a self-signed
     // attestation with a huge wts into proof.event.wit (covered by neither the
     // event id nor its signature), trying to lift the effTs ceiling. The clamp at
-    // the OWNER-signed event ts denies the lift — an injected attestation from a
+    // the OWNER-signed event ts denies the lift: an injected attestation from a
     // throwaway (non-witness) key confers NO extra ranking recency.
     {
       const attackerKp = kpOf('ptr-inject-atk')
@@ -557,15 +557,15 @@ async function run(M) {
       const plain = mk(seg2w) // the SAME pointer, real attestation only
       ok(W.verifyAttestation(injectedEv.wit[1], A.eventId(seg2w.body)), 'sanity: the injected throwaway-key attestation DOES pass verifyAttestation (there is no eligibility gate there)')
       eq(S.verifyPointer(injected), 'ok', 'the injected-attestation pointer still verifies (a fabricated attestation is not itself a record forgery)')
-      eq(S.checkPointer(injected).info.effTs, S.checkPointer(plain).info.effTs, 'the injected huge-wts attestation confers NO effTs lift — recency is clamped at the owner-signed proof ts, never the holder-attachable wit')
+      eq(S.checkPointer(injected).info.effTs, S.checkPointer(plain).info.effTs, 'the injected huge-wts attestation confers NO effTs lift: recency is clamped at the owner-signed proof ts, never the holder-attachable wit')
       eq(S.checkPointer(injected).info.effTs, seg2w.body.ts + SKEW, '…and that ceiling is the OWNER-signed proof ts + skew (authority-bounded)')
-      ok(S.checkPointer(injected).info.effTs < bigWts, 'the attacker-chosen ts is DENIED — effTs is far below it (defeats the injected-attestation lift)')
+      ok(S.checkPointer(injected).info.effTs < bigWts, 'the attacker-chosen ts is DENIED: effTs is far below it (defeats the injected-attestation lift)')
     }
 
-    // ROUND 2 — chain-pointer dedup keys on the OWNER-signed proof event id, NOT
+    // ROUND 2: chain-pointer dedup keys on the OWNER-signed proof event id, NOT
     // the holder-chosen blobHash (unverified at pointer-verify time). So ONE
     // holder cannot mint many chain pointers with distinct fake hashes and occupy
-    // many slots — its variants of one head collapse to a single entry.
+    // many slots: its variants of one head collapse to a single entry.
     {
       const CAP3 = 10
       const mergeC = S.makePointerMerge({ capPerKey: CAP3, shard: GEO })
@@ -574,11 +574,11 @@ async function run(M) {
         subject: rootX.pubB, holder: sybil.pubB, key: sybil.pubB, priv: sybil.priv,
         ts: WTS + 1000 + i, event: seg2w, certs: certsX, blobHash: idLike('fake-blob-' + i), // arbitrary holder-chosen hash
       }))
-      ok(variants.every((v) => S.verifyPointer(v) === 'ok'), 'each distinct-hash chain pointer independently verifies (blobHash is unverified at pointer-verify time — bound only at fetch)')
+      ok(variants.every((v) => S.verifyPointer(v) === 'ok'), 'each distinct-hash chain pointer independently verifies (blobHash is unverified at pointer-verify time; bound only at fetch)')
       eq(new Set(variants.map((v) => canon(v))).size, variants.length, '…and each is a DISTINCT record (distinct fake hash → distinct recId)')
       const acc = variants.reduce((a, v) => mergeC(a, { v: 1, ptrs: [v] }, 'pointers', target), null)
       eq(acc.ptrs.filter((p) => p.body.kind === 'chain' && p.body.holder === sybil.pubB).length, 1,
-        "ONE holder's chain pointers over the SAME head collapse to a SINGLE slot — distinct fake hashes cannot pad the index (dedup by proof event id, not holder-chosen blobHash)")
+        "ONE holder's chain pointers over the SAME head collapse to a SINGLE slot. Distinct fake hashes cannot pad the index (dedup by proof event id, not holder-chosen blobHash)")
     }
   }
 

@@ -16,15 +16,15 @@ export interface PieceIconProps {
 
 /**
  * Inline chess piece rendered with the SAME artwork as the board's active
- * piece set — never a unicode glyph.
+ * piece set, never a unicode glyph.
  *
  * How it works: the bundled sets (styles/pieces.css) deliver artwork through
  * selectors of the shape `.pieces-<set> .cg-wrap piece.<role>.<color>
  * { background-image: … }`, and the default cburnett set ships as chessground's
  * global `.cg-wrap piece.<role>.<color>` rules (chessground.cburnett.css,
  * loaded in main.tsx). This component recreates the minimal DOM both shapes
- * match — a `pieces-<set>` wrapper around a `.cg-wrap` element around a
- * `<piece class="<color> <role>">` child — so EVERY set, including the
+ * match: a `pieces-<set>` wrapper around a `.cg-wrap` element around a
+ * `<piece class="<color> <role>">` child, so EVERY set, including the
  * default, resolves exactly as it does on the board. piece-icon.css then
  * overrides chessground's board geometry (12.5% absolute square) so the
  * artwork fills this icon instead.
@@ -40,7 +40,7 @@ export function PieceIcon({ role, color, size = 24, className }: PieceIconProps)
   return (
     <span className={cls} style={style} aria-hidden>
       <span className="cg-wrap">
-        {/* chessground's custom <piece> element — created without JSX so the
+        {/* chessground's custom <piece> element: created without JSX so the
             app's IntrinsicElements are not widened for one internal node. */}
         {createElement('piece', { className: `${color} ${role}` })}
       </span>

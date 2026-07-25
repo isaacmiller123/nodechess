@@ -2,7 +2,7 @@
 
 > Offline Electron chess teaching/analysis app. This spec is the authorable source of truth for: the curriculum tree (beginner → ~2000 Elo), the puzzle theme taxonomy + rating-band mapping, the **local (no-LLM) coaching engine** (classification math, motif detection, template NLG), the spaced-repetition + local rating subsystem, and the bundled data-sources/licenses table.
 >
-> All numbers, formulas, and thresholds below are concrete and implementation-ready. Algorithm code is described to be **re-implemented in clean BSD/MIT modules** (never copied from AGPL/GPL sources — math and facts are not copyrightable; source text is). Stockfish is bundled as a separate UCI process so its GPL stays compartmentalized.
+> All numbers, formulas, and thresholds below are concrete and implementation-ready. Algorithm code is described to be **re-implemented in clean BSD/MIT modules** (never copied from AGPL/GPL sources; math and facts are not copyrightable; source text is). Stockfish is bundled as a separate UCI process so its GPL stays compartmentalized.
 
 ---
 
@@ -14,7 +14,7 @@ These are referenced throughout.
 - All evals come from a **bundled Stockfish 18** child process over UCI (see §6). `info ... score cp <x>` is **centipawns from side-to-move POV**; `score mate <n>` is mate-in-n plies (sign = who mates). Coaching always converts to a **fixed POV** (the player whose move is being judged) before computing diffs.
 - Analysis/review runs at a **fixed budget** (`go depth 20` or `~1500 ms movetime`, plus `MultiPV 2` minimum) so classification is **reproducible and cacheable** (key = `FEN + depth`). Great/Brilliant tests need the 2nd-best line.
 
-### 0.2 Win% (Lichess canonical) — single source of truth
+### 0.2 Win% (Lichess canonical), single source of truth
 ```ts
 // cp clamped to [-1000, 1000]; mate mapped to a finite high band.
 const WIN_MULT = -0.00368208;            // Lichess constant (lila PR #11148)
@@ -155,7 +155,7 @@ interface Curriculum {
   ],
   "interactive": [
     { "kind": "explainer", "fen": "4k3/8/8/3N4/8/8/8/4K3 w - - 0 1",
-      "notes": "Knight on d5 attacks c7, e7, f6, b6, f4, b4, c3, e3 — eight squares, none on its own line." },
+      "notes": "Knight on d5 attacks c7, e7, f6, b6, f4, b4, c3, e3. Eight squares, none on its own line." },
     { "kind": "guidedBoard", "pgn": "1. ... (guided: play Nf7+ forking K and Q)" }
   ],
   "puzzle": {
@@ -173,96 +173,96 @@ interface Curriculum {
 
 Legend per lesson: **objectives** abbreviated; **themes** = §2 keys; **rating** = puzzle-Glicko window.
 
-### BAND 0 — Absolute Beginner (0–600) · `ratingFloor: 0`
+### BAND 0: Absolute Beginner (0–600) · `ratingFloor: 0`
 Goal: know the rules, never hang for free, deliver basic mates.
 
-- **Unit B0.rules — The Board & The Pieces**
-  - *L1 How pieces move* — obj: move each piece legally. themes: — (interactive only). rating: n/a
-  - *L2 Special moves* — obj: castle, en-passant, promotion. themes: `promotion`,`enPassant`,`castling`. rating: 600–900 (sparse; mostly interactive)
-  - *L3 Check, checkmate, stalemate* — obj: distinguish the three. themes: `mate`,`mateIn1`. rating: 600–800
-  - *L4 Piece values & trades* — obj: count material, avoid bad trades. themes: `hangingPiece`. rating: 600–800
-- **Unit B0.mate — First Checkmates**
-  - *L1 Mate in one* — themes: `mateIn1`,`oneMove`. rating: 600–800
-  - *L2 Overkill mates (K+Q vs K, K+2R vs K)* — themes: `mate`,`endgame`. rating: 600–900 (supplement with authored positions)
-  - *L3 K+R vs K (the box/ladder)* — themes: `endgame`,`rookEndgame`. rating: 700–950 (authored fallback)
-- **Unit B0.safety — Don't Hang Pieces**
-  - *L1 Spot a free capture* — themes: `hangingPiece`,`oneMove`. rating: 600–850
-  - *L2 The fork (intro)* — themes: `fork`. rating: 700–950
-  - *L3 Defend a hanging piece* — themes: `hangingPiece`,`defensiveMove`. rating: 700–950
+- **Unit B0.rules: The Board & The Pieces**
+  - *L1 How pieces move*, obj: move each piece legally. themes: (interactive only). rating: n/a
+  - *L2 Special moves*, obj: castle, en-passant, promotion. themes: `promotion`,`enPassant`,`castling`. rating: 600–900 (sparse; mostly interactive)
+  - *L3 Check, checkmate, stalemate*, obj: distinguish the three. themes: `mate`,`mateIn1`. rating: 600–800
+  - *L4 Piece values & trades*, obj: count material, avoid bad trades. themes: `hangingPiece`. rating: 600–800
+- **Unit B0.mate: First Checkmates**
+  - *L1 Mate in one*, themes: `mateIn1`,`oneMove`. rating: 600–800
+  - *L2 Overkill mates (K+Q vs K, K+2R vs K)*, themes: `mate`,`endgame`. rating: 600–900 (supplement with authored positions)
+  - *L3 K+R vs K (the box/ladder)*, themes: `endgame`,`rookEndgame`. rating: 700–950 (authored fallback)
+- **Unit B0.safety: Don't Hang Pieces**
+  - *L1 Spot a free capture*, themes: `hangingPiece`,`oneMove`. rating: 600–850
+  - *L2 The fork (intro)*, themes: `fork`. rating: 700–950
+  - *L3 Defend a hanging piece*, themes: `hangingPiece`,`defensiveMove`. rating: 700–950
 
-### BAND 1 — Beginner (600–1000) · `ratingFloor: 600`
+### BAND 1: Beginner (600–1000) · `ratingFloor: 600`
 Goal: the core tactical motifs, opening principles, a first opening, basic king-and-pawn ideas.
 
-- **Unit B1.tactics — Pins, Skewers, Forks**
-  - *L1 Pin* — themes: `pin`. rating: 700–1050
-  - *L2 Skewer* — themes: `skewer`. rating: 750–1100
-  - *L3 Knight & pawn forks* — themes: `fork`. rating: 700–1050
-  - *L4 Discovered attack* — themes: `discoveredAttack`. rating: 800–1150
-- **Unit B1.mating — Back-Rank & Mating Nets**
-  - *L1 Back-rank mate* — themes: `backRankMate`,`mateIn1`. rating: 700–1050
-  - *L2 Mate in 2 (intro)* — themes: `mateIn2`,`short`. rating: 800–1150
-  - *L3 Smothered mate (intro)* — themes: `smotheredMate`. rating: 900–1200
-- **Unit B1.openings — Opening Principles**
-  - *L1 Center, develop, castle* — themes: `opening`. rating: 700–1000 (with `OpeningTags` filter)
-  - *L2 The Italian Game* — interactive PGN module; obj: reach a sound Italian setup
-  - *L3 The London System* — interactive PGN module
-- **Unit B1.endgame — King & Pawn Basics**
-  - *L1 Opposition* — themes: `endgame`,`pawnEndgame`. rating: 800–1100 (authored fallback)
-  - *L2 Promoting a pawn* — themes: `promotion`,`pawnEndgame`. rating: 800–1150
+- **Unit B1.tactics: Pins, Skewers, Forks**
+  - *L1 Pin*, themes: `pin`. rating: 700–1050
+  - *L2 Skewer*, themes: `skewer`. rating: 750–1100
+  - *L3 Knight & pawn forks*, themes: `fork`. rating: 700–1050
+  - *L4 Discovered attack*, themes: `discoveredAttack`. rating: 800–1150
+- **Unit B1.mating: Back-Rank & Mating Nets**
+  - *L1 Back-rank mate*, themes: `backRankMate`,`mateIn1`. rating: 700–1050
+  - *L2 Mate in 2 (intro)*, themes: `mateIn2`,`short`. rating: 800–1150
+  - *L3 Smothered mate (intro)*, themes: `smotheredMate`. rating: 900–1200
+- **Unit B1.openings: Opening Principles**
+  - *L1 Center, develop, castle*, themes: `opening`. rating: 700–1000 (with `OpeningTags` filter)
+  - *L2 The Italian Game*, interactive PGN module; obj: reach a sound Italian setup
+  - *L3 The London System*, interactive PGN module
+- **Unit B1.endgame: King & Pawn Basics**
+  - *L1 Opposition*, themes: `endgame`,`pawnEndgame`. rating: 800–1100 (authored fallback)
+  - *L2 Promoting a pawn*, themes: `promotion`,`pawnEndgame`. rating: 800–1150
 
-### BAND 2 — Intermediate Beginner (1000–1400) · `ratingFloor: 1000`
+### BAND 2: Intermediate Beginner (1000–1400) · `ratingFloor: 1000`
 Goal: combination motifs, calculation, K+P vs K technique, first real strategy.
 
-- **Unit B2.combos — Removing Defenders & Combinations**
-  - *L1 Deflection* — themes: `deflection`. rating: 1050–1400
-  - *L2 Attraction* — themes: `attraction`. rating: 1050–1400
-  - *L3 Capturing the defender* — themes: `capturingDefender`. rating: 1050–1400
-  - *L4 Intermezzo (zwischenzug)* — themes: `intermezzo`. rating: 1100–1450
-- **Unit B2.mating — Forced Mates**
-  - *L1 Mate in 2* — themes: `mateIn2`. rating: 1000–1350
-  - *L2 Sacrificial mating attacks* — themes: `sacrifice`,`kingsideAttack`. rating: 1100–1450
-- **Unit B2.endgame — Essential King & Pawn**
-  - *L1 K+P vs K (key squares)* — themes: `pawnEndgame`. rating: 1000–1350
-  - *L2 Outside passed pawn* — themes: `pawnEndgame`,`advancedPawn`. rating: 1100–1400
-- **Unit B2.strategy — First Strategy (Steps "Step 4")**
-  - *L1 Weak squares & outposts* — interactive; obj: place a knight on a protected outpost
-  - *L2 Open files for rooks* — interactive
-  - *L3 Good vs bad bishop* — interactive
+- **Unit B2.combos: Removing Defenders & Combinations**
+  - *L1 Deflection*, themes: `deflection`. rating: 1050–1400
+  - *L2 Attraction*, themes: `attraction`. rating: 1050–1400
+  - *L3 Capturing the defender*, themes: `capturingDefender`. rating: 1050–1400
+  - *L4 Intermezzo (zwischenzug)*, themes: `intermezzo`. rating: 1100–1450
+- **Unit B2.mating: Forced Mates**
+  - *L1 Mate in 2*, themes: `mateIn2`. rating: 1000–1350
+  - *L2 Sacrificial mating attacks*, themes: `sacrifice`,`kingsideAttack`. rating: 1100–1450
+- **Unit B2.endgame: Essential King & Pawn**
+  - *L1 K+P vs K (key squares)*, themes: `pawnEndgame`. rating: 1000–1350
+  - *L2 Outside passed pawn*, themes: `pawnEndgame`,`advancedPawn`. rating: 1100–1400
+- **Unit B2.strategy: First Strategy (Steps "Step 4")**
+  - *L1 Weak squares & outposts*, interactive; obj: place a knight on a protected outpost
+  - *L2 Open files for rooks*, interactive
+  - *L3 Good vs bad bishop*, interactive
 
-### BAND 3 — Intermediate (1400–1800) · `ratingFloor: 1400`
+### BAND 3: Intermediate (1400–1800) · `ratingFloor: 1400`
 Goal: advanced tactics, theoretical rook endgames, calculation discipline, deeper repertoire.
 
-- **Unit B3.tactics — Advanced Motifs**
-  - *L1 Interference* — themes: `interference`. rating: 1450–1800
-  - *L2 X-ray / battery* — themes: `xRayAttack`. rating: 1450–1800
-  - *L3 Quiet move (the in-between non-capture)* — themes: `quietMove`. rating: 1500–1850
-  - *L4 Overloaded pieces* — themes: `deflection` (proxy) + app's own overload detector. rating: 1450–1800
-- **Unit B3.endgame — Theoretical Rook Endgames**
-  - *L1 Lucena (building a bridge)* — themes: `rookEndgame`. rating: 1450–1800 (authored fallback)
-  - *L2 Philidor (third-rank defense)* — themes: `rookEndgame`. rating: 1450–1800 (authored fallback)
-  - *L3 Rook on the 7th rank* — themes: `rookEndgame`,`advancedPawn`. rating: 1500–1850
-- **Unit B3.calc — Calculation & Visualization**
-  - *L1 Forcing-moves first (checks, captures, threats)* — themes: `short`,`long`. rating: 1500–1850
-  - *L2 Candidate moves & elimination* — interactive
-- **Unit B3.openings — Repertoire Deepening**
+- **Unit B3.tactics: Advanced Motifs**
+  - *L1 Interference*, themes: `interference`. rating: 1450–1800
+  - *L2 X-ray / battery*, themes: `xRayAttack`. rating: 1450–1800
+  - *L3 Quiet move (the in-between non-capture)*, themes: `quietMove`. rating: 1500–1850
+  - *L4 Overloaded pieces*, themes: `deflection` (proxy) + app's own overload detector. rating: 1450–1800
+- **Unit B3.endgame: Theoretical Rook Endgames**
+  - *L1 Lucena (building a bridge)*, themes: `rookEndgame`. rating: 1450–1800 (authored fallback)
+  - *L2 Philidor (third-rank defense)*, themes: `rookEndgame`. rating: 1450–1800 (authored fallback)
+  - *L3 Rook on the 7th rank*, themes: `rookEndgame`,`advancedPawn`. rating: 1500–1850
+- **Unit B3.calc: Calculation & Visualization**
+  - *L1 Forcing-moves first (checks, captures, threats)*, themes: `short`,`long`. rating: 1500–1850
+  - *L2 Candidate moves & elimination*, interactive
+- **Unit B3.openings: Repertoire Deepening**
   - swappable PGN modules per opening (white d4/e4, black vs e4 / vs d4)
 
-### BAND 4 — Advanced (1800–2000) · `ratingFloor: 1800`
+### BAND 4: Advanced (1800–2000) · `ratingFloor: 1800`
 Goal: prophylaxis, deep endgame theory, conversion technique, long forced sequences.
 
-- **Unit B4.strategy — Prophylaxis & Maneuvering**
-  - *L1 Prophylactic thinking (stop their plan first)* — interactive
-  - *L2 Zugzwang & triangulation* — themes: `zugzwang`,`endgame`. rating: 1800–2050
-- **Unit B4.endgame — Higher Endgame Theory**
-  - *L1 R+2 vs R* — themes: `rookEndgame`. rating: 1800–2050 (authored fallback)
-  - *L2 Queen endgames* — themes: `queenEndgame`. rating: 1800–2050
-  - *L3 Conversion technique (winning won positions)* — themes: `advantage`,`crushing`. rating: 1800–2050
-- **Unit B4.tactics — Long & Very-Long Combinations**
-  - *L1 Mate in 4–5* — themes: `mateIn4`,`mateIn5`. rating: 1800–2050
-  - *L2 Very-long forced lines* — themes: `veryLong`. rating: 1850–2100
-- **Unit B4.attack — The Attacking Game**
-  - *L1 Opposite-side castling races* — themes: `kingsideAttack`,`queensideAttack`. rating: 1800–2050
-  - *L2 Sacrifices for the initiative* — themes: `sacrifice`. rating: 1800–2050
+- **Unit B4.strategy: Prophylaxis & Maneuvering**
+  - *L1 Prophylactic thinking (stop their plan first)*, interactive
+  - *L2 Zugzwang & triangulation*, themes: `zugzwang`,`endgame`. rating: 1800–2050
+- **Unit B4.endgame: Higher Endgame Theory**
+  - *L1 R+2 vs R*, themes: `rookEndgame`. rating: 1800–2050 (authored fallback)
+  - *L2 Queen endgames*, themes: `queenEndgame`. rating: 1800–2050
+  - *L3 Conversion technique (winning won positions)*, themes: `advantage`,`crushing`. rating: 1800–2050
+- **Unit B4.tactics: Long & Very-Long Combinations**
+  - *L1 Mate in 4–5*, themes: `mateIn4`,`mateIn5`. rating: 1800–2050
+  - *L2 Very-long forced lines*, themes: `veryLong`. rating: 1850–2100
+- **Unit B4.attack: The Attacking Game**
+  - *L1 Opposite-side castling races*, themes: `kingsideAttack`,`queensideAttack`. rating: 1800–2050
+  - *L2 Sacrifices for the initiative*, themes: `sacrifice`. rating: 1800–2050
 
 > **Coverage note:** ratings concentrate in ~1100–1600; **band ends (very low and ≥1900) need authored positions** to backfill thin pools. Each lesson's `fallbackThemes` plus an `authoredPositions` PGN module mitigate this.
 
@@ -304,24 +304,24 @@ export type PuzzleTheme = typeof THEME_ENUM[number];
 ```
 
 ## 2.2 Theme one-liner definitions (learner-facing tooltips)
-Adapt-and-attribute from `puzzleTheme.xml` (AGPL UI **text** — paraphrase, credit Lichess). Examples shipped verbatim-ish:
-- **fork** — one piece attacks two enemy pieces at once.
-- **pin** — a piece can't move without exposing a more valuable one behind it.
-- **skewer** — a valuable piece is attacked and forced to move, exposing a lesser one behind it.
-- **discoveredAttack** — moving a blocking piece reveals an attack from a long-range piece behind it.
-- **doubleCheck** — two pieces give check at once; only a king move escapes.
-- **deflection** — distract a piece from a defensive duty (a.k.a. overloading).
-- **capturingDefender** — remove the piece that defends another, then win it.
-- **interference** — block the line between a defender and what it defends.
-- **backRankMate** — mate on the back rank where the king is hemmed in by its own pawns.
-- **trappedPiece** — a piece with no safe square is won.
-- **hangingPiece** — an undefended piece can simply be taken.
-- **zugzwang** — any move worsens the position; you'd rather pass.
+Adapt-and-attribute from `puzzleTheme.xml` (AGPL UI **text**: paraphrase, credit Lichess). Examples shipped verbatim-ish:
+- **fork**: one piece attacks two enemy pieces at once.
+- **pin**: a piece can't move without exposing a more valuable one behind it.
+- **skewer**: a valuable piece is attacked and forced to move, exposing a lesser one behind it.
+- **discoveredAttack**: moving a blocking piece reveals an attack from a long-range piece behind it.
+- **doubleCheck**: two pieces give check at once; only a king move escapes.
+- **deflection**: distract a piece from a defensive duty (a.k.a. overloading).
+- **capturingDefender**: remove the piece that defends another, then win it.
+- **interference**: block the line between a defender and what it defends.
+- **backRankMate**: mate on the back rank where the king is hemmed in by its own pawns.
+- **trappedPiece**: a piece with no safe square is won.
+- **hangingPiece**: an undefended piece can simply be taken.
+- **zugzwang**: any move worsens the position; you'd rather pass.
 
 ## 2.3 Eval-band thresholds (from taxonomy)
-- `equality` — `|eval| ≤ 200 cp`
-- `advantage` — `200 ≤ eval ≤ 600 cp` ("decisive/clear advantage")
-- `crushing` — `eval ≥ 600 cp`
+- `equality`: `|eval| ≤ 200 cp`
+- `advantage`: `200 ≤ eval ≤ 600 cp` ("decisive/clear advantage")
+- `crushing`: `eval ≥ 600 cp`
 
 These map to the verbal bands used by the coach (§3, §4): equal / slightly better / clearly better / winning / completely winning / forced mate.
 
@@ -364,7 +364,7 @@ Four deterministic layers, all offline, no LLM:
 
 ## 3.1 cp → Win% → Accuracy formulas
 
-### Win% — see §0.2 (`winPercent`).
+### Win%: see §0.2 (`winPercent`).
 
 ### Per-move Accuracy%
 ```ts
@@ -429,7 +429,7 @@ MateLost severity:    Inaccuracy if povCp     >  999; Mistake if  > 700; else Bl
 ```
 
 ### (d) Optional chess.com-style rich badges (Chesskit win%-diff model)
-Use **clearly-labeled approximations** (chess.com's exact cp/depth and the "Brilliant/Great/Miss" names/icons are proprietary — use generic labels for shipping, see §7 design tokens). Operate on `winPercentageDiff` (signed to mover, 0..100 scale):
+Use **clearly-labeled approximations** (chess.com's exact cp/depth and the "Brilliant/Great/Miss" names/icons are proprietary, so use generic labels for shipping; see §7 design tokens). Operate on `winPercentageDiff` (signed to mover, 0..100 scale):
 ```
 diff < -20  -> Blunder
 diff < -10  -> Mistake
@@ -448,7 +448,7 @@ playedIsBest -> Best ;  position in opening book -> Book ;  single legal/forced 
 3. If only single pawns remain in play -> NOT a sacrifice.
 4. Material values P1 N3 B3 R5 Q9. If, after the wash, the MOVER ends up DOWN material -> it's a sacrifice.
 ```
-Note: this never flags pure pawn sacrifices (known limitation — flag in UI copy if used).
+Note: this never flags pure pawn sacrifices (known limitation; flag in UI copy if used).
 
 ## 3.3 Board-diff layer (what changed)
 
@@ -474,11 +474,11 @@ const RAY = new Set(['q','r','b']);
 // isTrapped   = non-pawn/non-king piece in a bad spot, no legal escape to a non-bad square,
 //               no equal-or-better capture available
 ```
-> **chess.js gap:** there is no `pin()` / `is_pinned()`. Derive absolute pins/skewers via **ray scans toward the king** + king alignment. Budget time here — it's the trickiest primitive.
+> **chess.js gap:** there is no `pin()` / `is_pinned()`. Derive absolute pins/skewers via **ray scans toward the king** + king alignment. Budget time here: it's the trickiest primitive.
 
 ## 3.4 Motif detection from engine PV + board diff
 
-Run detectors over the **engine best-move PV** (to explain the *best* move) and over the **played continuation** (to explain the *mistake*). Each detector is a pure boolean over node list + board states. **Gate every motif claim behind the engine eval swing** — assert "wins material via fork" only if the eval actually swings (static scans alone can be fooled by pins/in-between moves).
+Run detectors over the **engine best-move PV** (to explain the *best* move) and over the **played continuation** (to explain the *mistake*). Each detector is a pure boolean over node list + board states. **Gate every motif claim behind the engine eval swing**: assert "wins material via fork" only if the eval actually swings (static scans alone can be fooled by pins/in-between moves).
 
 ### fork
 On a player move (not by the king) landing on a square that is **not in a bad spot**, count attacked enemy non-pawn pieces where either `KING_VAL[target] > KING_VAL[mover]` (forking something more valuable) **or** the target is hanging and not also defended by the moving piece. **count > 1 ⇒ fork.**
@@ -488,8 +488,8 @@ After an opponent ray-piece move, the player captures on `opp.to` with a ray pie
 
 ### pin (absolute / relative)
 Derive via ray scan: an enemy piece on the line between an attacking ray piece and (a) the enemy king ⇒ **absolute pin**; (b) a more valuable enemy piece ⇒ **relative pin**. Sub-detectors:
-- **pin_prevents_attack** — a pinned enemy piece can't defend a higher/hanging player piece.
-- **pin_prevents_escape** — a pinned enemy piece can't flee its attacker along the pin line.
+- **pin_prevents_attack**: a pinned enemy piece can't defend a higher/hanging player piece.
+- **pin_prevents_escape**: a pinned enemy piece can't flee its attacker along the pin line.
 
 ### discovered attack / discovered check / double check
 - **discovered_check** = a checker exists that is **not** the square the player just moved to.
@@ -506,19 +506,19 @@ Final position is checkmate; the mated king is on its back rank; its 2–3 escap
 Final position `isCheckmate()`; narrate the forcing PV (`mateIn N`). For named patterns (smothered, Anastasia, Arabian, Boden, hook, dovetail, Vukovic, kill-box, double-bishop) match the known geometric signature; otherwise label generically "forced mate in N".
 
 ### deflection / interference (removing the guard)
-- **deflection** — capture a piece that is `isHanging` only because a defending **ray** piece was distracted from its line.
-- **interference** — capture a piece hanging only because an **interfering piece landed in `between(target, defender)`**, severing the defense.
+- **deflection**: capture a piece that is `isHanging` only because a defending **ray** piece was distracted from its line.
+- **interference**: capture a piece hanging only because an **interfering piece landed in `between(target, defender)`**, severing the defense.
 
-### overloaded piece (app's own — Lichess `overloading()` is a stub returning False)
+### overloaded piece (app's own, Lichess `overloading()` is a stub returning False)
 **Implement it:** a single enemy piece is the **sole defender of two or more** player targets (or one target + a key mating square); any move removing/distracting it wins material. Detect by: for each enemy piece D, collect the set of friendly-of-D squares whose only defender is D; if `|set| ≥ 2`, D is overloaded.
 
 ### capturing the defender / x-ray
-- **capturing_defender** — remove the piece critical to defending another, then win the other.
-- **x-ray** — a ray piece attacks/defends *through* an intervening piece along the same line.
+- **capturing_defender**: remove the piece critical to defending another, then win the other.
+- **x-ray**: a ray piece attacks/defends *through* an intervening piece along the same line.
 
 ## 3.5 Template-based NLG
 
-Templates are **slot-fill** keyed by `(verdict) × (primary motif) × (fact slots)`. Maintain **3–5 surface variants per cell**, chosen by a **deterministic hash of `(ply, fen)`** so wording varies without an LLM and stays reproducible. Always keep a **guaranteed fallback** template. Only emit a *positional* comment when no tactical motif fired **and** a static-eval term crossed a notable threshold (new passed pawn, new outpost, lost pawn shield) — to avoid noise.
+Templates are **slot-fill** keyed by `(verdict) × (primary motif) × (fact slots)`. Maintain **3–5 surface variants per cell**, chosen by a **deterministic hash of `(ply, fen)`** so wording varies without an LLM and stays reproducible. Always keep a **guaranteed fallback** template. Only emit a *positional* comment when no tactical motif fired **and** a static-eval term crossed a notable threshold (new passed pawn, new outpost, lost pawn shield), to avoid noise.
 
 ### Slot vocabulary
 - `{playedSan}`, `{bestSan}`, `{pieceName}`, `{square}`, `{attackerSan}`, `{targetName}`, `{evalBand}` (equal / slightly better / clearly better / winning / completely winning / forced mate in N), `{evalBefore}`, `{evalAfter}` (formatted `+1.2` / `-0.8` / `M3`), `{n}` (mate distance).
@@ -540,7 +540,7 @@ Templates are **slot-fill** keyed by `(verdict) × (primary motif) × (fact slot
 
 **blunder × hangingPiece**
 ```
-"Blunder. After {playedSan}, your {pieceName} on {square} is undefended — {attackerSan} just takes it. {bestSan} keeps the position {evalBand}."
+"Blunder. After {playedSan}, your {pieceName} on {square} is undefended. {attackerSan} just takes it. {bestSan} keeps the position {evalBand}."
 ```
 **mistake × fork (on the played move, you walked into it)**
 ```
@@ -548,7 +548,7 @@ Templates are **slot-fill** keyed by `(verdict) × (primary motif) × (fact slot
 ```
 **good/best × fork (explaining the best move)**
 ```
-"{bestSan}! The knight forks the king and the {targetName} — you win material and end up {evalBand}."
+"{bestSan}! The knight forks the king and the {targetName}, so you win material and end up {evalBand}."
 ```
 **blunder × MateLost**
 ```
@@ -571,24 +571,24 @@ Explain the engine's choice by narrating the first 2–4 plies of the PV with mo
 
 ### Worked example outputs
 
-Position A — White to move has `Nf7+` forking K and Q (best is `Nf7+`, played `Bd3` losing the thread):
+Position A: White to move has `Nf7+` forking K and Q (best is `Nf7+`, played `Bd3` losing the thread):
 - Played `Bd3` (delta 0.34 ⇒ blunder):
-  > "(+3.1 → +0.2) Blunder. **Nxf7+** was best — the knight forks the king and the queen, winning material and leaving you completely winning."
+  > "(+3.1 → +0.2) Blunder. **Nxf7+** was best. The knight forks the king and the queen, winning material and leaving you completely winning."
 
-Position B — Black hangs a rook with `Rd8??` (best `Rc7`):
-  > "Blunder. After **Rd8**, your rook on d8 is undefended — **Bxd8** just takes it. **Rc7** keeps the position equal."
+Position B: Black hangs a rook with `Rd8??` (best `Rc7`):
+  > "Blunder. After **Rd8**, your rook on d8 is undefended. **Bxd8** just takes it. **Rc7** keeps the position equal."
 
-Position C — Best move is a quiet mate-net `Qg4` (mate in 3):
-  > "**Qg4!** Checkmate is now unavoidable — after **…Kh8 Qxh4+ Kg8 Qh7#** it's a forced mate in 3."
+Position C: Best move is a quiet mate-net `Qg4` (mate in 3):
+  > "**Qg4!** Checkmate is now unavoidable. After **…Kh8 Qxh4+ Kg8 Qh7#** it's a forced mate in 3."
 
-Position D — solved a training puzzle cleanly:
+Position D: solved a training puzzle cleanly:
   > "Nailed it. The deflection **Rxe6** removes the defender of g7, and the mate follows."
 
 ---
 
 # 4. SPACED REPETITION + LOCAL RATING
 
-## 4.1 Spaced repetition — FSRS-6 (chosen over SM-2)
+## 4.1 Spaced repetition: FSRS-6 (chosen over SM-2)
 
 **Why FSRS-6:** separate Difficulty(1–10)/Stability(days-to-90%-recall)/Retrievability tracking; ~20–30% fewer reviews than SM-2 for equal retention; early lapses don't permanently wreck a card. Library: **ts-fsrs** (MIT, FSRS v6, Node ≥ 20).
 
@@ -606,7 +606,7 @@ w (21 FSRS-6 weights) = [
   1.8722, 0.1666, 0.796, 1.4835, 0.0614, 0.2629, 1.6483, 0.6014,
   1.8729, 0.5425, 0.0912, 0.0658, 0.1542 ]
 ```
-> **Never hand-edit the 21 weights.** Optionally re-optimize from the user's own review log later (fsrs-rs / optimizer) once there are hundreds of reviews. Defaults are population averages — only approximate for a single sparse user early on.
+> **Never hand-edit the 21 weights.** Optionally re-optimize from the user's own review log later (fsrs-rs / optimizer) once there are hundreds of reviews. Defaults are population averages, only approximate for a single sparse user early on.
 
 ### Grade mapping (solve result → FSRS Rating)
 ```
@@ -627,7 +627,7 @@ persist(next);                                 // store stability/difficulty/due
 ```
 **Due query:** `SELECT * FROM srs_cards WHERE due <= :now ORDER BY due LIMIT :n`.
 
-## 4.2 Local puzzle rating — Glicko-2 (Lichess-identical model)
+## 4.2 Local puzzle rating: Glicko-2 (Lichess-identical model)
 
 Each puzzle attempt = **one rated game, player vs puzzle**, **binary** outcome (solved-before-any-wrong-move = 1 / failed = 0). The puzzle's bundled `Rating` / `RatingDeviation` are the **opponent**. Use a vetted lib (`glicko2` npm / `glicko2.ts`), not hand-rolled.
 
@@ -655,8 +655,8 @@ volatility start 0.06
 # 5. CONTENT / PROGRESS PERSISTENCE (schema sketch)
 
 Two databases, ATTACHed at runtime:
-- **`puzzles.sqlite`** — read-only, bundled, built at ETL time from the Lichess CSV.
-- **`user.sqlite`** — writable, in `app.getPath('userData')`; survives app updates.
+- **`puzzles.sqlite`**: read-only, bundled, built at ETL time from the Lichess CSV.
+- **`user.sqlite`**: writable, in `app.getPath('userData')`; survives app updates.
 
 ```sql
 -- puzzles.sqlite (read-only)
@@ -685,13 +685,13 @@ CREATE TABLE games (id INTEGER PRIMARY KEY, pgn TEXT, event TEXT, white TEXT,
   black TEXT, result TEXT, date TEXT, eco TEXT);
 PRAGMA user_version = 1;   -- bump per migration
 ```
-**ETL gotcha:** Lichess `Moves` are UCI; `Moves[0]` is the **opponent setup move** — apply it to `FEN` to get the shown position; the **solution starts at `Moves[1]`**. Validate during import with chess.js.
+**ETL gotcha:** Lichess `Moves` are UCI; `Moves[0]` is the **opponent setup move**: apply it to `FEN` to get the shown position; the **solution starts at `Moves[1]`**. Validate during import with chess.js.
 
 ---
 
 # 6. ENGINE CONTRACT (what the coach consumes)
 
-- **Bundle native Stockfish 18** (x86-64-universal on Windows; NNUE embedded — no loose `.nnue`). Spawn from the **Electron main process**, talk UCI over stdin/stdout; never spawn from renderer; route via IPC.
+- **Bundle native Stockfish 18** (x86-64-universal on Windows; NNUE embedded: no loose `.nnue`). Spawn from the **Electron main process**, talk UCI over stdin/stdout; never spawn from renderer; route via IPC.
 - **Session:** `uci`→`uciok`; set `Threads = max(1, cores-1)`, `Hash = 128–512 MB`; `isready`→`readyok`; `ucinewgame` on reset.
 - **Coaching/review go:** `setoption name MultiPV value 2` (min, for Great/Brilliant), `go depth 20` (or `movetime 1500`). Parse streaming `info ... multipv i ... score cp|mate ... pv ...` until `bestmove`; keep the **latest line per multipv index**.
 - **Strength bots:** `UCI_LimitStrength=true` + `UCI_Elo` (1320–3190) for rating-matched opponents; `Skill Level` (0–20) for beginner bots. Reset to full strength + `MultiPV 1` for pure analysis/play.
@@ -714,10 +714,10 @@ PRAGMA user_version = 1;   -- bump per migration
 |---|---|---|---|
 | Lichess puzzle DB (`lichess_db_puzzle.csv.zst`) | zstd CSV, 10 cols, 6,014,381 rows (~300 MB / ~2 GB decompressed) | **CC0 1.0** | fully redistributable; decompress with `zstd --long=31 -d`; `Moves[0]` = opponent setup move |
 | lichess-org/chess-openings | TSV → dist `eco,name,pgn,uci,epd` (~3,733 lines) | **CC0 1.0** | opening names + EPD keys; ep field only if legal ep exists |
-| Polyglot `.bin` opening book | binary, 16-byte big-endian entries | **generate your own from CC0 Lichess PGNs** | community books (gmcheems-org) have mixed/unclear licenses — avoid; build clean book to be safe |
+| Polyglot `.bin` opening book | binary, 16-byte big-endian entries | **generate your own from CC0 Lichess PGNs** | community books (gmcheems-org) have mixed/unclear licenses. Avoid; build clean book to be safe |
 | Lichess open game DB (standard rated PGN) | `.pgn.zst` monthly | **CC0 1.0** | source for self-built book + explorer stats (filter high Elo) |
 | puzzleTheme.xml / learn.xml (UI text) | XML strings | **AGPL-3.0 (text)** | adapt-and-attribute theme defs + praise vocab; don't copy verbatim into permissive modules |
-| Lumbra's Gigabase | PGN/SCID | **CC BY-NC-SA 4.0** | **NON-COMMERCIAL — do NOT bundle** |
+| Lumbra's Gigabase | PGN/SCID | **CC BY-NC-SA 4.0** | **NON-COMMERCIAL. Do NOT bundle** |
 | Lichess Elite (nikonoel) / PGN Mentor | PGN | **unstated/ambiguous** | do not redistribute; rebuild from CC0 dumps |
 
 ## 7.3 Visual / audio assets
@@ -731,14 +731,14 @@ PRAGMA user_version = 1;   -- bump per migration
 | Piece set: rhosgfx | **CC0** | yes (permissive) |
 | Piece sets: kiwen-suwi, Firi, totoy, papercut | **CC BY 4.0** | yes (attribute) |
 | Piece set: shapes | **CC BY-SA 4.0** | yes (attribute + SA) |
-| Piece sets: **staunty, maestro, fresca, cardinal, icpieces, gioco, tatiana, dubrovny (sadsnake1), horsey, california, caliente, anarcandy, disguised, cooke, monarchy, xkcd** | **CC BY-NC-SA** | **NO — non-commercial** |
+| Piece sets: **staunty, maestro, fresca, cardinal, icpieces, gioco, tatiana, dubrovny (sadsnake1), horsey, california, caliente, anarcandy, disguised, cooke, monarchy, xkcd** | **CC BY-NC-SA** | **NO. Non-commercial** |
 | Piece sets: alpha, chess7, companion, leipzig, reillycraig, riohacha, shahi-ivory-brown | freeware / no-deriv / no-license | **NO** |
 | Board: flat-color CSS (brown/blue/green/purple) | trivial CSS, no image license | yes (preferred) |
 | Board textures (wood/maple/marble…) | **AGPL-3.0** | only if accepting AGPL; else generate/buy CC0 |
 | Sounds: futuristic, nes, piano, sfx (Enigmahack) | **AGPLv3+** | only if AGPL-OK |
-| Sounds: **standard (default), robot, instrument, woodland, other** | **non-free / unclear** | **NO — do not ship** |
-| Sounds: lisp | CC BY-NC-SA | **NO — non-commercial** |
-| **Kenney audio packs** (UI/interface/impact) | **CC0** | **yes — recommended commercial-safe sound source** |
+| Sounds: **standard (default), robot, instrument, woodland, other** | **non-free / unclear** | **NO. Do not ship** |
+| Sounds: lisp | CC BY-NC-SA | **NO, non-commercial** |
+| **Kenney audio packs** (UI/interface/impact) | **CC0** | **yes, recommended commercial-safe sound source** |
 
 ## 7.4 Libraries (runtime/build)
 | Lib | Purpose | License |
@@ -753,15 +753,15 @@ PRAGMA user_version = 1;   -- bump per migration
 | Lucide (icons) / Inter (font) | UI icon pack + tabular-figure font | MIT / SIL OFL |
 
 ## 7.5 Design tokens (for coaching/badge UI)
-- **Classification badge colors** (generic labels — avoid chess.com's "Brilliant/Great/Miss" branding): Best `#649b3b`, Excellent `#5c8bb0`, Good `#7d9b58`, Book `#a88865`, Inaccuracy `#e0a44a`, Mistake `#e08a3c`, Blunder `#ca3431`. Always pair color **with an icon + label** (color-blind safety).
+- **Classification badge colors** (generic labels: avoid chess.com's "Brilliant/Great/Miss" branding): Best `#649b3b`, Excellent `#5c8bb0`, Good `#7d9b58`, Book `#a88865`, Inaccuracy `#e0a44a`, Mistake `#e08a3c`, Blunder `#ca3431`. Always pair color **with an icon + label** (color-blind safety).
 - **Eval bands → words:** ≤50cp equal · 50–150 slightly better · 150–300 clearly better · 300–600 winning · >600 completely winning · mate "forced mate in N".
 
 ---
 
 ## 8. Known gaps / risks to track
-- **Overloading** is unimplemented upstream (deflection proxy only) — §3.4 specifies building it; ship that detector.
-- **Win% constant drift** (`-0.00368208` vs `-0.004`) and **threshold scale** (Advice delta vs Practice halved shift) — keep separate, documented.
-- **Motif false positives** in non-puzzle positions — always gate on the engine eval swing and fall back to the generic template.
-- **Thin puzzle pools** at band extremes and rare themes (interference/xRay/quietMove/zugzwang/queenEndgame) — `fallbackThemes` + authored positions.
-- **License contagion** — re-implement AGPL/GPL algorithms in clean BSD/MIT; keep Stockfish arms-length; honor CC-BY/SA/GPL attribution in the Credits screen; **never ship NC piece sets/sounds or the default Lichess "standard" sounds in a commercial build.**
-- **FSRS defaults** are population averages — re-optimize only after hundreds of reviews; never hand-edit the 21 weights.
+- **Overloading** is unimplemented upstream (deflection proxy only): §3.4 specifies building it; ship that detector.
+- **Win% constant drift** (`-0.00368208` vs `-0.004`) and **threshold scale** (Advice delta vs Practice halved shift). Keep separate, documented.
+- **Motif false positives** in non-puzzle positions: always gate on the engine eval swing and fall back to the generic template.
+- **Thin puzzle pools** at band extremes and rare themes (interference/xRay/quietMove/zugzwang/queenEndgame): use `fallbackThemes` + authored positions.
+- **License contagion**: re-implement AGPL/GPL algorithms in clean BSD/MIT; keep Stockfish arms-length; honor CC-BY/SA/GPL attribution in the Credits screen; **never ship NC piece sets/sounds or the default Lichess "standard" sounds in a commercial build.**
+- **FSRS defaults** are population averages: re-optimize only after hundreds of reviews; never hand-edit the 21 weights.

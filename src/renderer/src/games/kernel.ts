@@ -1,4 +1,4 @@
-// Game kernel — docs/GAMES-PLATFORM-SPEC.md §Game kernel (binding).
+// Game kernel, docs/GAMES-PLATFORM-SPEC.md §Game kernel (binding).
 //
 // Every game in the library is described by a GameSpec: a pure, headless rules
 // adapter (no React, no window, no engine). Library UI, online (wire v4), local
@@ -14,7 +14,7 @@ import type { SoundName } from '../sound/useSound'
  * manuals and dataset ids can be typed once.
  */
 export type GameKind =
-  // chess family — chessops (P1, live)
+  // chess family: chessops (P1, live)
   | 'chess'
   | 'chess960'
   | 'crazyhouse'
@@ -24,7 +24,7 @@ export type GameKind =
   | 'threecheck'
   | 'horde'
   | 'racingkings'
-  // chess family — ffish-es6 (P2)
+  // chess family: ffish-es6 (P2)
   | 'xiangqi'
   | 'shogi'
   | 'janggi'
@@ -98,7 +98,7 @@ export interface GameSpec<S = unknown> {
   result(s: S): GameResult | null
   /**
    * Side to move in `s`. OPTIONAL: absent means strict alternation from
-   * players[0] (turn = players[moves.length % 2]) — true for every kernel game
+   * players[0] (turn = players[moves.length % 2]): true for every kernel game
    * whose opening side never varies. Implemented when init OPTIONS can change
    * who opens (go: handicap ≥ 2 makes WHITE move first); consumers must prefer
    * it over parity whenever present.
@@ -113,7 +113,7 @@ export interface GameSpec<S = unknown> {
    * vertices ('pass' stays bare), grid games = their codec where it already IS
    * the standard notation (othello 'd3', hex 'c7', morris 'd2-d3xg7', ttt
    * 'b2'), connect4 = landing square 'd4'. OPTIONAL: absent means the codec
-   * string is already the notation. Never throws on garbage — implementations
+   * string is already the notation. Never throws on garbage: implementations
    * fall back to echoing `move`.
    */
   notate?(s: S, move: string): string
@@ -127,7 +127,7 @@ export interface GameSpec<S = unknown> {
  * to be played. States are immutable, so callers hold onto their init state
  * and pass it here at save time (src/shared/gameArchive.ts meta.notated).
  * Defensive: an illegal move (should never happen for a recorded game) stops
- * the replay — remaining moves are echoed verbatim.
+ * the replay. Remaining moves are echoed verbatim.
  */
 export function notateGame<S>(spec: GameSpec<S>, start: S, moves: readonly string[]): string[] {
   const out: string[] = []

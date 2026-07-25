@@ -12,7 +12,7 @@
 //
 // The pick model + UCI driver live in scripts/lib/weak-model.mjs and
 // scripts/lib/uci.mjs (shared with scripts/gen-elo-corpus.mjs); the pick model
-// MIRRORS src/main/ipc/engine.ipc.ts — keep in sync when tuning.
+// MIRRORS src/main/ipc/engine.ipc.ts: keep in sync when tuning.
 //
 // Usage:
 //   node scripts/calibrate-weak.mjs [--games 40] [--bands 400,600,800,1000,1200]
@@ -51,10 +51,10 @@ const ENGINE = flag('engine', defaultEnginePath(repoRoot))
 
 // ---- Pick models -------------------------------------------------------------------
 
-/** NEW model — the shared production mirror (scripts/lib/weak-model.mjs). */
+/** NEW model: the shared production mirror (scripts/lib/weak-model.mjs). */
 const pickNew = (cands, elo, fullmove) => pickWeakMove(cands, elo, fullmove, false)
 
-/** OLD model — the flat softmax + bottom-half blunder this branch replaced. */
+/** OLD model: the flat softmax + bottom-half blunder this branch replaced. */
 function pickOld(cands, elo) {
   const oldTemp = lerpByElo(elo, 100, 650, 1250, 50)
   const oldBlunder = lerpByElo(elo, 100, 0.25, 1300, 0.03)

@@ -1,4 +1,4 @@
-// Local go clocks (KernelOtb / KernelBot) — Japanese byo-yomi over the same
+// Local go clocks (KernelOtb / KernelBot). Japanese byo-yomi over the same
 // pure math the online session rules by (features/play/byoyomi.ts), owned
 // entirely in the renderer: no host, no wire, one authoritative SideClock per
 // color committed on every move, projected live by the shared <Clock>.
@@ -114,7 +114,7 @@ export function useLocalGoClock(
     setFlagged(null)
     setLiveByo(clocksRef.current)
     setBeat((b) => b + 1)
-    // `turn` is deliberately NOT a dep — reset only on new game/config.
+    // `turn` is deliberately NOT a dep. Reset only on new game/config.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey, fresh])
 
@@ -144,7 +144,7 @@ export function useLocalGoClock(
 
   // Turn changes while running = the previous side committed a move: settle
   // its think, then anchor the NEW side's think in the same commit (the
-  // running-gate effect below won't re-run — `running` usually stays true).
+  // running-gate effect below won't re-run, `running` usually stays true).
   useEffect(() => {
     if (!enabled || flagged) return
     const prev = turnRef.current
@@ -261,7 +261,7 @@ export function GoClockRow({
   clock: LocalGoClock
   /** This side's clock is the one burning. */
   active: boolean
-  /** Game over (result, scoring, or flag) — freeze the display. */
+  /** Game over (result, scoring, or flag). Freeze the display. */
   over: boolean
 }): JSX.Element {
   const interp = clock.interp(side)

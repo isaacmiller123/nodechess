@@ -4,7 +4,7 @@
 // byte-for-byte behavioral; every other game registers through the kernel
 // registry via gameAdapter.adapterFromSpec (see onlineStore's init). This file
 // stays dedicated (rather than wrapping the chess GameSpec) so the chess path
-// keeps its SAN-producing moveMeta — the store's PGN archive depends on it.
+// keeps its SAN-producing moveMeta. The store's PGN archive depends on it.
 // Must stay bare-node clean (scripts/test-mp-store.mjs bundles it).
 
 import type { MpColor } from '@shared/types'
@@ -65,11 +65,11 @@ export const chessOnlineAdapter: OnlineGameAdapter<string> = {
   },
 
   /** Lichess timeout rule: if the side that did NOT flag can never mate, the
-   *  flag is a draw — otherwise a plain win on time. */
+   *  flag is a draw. Otherwise a plain win on time. */
   flagResult(fen: string, by: MpColor): { result: '1-0' | '0-1' | '1/2-1/2'; reason: string } {
     const winner: MpColor = by === 'white' ? 'black' : 'white'
     if (hasInsufficientMaterial(fen, winner)) {
-      return { result: '1/2-1/2', reason: 'time out — insufficient material' }
+      return { result: '1/2-1/2', reason: 'time out: insufficient material' }
     }
     return { result: winner === 'white' ? '1-0' : '0-1', reason: 'on time' }
   }

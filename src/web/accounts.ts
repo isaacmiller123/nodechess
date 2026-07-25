@@ -1,9 +1,9 @@
 // Decentralized-accounts web glue (spec §14-A1 packaging deliverable).
 //
-// This is NOT the interim server-account system (authStore.ts / server/auth.ts
-// — in service until A-final): it is the A1 client surface for the
+// This is NOT the interim server-account system (authStore.ts / server/auth.ts.
+// In service until A-final): it is the A1 client surface for the
 // database-less accounts, wired to localStorage through the platform-neutral
-// keyring. NO UI yet — A6 owns UI. window.__chessAccounts is a dev/test
+// keyring. NO UI yet: A6 owns UI. window.__chessAccounts is a dev/test
 // surface so the flows are reachable from the console and from CI page
 // drivers without dead buttons anywhere.
 //
@@ -45,10 +45,10 @@ import {
 // ---------------------------------------------------------------------------
 
 // globalThis-based so the module also loads under the node-run web suites
-// (which stub localStorage) — in the browser this IS window.localStorage.
+// (which stub localStorage). In the browser this IS window.localStorage.
 // LAZY: this module is a side-effect import of the web entry, and a
 // storage-denied context (or a bare-node import without the stub) must not
-// blank the app at module-eval time — it errors when a flow actually runs.
+// blank the app at module-eval time. It errors when a flow actually runs.
 let _keyring: Keyring | null = null
 export function keyring(): Keyring {
   if (_keyring) return _keyring
@@ -59,7 +59,7 @@ export function keyring(): Keyring {
 }
 
 // ---------------------------------------------------------------------------
-// In-memory session (cleared by signOut — the chain is NEVER cleared)
+// In-memory session (cleared by signOut: the chain is NEVER cleared)
 // ---------------------------------------------------------------------------
 
 interface Session {
@@ -96,7 +96,7 @@ export function getState(): AccountsState {
 // ---------------------------------------------------------------------------
 
 /** 'Chrome', 'Firefox', 'Safari', 'Edge' … + platform hint, ≤ 64 chars
- *  (zCertPayload label cap). Pure string munging — deterministic per UA. */
+ *  (zCertPayload label cap). Pure string munging. Deterministic per UA. */
 export function shortDeviceLabel(ua: string): string {
   let browser = 'Browser'
   if (/Edg\//.test(ua)) browser = 'Edge'
@@ -124,7 +124,7 @@ function deviceLabel(): string {
 // ---------------------------------------------------------------------------
 
 export interface CreateAccountOpts {
-  /** Explicit "keep me signed in on this device" — stores the seed (keyfile
+  /** Explicit "keep me signed in on this device". Stores the seed (keyfile
    *  semantics, types.ts StoredAccount doc). Default: NOT stored. */
   rememberSeed?: boolean
 }
@@ -136,14 +136,14 @@ export interface CreateAccountOpts {
 /**
  * Resolve an account's own chain from the overlay, given the freshly derived
  * identity. Registered by the renderer's account-net layer (which owns the
- * peer/overlay) — this module must not import it, so the dependency is injected,
+ * peer/overlay): this module must not import it, so the dependency is injected,
  * exactly like setPinRootSignerProvider.
  *
  * Takes the whole identity, not just the root, because the peer that performs
  * the lookup has to run AS this account: sign-in is what starts the peer, so a
  * restore that needed an already-signed-in peer would deadlock.
  *
- * Contract: resolve the subject's chain, verify it, and return it — or null when
+ * Contract: resolve the subject's chain, verify it, and return it, or null when
  * the network has nothing (offline, or an account that never replicated). MUST
  * NOT throw; a restore failure is an honest "not found", never a broken sign-in.
  */
@@ -152,7 +152,7 @@ export type ChainRestoreProvider = (identity: Identity) => Promise<Chain | null>
 let chainRestoreProvider: ChainRestoreProvider | null = null
 
 /** Register the cross-device chain-restore provider (the account-net layer calls
- *  this once at boot). Until it is set, sign-in is local-only — the pre-network
+ *  this once at boot). Until it is set, sign-in is local-only. The pre-network
  *  behavior, unchanged. */
 export function setChainRestoreProvider(fn: ChainRestoreProvider | null): void {
   chainRestoreProvider = fn
@@ -177,7 +177,7 @@ async function restoreChainFor(identity: Identity): Promise<Chain | null> {
 /**
  * Adopt a network-resolved chain onto THIS device: enroll a fresh device key as
  * a root-signed personal-lane cert (spec §1 "enrollment is a personal-lane
- * root-signed certificate — valid offline"), persist chain + record, and open
+ * root-signed certificate: valid offline"), persist chain + record, and open
  * the session. Returns null when the network had nothing, so the caller can fall
  * through to its honest error.
  *
@@ -211,7 +211,7 @@ async function adoptFromNetwork(identity: Identity): Promise<AccountsState | nul
     rootPub,
     device: { index, pub: devicePub, certEvent: eventId(certEv.body) },
   }
-  // Chain first, record second — the same ordering (and the same reasoning) as
+  // Chain first, record second. The same ordering (and the same reasoning) as
   // createAccount: a half-adopted account must never brick the name.
   await keyring().saveChain(chain.root, chain)
   try {
@@ -257,17 +257,17 @@ export async function createAccount(
   const existing = await keyring().getAccount(identity.foldedName, identity.tag)
   if (existing)
     throw new Error(
-      `an account named '${identity.foldedName}#${identity.tag}' already exists on this device — sign in instead`,
+      `an account named '${identity.foldedName}#${identity.tag}' already exists on this device. Sign in instead`,
     )
-  // The chain is append-only and survives removeAccount by design — NEVER
+  // The chain is append-only and survives removeAccount by design. NEVER
   // overwrite one that is already on this device.
   if ((await keyring().loadChain(rootPub)) !== null)
     throw new Error(
-      `a chain for '${identity.foldedName}#${identity.tag}' already exists on this device — sign in instead`,
+      `a chain for '${identity.foldedName}#${identity.tag}' already exists on this device. Sign in instead`,
     )
   const device = deriveChild(identity.seed, KEY_PURPOSE.device, 0)
   const devicePub = toB64u(device.pub)
-  const now = Date.now() // glue-layer clock — the library never reads one
+  const now = Date.now() // glue-layer clock: the library never reads one
   const chain = createAccountChain({
     rootPriv: identity.rootPriv,
     rootPub: identity.rootPub,
@@ -289,7 +289,7 @@ export async function createAccount(
     ...(opts?.rememberSeed ? { seedB64u: toB64u(identity.seed) } : {}),
   }
   // Chain FIRST, record second: if the record write fails, roll the chain
-  // back (best-effort) so the username stays retryable — a half-created
+  // back (best-effort) so the username stays retryable. A half-created
   // account must never brick the name.
   await keyring().saveChain(chain.root, chain)
   try {
@@ -298,7 +298,7 @@ export async function createAccount(
     try {
       await keyring().removeChain(chain.root)
     } catch {
-      /* best-effort rollback — the original failure is what matters */
+      /* best-effort rollback: the original failure is what matters */
     }
     throw e
   }
@@ -311,12 +311,12 @@ export async function createAccount(
  * creates anything: no stored account/chain for the name → error directing
  * the user to createAccount (create-if-absent is an explicit, separate act).
  * Lookup is by (foldedName, DERIVED tag): a wrong password derives a
- * different root/tag, so the record simply isn't found — when other tags
+ * different root/tag, so the record simply isn't found. When other tags
  * exist under the name, that mismatch IS the wrong-password signal.
  */
 export interface SignInOpts {
-  /** A6 additive: explicit "keep me signed in on this device" at sign-in —
-   *  same keyfile semantics as CreateAccountOpts.rememberSeed. */
+  /** A6 additive: explicit "keep me signed in on this device" at sign-in.
+   *  Same keyfile semantics as CreateAccountOpts.rememberSeed. */
   rememberSeed?: boolean
 }
 
@@ -329,7 +329,7 @@ export async function signIn(
   let account = await keyring().getAccount(identity.foldedName, identity.tag)
   if (!account) {
     // CROSS-DEVICE (§10 "sign in anywhere"): this machine has never seen the
-    // account, but the identity is fully derived — the keys ARE the account. Ask
+    // account, but the identity is fully derived. The keys ARE the account. Ask
     // the network for the chain and enroll this device against it. Only when
     // that finds nothing is "not on this device" the honest answer.
     const adopted = await adoptFromNetwork(identity)
@@ -341,16 +341,16 @@ export async function signIn(
       sameName
         ? 'no account with this name and password on this device'
         : chainRestoreProvider === null
-          ? `no account named '${identity.foldedName}' on this device — create it explicitly`
-          : `could not find '${identity.foldedName}' on this device or the network — check the name and password, or restore from your recovery phrase`,
+          ? `no account named '${identity.foldedName}' on this device: create it explicitly`
+          : `could not find '${identity.foldedName}' on this device or the network: check the name and password, or restore from your recovery phrase`,
     )
   }
-  // Tag is a 25-bit prefix — keep the full-rootPub check as defense in depth.
+  // Tag is a 25-bit prefix. Keep the full-rootPub check as defense in depth.
   if (toB64u(identity.rootPub) !== account.rootPub)
     throw new Error('wrong password (derived key does not match this account)')
   let chain = await keyring().loadChain(account.rootPub)
   if (!chain) {
-    // A record with no chain: recoverable the same way — the chain lives on the
+    // A record with no chain: recoverable the same way. The chain lives on the
     // network by design (§5), so refuse only once the network has nothing.
     const restored = await restoreChainFor(identity)
     if (restored) {
@@ -358,12 +358,12 @@ export async function signIn(
       chain = restored
     }
   }
-  if (!chain) throw new Error('account record exists but its chain is missing — cannot sign in')
+  if (!chain) throw new Error('account record exists but its chain is missing: cannot sign in')
   if (chain.root !== account.rootPub) throw new Error('stored chain belongs to a different root')
   const vr = verifyChain(chain)
   if (!vr.ok)
-    throw new Error(`stored chain failed verification (${vr.errors[0]?.code}) — refusing to sign in`)
-  // Opt-in seed persistence (C-5 keyfile semantics) — only ever ADDS the
+    throw new Error(`stored chain failed verification (${vr.errors[0]?.code}). Refusing to sign in`)
+  // Opt-in seed persistence (C-5 keyfile semantics): only ever ADDS the
   // seed; forgetting is the explicit separate act (forgetRememberedSeed).
   if (opts?.rememberSeed && account.seedB64u === undefined) {
     account = { ...account, seedB64u: toB64u(identity.seed) }
@@ -373,8 +373,8 @@ export async function signIn(
   return getState()
 }
 
-/** Clears the in-memory identity ONLY. The chain + account record stay —
- *  sign-out never destroys the self-carried file. */
+/** Clears the in-memory identity ONLY. The chain + account record stay.
+ *  Sign-out never destroys the self-carried file. */
 export function signOut(): void {
   session = null
 }
@@ -389,13 +389,13 @@ export function exportMnemonic(): string {
   return seedToMnemonic(requireSession().identity.seed)
 }
 
-/** Keyfile JSON for the signed-in account (plaintext by design — C-5). */
+/** Keyfile JSON for the signed-in account (plaintext by design; C-5). */
 export function exportKeyfile(): string {
   return JSON.stringify(makeKeyfile(requireSession().identity))
 }
 
 /** Load + verify the signed-in account's stored chain (the A1 headless-verify
- *  proof surface). Pure read — no state change. */
+ *  proof surface). Pure read. No state change. */
 export async function verifyOwnChain(): Promise<VerifyResult> {
   const { account } = requireSession()
   const chain: Chain | null = await keyring().loadChain(account.rootPub)
@@ -404,7 +404,7 @@ export async function verifyOwnChain(): Promise<VerifyResult> {
 }
 
 // ---------------------------------------------------------------------------
-// A6 additive surface (renderer wiring — multi-device polish). Everything
+// A6 additive surface (renderer wiring: multi-device polish). Everything
 // below is ADDITIVE: no pre-A6 export changes shape or behavior.
 // ---------------------------------------------------------------------------
 
@@ -446,13 +446,13 @@ export async function listKeyringAccounts(): Promise<KeyringAccountInfo[]> {
  * sign-in). FAIL-CLOSED at every step: a seed that does not re-derive the
  * stored root/tag, a missing chain, or a chain failing verification silently
  * skips the record (never a throw at boot, never a session from unverified
- * data). No argon2id here — the seed is post-KDF material, so resume is
+ * data). No argon2id here: the seed is post-KDF material, so resume is
  * milliseconds. Returns the (possibly unchanged) state.
  */
 export async function resumeSession(): Promise<AccountsState> {
   if (session) return getState()
   // A6 review wiring-1: the store read itself must be inside the fail-closed
-  // boundary — a corrupt keyring record throwing in listAccounts() would
+  // boundary: a corrupt keyring record throwing in listAccounts() would
   // otherwise break boot for EVERY account on the device.
   let stored: StoredAccount[]
   try {
@@ -472,7 +472,7 @@ export async function resumeSession(): Promise<AccountsState> {
       const chain = await keyring().loadChain(account.rootPub)
       if (!chain || chain.root !== account.rootPub) continue
       if (!verifyChain(chain).ok) continue
-      // A6 review wiring-2: never a session from unverified data — the names
+      // A6 review wiring-2: never a session from unverified data. The names
       // must come from the chain's SIGNED genesis, not the mutable stored
       // record (a tampered localStorage name would otherwise ride into the
       // session identity and the exported keyfile).
@@ -495,14 +495,14 @@ export async function resumeSession(): Promise<AccountsState> {
       }
       return getState()
     } catch {
-      /* fail closed — a corrupt record must never block boot */
+      /* fail closed: a corrupt record must never block boot */
     }
   }
   return getState()
 }
 
 /** Drop the signed-in account's remembered seed (sign-out hygiene). The
- *  account record and chain stay — only the auto-resume material goes. */
+ *  account record and chain stay. Only the auto-resume material goes. */
 export async function forgetRememberedSeed(): Promise<void> {
   const s = requireSession()
   if (s.account.seedB64u === undefined) return
@@ -520,7 +520,7 @@ export function sessionInfo(): { rootPub: string; devicePub: string; deviceIndex
 }
 
 /**
- * A6 (Lane C) — the signed-in device's ed25519 signing material for v6 signed
+ * A6 (Lane C): the signed-in device's ed25519 signing material for v6 signed
  * online play (spec §3). Derives the device child key EXACTLY as updateProfile
  * signs (`deriveChild(seed, KEY_PURPOSE.device, device.index)`), so a per-move /
  * segment signature made with `priv` verifies against `key` (= account.device.pub),
@@ -529,7 +529,7 @@ export function sessionInfo(): { rootPub: string; devicePub: string; deviceIndex
  * tampered record) returns null rather than a key that would never verify.
  *
  * The returned shape is a structural `MpSigningConfig` (minus the optional,
- * per-game `oppRoot` the matchmaker pins) — mpClient's `mpSigningKey` hands it
+ * per-game `oppRoot` the matchmaker pins), mpClient's `mpSigningKey` hands it
  * straight to `mp.configureSigning`. NEVER logged/persisted; `priv` stays in-mem. */
 export function deviceSigningKey(): { priv: Uint8Array; key: string; root: string } | null {
   if (!session) return null
@@ -540,7 +540,7 @@ export function deviceSigningKey(): { priv: Uint8Array; key: string; root: strin
 }
 
 /**
- * A6 (M4 lead hook) — the signed-in account's ROOT signing material for the
+ * A6 (M4 lead hook). The signed-in account's ROOT signing material for the
  * records spec §1/§3/§10 bind to the ROOT itself: the standalone PIN record
  * (pinClient) and social presence / mailbox envelopes / friend halves
  * (socialClient). Mirrors {@link deviceSigningKey} but returns the ROOT child,
@@ -551,7 +551,7 @@ export function deviceSigningKey(): { priv: Uint8Array; key: string; root: strin
  * a derived root that does not match the stored account root returns null rather
  * than a key that would never verify.
  *
- * Unlike deviceSigningKey it is DELIBERATELY not on the window dev surface — the
+ * Unlike deviceSigningKey it is DELIBERATELY not on the window dev surface. The
  * root private key never rides the global console object; the two providers
  * import it directly. `rootPriv` stays in-memory, NEVER logged/persisted.
  */
@@ -570,7 +570,7 @@ export async function loadOwnChain(): Promise<Chain> {
   return chain
 }
 
-/** Profile field patch (§10 edit profile) — keys per zProfileFields. */
+/** Profile field patch (§10 edit profile): keys per zProfileFields. */
 export interface ProfileFieldPatch {
   bio?: string
   avatar?: string
@@ -595,7 +595,7 @@ export async function updateProfile(patch: ProfileFieldPatch): Promise<Chain> {
   const chain = await loadOwnChain()
   const device = deriveChild(identity.seed, KEY_PURPOSE.device, account.device.index)
   if (toB64u(device.pub) !== account.device.pub)
-    throw new Error('device key mismatch — refusing to sign')
+    throw new Error('device key mismatch: refusing to sign')
   const payload: CanonicalObject = { fields }
   const next = appendPersonal(chain, device.priv, account.device.pub, 'profile', payload, Date.now())
   const vr = verifyChain(next)
@@ -605,7 +605,7 @@ export async function updateProfile(patch: ProfileFieldPatch): Promise<Chain> {
 }
 
 // ---------------------------------------------------------------------------
-// Dev/test surface (NO UI in A1 — A6 owns UI)
+// Dev/test surface (NO UI in A1: A6 owns UI)
 // ---------------------------------------------------------------------------
 
 const surface = {

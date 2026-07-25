@@ -1,9 +1,9 @@
-// Variant Lab — editor model + variants.ini generator (PURE module: no React,
+// Variant Lab. Editor model + variants.ini generator (PURE module: no React,
 // no window; bundled headless by scripts/test-custom-variants.mjs).
 //
 // The builder edits an EditorModel; generateIni() turns it into the
 // Fairy-Stockfish variants.ini text that games/customVariants.ts loads through
-// ffish. The ini text is what gets persisted — the model is reconstructed from
+// ffish. The ini text is what gets persisted. The model is reconstructed from
 // it on edit (parseFenBoard + the saved def's dims), and raw-mode power users
 // can bypass the model entirely.
 
@@ -78,7 +78,7 @@ export interface ParentDef {
   id: ParentVariant
   label: string
   note: string
-  /** Painter disabled — the parent's start position is part of its identity. */
+  /** Painter disabled. The parent's start position is part of its identity. */
   lockBoard?: boolean
   files: number
   ranks: number
@@ -100,7 +100,7 @@ export const PARENTS: readonly ParentDef[] = [
   {
     id: 'crazyhouse',
     label: 'Crazyhouse',
-    note: 'Captured pieces switch sides — drop them back',
+    note: 'Captured pieces switch sides: drop them back',
     files: 8,
     ranks: 8,
     startFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR[] w KQkq - 0 1'
@@ -116,7 +116,7 @@ export const PARENTS: readonly ParentDef[] = [
   {
     id: 'antichess',
     label: 'Antichess',
-    note: 'Captures are forced — lose everything to win',
+    note: 'Captures are forced: lose everything to win',
     files: 8,
     ranks: 8,
     startFen: STD
@@ -345,20 +345,20 @@ export function startFenOf(model: EditorModel): string {
 
 /**
  * EditorModel → variants.ini text. Deterministic, human-readable, always at
- * least one key per section (an empty section crashes the WASM engine — see
+ * least one key per section (an empty section crashes the WASM engine; see
  * games/customVariants.ts header).
  */
 export function generateIni(model: EditorModel): string {
   const parent = parentDef(model.parent)
   const slug = slugify(model.name)
   const lines: string[] = []
-  lines.push(`# ${model.name.trim() || 'Untitled variant'} — built in the nodechess Variant Lab`)
+  lines.push(`# ${model.name.trim() || 'Untitled variant'}: built in the nodechess Variant Lab`)
   if (model.description.trim()) lines.push(`# ${model.description.trim()}`)
   lines.push(`[${slug}:${parent.id}]`)
 
   if (parent.lockBoard) {
     // Parent-defined identity (placement/grand): inherit its board + rules,
-    // but the section still needs one key — restate the promotion set.
+    // but the section still needs one key. Restate the promotion set.
     lines.push(`promotionPieceTypes = ${model.promotion.join('')}`)
     return lines.join('\n') + '\n'
   }
@@ -410,7 +410,7 @@ export function displayFenOfIni(iniText: string): string | null {
 // ---------------------------------------------------------------------------
 // ini → model (round-trips generateIni output; hand-edited inis fall to raw mode)
 
-/** Keys generateIni can emit — anything else marks the ini as hand-edited. */
+/** Keys generateIni can emit. Anything else marks the ini as hand-edited. */
 const GENERATED_KEYS = new Set([
   'maxfile',
   'maxrank',
@@ -427,8 +427,8 @@ const GENERATED_KEYS = new Set([
 
 export interface ModelFromIni {
   model: EditorModel
-  /** False when the ini carries structure the builder cannot express —
-   *  the editor then opens in raw mode to avoid destroying the user's text. */
+  /** False when the ini carries structure the builder cannot express.
+   *  The editor then opens in raw mode to avoid destroying the user's text. */
   exact: boolean
 }
 

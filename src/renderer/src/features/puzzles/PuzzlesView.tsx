@@ -52,7 +52,7 @@ function loadMode(): PuzzleModeKey {
 }
 
 /**
- * Puzzles trainer shell — a top mode switcher over four puzzle modes. Default
+ * Puzzles trainer shell: a top mode switcher over four puzzle modes. Default
  * export so it can be routed in App.tsx. Takes no props.
  */
 export default function PuzzlesView(): JSX.Element {
@@ -110,7 +110,7 @@ function TrainMode(): JSX.Element {
   const hintsEnabled = settings.hintsEnabled
 
   // Keyboard shortcuts: n = next, r = retry, h = hint (when hints are enabled),
-  // s = show solution (records the fail — retry-on-wrong give-up path).
+  // s = show solution (records the fail, retry-on-wrong give-up path).
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
@@ -160,11 +160,11 @@ function TrainMode(): JSX.Element {
             <RotateCcw size={18} />
           </button>
           {/* Mid-solve, advancing = skipping, which records the fail (honest
-              accounting — same rule as the Skip button in the sidebar). */}
+              accounting: same rule as the Skip button in the sidebar). */}
           <button
             className="icon-btn"
             onClick={isSolving ? s.skip : s.next}
-            title={isSolving ? 'Skip — counts as failed' : 'Next puzzle (n)'}
+            title={isSolving ? 'Skip. Counts as failed.' : 'Next puzzle (n)'}
           >
             {isSolving ? <SkipForward size={18} /> : <ChevronRight size={18} />}
           </button>
@@ -182,7 +182,7 @@ function TrainMode(): JSX.Element {
 
         {!s.apiReady && (
           <div className="panel pad muted small">
-            Preview mode — connect to the desktop app to load puzzles and ratings.
+            Preview mode. Connect to the desktop app to load puzzles and ratings.
           </div>
         )}
 
@@ -206,7 +206,7 @@ function TrainMode(): JSX.Element {
               revealSan={s.revealSan}
             />
           )}
-          {/* Give-up actions (retry-on-wrong): available while solving — incl.
+          {/* Give-up actions (retry-on-wrong): available while solving. Incl.
               the keep-trying state after a wrong move. Both record the fail
               once if it isn't already on the books. */}
           {isSolving && (
@@ -215,7 +215,7 @@ function TrainMode(): JSX.Element {
                 className="btn ghost"
                 onClick={s.showSolution}
                 disabled={!s.puzzle}
-                title="Reveal the solution (s) — counts as failed"
+                title="Reveal the solution (s). Counts as failed."
               >
                 <Eye size={16} aria-hidden /> Show solution
               </button>
@@ -223,7 +223,7 @@ function TrainMode(): JSX.Element {
                 className="btn ghost"
                 onClick={s.skip}
                 disabled={!s.puzzle}
-                title="Skip this puzzle — counts as failed"
+                title="Skip this puzzle. Counts as failed."
               >
                 Skip <SkipForward size={16} aria-hidden />
               </button>
@@ -260,7 +260,7 @@ function TrainMode(): JSX.Element {
             {coachOpen && (
               <div className="coachhint-panel-body">
                 <p className="muted small coachhint-lede">
-                  Conceptual guidance for this position — no solution spoilers.
+                  Conceptual guidance for this position. No solution spoilers.
                 </p>
                 <CoachHint fen={s.fen} />
               </div>

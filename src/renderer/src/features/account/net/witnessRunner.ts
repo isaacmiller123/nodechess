@@ -1,10 +1,10 @@
-// A6 M1 — the WITNESS RUNNER BODY (spec §3 entanglement).
+// A6 M1: the WITNESS RUNNER BODY (spec §3 entanglement).
 //
 // `WitnessCore` (src/shared/mp/witnessCore.ts) is the pure BRAIN: it verifies a
 // signed game's move-sig chain, countersigns the clock stream (wclk) at a
 // cadence, adjudicates terminals, and signs the stream end (wend) + the §3
 // witnessed-result record. It touches NO transport and produces NOTHING on its
-// own — `feed(msg)` returns the messages the caller must SEND.
+// own, `feed(msg)` returns the messages the caller must SEND.
 //
 // This module is that missing body: it joins the multiplayer game room as the
 // third, non-playing peer (`hello{role:'witness'}`, seated by mpSession.ts:887/
@@ -12,17 +12,17 @@
 // every emitted wclk/wend back to both players so their `MpNetSession`s verify +
 // surface them (onWitnessStream) and embed the wstream into BOTH chains' segment.
 //
-// Platform-specific by design (renderer-hosted next to the `mp` singleton — the
+// Platform-specific by design (renderer-hosted next to the `mp` singleton. The
 // same home as mpClient.ts): it owns a live transport + timers, so it lives
 // OUTSIDE src/shared/accounts (which stays pure). The transport is INJECTED
-// exactly like `MpNetSession` takes an `MpTransportFactory` — prod passes
-// `createRtcTransport` (rtcTransport.ts), headless tests pass a mock room — so
+// exactly like `MpNetSession` takes an `MpTransportFactory`: prod passes
+// `createRtcTransport` (rtcTransport.ts), headless tests pass a mock room, so
 // the frame/dispatch logic is unit-testable with no real relay.
 //
 // Casual/unsigned play is UNAFFECTED: an unsigned host never seats a witness
 // (mpSession onWitnessHello tolerates + ignores) and never mirrors a stream, so
-// this runner simply never receives a `start` and produces nothing. Signing —
-// and therefore witnessing — is opt-in, and only for a rated game whose players
+// this runner simply never receives a `start` and produces nothing. Signing,
+// and therefore witnessing, is opt-in, and only for a rated game whose players
 // both signed in (the caller supplies `kind`/`tc`/`pairing`).
 
 import { WitnessCore, type WitnessGameInit } from '@shared/mp/witnessCore'
@@ -40,9 +40,9 @@ import type { WitnessedResultRecord } from '@shared/accounts/storage/types'
  *  `deviceSigningKey()` ({ priv, key, root }) so a signed-in client can witness
  *  someone else's game with the same material it plays its own with. */
 export interface WitnessRunnerIdentity {
-  /** Witness account root (b64u) — rides in hello + the witnessed-result record. */
+  /** Witness account root (b64u). Rides in hello + the witnessed-result record. */
   root: B64u
-  /** Witness device signing pubkey (b64u) — what every wclk/wend verifies against. */
+  /** Witness device signing pubkey (b64u). What every wclk/wend verifies against. */
   key: B64u
   /** Witness device signing private key (raw 32 bytes). */
   priv: Uint8Array
@@ -53,11 +53,11 @@ export interface WitnessRunnerIdentity {
  * host-minted `start` carries gameId/gameKey/players-ROOTS/config; this supplies
  * the rest:
  *  - the players' DEVICE signing keys (move sigs verify against these, not the
- *    roots) — the witness resolves each color's key by matching the mirrored
+ *    roots): the witness resolves each color's key by matching the mirrored
  *    start's `players[color]` root against `participants`;
  *  - the RATED ladder binding + pairing anchors, which are a deliberate opt-in
- *    (a game is witnessed as RATED only when `kind`/`tc`/`pairing` are given —
- *    otherwise it follows as legacy/unrated, byte-identical to the pre-A4 path).
+ *    (a game is witnessed as RATED only when `kind`/`tc`/`pairing` are given.
+ *    Otherwise it follows as legacy/unrated, byte-identical to the pre-A4 path).
  *
  * In M1 the caller (dev flow) hands this over out of band with the room code; in
  * M2 the matchmaker fills it from the pool ads it already holds.
@@ -65,7 +65,7 @@ export interface WitnessRunnerIdentity {
 export interface WitnessRunnerGameInit {
   /** Known participant signing identities (device keys the players sign with),
    *  by account root. A hello the witness observes DIRECTLY on its own authored
-   *  peer channel (the host's) takes precedence — it is the ground truth of what
+   *  peer channel (the host's) takes precedence. It is the ground truth of what
    *  that player is actually signing with. Matchmaking / the dev flow supplies
    *  the rest (notably the guest, whose hello is targeted at the host, not us). */
   participants?: ReadonlyArray<{ root: B64u; key: B64u }>
@@ -88,7 +88,7 @@ export interface WitnessRunnerGameInit {
   gameKey?: B64u
 }
 
-/** The witnessed terminal — everything a segment writer (Lane E) and the peer's
+/** The witnessed terminal: everything a segment writer (Lane E) and the peer's
  *  shard/serve layer (Lane B) need from a completed witnessing. */
 export interface WitnessedGameResult {
   gameKey: B64u
@@ -97,7 +97,7 @@ export interface WitnessedGameResult {
   plies: number
   /** Player account roots by color (from the mirrored start). */
   players: { w: B64u; b: B64u }
-  /** The witness's terminal STREAM signature — exactly `SegmentPayload.wstream`
+  /** The witness's terminal STREAM signature: exactly `SegmentPayload.wstream`
    *  for BOTH players' chains. */
   wstream: { wkey: B64u; sig: B64u }
   /** The standalone §3 witnessed-result record (rage-quit denial + the artifact
@@ -106,17 +106,17 @@ export interface WitnessedGameResult {
 }
 
 export interface WitnessRunnerOpts {
-  /** Transport factory — REQUIRED. Prod: `createRtcTransport`; tests: a mock room
+  /** Transport factory: REQUIRED. Prod: `createRtcTransport`; tests: a mock room
    *  factory. Kept injected (like `MpNetSession`) so this module never imports a
    *  concrete transport and stays headless-testable. */
   makeTransport: MpTransportFactory
-  /** The witness's OWN wall clock (unix ms) — its independent time authority for
+  /** The witness's OWN wall clock (unix ms): its independent time authority for
    *  wclk `wts` and observed-flag adjudication. Defaults to `Date.now`. */
   now?: () => number
   /** Countersign the clock stream every N verified plies (WitnessCore default 4). */
   wclkEveryPlies?: number
   /** Observed-flag (rage-quit) poll interval (ms). Default 2000. `<= 0` disables
-   *  the internal timer — tests drive `handle.tick()` deterministically. */
+   *  the internal timer: tests drive `handle.tick()` deterministically. */
   tickIntervalMs?: number
   /** Fired (after broadcast) with each emitted witness stream message. */
   onWitnessMsg?: (msg: MpWitnessMsg) => void
@@ -127,7 +127,7 @@ export interface WitnessRunnerOpts {
   onWitnessed?: (result: WitnessedGameResult) => void
   /** Fired when the follower can no longer countersign this game (a chain
    *  violation poison, a ladder/pairing contradiction, or an unresolved device
-   *  key). ADVISORY — a witness never tears a live game down. */
+   *  key). ADVISORY. A witness never tears a live game down. */
   onError?: (error: string) => void
   /** Optional diagnostic log sink. */
   log?: (msg: string) => void
@@ -252,7 +252,7 @@ export function witnessRunner(
   /** The mirrored host-authoritative `start`/`rematchStart`: (re)initialize the
    *  core, then feed the message so its consistency + pairing gates run. */
   const onStartLike = (msg: Extract<WireMsg, { t: 'start' } | { t: 'rematchStart' }>): void => {
-    // Unsigned game (no gameKey/players): nothing to witness — degrade silently.
+    // Unsigned game (no gameKey/players): nothing to witness. Degrade silently.
     if (!msg.gameKey || !msg.players) return
     if (gameInit.gameKey !== undefined && msg.gameKey !== gameInit.gameKey) {
       log(`ignoring start for an unexpected gameKey ${msg.gameKey}`)
@@ -270,7 +270,7 @@ export function witnessRunner(
     if (!keyW || !keyB) {
       // No device key for a color ⇒ the witness cannot verify that side's move
       // sigs. Refuse to follow (honest degradation), never a wrong-key follow.
-      opts.onError?.(`missing device key for ${!keyW ? 'white' : 'black'} — cannot witness this game`)
+      opts.onError?.(`missing device key for ${!keyW ? 'white' : 'black'}: cannot witness this game`)
       return
     }
 
@@ -322,7 +322,7 @@ export function witnessRunner(
     switch (msg.t) {
       case 'hello':
         // Learn a player's device signing key from its hello (the host's reaches
-        // us; the guest's is targeted at the host — hence `participants`).
+        // us; the guest's is targeted at the host, hence `participants`).
         if ((msg.role === 'host' || msg.role === 'guest') && msg.root && msg.key) {
           observedKeys.set(msg.root, msg.key)
         }
@@ -331,7 +331,7 @@ export function witnessRunner(
       case 'rematchStart':
         onStartLike(msg)
         return
-      // Our own outputs / another witness's / control noise — never fed.
+      // Our own outputs / another witness's / control noise. Never fed.
       case 'wclk':
       case 'wend':
       case 'error':

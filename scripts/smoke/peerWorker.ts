@@ -1,13 +1,13 @@
-// A6 M1 real-relay SMOKE — one peer, in its own worker thread (fresh trystero
+// A6 M1 real-relay SMOKE: one peer, in its own worker thread (fresh trystero
 // module state ⇒ its own selfId + relay socket, the multi-process requirement).
 // Runs the app's REAL modules over the REAL trystero + werift transport (pointed
 // at a localhost Nostr relay, since public relays rate-limit a bare-node mesh):
 //
-//   • createBrowserFabric (Lane A) with an INJECTED werift+relay trystero room —
-//     the FIRST real-transport exercise of the browser fabric's makeAction usage.
-//   • startAccountPeerSingleton (Lane B) — overlay + witnessServe/memberServe +
+//   • createBrowserFabric (Lane A) with an INJECTED werift+relay trystero room.
+//     The FIRST real-transport exercise of the browser fabric's makeAction usage.
+//   • startAccountPeerSingleton (Lane B): overlay + witnessServe/memberServe +
 //     signed presence over that fabric.
-//   • MpNetSession (Lane C, SIGNED) over a werift+relay game transport — the same
+//   • MpNetSession (Lane C, SIGNED) over a werift+relay game transport. The same
 //     rtcTransport adapter shape, plus the A6 mpSession rated-wend seam.
 //   • startWitnessing (witnessController) → witnessRunner (Lane D).
 //   • createSegmentPublisher + installPreGameServing (the lead glue → Lane E).
@@ -55,7 +55,7 @@ const BLITZ_BASE = { baseMs: init.tc.initialMs, incMs: init.tc.incrementMs }
 const KIND = 'chess'
 
 // ---------------------------------------------------------------------------
-// Deterministic identity (raw keypairs, like the mock live-slice) — root ≠ device
+// Deterministic identity (raw keypairs, like the mock live-slice), root ≠ device
 // ---------------------------------------------------------------------------
 const kp = (b: number): { priv: Uint8Array; pub: Uint8Array; pubB: string } => {
   const priv = Uint8Array.from({ length: 32 }, (_, i) => (b * 7 + i) & 0xff)
@@ -81,7 +81,7 @@ const chainHolder: ChainHolder = { get: () => ownChain, set: (c) => { ownChain =
 const relayCfg = { urls: [init.relayUrl], redundancy: 1 }
 const baseRtc = { rtcPolyfill: RTCPeerConnection as unknown as typeof globalThis.RTCPeerConnection, rtcConfig: { iceServers: [] as RTCIceServer[] }, relayConfig: relayCfg }
 
-/** A werift+relay game transport — the rtcTransport.ts adapter, verbatim shape. */
+/** A werift+relay game transport. The rtcTransport.ts adapter, verbatim shape. */
 const gameTransport: MpTransportFactory = (roomCode, listeners: MpTransportListeners): MpTransport => {
   const canonical = normalizeRoomCode(roomCode) ?? roomCode
   const room = joinRoom({ appId: 'chess-sharp-mp-v3', password: 'chs-' + canonical, ...baseRtc }, canonical)

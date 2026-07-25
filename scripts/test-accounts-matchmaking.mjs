@@ -1,4 +1,4 @@
-// THE A6 M2 LANE L-mm SUITE — overlay-backed matchmaking, headless over a
+// THE A6 M2 LANE L-mm SUITE: overlay-backed matchmaking, headless over a
 // MockFabric multi-peer harness (spec §7 pairing legality, §4 witness fabric /
 // C-10 honest degradation, §3 pairing anchor).
 //
@@ -8,25 +8,25 @@
 // trystero pool + the browser account fabric in production runs here over an
 // in-memory pool hub + an in-process MockFabric bus, so the whole pairing /
 // witness-assignment path is proven deterministic and offline. Sections:
-//   1. pure pairing math — computeMatching pairs two LEGAL strangers, refuses an
+//   1. pure pairing math: computeMatching pairs two LEGAL strangers, refuses an
 //      illegal pair (ladder mismatch / width-exceeded), and is deterministic +
 //      symmetric (both peers read the same partner);
-//   2. witness assignment — assignWitnesses draws the canonical eligible set
+//   2. witness assignment: assignWitnesses draws the canonical eligible set
 //      over the live directory (a third presence-announced peer that is NEITHER
 //      player), and countReachableWitnesses matches;
-//   3. the live slice — a pool of TWO eligible strangers auto-pairs (no room
+//   3. the live slice. A pool of TWO eligible strangers auto-pairs (no room
 //      code exchanged) and a DISTINCT third peer self-assigns as the witness:
 //      openRoom fires once on the host, the guest joins that exact code pinned
 //      to the host, and the witness attaches to the same room, neither player;
-//   4. THE C-10 HONEST DEGRADATION — with NO third machine the same two strangers
+//   4. THE C-10 HONEST DEGRADATION: with NO third machine the same two strangers
 //      are a legal pair but assignWitnesses is EMPTY, so both sit in
 //      'waiting-witness' and NO room is ever opened and NO offer is ever
 //      published: an honest wait, never a fake pairing;
-//   5. anti-spoof — a tampered seek/offer signature is rejected; makePairingTerms
+//   5. anti-spoof: a tampered seek/offer signature is rejected; makePairingTerms
 //      binds the right opponent per color.
 //
 // House style: esbuild-bundle on the fly (alias @shared; the net module by abs
-// path; trystero/react external — the live pool room + React store are never
+// path; trystero/react external: the live pool room + React store are never
 // entered here), one-line asserts, exit(1) on any fail.
 
 import { resolve } from 'node:path'
@@ -86,7 +86,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -123,19 +123,19 @@ async function run(M) {
   const viewB = rankedView(idB.root, 1505, 800_000)
 
   // ==========================================================================
-  console.log('\n· 1. pairing math — computeMatching over a pool snapshot …')
+  console.log('\n· 1. pairing math, computeMatching over a pool snapshot …')
   // ==========================================================================
   {
     const both = [seek(idA, viewA), seek(idB, viewB)]
     const m = MM.computeMatching(both, MM.MM_KIND, BLITZ, NOW)
     eq(m.get(idA.root), idB.root, 'A is matched with B (legal ranked pair, cost 5 ≤ width)')
-    eq(m.get(idB.root), idA.root, 'B is matched with A — the matching is symmetric')
+    eq(m.get(idB.root), idA.root, 'B is matched with A: the matching is symmetric')
     ok(MM.pairingLegal ? true : true, 'pairingLegal is the shared authority (reused, not reimplemented)')
 
     // Illegal: a far-apart ranked pair beyond the trust width is NOT matched.
     const farView = rankedView(idB.root, 2400, 800_000)
     const far = MM.computeMatching([seek(idA, viewA), seek(idB, farView)], MM.MM_KIND, BLITZ, NOW)
-    ok(!far.has(idA.root) && !far.has(idB.root), 'a width-exceeded pair (1500 vs 2400) is refused — no illegal pairing')
+    ok(!far.has(idA.root) && !far.has(idB.root), 'a width-exceeded pair (1500 vs 2400) is refused, no illegal pairing')
 
     // A stale seek (older than maxSeekAgeMs) drops out of the pool.
     const stale = MM.computeMatching([seek(idA, viewA), seek(idB, viewB, 1, NOW - 60_000)], MM.MM_KIND, BLITZ, NOW)
@@ -147,7 +147,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 2. witness assignment — the canonical set over the directory …')
+  console.log('\n· 2. witness assignment. The canonical set over the directory …')
   // ==========================================================================
   const busFull = new W.MockFabric()
   const peers = {}
@@ -163,7 +163,7 @@ async function run(M) {
     const dir = peers.A.directory()
     const set = MM.assignWitnesses(dir, idA.root, idB.root, MM.MM_KIND, BLITZ, NOW)
     eq(set.length, 1, 'exactly one eligible witness for the A–B game (small-population relaxation)')
-    eq(set[0], idW.nodeId, 'the assigned witness is W — a third machine, NEITHER player')
+    eq(set[0], idW.nodeId, 'the assigned witness is W, a third machine, NEITHER player')
     ok(set[0] !== idA.nodeId && set[0] !== idB.nodeId, 'both players are excluded (entanglement gate never relaxes)')
     eq(MM.countReachableWitnesses(dir, idA.root, NOW, idB.root), 1, 'countReachableWitnesses agrees: 1 third machine')
     // Every observer computes the same witness from its own directory.
@@ -172,7 +172,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 3. live slice — two strangers auto-pair + a distinct witness …')
+  console.log('\n· 3. live slice, two strangers auto-pair + a distinct witness …')
   // ==========================================================================
   {
     const hub = MM.createMatchPoolHub()
@@ -211,7 +211,7 @@ async function run(M) {
     eq(calls.open[0].self.root, host.root, 'the lower-rooted peer is the host (deterministic)')
     const code = `room-${host.root.slice(0, 6)}`
     eq(calls.join.length, 1, 'the guest joined exactly one room')
-    eq(calls.join[0].code, code, 'the guest joined the EXACT code the host opened — no code exchanged out of band')
+    eq(calls.join[0].code, code, 'the guest joined the EXACT code the host opened, no code exchanged out of band')
     eq(calls.join[0].opponent.root, host.root, 'the guest pinned the host as its opponent (oppRoot)')
     eq(calls.witness.length, 1, 'the witness attached exactly once')
     eq(calls.witness[0].code, code, 'the witness attached to the SAME room')
@@ -236,7 +236,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 4. C-10 honest degradation — no third machine ⇒ honest wait …')
+  console.log('\n· 4. C-10 honest degradation. No third machine ⇒ honest wait …')
   // ==========================================================================
   {
     // A two-peer bus: A and B only, no eligible witness anywhere.
@@ -274,8 +274,8 @@ async function run(M) {
     }
     eq(engA.status().phase, 'waiting-witness', 'A honestly WAITS for a witness (never a dead button)')
     eq(engB.status().phase, 'waiting-witness', 'B honestly WAITS for a witness')
-    ok(engA.status().opponentRoot === idB.root, 'A did find its legal opponent — it is only the WITNESS that is missing')
-    eq(calls.open, 0, 'NO room was ever opened — never a fake pairing without a witness (C-10)')
+    ok(engA.status().opponentRoot === idB.root, 'A did find its legal opponent: it is only the WITNESS that is missing')
+    eq(calls.open, 0, 'NO room was ever opened: never a fake pairing without a witness (C-10)')
     eq(calls.join, 0, 'NO join was ever attempted')
     eq(calls.witness, 0, 'NO witness attached')
     eq(MM.countReachableWitnesses(eps.A.directory(), idA.root, NOW, idB.root), 0, 'the lobby honestly shows 0 reachable witnesses')
@@ -317,7 +317,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 6. pool re-entrancy — a self-publish never re-notifies (local echo) …')
+  console.log('\n· 6. pool re-entrancy, a self-publish never re-notifies (local echo) …')
   // ==========================================================================
   // The live search subscribes the engine's poll() to the pool AND poll()
   // publishes a fresh (higher-epoch) seek each round. If a self-publish notified
@@ -349,8 +349,8 @@ async function run(M) {
     poolA.publish(seek(idA, viewA, 2))
     eq(cFires, 1, 'hub: a publish-on-notify subscriber does NOT recurse on its own echo (re-entrancy closed)')
 
-    // (b) The production trystero adapter over an INJECTED fake room: same rule —
-    // local echo silent, a remote message notifies — proven with no real relay.
+    // (b) The production trystero adapter over an INJECTED fake room: same rule.
+    // Local echo silent, a remote message notifies: proven with no real relay.
     let onMessage = null
     const sent = []
     const fakeRoom = {
@@ -364,7 +364,7 @@ async function run(M) {
     let tNotifs = 0
     tPool.subscribe(() => tNotifs++)
     tPool.publish(seek(idA, viewA))
-    eq(tNotifs, 0, 'trystero: a local publish does NOT notify subscribers (local echo silent — no re-entrancy)')
+    eq(tNotifs, 0, 'trystero: a local publish does NOT notify subscribers (local echo silent, no re-entrancy)')
     eq(tPool.list().length, 1, 'trystero: the locally-published seek is in list() (echo updated the store)')
     eq(sent.length, 1, 'trystero: the local publish still broadcast over the room action')
     onMessage(seek(idB, viewB), { peerId: 'peerB' })

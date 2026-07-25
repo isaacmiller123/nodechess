@@ -36,12 +36,12 @@ export function registerReview(): void {
     if (pgnText === undefined && gameId !== undefined) {
       const game = getGame(gameId)
       if (!game) throw new Error(`review:run: game ${gameId} not found`)
-      // getGame is unfiltered (unlike listGames) — a non-chess row's archive is
+      // getGame is unfiltered (unlike listGames). A non-chess row's archive is
       // the generic wire codec, not PGN. Reject with a clear error instead of
       // the misleading "PGN has no mainline moves" the parser would produce.
       if (game.game_kind !== 'chess') {
         throw new Error(
-          `review:run: game ${gameId} is a '${game.game_kind}' game — the chess review engine only reviews standard chess`
+          `review:run: game ${gameId} is a '${game.game_kind}' game: the chess review engine only reviews standard chess`
         )
       }
       pgnText = game.pgn
@@ -75,7 +75,7 @@ export function registerReview(): void {
       return { reviewId: resolvedGameId, review }
     } finally {
       // The single-flight flag clears ONLY when the run settles (including an
-      // aborted one) — never out-of-band — so two reviews can never overlap on
+      // aborted one): never out-of-band, so two reviews can never overlap on
       // the shared engine.
       reviewing = false
       if (reviewAbort === abort) reviewAbort = null
@@ -129,7 +129,7 @@ export function registerReview(): void {
 
   // Cancel the in-flight review, if any: aborts the run (runReview checks the
   // signal between searches and stops the current one). The `reviewing` flag is
-  // released by the run's own finally when it settles — clearing it here would
+  // released by the run's own finally when it settles. Clearing it here would
   // let a second review race the aborted one on the same engine. A dead/stuck
   // engine can't wedge the flag either: analyzeFen's hard timeout settles it.
   handle('review:cancel', z.object({}).strict(), () => {

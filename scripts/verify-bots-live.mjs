@@ -1,6 +1,6 @@
 // LIVE proof for the bots-UI wave: real engine moves through the EXACT
-// main-process pool classes the ipc handlers use —
-//   1. KataGo: KatagoPool.play() (src/main/engine/KatagoPool.ts — the
+// main-process pool classes the ipc handlers use.
+//   1. KataGo: KatagoPool.play() (src/main/engine/KatagoPool.ts; the
 //      engine:playGo backend), standard ladder AND, when the Human-SL net is
 //      installed, the human rank ladder;
 //   2. Maia:   MaiaPool.get() + UciEngine.bestMove nodes=1 (the engine:play
@@ -100,7 +100,7 @@ try {
     if (!levels.includes(1500)) throw new Error(`maia 1500 not available (have: ${levels})`)
     const t0 = Date.now()
     const eng = await pool.get(1500)
-    // After 1.e4 — the human-move model answers from the raw policy head.
+    // After 1.e4: the human-move model answers from the raw policy head.
     const fen = 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1'
     const { bestmove } = await eng.bestMove(fen, { kind: 'nodes', value: 1 })
     pool.killAll()
@@ -111,7 +111,7 @@ try {
   console.log('verify-bots-live: OK')
 } catch (err) {
   failed = true
-  console.error(`verify-bots-live: FAILED — ${err?.stack ?? err}`)
+  console.error(`verify-bots-live: FAILED, ${err?.stack ?? err}`)
   // Never leave the human net renamed aside on a crash.
   if (existsSync(humanAside) && !existsSync(humanNet)) renameSync(humanAside, humanNet)
 } finally {

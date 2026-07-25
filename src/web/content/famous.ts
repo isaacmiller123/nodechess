@@ -1,7 +1,7 @@
 // Famous games, read from the static library instead of famous:list/famous:get.
 //
 // Mirrors src/main/famous/famous.repo.ts: same merge (curated shard wins an id
-// collision — done at emit time), same SAN tokenizer, same year-then-id order,
+// collision: done at emit time), same SAN tokenizer, same year-then-id order,
 // same per-ply expansion into before/after FENs. The movetext ships as SAN
 // because expanding it is chessops work the browser already carries, and the
 // expanded form is an order of magnitude bigger than the source.
@@ -86,7 +86,7 @@ export async function getFamous(id: string): Promise<FamousGameDetail | null> {
 
   for (let i = 0; i < sans.length; i++) {
     const move = parseSan(pos, sans[i])
-    if (!move) return null // illegal/ambiguous SAN — bail rather than emit garbage
+    if (!move) return null // illegal/ambiguous SAN: bail rather than emit garbage
 
     const fenBefore = makeFen(pos.toSetup())
     const color: 'white' | 'black' = pos.turn

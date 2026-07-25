@@ -83,7 +83,7 @@
        "conceptId": "files-ranks-squares",
        "coach": {
         "conceptId": "files-ranks-squares",
-        "text": "Before a single piece, you learn the ground you fight on. Sixty-four squares. The eight columns are the files — run your eye left to right along the bottom and you cross files a to h. The eight rows are the ranks — run your eye upward along the side and you climb ranks 1 to 8, counting from White's side. Files go across, ranks go up. Master this map first. A general who cannot read his own terrain loses before the battle.",
+        "text": "Before a single piece, you learn the ground you fight on. Sixty-four squares. The eight columns are the files. Run your eye left to right along the bottom and you cross files a to h. The eight rows are the ranks. Run your eye upward along the side and you climb ranks 1 to 8, counting from White's side. Files go across, ranks go up. Master this map first. A general who cannot read his own terrain loses before the battle.",
         "annotations": [
          {
           "kind": "arrow",
@@ -107,7 +107,7 @@
        "conceptId": "files-ranks-squares",
        "coach": {
         "conceptId": "files-ranks-squares",
-        "text": "Every square owns exactly one name: its file letter, then its rank number. This pawn stands on e4 — file e, fourth rank. Not 'the middle' and not 'over there'. e4. When I name a square, you must see it instantly, with no counting. That speed is not optional; it is the language of everything that follows.",
+        "text": "Every square owns exactly one name: its file letter, then its rank number. This pawn stands on e4. File e, fourth rank. Not 'the middle' and not 'over there'. e4. When I name a square, you must see it instantly, with no counting. That speed is not optional; it is the language of everything that follows.",
         "annotations": [
          {
           "kind": "highlight",
@@ -123,7 +123,7 @@
        "conceptId": "light-and-dark",
        "coach": {
         "conceptId": "light-and-dark",
-        "text": "The squares alternate, light and dark, and that pattern never lies. Set the board so a light square sits in your near-right corner — 'light on the right'. Get this backward and your king and queen start on the wrong squares. The corner h1, here, is light. Burn that in.",
+        "text": "The squares alternate, light and dark, and that pattern never lies. Set the board so a light square sits in your near-right corner, 'light on the right'. Get this backward and your king and queen start on the wrong squares. The corner h1, here, is light. Burn that in.",
         "annotations": [
          {
           "kind": "highlight",
@@ -145,7 +145,7 @@
        "conceptId": "the-centre",
        "coach": {
         "conceptId": "the-centre",
-        "text": "Four squares matter more than any others: e4, d4, e5, d5 — the centre. A piece here radiates across the whole board; a piece shoved to the rim sees half as much. Remember the old law: a knight on the rim is dim. We will spend years fighting for these four squares. Learn to love them now.",
+        "text": "Four squares matter more than any others: e4, d4, e5, d5, the centre. A piece here radiates across the whole board; a piece shoved to the rim sees half as much. Remember the old law: a knight on the rim is dim. We will spend years fighting for these four squares. Learn to love them now.",
         "annotations": [
          {
           "kind": "highlight",
@@ -181,7 +181,7 @@
        "conceptId": "files-ranks-squares",
        "coach": {
         "conceptId": "files-ranks-squares",
-        "text": "Reading the map is one thing; using it under your hand is another. A lone rook on a1, the board bare on purpose. I want the rook on the far corner of its own file — a8. Find a8 with your eye, then move the rook there. File a, eighth rank. Do not hunt; know.",
+        "text": "Reading the map is one thing; using it under your hand is another. A lone rook on a1, the board bare on purpose. I want the rook on the far corner of its own file: a8. Find a8 with your eye, then move the rook there. File a, eighth rank. Do not hunt; know.",
         "annotations": [
          {
           "kind": "circle",
@@ -201,7 +201,7 @@
        ],
        "successLine": {
         "conceptId": "files-ranks-squares",
-        "text": "a8. Clean. You read the file and the rank and went straight there — that is exactly the speed I want.",
+        "text": "a8. Clean. You read the file and the rank and went straight there. That is exactly the speed I want.",
         "annotations": [
          {
           "kind": "highlight",
@@ -211,7 +211,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. a8 sits at the top of the a-file — the same file the rook stands on, all the way up. Slide it straight to the edge."
+        "text": "No. a8 sits at the top of the a-file. The same file the rook stands on, all the way up. Slide it straight to the edge."
        }
       },
       {
@@ -219,7 +219,7 @@
        "conceptId": "the-centre",
        "coach": {
         "conceptId": "the-centre",
-        "text": "Now the queen on d1. Plant her on a central square — d4. File d, fourth rank. Straight up the file, four steps. Find d4 before you touch the piece.",
+        "text": "Now the queen on d1. Plant her on a central square: d4. File d, fourth rank. Straight up the file, four steps. Find d4 before you touch the piece.",
         "annotations": [
          {
           "kind": "circle",
@@ -239,7 +239,7 @@
        ],
        "successLine": {
         "conceptId": "the-centre",
-        "text": "d4 — the heart of the board. From here she touches a cross of ranks and files and both diagonals. Feel how much more she commands than she did on the back row.",
+        "text": "d4: the heart of the board. From here she touches a cross of ranks and files and both diagonals. Feel how much more she commands than she did on the back row.",
         "annotations": [
          {
           "kind": "highlight",
@@ -258,7 +258,7 @@
        "conceptId": "light-and-dark",
        "coach": {
         "conceptId": "light-and-dark",
-        "text": "This bishop on f1 stands on a light square. Send it to another light square on the long diagonal — a6. Light to light, always: that is the bishop's whole life. Trace the diagonal f1-e2-d3-c4-b5-a6 with your eye, then move.",
+        "text": "This bishop on f1 stands on a light square. Send it to another light square on the long diagonal: a6. Light to light, always: that is the bishop's whole life. Trace the diagonal f1-e2-d3-c4-b5-a6 with your eye, then move.",
         "annotations": [
          {
           "kind": "circle",
@@ -278,7 +278,7 @@
        ],
        "successLine": {
         "conceptId": "light-and-dark",
-        "text": "a6 — still a light square, as it must be. A bishop born on light never once in the whole game touches a dark square. Half the board is forever closed to it. Never forget which colour each of your bishops owns.",
+        "text": "a6: still a light square, as it must be. A bishop born on light never once in the whole game touches a dark square. Half the board is forever closed to it. Never forget which colour each of your bishops owns.",
         "annotations": [
          {
           "kind": "highlight",
@@ -298,7 +298,7 @@
   },
   {
    "id": "l2-long-range-pieces",
-   "title": "Rook, Bishop, Queen — the Long-Range Pieces",
+   "title": "Rook, Bishop, Queen: the Long-Range Pieces",
    "kind": "concept",
    "summary": "The three sliding pieces: how each travels, that they cannot jump, and how they capture.",
    "segments": [
@@ -311,7 +311,7 @@
        "conceptId": "rook-moves",
        "coach": {
         "conceptId": "rook-moves",
-        "text": "The rook moves in straight lines — along its rank and along its file, any distance, until something stops it. From d4 it sweeps the whole fourth rank and the whole d-file: a cross of fourteen squares on the empty board. Simple, honest, powerful. Rooks love open lines.",
+        "text": "The rook moves in straight lines. Along its rank and along its file, any distance, until something stops it. From d4 it sweeps the whole fourth rank and the whole d-file: a cross of fourteen squares on the empty board. Simple, honest, powerful. Rooks love open lines.",
         "annotations": [
          {
           "kind": "circle",
@@ -350,7 +350,7 @@
        "conceptId": "bishop-moves",
        "coach": {
         "conceptId": "bishop-moves",
-        "text": "The bishop moves on diagonals only. From d4 it runs both ways along the dark diagonals it lives on. Notice: every square it reaches is the same colour as d4. A bishop is hostage to its colour for the entire game — that is its one great weakness, and you must always know which one it commands.",
+        "text": "The bishop moves on diagonals only. From d4 it runs both ways along the dark diagonals it lives on. Notice: every square it reaches is the same colour as d4. A bishop is hostage to its colour for the entire game. That is its one great weakness, and you must always know which one it commands.",
         "annotations": [
          {
           "kind": "circle",
@@ -389,7 +389,7 @@
        "conceptId": "queen-moves",
        "coach": {
         "conceptId": "queen-moves",
-        "text": "Now the queen — rook and bishop in one. Ranks, files and diagonals together. From d4 she strikes twenty-seven squares at once, more than a third of the board. The most powerful piece you own. Guard her like it: a queen lost for nothing usually loses the game.",
+        "text": "Now the queen: rook and bishop in one. Ranks, files and diagonals together. From d4 she strikes twenty-seven squares at once, more than a third of the board. The most powerful piece you own. Guard her like it: a queen lost for nothing usually loses the game.",
         "annotations": [
          {
           "kind": "circle",
@@ -428,7 +428,7 @@
        "conceptId": "blocked-by-pieces",
        "coach": {
         "conceptId": "blocked-by-pieces",
-        "text": "But these pieces cannot jump. Put your own pawn on d3 and the rook on d4 is walled off downward — it cannot pass its own man. The first piece in the path is a full stop. This blocking is half of all chess: lines open and close as pieces move. See the walls, not just the pieces.",
+        "text": "But these pieces cannot jump. Put your own pawn on d3 and the rook on d4 is walled off downward. It cannot pass its own man. The first piece in the path is a full stop. This blocking is half of all chess: lines open and close as pieces move. See the walls, not just the pieces.",
         "annotations": [
          {
           "kind": "circle",
@@ -461,7 +461,7 @@
        "conceptId": "capturing",
        "coach": {
         "conceptId": "capturing",
-        "text": "And when the piece in the path is an enemy, you take it. Capturing is just moving onto its square and lifting it off the board — you stand where it stood. This bishop on c1 runs up the diagonal to g5, where a black pawn waits. The bishop captures it and takes its place. Your piece survives; theirs is gone.",
+        "text": "And when the piece in the path is an enemy, you take it. Capturing is just moving onto its square and lifting it off the board. You stand where it stood. This bishop on c1 runs up the diagonal to g5, where a black pawn waits. The bishop captures it and takes its place. Your piece survives; theirs is gone.",
         "annotations": [
          {
           "kind": "circle",
@@ -560,7 +560,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not that. The rook sits dead ahead on the d-file with nothing in the way. The queen moves like a rook here — straight up to d7."
+        "text": "Not that. The rook sits dead ahead on the d-file with nothing in the way. The queen moves like a rook here, straight up to d7."
        }
       },
       {
@@ -587,7 +587,7 @@
        ],
        "successLine": {
         "conceptId": "capturing",
-        "text": "Rxd4. Along the rank this time, not the file — the rook commands both. Knight gone, rook safe on d4. The rook is at its happiest on an open line with an enemy at the end of it.",
+        "text": "Rxd4. Along the rank this time, not the file, the rook commands both. Knight gone, rook safe on d4. The rook is at its happiest on an open line with an enemy at the end of it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -606,7 +606,7 @@
      "kind": "puzzle",
      "title": "Cool-down: take what's in range",
      "intro": {
-      "text": "Now you do it cold. Each position is stripped to one idea: a black piece sits undefended, in range of one of your long-range men. Pick the right piece — rook, bishop or queen — and take it. One move."
+      "text": "Now you do it cold. Each position is stripped to one idea: a black piece sits undefended, in range of one of your long-range men. Pick the right piece (rook, bishop or queen) and take it. One move."
      },
      "puzzle": {
       "themes": [
@@ -659,7 +659,7 @@
   },
   {
    "id": "l3-short-range-pieces",
-   "title": "Knight, Pawn, King — the Short-Range Pieces",
+   "title": "Knight, Pawn, King: the Short-Range Pieces",
    "kind": "concept",
    "summary": "The knight's L and its jump; the pawn's split between moving and capturing; the king's single step.",
    "segments": [
@@ -672,7 +672,7 @@
        "conceptId": "knight-moves",
        "coach": {
         "conceptId": "knight-moves",
-        "text": "The knight is the strange one. It moves in an L — two squares in a straight line, then one square to the side. From d4 it lands on eight squares, and not one of them shares a rank, file, or diagonal with another. That scatter is what makes the knight so tricky to defend against. Study the shape until your eye finds all eight without counting.",
+        "text": "The knight is the strange one. It moves in an L. Two squares in a straight line, then one square to the side. From d4 it lands on eight squares, and not one of them shares a rank, file, or diagonal with another. That scatter is what makes the knight so tricky to defend against. Study the shape until your eye finds all eight without counting.",
         "annotations": [
          {
           "kind": "circle",
@@ -735,7 +735,7 @@
        "conceptId": "knight-moves",
        "coach": {
         "conceptId": "knight-moves",
-        "text": "Now its superpower. The knight on g1 is hemmed in by its own pawns on f2 and g2 — yet it leaps clean over them to f3. The knight is the only piece that jumps. Walls of pawns mean nothing to it. That is why a knight can spring to life in the most crowded position, where rook and bishop suffocate.",
+        "text": "Now its superpower. The knight on g1 is hemmed in by its own pawns on f2 and g2, yet it leaps clean over them to f3. The knight is the only piece that jumps. Walls of pawns mean nothing to it. That is why a knight can spring to life in the most crowded position, where rook and bishop suffocate.",
         "annotations": [
          {
           "kind": "circle",
@@ -767,7 +767,7 @@
        "conceptId": "pawn-moves",
        "coach": {
         "conceptId": "pawn-moves",
-        "text": "The pawn confuses every beginner, so hear it once and hear it well. A pawn MOVES straight forward — one square, or two on its very first step — but it CANNOT capture straight ahead. It CAPTURES only diagonally forward. This pawn on e2 may step to e3 or e4; it may take the black pawn on d3 or the one on f3. Move forward, strike sideways. They are different directions.",
+        "text": "The pawn confuses every beginner, so hear it once and hear it well. A pawn MOVES straight forward (one square, or two on its very first step) but it CANNOT capture straight ahead. It CAPTURES only diagonally forward. This pawn on e2 may step to e3 or e4; it may take the black pawn on d3 or the one on f3. Move forward, strike sideways. They are different directions.",
         "annotations": [
          {
           "kind": "circle",
@@ -803,7 +803,7 @@
        "conceptId": "king-moves",
        "coach": {
         "conceptId": "king-moves",
-        "text": "The king steps one square in any direction — to all eight squares around him, the slowest piece on the board and the one you can never afford to lose. He may capture an undefended enemy beside him. But there is an iron rule: the king may never move onto a square an enemy attacks, and may never be captured. The whole game is about his safety. We protect him above all.",
+        "text": "The king steps one square in any direction: to all eight squares around him, the slowest piece on the board and the one you can never afford to lose. He may capture an undefended enemy beside him. But there is an iron rule: the king may never move onto a square an enemy attacks, and may never be captured. The whole game is about his safety. We protect him above all.",
         "annotations": [
          {
           "kind": "circle",
@@ -872,7 +872,7 @@
        "conceptId": "knight-moves",
        "coach": {
         "conceptId": "knight-moves",
-        "text": "Now you handle the awkward three yourself — and watch the pawn especially; that diagonal capture is the single most-missed move at the start. First, the knight. White to move: it sits on g1, asleep in the corner. Bring it into the game with its natural leap to f3 — a fine, active square pointing at the centre. Make the knight's L.",
+        "text": "Now you handle the awkward three yourself, and watch the pawn especially; that diagonal capture is the single most-missed move at the start. First, the knight. White to move: it sits on g1, asleep in the corner. Bring it into the game with its natural leap to f3. A fine, active square pointing at the centre. Make the knight's L.",
         "annotations": [
          {
           "kind": "circle",
@@ -892,7 +892,7 @@
        ],
        "successLine": {
         "conceptId": "knight-moves",
-        "text": "Nf3. The most natural developing move in all of chess. Two up, one across — the L. From f3 the knight eyes the centre and is ready for battle. Knights belong in the action, never dozing in the corner.",
+        "text": "Nf3. The most natural developing move in all of chess. Two up, one across: the L. From f3 the knight eyes the centre and is ready for battle. Knights belong in the action, never dozing in the corner.",
         "annotations": [
          {
           "kind": "highlight",
@@ -902,7 +902,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. The knight moves in an L: two squares then one to the side. From g1 that L reaches f3 — two up the file from g, one across to f."
+        "text": "No. The knight moves in an L: two squares then one to the side. From g1 that L reaches f3. Two up the file from g, one across to f."
        }
       },
       {
@@ -910,7 +910,7 @@
        "conceptId": "pawn-moves",
        "coach": {
         "conceptId": "pawn-moves",
-        "text": "White to move. Your pawn on e2, a black pawn on d3 — one square diagonally ahead. Here is the rule in the flesh: the pawn cannot touch it by moving forward, but it CAN capture it diagonally. Take the pawn.",
+        "text": "White to move. Your pawn on e2, a black pawn on d3. One square diagonally ahead. Here is the rule in the flesh: the pawn cannot touch it by moving forward, but it CAN capture it diagonally. Take the pawn.",
         "annotations": [
          {
           "kind": "circle",
@@ -929,7 +929,7 @@
        ],
        "successLine": {
         "conceptId": "pawn-moves",
-        "text": "exd3 — captured. Forward to move, diagonal to take. If you had pushed to e3 instead, the black pawn would have sat there untouched, grinning at you. The diagonal capture is the pawn's only fang. Never forget it.",
+        "text": "exd3: captured. Forward to move, diagonal to take. If you had pushed to e3 instead, the black pawn would have sat there untouched, grinning at you. The diagonal capture is the pawn's only fang. Never forget it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -939,7 +939,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not a push. Pawns capture diagonally forward, never straight. The black pawn on d3 is exactly one square diagonally ahead of e2 — take it there."
+        "text": "Not a push. Pawns capture diagonally forward, never straight. The black pawn on d3 is exactly one square diagonally ahead of e2. Take it there."
        }
       },
       {
@@ -966,7 +966,7 @@
        ],
        "successLine": {
         "conceptId": "king-moves",
-        "text": "Kxd5. The king is a fighting piece too, once danger has passed — one step, and the free pawn is his. But never forget the condition: he could take only because nothing defended d5. Had an enemy guarded it, stepping there would be illegal, walking onto an attacked square.",
+        "text": "Kxd5. The king is a fighting piece too, once danger has passed. One step, and the free pawn is his. But never forget the condition: he could take only because nothing defended d5. Had an enemy guarded it, stepping there would be illegal, walking onto an attacked square.",
         "annotations": [
          {
           "kind": "highlight",
@@ -976,7 +976,7 @@
         ]
        },
        "retryLine": {
-        "text": "The king moves one square in any direction. The pawn on d5 is directly ahead and undefended — step onto it and capture."
+        "text": "The king moves one square in any direction. The pawn on d5 is directly ahead and undefended. Step onto it and capture."
        }
       }
      ]
@@ -1044,9 +1044,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up: two free pieces — take the bigger",
+     "title": "Warm-up: two free pieces. Take the bigger",
      "intro": {
-      "text": "A twist on the free grab, to set up today's lesson. In each position TWO black pieces hang, and one of your men attacks both — but they are not worth the same. Take the bigger one. Trust your gut on which is worth more for now; we name the order properly in a moment."
+      "text": "A twist on the free grab, to set up today's lesson. In each position TWO black pieces hang, and one of your men attacks both, but they are not worth the same. Take the bigger one. Trust your gut on which is worth more for now; we name the order properly in a moment."
      },
      "puzzle": {
       "themes": [
@@ -1088,14 +1088,14 @@
     },
     {
      "kind": "teach",
-     "title": "What a piece controls — and what it's worth",
+     "title": "What a piece controls, and what it's worth",
      "steps": [
       {
        "fen": "4k3/8/8/8/3Q4/8/8/4K3 w - - 0 1",
        "conceptId": "queen-moves",
        "coach": {
         "conceptId": "queen-moves",
-        "text": "A piece 'controls' every square it could move to or capture on. The queen on d4 controls a vast web — the whole d-file, the whole fourth rank, both diagonals through d4. Any enemy piece that steps onto one of those squares can be taken. Before you move, always ask: what does my piece control, and what does the enemy's? That question is the root of all tactics.",
+        "text": "A piece 'controls' every square it could move to or capture on. The queen on d4 controls a vast web: the whole d-file, the whole fourth rank, both diagonals through d4. Any enemy piece that steps onto one of those squares can be taken. Before you move, always ask: what does my piece control, and what does the enemy's? That question is the root of all tactics.",
         "annotations": [
          {
           "kind": "circle",
@@ -1130,7 +1130,7 @@
        "conceptId": "capturing",
        "coach": {
         "conceptId": "capturing",
-        "text": "And capturing is how control turns into profit. The rook on d1 controls the d-file; the black pawn on d3 stands in it. Rxd3 — the pawn comes off and the rook stands where it stood. You do not jump it or skip it; you replace it, and your piece lives on. So every capture is a trade of one piece for another. That is exactly why what you capture matters — which brings us to the next board.",
+        "text": "And capturing is how control turns into profit. The rook on d1 controls the d-file; the black pawn on d3 stands in it. Rxd3: the pawn comes off and the rook stands where it stood. You do not jump it or skip it; you replace it, and your piece lives on. So every capture is a trade of one piece for another. That is exactly why what you capture matters, which brings us to the next board.",
         "annotations": [
          {
           "kind": "circle",
@@ -1157,7 +1157,7 @@
        "conceptId": "relative-power",
        "coach": {
         "conceptId": "relative-power",
-        "text": "Not all pieces are equal, and when you may take more than one, take the greater. Here your queen can capture the rook on d7 up the file, or the knight on h5 along the diagonal. Both are undefended — the black king is shut away in the corner and guards neither. A rook outweighs a knight, so the rook is the richer prize. We give exact point values next chapter; for now, feel the order: queen, then rook, then bishop and knight, then pawn. When you have a choice, win the bigger piece.",
+        "text": "Not all pieces are equal, and when you may take more than one, take the greater. Here your queen can capture the rook on d7 up the file, or the knight on h5 along the diagonal. Both are undefended. The black king is shut away in the corner and guards neither. A rook outweighs a knight, so the rook is the richer prize. We give exact point values next chapter; for now, feel the order: queen, then rook, then bishop and knight, then pawn. When you have a choice, win the bigger piece.",
         "annotations": [
          {
           "kind": "circle",
@@ -1192,7 +1192,7 @@
        "conceptId": "relative-power",
        "coach": {
         "conceptId": "relative-power",
-        "text": "Two free targets, different sizes — no counting of defenders yet, both are genuinely hanging. White to move. Your queen may capture the rook on d7 or the knight on h5. One is worth more than the other. Take the greater prize.",
+        "text": "Two free targets, different sizes: no counting of defenders yet, both are genuinely hanging. White to move. Your queen may capture the rook on d7 or the knight on h5. One is worth more than the other. Take the greater prize.",
         "annotations": [
          {
           "kind": "circle",
@@ -1226,7 +1226,7 @@
         ]
        },
        "retryLine": {
-        "text": "The knight is free, yes — but the rook on d7 is free too, and a rook is worth more than a knight. When both hang, take the bigger. Capture the rook."
+        "text": "The knight is free, yes, but the rook on d7 is free too, and a rook is worth more than a knight. When both hang, take the bigger. Capture the rook."
        }
       },
       {
@@ -1234,7 +1234,7 @@
        "conceptId": "relative-power",
        "coach": {
         "conceptId": "relative-power",
-        "text": "White to move. A black bishop sits on d5, undefended — and two of your pieces bear on it. Your rook on d1 attacks it straight up the open d-file; your queen on g2 attacks it along the diagonal. Either could take it. Which piece should do the taking — the one worth less, or the one worth more? Capture the bishop with the cheaper piece.",
+        "text": "White to move. A black bishop sits on d5, undefended, and two of your pieces bear on it. Your rook on d1 attacks it straight up the open d-file; your queen on g2 attacks it along the diagonal. Either could take it. Which piece should do the taking. The one worth less, or the one worth more? Capture the bishop with the cheaper piece.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1271,7 +1271,7 @@
        ],
        "successLine": {
         "conceptId": "relative-power",
-        "text": "Rxd5. The bishop is undefended, so either piece wins it — but the habit is golden: capture with the lesser piece, the rook, and keep your queen safe and unspent. Leading with the queen when a humbler piece would do is how beginners walk their best piece into trouble. We sharpen this into a real rule in a later chapter.",
+        "text": "Rxd5. The bishop is undefended, so either piece wins it, but the habit is golden: capture with the lesser piece, the rook, and keep your queen safe and unspent. Leading with the queen when a humbler piece would do is how beginners walk their best piece into trouble. We sharpen this into a real rule in a later chapter.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1281,7 +1281,7 @@
         ]
        },
        "retryLine": {
-        "text": "Both your rook on d1 and your queen on g2 attack the bishop on d5. When you have a choice of capturer, prefer the cheaper piece — take with the rook up the d-file."
+        "text": "Both your rook on d1 and your queen on g2 attack the bishop on d5. When you have a choice of capturer, prefer the cheaper piece. Take with the rook up the d-file."
        }
       }
      ]
@@ -1290,7 +1290,7 @@
      "kind": "puzzle",
      "title": "Cool-down: an enemy piece sits undefended",
      "intro": {
-      "text": "The gentlest 'win material' task there is. In each position a black piece stands undefended in your range. Capture it cleanly — your first taste of the skill that decides games below master level."
+      "text": "The gentlest 'win material' task there is. In each position a black piece stands undefended in your range. Capture it cleanly. Your first taste of the skill that decides games below master level."
      },
      "puzzle": {
       "themes": [
@@ -1343,9 +1343,9 @@
   },
   {
    "id": "l5-make-the-right-move",
-   "title": "Putting It Together — Make the Right Move",
+   "title": "Putting It Together: Make the Right Move",
    "kind": "practice",
-   "summary": "Calm positions, real choices. Find a legal move that does something useful — and take what's free.",
+   "summary": "Calm positions, real choices. Find a legal move that does something useful, and take what's free.",
    "segments": [
     {
      "kind": "teach",
@@ -1356,7 +1356,7 @@
        "conceptId": "knight-moves",
        "coach": {
         "conceptId": "knight-moves",
-        "text": "A calm opening — both sides have a pawn in the centre, nothing is hanging, no piece is in danger. So what makes a move 'useful'? Three honest goals at this stage: develop a piece toward the centre, take anything that's free, and keep your king safe. Nf3 does the first: it brings the knight off the back rank to a strong central square, and from f3 it already eyes Black's e5-pawn. A purposeful move — not a random shuffle.",
+        "text": "A calm opening: both sides have a pawn in the centre, nothing is hanging, no piece is in danger. So what makes a move 'useful'? Three honest goals at this stage: develop a piece toward the centre, take anything that's free, and keep your king safe. Nf3 does the first: it brings the knight off the back rank to a strong central square, and from f3 it already eyes Black's e5-pawn. A purposeful move, not a random shuffle.",
         "annotations": [
          {
           "kind": "circle",
@@ -1383,7 +1383,7 @@
        "conceptId": "the-centre",
        "coach": {
         "conceptId": "the-centre",
-        "text": "From the very first moves, fight for the centre and bring pieces out. White has a pawn on e4 staking a claim to the middle; the bishops and knights want open paths to active squares. A useful move develops a new piece, grabs centre, or improves a badly-placed one. A move that does none of these is usually a wasted move — and at this level wasted moves lose.",
+        "text": "From the very first moves, fight for the centre and bring pieces out. White has a pawn on e4 staking a claim to the middle; the bishops and knights want open paths to active squares. A useful move develops a new piece, grabs centre, or improves a badly-placed one. A move that does none of these is usually a wasted move, and at this level wasted moves lose.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1418,7 +1418,7 @@
        "conceptId": "knight-moves",
        "coach": {
         "conceptId": "knight-moves",
-        "text": "Mild pressure now: more than one legal move, but one clear best choice each time. The rule of thumb — take what's free where it's free; otherwise develop toward the centre. White to move. Nothing is free to grab here, so reach for development. Your knight on g1 wants the centre. Bring it to its best square.",
+        "text": "Mild pressure now: more than one legal move, but one clear best choice each time. The rule of thumb: take what's free where it's free; otherwise develop toward the centre. White to move. Nothing is free to grab here, so reach for development. Your knight on g1 wants the centre. Bring it to its best square.",
         "annotations": [
          {
           "kind": "circle",
@@ -1437,7 +1437,7 @@
        ],
        "successLine": {
         "conceptId": "knight-moves",
-        "text": "Nf3 — develop, attack the e5-pawn, point at the centre. One move, three small jobs done. That is what 'useful' looks like in the opening: every move should improve your position.",
+        "text": "Nf3: develop, attack the e5-pawn, point at the centre. One move, three small jobs done. That is what 'useful' looks like in the opening: every move should improve your position.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1447,7 +1447,7 @@
         ]
        },
        "retryLine": {
-        "text": "Nothing is hanging to capture, so develop. The knight on g1 belongs on f3, heading for the centre — make that move."
+        "text": "Nothing is hanging to capture, so develop. The knight on g1 belongs on f3, heading for the centre. Make that move."
        }
       },
       {
@@ -1474,7 +1474,7 @@
        ],
        "successLine": {
         "conceptId": "capturing",
-        "text": "Nxe4. The knight on c3 reached the loose pawn in one leap and won it back cleanly — nothing recaptures. Development is good, but an undefended pawn in your range comes first. Scan for free material before anything else, every single move.",
+        "text": "Nxe4. The knight on c3 reached the loose pawn in one leap and won it back cleanly. Nothing recaptures. Development is good, but an undefended pawn in your range comes first. Scan for free material before anything else, every single move.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1492,7 +1492,7 @@
        "conceptId": "bishop-moves",
        "coach": {
         "conceptId": "bishop-moves",
-        "text": "White to move. Nothing hangs. Your knight is already out on f3; now bring your light-squared bishop into the game and clear the path to castle your king to safety. Develop the bishop to an active central diagonal — c4, where it stares straight at f7, the heart of Black's position.",
+        "text": "White to move. Nothing hangs. Your knight is already out on f3; now bring your light-squared bishop into the game and clear the path to castle your king to safety. Develop the bishop to an active central diagonal: c4, where it stares straight at f7, the heart of Black's position.",
         "annotations": [
          {
           "kind": "circle",
@@ -1512,7 +1512,7 @@
        ],
        "successLine": {
         "conceptId": "bishop-moves",
-        "text": "Bc4 — the bishop springs to an active diagonal aimed at f7, and now the king can castle to safety next move. Develop, aim at the centre, ready your king. You are already playing real, principled chess.",
+        "text": "Bc4: the bishop springs to an active diagonal aimed at f7, and now the king can castle to safety next move. Develop, aim at the centre, ready your king. You are already playing real, principled chess.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1531,7 +1531,7 @@
      "kind": "puzzle",
      "title": "Cool-down: free material, found",
      "intro": {
-      "text": "Close the chapter the way you will close countless games: see the undefended piece and take it. A touch harder than before — the loose piece sits further off, so make the eye work."
+      "text": "Close the chapter the way you will close countless games: see the undefended piece and take it. A touch harder than before: the loose piece sits further off, so make the eye work."
      },
      "puzzle": {
       "themes": [
@@ -1596,7 +1596,7 @@
      "Sideways along its rank"
     ],
     "answerIndex": 1,
-    "explain": "A pawn moves straight forward but captures diagonally forward. Moving and capturing are different directions — the most-missed rule for beginners."
+    "explain": "A pawn moves straight forward but captures diagonally forward. Moving and capturing are different directions, the most-missed rule for beginners."
    },
    {
     "kind": "mc",
@@ -1620,7 +1620,7 @@
      "Light squares, until it is promoted"
     ],
     "answerIndex": 0,
-    "explain": "A bishop is bound to one colour for the entire game. A light-squared bishop never touches a dark square — half the board is closed to it."
+    "explain": "A bishop is bound to one colour for the entire game. A light-squared bishop never touches a dark square: half the board is closed to it."
    },
    {
     "kind": "mc",
@@ -1630,14 +1630,14 @@
      "A light square",
      "A dark square",
      "It depends how the board is set up",
-     "Neither — centre squares have no colour"
+     "Neither: centre squares have no colour"
     ],
     "answerIndex": 1,
     "explain": "d4 is a dark square. The colours alternate and never change: a square's colour is fixed by the board, not by the setup. Knowing each square's colour at a glance is what tells you which squares a bishop can ever reach."
    },
    {
     "kind": "play",
-    "prompt": "Two black pieces hang — a rook on d6 and a bishop on a4. Capture the one worth more with your queen.",
+    "prompt": "Two black pieces hang: a rook on d6 and a bishop on a4. Capture the one worth more with your queen.",
     "fen": "6k1/8/3r4/8/b7/8/8/3QK3 w - - 0 1",
     "solutionUci": [
      "d1d6"
@@ -1660,7 +1660,7 @@
     "solutionUci": [
      "c1h6"
     ],
-    "explain": "The bishop travels diagonals only. From c1 the dark diagonal runs c1-d2-e3-f4-g5-h6, straight to h6 — same colour all the way."
+    "explain": "The bishop travels diagonals only. From c1 the dark diagonal runs c1-d2-e3-f4-g5-h6, straight to h6, same colour all the way."
    },
    {
     "kind": "play",
@@ -1669,7 +1669,7 @@
     "solutionUci": [
      "e5d3"
     ],
-    "explain": "The knight moves in an L — two squares then one across. From e5 that L reaches d3: two down the file, one across."
+    "explain": "The knight moves in an L, two squares then one across. From e5 that L reaches d3: two down the file, one across."
    },
    {
     "kind": "play",
@@ -1705,16 +1705,16 @@
     "solutionUci": [
      "e4d5"
     ],
-    "explain": "The king steps one square in any direction and may capture an enemy beside it. Here d5 is undefended, so Kxd5 is legal and safe. Remember the condition: had any enemy guarded d5, stepping there would be illegal — the king may never move onto an attacked square."
+    "explain": "The king steps one square in any direction and may capture an enemy beside it. Here d5 is undefended, so Kxd5 is legal and safe. Remember the condition: had any enemy guarded d5, stepping there would be illegal. The king may never move onto an attacked square."
    },
    {
     "kind": "play",
-    "prompt": "A calm opening — both sides have a central pawn and nothing is hanging. There is no free material to grab, so develop: bring your kingside knight to its best square, toward the centre.",
+    "prompt": "A calm opening: both sides have a central pawn and nothing is hanging. There is no free material to grab, so develop: bring your kingside knight to its best square, toward the centre.",
     "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
     "solutionUci": [
      "g1f3"
     ],
-    "explain": "When nothing is free to take, make a useful move: develop toward the centre. Nf3 brings the kingside knight off the back rank to its best square, eyeing the centre — not the rim (a knight on the rim is dim). A purposeful move beats a random shuffle every time."
+    "explain": "When nothing is free to take, make a useful move: develop toward the centre. Nf3 brings the kingside knight off the back rank to its best square, eyeing the centre. Not the rim (a knight on the rim is dim). A purposeful move beats a random shuffle every time."
    },
    {
     "kind": "judge",
@@ -1730,7 +1730,7 @@
     "fen": "k7/8/8/3p4/4Q3/8/8/4K3 b - - 0 1",
     "lastMoveUci": "d3e4",
     "verdict": "blunder",
-    "explain": "Blunder. The pawn on e4 was defended by the pawn on d5. Black recaptures with ...dxe4 and wins the queen for a single pawn — a catastrophe. Never take with a big piece into a defended square."
+    "explain": "Blunder. The pawn on e4 was defended by the pawn on d5. Black recaptures with ...dxe4 and wins the queen for a single pawn, a catastrophe. Never take with a big piece into a defended square."
    }
   ]
  },

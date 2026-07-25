@@ -2,12 +2,12 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// nodechess seed — the standalone node runner served at seed.nodechess.com.
+// nodechess seed: the standalone node runner served at seed.nodechess.com.
 //
 // A separate target from vite.web.config.ts on purpose: this page must stay
-// tiny. It pulls in the accounts/overlay stack and nothing else — no engines, no
-// board, no puzzle data — so a volunteer leaving it open in a background tab
-// costs them almost nothing.
+// tiny. It pulls in the accounts/overlay stack and nothing else: no engines, no
+// board, no puzzle data. A volunteer leaving it open in a background tab costs
+// them almost nothing.
 //
 // It needs NO cross-origin isolation headers: those exist for the app's
 // SharedArrayBuffer engine workers, and a seed node runs no engine.

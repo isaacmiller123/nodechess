@@ -252,7 +252,7 @@ export function RatedPanel({ initialTimeControl }: RatedPanelProps = {}): JSX.El
             {banned
               ? `Rated ${ladderKey} games are paused until ${banDate(ban.until)}.`
               : !mm.peerLive || mm.phase === 'signed-out'
-                ? 'Starting your connection to the accounts network…'
+                ? 'Connecting…'
                 : ladder
                   ? standingSentence(ladderKey, ladder.display)
                   : `${ladderKey} · no games on this ladder yet`}

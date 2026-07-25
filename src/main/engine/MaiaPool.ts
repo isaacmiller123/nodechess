@@ -8,11 +8,11 @@ import {
   lc0Installed
 } from '../datasets/maia'
 
-// Lazy pool of lc0 processes for the "Human" (Maia) bot style — one persistent
+// Lazy pool of lc0 processes for the "Human" (Maia) bot style: one persistent
 // engine per weight file, because lc0 loads its net at startup (a ~1s eigen
 // backend spin-up we pay once per level, not once per move). Maia is played at
 // nodes=1: the raw policy head IS the human-move model, so each move is a
-// single NN eval — cheap enough that keeping a couple of levels resident is
+// single NN eval: cheap enough that keeping a couple of levels resident is
 // fine (~60MB RSS each, CPU idle between moves).
 export class MaiaPool {
   private engines = new Map<MaiaLevel, UciEngine>()

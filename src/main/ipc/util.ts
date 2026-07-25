@@ -15,7 +15,7 @@ export function senderAllowed(e: IpcMainInvokeEvent): boolean {
   }
   // Bundled renderer (loadFile) or the future app:// protocol.
   if (u.protocol === 'app:' || u.protocol === 'file:') return true
-  // Dev server only — exact host match (prefix matching would accept localhost.evil.com).
+  // Dev server only: exact host match (prefix matching would accept localhost.evil.com).
   if (u.protocol === 'http:' && (u.hostname === 'localhost' || u.hostname === '127.0.0.1')) return true
   return false
 }

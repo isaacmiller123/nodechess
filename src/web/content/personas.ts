@@ -4,7 +4,7 @@
 //
 // ONE deliberate difference. Desktop merges resources/personas/photos.json,
 // where each portrait is a base64 data URI, and hands `Persona.photo` back
-// inline — 6.6 MB of JSON for 24 portraits. The build splits those back into
+// inline, 6.6 MB of JSON for 24 portraits. The build splits those back into
 // image files, so `photo` here is a URL into the content tree. Every consumer
 // puts it straight into an <img src>, which treats the two identically, and the
 // gallery now paints from a 35 KB catalog while the browser fetches (and

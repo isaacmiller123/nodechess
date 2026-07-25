@@ -1,6 +1,6 @@
 // Shared fixture for the web-accounts determinism suites
-// (scripts/test-web-accounts.mjs — the node oracle — and
-// scripts/test-web-accounts-browser.mjs — the real-browser gate, spec §14 A1
+// (scripts/test-web-accounts.mjs: the node oracle, and
+// scripts/test-web-accounts-browser.mjs: the real-browser gate, spec §14 A1
 // "browser worst-case exercised in CI for at least chain verification").
 //
 // ONE fixture source, bundled per-platform, so node and browser run the
@@ -24,8 +24,8 @@ export const ROOT = resolve(__dirname, '..', '..')
 
 export const GOLDENS = {
   // frozen-at-genesis parameter digest (params.ts, asserted by both stage-1
-  // suites). Changed once pre-ship when PARAMS_V1 gained the pwNorm row —
-  // nothing had shipped, so v1 grew the row instead of minting v2.
+  // suites). Changed once pre-ship when PARAMS_V1 gained the pwNorm row.
+  // Nothing had shipped, so v1 grew the row instead of minting v2.
   paramsDigest: 'ZDoblqaVf5z1zL8IvmWK2sdZK29JTNWZpY38XuDBZdk',
   // argon2id KAT from scripts/test-accounts-core.mjs:
   //   deriveSeed('TestUser', 'correct horse battery staple')
@@ -37,7 +37,7 @@ export const GOLDENS = {
   chainVerifyDigest: '9X73ZssMl6BygmtesggEAp91sSDKfWM1ngaMG4-fCWM',
   chainFileSha256: 'ZJm5bqJwj7RrgksYMvwxH20nzLvUATaFPmOwr6koQSc',
   // identity-derived chain (argon2 seed → device children → chain), recorded
-  // from a green run of this suite — freezes derivation→chain end to end
+  // from a green run of this suite. Freezes derivation→chain end to end
   identityChainVerifyDigest: 'iNi_HEWRboKox2BbKvDh4ToNf09PFWrq4XzdD35cB_s',
   identityChainFileSha256: 'E8V34SGrs_459L3osc6DQvqkNtT2ryE4z1nsi_k7POU',
   // unicode display-name end to end: name 'Zoë' (also derived from NFD input),
@@ -59,12 +59,12 @@ export const GOLDENS = {
   // now signs the FULL binding (kind/tc/players/reason), which changes the
   // segment event bytes and therefore the folded state hash. Re-recorded
   // again for F2 (A4-13/14): RepState gained the commendTw counter + the
-  // pend pending-rematch map, and pair entries carry the PAIR_BOUND flag —
+  // pend pending-rematch map, and pair entries carry the PAIR_BOUND flag,
   // same fixture chain, new embedded rep-state bytes. Re-recorded for A5 J5
   // (A4-12): RepState gained the `unsettled` counter + the `ob` open-pairing-
-  // obligation map — same fixture chain, new embedded rep-state bytes.
+  // obligation map: same fixture chain, new embedded rep-state bytes.
   // Re-recorded for the A4-14 eligibility split: RepState gained the `com`
-  // commend-decay map — same fixture chain, new embedded rep-state bytes.
+  // commend-decay map. Same fixture chain, new embedded rep-state bytes.
   a4StateHash: '3nEnAH0Zy8owAdxpEWsH-0Pr8AYG2Vpa0yy7bDtHiz8',
 }
 
@@ -84,7 +84,7 @@ const hex = (b: Uint8Array): string =>
 
 const digestOf = (s: string): string => A.toB64u(A.sha256(A.utf8(s)))
 
-/** float64 bit pattern as hex — byte-parity, not toString rounding. */
+/** float64 bit pattern as hex, byte-parity, not toString rounding. */
 const f64hex = (x: number): string => {
   const buf = new ArrayBuffer(8)
   new DataView(buf).setFloat64(0, x)
@@ -155,7 +155,7 @@ function buildA4Fixture(): { a4VerifyOk: boolean; a4CkptDeepOk: boolean; a4State
     const g = SEG.gameKey({ v: 1, t: 'game-key', w: rootB, b: opp.pubB, nonce: digestOf('nonce' + n), ts: T + n })
     const tr = SEG.transcriptDigest(g, [], res, 'resign')
     // A4 review (A4-01/A4-08): rated segments require the FULL witness
-    // binding — kind/tc + players-by-color + reason (atomic; partial bindings
+    // binding: kind/tc + players-by-color + reason (atomic; partial bindings
     // are 'bad-ladder-binding' under verifySegmentEvent).
     const ws = SEG.signWitnessEnd(wit.priv, wit.pubB, g, res, 0, tr, {
       kind: 'chess', tc, players: { w: rootB, b: opp.pubB }, reason: 'resign',
@@ -318,7 +318,7 @@ export async function runFixture(): Promise<FixtureResult> {
 
 /**
  * Bundle the fixture entry for 'node' or 'browser'. format esm both; NOTHING
- * is stubbed or externalized for the browser build — the shared accounts tree
+ * is stubbed or externalized for the browser build. The shared accounts tree
  * must carry zero node built-ins, and esbuild failing to resolve one IS the
  * packaging assertion.
  */
@@ -373,7 +373,7 @@ export function readBundle(path) {
 }
 
 // ---------------------------------------------------------------------------
-// A5 J6 — judge verdict-bit parity fixture (spec §14-A5: "verdicts
+// A5 J6. Judge verdict-bit parity fixture (spec §14-A5: "verdicts
 // bit-identical across desktop/browser/mobile"). SEPARATE entry from
 // FIXTURE_ENTRY_TS so the stage-2 node suite's field count is untouched;
 // consumed by scripts/test-web-accounts-browser.mjs only.
@@ -382,22 +382,25 @@ export function readBundle(path) {
 /** Goldens for the judge parity fixture (recorded from a green node run
  * 2026-07-21, after the J6 measured-anchors landing in judge/anchors.ts;
  * paramsDigest + the two digest goldens re-frozen same day after J7's
- * lifetimeScheme row drifted PARAMS_A5_DIGEST — the config echo folds the
- * digest into every JudgeOutput/Tier1Record, so these track it by design). */
+ * lifetimeScheme row drifted PARAMS_A5_DIGEST: the config echo folds the
+ * digest into every JudgeOutput/Tier1Record, so these track it by design).
+ * anchorsJudgeDigest re-recorded 2026-07-25: the anchor bundle's `fit`
+ * provenance strings were repunctuated, which moves the canonical hash.
+ * Every integer in the bundle is unchanged. */
 export const JUDGE_GOLDENS = {
   paramsDigest: 'a4eNbkiD7g7LEMr_cSYXFanlYWkEjt67Y6vFOX5VIB8',
   syntheticOutputDigest: 'CXca7BM7agj9x28iaA9krmXIfWuBDgA9NPXGQr28m3A',
   tier1RecordDigest: 'Asbla6XbjafLCwGgZgIx8hS4e5MW_E_tmQYhqOqEyko',
-  anchorsJudgeDigest: 'lesqBEHtNzakeh94uBiOsQzPA-KS_tn_nXwTZ7ClhA8',
+  anchorsJudgeDigest: 'GUh_AkPvDyTirVDPPP6G9FGabDaCnPi5ucfHzsF7Ojc',
   windowVerdictJson:
     '{"zMicro":-60306,"games":31,"scoredGames":30,"convicted":false,"escalate":false}',
 }
 
 /**
  * The three J1 golden positions the browser ENGINE parity gate re-judges at
- * the TRUE Tier-1 config (subset of test-judge-node's JUDGE_POSITIONS —
+ * the TRUE Tier-1 config (subset of test-judge-node's JUDGE_POSITIONS;
  * moves-path opening, FEN middlegame, mate-in-1; kept to 3 for browser
- * wall-time). The node-side digest is computed LIVE in the same suite run —
+ * wall-time). The node-side digest is computed LIVE in the same suite run.
  * J1's frozen 9-position golden stays untouched.
  */
 export const JUDGE_PARITY_POSITIONS = [
@@ -411,7 +414,7 @@ export const JUDGE_PARITY_POSITIONS = [
 ]
 
 /** Judge-core parity entry: tier1Record + windowVerdict + anchor digests over
- * FIXED synthetic inputs (no engine — cheap enough for every browser run). */
+ * FIXED synthetic inputs (no engine: cheap enough for every browser run). */
 export const JUDGE_FIXTURE_ENTRY_TS = `
 import * as J from '@shared/accounts/judge'
 import { canonicalHash } from '@shared/accounts/codec'
@@ -420,7 +423,7 @@ import { toB64u } from '@shared/accounts/hash'
 const b64 = (v: unknown): string => toB64u(canonicalHash(v as never))
 
 /** Fixed synthetic JudgeOutput: 10 judged plies, cp + mate lines, K<multiPv
- * tail — the full canonical surface without an engine. */
+ * tail. The full canonical surface without an engine. */
 function synthOutput(): J.JudgeOutput {
   const positions = [] as { ply: number; lines: { move: string; cp?: number; mate?: number }[] }[]
   for (let i = 0; i < 10; i++) {
@@ -447,7 +450,7 @@ const MOVES = Array.from({ length: 10 }, (_, i) => ({
 }))
 
 /** Fixed synthetic K-window (30 scored + 1 unscored) over the MEASURED judge
- * anchors — the exact windowVerdict surface the Tier-2 ban trigger runs. */
+ * anchors: the exact windowVerdict surface the Tier-2 ban trigger runs. */
 function synthWindow(): { verdict: J.WindowVerdict } {
   const side = (scored: number, acplMicro: number, matchMicro: number): J.Tier1Side => ({
     scored, unscored: 1, acplMicro, matched: 0, matchMicro, clockFitMicro: 500_000, clockN: scored,
@@ -503,7 +506,7 @@ export const JUDGE_FIXTURE_HTML = `<!doctype html>
 </html>
 `
 
-/** Web ENGINE entry: the REAL web judge adapter (src/web/engines/judge.ts —
+/** Web ENGINE entry: the REAL web judge adapter (src/web/engines/judge.ts;
  * hash-verified wasm fetch, dedicated worker, bypasses assets.ts selection)
  * driven through judgeGame() at the TRUE Tier-1 config. Browser-only. */
 export const JUDGE_ENGINE_ENTRY_TS = `

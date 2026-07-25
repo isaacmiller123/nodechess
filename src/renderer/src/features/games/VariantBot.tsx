@@ -17,7 +17,7 @@ type Phase = 'setup' | 'playing'
 /**
  * vs Bot for the WHOLE chess family: 5-level Fairy-Stockfish opponents over
  * the game kernel (games/bots.ts provider seam), board via the registry
- * entry's lazy renderer (games/boards/ChessFamilyBoard.tsx — pockets,
+ * entry's lazy renderer (games/boards/ChessFamilyBoard.tsx: pockets,
  * promotion dialogs, intersection boards, canonical move strings). ffish
  * kinds preload their WASM rules behind the setup screen. Standard chess
  * stays on the richer PlayView path and never routes here.
@@ -47,7 +47,7 @@ export function VariantBot({
   // Monotonic game id: a stale engine reply from a finished/restarted game is dropped.
   const gameSeq = useRef(0)
 
-  // ffish WASM preload — runs behind the setup card; Start waits on it.
+  // ffish WASM preload: runs behind the setup card; Start waits on it.
   useEffect(() => {
     if (ready || !spec.preload) return
     let cancelled = false
@@ -59,7 +59,7 @@ export function VariantBot({
         setReady(true)
       })
       .catch(() => {
-        if (!cancelled) onToast('The rules engine failed to load — try reopening this game.')
+        if (!cancelled) onToast('The rules engine failed to load. Try reopening this game.')
       })
     return () => {
       cancelled = true
@@ -110,12 +110,12 @@ export function VariantBot({
         // cancelled/seq guards above drop stale replies). NEVER smuggle a
         // success flag out of a setState updater: React runs updaters during
         // render, and its eager fast path is skipped when another update
-        // (setThinking above) is already pending — so a flag read back
+        // (setThinking above) is already pending, so a flag read back
         // synchronously is ALWAYS false and the toast fired on every legal
         // bot reply (live packaged-app audit, 2026-07-07).
         const next = spec.play(state, mv)
         if (next) setState(next)
-        else onToast(`The engine offered an illegal move (${mv}) — try restarting.`)
+        else onToast(`The engine offered an illegal move (${mv}). Try restarting.`)
       })
       .catch((err) => {
         if (cancelled || seq !== gameSeq.current) return
@@ -123,7 +123,7 @@ export function VariantBot({
         onToast(
           err instanceof BotUnavailableError
             ? err.message
-            : 'The engine failed to move — is the engines dataset installed?'
+            : 'The engine failed to move. Is the engines dataset installed?'
         )
         setPhase('setup')
       })
@@ -133,7 +133,7 @@ export function VariantBot({
   }, [phase, state, turn, userColor, outcome, provider, level, spec, onToast])
 
   // The board proposes canonical kernel moves (promotion dialogs and pocket
-  // drops included) — validate through spec.play and ignore rejects.
+  // drops included). Validate through spec.play and ignore rejects.
   const onUserMove = useCallback(
     (move: string) => {
       if (isUserTurn) applyMove(move)
@@ -158,8 +158,8 @@ export function VariantBot({
   const resultLabel =
     outcome &&
     (outcome.score === '1/2-1/2'
-      ? `Draw — ${outcome.reason.replace(/-/g, ' ')}`
-      : `${outcome.winner === userColor ? 'You win' : 'Bot wins'} — ${outcome.reason.replace(/-/g, ' ')}`)
+      ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
+      : `${outcome.winner === userColor ? 'You win' : 'Bot wins'}: ${outcome.reason.replace(/-/g, ' ')}`)
 
   // Post-game Replay Theater (cinematic 3D/2D re-run of the finished game).
   const [theater, setTheater] = useState<TheaterInput | null>(null)
@@ -309,7 +309,7 @@ export function VariantBot({
           Change level
         </button>
         <p className="votb-note">
-          {entry.title} vs Fairy-Stockfish — {provider.describe(level)}.
+          {entry.title} vs Fairy-Stockfish: {provider.describe(level)}.
         </p>
       </aside>
     </div>

@@ -16,7 +16,7 @@
 //   * Arrows use the SCHOOL_BRUSHES registered via Board's `brushes` prop
 //     (same hex colors as the app's --brush-* tokens, with per-color opacity)
 //     plus per-shape `modifiers.lineWidth` for weight. EVERY School board that
-//     can render these shapes MUST pass `brushes={SCHOOL_BRUSHES}` — chessground
+//     can render these shapes MUST pass `brushes={SCHOOL_BRUSHES}`. Chessground
 //     crashes its SVG defs sync on unregistered brush keys.
 //   * Circles / highlights / hint glows use DrawShape.customSvg: chessground
 //     renders that HTML in a 100x100 box covering exactly the target square
@@ -25,7 +25,7 @@
 //     renderer (fixed stroke, no lineWidth) cannot do.
 //
 // CAVEAT (renderer contract): Board.tsx's shapesKey() only hashes
-// orig/dest/brush, and customSvg shapes carry no brush — two shape lists that
+// orig/dest/brush, and customSvg shapes carry no brush. Two shape lists that
 // differ only in customSvg content hash identically. Every School render site
 // therefore passes a syncNonce that bumps when the line/step/hint changes.
 import type { Key } from 'chessground/types'
@@ -49,8 +49,8 @@ const HEX: Record<AnnotationColor, string> = {
  *  keys (registered on School boards via Board's `brushes` prop), giving
  *  per-color opacity: 0.85 good / 0.55 bad / 0.5 info / 0.85 focus. */
 const ARROW_BRUSH: Record<AnnotationColor, string> = {
-  good: 'schoolGood', // solid — the one arrow that must dominate
-  bad: 'schoolBad', // reduced opacity: "you went here — don't"
+  good: 'schoolGood', // solid. The one arrow that must dominate
+  bad: 'schoolBad', // reduced opacity: "you went here: don't"
   info: 'schoolInfo',
   focus: 'schoolFocus'
 }
@@ -71,7 +71,7 @@ export function brushFor(color: AnnotationColor | undefined): string {
 }
 
 // ---------------------------------------------------------------------------
-// customSvg builders — 0..100 box covering the target square. Elements carry
+// customSvg builders, 0..100 box covering the target square. Elements carry
 // classes so school-play.css can theme/animate them with design tokens (CSS
 // properties override presentation attributes); the attrs are the fallback.
 // ---------------------------------------------------------------------------
@@ -98,7 +98,7 @@ function highlightSvg(color: AnnotationColor): string {
 
 function glowSvg(): string {
   const hex = HEX.focus
-  // Concentric discs fake a soft radial glow (no SVG filters — their ids would
+  // Concentric discs fake a soft radial glow (no SVG filters; their ids would
   // collide across shapes). school-play.css pulses the group.
   return (
     `<g class="school-hint-glow">` +
@@ -114,7 +114,7 @@ function glowSvg(): string {
 // ---------------------------------------------------------------------------
 
 /** Convert one BoardAnnotation into a chessground DrawShape, or null if malformed.
- *  NOTE: annotation labels are deliberately NOT passed to chessground — its
+ *  NOTE: annotation labels are deliberately NOT passed to chessground. Its
  *  shape labels shrink multi-word text into an unreadable dot. Labels render as
  *  readable HTML pills over the board instead (see annotationLabels below). */
 export function annotationToShape(a: BoardAnnotation): DrawShape | null {
@@ -148,7 +148,7 @@ export function annotationsToShapes(annotations?: BoardAnnotation[]): DrawShape[
 
 // ---------------------------------------------------------------------------
 // Readable HTML labels for annotations. Chessground's own shape labels scale
-// text down to fit a small circle — multi-word labels become dust. Instead the
+// text down to fit a small circle: multi-word labels become dust. Instead the
 // School renders labels as absolutely-positioned pills over the board
 // (BoardFrame's .school-ann-labels overlay): arrows label at their midpoint,
 // circles/highlights just above their square.
@@ -218,7 +218,7 @@ export type SchoolHintStage = 0 | 1 | 2 | 3
 
 /** Shapes for one hint stage against the expected UCI move. Renders nothing at
  *  stage 0 or for a malformed move. Remember to bump the board's syncNonce when
- *  the stage changes — see the shapesKey caveat above. */
+ *  the stage changes. See the shapesKey caveat above. */
 export function hintShapes(expectedUci: string, stage: SchoolHintStage): DrawShape[] {
   if (!expectedUci || expectedUci.length < 4 || stage <= 0) return []
   const from = expectedUci.slice(0, 2) as Key
@@ -238,7 +238,7 @@ export function hintShapes(expectedUci: string, stage: SchoolHintStage): DrawSha
 }
 
 // ---------------------------------------------------------------------------
-// School arrow brushes — registered by every School board via Board's
+// School arrow brushes: registered by every School board via Board's
 // `brushes` prop (chessground deep-merges them over its defaults, so stock
 // keys survive). ARROW_BRUSH above references these keys: a School board that
 // renders annotation/hint shapes WITHOUT registering SCHOOL_BRUSHES will crash
@@ -247,7 +247,7 @@ export function hintShapes(expectedUci: string, stage: SchoolHintStage): DrawSha
 export const SCHOOL_BRUSHES: Record<string, DrawBrush> = {
   schoolGood: { key: 'sg', color: HEX.good, opacity: 0.9, lineWidth: 12 },
   schoolBad: { key: 'sb', color: HEX.bad, opacity: 0.65, lineWidth: 11 },
-  // Info arrows were washing out to grey at 0.5 — keep them clearly BLUE.
+  // Info arrows were washing out to grey at 0.5. Keep them clearly BLUE.
   schoolInfo: { key: 'si', color: '#2b6fc9', opacity: 0.8, lineWidth: 9 },
   schoolFocus: { key: 'sf', color: HEX.focus, opacity: 0.9, lineWidth: 11 }
 }

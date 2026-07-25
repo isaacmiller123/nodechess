@@ -1,4 +1,4 @@
-// A2 witness fabric — shared type contract (spec §1 PIN, §4 witness fabric,
+// A2 witness fabric: shared type contract (spec §1 PIN, §4 witness fabric,
 // ACCOUNTS-PARAMS §Witness/§PIN). Types + protocol rules only; implementations
 // live in sibling modules. Platform-neutral: no `node:` imports, no DOM globals.
 //
@@ -12,11 +12,11 @@ import type { B64u, EventId, SignedEvent, WitnessAttestation, Chain } from '../t
 // Node identity & key distance
 // ---------------------------------------------------------------------------
 
-/** nodeId = sha256(rootPub) — 32 bytes. All fabric distance is XOR over this. */
+/** nodeId = sha256(rootPub), 32 bytes. All fabric distance is XOR over this. */
 export type NodeId = B64u
 
 /**
- * Signed, ephemeral presence record (C-3 — expiring coordination state, no
+ * Signed, ephemeral presence record (C-3, expiring coordination state, no
  * authority). Broadcast into the fabric room; the union of live records forms
  * each observer's NodeDirectory. Nothing here is trusted beyond its signature:
  * eligibility is judged by the OBSERVER from floors + the subject's chain.
@@ -24,17 +24,17 @@ export type NodeId = B64u
 export interface PresenceBody extends CanonicalObject {
   v: 1
   root: B64u
-  /** Signing child key (device) — certified in the node's own chain. */
+  /** Signing child key (device). Certified in the node's own chain. */
   key: B64u
   caps: {
     witness: boolean
     committee: boolean
-    /** Advertised shard budget, MB (§11) — informational until A3. */
+    /** Advertised shard budget, MB (§11). Informational until A3. */
     shardMb: number
   }
   /** Params revision this node coordinates under. */
   params: B64u
-  /** Sender-claimed unix ms — bounded by receivers against local clock. */
+  /** Sender-claimed unix ms. Bounded by receivers against local clock. */
   ts: number
   /** Attested uptime percent over trailing 30d (0-100, integer). */
   uptimePct: number
@@ -49,7 +49,7 @@ export interface SignedPresence {
  * An observer's view of live nodes. Directories are LOCAL and may differ
  * across observers; every rule that matters (thresholds, eligibility,
  * diversity) is enforced on the SIGNATURE SET of a record, never on any
- * single observer's directory — so view divergence degrades liveness only,
+ * single observer's directory, so view divergence degrades liveness only,
  * never safety.
  */
 export interface NodeDirectory {
@@ -69,7 +69,7 @@ export interface SubjectSummary {
 }
 
 // ---------------------------------------------------------------------------
-// Write lease (§4) — threshold-granted, epoch-fenced
+// Write lease (§4), threshold-granted, epoch-fenced
 // ---------------------------------------------------------------------------
 
 export interface LeaseBody extends CanonicalObject {
@@ -119,7 +119,7 @@ export interface LeaseGrant extends CanonicalObject {
  *    requires `takeover` referencing a valid PIN session record; same-device
  *    re-grants (crash recovery) need none,
  *  - no unexpired fuse-tripped record for the root (fuse check is MANDATORY
- *    for grantors — granting into a fuse window is witness misbehavior).
+ *    for grantors: granting into a fuse window is witness misbehavior).
  */
 export interface Lease {
   body: LeaseBody
@@ -146,7 +146,7 @@ export type { WitnessAttestation }
 /**
  * Checkpoint cosignature = WitnessAttestation on the ckpt event, with the
  * added obligation that the witness RECOMPUTED the incremental fold step
- * before signing (§2b) — cosigning a bad checkpoint is slashable. Checkpoint
+ * before signing (§2b): cosigning a bad checkpoint is slashable. Checkpoint
  * validity at verify time: ≥ ckptM attestations from distinct eligible
  * witnesses spanning ≥ 3 distinct /16 nodeId prefixes (diversity bound).
  */
@@ -175,7 +175,7 @@ export interface WitnessedTime {
 }
 
 // ---------------------------------------------------------------------------
-// PIN — tOPRF committee (§1), RFC 9497 OPRF(ristretto255, SHA-512)
+// PIN, tOPRF committee (§1), RFC 9497 OPRF(ristretto255, SHA-512)
 // ---------------------------------------------------------------------------
 
 /**
@@ -183,7 +183,7 @@ export interface WitnessedTime {
  *  - Client picks OPRF key k, Shamir-splits it T-of-N over the ristretto255
  *    scalar field, sends share k_i to committee member i (transport-encrypted
  *    to the member's key), then DELETES k and every share.
- *  - shareCommitments[i] = k_i·G — published so members can't silently swap
+ *  - shareCommitments[i] = k_i·G: published so members can't silently swap
  *    shares and clients/verifiers can check partial evaluations (DLEQ per
  *    RFC 9497 VOPRF mode against the commitment).
  *  - pinPub: client computes out = OPRF(k, pin), pinKey = SLIP-0010-style
@@ -191,7 +191,7 @@ export interface WitnessedTime {
  *    Deriving pinKey REQUIRES a committee evaluation (that is the whole
  *    design: offline brute force is impossible, the rate limit lives with
  *    the committee's counter).
- * The payload is part of the account chain — fuse checks and takeover
+ * The payload is part of the account chain. Fuse checks and takeover
  * verification read it from there.
  */
 export interface PinRecordPayload extends CanonicalObject {
@@ -207,7 +207,7 @@ export interface PinRecordPayload extends CanonicalObject {
 }
 
 /**
- * Attempt counting (C-2, spec §1) — evaluations minus proven successes:
+ * Attempt counting (C-2, spec §1). Evaluations minus proven successes:
  *  - Every blind-evaluation REQUEST a member serves for (root) increments
  *    that member's local attempt counter and issues an evalNonce.
  *  - A client that derives pinKey proves success by signing
@@ -219,7 +219,7 @@ export interface PinRecordPayload extends CanonicalObject {
  *  - The counter NEVER resets. On fuse expiry, headroom refills by pinRefill.
  *  - Committee handoff (re-provision) REQUIRES a pinKey-signed authorization
  *    and carries the effective count forward in the new PinRecord
- *    (carriedFails) — co-signed by the OLD committee threshold.
+ *    (carriedFails): co-signed by the OLD committee threshold.
  */
 export interface PinAttemptReport extends CanonicalObject {
   root: B64u
@@ -247,7 +247,7 @@ export interface FuseRecord {
 }
 
 /**
- * PIN-gated session record — what lease takeovers and witnessed device
+ * PIN-gated session record: what lease takeovers and witnessed device
  * enrollment countersigning reference. Verifiable by anyone against pinPub
  * in the chain's active 'pin' record.
  */
@@ -285,7 +285,7 @@ export interface PinSession {
 /**
  * Root-signed authorization, used for accounts that carry NO active PIN record
  * (spec §1: the PIN gates the witnessed zone, and provisioning one needs a live
- * committee — so until a PIN exists the password alone is the account, exactly
+ * committee, so until a PIN exists the password alone is the account, exactly
  * as the sign-in copy states). Same body as a PIN session so the epoch/device/
  * purpose replay-binding is identical; the only difference is which key signs.
  *
@@ -331,7 +331,7 @@ export interface DoubleGrantEvidence {
   root: B64u
   a: Lease
   b: Lease
-  /** Chain slice — RESERVED. adjudicate does NOT consume it (fork verdicts go
+  /** Chain slice: RESERVED. adjudicate does NOT consume it (fork verdicts go
    * through adjudicateFork on a self-authenticating ForkProof); kept so callers
    * can carry the slice for the fork path without a shape change. */
   events: SignedEvent[]
@@ -379,7 +379,7 @@ export type FabricRequestKind =
   | 'fuse-check' // any → member: current fuse state for a root
   | 'head' // any → witness: cached head for a root/lane
   // A3 overlay (spec §5; overlay/types.ts payload contracts). The fabric
-  // remains transport-only — these kinds ride request() like every other,
+  // remains transport-only. These kinds ride request() like every other,
   // and the overlay layer owns all routing + validation.
   | 'overlay-ping'
   | 'overlay-find-node'
@@ -388,7 +388,7 @@ export type FabricRequestKind =
   | 'overlay-fetch' // viewer → holder: summary / event pages / shard bodies
   // A7 social transport (spec §3/§10; social/transport.ts payload contracts).
   // Mailbox is a dedicated RPC pair (admission is stateful, drain must be
-  // authenticated AND clearing — semantics find-value/store cannot honor).
+  // authenticated AND clearing: semantics find-value/store cannot honor).
   | 'social-mail-send' // sender → relay: offer an envelope for a recipient box
   | 'social-mail-drain' // recipient → relay: recipient-root-signed drain+clear
   // A6 live rated play (spec §3): before move 1 each player exchanges a SIGNED
@@ -400,7 +400,7 @@ export type FabricRequestKind =
   | 'pregame-snapshot' // player ↔ opponent: exchange the signed pre-game snapshot
 
 // ---------------------------------------------------------------------------
-// Witness-side cache (C-1 gossip memory — reconstructible, unauthoritative)
+// Witness-side cache (C-1 gossip memory: reconstructible, unauthoritative)
 // ---------------------------------------------------------------------------
 
 export interface WitnessCacheEntry {

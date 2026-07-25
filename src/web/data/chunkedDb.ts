@@ -3,7 +3,7 @@
 //
 // WHY sql.js-httpvfs rather than a VFS of our own over wa-sqlite or
 // @sqlite.org/sqlite-wasm: it is the only published implementation of the exact
-// shape this deployment needs — a byte range mapped onto `<prefix><nnn>` split
+// shape this deployment needs, a byte range mapped onto `<prefix><nnn>` split
 // files, so a 2 GB database survives Cloudflare Pages' 25 MiB per-file cap. Its
 // reads are synchronous XHR inside the worker, which means no COOP/COEP
 // requirement of its own, no Asyncify/JSPI build, and no browser-support
@@ -13,13 +13,13 @@
 // The costs, both accepted knowingly: the package has been unmaintained since
 // 2022, and its page cache never evicts (see `transferStats`).
 //
-// Everything here is deliberately thin — the queries live in puzzleSource.ts.
+// Everything here is deliberately thin. The queries live in puzzleSource.ts.
 
 import { releaseProxy } from 'comlink'
 import { createDbWorker, type SqliteStats, type WorkerHttpvfs } from 'sql.js-httpvfs'
 // The worker script and its wasm ship inside the package as prebuilt files;
 // Vite emits them as assets and hands us the URLs. They must be same-origin
-// (COEP require-corp — vite.web.config.ts sets it for the engine workers).
+// (COEP require-corp: vite.web.config.ts sets it for the engine workers).
 import defaultWorkerUrl from 'sql.js-httpvfs/dist/sqlite.worker.js?url'
 import defaultWasmUrl from 'sql.js-httpvfs/dist/sql-wasm.wasm?url'
 import type { PuzzleChunkManifest } from './manifest'
@@ -34,7 +34,7 @@ export interface ChunkedDbOptions {
   manifest: PuzzleChunkManifest
   workerUrl?: string
   wasmUrl?: string
-  /** Hard ceiling on bytes read per open. Left unbounded by default — a query
+  /** Hard ceiling on bytes read per open. Left unbounded by default. A query
    *  that trips it fails mid-flight, which is worse than a slow one. */
   maxBytesToRead?: number
 }
@@ -81,7 +81,7 @@ export class ChunkedSqlite {
           config: {
             serverMode: 'chunked',
             // The mapper builds `${urlPrefix}${chunkIndex padded to
-            // suffixLength}` — matching the names the build script writes.
+            // suffixLength}`. Matching the names the build script writes.
             urlPrefix: `${base}${m.db.prefix}`,
             serverChunkSize: m.db.chunkBytes,
             databaseLengthBytes: m.db.bytes,
@@ -115,7 +115,7 @@ export class ChunkedSqlite {
   }
 
   /** Releases the Comlink proxies. The library exposes no handle on the
-   *  underlying Worker, so the thread itself lives until the page unloads —
+   *  underlying Worker, so the thread itself lives until the page unloads,
    *  which is why callers should hold ONE reader for the app's lifetime rather
    *  than opening one per view. */
   async close(): Promise<void> {

@@ -1,4 +1,4 @@
-// THE A6 M2 LEASE + PAIRING PROOF — the live write-lease lifecycle (spec §4) and
+// THE A6 M2 LEASE + PAIRING PROOF: the live write-lease lifecycle (spec §4) and
 // the REAL witnessed 'pairing' record (spec §3/§8) that arms the witness's rated
 // gate, headless over MockFabric. This is the L-lease lane's acceptance test: the
 // slice of the §1 acceptance test that proves single-writer discipline + pairing
@@ -8,22 +8,22 @@
 //   node scripts/test-accounts-lease-runner.mjs
 //
 // The cast (all on ONE in-process MockFabric bus, test-accounts-lease style):
-//   • host / guest accounts — fresh decentralized accounts, signed in
-//   • host device A / device B — TWO devices of the SAME account (one root)
-//   • 16 witness nodes — a full canonical set (tLease = 9), NEITHER player
+//   • host / guest accounts: fresh decentralized accounts, signed in
+//   • host device A / device B: TWO devices of the SAME account (one root)
+//   • 16 witness nodes: a full canonical set (tLease = 9), NEITHER player
 //
 // The proofs:
-//   1. a T_lease lease HELD AT ONE EPOCH — leaseRunner gathers ≥ tLease grants at
+//   1. a T_lease lease HELD AT ONE EPOCH: leaseRunner gathers ≥ tLease grants at
 //      epoch 1, verifyLease green; heartbeat renews the SAME epoch (a same-device
 //      re-grant, still green); acquire is idempotent while held.
-//   2. a SECOND device is refused 'playing-elsewhere' — device B, seeing device A
+//   2. a SECOND device is refused 'playing-elsewhere': device B, seeing device A
 //      authored the live head, refuses to grab a conflicting lease; a PIN-gated
 //      takeover then advances the epoch and verifyLease admits it (expiry frees
 //      takeover).
-//   3. a forced same-epoch double-write is SLASHABLE — two same-epoch leases to
+//   3. a forced same-epoch double-write is SLASHABLE. Two same-epoch leases to
 //      different devices adjudicate to the witness intersection; two witnessed
 //      successors of one prev adjudicate to the user (slash.ts, both shapes).
-//   4. the REAL 'pairing' event VERIFIES + ANCHORS IN BOTH CHAINS — host + guest
+//   4. the REAL 'pairing' event VERIFIES + ANCHORS IN BOTH CHAINS, host + guest
 //      each anchor a witnessed 'pairing' under their lease; verifyChain green on
 //      both; the two payloads arm the WitnessCore rated gate (and its absence /
 //      contradiction poisons the follower).
@@ -65,7 +65,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -117,7 +117,7 @@ async function run(M) {
   const fabric = new W.MockFabric()
   const host = makePlayer(fabric, 10, 11, 'Hosty')
   const guest = makePlayer(fabric, 20, 21, 'Guesty')
-  // Host device B — a SECOND device of the SAME account (host root), never certified
+  // Host device B: a SECOND device of the SAME account (host root), never certified
   // here (it only needs a device signing key to contend for the lease).
   const deviceB = kp(12)
 
@@ -141,7 +141,7 @@ async function run(M) {
       summaries: () => summaries,
       subject: () => subjectFor(identity.root, W.nodeIdOf(identity.root)),
       now: () => NOW,
-      heartbeatMs: 0, // no internal timer — this suite drives heartbeat() explicitly
+      heartbeatMs: 0, // no internal timer: this suite drives heartbeat() explicitly
     })
 
   // ==========================================================================
@@ -155,7 +155,7 @@ async function run(M) {
   const leaseA = runnerA.currentLease()
   const vA = W.verifyLease(leaseA, ctxFor(host.root.pubB, host.nodeId))
   ok(vA.ok, 'the held lease verifies against the canonical witness set')
-  ok(vA.validGrantors.length >= PARAMS_A2.tLease, `the lease carries ≥ tLease (${PARAMS_A2.tLease}) distinct grantors — a real T_lease lease`)
+  ok(vA.validGrantors.length >= PARAMS_A2.tLease, `the lease carries ≥ tLease (${PARAMS_A2.tLease}) distinct grantors, a real T_lease lease`)
   eq(runnerA.currentEpoch(), 1, 'currentEpoch() reports the held epoch (wired into the segment append)')
 
   // Heartbeat renews the SAME epoch (a same-device re-grant, still valid).
@@ -198,7 +198,7 @@ async function run(M) {
   eq(acqB.ok === false && acqB.heldBy, host.signing.key, 'it names the device currently holding the lease')
   eq(acqB.ok === false && acqB.observedEpoch, 1, 'and the observed live epoch')
 
-  // An UNSYNCED second device — its local chain lacks device A's append, yet the
+  // An UNSYNCED second device: its local chain lacks device A's append, yet the
   // witnesses report epoch 1 ⇒ it cannot prove ownership and DEFERS, never a blind
   // same-epoch grab (the double-grant safety the honest client owes). M3 chain
   // replication resolves this to the clean playing-elsewhere refusal above.
@@ -218,7 +218,7 @@ async function run(M) {
   const vTake = W.verifyLease(runnerB.currentLease(), ctxFor(host.root.pubB, host.nodeId, { prior: { epoch: 1, device: host.signing.key }, pinPub: pin.pubB, session }))
   ok(vTake.ok, 'verifyLease admits the takeover (advanced epoch + a valid PIN-gated session)')
   // The SAME session (bound to epoch 2) cannot be replayed to authorize an epoch-3
-  // takeover — the takeover gate runs because the epoch-3 body is a DIFFERENT
+  // takeover: the takeover gate runs because the epoch-3 body is a DIFFERENT
   // device than the prior holder, and the session's epoch-bind then rejects it.
   const vReplay = W.verifyLease(
     W.grantLease(W.buildLeaseBody({ root: host.root.pubB, epoch: 3, device: deviceB.pubB, grantedWts: NOW, ttlMs: PARAMS_A2.leaseTtlMs, params: PARAMS_A2_DIGEST, takeover: W.pinSessionId(session) }), []),
@@ -230,7 +230,7 @@ async function run(M) {
   // An account with NO PIN cannot mint a PIN session, so without this lane the
   // second device is refused forever and cross-device play is impossible. The
   // runner mints a root-signed session itself, but ONLY once the holder's lease
-  // is plainly dead (headTs older than a full TTL) — a LIVE holder is a real
+  // is plainly dead (headTs older than a full TTL). A LIVE holder is a real
   // concurrent session and must still be refused.
   const rootMint = async (epoch) => ({
     kind: 'root',
@@ -254,7 +254,7 @@ async function run(M) {
 
   // (a) holder still LIVE ⇒ refused, no auto-mint.
   const acqLive = await runnerBAuto(NOW).acquire()
-  eq(acqLive.ok === false && acqLive.reason, 'playing-elsewhere', 'a LIVE holder is still refused — auto-takeover never races a real session')
+  eq(acqLive.ok === false && acqLive.reason, 'playing-elsewhere', 'a LIVE holder is still refused, auto-takeover never races a real session')
 
   // (b) holder's lease DEAD (past a full TTL) ⇒ auto-mints and takes the lane.
   const acqStale = await runnerBAuto(NOW + PARAMS_A2.leaseTtlMs + 1).acquire()
@@ -265,7 +265,7 @@ async function run(M) {
   // ==========================================================================
   console.log('\n· 3. a forced same-epoch double-write is slashable (witness/slash.ts) …')
   // ==========================================================================
-  // (a) DOUBLE-GRANT: force device B to gather a SAME-epoch lease (epoch 1) — the
+  // (a) DOUBLE-GRANT: force device B to gather a SAME-epoch lease (epoch 1). The
   // dishonest path an honest leaseRunner refuses above. Two valid leases at one
   // epoch to different devices ⇒ the intersection grantors double-signed.
   const acqBForce = await runnerB.acquire({ forceEpoch: 1 })
@@ -343,7 +343,7 @@ async function run(M) {
   eq(mkCore(badAnchors).feed(startMsg, NOW).ok, false, 'a pairing anchor naming the wrong opponent poisons the follower')
 
   // ==========================================================================
-  console.log('\n· 5. honest degradation — no reachable witness ⇒ the rated button waits …')
+  console.log('\n· 5. honest degradation. No reachable witness ⇒ the rated button waits …')
   // ==========================================================================
   const barren = new W.MockFabric()
   const soloEp = barren.endpoint(host.nodeId)
@@ -353,7 +353,7 @@ async function run(M) {
   })
   const acqBarren = await runnerBarren.acquire()
   eq(acqBarren.ok, false, 'with no witness reachable the lease is NOT granted')
-  eq(acqBarren.ok === false && acqBarren.reason, 'insufficient-witnesses', 'it degrades honestly (C-10) — the rated button waits, casual play unaffected')
+  eq(acqBarren.ok === false && acqBarren.reason, 'insufficient-witnesses', 'it degrades honestly (C-10): the rated button waits, casual play unaffected')
 
   for (const w of witnesses) w.ep.close()
   host.ep.close(); guest.ep.close()

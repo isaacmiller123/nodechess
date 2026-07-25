@@ -1,8 +1,8 @@
-// nodechess web server (docs/WEB-PORT-SPEC.md) — W1 statics + W3/W4 API.
+// nodechess web server (docs/WEB-PORT-SPEC.md): W1 statics + W3/W4 API.
 //
 // One Fastify process: serves the SPA (dist-web) with the cross-origin-
 // isolation headers the W2 WASM engines need, the games-art static tree, a
-// health probe, and the account/persistence API —
+// health probe, and the account/persistence API:
 //   /api/auth/*        signup/login/logout/me       (server/auth.ts)
 //   /api/ipc/<channel> the desktop IPC bridge       (server/bridge.ts)
 //   /api/review/*      client-computed review store (server/review.ts)
@@ -12,7 +12,7 @@
 // 503 coming-online and the static server still works.
 //
 // Bundled by scripts/build-server.mjs (esbuild → dist-server/index.cjs,
-// self-contained — the Docker runtime stage carries no node_modules).
+// self-contained: the Docker runtime stage carries no node_modules).
 //
 // Env:
 //   PORT            listen port           (default 8080)
@@ -33,7 +33,7 @@
 //   MAX_ACCOUNTS    signup ceiling (default 500; each account is a per-user
 //                   on-disk DB)
 //   ACCOUNTS_DECENTRALIZED  A-final switch (server/afinal.ts, spec §14):
-//                   1 = decentralized accounts — interim /api/auth/* answers
+//                   1 = decentralized accounts: interim /api/auth/* answers
 //                   410 superseded; 0 = interim system fully intact (the
 //                   emergency fallback). Unset: shipped builds default ON
 //                   (build-server.mjs injects the default); ad-hoc bundles
@@ -76,13 +76,13 @@ const VERSION = typeof __WEB_APP_VERSION__ === 'string' ? __WEB_APP_VERSION__ : 
 
 async function main(): Promise<void> {
   if (!fs.existsSync(path.join(WEB_ROOT, 'index.html'))) {
-    console.error(`WEB_ROOT has no index.html: ${WEB_ROOT} — run \`npm run build:web\` first`)
+    console.error(`WEB_ROOT has no index.html: ${WEB_ROOT}. Run \`npm run build:web\` first`)
     process.exit(1)
   }
 
   // TRUST_PROXY=1: honor X-Forwarded-Proto from a TLS-terminating reverse
   // proxy so req.protocol reads 'https' and the sid cookie gets its Secure
-  // flag (server/auth.ts). Opt-in — enabling it unconditionally would let
+  // flag (server/auth.ts). Opt-in: enabling it unconditionally would let
   // clients that connect directly spoof the header.
   const app = Fastify({
     logger: { level: process.env.LOG_LEVEL ?? 'info' },
@@ -102,7 +102,7 @@ async function main(): Promise<void> {
   // Origin header to cross-site POSTs, so a mutating /api call whose Origin
   // does not match the host it arrived at is refused before any route runs.
   // Same-origin fetches match, and non-browser clients (curl, the test
-  // suites) send no Origin at all — both pass untouched. `req.host` honors
+  // suites) send no Origin at all. Both pass untouched. `req.host` honors
   // X-Forwarded-Host only under TRUST_PROXY, mirroring the cookie logic.
   app.addHook('onRequest', async (req, reply) => {
     if (req.method === 'GET' || req.method === 'HEAD') return
@@ -113,14 +113,14 @@ async function main(): Promise<void> {
     try {
       originHost = new URL(origin).host
     } catch {
-      originHost = null // 'null' (sandboxed frames) or malformed — refuse
+      originHost = null // 'null' (sandboxed frames) or malformed: refuse
     }
     if (!originHost || (originHost !== req.host && originHost !== req.hostname)) {
       return reply.code(403).send({ error: 'bad-origin' })
     }
   })
 
-  // Per-IP rate limits — registered global:false; only the routes that carry a
+  // Per-IP rate limits. Registered global:false; only the routes that carry a
   // config (login/signup in server/auth.ts) are limited. Keying uses req.ip,
   // which is the X-Forwarded-For client only under TRUST_PROXY.
   await app.register(fastifyRateLimit, { global: false })
@@ -129,7 +129,7 @@ async function main(): Promise<void> {
   // fresh deploy is picked up on refresh (the web app's whole update story).
   await app.register(fastifyStatic, {
     root: WEB_ROOT,
-    // cacheControl:false — the module's own header would overwrite setHeaders.
+    // cacheControl:false. The module's own header would overwrite setHeaders.
     cacheControl: false,
     setHeaders: (res, filePath) => {
       if (filePath.includes(`${path.sep}assets${path.sep}`)) {
@@ -142,7 +142,7 @@ async function main(): Promise<void> {
 
   // 3D tabletop PBR textures + piece art (main.web.tsx points
   // window.__gamesArtBase here in production). Optional: a source checkout
-  // without the art pipeline output still serves the app — the renderer keeps
+  // without the art pipeline output still serves the app. The renderer keeps
   // its procedural fallbacks.
   if (fs.existsSync(GAMES_ART_ROOT)) {
     await app.register(fastifyStatic, {
@@ -155,7 +155,7 @@ async function main(): Promise<void> {
       }
     })
   } else {
-    app.log.warn(`games-art root missing (${GAMES_ART_ROOT}) — 3D textures fall back to procedural`)
+    app.log.warn(`games-art root missing (${GAMES_ART_ROOT}): 3D textures fall back to procedural`)
   }
 
   app.get('/healthz', async () => ({ ok: true, version: VERSION, ts: Date.now() }))
@@ -167,11 +167,11 @@ async function main(): Promise<void> {
   await app.register(fastifyCookie)
 
   // A-final switch (spec §14, server/afinal.ts): when the decentralized
-  // accounts are live, the interim /api/auth namespace answers 410 superseded
-  // — registered regardless of bridge presence (superseded, not
+  // accounts are live, the interim /api/auth namespace answers 410 superseded.
+  // Registered regardless of bridge presence (superseded, not
   // coming-online). The content plane (/api/ipc, /api/review, statics) is
   // untouched either way, and existing interim session cookies still resolve
-  // there (only the account-lifecycle endpoints are refused — reversible OFF
+  // there (only the account-lifecycle endpoints are refused; reversible OFF
   // via ACCOUNTS_DECENTRALIZED=0).
   const accountsFlag = accountsDecentralized()
   app.log.info(
@@ -192,7 +192,7 @@ async function main(): Promise<void> {
     })
     const auth = new AuthStore(DATA_DIR)
     // Flag ON: the interim auth endpoints are 410-gated above and their
-    // routes are simply not registered. AuthStore itself stays constructed —
+    // routes are simply not registered. AuthStore itself stays constructed:
     // ipc/review still resolve EXISTING session cookies (per-user data stays
     // reachable; no new session can be minted with login/signup refused).
     if (!accountsFlag.on) registerAuthRoutes(app, auth)
@@ -200,33 +200,33 @@ async function main(): Promise<void> {
     registerReviewRoutes(app, api, auth)
     if (!api.puzzlesInstalled()) {
       app.log.warn(
-        `puzzle DB missing (${PUZZLES_PATH}) — puzzle channels degrade to empty results`
+        `puzzle DB missing (${PUZZLES_PATH}): puzzle channels degrade to empty results`
       )
     }
   } else {
     app.log.warn(
-      `ipc bridge bundle missing (${BRIDGE_PATH}) — /api stays coming-online ` +
+      `ipc bridge bundle missing (${BRIDGE_PATH}): /api stays coming-online ` +
         `(run node scripts/build-ipc-bridge.mjs)`
     )
   }
 
   // Catch-all for the REST of the API namespace: anything the routers above
   // did not claim answers an honest 503, NOT the SPA fallback, so client fetch
-  // errors stay legible. Registered for the bare path AND the subtree —
+  // errors stay legible. Registered for the bare path AND the subtree:
   // find-my-way's wildcard does not match the prefix itself, and the SPA shell
   // answering GET /api would read as a broken API, not a reserved one.
   // (Static routes and /api/ipc/:channel take precedence over the wildcard.)
   const apiComingOnline = async (_req: unknown, reply: FastifyReply): Promise<unknown> => {
     return reply.code(503).send({
       error: 'coming-online',
-      message: 'The nodechess web API is coming online — this endpoint is not implemented yet.'
+      message: 'The nodechess web API is coming online. This endpoint is not implemented yet.'
     })
   }
   app.all('/api', apiComingOnline)
   app.all('/api/*', apiComingOnline)
 
   // SPA fallback: any other GET/HEAD renders the app shell (client-side
-  // routing) — EXCEPT asset-shaped paths (hashed /assets/*, /games-art/*, or
+  // routing): EXCEPT asset-shaped paths (hashed /assets/*, /games-art/*, or
   // anything with a file extension), which can never be client routes: a
   // stale tab requesting a redeployed chunk must get a clean 404, not
   // index.html served as JavaScript. Non-GET methods 404 like normal.
@@ -244,7 +244,7 @@ async function main(): Promise<void> {
   })
 
   const address = await app.listen({ port: PORT, host: HOST })
-  // Parsed by scripts/test-web-server.mjs — keep the shape stable.
+  // Parsed by scripts/test-web-server.mjs: keep the shape stable.
   console.log(`nodechess-web listening ${address}`)
 }
 

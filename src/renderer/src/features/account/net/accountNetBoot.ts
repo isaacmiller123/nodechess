@@ -1,13 +1,13 @@
-// A6 M1–M4 — LEAD INTEGRATION boot: wire the live account net into the running app.
+// A6 M1–M4, LEAD INTEGRATION boot: wire the live account net into the running app.
 //
 // This is the renderer-only side-effect module the online-game boot imports (next
 // to onlineStore.setSoundSink, useOnlineGame.ts). It does several guarded things,
 // each an honest NO-OP when signed out so casual/unsigned play stays byte-identical:
 //
 //   1. Register the signed-in device's signing-key PROVIDER on the store
-//      (onlineStore.setSigningKeyProvider(mpSigningKey)) — the store offers this
+//      (onlineStore.setSigningKeyProvider(mpSigningKey)), the store offers this
 //      device's key to `mp` only for a RATED game (mpClient.mpSigningKey()).
-//   2. Register the segment PUBLISHER (onlineStore.setSegmentPublisher(glue)) —
+//   2. Register the segment PUBLISHER (onlineStore.setSegmentPublisher(glue)):
 //      a finished, witnessed rated game's SignedGameOutcome → the countersigned
 //      segment appended to this player's own chain (segmentPublisher.ts → Lane E),
 //      landing at the M2 lease runner's live monotonic epoch (getLeaseRunner).
@@ -18,7 +18,7 @@
 //      and serves this player's pre-game snapshot to opponents + the game witness.
 //   4. Expose a dev/ops witness surface (window.__chessWitness) so a signed-in
 //      idle instance CAN witness a room it is asked to (the M1 dev flow; M2
-//      matchmaking auto-assigns). Mirrors window.__chessAccounts — reachable from
+//      matchmaking auto-assigns). Mirrors window.__chessAccounts, reachable from
 //      the console + CI drivers, no dead buttons.
 //
 //   --- M2 (overlay-backed matchmaking + live write-lease) ---
@@ -43,8 +43,8 @@
 //      directory BEFORE the peer and pass its validator + merge in, so every
 //      overlay store is shard-capacity + pointer-duty verified (§5); open the KV
 //      store at the platform §11 budget. On each landed 'segment'/'pairing',
-//      publish-on-write the event onto the guaranteed floor and — throttled, per
-//      game / on tab-hide / on sign-out, NEVER per move — finalSync the whole
+//      publish-on-write the event onto the guaranteed floor and (throttled, per
+//      game / on tab-hide / on sign-out, NEVER per move) finalSync the whole
 //      chain into shard space (the §5 owner-gone reconstruction guarantee). Run
 //      the background repair loop (eviction=churn=healed) + a write-time
 //      shard-pointer index cadence; stop both on teardown.
@@ -55,12 +55,12 @@
 //      record/fuse persist through the KV keyed by root) and the social client
 //      (presence + mailbox relay + §3 friend request→consent edges over the
 //      overlay). A friend edge lands on our OWN witnessed lane (no third witness
-//      needed — the peer's countersignature is its authority). Both singletons
+//      needed, the peer's countersignature is its authority). Both singletons
 //      stop on teardown. Un-fixtured PIN dialogs + PeopleTab read their live state.
 //
 // The heavy peer stack activates ONLY on sign-in; a signed-out user never joins
 // the accounts fabric. Every failure degrades honestly (rated write waits, PIN /
-// social surface an honest wait), never a crash. src/shared/accounts stays pure —
+// social surface an honest wait), never a crash. src/shared/accounts stays pure:
 // all hosting lives here.
 
 import { clientAppendWitnessed, makeRootSession, nodeIdOf } from '@shared/accounts/witness'
@@ -137,7 +137,7 @@ import { summarizeNetStatus } from './accountNetStatus'
 import { requestPreGameSnapshot } from './preGame'
 import { startWitnessing } from './witnessController'
 import type { WitnessRunnerGameInit, WitnessRunnerHandle } from './witnessRunner'
-// M5 anticheat — Lane L-t1 (Tier-1 judge runner) + Lane L-t2 (verdict client).
+// M5 anticheat: Lane L-t1 (Tier-1 judge runner) + Lane L-t2 (verdict client).
 import { runTier1ForGame, type Tier1GameView, type Tier1Signals } from './judgeRunner'
 import {
   getVerdictClient,
@@ -153,40 +153,40 @@ import {
 // into runTier1ForGame so the runner itself stays headless-testable.
 import { newWebJudgeEngine } from '../../../../../web/engines'
 
-/** Re-announce presence every 60 s — presence is ephemeral (§4/§11) and a live
+/** Re-announce presence every 60 s, presence is ephemeral (§4/§11) and a live
  *  tab must refresh it well within the fabric's stale horizon
  *  (peerService staleAfterMs = leaseTtlMs·4 = 480 s). */
 const PRESENCE_HEARTBEAT_MS = 60_000
 
-/** M4 — re-publish SOCIAL presence + drain the mailbox on this cadence while a
+/** M4: re-publish SOCIAL presence + drain the mailbox on this cadence while a
  *  tab is live (§10 ephemeral presence / store-and-forward mail). Distinct from
  *  the fabric presence heartbeat above (that keeps the OVERLAY node reachable;
  *  this keeps the social surface fresh). */
 const SOCIAL_HEARTBEAT_MS = 60_000
 const SOCIAL_SYNC_MS = 45_000
 
-/** M3 — the §5 write-time shard-pointer index refresh cadence. Cheap when this
+/** M3: the §5 write-time shard-pointer index refresh cadence. Cheap when this
  *  node carries no rows yet (gate.subjects() empty ⇒ a no-op tick); once it is a
  *  duty carrier for others it re-publishes the authenticated 'shard' pointers so
  *  viewers keep enumerating the real carriers. Far shorter than the 6 h repair
  *  scan (that heals eviction; this just keeps the contact sheet current). */
 const SHARD_POINTER_CADENCE_MS = 3 * 60_000
 
-/** M5 — re-run the deterministic §8 escalation self-audit on this cadence while a
+/** M5: re-run the deterministic §8 escalation self-audit on this cadence while a
  *  tab is live: it re-checks every ladder, RETRIES an owed self-ban that could not
  *  be witnessed at game-over (C-10), re-publishes the conviction row, and runs the
  *  self suppression scan. Post-game is the primary trigger; this is the safety net
  *  for a ban that had no reachable witness when its game settled. Far longer than a
- *  game (the judge already ran per game) — this never re-judges, only re-assesses. */
+ *  game (the judge already ran per game); this never re-judges, only re-assesses. */
 const VERDICT_AUDIT_CADENCE_MS = 5 * 60_000
 
 // ---------------------------------------------------------------------------
-// 1 + 2. Store registrations (once, at module load — inert until a rated game).
+// 1 + 2. Store registrations (once, at module load, inert until a rated game).
 // ---------------------------------------------------------------------------
 
 onlineStore.setSigningKeyProvider(mpSigningKey)
 
-// M4 — register the account-ROOT signer both the PIN committee client and the
+// M4: register the account-ROOT signer both the PIN committee client and the
 // social client sign their root-bound records with (spec §1 PIN record; §3/§10
 // presence/mailbox/friend halves). `rootSigningKey` returns null when signed out,
 // so the singletons stay in an HONEST signer-unavailable state until sign-in
@@ -197,7 +197,7 @@ setSocialRootSignerProvider(rootSigningKey)
 
 /** How long a cross-device restore waits for the overlay to find anyone before
  *  giving up. A new device has to join relays and fill a bucket from cold, so
- *  this is deliberately patient — but bounded, because the honest answer when
+ *  this is deliberately patient, but bounded, because the honest answer when
  *  nothing answers is "not found", not a hung sign-in. */
 const RESTORE_REACHABILITY_TIMEOUT_MS = 20_000
 const RESTORE_POLL_MS = 500
@@ -211,7 +211,7 @@ const RESTORE_POLL_MS = 500
  * once sign-in completes.
  *
  * The transient peer runs as device index 0, whose key is DERIVED from the seed
- * and is therefore already ours on every machine that can derive the identity —
+ * and is therefore already ours on every machine that can derive the identity,
  * and whose cert is already inside the very chain we are fetching, so a verifier
  * that resolves us reaches the same conclusion. The freshly enrolled per-machine
  * device key (accounts.adoptFromNetwork) is a separate, higher index.
@@ -248,7 +248,7 @@ setChainRestoreProvider(async (identity: Identity): Promise<Chain | null> => {
       nowMs: Date.now(),
     })
     // Only a FULL reconstruction is adoptable. The 'floor' path is a union of
-    // surviving segments — real data, but not a verified chain, and adopting it
+    // surviving segments, real data, but not a verified chain, and adopting it
     // would silently truncate history on the new device.
     return view.status === 'expected' && view.chain ? view.chain : null
   } catch {
@@ -257,7 +257,7 @@ setChainRestoreProvider(async (identity: Identity): Promise<Chain | null> => {
     try {
       await peer?.stop()
     } catch {
-      /* teardown is best-effort — the restore verdict already stands */
+      /* teardown is best-effort, the restore verdict already stands */
     }
     try {
       await kv?.close?.()
@@ -269,7 +269,7 @@ setChainRestoreProvider(async (identity: Identity): Promise<Chain | null> => {
 
 /**
  * Mint the session that authorizes THIS device to take the write lease at
- * `epoch` — the step that lets an account move to a second machine.
+ * `epoch`, the step that lets an account move to a second machine.
  *
  * Lane, per spec §1 / lease.verifyTakeover:
  *  - PIN provisioned ('set' | 'banned') ⇒ null. The PIN key is only recoverable
@@ -320,18 +320,18 @@ const chainHolder: ChainHolder = {
   },
 }
 
-/** M2 — the live write-lease runner for the signed-in account, or null when no
+/** M2: the live write-lease runner for the signed-in account, or null when no
  *  peer is up. ONE runner per account (minted in reconcilePeer, released on
  *  teardown). Fed to the segment publisher AND the pre-game prep so a rated
  *  game's 'pairing' (pre-move-1) and 'segment' (post-game) land at the SAME
- *  monotonic epoch — one fencing run, spec §4. */
+ *  monotonic epoch, one fencing run, spec §4. */
 let leaseRunner: LeaseRunner | null = null
 
-/** M2 — the stop handle for this instance's idle witness offer (offerWitnessing),
+/** M2: the stop handle for this instance's idle witness offer (offerWitnessing),
  *  or null. Started when the peer goes live, stopped on teardown. */
 let stopWitnessOffer: (() => void) | null = null
 
-/** M2 — the gameKey of the rated game we most recently acquired a lease for, or
+/** M2: the gameKey of the rated game we most recently acquired a lease for, or
  *  null. Lets the store observer release the lease when that game leaves live
  *  play without producing a segment (aborted / unwitnessed), so the heartbeat
  *  never renews past a settled game (the segment publisher releases on its own
@@ -340,13 +340,13 @@ let preppedGameKey: string | null = null
 
 // --- M3 storage-duty + M4 PIN/social live-on-sign-in state ------------------
 
-/** M3 — the composed overlay store-accept gate (shard capacity + pointer duty)
+/** M3: the composed overlay store-accept gate (shard capacity + pointer duty)
  *  for the live peer, or null when none is up. Built BEFORE the peer (its
  *  validator/merge gate every overlay store); its subjects() is the repair
  *  worklist + the shard-pointer index worklist. */
 let storageGate: StorageDutyGate | null = null
 
-/** M3 — the live overlay storage gate for the signed-in peer (usedBytes() = the
+/** M3: the live overlay storage gate for the signed-in peer (usedBytes() = the
  *  live §11 byte accounting; subjects() = the accounts we carry rows for), or null
  *  when signed out. The DataTab / net-status surfaces read the REAL figures here
  *  rather than a fixture. */
@@ -354,42 +354,42 @@ export function getStorageGate(): StorageDutyGate | null {
   return storageGate
 }
 
-/** M3 — the DEVICE signing identity the live peer runs as, captured at start so
+/** M3: the DEVICE signing identity the live peer runs as, captured at start so
  *  the §5 duty operations (publish-on-write / final sync / held-shard pointers)
  *  keep working through a sign-out teardown even after the web session clears
  *  (deviceSigningKey would already read null). Nulled after the sign-out sync. */
 let peerSigning: { root: string; key: string; priv: Uint8Array } | null = null
 
-/** M3/M4 — the persistent CanonicalObject store for THIS session (opened at the
+/** M3/M4: the persistent CanonicalObject store for THIS session (opened at the
  *  §11 platform budget). Backs the peer's overlay accounting AND the PIN record /
  *  fuse persistence (keyed by root). Closed after the peer that used it is down. */
 let accountKv: KvStore | null = null
 
-/** M3 — stop handles for the background repair loop + the write-time shard-pointer
+/** M3: stop handles for the background repair loop + the write-time shard-pointer
  *  cadence, started when the peer goes live and stopped on teardown. */
 let stopRepairLoop: (() => void) | null = null
 let stopShardPointerCadence: (() => void) | null = null
 
-/** M3 — guards against overlapping §5 final syncs (a slow re-shard must never
+/** M3: guards against overlapping §5 final syncs (a slow re-shard must never
  *  stack behind a rapid second game / a tab-hide firing mid-sync). */
 let finalSyncInFlight = false
 
 // --- M5 anticheat live state (Tier-1 record projection + verdict cadence) ----
 
-/** M5 §8 — the trust-store PROJECTION: gameKey → the canonical Tier1Record the
+/** M5 §8, the trust-store PROJECTION: gameKey → the canonical Tier1Record the
  *  pinned judge produced for OUR own rated games. It is the L-t2 escalation
  *  trigger's record input (assessEscalation needs a record for EVERY game in a
- *  window — an unjudged rated game is §8 non-compliance and the check fails
+ *  window, an unjudged rated game is §8 non-compliance and the check fails
  *  CLOSED). Hydrated from the account KV on sign-in and written on every judged
  *  game, so a long career's trailing-K window stays fully judged across restarts.
  *  Cleared on teardown (1:1 with the signed-in identity). */
 const tier1Records = new Map<string, Tier1Record>()
 
-/** M5 — the stop handle for the periodic verdict self-audit cadence, or null. */
+/** M5: the stop handle for the periodic verdict self-audit cadence, or null. */
 let stopVerdictAuditCadence: (() => void) | null = null
 
-/** M5 — serialize the post-game judge passes: two rapid rated finishes must not
- *  spawn two pinned judge Workers (memory) or two overlapping self-audits — a
+/** M5, serialize the post-game judge passes: two rapid rated finishes must not
+ *  spawn two pinned judge Workers (memory) or two overlapping self-audits; a
  *  second landing queues behind the first. */
 let judgeChain: Promise<void> = Promise.resolve()
 
@@ -411,9 +411,9 @@ onlineStore.setSegmentPublisher(
     getLeaseRunner: () => leaseRunner,
     saveChain: (root, chain) => keyring().saveChain(root, chain),
     // M3 §5: the instant the countersigned 'segment' lands, replicate it onto the
-    // guaranteed floor (publish-on-write) and — throttled, per game, never per
-    // move — leave the whole chain in shard space so it reconstructs owner-gone.
-    // M5 §8: the SAME landing is the anticheat trigger — judge the finished game's
+    // guaranteed floor (publish-on-write) and (throttled, per game, never per
+    // move) leave the whole chain in shard space so it reconstructs owner-gone.
+    // M5 §8: the SAME landing is the anticheat trigger, judge the finished game's
     // signed transcript (Tier-1) and run the deterministic Tier-2 escalation.
     onPublished: ({ chain, event, game }) => {
       void afterWitnessedWrite(chain, event)
@@ -423,7 +423,7 @@ onlineStore.setSegmentPublisher(
 )
 
 // ---------------------------------------------------------------------------
-// 3. Account-peer lifecycle — start on sign-in, stop on sign-out.
+// 3. Account-peer lifecycle: start on sign-in, stop on sign-out.
 // ---------------------------------------------------------------------------
 
 /** The account root the LIVE peer runs as, or null when none is up. */
@@ -437,7 +437,7 @@ function signedInRoot(): string | null {
 }
 
 function scheduleReconcile(): void {
-  if (signedInRoot() === peerRoot) return // no transition pending — cheap guard
+  if (signedInRoot() === peerRoot) return // no transition pending, cheap guard
   reconcileChain = reconcileChain.then(reconcilePeer).catch((err) => {
     console.warn('[account-net] peer reconcile failed:', err)
   })
@@ -485,12 +485,12 @@ async function reconcilePeer(): Promise<void> {
       try {
         await accountKv.close()
       } catch {
-        /* best-effort — a store that won't close is dropped on GC */
+        /* best-effort, a store that won't close is dropped on GC */
       }
       accountKv = null
     }
   }
-  if (target === null) return // signed out — honest no-op
+  if (target === null) return // signed out, honest no-op
 
   // Mint the peer for the signed-in identity. deviceSigningKey reads the web
   // session; guard against a sign-out that raced in mid-reconcile.
@@ -515,7 +515,7 @@ async function reconcilePeer(): Promise<void> {
   })
   storageGate = gate
   // M5 §8: compose the verdict-row STORE gate OVER the M3 storage gate so ONE
-  // validator/merge gates EVERY kind — shard/events/pointers, generic 'record'
+  // validator/merge gates EVERY kind: shard/events/pointers, generic 'record'
   // (incl. the §1 fuse row), and now the kind-'record' Tier-2 verdict rows (each
   // context-free-verified + accused-slot-bound). Non-verdict values fall straight
   // through to the storage gate, so M1–M4 store behavior is byte-identical.
@@ -528,7 +528,7 @@ async function reconcilePeer(): Promise<void> {
     validator: verdictGate.validator,
     overlay: { merge: verdictGate.merge },
   })
-  // Capture the device identity the peer runs as — the §5 duty ops use it through
+  // Capture the device identity the peer runs as, the §5 duty ops use it through
   // a sign-out teardown even after the web session clears.
   peerSigning = { root: signing.root, key: signing.key, priv: signing.priv }
   ownChain = await loadOwnChain()
@@ -552,7 +552,7 @@ async function reconcilePeer(): Promise<void> {
   peerRoot = signing.root
 
   // M2: offer to WITNESS matchmade games this instance is the canonical third
-  // machine for (the idle/always-on posture — so a two-player table finds its
+  // machine for (the idle/always-on posture, so a two-player table finds its
   // witness). The operator peer runs the equivalent by joining the same pool
   // rooms (server/operator/peer.ts). Stopped on teardown.
   stopWitnessOffer = matchmakingStore.offerWitnessing()
@@ -571,7 +571,7 @@ async function reconcilePeer(): Promise<void> {
   // M4: start the live PIN committee client (tOPRF over the peer's memberServe).
   // The PIN record + fuse persist through the account KV keyed by root; publishFuse
   // is the M5 overlay/shard-space hook (a no-op stub for now). Honest 'no-committee'
-  // when < pinN committee-capable machines are reachable — the wizard waits.
+  // when < pinN committee-capable machines are reachable; the wizard waits.
   startPinClientFromProvider({
     loadRecord: loadPinRecord,
     saveRecord: savePinRecord,
@@ -581,7 +581,7 @@ async function reconcilePeer(): Promise<void> {
 
   // M4: start the live social client (presence + mailbox relay + §3 friends over
   // the overlay). appendFriendEdge lands the countersigned edge on our own
-  // witnessed lane (it works in the honest 2-user case — the peer's
+  // witnessed lane (it works in the honest 2-user case: the peer's
   // countersignature is its authority, no third witness needed); chainOf/resolveName
   // are best-effort (honest empties otherwise). Stopped on teardown.
   startSocialClientFromProvider({
@@ -594,12 +594,12 @@ async function reconcilePeer(): Promise<void> {
     syncMs: SOCIAL_SYNC_MS,
   })
 
-  // M5 §8: start the live Tier-2 verdict client — the deterministic escalation
+  // M5 §8: start the live Tier-2 verdict client, the deterministic escalation
   // trigger on OUR chain-derived rated-game windows → 5σ conviction → the §8
   // self-ban appended BEFORE any further witnessed event → the reproducible
   // verdict row published over the overlay. Its window inputs are the a4 fold's
   // seed-pinned ladders (byte-identical across verifiers) + the Tier-1 records the
-  // judge runner folds in — hydrated from the KV first so a long career's
+  // judge runner folds in, hydrated from the KV first so a long career's
   // trailing-K window is fully-judged across restarts. It NEVER fabricates a ban
   // (only a 5σ self-audit convicts; every scarcity degrades to an honest wait).
   await hydrateTier1Records(signing.root)
@@ -627,7 +627,7 @@ scheduleReconcile()
 
 let activeWitness: WitnessRunnerHandle | null = null
 
-/** Start/stop witnessing one room — reachable from the console + CI drivers, the
+/** Start/stop witnessing one room, reachable from the console + CI drivers, the
  *  same dev-surface pattern as window.__chessAccounts. In production the always-on
  *  operator peer (server/operator/peer.ts, same witnessServe) is the reliable
  *  third machine; M2 matchmaking auto-assigns the witness from the pool. */
@@ -669,7 +669,7 @@ if (typeof window !== 'undefined') window.__chessWitness = witnessControl
 // configureMatchmaking wires the three live seams the matchmaking engine calls
 // when it strikes a match over the pool (matchmaking.ts owns the pool + pairing
 // + witness-assignment; the lead owns the mp/witness singletons). Every seam is
-// only ever entered for a RATED search between two signed-in accounts — casual /
+// only ever entered for a RATED search between two signed-in accounts. Casual /
 // link play never reaches here and stays byte-identical.
 // ---------------------------------------------------------------------------
 
@@ -677,8 +677,8 @@ const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms
 
 /** The guest waits this long after accepting the offer before it joins the mp
  *  room, so the assigned WITNESS has time to attach + take its seat first. The
- *  host mirrors the signed `start` exactly ONCE — when the guest's hello arrives
- *  — and mpSession does NOT resend it to a witness seated later (onWitnessHello),
+ *  host mirrors the signed `start` exactly ONCE (when the guest's hello arrives)
+ *  and mpSession does NOT resend it to a witness seated later (onWitnessHello),
  *  so a witness that hellos after `start` never initializes its WitnessCore and
  *  never countersigns. Seating the witness before the guest joins avoids that.
  *  (See notesForLead: the durable fix is mpSession resending start/resync to a
@@ -699,7 +699,7 @@ function hostConfigFor(a: MatchAssignment): MpGameConfig {
 /** Seed the players' CURRENT heads into THIS peer's witnessServe attest cache so
  *  their pre-game witnessed 'pairing' appends get our non-player attestation. The
  *  head is game-independent, so a placeholder game key (derived from the room) is
- *  enough to fetch each player's signed head snapshot. Best-effort + retried — a
+ *  enough to fetch each player's signed head snapshot. Best-effort + retried, a
  *  player not yet reachable over the fabric simply seeds a beat later (the
  *  players' prep retries meanwhile). */
 async function seedWitnessHeads(code: string, participants: ReadonlyArray<{ root: string }>): Promise<void> {
@@ -728,7 +728,7 @@ async function seedWitnessHeads(code: string, participants: ReadonlyArray<{ root
 /** The M2 pre-game hook: acquire the live write lease at the correct monotonic
  *  epoch AND anchor OUR witnessed 'pairing' event before move 1 (both players run
  *  it for their own chain). Honest degradation surfaces the reason (no witness /
- *  playing elsewhere) — the rated write waits, casual play is unaffected. */
+ *  playing elsewhere), the rated write waits, casual play is unaffected. */
 const ratedGamePrep = createRatedGamePrep({
   getPeer: getAccountPeer,
   chain: chainHolder,
@@ -768,14 +768,14 @@ async function runRatedPrep(a: MatchAssignment): Promise<void> {
     return
   }
   // M5 §8: before anchoring OUR witnessed 'pairing', discharge any owed self-ban
-  // FIRST — a 5σ conviction obliges the self-ban to be the NEXT witnessed event.
+  // FIRST: a 5σ conviction obliges the self-ban to be the NEXT witnessed event.
   // guardWitnessedAppend re-runs the self-audit AND attempts the owed append, so
   // this both retries the ban and reports whether we remain blocked; if it cannot
-  // be witnessed yet, hold the rated pairing (honest wait, C-10) — casual play is
+  // be witnessed yet, hold the rated pairing (honest wait, C-10); casual play is
   // never affected (it does not reach here).
   const banGuard = await guardWitnessedAppend()
   if (banGuard.blocked) {
-    console.warn(`[account-net] rated prep held: §8 self-ban owed on ${banGuard.pending.join(', ')} — rated write waits (C-10)`)
+    console.warn(`[account-net] rated prep held: §8 self-ban owed on ${banGuard.pending.join(', ')}: rated write waits (C-10)`)
     return
   }
   const start: RatedGameStart = {
@@ -789,25 +789,25 @@ async function runRatedPrep(a: MatchAssignment): Promise<void> {
   const res = await ratedGamePrep(start)
   if (res.ok) {
     preppedGameKey = signed.gameKey
-    console.info(`[account-net] rated prep OK (${a.color}) — lease epoch ${res.epoch}, witnessed pairing anchored`)
+    console.info(`[account-net] rated prep OK (${a.color}): lease epoch ${res.epoch}, witnessed pairing anchored`)
     // M3 §5 publish-on-write: replicate the just-anchored 'pairing' head onto the
     // guaranteed floor now (the post-game 'segment' final sync will re-shard the
     // whole chain including it; this makes the pairing recoverable immediately).
     void replicateWitnessedHead('pairing')
   } else {
-    console.warn(`[account-net] rated prep degraded: ${res.reason} — rated write waits (C-10); casual play unaffected`)
+    console.warn(`[account-net] rated prep degraded: ${res.reason}. Rated write waits (C-10); casual play unaffected`)
   }
 }
 
 /**
- * Wrap a MatchPool so OUR OWN publish never wakes OUR OWN subscribers — only a
+ * Wrap a MatchPool so OUR OWN publish never wakes OUR OWN subscribers; only a
  * REMOTE message does. Without this, the live search loops forever: the engine
  * subscribes `poll` to the pool AND `poll` publishes a fresh (higher-epoch) seek,
  * whose local echo synchronously notifies subscribers → poll → publish → notify →
  * … (a self-publish re-entrancy; the headless suite never hits it because it
  * drives poll() manually). The engine reads list() right after it publishes, so
  * suppressing the self-notify loses nothing; the heartbeat + remote messages
- * still drive the cadence. (Lead workaround — see notesForLead: the root fix
+ * still drive the cadence. (Lead workaround, see notesForLead: the root fix
  * belongs in matchmaking.ts's pool adapters, which notify on self-publish.)
  */
 function nonReentrantPool(inner: MatchPool): MatchPool {
@@ -838,12 +838,12 @@ function nonReentrantPool(inner: MatchPool): MatchPool {
 }
 
 configureMatchmaking({
-  // The (kind, ladder) pool transport — the real trystero room, wrapped so a
+  // The (kind, ladder) pool transport, the real trystero room, wrapped so a
   // self-publish can't re-enter the poll loop (see nonReentrantPool).
   poolFactory: (kind, ladderId): MatchPool => nonReentrantPool(createTrysteroMatchPool({ kind, ladderId })),
   // HOST: open a rated mp room via the online store; the minted code (getState().
   // code) is what the engine publishes as the signed offer. host = white. Kick the
-  // pre-game lease+pairing prep once the code is out (non-blocking — the engine is
+  // pre-game lease+pairing prep once the code is out (non-blocking, the engine is
   // waiting on the code to publish the offer). Returns null on a host failure, which
   // the engine reflects honestly (opponent + witness found, room open pending).
   openRoom: async (a: MatchAssignment): Promise<string | null> => {
@@ -858,7 +858,7 @@ configureMatchmaking({
     return code
   },
   // GUEST: join the host's EXACT room, pinned to the opponent root (no code typed
-  // by a human — the pool + signed offer carried it). guest = black. Kick prep.
+  // by a human, the pool + signed offer carried it). guest = black. Kick prep.
   // The join is delayed so the witness seats first (WITNESS_SEAT_DELAY_MS).
   joinRoom: (a: MatchAssignment): void => {
     setTimeout(() => {
@@ -870,7 +870,7 @@ configureMatchmaking({
   // is minted at runtime (random nonce) and is NOT known at attach time, so the
   // WitnessCore move-gate follows as 'embedder-verified' (as in M1). The REAL
   // witnessed 'pairing' events still anchor in BOTH chains via the players' prep
-  // above — that is the M2 §3/§8 substrate deliverable, independent of this gate.
+  // above; that is the M2 §3/§8 substrate deliverable, independent of this gate.
   startWitness: (a): void => {
     witnessControl.start(a.code, {
       participants: a.participants,
@@ -879,8 +879,8 @@ configureMatchmaking({
       pairing: 'embedder-verified',
     })
     // The witness's own pre-game head seed (witnessController.seedHeadsFor) is
-    // gated on a known gameKey — which the runtime mints only once the game
-    // starts — so it is skipped here. Seed the players' CURRENT heads directly
+    // gated on a known gameKey (which the runtime mints only once the game
+    // starts), so it is skipped here. Seed the players' CURRENT heads directly
     // so their pre-game 'pairing' appends get this non-player witness's
     // attestation (admitEvent rejects a height-1 event against an un-seeded root).
     // The head is game-independent, so a placeholder game key suffices to fetch it.
@@ -902,13 +902,13 @@ onlineStore.subscribe(() => {
 })
 
 // ---------------------------------------------------------------------------
-// 6. M3 §5 live storage duty — publish-on-write, throttled final sync, the
+// 6. M3 §5 live storage duty: publish-on-write, throttled final sync, the
 //    write-time shard-pointer index. All guarded on a live peer + signing; a
 //    signed-out tab never enters any of it (casual play stays byte-identical).
 // ---------------------------------------------------------------------------
 
 /** The highest-height witnessed-lane event of a chain (the countersigned head),
- *  or null — the event publish-on-write / final sync commit against. */
+ *  or null, the event publish-on-write / final sync commit against. */
 function witnessedHeadEventOf(chain: Chain): SignedEvent | null {
   let best: SignedEvent | null = null
   for (const ev of chain.events) {
@@ -920,8 +920,8 @@ function witnessedHeadEventOf(chain: Chain): SignedEvent | null {
 
 /**
  * A rated 'segment' just landed: replicate it onto the guaranteed floor
- * (publish-on-write, §5 "witnessed events replicate at creation") and — throttled
- * — leave the whole chain in shard space. The throttle is PER GAME (one 'segment'
+ * (publish-on-write, §5 "witnessed events replicate at creation") and, throttled,
+ * leave the whole chain in shard space. The throttle is PER GAME (one 'segment'
  * per game, never per move); a rated game is minutes apart, so re-sharding per
  * game is cheap and guarantees a hard-killed node already left a fresh, chain-
  * pointer-pinned snapshot for the §5 owner-gone reconstruction. Never throws.
@@ -933,14 +933,14 @@ async function afterWitnessedWrite(chain: Chain, event: SignedEvent): Promise<vo
     try {
       await publishWitnessedWrite(peer.overlay, signing, chain, event)
     } catch {
-      /* honest no-op — no reachable carrier yet; repair + final sync catch up */
+      /* honest no-op, no reachable carrier yet; repair + final sync catch up */
     }
   }
   await runFinalSync('post-game')
 }
 
 /** Publish-on-write the current witnessed head IFF it is of `expectType`
- *  (pairing / friend) — the just-anchored event replicated onto the §5 floor.
+ *  (pairing / friend), the just-anchored event replicated onto the §5 floor.
  *  Best-effort; a chain whose head has already advanced past it simply skips. */
 async function replicateWitnessedHead(expectType: string): Promise<void> {
   const peer = getAccountPeer()
@@ -960,8 +960,8 @@ async function replicateWitnessedHead(expectType: string): Promise<void> {
  * The §5 FINAL SYNC of OUR own chain: erasure-code it to distance-assigned
  * carriers + pin a self chain-pointer whose embedded countersigned head survives
  * us going offline. Non-overlapping (a slow re-shard never stacks) and total (a
- * root-signed / genesis-only head is 'head-not-signable' — an honest skip, not a
- * crash). Triggered per game, on tab-hide, and on sign-out — NEVER per move.
+ * root-signed / genesis-only head is 'head-not-signable', an honest skip, not a
+ * crash). Triggered per game, on tab-hide, and on sign-out, NEVER per move.
  */
 async function runFinalSync(trigger: string): Promise<void> {
   if (finalSyncInFlight) return
@@ -1006,7 +1006,7 @@ function startShardPointerCadence(peer: AccountPeer, gate: StorageDutyGate): () 
         subjects,
       })
     } catch {
-      /* honest — a row we cannot prove duty for is skipped, never fatal */
+      /* honest: a row we cannot prove duty for is skipped, never fatal */
     }
   }
   const timer = setInterval(() => void tick(), SHARD_POINTER_CADENCE_MS)
@@ -1024,7 +1024,7 @@ const PIN_RECORD_PREFIX = 'pin-record|'
 const PIN_FUSE_PREFIX = 'pin-fuse|'
 
 /** Load this account's persisted PIN record from the account KV (null when none
- *  stored / no store / a corrupt row — the client redraws a live committee). */
+ *  stored / no store / a corrupt row, the client redraws a live committee). */
 async function loadPinRecord(root: string): Promise<SignedPinRecord | null> {
   if (!accountKv) return null
   try {
@@ -1035,7 +1035,7 @@ async function loadPinRecord(root: string): Promise<SignedPinRecord | null> {
   }
 }
 
-/** Persist the account's PIN record to the account KV (best-effort — a denied /
+/** Persist the account's PIN record to the account KV (best-effort, a denied /
  *  over-budget write is honest churn; the committee still holds the shares). */
 async function savePinRecord(root: string, rec: SignedPinRecord): Promise<void> {
   if (!accountKv) return
@@ -1046,7 +1046,7 @@ async function savePinRecord(root: string, rec: SignedPinRecord): Promise<void> 
   }
 }
 
-/** Load a persisted (expired) fuse — sets the next cycle's floor (§1). Null until
+/** Load a persisted (expired) fuse, sets the next cycle's floor (§1). Null until
  *  the M5 hook persists one; the live committee count re-derives an active ban. */
 async function loadPinFuse(root: string): Promise<FuseRecord | null> {
   if (!accountKv) return null
@@ -1060,17 +1060,17 @@ async function loadPinFuse(root: string): Promise<FuseRecord | null> {
 
 /**
  * Publish a tripped §1 fuse into real shard/pointer space (the M5 hook, no longer
- * inert). A fuse is a public signed fact any verifier can check (pin.ts) — its
+ * inert). A fuse is a public signed fact any verifier can check (pin.ts), its
  * committee ≥ pinT co-signature is its authority, so publishing it is safe even
  * though the committee's replicated counter stays the live source of truth:
  *   1. PERSIST it through the account KV under the SAME key loadPinFuse reads, so
- *      the tripped ban survives a restart and sets the next cycle's floor (§1) —
+ *      the tripped ban survives a restart and sets the next cycle's floor (§1);
  *      previously nothing wrote it, so every refresh re-tripped from the counter.
  *   2. REPLICATE it onto the overlay under a deterministic per-root slot (kind
- *      'record' — the composed store gate accepts a generic signed record), so a
+ *      'record', the composed store gate accepts a generic signed record), so a
  *      verifier that is not on the committee can still discover it. Best-effort:
  *      no reachable carrier ⇒ an honest no-op, exactly like §5 publish-on-write.
- * There is NO local ban shortcut here — this only publishes what the committee
+ * There is NO local ban shortcut here: this only publishes what the committee
  * already co-signed.
  */
 async function publishPinFuse(root: string, fr: FuseRecord): Promise<void> {
@@ -1078,7 +1078,7 @@ async function publishPinFuse(root: string, fr: FuseRecord): Promise<void> {
     try {
       await accountKv.put(PIN_FUSE_PREFIX + root, fr as unknown as CanonicalObject)
     } catch {
-      /* honest no-op — an over-budget/denied write is tolerated churn */
+      /* honest no-op: an over-budget/denied write is tolerated churn */
     }
   }
   const peer = getAccountPeer()
@@ -1086,7 +1086,7 @@ async function publishPinFuse(root: string, fr: FuseRecord): Promise<void> {
     try {
       await peer.overlay.put(fuseSlotKey(root), 'record', fr as unknown as CanonicalObject)
     } catch {
-      /* honest no-op — no reachable carrier yet */
+      /* honest no-op: no reachable carrier yet */
     }
   }
 }
@@ -1099,7 +1099,7 @@ function fuseSlotKey(root: B64u): B64u {
 
 /**
  * Land a countersigned §3 friend edge on OUR OWN witnessed lane (the M4 friend
- * write hook). Unlike a rated game the edge needs NO third-machine witness — its
+ * write hook). Unlike a rated game the edge needs NO third-machine witness, its
  * authority is the peer's countersignature already carried in `payload` (the
  * mailbox consent handshake), so it lands in the honest 2-user case too. The
  * DEVICE key authors the event (the same key the M2 pairing/segment appends use,
@@ -1114,7 +1114,7 @@ async function appendFriendEdge(payload: FriendPayload, _peerRoot: string): Prom
   const signing = peerSigning ?? deviceSigningKey()
   const chain = ownChain
   if (!signing || !chain) return false
-  // M5 §8: a friend edge is a witnessed-lane append — it must never precede an
+  // M5 §8: a friend edge is a witnessed-lane append; it must never precede an
   // owed self-ban. Honest false (the UI shows "writes when a witness is
   // reachable"); the consent half was already mailed, so the peer completes later.
   if ((await guardWitnessedAppend()).blocked) return false
@@ -1128,7 +1128,7 @@ async function appendFriendEdge(payload: FriendPayload, _peerRoot: string): Prom
       try {
         await publishWitnessedWrite(peer.overlay, signing, next, head)
       } catch {
-        /* honest — the floor catches up on the next final sync + repair */
+        /* honest: the floor catches up on the next final sync + repair */
       }
     }
     return true
@@ -1156,7 +1156,7 @@ async function resolveName(root: string): Promise<string | null> {
 }
 
 // ---------------------------------------------------------------------------
-// 10. M5 live anticheat — Tier-1 judge per rated game (Lane L-t1) + the
+// 10. M5 live anticheat: Tier-1 judge per rated game (Lane L-t1) + the
 //     deterministic Tier-2 escalation / self-ban / verdict publish (Lane L-t2).
 //     All guarded on a live peer + signing (a signed-out / casual game never
 //     enters any of it) and every scarcity degrades to an honest no-op (§0/C-10);
@@ -1164,7 +1164,7 @@ async function resolveName(root: string): Promise<string | null> {
 // ---------------------------------------------------------------------------
 
 /** OUR judged Tier1Records persist under a per-ROOT KV prefix (the account KV is a
- *  single shared IndexedDB, so rows are root-scoped exactly like the PIN records —
+ *  single shared IndexedDB, so rows are root-scoped exactly like the PIN records,
  *  a second account on the same device never reads the first's projection). */
 const TIER1_RECORD_PREFIX = 'tier1-record|'
 function tier1KeyPrefix(root: B64u): string {
@@ -1179,7 +1179,7 @@ function tier1KeyPrefix(root: B64u): string {
  * escalation self-audit (which publishes the reproducible verdict row + appends
  * the §8 self-ban on a 5σ conviction). BOTH players run this independently on
  * their own instances over the SAME signed transcript, so the tier1Digest is
- * bit-identical across them — the §8 parity property. Serialized (judgeChain) so
+ * bit-identical across them, the §8 parity property. Serialized (judgeChain) so
  * two rapid finishes never run two Workers at once, and never throws: a rated
  * game that can't be judged degrades honestly; casual play never reaches here.
  */
@@ -1197,7 +1197,7 @@ async function afterRatedSegmentJudged(game: FinishedRatedGame): Promise<void> {
 async function judgeAndAudit(game: FinishedRatedGame): Promise<void> {
   const peer = getAccountPeer()
   const signing = peerSigning ?? deviceSigningKey()
-  if (!peer || !signing) return // signed out mid-flight — honest no-op
+  if (!peer || !signing) return // signed out mid-flight, honest no-op
   const view: Tier1GameView = {
     gameKey: game.game,
     players: game.players,
@@ -1207,7 +1207,7 @@ async function judgeAndAudit(game: FinishedRatedGame): Promise<void> {
   }
   // Tier-1: drive the pinned Worker over the bare-FEN verdict surface. Absent salt
   // block ⇒ Tier-1 only (the A5-17 window-salt / lifetime arm needs the canonical
-  // witness set threaded from the lease + the per-window z assembly — deferred; its
+  // witness set threaded from the lease + the per-window z assembly, deferred; its
   // absence only removes conviction PATHS, never grounds a false one).
   const res = await runTier1ForGame(view, {
     newJudgeEngine: newWebJudgeEngine,
@@ -1237,7 +1237,7 @@ async function persistTier1Record(game: B64u, record: Tier1Record): Promise<void
   try {
     await accountKv.put(tier1KeyPrefix(peerRoot) + game, record as unknown as CanonicalObject)
   } catch {
-    /* honest no-op — the in-memory projection still serves this session */
+    /* honest no-op: the in-memory projection still serves this session */
   }
 }
 
@@ -1254,15 +1254,15 @@ async function hydrateTier1Records(root: B64u): Promise<void> {
       tier1Records.set(e.key.slice(prefix.length), e.value as unknown as Tier1Record)
     }
   } catch {
-    /* honest — an unreadable store leaves the projection empty (fail-closed) */
+    /* honest: an unreadable store leaves the projection empty (fail-closed) */
   }
 }
 
 /**
  * Walk OUR chain through the TESTED a4 fold and, for each rated game, capture the
- * chain-derived strength ENTERING it — exactly the LadderGameRef the §8 trigger
+ * chain-derived strength ENTERING it, exactly the LadderGameRef the §8 trigger
  * consumes. Uses the fold's own seed-pinned `ladders` (the byte-identical floor
- * every verifier recomputes — NOT a per-roster vouched read, which would not
+ * every verifier recomputes, NOT a per-roster vouched read, which would not
  * reproduce on an adopter) and the fold's `seen`-at-this-height rating rule, so
  * the rated set matches the fold with ZERO drift (mirrors ratingEvidenceOf). Pure
  * + total: an adversarial payload fails closed exactly where the fold does.
@@ -1306,7 +1306,7 @@ function ladderGameRefsOf(chain: Chain): Map<string, LadderGameRef[]> {
  * game makes the §8 check non-evaluable (unjudged is itself non-compliance, §8),
  * so we skip it as an honest no-op rather than feed a partial window (fail-closed).
  * Ladders below a full reganK window can never convict on the trailing-K arm (the
- * only arm wired today — the lifetime arm needs salted closed-window zs, deferred),
+ * only arm wired today, the lifetime arm needs salted closed-window zs, deferred),
  * so they are skipped cheaply.
  */
 function ourLadderAudits(): LadderAudit[] {
@@ -1332,7 +1332,7 @@ function ourLadderAudits(): LadderAudit[] {
 }
 
 /** Rebuild a verdict record's window entries from OUR chain-derived refs + judged
- *  records — the adopt / suppression re-verification input. Null when we cannot
+ *  records, the adopt / suppression re-verification input. Null when we cannot
  *  reproduce the window (a game we did not judge), so the record is REJECTED, never
  *  adopted unverified (§0). Reproducible for a subject whose games WE judged (always
  *  true for OUR own self-audit rows). */
@@ -1357,7 +1357,7 @@ function entriesForOwnWindow(rec: Tier2VerdictRecord): readonly WindowEntry[] | 
 }
 
 /** The set of ladders OUR chain already carries a folded self-ban for (the a4
- *  fold's `bans`) — so the verdict client never re-appends a self-ban a prior
+ *  fold's `bans`), so the verdict client never re-appends a self-ban a prior
  *  session already witnessed (restart-idempotent, A5-22). */
 function foldSelfBanLadders(chain: Chain): Set<string> {
   const w = chain.events.filter((e) => e.body.lane === 'w').sort((a, b) => a.body.height - b.body.height)
@@ -1384,7 +1384,7 @@ function verdictSignerOf(): VerdictSigner | null {
  * the segment / pairing appends), advance + persist OUR chain, and replicate the
  * ban onto the §5 floor. A self-ban has NO game players, so ANY witness counts as
  * the required non-player attester. Honest failure (no peer / lease / reachable
- * witness) leaves the ban OWED — the verdict client keeps it pending and the §8
+ * witness) leaves the ban OWED, the verdict client keeps it pending and the §8
  * guard holds further witnessed writes until it lands (C-10). Never throws.
  */
 async function appendSelfBanWitnessed(build: SelfBanBuild): Promise<{ ok: boolean; reason?: string }> {
@@ -1407,7 +1407,7 @@ async function appendSelfBanWitnessed(build: SelfBanBuild): Promise<{ ok: boolea
       ts: Date.now(),
       epoch: acq.epoch,
       witnessSet: acq.witnessSet,
-      players: new Set<NodeId>(), // a self-ban has no game players — any witness is non-player
+      players: new Set<NodeId>(), // a self-ban has no game players; any witness is non-player
       minWitnesses: 1,
     })
     if (!res.ok) return { ok: false, reason: res.reason }
@@ -1427,7 +1427,7 @@ async function appendSelfBanWitnessed(build: SelfBanBuild): Promise<{ ok: boolea
  * The periodic §8 self-audit + self suppression scan (the safety net for a ban
  * that had no reachable witness at game-over). Each tick re-runs the deterministic
  * escalation self-audit (retrying an owed self-ban + re-publishing the verdict
- * row) and runs suppressionScan over OUR OWN chain — surfacing a conviction whose
+ * row) and runs suppressionScan over OUR OWN chain, surfacing a conviction whose
  * self-ban we never appended so the L-ui shows it honestly. Cheap when clear (a
  * fully-honest career assesses in one fold walk). Returns a stop handle.
  */
@@ -1454,7 +1454,7 @@ function startVerdictAuditCadence(): () => void {
         chainEvents: chain.events,
       })
       if (ev.evidence && Object.values(ev.evidence.ladders).some((l) => l?.suppressed))
-        console.warn('[account-net] verdict: self suppression detected — an owed §8 self-ban is missing from our chain')
+        console.warn('[account-net] verdict: self suppression detected. An owed §8 self-ban is missing from our chain')
     } catch {
       /* honest no-op */
     }

@@ -1,29 +1,29 @@
-// A6 lane-4 wiring suite — the renderer accounts store's PURE derivations
+// A6 lane-4 wiring suite: the renderer accounts store's PURE derivations
 // over the REAL web glue (no browser, no network, no engine).
 //
 //   node scripts/test-web-accounts-wiring.mjs
 //
 // What it proves:
-//  1. AUTH LIFECYCLE — createAccount / signIn / signOut / resumeSession /
+//  1. AUTH LIFECYCLE: createAccount / signIn / signOut / resumeSession /
 //     forgetRememberedSeed / listKeyringAccounts against src/web/accounts.ts
 //     with real argon2id derivation over a stubbed localStorage.
-//  2. CHAIN → UI — src/renderer/.../features/account/store/derive.ts:
+//  2. CHAIN → UI, src/renderer/.../features/account/store/derive.ts:
 //     deriveOwnAccount / deriveChainEvents / deriveDevices / deriveProfile /
 //     foldChainA4 / foldDigestOf produce exactly what the shared folds say
 //     (§0: derived, never asserted), deterministically (same inputs → same
 //     JSON twice).
-//  3. §10 EDIT PROFILE — updateProfile appends a verifying personal-lane
+//  3. §10 EDIT PROFILE: updateProfile appends a verifying personal-lane
 //     record and the derivation round-trips it. Includes the §10 staleness
 //     value (deriveProfile.lastWitnessedActivityWts): null on every locally
-//     created chain — the UI's honest "no witnessed activity" source, never
+//     created chain, the UI's honest "no witnessed activity" source, never
 //     a fabricated freshness claim (review complete-1).
-//  4. §6/§9 RENDERING — placement/provisional/ranked/banned states from
+//  4. §6/§9 RENDERING: placement/provisional/ranked/banned states from
 //     synthetic fold states, including the ban→standing projection.
-//  5. RENDERER STORE PRIVACY CONTRACT (review wiring-3) — mock/store.ts
+//  5. RENDERER STORE PRIVACY CONTRACT (review wiring-3), mock/store.ts
 //     bundled headless (react stubbed to a bare useSyncExternalStore):
 //     signIn(remember:true) stores the seed; store.signOut() ALWAYS forgets
-//     it — asserted via the exported signOutSequence with the REAL
-//     forgetRememberedSeed and an injected failing teardown — and the
+//     it: asserted via the exported signOutSequence with the REAL
+//     forgetRememberedSeed and an injected failing teardown, and the
 //     resumed boot after sign-out stays signed out.
 //
 // Style: house ok/eq kit, failures counter, exit(1) on any failure.
@@ -149,7 +149,7 @@ async function main() {
   )
   ok(
     acc.ladders.every((l) => l.display.state === 'placement' && l.display.n === 0),
-    'every fresh ladder renders Placement 0/N (§6 — never a number)',
+    'every fresh ladder renders Placement 0/N (§6: never a number)',
   )
   ok(
     acc.ladders.every((l) => l.display.of === PARAMS_A4.placementGames),
@@ -202,7 +202,7 @@ async function main() {
   eq(devices[0].revoked, undefined, 'not revoked')
 
   // ==========================================================================
-  console.log('\n· §10 edit profile — signed personal-lane record round-trip …')
+  console.log('\n· §10 edit profile: signed personal-lane record round-trip …')
   // ==========================================================================
   const chain1 = await G.updateProfile({ bio: 'wired bio', flair: '♞' })
   eq(chain1.events.length, 3, 'profile record appended')
@@ -212,7 +212,7 @@ async function main() {
   eq(prof.flair, '♞', 'flair round-trips through the chain')
   eq(prof.country, '', 'untouched field keeps its default')
   // §10 staleness (complete-1): no witness attestations exist on a locally
-  // created chain, so the derived value is null — the honest "no witnessed
+  // created chain, so the derived value is null, the honest "no witnessed
   // activity on record" the profile surface renders. NEVER a self-claimed ts.
   eq(
     D.deriveProfile(chain0).lastWitnessedActivityWts,
@@ -323,7 +323,7 @@ async function main() {
   console.log('\n· wiring-1/2: fail-closed boot + genesis-verified names …')
   // ==========================================================================
   G.signOut()
-  // Keyring rows are base64url(canonical JSON) — decode to find + tamper.
+  // Keyring rows are base64url(canonical JSON). Decode to find + tamper.
   const rowDecode = (v) => JSON.parse(Buffer.from(v.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'))
   const rowEncode = (obj) => Buffer.from(JSON.stringify(obj), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
   const lsKeys = Array.from({ length: globalThis.localStorage.length }, (_, i) => globalThis.localStorage.key(i))
@@ -339,7 +339,7 @@ async function main() {
   const pristineRow = globalThis.localStorage.getItem(accKey)
   {
     // wiring-2: the session's names come from the SIGNED genesis, never the
-    // mutable stored record — a tampered localStorage name must never ride
+    // mutable stored record: a tampered localStorage name must never ride
     // into a session (or the keyfile export it feeds).
     const t = rowDecode(pristineRow)
     t.displayName = 'Mallory'
@@ -351,7 +351,7 @@ async function main() {
     eq((await G.resumeSession()).signedIn, false, 'wiring-2: tampered stored foldedName ⇒ NO session')
   }
   {
-    // wiring-1: a corrupt keyring record must never break boot — the store
+    // wiring-1: a corrupt keyring record must never break boot. The store
     // read itself sits inside the fail-closed boundary.
     globalThis.localStorage.setItem(accKey, '{corrupt')
     let boot = null
@@ -426,7 +426,7 @@ async function main() {
 
   // create (remember:true) → recovery step → finishCreate commits.
   eq(await S.accountsUiStore.createAccount('Storee', 'password-456', true), true, 'store createAccount succeeds')
-  eq(storeState().signedIn, false, 'createAccount stages — signedIn flips only at finishCreate (C-5)')
+  eq(storeState().signedIn, false, 'createAccount stages, signedIn flips only at finishCreate (C-5)')
   S.accountsUiStore.finishCreate()
   eq(storeState().signedIn, true, 'finishCreate commits the staged account')
   eq(
@@ -460,7 +460,7 @@ async function main() {
   eq(
     await remembered(),
     false,
-    'seed is forgotten EVEN WHEN the teardown (webSignOut) throws — forget is sequenced first',
+    'seed is forgotten EVEN WHEN the teardown (webSignOut) throws: forget is sequenced first',
   )
   G2.signOut() // finish the teardown the injected failure skipped
   eq(
@@ -469,15 +469,15 @@ async function main() {
     'resumed boot after the failed sign-out stays signed out (no seed to resume from)',
   )
 
-  // wiring-6: the store's remember DEFAULT is false — no silent seed storage.
+  // wiring-6: the store's remember DEFAULT is false. No silent seed storage.
   await S.accountsUiStore.signIn('Storee', 'password-456')
   eq(storeState().signedIn, true, 'default-argument sign-in works')
-  eq(await remembered(), false, 'store default remember=false — the seed is stored only on explicit opt-in')
+  eq(await remembered(), false, 'store default remember=false: the seed is stored only on explicit opt-in')
   await S.accountsUiStore.signOut()
 
   // ==========================================================================
   console.log(
-    `\n${failures === 0 ? `ALL GREEN — ${passed} assertions` : `${failures} FAILURES (${passed} passed)`}`,
+    `\n${failures === 0 ? `ALL GREEN: ${passed} assertions` : `${failures} FAILURES (${passed} passed)`}`,
   )
   process.exit(failures === 0 ? 0 : 1)
 }

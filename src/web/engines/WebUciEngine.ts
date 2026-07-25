@@ -1,6 +1,6 @@
-// Browser twin of src/main/engine/UciEngine.ts: the same thin UCI wrapper —
+// Browser twin of src/main/engine/UciEngine.ts: the same thin UCI wrapper,
 // same events ('info', 'bestmove', 'exit', 'engineError'), same one-search-at-
-// a-time discipline, same stop()/bestMove() semantics — over a UciTransport
+// a-time discipline, same stop()/bestMove() semantics. Over a UciTransport
 // (Worker or emscripten module) instead of a child process. Consumers ported
 // from desktop (weak play, review, personas, evalVariant) attach/detach
 // listeners exactly as they do against the desktop class.
@@ -17,7 +17,7 @@ interface EngineEvents extends Record<string, unknown[]> {
 }
 
 /** First-start handshake budget: covers the wasm fetch + compile on a cold
- *  cache (7 MB for the chess build) — generous, but a wedged load must still
+ *  cache (7 MB for the chess build). Generous, but a wedged load must still
  *  fail rather than hang its caller forever. */
 const START_TIMEOUT_MS = 90_000
 
@@ -167,7 +167,7 @@ export class WebUciEngine extends Emitter<EngineEvents> {
     try {
       await settled
     } catch {
-      /* engine already idle or gone — nothing to stop */
+      /* engine already idle or gone: nothing to stop */
     }
   }
 

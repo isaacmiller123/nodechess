@@ -3,7 +3,7 @@
 // Board tops are baked into a single canvas (checker veneer, goban line grid,
 // felt) so lines are anti-aliased and never z-fight. When games-art PBR color
 // maps are available they are composited as the veneer source; otherwise a
-// procedural wood grain is synthesized from the style color — the renderer
+// procedural wood grain is synthesized from the style color. The renderer
 // must look GOOD standalone (spec: visual bar is paramount and gating).
 
 import * as THREE from 'three'
@@ -19,7 +19,7 @@ export function hashString(s: string): number {
   return h >>> 0
 }
 
-/** mulberry32 PRNG — tiny, deterministic, good enough for jitter. */
+/** mulberry32 PRNG. Tiny, deterministic, good enough for jitter. */
 export function mulberry32(seed: number): () => number {
   let a = seed >>> 0
   return () => {
@@ -104,7 +104,7 @@ export function makeFeltCanvas(size: number, base: string, seed = 3): HTMLCanvas
 
 export type VeneerSource = HTMLCanvasElement | HTMLImageElement
 
-/** Draw a random rotated/mirrored crop of `src` into the current square — per-square veneer variety. */
+/** Draw a random rotated/mirrored crop of `src` into the current square, per-square veneer variety. */
 function drawVeneerCell(
   ctx: CanvasRenderingContext2D,
   src: VeneerSource,
@@ -160,7 +160,7 @@ export function makeCellsCanvas(opts: CellsCanvasOpts): HTMLCanvasElement {
       const tone = (rand() - 0.5) * 0.07
       ctx.fillStyle = tone > 0 ? `rgba(255,250,240,${tone})` : `rgba(20,10,0,${-tone})`
       ctx.fillRect(x, y, cell, cell)
-      // Edge darkening — reads as square bevel from a distance.
+      // Edge darkening: reads as square bevel from a distance.
       const g = ctx.createLinearGradient(x, y, x, y + cell)
       g.addColorStop(0, 'rgba(255,255,255,0.05)')
       g.addColorStop(0.12, 'rgba(255,255,255,0)')
@@ -211,7 +211,7 @@ export function makeIntersectionsCanvas(opts: IntersectionsCanvasOpts): HTMLCanv
   const ctx = canvas.getContext('2d')!
 
   const src = opts.top.src ?? makeWoodGrainCanvas(1024, opts.top.color, opts.seed ?? 31)
-  // Stretch the veneer across the whole top — a goban is one solid block.
+  // Stretch the veneer across the whole top: a goban is one solid block.
   ctx.drawImage(src, 0, 0, 'width' in src ? src.width : 1024, 'width' in src ? src.height : 1024, 0, 0, canvas.width, canvas.height)
 
   const px = (fileIdx: number): number => (opts.margin + fileIdx) * cell

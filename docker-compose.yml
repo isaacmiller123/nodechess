@@ -4,8 +4,8 @@
 #   → http://localhost:8080
 #
 # Data layout on the host:
-#   ./data-web          accounts DB + per-user game DBs (BACK THIS UP — it is
-#                       the only stateful thing; gitignored)
+#   ./data-web          accounts DB + per-user game DBs (BACK THIS UP, it is
+#                       the only stateful thing, and it is gitignored)
 #   ./resources/data    puzzles.sqlite (optional, read-only; grab it with
 #                       `npm run setup:puzzles && npm run build:puzzles` or copy
 #                       it from a dev machine). Missing file = puzzle features
@@ -19,7 +19,7 @@ services:
     volumes:
       # DATA_DIR (the image sets DATA_DIR=/data)
       - ./data-web:/data
-      # Puzzle DB stays OUTSIDE the image by default (2.1 GB) — see Dockerfile
+      # Puzzle DB stays OUTSIDE the image by default (2.1 GB). See Dockerfile
       # for the optional bake-in build.
       - ./resources/data:/puzzles:ro
     environment:
@@ -28,11 +28,11 @@ services:
       # reverse proxy in front: trust its X-Forwarded-* headers so rate
       # limiting sees real client IPs and X-Forwarded-Proto marks the session
       # cookie Secure. REMOVE this line if you expose port 8080 directly to
-      # the internet instead — direct clients could spoof those headers.
+      # the internet instead, because direct clients could spoof those headers.
       TRUST_PROXY: '1'
       # The image runs NODE_ENV=production, so the session cookie defaults to
       # Secure. For plain-http local hosting, Chrome/Firefox still accept it
-      # on http://localhost; Safari does not — uncomment for local Safari:
+      # on http://localhost; Safari does not. Uncomment for local Safari:
       # COOKIE_SECURE: '0'
       # LOG_LEVEL: debug
     restart: unless-stopped

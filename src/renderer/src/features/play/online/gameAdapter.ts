@@ -4,7 +4,7 @@
 // detect a terminal position, whose turn it is, flag adjudication). Chess is the
 // built-in default (chessAdapter.ts) so existing online chess is behaviorally
 // untouched; every OTHER registered game bridges in through adapterFromSpec()
-// below, which wraps a kernel GameSpec (games/kernel.ts) — the store registers
+// below, which wraps a kernel GameSpec (games/kernel.ts). The store registers
 // the whole games/registry.ts at init, so every registered game is playable
 // online automatically.
 //
@@ -28,7 +28,7 @@ export interface OnlineMoveMeta {
 
 /** What the store needs from a game to run it online. `S` is the game's own
  *  immutable state snapshot (chess: a FEN string). All move strings are the
- *  game's canonical codec — the same opaque strings that ride the v4 wire. */
+ *  game's canonical codec: the same opaque strings that ride the v4 wire. */
 export interface OnlineGameAdapter<S = unknown> {
   /** Registry key; matches MpGameConfig.game.kind ('chess' when absent). */
   kind: string
@@ -53,7 +53,7 @@ export interface OnlineGameAdapter<S = unknown> {
   flagResult?(s: S, by: MpColor): { result: GameResult; reason: string }
   /**
    * Present when the rules engine loads asynchronously (ffish WASM). The store
-   * awaits it before init/play during host()/start — see needsPreload().
+   * awaits it before init/play during host()/start. See needsPreload().
    */
   preload?(): Promise<void>
   /** True while preload() has not yet resolved (skip the async path when the
@@ -70,7 +70,7 @@ export function registerOnlineGameAdapter<S>(adapter: OnlineGameAdapter<S>): voi
 }
 
 /** Resolve the adapter for a game kind (undefined kind = chess). Returns null
- *  when this build has no kernel for it — the store surfaces a friendly error
+ *  when this build has no kernel for it. The store surfaces a friendly error
  *  instead of corrupting state. */
 export function resolveOnlineGameAdapter(kind: string | undefined): OnlineGameAdapter<unknown> | null {
   return adapters.get(kind ?? 'chess') ?? null
@@ -90,7 +90,7 @@ interface SpecStateShape {
   data?: { player?: unknown }
 }
 
-/** Go's scoring seam (games/go.ts GoSpec) — detected structurally so this
+/** Go's scoring seam (games/go.ts GoSpec). Detected structurally so this
  *  module stays free of per-game imports. */
 interface ScoringSeam<S> {
   isScoringPhase?(s: S): boolean
@@ -100,19 +100,19 @@ interface ScoringSeam<S> {
 /**
  * Bridge a kernel GameSpec into the store's online seam.
  *
- * Turn derivation (no turn() on GameSpec — derived per family, see each spec):
- *   - chess family (chessops + ffish states): the FEN's side-to-move field —
- *     robust against custom-FEN start options;
+ * Turn derivation (no turn() on GameSpec; derived per family, see each spec):
+ *   - chess family (chessops + ffish states): the FEN's side-to-move field.
+ *     Robust against custom-FEN start options;
  *   - American checkers: engine snapshot `data.player` ('light' = white);
  *   - International draughts: the library FEN's leading 'W'/'B';
- *   - everything else: move-count parity against spec.players — every codec
+ *   - everything else: move-count parity against spec.players. Every codec
  *     move is exactly one ply in every kernel game (go/othello passes, hex
  *     'swap' and morris mill-captures included).
  *
  * Terminal mapping: kernel GameResult.score → the store's '1-0' result string.
  * Go's scoring phase (two passes, dead-stone marking unresolved) has no wire
  * messages yet, so ONLINE go scores immediately after the second pass with
- * every stone treated as alive (Tromp-Taylor style) — deterministic on both
+ * every stone treated as alive (Tromp-Taylor style), deterministic on both
  * peers. Play captures out before passing.
  */
 export function adapterFromSpec<S>(spec: GameSpec<S>): OnlineGameAdapter<S> {
@@ -182,11 +182,11 @@ export function adapterFromSpec<S>(spec: GameSpec<S>): OnlineGameAdapter<S> {
       const winner: MpColor = by === 'white' ? 'black' : 'white'
       if (spec.family === 'chess') {
         // chessops-backed states expose a live Position with the variant-aware
-        // insufficient-material test; ffish states don't (fen-only) — their
+        // insufficient-material test; ffish states don't (fen-only). Their
         // flag is a plain loss, like every non-chess family.
         const pos = (s as { pos?: { hasInsufficientMaterial?(c: MpColor): boolean } }).pos
         if (pos?.hasInsufficientMaterial?.(winner) === true) {
-          return { result: '1/2-1/2', reason: 'time out — insufficient material' }
+          return { result: '1/2-1/2', reason: 'time out: insufficient material' }
         }
       }
       return { result: winner === 'white' ? '1-0' : '0-1', reason: 'on time' }

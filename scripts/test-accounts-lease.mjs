@@ -10,7 +10,7 @@
 //     and the small-population (C-10) effective-threshold floor;
 //   · slash.adjudicate: same-epoch fork (user), same-epoch different-device
 //     double-grant (intersection witnesses, keyOf-attributed), same-device
-//     renewal + ALL different-epoch pairs (none — supersession, forks go through
+//     renewal + ALL different-epoch pairs (none: supersession, forks go through
 //     adjudicateFork), fabricated-grant framing rejected, and below-threshold (none).
 //
 // House style: esbuild-bundle the TS on the fly, one-line per assert, exit(1) on
@@ -51,7 +51,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -216,7 +216,7 @@ async function run(M) {
 
   // -- ROOT LANE: accounts with NO PIN record (ctx.pinPub absent).
   // Without this lane a PIN-less account can never reach a second device, and a
-  // PIN cannot be provisioned without a live committee — the two deadlocked.
+  // PIN cannot be provisioned without a live committee. The two deadlocked.
   const takeoverCtx = { ...ctx, prior: { epoch: 1, device: deviceA.pubB } }
   const mkRootSession = (device, epoch = 2, root = subjectRoot, priv = subjKp.priv) =>
     pin.makeRootSession({ v: 1, root, device, purpose: 'lease-takeover', evalNonce: kp(4321).pubB, wts: NOW, epoch }, priv, root)
@@ -303,7 +303,7 @@ async function run(M) {
   const renewVerdict = slash.adjudicate({ root: subjectRoot, a: lease.grantLease(bodyX, grantsX), b: lease.grantLease(bodyRenew, grantsRenew), events: [] }, { tLease: PARAMS_A2.tLease, keyOf: slashKeyOf })
   eq(renewVerdict.guilty, 'none', 'same-epoch SAME-device renewal is not a double-grant (no honest grantor is slashed)')
 
-  // Different-epoch lease pairs are NOT a double-grant — a later epoch legitimately
+  // Different-epoch lease pairs are NOT a double-grant. A later epoch legitimately
   // supersedes an earlier one. The double-grant path returns 'none' regardless of
   // device or of any (unverifiable) events handed to it; a REAL witnessed fork is
   // adjudicated separately by detectSameEpochFork/adjudicateFork on the signed
@@ -313,7 +313,7 @@ async function run(M) {
   const bodyLate = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 6 })
   const grantsLate = witnesses.slice(4, 13).map((w) => lease.signGrant(bodyLate, w.nodeId, w.device.pubB, w.device.priv, NOW))
   const dg2 = { root: subjectRoot, a: lease.grantLease(bodyX, grantsX), b: lease.grantLease(bodyLate, grantsLate), events: fabricatedEvents }
-  eq(slash.adjudicate(dg2, { tLease: PARAMS_A2.tLease, keyOf: slashKeyOf }).guilty, 'none', 'a different-epoch pair is a legitimate supersession, not a double-grant — even with (unverified) events attached')
+  eq(slash.adjudicate(dg2, { tLease: PARAMS_A2.tLease, keyOf: slashKeyOf }).guilty, 'none', 'a different-epoch pair is a legitimate supersession, not a double-grant, even with (unverified) events attached')
   eq(slash.adjudicate({ ...dg2, events: [] }, { tLease: PARAMS_A2.tLease, keyOf: slashKeyOf }).guilty, 'none', 'different-epoch pair with no events: still none')
   // different-epoch SAME device (crash-recovery re-fence) → also none.
   const bodyBump = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceA.pubB), epoch: 6 })

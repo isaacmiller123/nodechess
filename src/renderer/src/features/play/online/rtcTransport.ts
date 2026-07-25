@@ -17,7 +17,7 @@ import type { MpTransport, MpTransportFactory, MpTransportListeners } from './mp
 /** A unique app namespace so only nodechess builds discover each other. Bumped to
  *  v3 alongside the wire protocol so a v2 build never even shares a room with v3.
  *  Kept at the pre-rebrand spelling deliberately: this string IS the rendezvous,
- *  so changing it partitions the network — already-released builds would never
+ *  so changing it partitions the network: already-released builds would never
  *  see a renamed one, turning "same version required" into "peer never appears".
  *  Retire it with the next wire-protocol bump, not with the wordmark. */
 const APP_ID = 'chess-sharp-mp-v3'
@@ -104,7 +104,7 @@ export const createRtcTransport: MpTransportFactory = (
       try {
         // Target one peer when given; otherwise broadcast to the whole room. The
         // send is async: surface a rejected promise to the session (T6) instead of
-        // an unhandled rejection — it treats a dead channel like heartbeat trouble.
+        // an unhandled rejection: it treats a dead channel like heartbeat trouble.
         const p = toPeer ? msg.send(text, { target: toPeer }) : msg.send(text)
         void Promise.resolve(p).catch((err) => listeners.onSendError?.(err))
       } catch (err) {

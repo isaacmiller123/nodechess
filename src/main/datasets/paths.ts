@@ -3,7 +3,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 
 // Dataset resolution. The large datasets (Stockfish engine binary, Lichess puzzle
-// DB) are NOT shipped in the repo or the installer — they are imported at runtime
+// DB) are NOT shipped in the repo or the installer. They are imported at runtime
 // into a writable per-user folder. Every consumer resolves "imported first, then
 // bundled" so a freshly imported dataset is picked up without a reinstall.
 //
@@ -66,7 +66,7 @@ function bundledEnginePath(): string {
 }
 
 // Fairy-Stockfish's mac build ships BUNDLED (resources/engine/mac, from the
-// Homebrew fairy-stockfish 14.0.1 bottle — it's only ~750 KB); win-x64 imports
+// Homebrew fairy-stockfish 14.0.1 bottle: it's only ~750 KB); win-x64 imports
 // at runtime from the official Fairy-Stockfish GitHub release (see
 // datasets/fairyStockfish.ts). Resolution stays imported-first like Stockfish.
 function bundledFairyEnginePath(): string {

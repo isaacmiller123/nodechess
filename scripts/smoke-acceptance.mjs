@@ -1,19 +1,19 @@
-// A6 M6 / A-FINAL — THE §1 ACCEPTANCE TEST, END TO END, ON THE LIVE WIRE.
+// A6 M6 / A-FINAL: THE §1 ACCEPTANCE TEST, END TO END, ON THE LIVE WIRE.
 //
 //   node scripts/smoke-acceptance.mjs   (npm run smoke:acceptance)
 //
 // FOUR account peers, EACH a FRESH argon2id account in its OWN worker thread
-// (fresh trystero selfId + relay socket — the multi-process requirement), over
+// (fresh trystero selfId + relay socket: the multi-process requirement), over
 // the REAL trystero + werift WebRTC transport pointed at a localhost Nostr relay.
 // This is the whole §1 acceptance sentence, asserted step by step:
 //
-//   PHASE 1 — THE ACCEPTANCE GATE:
+//   PHASE 1, THE ACCEPTANCE GATE:
 //     • FOUR FRESH ACCOUNTS are created from argon2id identities (deriveIdentity
-//       + deriveChild — the exact web/accounts.ts createAccount derivation). The
+//       + deriveChild: the exact web/accounts.ts createAccount derivation). The
 //       harness independently RE-DERIVES each root from (name,password) and
-//       proves it equals the account the peer booted as — a real §1 root, not a
+//       proves it equals the account the peer booted as. A real §1 root, not a
 //       test keypair, deterministically reproducible (C-5: no recovery).
-//     • TWO STRANGERS AUTO-PAIR with NO room code (the harness brokers nothing —
+//     • TWO STRANGERS AUTO-PAIR with NO room code (the harness brokers nothing;
 //       the shared gameKey proves the signed-pool rendezvous), host=white.
 //     • A DISTINCT THIRD peer self-assigns as the WITNESS (neither player); the
 //       real witnessed 'pairing' event anchors + verifies in BOTH chains.
@@ -26,16 +26,16 @@
 //     • both players FINAL-SYNC their chain into shard space (§5 erasure code +
 //       self chain-pointer). THE OWNER (white) GOES OFFLINE, and a FOURTH FRESH
 //       peer RECONSTRUCTS white's profile/game FROM SHARD SPACE through the live
-//       viewer — bit-faithful chain, real folded profile, the rated game present.
+//       viewer: bit-faithful chain, real folded profile, the rated game present.
 //
-//   PHASE 2 — HONEST 2-USER DEGRADATION (no third machine):
+//   PHASE 2, HONEST 2-USER DEGRADATION (no third machine):
 //     two peers, no witness ⇒ both reach 'waiting-witness' (opponentFound, NO game
-//     opened, no lease grabbed — never a fake pairing, C-10); CASUAL (unsigned)
+//     opened, no lease grabbed: never a fake pairing, C-10); CASUAL (unsigned)
 //     play over the same transport still starts + moves (byte-identical v5).
 //
 // TRANSPORT (stated honestly, exactly like smoke-live-slice / smoke-m2): trystero
 // 0.25.2 + werift, pointed at a LOCALHOST Nostr relay (scripts/lib/local-nostr-
-// relay.mjs) rather than public relays — the sanctioned A6 fallback
+// relay.mjs) rather than public relays: the sanctioned A6 fallback
 // ("a multi-process localhost signaling harness that KEEPS the real trystero
 // transport"): from bare node, N peers hammering the public pool trip rate-
 // limiting and never mesh, while the werift WebRTC itself is 100% real (ICE over
@@ -71,7 +71,7 @@ const eq = (a, b, msg) => ok(a === b, a === b ? msg : `${msg} (got ${JSON.string
 
 const TC = { initialMs: 180_000, incrementMs: 2_000 } // 3+2 ⇒ Blitz (matches MM_DEFAULT_TC.Blitz)
 const SEED_MICRO = 1200 * 1_000_000
-const K_REC = 12 // production K_rec (§5 40/12 geometry) — reconstruction floor
+const K_REC = 12 // production K_rec (§5 40/12 geometry): reconstruction floor
 
 // Fresh, distinct argon2id credentials per run (distinct names ⇒ distinct roots).
 const RUN = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
@@ -105,7 +105,7 @@ async function bundleWorker(outdir) {
 }
 
 /** A tiny bundle of the FROZEN identity derivation so the harness can RE-DERIVE
- *  each account root independently of the worker — proving the peer's account IS
+ *  each account root independently of the worker: proving the peer's account IS
  *  the argon2id identity for its (name,password), and reproducibly so (C-5). */
 async function bundleDerive(outdir) {
   const entry = resolve(outdir, 'derive-entry.mjs')
@@ -154,7 +154,7 @@ function spawnPeer(workerFile, role, cred, warmupMs = 0) {
 let RELAY_URL = ''
 // ── Public-internet override (ACCEPT_RELAY_URL) ──────────────────────────────
 // Default: localhost relay (deterministic). Set ACCEPT_RELAY_URL=wss://<public
-// nostr relay> to route SIGNALING through real public internet infrastructure —
+// nostr relay> to route SIGNALING through real public internet infrastructure,
 // the genuine "two strangers worldwide discover each other" proof. When public,
 // we also hand the peers the real DEFAULT_ICE_SERVERS STUN/TURN set (host
 // candidates still win on one machine, but ICE gathers against public STUN).
@@ -197,10 +197,10 @@ const lastStatus = (p) => p.state.statuses[p.state.statuses.length - 1] ?? null
 const sawPhase = (p, phase) => p.state.statuses.some((s) => s.phase === phase)
 
 // ===========================================================================
-// PHASE 1 — the acceptance gate
+// PHASE 1: the acceptance gate
 // ===========================================================================
 async function phaseAcceptance(workerFile, derive) {
-  console.log('\n═══ PHASE 1 — THE §1 ACCEPTANCE GATE (fresh argon2id accounts, live wire) ═══')
+  console.log('\n═══ PHASE 1: THE §1 ACCEPTANCE GATE (fresh argon2id accounts, live wire) ═══')
   const relay = await openSignaling()
   RELAY_URL = relay.url
 
@@ -225,12 +225,12 @@ async function phaseAcceptance(workerFile, derive) {
     ok(true, 'all FOUR account peers booted + announced presence on the live fabric')
 
     // ---- PROOF: every account is a real argon2id §1 identity -----------------
-    console.log('\n· PROOF — every peer is a FRESH argon2id account (independently re-derived):')
+    console.log('\n· PROOF. Every peer is a FRESH argon2id account (independently re-derived):')
     for (const [key, p] of Object.entries(peers)) {
       const cred = p.state.cred
       const id = await derive.deriveIdentity(cred.name, cred.password)
       const reRoot = derive.toB64u(id.rootPub)
-      eq(p.state.ready.root, reRoot, `${p.state.role} (${cred.name}) root === argon2id deriveIdentity(name,password) — a real §1 account, reproducible`)
+      eq(p.state.ready.root, reRoot, `${p.state.role} (${cred.name}) root === argon2id deriveIdentity(name,password), a real §1 account, reproducible`)
       ok(typeof p.state.ready.root === 'string' && p.state.ready.root.length === 43, `${p.state.role} root is a 43-char b64u ed25519 account key`)
       ok(typeof p.state.ready.tag === 'string' && p.state.ready.tag.length > 0, `${p.state.role} carries a #tag identicon (${p.state.ready.tag})`)
     }
@@ -252,32 +252,32 @@ async function phaseAcceptance(workerFile, derive) {
     const whitePeer = A.color === 'w' ? peers.a : peers.b
 
     // ---- PROOF: paired with NO code exchanged --------------------------------
-    console.log('\n· PROOF — two strangers auto-paired with NO room code exchanged:')
+    console.log('\n· PROOF. Two strangers auto-paired with NO room code exchanged:')
     ok(peers.a.state.statuses.some((s) => s.opponentFound), 'peer A found a legal opponent purely from the signed pool')
     ok(peers.b.state.statuses.some((s) => s.opponentFound), 'peer B found a legal opponent purely from the signed pool')
-    ok(white.color === 'w' && black.color === 'b', 'exactly one host (white) and one guest (black) — the deterministic seat split')
+    ok(white.color === 'w' && black.color === 'b', 'exactly one host (white) and one guest (black), the deterministic seat split')
     eq(white.segment && white.segment.game, black.segment && black.segment.game, 'both peers reached the SAME gameKey with NO parent brokering (pool rendezvous)')
 
     // ---- PROOF: a distinct third peer witnessed ------------------------------
-    console.log('\n· PROOF — a distinct third peer attached as the witness (neither player):')
+    console.log('\n· PROOF. A distinct third peer attached as the witness (neither player):')
     ok(peers.witness.state.witnessing, 'the third peer self-assigned + attached as the witness')
     const wm = peers.witness.state.witnessing ?? {}
     ok(wm.host === white.root && wm.guest === black.root, 'the witness knows both players as host/guest and is NEITHER of them')
     ok(peers.witness.state.ready.root !== white.root && peers.witness.state.ready.root !== black.root, 'the witness is a distinct third account')
 
     // ---- PROOF: the live write lease at ONE epoch ----------------------------
-    console.log('\n· PROOF — both players hold the live write lease at one monotonic epoch:')
+    console.log('\n· PROOF. Both players hold the live write lease at one monotonic epoch:')
     ok(peers.a.state.preps.some((p) => p.ok) && peers.b.state.preps.some((p) => p.ok), 'both players completed the pre-game lease + pairing prep')
     eq(white.epoch, 1, 'white acquired the lease at epoch 1 (fresh account)')
     eq(black.epoch, 1, 'black acquired the lease at epoch 1 (fresh account)')
 
     // ---- PROOF: the REAL witnessed pairing event in BOTH chains --------------
-    console.log('\n· PROOF — the REAL witnessed pairing event anchored + verifies in BOTH chains:')
+    console.log('\n· PROOF. The REAL witnessed pairing event anchored + verifies in BOTH chains:')
     ok(white.hasPairing && black.hasPairing, 'both chains carry a witnessed "pairing" event before move 1 (§3/§8)')
     ok(white.pairingVerified && black.pairingVerified, 'both pairing events verify (event sig + ≥1 attestation + correct game/ladder/opponent)')
 
     // ---- PROOF: the countersigned rated segment in BOTH chains ---------------
-    console.log('\n· PROOF — matching countersigned rated segments in BOTH chains:')
+    console.log('\n· PROOF. Matching countersigned rated segments in BOTH chains:')
     ok(white.landed && black.landed, 'both players appended a witnessed segment to their own chain')
     ok(white.verifyChainOk && black.verifyChainOk, 'both chains verifyChain green with pairing + segment')
     eq(white.segmentVerifyErr, null, "white chain's segment verifies (verifySegmentEvent === null)")
@@ -295,14 +295,14 @@ async function phaseAcceptance(workerFile, derive) {
     }
 
     // ---- PROOF: the a4 fold moved BOTH ladders off the seed -------------------
-    console.log('\n· PROOF — the a4 fold moved BOTH Blitz ladders off the §6 1200 seed:')
+    console.log('\n· PROOF. The a4 fold moved BOTH Blitz ladders off the §6 1200 seed:')
     ok(white.ladder && white.ladder.n === 1, 'white Blitz ladder folded exactly 1 rated game')
     ok(black.ladder && black.ladder.n === 1, 'black Blitz ladder folded exactly 1 rated game')
     ok(white.ladder && white.ladder.r > SEED_MICRO, 'white (winner) rating rose above 1200')
     ok(black.ladder && black.ladder.r < SEED_MICRO, 'black (loser) rating fell below 1200')
 
     // ---- PROOF: the M5 Tier-1 judge ran over the finished game ---------------
-    console.log('\n· PROOF — the M5 Tier-1 anticheat judge ran over the finished SIGNED game (both instances):')
+    console.log('\n· PROOF: the M5 Tier-1 anticheat judge ran over the finished SIGNED game (both instances):')
     await waitFor(() => (peers.a.state.judge && peers.b.state.judge) || all().some((p) => p.state.error), 60_000, 'both players judged').catch(() => {})
     const jA = peers.a.state.judge
     const jB = peers.b.state.judge
@@ -316,24 +316,24 @@ async function phaseAcceptance(workerFile, derive) {
     }
 
     // ---- PROOF: both players final-synced their chain into shard space -------
-    console.log('\n· PROOF — both players FINAL-SYNCED their chain into shard space (§5):')
+    console.log('\n· PROOF. Both players FINAL-SYNCED their chain into shard space (§5):')
     await waitFor(() => (peers.a.state.synced && peers.b.state.synced) || all().some((p) => p.state.error), 60_000, 'both players synced').catch(() => {})
     ok(peers.a.state.synced && peers.a.state.synced.ok, 'peer A erasure-coded its chain into shard space + pinned a self chain-pointer')
     ok(peers.b.state.synced && peers.b.state.synced.ok, 'peer B erasure-coded its chain into shard space + pinned a self chain-pointer')
     ok(whitePeer.state.synced && whitePeer.state.synced.liveRows >= K_REC, `white left ≥ K_rec(${K_REC}) live shard rows on the network (${whitePeer.state.synced?.liveRows} rows)`)
 
     // ---- PROOF: a FOURTH peer reconstructs white with the OWNER OFFLINE ------
-    console.log('\n· PROOF — a FOURTH fresh peer RECONSTRUCTS white from shard space with the OWNER OFFLINE:')
+    console.log('\n· PROOF. A FOURTH fresh peer RECONSTRUCTS white from shard space with the OWNER OFFLINE:')
     // Let the shard rows + the write-time pointer index settle across carriers.
     await new Promise((r) => setTimeout(r, 12_000))
     const whiteChainHash = whitePeer.state.result.chainHash
     ok(typeof whiteChainHash === 'string' && whiteChainHash.length === 43, 'white reported the hash of its own final chain (the bit-faithful target)')
 
-    // THE OWNER (white) GOES OFFLINE — a graceful leave (sign-out / close-tab):
+    // THE OWNER (white) GOES OFFLINE. A graceful leave (sign-out / close-tab):
     // onPeerLeave prunes white from every routing table at once, so the viewer's
     // shard lookups never stall on a dead contact; white's shards live on the
-    // OTHER carriers (black/witness/viewer) regardless — the network IS the storage.
-    console.log(`· white (${whitePeer.state.cred.name}) signs off — the owner goes offline …`)
+    // OTHER carriers (black/witness/viewer) regardless: the network IS the storage.
+    console.log(`· white (${whitePeer.state.cred.name}) signs off. The owner goes offline …`)
     whitePeer.w.postMessage({ type: 'leave' })
     await waitFor(() => whitePeer.state.left || whitePeer.state.error, 20_000, 'white left the overlay').catch(() => {})
     await new Promise((r) => setTimeout(r, 5_000)) // let onPeerLeave propagate + the mesh settle
@@ -362,10 +362,10 @@ async function phaseAcceptance(workerFile, derive) {
 }
 
 // ===========================================================================
-// PHASE 2 — honest 2-user degradation: 2 peers, no witness, casual still works
+// PHASE 2. Honest 2-user degradation: 2 peers, no witness, casual still works
 // ===========================================================================
 async function phaseDegradation(workerFile) {
-  console.log('\n═══ PHASE 2 — honest 2-user degradation (2 peers, no third machine) ═══')
+  console.log('\n═══ PHASE 2: honest 2-user degradation (2 peers, no third machine) ═══')
   const relay = await openSignaling()
   RELAY_URL = relay.url
   const peers = {
@@ -386,17 +386,17 @@ async function phaseDegradation(workerFile) {
     )
     for (const p of all) if (p.state.error) throw new Error(`${p.state.role}: ${p.state.error}`)
 
-    console.log('\n· PROOF — the rated flow HONESTLY WAITS, never a fake pairing (C-10):')
+    console.log('\n· PROOF. The rated flow HONESTLY WAITS, never a fake pairing (C-10):')
     for (const p of all) {
       const s = lastStatus(p)
       ok(s && s.phase === 'waiting-witness', `${p.state.role} sits in 'waiting-witness' (never a dead button)`)
-      ok(p.state.statuses.some((x) => x.opponentFound), `${p.state.role} DID find its legal opponent — only the WITNESS is missing`)
+      ok(p.state.statuses.some((x) => x.opponentFound), `${p.state.role} DID find its legal opponent. Only the WITNESS is missing`)
       ok(s && s.witnessesReachable <= 1, `${p.state.role} has NO distinct third-machine witness (count ≤ the witness-capable opponent)`)
     }
-    ok(peers.a.state.preps.length === 0 && peers.b.state.preps.length === 0, 'NO pre-game prep ran — no lease grabbed without a witness')
-    ok(!peers.a.state.result && !peers.b.state.result, 'NO rated game room was ever opened — never a fake pairing (C-10)')
+    ok(peers.a.state.preps.length === 0 && peers.b.state.preps.length === 0, 'NO pre-game prep ran, no lease grabbed without a witness')
+    ok(!peers.a.state.result && !peers.b.state.result, 'NO rated game room was ever opened, never a fake pairing (C-10)')
 
-    console.log('\n· PROOF — CASUAL (unsigned) play still works while rated waits:')
+    console.log('\n· PROOF, CASUAL (unsigned) play still works while rated waits:')
     peers.a.w.postMessage({ type: 'casualHost' })
     await waitFor(() => peers.a.state.casualCode || peers.a.state.error, 30_000, 'casual host minted a code')
     if (peers.a.state.error) throw new Error(`casual host: ${peers.a.state.error}`)
@@ -409,8 +409,8 @@ async function phaseDegradation(workerFile) {
     for (const p of all) if (p.state.error) throw new Error(`${p.state.role}: ${p.state.error}`)
     ok(peers.a.state.casualResult && peers.a.state.casualResult.started, 'the casual game started for the host (unsigned, byte-identical v5)')
     ok(peers.b.state.casualResult && peers.b.state.casualResult.started, 'the casual game started for the joiner')
-    ok(peers.b.state.casualResult && peers.b.state.casualResult.plies >= 1, 'a move flowed over the casual game (white e2e4) — casual is fully live')
-    ok(!peers.a.state.result && !peers.b.state.result, 'the rated search still never opened a game — casual and rated are cleanly separate')
+    ok(peers.b.state.casualResult && peers.b.state.casualResult.plies >= 1, 'a move flowed over the casual game (white e2e4): casual is fully live')
+    ok(!peers.a.state.result && !peers.b.state.result, 'the rated search still never opened a game: casual and rated are cleanly separate')
   } finally {
     for (const p of all) { try { p.w.postMessage({ type: 'stop' }) } catch {} }
     await Promise.all(all.map((p) => p.w.terminate().catch(() => {})))
@@ -431,7 +431,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failed ? `❌ ${failed} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failed ? `, ${failed} failures` : ''}`)
+  console.log(`\n${failed ? `❌ ${failed} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failed ? `, ${failed} failures` : ''}`)
   process.exit(failed ? 1 : 0)
 }
 

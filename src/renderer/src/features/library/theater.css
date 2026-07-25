@@ -1,4 +1,4 @@
-/* Replay Theater — cinematic full-screen replay (features/library/ReplayTheater.tsx).
+/* Replay Theater: cinematic full-screen replay (features/library/ReplayTheater.tsx).
    Deliberately dark regardless of app theme: it is a stage, not a panel. */
 
 .theater {
@@ -237,7 +237,7 @@
   gap: var(--space-3);
   margin-top: var(--space-2);
 }
-/* votb-btn is themed for panels — restate it for the dark card. */
+/* votb-btn is themed for panels. Restate it for the dark card. */
 .theater-card .votb-btn {
   border-color: rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.08);

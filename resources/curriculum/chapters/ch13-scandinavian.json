@@ -3,7 +3,7 @@
  "band": "13",
  "order": 13,
  "title": "The Scandinavian & Meeting 1.e4",
- "subtitle": "1.e4 d5 — strike the centre at once, keep the queen safe, and punish 1.e4's cheap traps",
+ "subtitle": "1.e4 d5: strike the centre at once, keep the queen safe, and punish 1.e4's cheap traps",
  "estMinutes": 55,
  "concepts": [
   {
@@ -34,7 +34,7 @@
   {
    "id": "meet-1e4-traps",
    "name": "Meeting 1.e4's traps",
-   "short": "Know the cheap shots: the Wayward Queen (2.Qh5) eyes f7 — answer with ...g6 and ...Nf6; never weaken f7 with ...f6 (Damiano)."
+   "short": "Know the cheap shots: the Wayward Queen (2.Qh5) eyes f7. Answer with ...g6 and ...Nf6; never weaken f7 with ...f6 (Damiano)."
   }
  ],
  "lessons": [
@@ -48,7 +48,7 @@
      "kind": "puzzle",
      "title": "Warm-up: spot the loose piece",
      "intro": {
-      "text": "Before we open a new defence, sharpen the eye. In every position one move wins material outright. The Scandinavian leads to open, piece-active play — these are the patterns you'll be hunting."
+      "text": "Before we open a new defence, sharpen the eye. In every position one move wins material outright. The Scandinavian leads to open, piece-active play. These are the patterns you'll be hunting."
      },
      "puzzle": {
       "themes": [
@@ -64,7 +64,7 @@
      "kind": "teach",
      "title": "Why 1...d5",
      "intro": {
-      "text": "I am Viktor. Today, Black. When White plays 1.e4 he stakes a claim in the centre. Most defences let that pawn sit. The Scandinavian does not — we answer 1...d5 and hit e4 on move one."
+      "text": "I am Viktor. Today, Black. When White plays 1.e4 he stakes a claim in the centre. Most defences let that pawn sit. The Scandinavian does not. We answer 1...d5 and hit e4 on move one."
      },
      "steps": [
       {
@@ -90,7 +90,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "1...d5! Straight at e4. White cannot defend the pawn well, so he almost always takes: 2.exd5. Good — we have traded his proud centre pawn for a flank pawn, and the centre is half-open already.",
+        "text": "1...d5! Straight at e4. White cannot defend the pawn well, so he almost always takes: 2.exd5. Good. We have traded his proud centre pawn for a flank pawn, and the centre is half-open already.",
         "annotations": [
          {
           "kind": "arrow",
@@ -110,7 +110,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3P4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
        "coach": {
-        "text": "After 2.exd5 we recapture with the queen: 2...Qxd5. Yes — the queen comes out early. That breaks a rule you learned, so you must respect WHY: she is exposed, and White will gain a tempo by attacking her. We must be ready to retreat her to safety.",
+        "text": "After 2.exd5 we recapture with the queen: 2...Qxd5. Yes. The queen comes out early. That breaks a rule you learned, so you must respect WHY: she is exposed, and White will gain a tempo by attacking her. We must be ready to retreat her to safety.",
         "annotations": [
          {
           "kind": "arrow",
@@ -125,7 +125,7 @@
       {
        "fen": "rnb1kbnr/ppp1pppp/8/3q4/8/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 3",
        "coach": {
-        "text": "3.Nc3! There it is — the knight develops AND attacks the queen. White gains a tempo. This is the price of the Scandinavian, and it is small: he spends a move chasing, we spend a move retreating, and the position is roughly balanced. The only mistake would be to retreat her to a square where she is chased AGAIN.",
+        "text": "3.Nc3! There it is. The knight develops AND attacks the queen. White gains a tempo. This is the price of the Scandinavian, and it is small: he spends a move chasing, we spend a move retreating, and the position is roughly balanced. The only mistake would be to retreat her to a square where she is chased AGAIN.",
         "annotations": [
          {
           "kind": "arrow",
@@ -146,7 +146,7 @@
     },
     {
      "kind": "guided",
-     "title": "Retreat the queen — safely",
+     "title": "Retreat the queen: safely",
      "intro": {
       "text": "The knight on c3 attacks your queen on d5. Move her to a safe, active square. Two squares are the classical homes; a third quiet retreat is also fine."
      },
@@ -171,7 +171,7 @@
         "d5d8"
        ],
        "successLine": {
-        "text": "Good. 3...Qa5 (pinning thoughts on c3) and 3...Qd6 are the two main homes; 3...Qd8 is solid but passive. What you must NEVER do is 3...Qe5+? or 3...Qe6+? — White just blocks with a developing move and chases the queen for free.",
+        "text": "Good. 3...Qa5 (pinning thoughts on c3) and 3...Qd6 are the two main homes; 3...Qd8 is solid but passive. What you must NEVER do is 3...Qe5+? or 3...Qe6+?. White just blocks with a developing move and chases the queen for free.",
         "annotations": [
          {
           "kind": "highlight",
@@ -187,7 +187,7 @@
         "conceptId": "queen-safety"
        },
        "retryLine": {
-        "text": "Not there. A check like ...Qe5+ feels active, but White answers Be2 or Nge2 — developing WITH tempo — and your queen is shoved around again. Retreat to a5, d6, or d8 instead.",
+        "text": "Not there. A check like ...Qe5+ feels active, but White answers Be2 or Nge2 (developing WITH tempo) and your queen is shoved around again. Retreat to a5, d6, or d8 instead.",
         "conceptId": "queen-safety"
        }
       }
@@ -197,7 +197,7 @@
      "kind": "puzzle",
      "title": "Cool-down: open-position tactics",
      "intro": {
-      "text": "The Scandinavian opens lines. Finish with tactics from open middlegames — the kind your active pieces will create."
+      "text": "The Scandinavian opens lines. Finish with tactics from open middlegames. The kind your active pieces will create."
      },
      "puzzle": {
       "themes": [
@@ -221,7 +221,7 @@
      "kind": "teach",
      "title": "Why a5",
      "intro": {
-      "text": "3...Qa5 is the old main line. The queen eyes the knight on c3 and the a5–e1 diagonal, and she sits far from White's pieces — hard to hit again."
+      "text": "3...Qa5 is the old main line. The queen eyes the knight on c3 and the a5–e1 diagonal, and she sits far from White's pieces. Hard to hit again."
      },
      "steps": [
       {
@@ -247,7 +247,7 @@
       {
        "fen": "rnb1kb1r/ppp1pppp/5n2/q7/3P4/2N2N2/PPP2PPP/R1BQKB1R b KQkq - 2 5",
        "coach": {
-        "text": "White has played 4.d4 and 5.Nf3. Our move order: 5...c6! first. This little pawn does two big jobs — it gives the queen a retreat square on c7 and, crucially, it covers b5 so the knight can never jump in with Nb5 to harass her. Queen safety again.",
+        "text": "White has played 4.d4 and 5.Nf3. Our move order: 5...c6! first. This little pawn does two big jobs. It gives the queen a retreat square on c7 and, crucially, it covers b5 so the knight can never jump in with Nb5 to harass her. Queen safety again.",
         "annotations": [
          {
           "kind": "highlight",
@@ -287,7 +287,7 @@
       {
        "fen": "rn3rk1/pp2bppp/2p1pn2/q4b2/2BP4/2N2N2/PPPB1PPP/R2QR1K1 w - - 4 10",
        "coach": {
-        "text": "The finished house: ...e6, ...Be7, ...O-O all played. Bishop on f5 is active, pawns on c6/e6 form a wall, the queen on a5 is safe, the king is castled. White stands a shade better — he has the extra centre tempo — but Black is rock-solid and ready to play ...Nbd7 and fight with ...c5 or ...Rad8. This is a full, sound game.",
+        "text": "The finished house: ...e6, ...Be7, ...O-O all played. Bishop on f5 is active, pawns on c6/e6 form a wall, the queen on a5 is safe, the king is castled. White stands a shade better (he has the extra centre tempo) but Black is rock-solid and ready to play ...Nbd7 and fight with ...c5 or ...Rad8. This is a full, sound game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -320,7 +320,7 @@
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — White claims the centre."
+        "text": "1.e4: White claims the centre."
        }
       },
       {
@@ -333,104 +333,104 @@
       {
        "uci": "e4d5",
        "coach": {
-        "text": "2.exd5 — he grabs the pawn."
+        "text": "2.exd5: he grabs the pawn."
        }
       },
       {
        "uci": "d8d5",
        "coach": {
-        "text": "2...Qxd5 — recapture. The queen is out, but we know the plan.",
+        "text": "2...Qxd5: recapture. The queen is out, but we know the plan.",
         "conceptId": "queen-tempo"
        }
       },
       {
        "uci": "b1c3",
        "coach": {
-        "text": "3.Nc3 — develop with tempo, hitting the queen."
+        "text": "3.Nc3: develop with tempo, hitting the queen."
        }
       },
       {
        "uci": "d5a5",
        "coach": {
-        "text": "3...Qa5 — retreat to a safe, active square.",
+        "text": "3...Qa5: retreat to a safe, active square.",
         "conceptId": "queen-safety"
        }
       },
       {
        "uci": "d2d4",
        "coach": {
-        "text": "4.d4 — White builds his centre."
+        "text": "4.d4: White builds his centre."
        }
       },
       {
        "uci": "g8f6",
        "coach": {
-        "text": "4...Nf6 — develop, eye e4 and d5.",
+        "text": "4...Nf6: develop, eye e4 and d5.",
         "conceptId": "scandi-plan"
        }
       },
       {
        "uci": "g1f3",
        "coach": {
-        "text": "5.Nf3 — White's last minor piece toward the centre."
+        "text": "5.Nf3: White's last minor piece toward the centre."
        }
       },
       {
        "uci": "c7c6",
        "coach": {
-        "text": "5...c6! — guard b5, give the queen the c7 escape.",
+        "text": "5...c6!. Guard b5, give the queen the c7 escape.",
         "conceptId": "queen-safety"
        }
       },
       {
        "uci": "f1c4",
        "coach": {
-        "text": "6.Bc4 — White's bishop aims at f7."
+        "text": "6.Bc4: White's bishop aims at f7."
        }
       },
       {
        "uci": "c8f5",
        "coach": {
-        "text": "6...Bf5! — bishop OUT before ...e6.",
+        "text": "6...Bf5!, bishop OUT before ...e6.",
         "conceptId": "scandi-plan"
        }
       },
       {
        "uci": "c1d2",
        "coach": {
-        "text": "7.Bd2 — developing, eyeing the queen on a5."
+        "text": "7.Bd2: developing, eyeing the queen on a5."
        }
       },
       {
        "uci": "e7e6",
        "coach": {
-        "text": "7...e6 — now lock the chain; the bishop is already outside it on f5.",
+        "text": "7...e6: now lock the chain; the bishop is already outside it on f5.",
         "conceptId": "scandi-plan"
        }
       },
       {
        "uci": "e1g1",
        "coach": {
-        "text": "8.O-O — White tucks his king away."
+        "text": "8.O-O: White tucks his king away."
        }
       },
       {
        "uci": "f8e7",
        "coach": {
-        "text": "8...Be7 — modest but solid, preparing to castle.",
+        "text": "8...Be7: modest but solid, preparing to castle.",
         "conceptId": "scandi-plan"
        }
       },
       {
        "uci": "f1e1",
        "coach": {
-        "text": "9.Re1 — White centralises a rook."
+        "text": "9.Re1: White centralises a rook."
        }
       },
       {
        "uci": "e8g8",
        "coach": {
-        "text": "9...O-O — the house is complete: king safe, all minor pieces out, the f5-bishop active. White has a small space edge, Black is rock-solid with ...Nbd7 and a later ...c5 or ...Rad8 to come.",
+        "text": "9...O-O. The house is complete: king safe, all minor pieces out, the f5-bishop active. White has a small space edge, Black is rock-solid with ...Nbd7 and a later ...c5 or ...Rad8 to come.",
         "conceptId": "scandi-plan"
        }
       }
@@ -458,7 +458,7 @@
    "id": "l3-qd6-modern",
    "title": "The Modern Line: 3...Qd6",
    "kind": "variation",
-   "summary": "3...Qd6 — the flexible modern queen retreat, with the same plan.",
+   "summary": "3...Qd6: the flexible modern queen retreat, with the same plan.",
    "segments": [
     {
      "kind": "teach",
@@ -484,7 +484,7 @@
       {
        "fen": "rnb1kb1r/pp2pppp/2pq1n2/8/3P4/2N2N2/PPP2PPP/R1BQKB1R w KQkq - 0 6",
        "coach": {
-        "text": "The set-up mirrors the main line: 4.d4 Nf6 5.Nf3 c6. Again ...c6 first — and from d6 the queen would have to dodge a Nb5 jump, so covering b5 with ...c6 matters even more here. Queen safety is the through-line of this whole defence.",
+        "text": "The set-up mirrors the main line: 4.d4 Nf6 5.Nf3 c6. Again ...c6 first, and from d6 the queen would have to dodge a Nb5 jump, so covering b5 with ...c6 matters even more here. Queen safety is the through-line of this whole defence.",
         "annotations": [
          {
           "kind": "highlight",
@@ -504,7 +504,7 @@
       {
        "fen": "rn2kb1r/pp2pppp/2pq1n2/5b2/3P4/2N2N2/PPP1BPPP/R1BQK2R b KQkq - 1 7",
        "coach": {
-        "text": "Then 6...Bf5, ...e6, ...Be7, ...Nbd7, ...O-O. Identical scheme to the 3...Qa5 line — that is the beauty: learn ONE plan and it serves both queen retreats. White keeps a small space edge; Black is solid and ready to counter with ...c5 or ...e5 later.",
+        "text": "Then 6...Bf5, ...e6, ...Be7, ...Nbd7, ...O-O. Identical scheme to the 3...Qa5 line. That is the beauty: learn ONE plan and it serves both queen retreats. White keeps a small space edge; Black is solid and ready to counter with ...c5 or ...e5 later.",
         "annotations": [
          {
           "kind": "highlight",
@@ -557,7 +557,7 @@
         "conceptId": "scandi-plan"
        },
        "retryLine": {
-        "text": "Not yet. Develop later — first prevent White's tricks. Which pawn move stops Nb5 AND gives the queen the c7 escape square? It's ...c6.",
+        "text": "Not yet. Develop later, first prevent White's tricks. Which pawn move stops Nb5 AND gives the queen the c7 escape square? It's ...c6.",
         "conceptId": "queen-safety"
        }
       }
@@ -591,13 +591,13 @@
      "kind": "teach",
      "title": "When White won't take",
      "intro": {
-      "text": "Not every White player captures on d5. The two off-beat tries — declining with 2.Nc3 and pushing with 2.e5 — are not dangerous if you know the reply."
+      "text": "Not every White player captures on d5. The two off-beat tries (declining with 2.Nc3 and pushing with 2.e5) are not dangerous if you know the reply."
      },
      "steps": [
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2",
        "coach": {
-        "text": "2.Nc3?! — White defends e4 instead of taking. But now we have a free choice. The clean reply is 2...dxe4 3.Nxe4, after which we develop with ...Nf6, ...Bf5 and have an easy, equal game — White has nothing.",
+        "text": "2.Nc3?!. White defends e4 instead of taking. But now we have a free choice. The clean reply is 2...dxe4 3.Nxe4, after which we develop with ...Nf6, ...Bf5 and have an easy, equal game. White has nothing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -612,7 +612,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2",
        "coach": {
-        "text": "2.e5?! — White pushes past instead of taking. This is just a worse French Defence for him: his pawn on e5 can be attacked at the base. We hit it with 2...c5! and follow with ...Nc6, ...Bf5, ...e6. Black is at least equal — the e5-pawn is a long-term weakness.",
+        "text": "2.e5?!. White pushes past instead of taking. This is just a worse French Defence for him: his pawn on e5 can be attacked at the base. We hit it with 2...c5! and follow with ...Nc6, ...Bf5, ...e6. Black is at least equal. The e5-pawn is a long-term weakness.",
         "annotations": [
          {
           "kind": "highlight",
@@ -657,7 +657,7 @@
         "d5d4"
        ],
        "successLine": {
-        "text": "2...dxe4 — simplest and best. After 3.Nxe4 you've removed White's only centre pawn and develop freely with ...Nf6 and ...Bf5. (Pushing 2...d4 to gain space is also perfectly good.) White's 2.Nc3 gave you an easy game.",
+        "text": "2...dxe4: simplest and best. After 3.Nxe4 you've removed White's only centre pawn and develop freely with ...Nf6 and ...Bf5. (Pushing 2...d4 to gain space is also perfectly good.) White's 2.Nc3 gave you an easy game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -668,7 +668,7 @@
         "conceptId": "punish-passive"
        },
        "retryLine": {
-        "text": "There's a cleaner path. White's knight DEFENDS e4 but you can still resolve the centre. Capture the pawn — 2...dxe4 — or shove yours forward with ...d4.",
+        "text": "There's a cleaner path. White's knight DEFENDS e4 but you can still resolve the centre. Capture the pawn (2...dxe4) or shove yours forward with ...d4.",
         "conceptId": "punish-passive"
        }
       }
@@ -696,11 +696,11 @@
    "id": "l5-meeting-traps",
    "title": "Meeting 1.e4's Cheap Traps",
    "kind": "tactics",
-   "summary": "The Wayward Queen (2.Qh5), the f7 mate, and the f6 weakness (Damiano) — and the queen-greed trap to avoid.",
+   "summary": "The Wayward Queen (2.Qh5), the f7 mate, and the f6 weakness (Damiano), and the queen-greed trap to avoid.",
    "segments": [
     {
      "kind": "teach",
-     "title": "The Wayward Queen — 2.Qh5",
+     "title": "The Wayward Queen, 2.Qh5",
      "intro": {
       "text": "Below master level you will meet the early queen sortie 2.Qh5 (here against 1...e5, but the idea is universal): White lunges at f7 and h5, hoping for a one-move mate. Defend correctly and the queen is just a target."
      },
@@ -729,7 +729,7 @@
       {
        "fen": "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
        "coach": {
-        "text": "The trap to AVOID: after 2...Nc6 3.Bc4, the natural-looking 3...Nf6?? walks into 4.Qxf7#. The bishop on c4 and queen on h5 both hit f7 — the king cannot take, every escape is covered. This is checkmate. Remember it so you never allow it.",
+        "text": "The trap to AVOID: after 2...Nc6 3.Bc4, the natural-looking 3...Nf6?? walks into 4.Qxf7#. The bishop on c4 and queen on h5 both hit f7. The king cannot take, every escape is covered. This is checkmate. Remember it so you never allow it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -750,7 +750,7 @@
       {
        "fen": "r1bqkbnr/pppp1p1p/2n3p1/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 4",
        "coach": {
-        "text": "The correct move is 3...g6! It hits the queen AND slams the door on f7. White's queen must scuttle back (4.Qf3 or 4.Qd1), and then 4...Nf6 develops with a tempo gained. Black is fine — the early queen has wasted moves while Black brought out pieces.",
+        "text": "The correct move is 3...g6! It hits the queen AND slams the door on f7. White's queen must scuttle back (4.Qf3 or 4.Qd1), and then 4...Nf6 develops with a tempo gained. Black is fine. The early queen has wasted moves while Black brought out pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -771,7 +771,7 @@
       {
        "fen": "rnbqkbnr/pppp2pp/5p2/4N3/4P3/8/PPPP1PPP/RNBQKB1R b KQkq - 0 3",
        "coach": {
-        "text": "One more weakness to NEVER create against 1.e4: the move ...f6. This is the Damiano — 1.e4 e5 2.Nf3 f6?? 3.Nxe5! If 3...fxe5 4.Qh5+ and the king is exposed; g6 5.Qxe5+ forks king and rook. ...f6 rips open the king's own diagonal. The lesson: defend f7 with PIECES (...Nc6, ...g6, ...Qe7), never with ...f6.",
+        "text": "One more weakness to NEVER create against 1.e4: the move ...f6. This is the Damiano, 1.e4 e5 2.Nf3 f6?? 3.Nxe5! If 3...fxe5 4.Qh5+ and the king is exposed; g6 5.Qxe5+ forks king and rook. ...f6 rips open the king's own diagonal. The lesson: defend f7 with PIECES (...Nc6, ...g6, ...Qe7), never with ...f6.",
         "annotations": [
          {
           "kind": "highlight",
@@ -832,7 +832,7 @@
         "conceptId": "meet-1e4-traps"
        },
        "retryLine": {
-        "text": "That doesn't stop the mate. Qxf7# is coming. You need a move that BOTH blocks the f7 path and gains time. A pawn to g6 does both — it covers f7 and attacks the queen.",
+        "text": "That doesn't stop the mate. Qxf7# is coming. You need a move that BOTH blocks the f7 path and gains time. A pawn to g6 does both. It covers f7 and attacks the queen.",
         "conceptId": "meet-1e4-traps"
        }
       }
@@ -883,13 +883,13 @@
      "kind": "guided",
      "title": "Choose your queen retreat",
      "intro": {
-      "text": "One last check of the core idea before you play — on a fresh move order. This time you reached it via 2...Qxd5 3.Nf3 c6 4.Nc3, so ...c6 is already in. The knight hits your queen; pick either main retreat."
+      "text": "One last check of the core idea before you play. On a fresh move order. This time you reached it via 2...Qxd5 3.Nf3 c6 4.Nc3, so ...c6 is already in. The knight hits your queen; pick either main retreat."
      },
      "steps": [
       {
        "fen": "rnb1kbnr/pp2pppp/2p5/3q4/8/2N2N2/PPPP1PPP/R1BQKB1R b KQkq - 1 4",
        "coach": {
-        "text": "Black to move — the c3-knight attacks the queen, and you have already played ...c6. Retreat to one of the two active homes.",
+        "text": "Black to move. The c3-knight attacks the queen, and you have already played ...c6. Retreat to one of the two active homes.",
         "annotations": [
          {
           "kind": "arrow",
@@ -905,11 +905,11 @@
         "d5d6"
        ],
        "successLine": {
-        "text": "Good — a5 or d6 again, on a board you hadn't seen. With ...c6 already played, Nb5 can never harass her. Now you know the whole plan: ...Nf6, ...Bf5, ...e6, ...Be7, castle. Go play it against a real opponent.",
+        "text": "Good: a5 or d6 again, on a board you hadn't seen. With ...c6 already played, Nb5 can never harass her. Now you know the whole plan: ...Nf6, ...Bf5, ...e6, ...Be7, castle. Go play it against a real opponent.",
         "conceptId": "scandi-plan"
        },
        "retryLine": {
-        "text": "Pick an ACTIVE, safe square — the queen belongs on a5 or d6. Avoid checks (they lose time) and avoid the passive d8 for this drill.",
+        "text": "Pick an ACTIVE, safe square: the queen belongs on a5 or d6. Avoid checks (they lose time) and avoid the passive d8 for this drill.",
         "conceptId": "queen-safety"
        }
       }
@@ -941,19 +941,19 @@
      "To set up a kingside pawn storm"
     ],
     "answerIndex": 1,
-    "explain": "1...d5 hits e4 the moment it appears. White almost always takes (2.exd5), trading his centre pawn — Black gets an open, equal fight instead of letting White build e4+d4."
+    "explain": "1...d5 hits e4 the moment it appears. White almost always takes (2.exd5), trading his centre pawn. Black gets an open, equal fight instead of letting White build e4+d4."
    },
    {
     "kind": "mc",
     "prompt": "After 1.e4 d5 2.exd5 Qxd5 3.Nc3, the knight attacks your queen. Which retreat is BAD?",
     "options": [
-     "3...Qa5 — safe and active on the rim",
-     "3...Qd6 — flexible and hard to attack",
-     "3...Qe5+ — a check that feels active",
-     "3...Qd8 — passive but solid"
+     "3...Qa5: safe and active on the rim",
+     "3...Qd6: flexible and hard to attack",
+     "3...Qe5+: a check that feels active",
+     "3...Qd8: passive but solid"
     ],
     "answerIndex": 2,
-    "explain": "3...Qe5+ is met by a developing block like Be2 or Nge2 — White gains ANOTHER tempo chasing the queen. a5, d6 and d8 are all fine; a5 and d6 are the active main lines."
+    "explain": "3...Qe5+ is met by a developing block like Be2 or Nge2. White gains ANOTHER tempo chasing the queen. a5, d6 and d8 are all fine; a5 and d6 are the active main lines."
    },
    {
     "kind": "mc",
@@ -986,7 +986,7 @@
     "solutionUci": [
      "d8d5"
     ],
-    "explain": "2...Qxd5. The queen comes out early — that's the deal in the Scandinavian. You'll retreat her safely after 3.Nc3."
+    "explain": "2...Qxd5. The queen comes out early, that's the deal in the Scandinavian. You'll retreat her safely after 3.Nc3."
    },
    {
     "kind": "play",
@@ -996,7 +996,7 @@
      "d5a5",
      "d5d6"
     ],
-    "explain": "3...Qa5 or 3...Qd6 — the same decision you trained, on a fresh board. Both are safe and active; a check like ...Qe5+ just hands White a developing block with tempo."
+    "explain": "3...Qa5 or 3...Qd6: the same decision you trained, on a fresh board. Both are safe and active; a check like ...Qe5+ just hands White a developing block with tempo."
    },
    {
     "kind": "play",
@@ -1009,7 +1009,7 @@
    },
    {
     "kind": "play",
-    "prompt": "You've played ...c6 and White developed 6.Bc4. Deploy the light-squared bishop to its IDEAL Scandinavian post — the f5-square, eyeing White's kingside — out of the chain before ...e6.",
+    "prompt": "You've played ...c6 and White developed 6.Bc4. Deploy the light-squared bishop to its IDEAL Scandinavian post (the f5-square, eyeing White's kingside) out of the chain before ...e6.",
     "fen": "rnb1kb1r/pp2pppp/2p2n2/q7/2BP4/2N2N2/PPP2PPP/R1BQK2R b KQkq - 1 6",
     "solutionUci": [
      "c8f5"
@@ -1033,7 +1033,7 @@
     "solutionUci": [
      "g7g6"
     ],
-    "explain": "3...g6! blocks the c4-bishop-and-queen battery on f7 and attacks the queen, so she must retreat (Qe2/Qf3/Qd1). Same idea as the drilled Wayward Queen — defend f7 with a pawn that also wins time."
+    "explain": "3...g6! blocks the c4-bishop-and-queen battery on f7 and attacks the queen, so she must retreat (Qe2/Qf3/Qd1). Same idea as the drilled Wayward Queen: defend f7 with a pawn that also wins time."
    },
    {
     "kind": "judge",
@@ -1041,7 +1041,7 @@
     "fen": "rnb1kbnr/ppp1pppp/8/8/2B5/2q5/PPPP1PPP/R1BQK1NR w KQkq - 1 5",
     "lastMoveUci": "a5c3",
     "verdict": "blunder",
-    "explain": "Blunder. After 5.dxc3 (or 5.bxc3) White simply recaptures and Black is down a whole queen for a knight. Never grab a defended piece with the queen — queen safety first."
+    "explain": "Blunder. After 5.dxc3 (or 5.bxc3) White simply recaptures and Black is down a whole queen for a knight. Never grab a defended piece with the queen, queen safety first."
    },
    {
     "kind": "judge",
@@ -1049,7 +1049,7 @@
     "fen": "r1bqkb1r/pppp1Qpp/2n2n2/4p3/2B1P3/8/PPPP1PPP/RNB1K1NR b KQkq - 0 4",
     "lastMoveUci": "h5f7",
     "verdict": "blunder",
-    "explain": "Disaster — 3...Nf6?? allowed 4.Qxf7#. The queen and bishop both hit f7, the king can't take and has no escape. Against 2.Qh5 you must defend f7 (with ...g6), not ignore it."
+    "explain": "Disaster, 3...Nf6?? allowed 4.Qxf7#. The queen and bishop both hit f7, the king can't take and has no escape. Against 2.Qh5 you must defend f7 (with ...g6), not ignore it."
    },
    {
     "kind": "judge",
@@ -1057,7 +1057,7 @@
     "fen": "rnb1kb1r/pp2pppp/2pq1n2/1N6/3P4/5N2/PPP2PPP/R1BQKB1R b KQkq - 1 6",
     "lastMoveUci": "c3b5",
     "verdict": "blunder",
-    "explain": "Bad for White — because Black played ...c6, the b5-square is covered: 6...cxb5! just wins the knight. This is exactly why ...c6 goes in early. Black is now up a piece."
+    "explain": "Bad for White. Because Black played ...c6, the b5-square is covered: 6...cxb5! just wins the knight. This is exactly why ...c6 goes in early. Black is now up a piece."
    },
    {
     "kind": "judge",
@@ -1065,7 +1065,7 @@
     "fen": "rn2kb1r/ppp1pppp/5n2/q4b2/3P4/2N2N2/PPP2PPP/R1BQKB1R w KQkq - 3 6",
     "lastMoveUci": "c8f5",
     "verdict": "correct",
-    "explain": "Correct — this is the model plan. The bishop reaches its active post on f5 before ...e6 can shut it in. A textbook Scandinavian development."
+    "explain": "Correct: this is the model plan. The bishop reaches its active post on f5 before ...e6 can shut it in. A textbook Scandinavian development."
    },
    {
     "kind": "judge",

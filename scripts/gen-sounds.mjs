@@ -1,21 +1,21 @@
-// gen-sounds.mjs — offline procedural synthesis of the 'classic' and 'real'
+// gen-sounds.mjs: offline procedural synthesis of the 'classic' and 'real'
 // sound themes for nodechess.
 //
 //   node scripts/gen-sounds.mjs
 //
-// Renders 16-bit PCM mono 44.1 kHz WAV files in pure Node (no dependencies —
+// Renders 16-bit PCM mono 44.1 kHz WAV files in pure Node (no dependencies;
 // WAV headers are written by hand) into:
 //
 //   src/renderer/src/assets/sounds/classic/<event>.wav        (1 file / event)
 //   src/renderer/src/assets/sounds/real/<event>.<1|2|3>.wav   (3 variants / event)
 //
-// 'classic'  — a chess.com-flavored approximation (their actual sounds are
+// 'classic':   a chess.com-flavored approximation (their actual sounds are
 //              proprietary, so nothing is sampled): deep wooden "thock" moves,
 //              a heavier double-impact capture, a two-knock castle, a bright
 //              alert for check, an ascending chime for promote, a muted buzz
 //              for a wrong puzzle move, a dry tick for low time, and a
 //              resolved chord for game end.
-// 'real'     — layered wood-on-wood physics: a noise-burst contact transient +
+// 'real'.      Layered wood-on-wood physics: a noise-burst contact transient +
 //              a small resonant "piece" mode + inharmonic board-plate modes +
 //              a felt-slide tail, with per-variant random micro-variation
 //              (pitch/timing/gain jitter) so repeated moves don't sound
@@ -73,7 +73,7 @@ function makeBuf(seconds) {
 }
 
 /**
- * One exponentially-decaying sine partial — the building block of "modal"
+ * One exponentially-decaying sine partial: the building block of "modal"
  * synthesis (a struck resonant object is a sum of these).
  *  freq   Hz              tau  decay time constant (s)
  *  gain   linear          t    start offset (s)
@@ -129,7 +129,7 @@ function biquad(x, type, f0, q) {
 }
 
 /**
- * Band-passed white-noise burst — the contact "click" of wood meeting wood.
+ * Band-passed white-noise burst: the contact "click" of wood meeting wood.
  *  dur    total seconds     center/q  bandpass shape
  *  decay  env time constant (defaults to dur/3)
  */
@@ -148,7 +148,7 @@ function noiseBurst(out, rng, { t = 0, dur, center, q = 0.9, gain, attack = 0.00
 }
 
 /**
- * Felt-slide / scuff — low-passed noise with a slow swell-and-fade envelope.
+ * Felt-slide / scuff: low-passed noise with a slow swell-and-fade envelope.
  * Reads as a piece's felt base sliding/settling on the board.
  */
 function slide(out, rng, { t = 0, dur, cutoff = 1100, gain, swell = 0.35 }) {
@@ -170,7 +170,7 @@ function slide(out, rng, { t = 0, dur, cutoff = 1100, gain, swell = 0.35 }) {
 // ---------------------------------------------------------------------------
 
 /**
- * A wooden knock for the 'classic' theme — clean and repeatable (no rng in the
+ * A wooden knock for the 'classic' theme: clean and repeatable (no rng in the
  * partial structure; classic is one fixed file per event).
  *  f0     body fundamental (Hz)   weight  scales gains / darkens
  *  click  transient gain          bright  scales click center + upper modes
@@ -209,7 +209,7 @@ function chimeC(out, rng, { t = 0, freq, tau = 0.12, gain = 0.8, woody = 0.2 }) 
  *  ring       scales decay times (bigger = more resonant)
  */
 function placement(out, rng, { t = 0, weight = 1, brightness = 1, board = 150, ring = 1 }) {
-  // 1) contact transient — 1.5–3 ms of band-passed noise
+  // 1) contact transient, 1.5–3 ms of band-passed noise
   noiseBurst(out, rng, {
     t,
     dur: uni(rng, 0.0015, 0.003),
@@ -218,7 +218,7 @@ function placement(out, rng, { t = 0, weight = 1, brightness = 1, board = 150, r
     gain: 0.42 * weight * brightness * jit(rng, 0.25),
     decay: uni(rng, 0.0012, 0.0024)
   })
-  // 2) the piece itself — one small, quickly-damped mode
+  // 2) the piece itself: one small, quickly-damped mode
   mode(out, {
     t,
     freq: uni(rng, 480, 880) * brightness,
@@ -227,7 +227,7 @@ function placement(out, rng, { t = 0, weight = 1, brightness = 1, board = 150, r
     attack: 0.0012,
     phase: rng() * 6.28
   })
-  // 3) board plate — inharmonic mode stack (wood plates aren't harmonic)
+  // 3) board plate: inharmonic mode stack (wood plates aren't harmonic)
   const f0 = board * jit(rng, 0.05)
   const ratios = [1, 1.62 * jit(rng, 0.06), 2.36 * jit(rng, 0.08), 3.4 * jit(rng, 0.1)]
   const taus = [0.055, 0.03, 0.019, 0.012]
@@ -254,7 +254,7 @@ function placement(out, rng, { t = 0, weight = 1, brightness = 1, board = 150, r
   })
 }
 
-/** Captured-piece rattle — a few fast, decaying piece-on-piece micro-knocks. */
+/** Captured-piece rattle: a few fast, decaying piece-on-piece micro-knocks. */
 function rattle(out, rng, { t = 0, count = 3, gain = 0.5 }) {
   let at = t
   let g = gain
@@ -318,7 +318,7 @@ function wavBytes(x) {
 }
 
 // ---------------------------------------------------------------------------
-// CLASSIC theme — chess.com-flavored, one fixed render per event
+// CLASSIC theme, chess.com-flavored, one fixed render per event
 // ---------------------------------------------------------------------------
 
 const CLASSIC = {
@@ -326,36 +326,36 @@ const CLASSIC = {
   move(out, rng) {
     knockC(out, rng, { f0: 185, weight: 1, click: 0.5, bright: 1, tau: 0.048 })
   },
-  // Heavier double impact — a snap, then the deep landing.
+  // Heavier double impact: a snap, then the deep landing.
   capture(out, rng) {
     knockC(out, rng, { t: 0, f0: 208, weight: 0.8, click: 0.62, bright: 1.25, tau: 0.03 })
     knockC(out, rng, { t: 0.048, f0: 132, weight: 1.2, click: 0.36, bright: 0.85, tau: 0.06 })
   },
-  // Two knocks — king, then rook settling.
+  // Two knocks: king, then rook settling.
   castle(out, rng) {
     knockC(out, rng, { t: 0, f0: 212, weight: 0.9, click: 0.42, tau: 0.04 })
     knockC(out, rng, { t: 0.12, f0: 166, weight: 1.05, click: 0.34, tau: 0.052 })
   },
-  // Bright, short alert — a small bell over a grounding knock.
+  // Bright, short alert: a small bell over a grounding knock.
   check(out, rng) {
     mode(out, { t: 0, freq: 1046, tau: 0.1, gain: 0.95, attack: 0.002 })
     mode(out, { t: 0, freq: 2093, tau: 0.05, gain: 0.36, attack: 0.002 })
     mode(out, { t: 0, freq: 3135, tau: 0.028, gain: 0.16, attack: 0.0015 })
     knockC(out, rng, { t: 0, f0: 205, weight: 0.5, click: 0.3, tau: 0.028 })
   },
-  // Ascending chime — E5 G5 C6 with a sparkle on top.
+  // Ascending chime: E5 G5 C6 with a sparkle on top.
   promote(out, rng) {
     chimeC(out, rng, { t: 0, freq: 659, tau: 0.11, gain: 0.72, woody: 0.16 })
     chimeC(out, rng, { t: 0.085, freq: 784, tau: 0.11, gain: 0.76, woody: 0.14 })
     chimeC(out, rng, { t: 0.17, freq: 1047, tau: 0.17, gain: 0.82, woody: 0.12 })
     mode(out, { t: 0.17, freq: 2093, tau: 0.09, gain: 0.14, attack: 0.003 })
   },
-  // Warm two-note rise — pieces are set, the game is on.
+  // Warm two-note rise: pieces are set, the game is on.
   gameStart(out, rng) {
     chimeC(out, rng, { t: 0, freq: 330, tau: 0.12, gain: 0.85, woody: 0.22 })
     chimeC(out, rng, { t: 0.13, freq: 440, tau: 0.15, gain: 0.9, woody: 0.18 })
   },
-  // Resolved chord — a settled C-major roll, gently damped.
+  // Resolved chord: a settled C-major roll, gently damped.
   gameEnd(out, rng) {
     chimeC(out, rng, { t: 0, freq: 262, tau: 0.26, gain: 0.85, woody: 0.2 })
     chimeC(out, rng, { t: 0.014, freq: 330, tau: 0.24, gain: 0.62, woody: 0 })
@@ -367,12 +367,12 @@ const CLASSIC = {
     mode(out, { t: 0, freq: 1150, tau: 0.013, gain: 0.85, attack: 0.0008 })
     noiseBurst(out, rng, { t: 0, dur: 0.002, center: 3400, q: 1, gain: 0.5, decay: 0.001 })
   },
-  // Bright little "ding-ding" — correct!
+  // Bright little "ding-ding", correct!
   puzzleSolved(out, rng) {
     chimeC(out, rng, { t: 0, freq: 784, tau: 0.09, gain: 0.7, woody: 0.1 })
     chimeC(out, rng, { t: 0.1, freq: 1047, tau: 0.14, gain: 0.8, woody: 0.08 })
   },
-  // Muted buzz — soft, unpunishing "nope" (doubles as an illegal-move cue).
+  // Muted buzz: soft, unpunishing "nope" (doubles as an illegal-move cue).
   puzzleFailed(out) {
     const n = Math.ceil(0.24 * SR)
     for (let i = 0; i < n && i < out.length; i++) {
@@ -404,7 +404,7 @@ const CLASSIC_SPEC = {
 }
 
 // ---------------------------------------------------------------------------
-// REAL theme — wood physics, 3 seeded variants per event
+// REAL theme: wood physics, 3 seeded variants per event
 // ---------------------------------------------------------------------------
 
 const REAL = {
@@ -419,14 +419,14 @@ const REAL = {
     rattle(out, rng, { t: 0.012, count: 3 + (rng() < 0.5 ? 1 : 0), gain: uni(rng, 0.4, 0.55) })
     slide(out, rng, { t: uni(rng, 0.08, 0.11), dur: uni(rng, 0.04, 0.06), cutoff: 1100, gain: uni(rng, 0.04, 0.07) })
   },
-  // Two placements — king first, rook a beat later, then everything settles.
+  // Two placements: king first, rook a beat later, then everything settles.
   castle(out, rng) {
     placement(out, rng, { t: 0, weight: uni(rng, 0.8, 0.95), brightness: uni(rng, 0.85, 1), board: 156, ring: jit(rng, 0.1) })
     const t2 = uni(rng, 0.125, 0.165)
     placement(out, rng, { t: t2, weight: uni(rng, 0.95, 1.15), brightness: uni(rng, 0.8, 0.95), board: 138, ring: jit(rng, 0.1) })
     slide(out, rng, { t: t2 + 0.02, dur: uni(rng, 0.05, 0.08), cutoff: 1000, gain: uni(rng, 0.05, 0.08) })
   },
-  // A firm, assertive set-down — brighter, ringier, with a knuckly double-tap.
+  // A firm, assertive set-down: brighter, ringier, with a knuckly double-tap.
   check(out, rng) {
     placement(out, rng, { t: 0, weight: uni(rng, 1.1, 1.3), brightness: uni(rng, 1.05, 1.25), board: 162, ring: 1.3 * jit(rng, 0.1) })
     mode(out, { t: uni(rng, 0.028, 0.038), freq: uni(rng, 520, 640), tau: 0.014, gain: 0.3, attack: 0.001, phase: rng() * 6.28 })
@@ -437,14 +437,14 @@ const REAL = {
     placement(out, rng, { t: uni(rng, 0.065, 0.085), weight: uni(rng, 1.05, 1.2), brightness: uni(rng, 1, 1.2), board: 158, ring: 1.3 })
     mode(out, { t: uni(rng, 0.18, 0.21), freq: uni(rng, 640, 760), tau: 0.012, gain: 0.22, attack: 0.001, phase: rng() * 6.28 })
   },
-  // Last two pieces placed gently — the board is set.
+  // Last two pieces placed gently: the board is set.
   gameStart(out, rng) {
     placement(out, rng, { t: 0, weight: uni(rng, 0.6, 0.75), brightness: 0.8, board: 150, ring: jit(rng, 0.1) })
     slide(out, rng, { t: 0.03, dur: 0.06, cutoff: 1100, gain: 0.05 })
     placement(out, rng, { t: uni(rng, 0.16, 0.2), weight: uni(rng, 0.7, 0.85), brightness: 0.85, board: 162, ring: jit(rng, 0.1) })
     slide(out, rng, { t: uni(rng, 0.2, 0.24), dur: 0.07, cutoff: 1000, gain: 0.05 })
   },
-  // The king is laid down and rocks to rest — knock, wobble-wobble, hush.
+  // The king is laid down and rocks to rest, knock, wobble-wobble, hush.
   gameEnd(out, rng) {
     placement(out, rng, { t: 0, weight: uni(rng, 1.15, 1.35), brightness: uni(rng, 0.85, 1), board: 134, ring: jit(rng, 0.1) })
     let at = uni(rng, 0.1, 0.13)
@@ -460,18 +460,18 @@ const REAL = {
     }
     slide(out, rng, { t: 0.4, dur: 0.09, cutoff: 900, gain: 0.045, swell: 0.4 })
   },
-  // A mechanical clock tick — nothing but escapement.
+  // A mechanical clock tick: nothing but escapement.
   lowTime(out, rng) {
     noiseBurst(out, rng, { t: 0, dur: 0.0015, center: uni(rng, 2600, 3100), q: 1.1, gain: 0.6, decay: 0.0008 })
     mode(out, { t: 0, freq: uni(rng, 1400, 1600), tau: 0.007, gain: 0.5, attack: 0.0006, phase: rng() * 6.28 })
     mode(out, { t: 0, freq: uni(rng, 680, 760), tau: 0.01, gain: 0.2, attack: 0.0008, phase: rng() * 6.28 })
   },
-  // Two confident rising raps on the board — "well played".
+  // Two confident rising raps on the board, "well played".
   puzzleSolved(out, rng) {
     placement(out, rng, { t: 0, weight: 0.8, brightness: 1.15, board: 176, ring: 1.2 })
     placement(out, rng, { t: uni(rng, 0.11, 0.13), weight: 0.9, brightness: 1.25, board: 212, ring: 1.35 })
   },
-  // A piece put down flat and dull — muffled thud + resigned little scuff.
+  // A piece put down flat and dull. Muffled thud + resigned little scuff.
   puzzleFailed(out, rng) {
     placement(out, rng, { t: 0, weight: uni(rng, 1.1, 1.3), brightness: uni(rng, 0.4, 0.5), board: 106, ring: 0.62 })
     slide(out, rng, { t: 0.05, dur: uni(rng, 0.08, 0.11), cutoff: 800, gain: uni(rng, 0.09, 0.12), swell: 0.3 })
@@ -526,7 +526,7 @@ async function main() {
   const total = c + r
   console.log(`generated total: ${(total / 1024).toFixed(1)} KiB`)
   if (total > 1.2 * 1024 * 1024) {
-    console.warn('WARNING: generated assets exceed the 1.2 MiB self-budget — trim durations.')
+    console.warn('WARNING: generated assets exceed the 1.2 MiB self-budget, trim durations.')
   }
 }
 

@@ -1,6 +1,6 @@
 /* Extra chess piece sets (offline, scoped overrides).
    Generated from lichess-org/lila open-licensed SVGs; each set is FOSS
-   (GPL / Apache / MIT) — no non-commercial sets are bundled.
+   (GPL / Apache / MIT): no non-commercial sets are bundled.
    Apply a wrapper class `pieces-<set>` on an ancestor of `.cg-wrap` to switch.
    `pieces-cburnett` is intentionally empty: it is the chessground default
    already loaded via `chessground/assets/chessground.cburnett.css`.

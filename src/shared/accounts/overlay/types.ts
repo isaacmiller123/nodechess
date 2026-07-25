@@ -1,13 +1,13 @@
-// A3 overlay — shared type contract (spec §5 overlay & publish-on-write,
+// A3 overlay: shared type contract (spec §5 overlay & publish-on-write,
 // ACCOUNTS-PARAMS §Storage). Types + protocol rules only; implementations live
 // in sibling modules. Platform-neutral: no `node:` imports, no DOM globals.
 //
 // The overlay is a Kademlia-style key-distance routing layer built OVER the A2
 // FabricEndpoint abstraction (witness/types.ts). The fabric (trystero/Nostr or
-// MockFabric) provides transport + bootstrap ONLY — never routing (C-11). All
+// MockFabric) provides transport + bootstrap ONLY, never routing (C-11). All
 // distance math reuses witness/distance.ts (XOR over decoded 32-byte nodeIds).
 //
-// Determinism: no Date.now / Math.random anywhere in the overlay — clocks are
+// Determinism: no Date.now / Math.random anywhere in the overlay. Clocks are
 // injected (nowMs) and every candidate ordering is by XOR distance with the
 // compareNodeIdBytes tie-break, so the same topology + same inputs walk the
 // same route on node and in the browser bundle.
@@ -34,7 +34,7 @@ export interface Contact extends CanonicalObject {
 /**
  * One k-bucket: at most kBucket contacts sharing a distance prefix to OUR
  * nodeId. Kademlia's anti-eclipse admission rule is MANDATORY: a full bucket
- * NEVER evicts a live long-standing contact for a newcomer — the newcomer is
+ * NEVER evicts a live long-standing contact for a newcomer. The newcomer is
  * dropped unless the least-recently-seen contact fails a ping. (Long-lived
  * honest contacts are sticky; an attacker who floods fresh nodeIds cannot
  * displace them.)
@@ -46,7 +46,7 @@ export interface KBucket {
 
 export interface RoutingTable {
   self: NodeId
-  /** buckets[i] holds contacts that share an i-bit prefix with self — i.e.
+  /** buckets[i] holds contacts that share an i-bit prefix with self, i.e.
    * whose XOR distance has bit-length 256 − i (bucketIndexOf computes
    * idx = 256 − distance.bitLength). So buckets[255] is the nearest ring
    * (1-bit distance) and buckets[0] the farthest; bucket count = 256. */
@@ -59,8 +59,8 @@ export interface RoutingTable {
 // Every overlay RPC response carries the responder's k-closest view so lookups
 // converge in O(log N) hops. Responders NEVER trust the requester's claimed
 // identity beyond the transport's `from` nodeId; stored values are validated
-// by the STORAGE layer's own verifiers (pointers/shards) before acceptance —
-// the overlay moves bytes and routes, it never confers authority (§0).
+// by the STORAGE layer's own verifiers (pointers/shards) before acceptance.
+// The overlay moves bytes and routes, it never confers authority (§0).
 
 export interface FindNodeReq extends CanonicalObject {
   v: 1
@@ -84,7 +84,7 @@ export interface FindValueReq extends CanonicalObject {
   kind: ValueKind
 }
 
-/** Either the value (hit) or the k-closest contacts (miss) — never both. */
+/** Either the value (hit) or the k-closest contacts (miss), never both. */
 export interface FindValueRes extends CanonicalObject {
   v: 1
   /** Present on hit: opaque canonical payload, validated by the storage layer. */
@@ -130,7 +130,7 @@ export type StoreValidator = (
 ) => boolean
 
 export interface OverlayOpts {
-  /** Injected clock (ms). REQUIRED — the overlay has no ambient time. */
+  /** Injected clock (ms). REQUIRED. The overlay has no ambient time. */
   nowMs: () => number
   /** Storage-layer STORE gate (default: refuse everything but 'record'). */
   validator?: StoreValidator

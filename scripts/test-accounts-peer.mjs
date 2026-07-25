@@ -1,4 +1,4 @@
-// THE A6-M1 LANE B SUITE — account peer service + overlay bootstrap +
+// THE A6-M1 LANE B SUITE: account peer service + overlay bootstrap +
 // persistent KV, headless over MockFabric (spec §2.2, §4, §5, §11).
 //
 //   node scripts/test-accounts-peer.mjs
@@ -58,7 +58,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -90,7 +90,7 @@ async function run(M) {
   for (const s of specs) {
     const ep = bus.endpoint(s.nodeId)
     // autoBootstrap:false so all three announce BEFORE any bootstraps (else the
-    // first peer would bootstrap into an empty directory) — mirrors how the
+    // first peer would bootstrap into an empty directory). Mirrors how the
     // lead announces the fleet, then converges it.
     const peer = await P.startAccountPeer({
       identity: s.identity,
@@ -113,7 +113,7 @@ async function run(M) {
   ok(fabricOk, 'the injected fabric endpoint nodeId matches the derived nodeId')
 
   // A mismatched endpoint is refused (identity binding is mandatory). Runs on a
-  // throwaway bus — minting an endpoint for a nodeId REPLACES its registration,
+  // throwaway bus: minting an endpoint for a nodeId REPLACES its registration,
   // so this must never touch the shared bus’s live peers.
   let mismatchThrew = false
   try {
@@ -242,7 +242,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 5. kvStore — canonical persistence adapter …')
+  console.log('\n· 5. kvStore, canonical persistence adapter …')
   // ==========================================================================
   {
     const mem = await KV.openKvStore({ forceMemory: true })
@@ -271,7 +271,7 @@ async function run(M) {
     } catch {
       putThrew = true
     }
-    ok(putThrew, 'put REJECTS a non-canonical value (fractional number) at the boundary — junk never persists')
+    ok(putThrew, 'put REJECTS a non-canonical value (fractional number) at the boundary, junk never persists')
     eq(await store.has('bad'), false, '…and the rejected key was never written')
 
     ok(await store.has('k1'), 'has() true for a present key')

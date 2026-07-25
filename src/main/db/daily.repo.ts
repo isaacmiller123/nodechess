@@ -11,7 +11,7 @@ import type {
 } from '../../shared/types'
 
 // ============================================================================
-// SLICE C — Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
+// SLICE C: Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
 //
 // All read/write logic for the daily puzzle, the daily-streak calendar, and the
 // aggregate stats / paginated history views. Reads the writable app DB
@@ -25,7 +25,7 @@ import type {
 // The daily is keyed to the user's LOCAL calendar day, Wordle-style: the puzzle
 // is still deterministic per 'YYYY-MM-DD' string (everyone on the same local
 // date gets the same puzzle), but "today" flips at the user's own midnight and
-// the streak counts consecutive LOCAL days — matching the School streak
+// the streak counts consecutive LOCAL days. Matching the School streak
 // (src/main/util/day.ts). Keying on UTC broke streaks west of UTC: solving Mon
 // 3pm + Tue 5pm PST wrote UTC-Mon and UTC-Wed rows, resetting the streak.
 
@@ -68,7 +68,7 @@ function prevYmd(ymd: string): string {
 
 // ---- Deterministic daily selection -----------------------------------------
 
-/** FNV-1a 32-bit hash of a string — small, fast, dependency-free, and stable
+/** FNV-1a 32-bit hash of a string: small, fast, dependency-free, and stable
  *  across runs/machines so the day's puzzle is identical for everyone. */
 function hashYmd(ymd: string): number {
   let h = 0x811c9dc5
@@ -94,7 +94,7 @@ interface DailyRow {
 // always-mounted surfaces and the band COUNT + ORDER BY ... OFFSET scan isn't
 // free. The mapping is deterministic over the read-only puzzle DB, so caching
 // is safe; only successful lookups are cached (a lean install that later
-// imports the DB won't see stale nulls). Tiny cap — only today ± a few days
+// imports the DB won't see stale nulls). Tiny cap: only today ± a few days
 // are ever requested.
 const dailyIdCache = new Map<string, string>()
 const DAILY_ID_CACHE_MAX = 8

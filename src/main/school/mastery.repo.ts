@@ -13,7 +13,7 @@ import type {
 // Tables (concept_mastery, chapter_progress) exist at user_version 2 (see
 // db/database.ts migrate()). All writes are upserts so the renderer can record
 // freely without first reading. Mastery is a deterministic rolling estimate, NOT
-// an engine call — Viktor uses it to reference what the learner already knows.
+// an engine call. Viktor uses it to reference what the learner already knows.
 
 interface ConceptRow {
   concept_id: string
@@ -38,7 +38,7 @@ function clamp01(n: number): number {
 
 /**
  * Append one study-log row to progress_event (kind/ref/value/created_at). This is
- * the LOCAL-DAY-bucketable record of School activity — the daily/streak builder
+ * the LOCAL-DAY-bucketable record of School activity: the daily/streak builder
  * buckets these rows by local day (src/main/util/day.ts) to know which days the
  * user actually studied. Every concrete study action (a concept attempt, a lesson
  * completion, a recorded test) appends one row.
@@ -46,7 +46,7 @@ function clamp01(n: number): number {
  *   kind:  'concept' | 'lesson' | 'test'
  *   ref:   the concept/lesson/chapter id it refers to
  *   value: a small numeric payload (mastery for concepts, score for tests, 1 for
- *          lessons) — purely informational for now.
+ *          lessons). Purely informational for now.
  */
 export function appendProgressEvent(kind: string, ref: string, value: number): void {
   getAppDb()
@@ -65,7 +65,7 @@ export function getMastery(): SchoolMastery {
       'SELECT chapter_id, segments_done, completed, boss_won FROM chapter_progress'
     )
     .all() as unknown as ChapterRow[]
-  // Read lesson_progress back (it was previously write-only — done-state never
+  // Read lesson_progress back (it was previously write-only; done-state never
   // survived a remount/restart). Only rows actually marked done.
   const lessonRows = db
     .prepare('SELECT chapter_id, lesson_id FROM lesson_progress WHERE done=1')
@@ -117,7 +117,7 @@ export function recordConcept(conceptId: string, correct: boolean): { mastery: n
   return { mastery: newMastery }
 }
 
-/** Advance a chapter's segment progress (monotonic — never moves backwards). */
+/** Advance a chapter's segment progress (monotonic; never moves backwards). */
 export function recordSegment(chapterId: string, segmentsDone: number): void {
   const db = getAppDb()
   const existing = db
@@ -138,7 +138,7 @@ export function recordSegment(chapterId: string, segmentsDone: number): void {
 
 /**
  * Mark a chapter completed. boss_won is sticky: once won it stays won, and a
- * win on this pass sets it even if it wasn't before. An EARNED completion —
+ * win on this pass sets it even if it wasn't before. An EARNED completion,
  * auto_completed=0 (also reclaims a placement-auto row: once the learner truly
  * completes it, a placement reset must not take it away).
  */
@@ -161,7 +161,7 @@ export function completeChapter(chapterId: string, bossWon: boolean): void {
   ).run(chapterId, won, now, won)
 }
 
-/** Mark one lesson of a chapter done (idempotent upsert). An EARNED completion —
+/** Mark one lesson of a chapter done (idempotent upsert). An EARNED completion,
  *  auto_completed=0 (also reclaims a placement-auto row: a lesson the learner
  *  actually did must survive a placement reset). */
 export function recordLesson(chapterId: string, lessonId: string): void {
@@ -180,12 +180,12 @@ export function recordLesson(chapterId: string, lessonId: string): void {
 }
 
 /**
- * Placement pre-completion — RECONCILES the placement-derived completions to
+ * Placement pre-completion: RECONCILES the placement-derived completions to
  * exactly `entries`: marks every given chapter fully complete (all its lessons
  * done + the chapter itself completed, auto_completed=1) and PRUNES auto rows for
  * chapters NOT in the set, so a re-placement that lands LOWER retracts the
  * completions the higher estimate granted (an empty set retracts them all).
- * Rows the learner earned manually (auto_completed=0 — recordLesson /
+ * Rows the learner earned manually (auto_completed=0: recordLesson /
  * completeChapter / recordSegment) are never deleted, and the ON CONFLICT
  * updates leave an existing row's provenance alone so an auto pass can't claim
  * them. Idempotent + one transaction. boss_won is left untouched (they didn't
@@ -228,7 +228,7 @@ export function bulkCompleteChapters(
  * chapter). One transaction: wipe the chapter's lesson_progress, zero its
  * chapter_progress (segments/completed/boss), and zero the chapter_test attempts +
  * passed. best_pct is KEPT (the learner's high-water mark survives a retake). The
- * concept_mastery rolling estimate is intentionally left alone — it's a separate,
+ * concept_mastery rolling estimate is intentionally left alone. It's a separate,
  * slowly-decaying signal, not part of the chapter's per-pass progress.
  */
 export function resetChapterForRetake(chapterId: string): void {
@@ -244,7 +244,7 @@ export function resetChapterForRetake(chapterId: string): void {
 }
 
 /** The retake reset's statements WITHOUT a transaction, so a caller that is
- *  already inside one (recordTest) can include them atomically — SQLite can't
+ *  already inside one (recordTest) can include them atomically. SQLite can't
  *  nest BEGIN. */
 function resetChapterStatements(db: DatabaseSync, chapterId: string): void {
   db.prepare('DELETE FROM lesson_progress WHERE chapter_id=?').run(chapterId)
@@ -261,15 +261,15 @@ function resetChapterStatements(db: DatabaseSync, chapterId: string): void {
 }
 
 /**
- * Record a chapter-test attempt — SERVER-AUTHORITATIVE. The client sends only the
- * raw score (plus the attempt number it THINKS it's on — accepted as advisory
+ * Record a chapter-test attempt: SERVER-AUTHORITATIVE. The client sends only the
+ * raw score (plus the attempt number it THINKS it's on; accepted as advisory
  * telemetry, never used to derive state); the server:
  *   1. recomputes passed = scorePct >= chapter.test.passThreshold (the client's
  *      opinion is never trusted),
- *   2. advances the stored attempt counter itself — every failing submission is
- *      one more attempt, capped at MAX_ATTEMPTS — so a stale or tampered client
+ *   2. advances the stored attempt counter itself: every failing submission is
+ *      one more attempt, capped at MAX_ATTEMPTS, so a stale or tampered client
  *      attemptNo can't pin the counter below the cap,
- *   3. on a FRESH pass marks the chapter itself completed (completeChapter — the
+ *   3. on a FRESH pass marks the chapter itself completed (completeChapter; the
  *      completion authority for new-model chapters; the legacy segments flow has
  *      its own school:completeChapter IPC),
  *   4. detects a TRUE second fail (not passed AND attempts have reached
@@ -329,7 +329,7 @@ export function recordTest(
 
     appendProgressEvent('test', chapterId, scorePct)
 
-    // (3) Fresh pass ⇒ the chapter itself is complete (chapter_progress.completed —
+    // (3) Fresh pass ⇒ the chapter itself is complete (chapter_progress.completed;
     // new-model chapters have no other completion path). bossWon=false keeps
     // boss_won sticky: a prior win is never cleared, and none is claimed here.
     if (passedNow && !wasPassed) completeChapter(chapterId, false)
@@ -337,7 +337,7 @@ export function recordTest(
     if (mustRetake) {
       // The retake reset zeroes attempts/passed/progress (keeps best_pct) so the
       // learner redoes the chapter. We just wrote attempts=2; the reset clears it.
-      // Transaction-free variant — we're already inside BEGIN.
+      // Transaction-free variant: we're already inside BEGIN.
       resetChapterStatements(db, chapterId)
     }
 

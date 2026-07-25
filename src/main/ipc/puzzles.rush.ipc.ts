@@ -4,7 +4,7 @@ import type { RushRunRow, RushBest } from '../../shared/types'
 import { saveRushRun, listRushRuns, rushBests } from '../db/rush.repo'
 
 // ============================================================================
-// SLICE B — Puzzle Rush / Storm persistence.  ★ OWNED BY THE RUSH BUILDER ★
+// SLICE B: Puzzle Rush / Storm persistence.  ★ OWNED BY THE RUSH BUILDER ★
 //
 // Channels (already mirrored in preload + Api.puzzles):
 //   puzzles:saveRush   RushRunInput              -> { id, best, isBest }

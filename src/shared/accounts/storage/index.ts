@@ -1,5 +1,5 @@
 // Public API of the A3 storage layer (spec §5; contracts: ./types.ts).
-// Platform-neutral + deterministic — same inputs → same bytes on node and in
+// Platform-neutral + deterministic: same inputs → same bytes on node and in
 // the browser bundle. The overlay moves bytes and routes; the verifiers here
 // gate acceptance (§0: storage confers no authority it did not verify).
 

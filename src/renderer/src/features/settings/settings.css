@@ -1,5 +1,5 @@
 /* ============================================================
-   Settings — feature-scoped styles. Tokens only (tokens.css).
+   Settings: feature-scoped styles. Tokens only (tokens.css).
    The bulk of Settings styling (.settings-view .settings-card .setting-row
    .segmented .seg .switch .board-swatches .btn .field .text-input) lives in
    the shared app.css. This file adds the Settings-only extras: range sliders,
@@ -585,7 +585,7 @@
 }
 
 /* ============================================================
-   Updates card (UpdatesPanel.tsx) — current version + manual
+   Updates card (UpdatesPanel.tsx): current version + manual
    check + the state-appropriate action. Mirrors the Datasets
    card's tone: quiet rows, an accent-soft offer strip when a
    new version is out.

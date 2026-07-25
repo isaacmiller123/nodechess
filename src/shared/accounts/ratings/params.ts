@@ -1,7 +1,7 @@
 // A4 parameters (docs/ACCOUNTS-PARAMS.md §Ratings / §Matchmaking /
 // §Social reputation weights). Like PARAMS_A2/A3 these are NOT frozen-at-
 // genesis: they govern folds and pairing rules that every verifier recomputes,
-// so records that depend on them embed PARAMS_A4_DIGEST — a verifier always
+// so records that depend on them embed PARAMS_A4_DIGEST. A verifier always
 // knows which rule set produced a number. All fractional values are FIXED-POINT
 // integers (micro-units, ×10⁶) per the canonical-codec integers-only rule.
 // [SIGN-OFF] items carried verbatim from ACCOUNTS-PARAMS.md: reveal thresholds
@@ -47,7 +47,7 @@ export const PARAMS_A4 = {
   bracketWidth: 800,
   // Opponent-diversity window (witnessed-lane heights): the trust fold's
   // per-opponent memory covers the trailing window only (bounded state, like
-  // repPairWindow) — recent diversity is the anti-farming signal.
+  // repPairWindow). Recent diversity is the anti-farming signal.
   trustDivWindow: 1000,
   // Trust-term weights (chain-shape, micro-units; forensic terms re-weight at A5).
   trustWAgeMicro: 150_000,
@@ -69,7 +69,7 @@ export const PARAMS_A4 = {
   // Reference window (witnessed-lane heights): a commend / rematch-accept may
   // only reference a segment whose height is within this many witnessed events
   // of it. Bounds the fold's per-(game,opp) dedup memory so checkpoint state
-  // stays O(window), not O(games) — entries older than the window are pruned
+  // stays O(window), not O(games). Entries older than the window are pruned
   // deterministically by repStep.
   repPairWindow: 200,
 } as const satisfies CanonicalObject

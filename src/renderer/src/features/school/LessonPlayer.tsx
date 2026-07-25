@@ -20,7 +20,7 @@ export interface LessonPlayerProps {
   chapterTitle: string
   /** Back to the chapter overview without recording completion. */
   onBack: () => void
-  /** All segments finished — lesson recorded; return to the overview. */
+  /** All segments finished: lesson recorded; return to the overview. */
   onComplete: () => void
   /** Deep link to Settings → Datasets (puzzle segments' install notice). */
   onOpenSettings?: () => void
@@ -58,7 +58,7 @@ export function LessonPlayer({
   }, [chapterId, lesson.id])
 
   const onSegDone = useCallback(() => {
-    // Side effects stay OUT of the setSegIdx updater — updaters must be pure
+    // Side effects stay OUT of the setSegIdx updater. Updaters must be pure
     // (StrictMode double-invokes them in dev, which would duplicate the
     // recordLesson IPC write). Compute "last segment" from state instead.
     if (segIdx + 1 >= segments.length) {
@@ -105,7 +105,7 @@ export function LessonPlayer({
             </span>
             <h2 className="lesson-complete-title">Lesson complete</h2>
             <p className="lesson-complete-sub">
-              {lesson.title} — done. Viktor has noted your progress.
+              {lesson.title} is done. Viktor has noted your progress.
             </p>
             <button className="btn school-primary lesson-complete-btn" onClick={onComplete}>
               Back to chapter <ChevronRight size={16} />
@@ -235,7 +235,7 @@ function modelStartFen(seg: LessonSegment): string {
 function SkipImmediately({ onDone }: { onDone: () => void }): JSX.Element {
   // Render nothing and advance once on mount. The ref guard makes this survive
   // StrictMode's dev double effect-fire (refs persist across the simulated
-  // remount) — firing onDone twice would skip a real segment.
+  // remount): firing onDone twice would skip a real segment.
   const firedRef = useRef(false)
   useEffect(() => {
     if (firedRef.current) return

@@ -47,7 +47,7 @@ export interface AppSettings {
   confirmResign: boolean
   /** Play the ticking warning when a clock runs low in timed Play. */
   lowTimeWarning: boolean
-  /** Show hint buttons (School/Puzzles/Play coaching) — off for a harder game. */
+  /** Show hint buttons (School/Puzzles/Play coaching). Off for a harder game. */
   hintsEnabled: boolean
   /** Draw the engine's best-move arrows on the Analysis board. */
   showEngineArrows: boolean
@@ -99,7 +99,7 @@ function clampInt(value: unknown, min: number, max: number, fallback: number): n
   return Math.min(max, Math.max(min, Math.round(n)))
 }
 
-/** Clamp a possibly-stale fractional pref (no rounding — used for 0..1 volume). */
+/** Clamp a possibly-stale fractional pref (no rounding; used for 0..1 volume). */
 function clampFloat(value: unknown, min: number, max: number, fallback: number): number {
   const n = typeof value === 'number' ? value : Number(value)
   if (!Number.isFinite(n)) return fallback

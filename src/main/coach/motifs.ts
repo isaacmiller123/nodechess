@@ -1,8 +1,8 @@
 /**
  * Motif detectors (docs/content-coaching.md §3.4) over an engine PV or the
  * played continuation. Each detector is a pure-ish boolean/struct over board
- * states. The caller (index.ts) GATES every claim on the engine eval swing —
- * a static scan alone can be fooled by pins/in-between moves.
+ * states. The caller (index.ts) GATES every claim on the engine eval swing.
+ * A static scan alone can be fooled by pins/in-between moves.
  *
  * All detector logic is re-implemented from documented behaviour
  * (lichess-puzzler cook.py/util.py, Lichess Advice.scala). The upstream
@@ -91,10 +91,10 @@ export function buildLine(start: Chess, moves: { from: Square; to: Square; promo
 }
 
 /**
- * fork — the moving piece (not the king) lands on a square attacking >1 enemy
+ * fork: the moving piece (not the king) lands on a square attacking >1 enemy
  * piece. Each target is either the enemy king (a check, which must be answered
  * first), a more valuable enemy non-pawn, or a hanging enemy non-pawn. When the
- * move delivers check, the moving piece's own "bad spot" status is ignored — the
+ * move delivers check, the moving piece's own "bad spot" status is ignored. The
  * opponent must respond to the check before capturing the forking piece, so the
  * second target falls. Otherwise the forking square must not be in a bad spot.
  */
@@ -132,7 +132,7 @@ function joinTargets(names: string[]): string {
 }
 
 /**
- * pin — derived via ray scan: an enemy piece on the line between one of `color`'s
+ * pin. Derived via ray scan: an enemy piece on the line between one of `color`'s
  * ray pieces and (a) the enemy king => absolute pin; (b) a more valuable enemy
  * piece => relative pin. `color` is the side doing the pinning.
  */
@@ -204,7 +204,7 @@ function rayCovers(role: Piece['role'], a: Square, b: Square): boolean {
 }
 
 /**
- * skewer — after an opponent ray-piece move, the player captures on the same
+ * skewer: after an opponent ray-piece move, the player captures on the same
  * line with a ray piece; the more valuable enemy piece was in front, exposing a
  * lesser one behind; the capture lands in a bad spot for the capturer.
  */
@@ -247,7 +247,7 @@ function behindOnLine(pos: Chess, from: Square, to: Square): Square | null {
   return null
 }
 
-/** double_check — more than one checker in the resulting position. */
+/** double_check: more than one checker in the resulting position. */
 export function detectDoubleCheck(ply: Ply): MotifHit | null {
   const ctx = ply.after.ctx()
   if (ctx.checkers.moreThanOne()) {
@@ -257,8 +257,8 @@ export function detectDoubleCheck(ply: Ply): MotifHit | null {
 }
 
 /**
- * discovered_check — a checker exists that is NOT the square the player just
- * moved to. discovered_attack — discovered_check OR a capture whose
+ * discovered_check: a checker exists that is NOT the square the player just
+ * moved to. discovered_attack: discovered_check OR a capture whose
  * from->to between-squares contain the previous move's `from` (the vacated line).
  */
 export function detectDiscovered(prev: Ply | null, ply: Ply): MotifHit | null {
@@ -280,7 +280,7 @@ export function detectDiscovered(prev: Ply | null, ply: Ply): MotifHit | null {
 }
 
 /**
- * hanging piece — the piece captured on this player move was a non-pawn that was
+ * hanging piece: the piece captured on this player move was a non-pawn that was
  * hanging in the position before the capture.
  */
 export function detectHangingCapture(ply: Ply): MotifHit | null {
@@ -298,7 +298,7 @@ export function detectHangingCapture(ply: Ply): MotifHit | null {
 }
 
 /**
- * back-rank mate — final position is checkmate, the mated king is on its back
+ * back-rank mate: final position is checkmate, the mated king is on its back
  * rank, its forward escape squares are blocked/attacked, and >=1 checker sits on
  * the back rank.
  */
@@ -330,7 +330,7 @@ export function detectBackRankMate(pos: Chess): MotifHit | null {
   return { key: 'backRankMate', detail: 'back-rank mate' }
 }
 
-/** general mate-net — final position is checkmate; report mate distance. */
+/** general mate-net: final position is checkmate; report mate distance. */
 export function detectMate(pos: Chess, mateInPlies: number | null): MotifHit | null {
   if (!pos.isCheckmate()) {
     if (mateInPlies != null && mateInPlies > 0) {
@@ -343,7 +343,7 @@ export function detectMate(pos: Chess, mateInPlies: number | null): MotifHit | n
 }
 
 /**
- * deflection — capture a piece that is hanging ONLY because a defending ray piece
+ * deflection: capture a piece that is hanging ONLY because a defending ray piece
  * was distracted from its line on the previous player move (the defender no
  * longer covers the capture square).
  */
@@ -369,7 +369,7 @@ export function detectDeflection(prev: Ply | null, ply: Ply): MotifHit | null {
 }
 
 /**
- * interference — capture a piece hanging only because an interfering piece landed
+ * interference: capture a piece hanging only because an interfering piece landed
  * on a between-square of (target, its defender) on the previous player move,
  * severing the defence.
  */
@@ -403,7 +403,7 @@ export function detectInterference(prev: Ply | null, ply: Ply): MotifHit | null 
 }
 
 /**
- * overloaded — a single enemy piece is the SOLE defender of two or more player
+ * overloaded: a single enemy piece is the SOLE defender of two or more player
  * targets (implemented per spec; upstream lichess `overloading()` is a stub).
  * `color` is the side exploiting the overload (i.e. the enemy piece belongs to
  * `opposite(color)` and defends `opposite(color)`'s own pieces).
@@ -441,7 +441,7 @@ export function detectOverloaded(pos: Chess, color: Color): MotifHit | null {
 }
 
 /**
- * capturing the defender — this player move captures a piece that was the sole
+ * capturing the defender: this player move captures a piece that was the sole
  * defender of another enemy piece, which then becomes hanging.
  */
 export function detectCapturingDefender(ply: Ply): MotifHit | null {
@@ -472,7 +472,7 @@ export function detectCapturingDefender(ply: Ply): MotifHit | null {
 }
 
 /**
- * x-ray — a ray piece of `color` attacks or defends THROUGH an intervening piece
+ * x-ray: a ray piece of `color` attacks or defends THROUGH an intervening piece
  * along the same line (a battery / x-ray relation in the resulting position).
  */
 export function detectXRay(pos: Chess, color: Color): MotifHit | null {
@@ -492,7 +492,7 @@ export function detectXRay(pos: Chess, color: Color): MotifHit | null {
           if (first === null) {
             first = sq
           } else {
-            // second piece on the line — an x-ray relation through `first`.
+            // second piece on the line: an x-ray relation through `first`.
             const firstPiece = pos.board.get(first)!
             const secondPiece = occ
             // report when the rear target is an enemy of higher-or-equal value.

@@ -3,7 +3,7 @@ import { parseFenBoard, cellIndex, type BoardCells } from './model'
 import { PieceGlyph } from './PieceGlyph'
 
 /**
- * Read-only mini board for gallery cards and template tiles — renders any
+ * Read-only mini board for gallery cards and template tiles. Renders any
  * FEN body at any board size with the active piece set. Decorative.
  */
 export function MiniBoard({

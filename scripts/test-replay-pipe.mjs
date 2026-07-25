@@ -8,7 +8,7 @@
 // injected via preloadFfish({ wasmBinary }) for the xiangqi leg). Coverage:
 //   1. synthesized games across families (chessops variant, go w/ options +
 //      handicap, othello, checkers, xiangqi): envelope-encode → parse →
-//      buildReplay — every move replays legally (spec.play validates each
+//      buildReplay: every move replays legally (spec.play validates each
 //      position), states/notation counts match the move count;
 //   2. stored notation (meta.notated) is preferred verbatim; missing notation
 //      falls back to spec.notate / codec echo;
@@ -18,7 +18,7 @@
 //      (never throws), chess PGN text and junk parse to null;
 //   5. turnAt honors spec.turn (go handicap → white opens) and parity fallback.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -84,7 +84,7 @@ const wasm = readFileSync(resolve(ROOT, 'node_modules/ffish-es6/ffish.wasm'))
 await preloadFfish({ wasmBinary: wasm })
 
 /** Synthesize a legal N-ply game for a kind by always playing the FIRST legal
- *  move — every registered spec supports this without knowing its codec. */
+ *  move. Every registered spec supports this without knowing its codec. */
 function synthesize(spec, options, plies) {
   let s = spec.init(options)
   const start = s
@@ -101,7 +101,7 @@ function synthesize(spec, options, plies) {
   return { start, moves }
 }
 
-/** Envelope text the save path writes (result fixed — irrelevant to replay). */
+/** Envelope text the save path writes (result fixed; irrelevant to replay). */
 function envelopeOf(kind, moves, meta) {
   return encodeGameArchive({
     v: 1,
@@ -140,7 +140,7 @@ try {
       replay.notated.every((n) => typeof n === 'string' && n.length > 0),
       `${leg.kind}: every ply has non-empty notation`
     )
-    // Each replayed position accepted the recorded move — additionally assert
+    // Each replayed position accepted the recorded move. Additionally assert
     // the final state's own history matches (specs carry `moves`).
     const finalMoves = replay.states[replay.states.length - 1].moves
     eq(finalMoves.length, moves.length, `${leg.kind}: final state history length matches`)
@@ -192,7 +192,7 @@ try {
   eq(legacy.moves.length, goMoves.length, 'legacy result token stripped from moves')
   eq(legacy.white, 'Alice', 'legacy White tag surfaced')
   eq(legacy.result, '0-1', 'legacy Result tag surfaced')
-  // Legacy rows carry no options — the 19x19 default must still replay 9x9-legal
+  // Legacy rows carry no options. The 19x19 default must still replay 9x9-legal
   // vertices (synthesized on 9x9, all inside 19x19).
   const legacyReplay = buildReplay(goSpec, legacy)
   eq(legacyReplay.truncated, false, 'legacy go game replays on default options')
@@ -226,7 +226,7 @@ try {
     'notationFor never returns empty'
   )
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

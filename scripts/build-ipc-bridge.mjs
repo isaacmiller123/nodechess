@@ -11,7 +11,7 @@
 //
 // Kept SEPARATE from scripts/build-server.mjs on purpose: dist-server/index.cjs
 // (statics + auth + routing) builds without touching src/main, and
-// server/index.ts require()s this artifact lazily at runtime — a missing bridge
+// server/index.ts require()s this artifact lazily at runtime. A missing bridge
 // degrades to 503 coming-online instead of breaking the static server.
 
 import { build } from 'esbuild'

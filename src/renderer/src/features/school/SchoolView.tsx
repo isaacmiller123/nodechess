@@ -45,7 +45,7 @@ const TIERS: TierDef[] = [
     key: 'foundation',
     numeral: 'I',
     name: 'Foundation',
-    blurb: 'The rules, board vision and the first mates — the ground everything stands on.',
+    blurb: 'The rules, board vision and the first mates: the ground everything stands on.',
     // Open floor so a mis-ordered chapter can never silently drop off the map.
     from: Number.NEGATIVE_INFINITY,
     to: 7
@@ -54,7 +54,7 @@ const TIERS: TierDef[] = [
     key: 'core',
     numeral: 'II',
     name: 'Core Tactics & First Repertoire',
-    blurb: 'Forks, pins and discoveries — and the first openings you can trust.',
+    blurb: 'Forks, pins and discoveries, plus the first openings you can trust.',
     from: 8,
     to: 16
   },
@@ -70,7 +70,7 @@ const TIERS: TierDef[] = [
     key: 'advanced',
     numeral: 'IV',
     name: 'Advanced Mastery',
-    blurb: 'Deep calculation, conversion and theory — the run at master play.',
+    blurb: 'Deep calculation, conversion and theory: the run at master play.',
     from: 29,
     to: Number.POSITIVE_INFINITY
   }
@@ -79,7 +79,7 @@ const TIERS: TierDef[] = [
 type NodeState = 'done' | 'current' | 'open' | 'locked'
 
 /**
- * Chess School index — Viktor's curriculum as a guided JOURNEY: a header band
+ * Chess School index, Viktor's curriculum as a guided JOURNEY: a header band
  * (identity + stats + the Today/Recommended surfaces side by side) above the
  * tiered chapter path. The current chapter is the hero card with a progress
  * ring and Continue CTA; completed chapters compact with checkmarks; locked
@@ -90,7 +90,7 @@ type NodeState = 'done' | 'current' | 'open' | 'locked'
 export default function SchoolView({
   onOpenSettings
 }: {
-  /** Deep link to Settings → Datasets — the placement flow's engine notice and
+  /** Deep link to Settings → Datasets: the placement flow's engine notice and
    *  the lesson puzzle segments' puzzle-DB notice both land there. */
   onOpenSettings?: () => void
 } = {}): JSX.Element {
@@ -253,7 +253,7 @@ export default function SchoolView({
         </div>
 
         {/* Today (daily lesson + local-day streak) and Viktor's weakness-driven
-            "Recommended next" — compact side-by-side header surfaces. Each renders
+            "Recommended next", compact side-by-side header surfaces. Each renders
             null until the bridge returns data. */}
         {state === 'ready' && (
           <div className="school-home-surfaces">
@@ -408,10 +408,10 @@ function pad(order: number): string {
 
 /**
  * One chapter on the journey path. Four states:
- *   • current — the hero: big card, progress ring, Continue/Start CTA
- *   • done    — compact row with a checkmark and a Review affordance
- *   • open    — unlocked but not current (rare; e.g. after a re-placement)
- *   • locked  — dimmed, non-interactive, name-based hint (NEVER an Elo)
+ *   • current. The hero: big card, progress ring, Continue/Start CTA
+ *   • done:     compact row with a checkmark and a Review affordance
+ *   • open:     unlocked but not current (rare; e.g. after a re-placement)
+ *   • locked:   dimmed, non-interactive, name-based hint (NEVER an Elo)
  */
 function JourneyNode({
   meta,

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Headless test for GameSpec.notate — per-kind notation goldens
+// Headless test for GameSpec.notate: per-kind notation goldens
 // (src/renderer/src/games/* + kernel.ts notateGame).
 //
 //   node scripts/test-notation.mjs
@@ -13,13 +13,13 @@
 //     'a8=Q', crazyhouse pawn drop '@e5', atomic 'Nxf7#');
 //   - ffish family + custom variants: real SAN via ffish board.sanMove
 //     (xiangqi 'Cxe7+', shogi 'Bxc3=H' promo + 'P@c1' drop, makruk 'cxb3=M',
-//     janggi pass codec e9e9 = 'Ke9' — a literal same-square king move);
+//     janggi pass codec e9e9 = 'Ke9': a literal same-square king move);
 //   - go/gomoku: color-prefixed uppercase vertices 'B D4' / 'W Q16', bare
 //     'pass'; go handicap games open with a WHITE-prefixed move;
 //   - connect4: landing square 'd4' (codec is the bare column digit);
 //   - identity-codec kinds: notate stays ABSENT and notateGame echoes.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -78,7 +78,7 @@ await build({
   jsx: 'automatic',
   loader: { '.css': 'empty' },
   // games/ffish.ts resolves the WASM asset via a Vite '?url' import; headless
-  // bundles keep it external (never executed in node — we pass wasmBinary).
+  // bundles keep it external (never executed in node; we pass wasmBinary).
   external: ['*?url'],
   alias: { '@shared': resolve(ROOT, 'src/shared'), '@': resolve(ROOT, 'src/renderer/src') },
   logLevel: 'silent'
@@ -253,7 +253,7 @@ try {
   // ---- identity-codec kinds: notate absent, codec IS the notation -------------
   console.log('identity codecs (checkers PDN, othello, hex, morris, ttt)')
   const identity = (sp, moves, msg, init) => {
-    ok(sp.notate === undefined, `${sp.kind}: notate absent — codec is the notation`)
+    ok(sp.notate === undefined, `${sp.kind}: notate absent. Codec is the notation`)
     const start = sp.init(init)
     playAll(sp, start, moves)
     eqArr(notateGame(sp, start, moves), moves, msg)
@@ -273,7 +273,7 @@ try {
   identity(m.TICTACTOE_SPEC, ['b2', 'a1', 'c3'], 'tictactoe: cells echo verbatim')
   {
     const morris = m.MORRIS_SPEC
-    ok(morris.notate === undefined, 'morris: notate absent — codec is the notation')
+    ok(morris.notate === undefined, 'morris: notate absent. Codec is the notation')
     const start = morris.init()
     const line = ['a1', 'b2', 'd1', 'd2']
     const s = playAll(morris, start, line)
@@ -292,7 +292,7 @@ try {
   )
   eqArr(notateGame(chess, chess.init(), []), [], 'notateGame: empty game notates to empty')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

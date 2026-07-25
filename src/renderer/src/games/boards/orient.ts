@@ -2,7 +2,7 @@
 //
 // Kept free of React and DOM so the OTB flip math is headless-testable
 // (scripts/test-flip.mjs). Two invariants matter for flipPolicy 'rotate':
-//   1. flipping is a 180° rotation (an involution — flipping twice is identity);
+//   1. flipping is a 180° rotation (an involution: flipping twice is identity);
 //   2. the SAME mapping is used for square rendering, piece placement and
 //      click handling, so interaction stays consistent after a flip.
 

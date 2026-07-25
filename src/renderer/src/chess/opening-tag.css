@@ -1,5 +1,5 @@
 /* ============================================================
-   OpeningTag (chess/openingTrace.ts) — persistent opening
+   OpeningTag (chess/openingTrace.ts): persistent opening
    identity line, rendered as a slim header inside the Moves box
    (panels/MoveList.tsx) in both Play and Analysis. Mirrors the
    retired .opening-line look (analysis.css) but lives here so

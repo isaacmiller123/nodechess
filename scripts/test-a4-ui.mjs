@@ -1,6 +1,6 @@
 // Headless RENDER test for the A4 accounts UI (src/renderer/src/features/
-// account/**) and for the rated-play surface it feeds (features/play/online/**)
-// — the suite that makes the A4 renderer review fixes revert-proof.
+// account/**) and for the rated-play surface it feeds (features/play/online/**).
+// The suite that makes the A4 renderer review fixes revert-proof.
 // Every pinned behavior below was applied in the 2026-07 A4 fix pass and then
 // found UNENFORCED by the re-verification (no script rendered any .tsx, so a
 // silent revert kept all suites green). This suite renders the real components
@@ -10,26 +10,26 @@
 //   node scripts/test-a4-ui.mjs
 //
 // Pins (one section per review id):
-//   A4-17  provisional viewer sees NOTHING rating-shaped about anyone —
+//   A4-17  provisional viewer sees NOTHING rating-shaped about anyone.
 //          RatingLadders/ProfilePage render through the SHARED projections
 //          (mm/pairing visibleOpponentInfo / spectatorOpponentInfo); plus the
 //          previously-missing 'banned' OpponentInfo branch renders.
 //   A4-18  the SHARED quadratic width() curve holds its goldens
-//          (widthMin + floor(widthSpan·(1−T)²)) at several T — a local linear
+//          (widthMin + floor(widthSpan·(1−T)²)) at several T: a local linear
 //          curve differs at every interior test point.
 //   A4-25  the meter renders NO numeric trust/width oracle (no "T = …",
-//          no "±N") in any build — §7 widening is invisible.
+//          no "±N") in any build: §7 widening is invisible.
 //   A4-26  the rated flow in Play → Online satisfies mm/pairing.pairingLegal
 //          on the EXACT PairViews it builds (features/play/online/
 //          ratedPairing.ownPairView), and its opponent card refuses to render
 //          a pairing the protocol rejects.
 //   A4-27  on a ladder where the signed-in account is NOT ranked, no spillover
-//          bracket and no opponent rating ever renders on that client — not
+//          bracket and no opponent rating ever renders on that client. Not
 //          even when the counterparty advertises a revealed rating (§6).
-//   A4-28  every fixture UiLadder.display IS displayState(state, key) — the
+//   A4-28  every fixture UiLadder.display IS displayState(state, key). The
 //          shared §6 authority (PARAMS_A4 reveal thresholds 120/100/80/40).
 //   A4-29  the degradation carriers (reconstruction.path='floor',
-//          revocationContested, checkpoint.mOfN=false — the viewer.ts
+//          revocationContested, checkpoint.mOfN=false: the viewer.ts
 //          resolveProfile signals) render as VISIBLE degraded states.
 //
 // Pattern: esbuild-bundle on the fly (alias @shared → src/shared, css → empty,
@@ -106,7 +106,7 @@ function makeFakeStorage() {
   }
 }
 globalThis.localStorage = makeFakeStorage()
-// node ≥21 defines globalThis.navigator as getter-only — defineProperty it.
+// node ≥21 defines globalThis.navigator as getter-only, defineProperty it.
 Object.defineProperty(globalThis, 'navigator', {
   value: { userAgent: 'nodechess-a4-ui-suite (node)' },
   configurable: true,
@@ -124,7 +124,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`
   )
   process.exit(failures ? 1 : 0)
 }
@@ -160,7 +160,7 @@ async function run(outdir) {
     format: 'esm',
     platform: 'node',
     // Bare packages (react, react-dom/server, lucide-react) resolve from
-    // node_modules at runtime — node loads their CJS fine, and the whole
+    // node_modules at runtime: node loads their CJS fine, and the whole
     // graph shares ONE react instance. The renderer/shared PROJECT tree is
     // what gets bundled (alias resolves @shared to a path first).
     packages: 'external',
@@ -211,7 +211,7 @@ async function run(outdir) {
     spectatorOpponentInfo,
   } = M
   const render = (el) => renderToStaticMarkup(el)
-  ok(true, 'bundle imported — account + rated-play module-scope invariants held (DEV armed)')
+  ok(true, 'bundle imported: account + rated-play module-scope invariants held (DEV armed)')
 
   const mira = PROFILES['mira#T8FQ2']
   const adrift = PROFILES['adrift#P9GH3']
@@ -220,7 +220,7 @@ async function run(outdir) {
   ok(mira && adrift && vanished && newbie, 'fixture profiles present (mira/adrift/vanished/newbie)')
 
   // ==========================================================================
-  // A4-28 — fixture display states ARE the shared displayState() output
+  // A4-28: fixture display states ARE the shared displayState() output
   // ==========================================================================
   console.log('\n[A4-28] UiLadder.display === displayState(state, category) for every fixture …')
   eq(PARAMS_A4.revealBullet, 120, 'PARAMS_A4.revealBullet is 120')
@@ -272,7 +272,7 @@ async function run(outdir) {
   )
 
   // ==========================================================================
-  // A4-18 — the shared quadratic width() curve, and A4-25 — no trust oracle
+  // A4-18: the shared quadratic width() curve, and A4-25, no trust oracle
   // ==========================================================================
   // TrustWidthMeter is GONE. It rendered a band plus several paragraphs telling
   // the player how pairing widens under suspicion, which is a description of the
@@ -342,11 +342,11 @@ async function run(outdir) {
   }
 
   // ==========================================================================
-  // A4-17 — provisional viewer: nothing rating-shaped, on any surface
+  // A4-17. Provisional viewer: nothing rating-shaped, on any surface
   // ==========================================================================
   console.log('\n[A4-17] §6 provisional-information rule on RatingLadders/ProfilePage …')
   // Derived from the fixture PROTOCOL state (not hardcoded) so a legitimate
-  // fixture retune cannot rot these pins — the RULE stays pinned either way.
+  // fixture retune cannot rot these pins. The RULE stays pinned either way.
   const miraElo = Object.fromEntries(mira.ladders.map((l) => [l.key, eloOf(l.state.r)]))
   const MIRA_NUMBERS = new RegExp(`\\b(${Object.values(miraElo).join('|')})\\b`)
   deepEq(Object.values(miraElo), [1702, 1731, 1688, 1573], 'mira protocol display-Elo goldens')
@@ -397,7 +397,7 @@ async function run(outdir) {
   // negative assertions immediately preceding are the actual §6 rule.
   ok(provFullText.trim().length > 40, 'full mode: the page still renders without leaking a rating')
 
-  // (b) compact mode is a surface too — the projection binds there as well
+  // (b) compact mode is a surface too. The projection binds there as well
   const provCompact = render(
     h(RatingLadders, { ladders: mira.ladders, projection: provProjection, compact: true })
   )
@@ -422,7 +422,7 @@ async function run(outdir) {
   deepEq(
     rankedProjection.Classical,
     { kind: 'bracket', ...bracketOf(eloOf(mira.ladders[3].state.r)) },
-    'the Classical bracket is bracketOf(eloOf(protocol rating)) — [800,1600)'
+    'the Classical bracket is bracketOf(eloOf(protocol rating)), [800,1600)'
   )
   const rankedFull = render(h(RatingLadders, { ladders: mira.ladders, projection: rankedProjection }))
   const rankedFullText = textOf(rankedFull)
@@ -463,7 +463,7 @@ async function run(outdir) {
     'and the banned ladder is unpairable under the shared pairingLegal'
   )
 
-  // (e) ProfilePage end-to-end — SPECTATOR first (store boots signed out)
+  // (e) ProfilePage end-to-end: SPECTATOR first (store boots signed out)
   eq(accountsUiStore.getState().signedIn, false, 'store boots signed OUT (spectator viewer)')
   const spectatorPage = render(h(ProfilePage, { handle: 'mira#T8FQ2', onBack: () => {} }))
   const spectatorText = textOf(spectatorPage)
@@ -478,9 +478,9 @@ async function run(outdir) {
   )
   ok(!spectatorPage.includes('Unranked pool'), 'spectator ProfilePage: not the provisional projection')
 
-  // (f) ProfilePage end-to-end — REAL signed-in placement/provisional viewer
+  // (f) ProfilePage end-to-end: REAL signed-in placement/provisional viewer
   //     (real store → real argon2id + chain; fresh account = placement 0/10)
-  console.log('  · creating a real account through the store (argon2id — a few seconds) …')
+  console.log('  · creating a real account through the store (argon2id, a few seconds) …')
   const created = await accountsUiStore.createAccount('a4uiviewer', 'correct horse battery staple')
   eq(created, true, 'store createAccount succeeds under node')
   accountsUiStore.finishCreate()
@@ -513,12 +513,12 @@ async function run(outdir) {
   )
 
   // ==========================================================================
-  // A4-26 — the rated flow's OWN PairViews satisfy the shared pairingLegal
+  // A4-26: the rated flow's OWN PairViews satisfy the shared pairingLegal
   // ==========================================================================
   // Re-pointed from the deleted account/rated/RatedLobby onto the surface that
   // replaced it: Play → Online's rated pool. `ownPairView` is the builder the
   // live panel calls for the signed-in account, and the counterparty's side is
-  // that same projection built by THEIR client and carried in the signed seek —
+  // that same projection built by THEIR client and carried in the signed seek,
   // so the views below are the exact ones the surface pairs and renders on.
   console.log('\n[A4-26] the rated flow’s PairViews satisfy mm/pairing.pairingLegal …')
   // Preview trust for the two sides (micro-units, §7 recomputable-by-anyone) and
@@ -614,12 +614,12 @@ async function run(outdir) {
   ok(!/\d/.test(textOf(noOppCard)), 'no counterparty view yet: not one digit renders')
 
   // ==========================================================================
-  // A4-27 — no spillover bracket / no opponent rating on a hidden client
+  // A4-27: no spillover bracket / no opponent rating on a hidden client
   // ==========================================================================
   console.log('\n[A4-27] no spillover bracket on a provisional player’s client …')
   // A counterparty who is loudly RANKED on the same rail: the pairing is legal
   // and a ranked viewer would see the number, so the silence below is the §6
-  // rendering rule doing its job — not an accident of the fixtures.
+  // rendering rule doing its job: not an accident of the fixtures.
   const loudOpp = (key) =>
     ownPairView(newbie.rootPub, key, { n: 400, r: 1_499_000_000, rd: 55_000_000 }, OPP_TRUST_MICRO)
   eq(loudOpp('Blitz').display.state, 'ranked', 'the loud counterparty is ranked (400 games)')
@@ -643,7 +643,7 @@ async function run(outdir) {
       ok(markup.includes('Unranked opponent pool'), `${key} / ${label}: the pool state renders`)
       ok(!markup.includes(oppBracketStr), `${key} / ${label}: no spillover bracket renders`)
       ok(!/\d+–\d+/.test(text), `${key} / ${label}: no bracket range of any shape renders`)
-      ok(!/\d/.test(text), `${key} / ${label}: not one digit renders — no rating can leak`)
+      ok(!/\d/.test(text), `${key} / ${label}: not one digit renders. No rating can leak`)
     }
   }
   // The control: the SAME loud counterparty against a ranked viewer DOES render
@@ -658,13 +658,13 @@ async function run(outdir) {
   )
   ok(
     /\b1499\b/.test(textOf(controlCard)),
-    'control: a ranked viewer DOES see a ranked opponent’s rating — the rule above is not vacuous'
+    'control: a ranked viewer DOES see a ranked opponent’s rating. The rule above is not vacuous'
   )
 
   // ==========================================================================
-  // A4-29 — C-12 degradation carriers render as a VISIBLE degraded state
+  // A4-29: C-12 degradation carriers render as a VISIBLE degraded state
   // ==========================================================================
-  console.log('\n[A4-29] degraded reconstruction renders degraded — never silently complete …')
+  console.log('\n[A4-29] degraded reconstruction renders degraded: never silently complete …')
   eq(adrift.reconstruction.path, 'floor', 'fixture carries the floor path (resolveProfile status)')
   eq(adrift.reconstruction.revocationContested, true, 'fixture carries revocationContested (C-12)')
   eq(adrift.checkpoint.mOfN, false, 'fixture carries the below-threshold checkpoint (mOfN:false)')

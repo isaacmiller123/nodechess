@@ -32,8 +32,7 @@ export function Placeholder({ view }: { view: ViewKey }) {
         <h2 id={headingId}>{c.title}</h2>
         {c.body && <p className="muted">{c.body}</p>}
         <p className="muted small">
-          Under construction in the current build loop — the engine, board, and 4.7M-puzzle database are
-          already live.
+          Under construction in the current build loop.
         </p>
       </section>
     </div>

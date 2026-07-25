@@ -1,7 +1,7 @@
-// A2 fabric transport — MockFabric: an in-process implementation of
+// A2 fabric transport, MockFabric: an in-process implementation of
 // FabricEndpoint (types.ts) that wires N nodes over a single shared message bus.
-// This is the test substrate for the witness fabric — the mock-pair analogue of
-// the games layer's test-mp — so the protocol flows (protocol.ts) and the
+// This is the test substrate for the witness fabric. The mock-pair analogue of
+// the games layer's test-mp, so the protocol flows (protocol.ts) and the
 // operator peer (server/operator/peer.ts) run against a deterministic, offline,
 // in-memory network instead of real WebRTC relays.
 //
@@ -9,7 +9,7 @@
 // onRequest(kind) handler; presence announce broadcasts into a shared directory
 // every endpoint observes. Payloads cross the "wire" as canonical bytes
 // (parseCanonical(canonicalBytes(x))) so nothing shares a mutable reference and
-// a non-canonical payload fails loudly at the boundary — exactly as a real
+// a non-canonical payload fails loudly at the boundary. Exactly as a real
 // transport would frame them.
 //
 // Pure + platform-neutral: no `node:` imports, no DOM globals, no Date.now(),
@@ -42,7 +42,7 @@ function wireClone(payload: CanonicalObject): CanonicalObject {
 /**
  * A shared in-process message bus. Endpoints created off one MockFabric see one
  * another's presence announcements and can request one another by nodeId. The
- * directory is shared (every observer sees the same live set) — real fabrics are
+ * directory is shared (every observer sees the same live set). Real fabrics are
  * observer-local, but a shared view is strictly harder on the protocol (every
  * safety rule is enforced on a record's SIGNATURE SET, never on the directory),
  * so the mock loses no coverage.
@@ -61,7 +61,7 @@ export class MockFabric {
 
   /** Mint an endpoint for `nodeId`. Re-minting the same nodeId REPLACES the
    * registration (a node reconnecting with a fresh handler table); the prior
-   * handle becomes stale — its close() is a no-op (see _close). */
+   * handle becomes stale. Its close() is a no-op (see _close). */
   endpoint(nodeId: NodeId): FabricEndpoint {
     const reg: Registration = { nodeId, handlers: new Map(), closed: false }
     this.registry.set(nodeId, reg)
@@ -107,10 +107,10 @@ export class MockFabric {
   _close(reg: Registration): void {
     reg.closed = true
     reg.handlers.clear()
-    // Only evict if this reg is still the CURRENT one for the nodeId — closing a
+    // Only evict if this reg is still the CURRENT one for the nodeId. Closing a
     // stale handle after the node re-minted must not evict the live registration.
     if (this.registry.get(reg.nodeId) === reg) this.registry.delete(reg.nodeId)
-    // Presence is left in the directory to expire naturally by staleness — a
+    // Presence is left in the directory to expire naturally by staleness. A
     // node going offline does not instantly vanish from every observer's view.
   }
 }

@@ -20,7 +20,7 @@ import { Board } from '../../../board/Board'
 import { pieceSetClass } from '../../../board/pieceSets'
 import { isWebBuild } from '../../../platform'
 import { useSettings } from '../../../state/settings'
-// Shared 3-stage hint UI from the classic trainer (read-only imports) — the
+// Shared 3-stage hint UI from the classic trainer (read-only imports). The
 // same ladder + board overlay Train and Custom use, for one consistent look.
 import { HintLadder } from '../HintLadder'
 import { HintArrow } from '../HintArrow'
@@ -36,15 +36,15 @@ import { useDailySolver, type DailyOutcome } from './daily-session'
 import './daily.css'
 
 // ============================================================================
-// SLICE C — Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
+// SLICE C: Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
 //
 // One mode screen with three sub-tabs:
-//   1. Daily   — the SAME puzzle for everyone on a given UTC day; solve it on a
+//   1. Daily:    the SAME puzzle for everyone on a given UTC day; solve it on a
 //                board (lead-in -> solve -> auto-reply via useDailySolver), persist
 //                the outcome (recordDaily + a mode:'daily' attempt that moves the
 //                Glicko ladder), and show a "come back tomorrow" state once done.
-//   2. Streak  — current / best consecutive-solved days + a calendar strip.
-//   3. Stats   — overall accuracy/solved, per-theme accuracy bars, a daily
+//   2. Streak:   current / best consecutive-solved days + a calendar strip.
+//   3. Stats:    overall accuracy/solved, per-theme accuracy bars, a daily
 //                sparkline, and a paginated solve-history list.
 // ============================================================================
 
@@ -100,7 +100,7 @@ export default function DailyMode(): JSX.Element {
 
       {!apiReady && (
         <div className="panel pad muted small daily-preview-note">
-          Preview mode — connect to the desktop app to load the daily puzzle, your
+          Preview mode. Connect to the desktop app to load the daily puzzle, your
           streak, and stats.
         </div>
       )}
@@ -113,7 +113,7 @@ export default function DailyMode(): JSX.Element {
 }
 
 // ============================================================================
-// 1. DAILY TAB — solve the day's puzzle, or "come back tomorrow" if done.
+// 1. DAILY TAB: solve the day's puzzle, or "come back tomorrow" if done.
 // ============================================================================
 
 type DailyLoad = 'loading' | 'ready' | 'empty' | 'error'
@@ -161,7 +161,7 @@ function DailyTab({
   // Interactive only when today's daily is still open (no result) or the user
   // chose to replay for practice. When a result already exists we still hand the
   // puzzle to the solver so the board shows the real position, but the board is
-  // rendered view-only (below) — which also means onUserMove can never fire and
+  // rendered view-only (below), which also means onUserMove can never fire and
   // re-trigger persistence.
   const interactive = !result || replaying
 
@@ -218,7 +218,7 @@ function DailyTab({
 
   const startReplay = useCallback(() => {
     setReplaying(true)
-    // Restart the solver too (same restart the Retry button uses) — otherwise it
+    // Restart the solver too (same restart the Retry button uses). Otherwise it
     // stays in 'solved'/'failed' and the board remains view-only on the final
     // position. While `replaying` is set, onComplete skips re-persisting.
     solver.retry()
@@ -265,7 +265,7 @@ function DailyTab({
         <CalendarDays size={26} aria-hidden />
         <h3>{load === 'error' ? 'Could not load the daily' : 'No daily puzzle yet'}</h3>
         <p className="muted">
-          {/* Web: there's no dataset import — the puzzle DB lives server-side. */}
+          {/* Web: there's no dataset import. The puzzle DB lives server-side. */}
           {load === 'error'
             ? 'Something went wrong fetching today’s puzzle. Try again shortly.'
             : isWebBuild
@@ -387,7 +387,7 @@ function DailySolvePanel({
   let tone: 'neutral' | 'solved' | 'failed' = 'neutral'
   if (phase === 'solved') {
     title = 'Solved!'
-    subtitle = replaying ? 'Nice — practice solve.' : 'You’ve cracked today’s puzzle.'
+    subtitle = replaying ? 'Nice practice solve.' : 'You’ve cracked today’s puzzle.'
     tone = 'solved'
   } else if (phase === 'failed') {
     title = 'Not today'
@@ -395,7 +395,7 @@ function DailySolvePanel({
     tone = 'failed'
   } else {
     title = `Find the best move for ${solver.orientation === 'white' ? 'White' : 'Black'}`
-    subtitle = replaying ? 'Practice run — solve it again.' : 'One shot. Make it count.'
+    subtitle = replaying ? 'Practice run. Solve it again.' : 'One shot. Make it count.'
   }
 
   return (
@@ -453,7 +453,7 @@ function DailyDoneCard({
           <div className="daily-done-sub muted">
             {result.solved
               ? result.firstTry
-                ? 'Solved first try — flawless.'
+                ? 'Solved first try. Flawless.'
                 : 'Solved. Come back tomorrow for the next one.'
               : 'You’ll get the next one. Come back tomorrow.'}
           </div>
@@ -491,7 +491,7 @@ function DailyDoneCard({
 }
 
 // ============================================================================
-// 2. STREAK SECTION — current / best + calendar strip.
+// 2. STREAK SECTION: current / best + calendar strip.
 // ============================================================================
 
 function StreakSection({
@@ -579,7 +579,7 @@ function DailyCalendar({ recent }: { recent: { ymd: string; solved: boolean }[] 
           <div
             key={d.ymd}
             className={`daily-cell ${cls}${isToday ? ' is-today-ring' : ''}`}
-            title={`${formatYmdLong(d.ymd)} — ${d.solved ? 'solved' : isToday ? 'not yet' : 'missed'}`}
+            title={`${formatYmdLong(d.ymd)}: ${d.solved ? 'solved' : isToday ? 'not yet' : 'missed'}`}
           >
             {d.solved && <Check size={11} aria-hidden />}
           </div>
@@ -590,7 +590,7 @@ function DailyCalendar({ recent }: { recent: { ymd: string; solved: boolean }[] 
 }
 
 // ============================================================================
-// 3. STATS SECTION — totals, per-theme bars, sparkline, paginated history.
+// 3. STATS SECTION: totals, per-theme bars, sparkline, paginated history.
 // ============================================================================
 
 const HISTORY_PAGE = 12
@@ -643,7 +643,7 @@ function StatsSection(): JSX.Element {
           icon={<Target size={18} aria-hidden />}
           tone="accent"
           label="Accuracy"
-          value={hasData ? `${Math.round(stats.accuracy * 100)}%` : '—'}
+          value={hasData ? `${Math.round(stats.accuracy * 100)}%` : '·'}
           unit={hasData ? `${stats.totalSolved}/${stats.totalAttempts}` : 'no attempts'}
         />
         <StatCard
@@ -711,7 +711,7 @@ function StatsSection(): JSX.Element {
 
       {!hasData && (
         <p className="muted small daily-stats-hint">
-          Stats span every mode — Train, Custom, Rush, and Daily.
+          Stats span every mode: Train, Custom, Rush, and Daily.
         </p>
       )}
     </div>
@@ -897,7 +897,7 @@ function DailySparkline({
             <div
               key={d.ymd}
               className="daily-spark-col"
-              title={`${formatYmdLong(d.ymd)} — ${d.solved}/${d.attempts}`}
+              title={`${formatYmdLong(d.ymd)}: ${d.solved}/${d.attempts}`}
             >
               {d.attempts > 0 ? (
                 <div
@@ -942,7 +942,7 @@ function formatYmdLong(ymd: string): string {
 }
 
 function formatMs(ms: number | null): string {
-  if (ms == null || ms <= 0) return '—'
+  if (ms == null || ms <= 0) return '·'
   const totalSec = ms / 1000
   if (totalSec < 60) return `${totalSec.toFixed(totalSec < 10 ? 1 : 0)}s`
   const m = Math.floor(totalSec / 60)

@@ -1,4 +1,4 @@
-// A6 social core — friend edges (spec §3 "friendships are witnessed-lane
+// A6 social core: friend edges (spec §3 "friendships are witnessed-lane
 // entanglements", §10). PURE data + verification + fold: builders return
 // payloads the caller signs and appends via chain.ts appendWitnessed; the
 // verifier proves everything an edge can prove ABOUT ITSELF with no recursion
@@ -9,11 +9,11 @@
 // the SUBJECT's own chain, so the subject's event signature proves only the
 // subject's OWN standing consent. What makes an 'add' a countersigned edge is
 // the INNER material:
-//   sig    — the peer's ed25519 over friendBytes({v:1, t:'friend', a, b}),
+//   sig.     The peer's ed25519 over friendBytes({v:1, t:'friend', a, b}),
 //            a/b = the two roots in compareKeys order (BOTH parties sign the
 //            identical bytes, so one signature per party serves both chains,
 //            and a signature can never be replayed into another pair), and
-//   certs  — inline, recursion-bounded (events.ts zCertEvent) root-signed
+//   certs:   inline, recursion-bounded (events.ts zCertEvent) root-signed
 //            cert events of the PEER proving key ∈ peer (absent exactly when
 //            key IS the peer root).
 // A 'remove' is unilateral by design (§3): the subject's own event signature
@@ -24,7 +24,7 @@
 //                 AND B's latest edge state for A is a VERIFIED add.
 // Each chain answers only "does this owner currently assert the edge, with
 // consent proven at assertion time?". Removal by EITHER side flips the mutual
-// read false via that side's own chain — so a stale countersignature replayed
+// read false via that side's own chain, so a stale countersignature replayed
 // into an 'add' can never resurrect an edge the peer removed, and nobody can
 // be shown as someone's friend without both a signature they minted AND their
 // own chain still asserting it. One verifiable list, not different lists for
@@ -32,11 +32,11 @@
 //
 // FOLD RULE (fail closed, the documented ignore semantics): walking the
 // witnessed lane in (height, ts, id) order, an 'add' whose countersignature
-// material does not FULLY verify (verifyFriendAdd) is IGNORED — it neither
+// material does not FULLY verify (verifyFriendAdd) is IGNORED. It neither
 // establishes nor removes anything, exactly like an unverifiable commend in
 // the reputation fold. A malformed payload of either action is ignored the
 // same way. Event-level authenticity (signature, cert/revocation standing,
-// linkage) is verifyChain's business — the authenticated read side is
+// linkage) is verifyChain's business. The authenticated read side is
 // friendsOfChain, which refuses unverifiable chains outright; friendsOf run
 // standalone still never accepts a bad countersig.
 //
@@ -55,11 +55,11 @@ import type { B64u, Chain, FriendPayload, SignedEvent } from '../types'
 
 /**
  * The exact canonical bytes BOTH parties sign for the edge between the two
- * roots — {v:1, t:'friend', a, b} under cjson-v1 with a/b the roots in
+ * roots, {v:1, t:'friend', a, b} under cjson-v1 with a/b the roots in
  * compareKeys order (order of the arguments is immaterial). Binding both
  * roots makes a countersignature unreplayable into any other pair; the sorted
  * form makes the two parties' signatures cover identical bytes. Throws on
- * programmer misuse (equal roots — no self-edges); pure otherwise.
+ * programmer misuse (equal roots: no self-edges); pure otherwise.
  */
 export function friendBytes(rootA: B64u, rootB: B64u): Uint8Array {
   if (rootA === rootB) throw new Error('friendBytes: an edge needs two distinct roots')
@@ -80,24 +80,24 @@ export function makeFriendSig(priv: Uint8Array, rootA: B64u, rootB: B64u): B64u 
 export interface MakeFriendAddOpts {
   /** Counterparty root. */
   peer: B64u
-  /** Peer signing key — the peer root itself or a certified child. */
+  /** Peer signing key. The peer root itself or a certified child. */
   key: B64u
   /** makeFriendSig output under `key` for the (subject, peer) pair. */
   sig: B64u
-  /** Peer root-signed cert events proving `key` — REQUIRED iff key !== peer. */
+  /** Peer root-signed cert events proving `key`. REQUIRED iff key !== peer. */
   certs?: SignedEvent[]
 }
 
 /**
  * Assemble the FriendPayload the SUBJECT appends to its own chain for a
  * countersigned add. Throws on structural misuse (missing/extraneous certs,
- * bad shapes) — this is the trusted build path; untrusted material goes
+ * bad shapes): this is the trusted build path; untrusted material goes
  * through verifyFriendAdd.
  */
 export function makeFriendAddPayload(o: MakeFriendAddOpts): FriendPayload {
   if ((o.key === o.peer) !== (o.certs === undefined))
     throw new Error('makeFriendAddPayload: certs are required iff key is not the peer root')
-  // A6 review friends-2: an EMPTY certs array is not "certs supplied" — a
+  // A6 review friends-2: an EMPTY certs array is not "certs supplied". A
   // device-key add with certs:[] would mint a schema-shaped payload the fold
   // permanently ignores (no provable key provenance). Refuse at build time.
   if (o.certs !== undefined && o.certs.length === 0)
@@ -135,19 +135,19 @@ export function makeFriendRemovePayload(peer: B64u): FriendPayload {
  *  1. the payload parses under zFriendPayload with action 'add' (strict
  *     shapes; the schema already forces key+sig present and certs present
  *     iff key !== peer);
- *  2. peer ≠ to — no self-edges;
+ *  2. peer ≠ to: no self-edges;
  *  3. key provenance: key === peer (peer-root-signed), or an inline cert
  *     verifies as a ROOT-signed certificate of `peer` for exactly `key`
  *     (certs.ts isRootSignedCert: full body schema, root-signed, valid event
  *     signature). Inline material cannot carry a revocation, so the key is
- *     unrevoked as far as this payload can show — the same boundary as
+ *     unrevoked as far as this payload can show: the same boundary as
  *     commends;
- *  4. `sig` verifies under `key` over friendBytes(to, peer) — the sorted
+ *  4. `sig` verifies under `key` over friendBytes(to, peer): the sorted
  *     two-root binding, unreplayable into any other pair.
  *
  * Never throws; any malformation (including values that would crash the
  * canonical codec) returns false. This proves CONSENT AT ASSERTION TIME
- * only — the live relationship additionally needs the peer's own chain
+ * only: the live relationship additionally needs the peer's own chain
  * still asserting the edge (areFriends, the mutual-read rule).
  */
 export function verifyFriendAdd(payload: unknown, to: B64u): boolean {
@@ -183,7 +183,7 @@ export function verifyFriendAdd(payload: unknown, to: B64u): boolean {
 // The fold: one chain's events → the owner-asserted friend set
 // ---------------------------------------------------------------------------
 
-/** One peer's latest edge state in a chain (integers/strings only — the view
+/** One peer's latest edge state in a chain (integers/strings only; the view
  * is canonical-serializable, so re-folds can be compared bit-identically). */
 export interface FriendEdgeState extends CanonicalObject {
   peer: B64u
@@ -191,7 +191,7 @@ export interface FriendEdgeState extends CanonicalObject {
   state: 'add' | 'remove'
   /** Witnessed height of the deciding event. */
   height: number
-  /** Author-claimed ts of the deciding event (display metadata — the height
+  /** Author-claimed ts of the deciding event (display metadata: the height
    * is the ordering authority; nothing consequence-bearing reads this). */
   ts: number
 }
@@ -203,22 +203,22 @@ export interface FriendView extends CanonicalObject {
   friends: B64u[]
   /** Latest edge state per peer ever named (verified adds and removes),
    * compareKeys-sorted by peer. Ignored (unverifiable/malformed) events
-   * leave no trace here — ignored means ignored. */
+   * leave no trace here. Ignored means ignored. */
   edges: FriendEdgeState[]
 }
 
 /**
- * Derive the owner-asserted friend set from an event list — a pure,
+ * Derive the owner-asserted friend set from an event list. A pure,
  * deterministic fold (same event SET → bit-identical view, storage order
  * immaterial). Witnessed-lane 'friend' events bound to `root` are walked in
- * (height, ts, id) order — heights are unique on a verified chain; the ts/id
+ * (height, ts, id) order: heights are unique on a verified chain; the ts/id
  * tiebreaks keep the fold deterministic even on unverified input. Per peer,
  * the LAST verified event wins:
  *   - 'add'    counts only if verifyFriendAdd passes (fold rule: a forged or
- *              unverifiable countersig is IGNORED — it neither establishes
+ *              unverifiable countersig is IGNORED: it neither establishes
  *              nor removes an edge);
  *   - 'remove' always applies (unilateral by design; event authenticity is
- *              verifyChain's business — see friendsOfChain).
+ *              verifyChain's business. See friendsOfChain).
  * Total: never throws on any input; events that cannot even be id-hashed or
  * whose payloads do not parse are skipped.
  */
@@ -260,7 +260,7 @@ export function friendsOf(root: B64u, events: readonly SignedEvent[]): FriendVie
 /**
  * The authenticated read side: verifyChain first (event signatures, cert and
  * revocation standing, linkage, payload schemas, forks), then fold. Returns
- * null when the chain does not verify — a viewer never derives a friend list
+ * null when the chain does not verify. A viewer never derives a friend list
  * from a chain it cannot trust (fail closed, §0). Never throws.
  */
 export function friendsOfChain(chain: Chain): FriendView | null {

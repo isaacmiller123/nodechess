@@ -1,10 +1,10 @@
-// Photoreal chess set loader — Poly Haven "Chess Set" (CC0, Riley Queen),
+// Photoreal chess set loader, Poly Haven "Chess Set" (CC0, Riley Queen),
 // repackaged by scripts/prep-chess3d.mjs into resources/games-art/chess3d/
 // (per-piece geometry GLBs + shared PBR JPEG sets + manifest.json; ≤15MB).
 //
 // INTEGRATION NOTES (for the 'glb' piece system completing three/providers.ts):
 // - Call `loadChessSet(artBaseUrl)` (same base-URL semantics as artLoader.ts;
-//   null result = keep the procedural/2D fallback — never throw to the UI).
+//   null result = keep the procedural/2D fallback. Never throw to the UI).
 // - Geometries are returned ALREADY SCALED to tabletop world units
 //   (1 unit = 1 board square, per types.ts BoardStyle.slabHeight convention),
 //   origin at the piece's base center: place a piece at
@@ -20,7 +20,7 @@
 //   → ChessPieceType via `pieceTypeFromCode`.
 //
 // If the provider contract gains a dedicated GLB shape, keep this module the
-// single owner of manifest/file names — they must stay in sync with
+// single owner of manifest/file names: they must stay in sync with
 // scripts/prep-chess3d.mjs.
 
 import * as THREE from 'three'
@@ -53,7 +53,7 @@ export interface ChessSetAssets {
   geometries: Record<TabletopColor, Record<ChessPieceType, THREE.BufferGeometry>>
   /** Scanned board + frame geometry, world units, origin at board center. */
   boardGeometry: THREE.BufferGeometry
-  /** y (world units) of the board's top surface — rest pieces here. */
+  /** y (world units) of the board's top surface. Rest pieces here. */
   boardTopY: number
   /** Source physical square size in meters (provenance/debug). */
   squareSizeMeters: number
@@ -114,7 +114,7 @@ const cache = new Map<string, Promise<ChessSetAssets | null>>()
 
 /**
  * Load the photoreal chess set. Resolves null when the art base is not
- * configured or any file fails — callers keep their procedural fallback.
+ * configured or any file fails. Callers keep their procedural fallback.
  * Cached per resolved manifest URL; `dispose()` evicts the entry.
  */
 export function loadChessSet(artBaseUrl?: string | null): Promise<ChessSetAssets | null> {

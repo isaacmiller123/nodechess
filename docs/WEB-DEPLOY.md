@@ -1,9 +1,9 @@
-# nodechess web — deployment guide
+# nodechess web: deployment guide
 
 The web target ships as **one Docker image**: the SPA (`dist-web`), the Fastify
 server + IPC bridge bundles (`dist-server`), and the static content trees the
 server serves (games-art, curriculum, famous, personas, openings, manuals).
-Running it locally and deploying it to a VPS are the same artifact — see
+Running it locally and deploying it to a VPS use the same artifact. See
 `docs/WEB-PORT-SPEC.md` for the architecture.
 
 Two pieces of state live OUTSIDE the image:
@@ -56,7 +56,7 @@ machine). Three supported configurations:
    the build context either.
 2. **Baked into the image.** Useful for single-artifact platforms (registry →
    Fly/Cloud Run style). The Dockerfile takes the DB as a *named build
-   context*, which is exempt from `.dockerignore` — no repo edits needed:
+   context*, which is exempt from `.dockerignore`. No repo edits needed:
 
    ```sh
    docker build -t nodechess-web \
@@ -64,15 +64,15 @@ machine). Three supported configurations:
      --build-context puzzles-db=resources/data .
    ```
 
-   The file lands at `/app/resources/data/puzzles.sqlite` — the image's
-   default `PUZZLES_PATH` — so no runtime configuration is needed. Expect a
+   The file lands at `/app/resources/data/puzzles.sqlite`, the image's
+   default `PUZZLES_PATH`, so no runtime configuration is needed. Expect a
    ~2.3 GB image.
 3. **No puzzle DB.** Everything else works; puzzle surfaces show their honest
    "not installed" state.
 
 ## Environment variables
 
-All optional — the image defaults are a complete configuration.
+All optional: the image defaults are a complete configuration.
 
 | Variable | Image default | Meaning |
 | --- | --- | --- |
@@ -82,9 +82,9 @@ All optional — the image defaults are a complete configuration.
 | `GAMES_ART_ROOT` | `/app/resources/games-art` | 3D tabletop textures/pieces, served at `/games-art`. Missing dir = procedural fallbacks, warning logged. |
 | `DATA_DIR` | `/data` | Server state: `server.sqlite` (accounts + sessions), `users/<id>/app.sqlite` (per-user data), plus the shared anonymous DB for logged-out reads. Source default: `./data-web`. |
 | `PUZZLES_PATH` | `/app/resources/data/puzzles.sqlite` | Puzzle DB file. Compose overrides to `/puzzles/puzzles.sqlite`. Missing file = puzzles report "not installed". |
-| `TRUST_PROXY` | unset (off) | `1` = trust `X-Forwarded-*` from the reverse proxy in front. **Set this whenever you run behind a proxy** — it is what gives rate limiting real client IPs and lets `X-Forwarded-Proto` mark the session cookie `Secure`. Leave off only when clients hit the container directly (a trusted header would then be client-spoofable). Compose sets it. |
-| `COOKIE_SECURE` | unset (auto) | Session-cookie `Secure` flag. Auto = on for https requests **and whenever `NODE_ENV=production`** (so a misconfigured proxy can't downgrade it). `1` forces it on, `0` turns it off — only for plain-http LAN/localhost hosting (Safari refuses `Secure` cookies on `http://localhost`; Chrome/Firefox accept them). |
-| `MAX_ACCOUNTS` | `500` | Signup ceiling — each account is an on-disk per-user DB, so an open server refuses account #501 with `403 signups-closed`. |
+| `TRUST_PROXY` | unset (off) | `1` = trust `X-Forwarded-*` from the reverse proxy in front. **Set this whenever you run behind a proxy**. It is what gives rate limiting real client IPs and lets `X-Forwarded-Proto` mark the session cookie `Secure`. Leave off only when clients hit the container directly (a trusted header would then be client-spoofable). Compose sets it. |
+| `COOKIE_SECURE` | unset (auto) | Session-cookie `Secure` flag. Auto = on for https requests **and whenever `NODE_ENV=production`** (so a misconfigured proxy can't downgrade it). `1` forces it on, `0` turns it off: only for plain-http LAN/localhost hosting (Safari refuses `Secure` cookies on `http://localhost`; Chrome/Firefox accept them). |
+| `MAX_ACCOUNTS` | `500` | Signup ceiling: each account is an on-disk per-user DB, so an open server refuses account #501 with `403 signups-closed`. |
 | `AUTH_RATE_LOGIN` | `10` | Login attempts allowed per IP per minute (429 beyond). |
 | `AUTH_RATE_SIGNUP` | `5` | Signups allowed per IP per hour (429 beyond). |
 | `MAX_OPEN_USER_DBS` | `32` | Per-user SQLite handles kept open (LRU; cold ones close and reopen on demand). |
@@ -96,7 +96,7 @@ All optional — the image defaults are a complete configuration.
 Everything worth backing up is `DATA_DIR` (`/data`, i.e. `./data-web` with
 compose): accounts, sessions, and every user's games/ratings/school
 progress/settings. The puzzle DB and everything in the image are
-reproducible — don't bother backing them up.
+reproducible, so don't bother backing them up.
 
 ```sh
 docker compose stop web
@@ -111,8 +111,8 @@ the container.
 
 Accounts are deliberately friends-scale: username + password (argon2id),
 httpOnly session cookie, no email verification or self-service reset. Session
-tokens are stored **hashed** (sha256) — a leaked `server.sqlite` does not
-yield replayable sessions — but the argon2 password hashes live there, so
+tokens are stored **hashed** (sha256), so a leaked `server.sqlite` does not
+yield replayable sessions. The argon2 password hashes do live there, so
 treat backups accordingly. Login and signup are rate-limited per IP and
 signups stop at `MAX_ACCOUNTS`. One accepted friends-scale limitation:
 usernames are enumerable (signup answers 409 for a taken name); login timing
@@ -135,12 +135,12 @@ matter:
    context. Boilerplate "security headers" proxy snippets that set their own
    `Cross-Origin-*` values will silently break the engines.
 3. **Forward `X-Forwarded-Proto` and preserve `Host`** (the snippets below do
-   both) — the proto marks session cookies `Secure`; the Host header is what
+   both). The proto marks session cookies `Secure`. The Host header is what
    the same-origin check on mutating `/api` calls compares against. In
    production the cookie is `Secure` even if the proxy forgets the proto
    header (see `COOKIE_SECURE`).
-4. **WebSockets: nothing to configure.** Online multiplayer is trystero
-   WebRTC — the *browser* talks to public relays and peers directly; your
+4. **WebSockets: nothing to configure.** Online multiplayer is trystero over
+   WebRTC. The *browser* talks to public relays and peers directly; your
    server never carries game traffic and exposes no WebSocket endpoints.
 
 Caddy is the two-line option (automatic TLS, preserves upstream headers,
@@ -169,7 +169,7 @@ server {
 }
 ```
 
-Optional: enable gzip/brotli at the proxy — the WASM engine and SPA chunks
+Optional: enable gzip/brotli at the proxy. The WASM engine and SPA chunks
 are multi-megabyte and compress well (the Node server serves them
 uncompressed).
 
@@ -177,7 +177,7 @@ uncompressed).
 
 ### Fly.io
 
-One machine + one volume (SQLite has a single writer — do not scale out):
+One machine + one volume (SQLite has a single writer; do not scale out):
 
 ```sh
 fly launch --no-deploy          # detects the Dockerfile, writes fly.toml
@@ -196,8 +196,8 @@ fly volumes create data --size 4
   destination = "/data"
 ```
 
-Puzzle DB, either: upload it to the same volume once —
-`fly sftp shell` → `put resources/data/puzzles.sqlite /data/puzzles.sqlite` —
+Puzzle DB, either: upload it to the same volume once with
+`fly sftp shell` → `put resources/data/puzzles.sqlite /data/puzzles.sqlite`
 and set `PUZZLES_PATH=/data/puzzles.sqlite` (`fly secrets set` or `[env]`);
 or bake it into the image (option 2 above) and deploy the bigger image.
 Then `fly deploy` and keep it at one machine (`fly scale count 1`).
@@ -212,8 +212,8 @@ git clone <your-fork> nodechess && cd nodechess
 docker compose up --build -d
 ```
 
-Put Caddy/nginx in front as above, point DNS at the box, done. Updates:
-`git pull && docker compose up --build -d` — clients pick up the new version
+Put Caddy/nginx in front as above, point DNS at the box, done. To update, run
+`git pull && docker compose up --build -d`. Clients pick up the new version
 on refresh (`index.html` is served no-cache; hashed assets are immutable).
 
 ## Health & operations

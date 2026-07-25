@@ -1,5 +1,5 @@
 // Headless test for the A4 ratings brick (src/shared/accounts/ratings/
-// {ladders,glicko,fold,display}.ts + checkpoint.ts pluggable folds — phase A4
+// {ladders,glicko,fold,display}.ts + checkpoint.ts pluggable folds. Phase A4
 // brick 2a, re-fixtured by fix-brick F2 for the A4 review: A4-01/02/09/11/19).
 //
 //   node scripts/test-accounts-ratings.mjs
@@ -16,7 +16,7 @@
 // pins SEEDS for every opponent; roster-vouched reads live in
 // ratingEvidenceOf, where the magnitude clamp now applies) + the section-10
 // sybil-ratchet PIN, the A4-19 negatives (color-flip forgery, fabricated
-// oppCkpt cosigners — excluded EVERYWHERE + chain-level 'bad-segment'),
+// oppCkpt cosigners: excluded EVERYWHERE + chain-level 'bad-segment'),
 // placement floor, skip rules, windowed dedup + the A4-11 chain-level
 // 'dup-game' replay death, display-state boundaries, checkpoint integration
 // (incl. the A4-10 a4-v1 auto-select), determinism, and rep/trust composition
@@ -50,7 +50,7 @@ function ok(cond, msg) {
 function eq(a, b, msg) {
   ok(a === b, a === b ? msg : `${msg} (got ${JSON.stringify(a)}, want ${JSON.stringify(b)})`)
 }
-/** Relative-error check (for the float cross-check only — never for state). */
+/** Relative-error check (for the float cross-check only; never for state). */
 function close(a, b, relTol, msg) {
   const rel = Math.abs(a - b) / Math.max(1, Math.abs(b))
   ok(rel <= relTol, `${msg}${rel <= relTol ? '' : ` (rel err ${rel})`}`)
@@ -61,7 +61,7 @@ function hasCode(vr, code, msg) {
 }
 
 // ---- golden vectors (recorded from a green run; determinism anchors) ---------
-// Exact micro outputs of glickoUpdateMicro on the fixed inputs below — any
+// Exact micro outputs of glickoUpdateMicro on the fixed inputs below. Any
 // change to detmath, the glicko port, or the micro rounding breaks these on
 // every platform at once. UNCHANGED by F2 (the math is untouched).
 const GOLDEN_GLICKO = {
@@ -75,17 +75,17 @@ const GOLDEN_GLICKO = {
 // (Re-frozen by F2: fixtures sign the full F1 binding + real oppCkpt cosigs,
 // and RepState gained commendTw/pend + the PAIR_BOUND/PAIR_EST flags.
 // Re-frozen by A5 J5: RepState gained the `unsettled` counter + the `ob`
-// open-pairing-obligation map — same fixture chains, new embedded rep bytes.
+// open-pairing-obligation map: same fixture chains, new embedded rep bytes.
 // Re-frozen by the A4-14 eligibility split: RepState gained the `com`
-// commend-decay map (commendTw now folds the decayed floor tier only) —
-// same fixture chains, new embedded rep bytes.
+// commend-decay map (commendTw now folds the decayed floor tier only).
+// Same fixture chains, new embedded rep bytes.
 // Re-frozen by the A4-02 close: the fold pins the §6 SEEDS for every
-// opponent — the golden chain's g3 segment embeds a 1600/80 oppCkpt whose
+// opponent: the golden chain's g3 segment embeds a 1600/80 oppCkpt whose
 // numbers no longer reach the in-fold update (roster-vouched reads moved to
-// ratingEvidenceOf) — same fixture chains, new embedded ladder bytes.)
+// ratingEvidenceOf): same fixture chains, new embedded ladder bytes.)
 const GOLDEN_FOLD_HASH = 'rZRJa27vcHtTRylaoMXWrLJdRnz4YI8uQMrZhmVEx9o'
 // canonicalHash (b64u) of the placement chain's fold state after 10 games.
-// (NB: depends on the suite's deterministic shared ts sequence — adding a
+// (NB: depends on the suite's deterministic shared ts sequence; adding a
 // ts-consuming fixture BEFORE section 5 legitimately re-records this.)
 const GOLDEN_PLACEMENT_HASH = 'LObyT9AIXAtkip36hI-IvMvkz9lRBuhwVGvdMMTwj2c'
 
@@ -98,7 +98,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -195,10 +195,10 @@ async function run(outdir) {
    * optional (absent = legacy: the witness signs the EXACT legacy bytes).
    * When kind/tc present the witness signs the FULL F1 RatedBinding
    * {kind, tc, players, reason} with players derived from `color`. Overrides:
-   *   bind      — sign exactly this binding instead (null ⇒ legacy bytes);
-   *   bindColor — sign players for THIS color while the payload claims
+   *   bind:       sign exactly this binding instead (null ⇒ legacy bytes);
+   *   bindColor: sign players for THIS color while the payload claims
    *               `color` (the A4-01/A4-19 color-flip forgery);
-   *   wsig      — raw wstream sig override (forged-witness fixtures).
+   *   wsig:       raw wstream sig override (forged-witness fixtures).
    */
   const addSeg = (c, game, opp, o = {}) => {
     const { color = 'w', result = '1-0', reason = 'checkmate', kind, tc, oppCkpt, oppProfile, bind, bindColor, wsig } = o
@@ -248,7 +248,7 @@ async function run(outdir) {
   })
   const G = (s) => fakeId(`game-${s}`)
   /** WitnessEligibility predicate accepting exactly these keypairs' pubkeys
-   * (the verifier's read-time roster — A4-02/03/05/14). */
+   * (the verifier's read-time roster: A4-02/03/05/14). */
   const roster = (...ks) => {
     const set = new Set(ks.map((k) => k.pubB))
     return (w) => set.has(w)
@@ -374,7 +374,7 @@ async function run(outdir) {
       kind: 'chess', tc: BLITZ_TC, result: '1/2-1/2', color: 'b', reason: 'agreement',
       oppCkpt: mkOppCkpt(oppB, a4OppState({ 'chess:Blitz': { r: 1_600_000_000, rd: 80_000_000, vol: 60_000, n: 150, placed: 1 } })),
     })
-    c = addSeg(c, G('g4'), oppB.pubB, { result: '1-0', color: 'w' }) // legacy: no kind/tc — unrated
+    c = addSeg(c, G('g4'), oppB.pubB, { result: '1-0', color: 'w' }) // legacy: no kind/tc. Unrated
     c = addSeg(c, G('g5'), oppA.pubB, { kind: 'chess', tc: { baseMs: 60_000, incMs: 0 }, result: '1-0', color: 'b' }) // Bullet ladder
     c = chain.appendWitnessed(c, me.priv, meB, 'conduct', { kind: 'abort', game: G('a1'), opp: oppA.pubB }, ts++)
     goldenChain = c
@@ -421,7 +421,7 @@ async function run(outdir) {
     const s = foldChain(c)
     const expectedSeed = glicko.glickoUpdateMicro(seedMicro, [{ ratingMicro: P.seedRating * M6, rdMicro: P.seedRd * M6, score: 1 }])
     eq(s.ladders['chess:Blitz'].r, expectedSeed.ratingMicro,
-      'A4-02: the FOLD pins the §6 seeds — the embedded 1600 never reaches the in-fold update')
+      'A4-02: the FOLD pins the §6 seeds. The embedded 1600 never reaches the in-fold update')
     eq(s.ladders['chess:Blitz'].rd, Math.max(expectedSeed.rdMicro, P.placementRdFloor * M6), 'stored rd = max(computed, placement floor)')
     eq(chain.verifyChain(c).ok, true, 'the cosigned-oppCkpt chain verifies ok end-to-end')
     // the FOLD is byte-identical to the same game against a no-ckpt opponent
@@ -434,7 +434,7 @@ async function run(outdir) {
     const expectedVouched = glicko.glickoUpdateMicro(seedMicro, [{ ratingMicro: oppLadder.r, rdMicro: oppLadder.rd, score: 1 }])
     const ev = fold.ratingEvidenceOf(c, honest)
     eq(ev.ladders['chess:Blitz'].r, expectedVouched.ratingMicro,
-      'ratingEvidenceOf under a vouching roster reads the opponent 1600/80 (the read is live — at READ time)')
+      'ratingEvidenceOf under a vouching roster reads the opponent 1600/80 (the read is live; at READ time)')
     eq(ev.ladders['chess:Blitz'].rd, Math.max(expectedVouched.rdMicro, P.placementRdFloor * M6),
       'vouched read applies the same placement-floor discipline')
     ok(ev.ladders['chess:Blitz'].r > s.ladders['chess:Blitz'].r,
@@ -449,7 +449,7 @@ async function run(outdir) {
     eq(stateHash(fold.ratingEvidenceOf(c, roster(...cosigners)).ladders), stateHash(s.ladders),
       'a roster not vouching the wstream witness earns the seeds (A4-05 rule applied to ratings)')
   }
-  console.log('\n· pinned inputs: seeds for missing / ladderless / malformed oppCkpt — fold AND vouched read …')
+  console.log('\n· pinned inputs: seeds for missing / ladderless / malformed oppCkpt. Fold AND vouched read …')
   {
     const expectedSeed = glicko.glickoUpdateMicro(seedMicro, [{ ratingMicro: P.seedRating * M6, rdMicro: P.seedRd * M6, score: 1 }])
     const rdWithFloor = Math.max(expectedSeed.rdMicro, P.placementRdFloor * M6)
@@ -472,12 +472,12 @@ async function run(outdir) {
         `${name} → vouched read seeds 1200/350 exactly (reader fail-closed)`)
     }
   }
-  console.log('\n· A4-10: fold-id rule — a rated segment may embed a4-v1 checkpoints ONLY …')
+  console.log('\n· A4-10: fold-id rule. A rated segment may embed a4-v1 checkpoints ONLY …')
   {
     // THE REVIEW VECTOR, now dead: a rated player presenting a STALE
     // pre-rated basic-v1 oppCkpt used to read as a seed-rated (1200/350)
     // opponent in the rating fold AND a full established-opponent proxy in
-    // the trust fold — the seed-washing dial. Now the segment itself fails
+    // the trust fold, the seed-washing dial. Now the segment itself fails
     // ('bad-opp-ckpt', fail-hard like every embed defect): a rating-young
     // opponent is represented honestly by OMITTING oppCkpt.
     const basicCk = mkOppCkpt(oppB, { n: 6, byType: { segment: 6 }, head: fakeId('h'), height: 6 })
@@ -491,7 +491,7 @@ async function run(outdir) {
     const foreignCk = mkOppCkpt(oppB, { f: 'evil-v9', n: 6 })
     eq(seg.verifySegmentEvent(witnessedSorted(addSeg(mkChain(), G('fi2'), oppB.pubB, { kind: 'chess', tc: BLITZ_TC, oppCkpt: foreignCk }))[1]),
       'bad-opp-ckpt', 'a FOREIGN fold id on a rated segment fails the same way (fail closed)')
-    // kind-only (half-bound) segments are rated-SHAPED — the rule applies
+    // kind-only (half-bound) segments are rated-SHAPED. The rule applies
     const cHalfB = addSeg(mkChain(), G('fi3'), oppB.pubB, { kind: 'chess', oppCkpt: basicCk })
     eq(seg.verifySegmentEvent(witnessedSorted(cHalfB)[1]), 'bad-opp-ckpt',
       'kind-only (rated-shaped) segment + basic-v1 oppCkpt → bad-opp-ckpt too')
@@ -500,13 +500,13 @@ async function run(outdir) {
     eq(seg.verifySegmentEvent(witnessedSorted(cLegacyCk)[1]), null,
       'an UNBOUND (legacy) segment may still embed a basic-v1 checkpoint (casual-history opponents are honest)')
     eq(chain.verifyChain(cLegacyCk).ok, true, '…and its chain verifies end-to-end')
-    // the a4-v1 twin of the SAME shape passes — the fold id is the exact cut
+    // the a4-v1 twin of the SAME shape passes. The fold id is the exact cut
     const cA4 = addSeg(mkChain(), G('fi5'), oppB.pubB, { kind: 'chess', tc: BLITZ_TC, oppCkpt: mkOppCkpt(oppB, { f: 'a4-v1', n: 6 }) })
     eq(seg.verifySegmentEvent(witnessedSorted(cA4)[1]), null,
       'the SAME rated segment with an a4-v1-stated oppCkpt verifies (fold id is the exact discriminator)')
     eq(fold.A4_FOLD_ID, 'a4-v1', "segment.ts's restated fold-id literal matches ratings/fold.ts A4_FOLD_ID")
   }
-  console.log('\n· A4-02 magnitude sanity clamp — on the VOUCHED read (the fold always seeds) …')
+  console.log('\n· A4-02 magnitude sanity clamp: on the VOUCHED read (the fold always seeds) …')
   {
     const winVs = (r, rd) => glicko.glickoUpdateMicro(seedMicro, [{ ratingMicro: r, rdMicro: rd, score: 1 }]).ratingMicro
     const seedWin = winVs(P.seedRating * M6, P.seedRd * M6)
@@ -550,12 +550,12 @@ async function run(outdir) {
       'forged high self-claimed opponent rating (oppProfile/reason) never moves a ladder')
     eq(stateHash(sForged.trust), stateHash(sPlain.trust), '…nor the trust inputs')
     // and rep differs only via the reason CLASS, which both used ('resign'-prefixed
-    // free text is NOT the machine string 'resign' — both classify completed)
+    // free text is NOT the machine string 'resign': both classify completed)
     eq(sForged.rep.seg, sPlain.rep.seg, '…rep counters agree')
   }
 
   // ============================================================================
-  // 4b. A4-19: the two rating-fold authority breaks — negative coverage
+  // 4b. A4-19: the two rating-fold authority breaks, negative coverage
   // ============================================================================
   console.log('\n· A4-19: color-flip forgery is excluded EVERYWHERE …')
   {
@@ -595,7 +595,7 @@ async function run(outdir) {
     const cSwap = addSeg(mkChain(), G('cf2'), oppA.pubB, { kind: 'chess', tc: BLITZ_TC })
     const evSwap = clone(witnessedSorted(cSwap)[1])
     evSwap.body.payload.opp = oppB.pubB
-    ok(seg.verifySegmentEvent(evSwap) !== null, 'relabeling opp breaks event sig / players binding — never verifies')
+    ok(seg.verifySegmentEvent(evSwap) !== null, 'relabeling opp breaks event sig / players binding, never verifies')
   }
   console.log('\n· A4-19: oppCkpt without verifiable M-of-N cosigs never rates …')
   {
@@ -605,7 +605,7 @@ async function run(outdir) {
     const fabricatedWit = Array.from({ length: 4 }, (_, i) => ({
       w: fakeId(`fab-cosigner-${i}`), wts: 900, epoch: 0, sig: 'B'.repeat(86),
     }))
-    // (b) no cosigners at all — the pre-F1 suite fixture shape
+    // (b) no cosigners at all: the pre-F1 suite fixture shape
     const casesBad = {
       'fabricated 4-entry wit (garbage cosig sigs)': mkOppCkpt(oppB, oppState, fabricatedWit),
       'zero cosigners': mkOppCkpt(oppB, oppState, null),
@@ -692,7 +692,7 @@ async function run(outdir) {
   // ============================================================================
   console.log('\n· skip rules …')
   {
-    // (a) no kind/tc — LEGACY, wstream-valid
+    // (a) no kind/tc: LEGACY, wstream-valid
     const cLegacy = addSeg(mkChain(), G('s1'), oppA.pubB, {})
     const sLegacy = foldChain(cLegacy)
     eq(Object.keys(sLegacy.ladders).length, 0, 'segment without kind/tc never rates')
@@ -701,7 +701,7 @@ async function run(outdir) {
     // (b) Unlimited
     const cUnl = addSeg(mkChain(), G('s2'), oppA.pubB, { kind: 'chess', tc: { baseMs: 0, incMs: 0 } })
     const sUnl = foldChain(cUnl)
-    eq(Object.keys(sUnl.ladders).length, 0, 'Unlimited (baseMs 0) never rates — even witness-bound')
+    eq(Object.keys(sUnl.ladders).length, 0, 'Unlimited (baseMs 0) never rates: even witness-bound')
     eq(sUnl.rep.seg, 1, '…but rep counts it')
     // (c) bad-ladder-binding: payload claims Blitz, witness signed the LEGACY bytes
     const cBad = addSeg(mkChain(), G('s3'), oppA.pubB, { kind: 'chess', tc: BLITZ_TC, bind: null })
@@ -709,7 +709,7 @@ async function run(outdir) {
     eq(seg.verifySegmentEvent(evBad), 'bad-ladder-binding', 'fixture sanity: the segment IS bad-ladder-binding')
     const sBad = foldChain(cBad)
     eq(Object.keys(sBad.ladders).length, 0, 'bad-ladder-binding segment never rates')
-    eq(sBad.rep.seg, 0, '…and rep counts NOTHING (A4-07 — the F2 change from the old still-feeds-rep decision)')
+    eq(sBad.rep.seg, 0, '…and rep counts NOTHING (A4-07: the F2 change from the old still-feeds-rep decision)')
     eq(sBad.trust.wn, 0, '…and trust counts NOTHING (A4-05)')
     // (d) binding value mismatch: witness signed a DIFFERENT tc (full binding otherwise)
     const cMis = addSeg(mkChain(), G('s4'), oppA.pubB, {
@@ -741,7 +741,7 @@ async function run(outdir) {
     eq(sDup.ladders['chess:Blitz'].r, before.ladders['chess:Blitz'].r, 'rating unmoved by the duplicate')
     eq(sDup.seen[G('d1')], 1, 'seen keeps the ORIGINAL rated height (no refresh by the dup)')
     eq(sDup.rep.seg, 1, 'rep deduped the same (game, opp) by its own rule')
-    eq(sDup.trust.wn, 2, 'trust counted both segments (its own rules — no dedup by design)')
+    eq(sDup.trust.wn, 2, 'trust counted both segments (its own rules, no dedup by design)')
     eq(sDup.byType.segment, 2, 'basic counters tick for every segment event')
     hasCode(chain.verifyChain(cDup), 'dup-game', 'A4-11: verifyChain rejects the in-window replay chain-wide (dup-game)')
     // (b) same game key, DIFFERENT opp: rating deduped by GAME KEY; rep counts the new pair
@@ -777,14 +777,14 @@ async function run(outdir) {
     cEdge = padPins(cEdge, W - 1) // head h200
     const cEdgeAt = addSeg(cEdge, G('e1'), oppA.pubB, { kind: 'chess', tc: BLITZ_TC }) // h201, diff = W
     eq(foldChain(cEdgeAt).ladders['chess:Blitz'].n, 1, 'duplicate at exactly the window edge (diff = W) is still deduped')
-    // one past: the FOLD's windowed memory expires — and that is exactly where
+    // one past: the FOLD's windowed memory expires, and that is exactly where
     // the chain layer takes over (A4-11): the replay is dup-game fraud.
     const cEdgePast = addSeg(padPins(cEdge, 1), G('e1'), oppA.pubB, { kind: 'chess', tc: BLITZ_TC }) // h202, diff = W+1
     const sPast = foldChain(cEdgePast)
     eq(sPast.ladders['chess:Blitz'].n, 2, 'one past the window edge the fold entry is pruned (standalone fold rates)')
     eq(sPast.seen[G('e1')], 202, 'the new rating re-records the game key at the new height')
     hasCode(chain.verifyChain(cEdgePast), 'dup-game',
-      'A4-11 CLOSED: the cross-window replay NEVER verifies — verifyChain forbids the game key chain-wide')
+      'A4-11 CLOSED: the cross-window replay NEVER verifies, verifyChain forbids the game key chain-wide')
     // bounded state: 260 distinct rated games → seen holds exactly W+1 entries
     let cBulk = mkChain()
     for (let i = 1; i <= 260; i++) cBulk = addSeg(cBulk, G(`bulk${i}`), oppA.pubB, { kind: 'chess', tc: BLITZ_TC })
@@ -821,7 +821,7 @@ async function run(outdir) {
   }
   console.log('\n· pairViewOf composes the mm PairView shape …')
   {
-    // atWts = the pairing record's witnessed timestamp — BOTH sides' tMicro
+    // atWts = the pairing record's witnessed timestamp: BOTH sides' tMicro
     // are evaluated at this same instant (A4-16 / display.ts doc convention).
     const AT_WTS = 1_000_000
     const lad = { r: 1_534_567_890, rd: 62_000_000, vol: 60_000, n: 150, placed: 1 }
@@ -899,7 +899,7 @@ async function run(outdir) {
   }
   console.log('\n· checkpoints: basic-v1 stays bit-identical + fold transitions …')
   {
-    // default fold on an UNRATED chain (legacy segments only) — the A1 path.
+    // default fold on an UNRATED chain (legacy segments only). The A1 path.
     // (A rated chain now auto-selects a4-v1 and verifyChain REQUIRES it, so
     // the basic-v1 regression fixture must be rating-free.)
     let c = mkChain()
@@ -919,24 +919,24 @@ async function run(outdir) {
     const a4After = ckpt.makeCheckpointEvent(c2, me.priv, meB, ts++) // auto-selects a4-v1
     eq(a4After.body.payload.state.f, 'a4-v1', 'the transition checkpoint auto-selected a4-v1 (first rated segment)')
     ok(!ckpt.verifyCheckpointIncremental(c2, a4After), 'basic-v1 → a4-v1 transition: incremental refuses (fold discontinuity)')
-    ok(ckpt.verifyCheckpointDeep(c2, a4After), 'basic-v1 → a4-v1 transition: deep verifies (recompute from genesis — the documented upgrade path)')
+    ok(ckpt.verifyCheckpointDeep(c2, a4After), 'basic-v1 → a4-v1 transition: deep verifies (recompute from genesis, the documented upgrade path)')
     eq(chain.verifyChain(chain.appendEvent(c2, a4After)).ok, true, 'the transitioned chain verifies ok end-to-end')
     // ═══ A4-10 GATE PIN (review: "deleting the incremental-path gate lines
-    // keeps every suite green" — no longer). Build a basic-v1 checkpoint that
+    // keeps every suite green", no longer). Build a basic-v1 checkpoint that
     // is DIGEST-VALID over a rated range: fold-downgrade sandbagging. Every
-    // verification path must refuse it BECAUSE of the rated-coverage gate —
-    // the digest recomputation alone would pass, so these asserts fail the
+    // verification path must refuse it BECAUSE of the rated-coverage gate.
+    // The digest recomputation alone would pass, so these asserts fail the
     // moment the gate lines are reverted.
     const basicOverRated = ckpt.makeCheckpointEvent(c2, me.priv, meB, ts++, ckpt.basicFold)
     eq(basicOverRated.body.payload.state.f, undefined, 'fixture sanity: the sandbag checkpoint embeds a basic-v1 (f-less) state')
     eq(basicOverRated.body.payload.prevCkpt, events.eventId(basic.body),
-      'fixture sanity: it chains to the earlier basic ckpt (same fold id — incrementally reachable)')
+      'fixture sanity: it chains to the earlier basic ckpt (same fold id, incrementally reachable)')
     ok(!ckpt.verifyCheckpointIncremental(c2, basicOverRated),
       'A4-10 PIN: basic-v1 checkpoint covering rated play → verifyCheckpointIncremental FALSE (the gate, not the digest)')
     ok(!ckpt.verifyCheckpointDeep(c2, basicOverRated),
       'A4-10 PIN: …and verifyCheckpointDeep FALSE (deep-path gate)')
     hasCode(chain.verifyChain(chain.appendEvent(c2, basicOverRated)), 'bad-checkpoint',
-      'A4-10 PIN: …and verifyChain flags the chain (bad-checkpoint — fold-downgrade sandbagging is fraud)')
+      'A4-10 PIN: …and verifyChain flags the chain (bad-checkpoint; fold-downgrade sandbagging is fraud)')
     // contrast at the SAME position: the a4-v1 checkpoint deep-verifies (above),
     // so the refusal is exactly the basic-v1-over-rated rule, nothing else.
     // The gate keys on the FIRST rated height: a basic ckpt covering only the
@@ -981,7 +981,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 10. A4-02 PIN — the sybil-cosigned phantom-opponent ratchet is DEAD
+  // 10. A4-02 PIN. The sybil-cosigned phantom-opponent ratchet is DEAD
   // ============================================================================
   console.log('\n· A4-02 PIN: a self-minted sybil-cosigned oppCkpt moves NOTHING …')
   {
@@ -1015,15 +1015,15 @@ async function run(outdir) {
     const cSybil = addSeg(mkChain(), G('syb1'), oppB.pubB, {
       kind: 'chess', tc: BLITZ_TC, result: '1-0', color: 'w', oppCkpt: sybilCkpt,
     })
-    // identical game WITHOUT any oppCkpt — the honest young-opponent baseline
+    // identical game WITHOUT any oppCkpt: the honest young-opponent baseline
     const cBase = addSeg(mkChain(), G('syb1'), oppB.pubB, { kind: 'chess', tc: BLITZ_TC, result: '1-0', color: 'w' })
     // The attack is REACHABLE: structure/provenance checks all pass (a
     // deterministic gate cannot judge eligibility) and the chain verifies.
     eq(seg.verifySegmentEvent(witnessedSorted(cSybil)[1]), null,
       'fixture sanity: the sybil-cosigned segment PASSES verifySegmentEvent (structure is not eligibility)')
     eq(chain.verifyChain(cSybil).ok, true, 'fixture sanity: the sybil chain verifies ok end-to-end')
-    // ── THE PIN (fold layer): the fabricated 3200 phantom must move NOTHING —
-    // the fold pins seeds for every opponent, so the sybil chain's ladders are
+    // ── THE PIN (fold layer): the fabricated 3200 phantom must move NOTHING.
+    // The fold pins seeds for every opponent, so the sybil chain's ladders are
     // BYTE-IDENTICAL to the no-oppCkpt baseline. Reverting the A4-02 fold rule
     // (pinning the embedded numbers again) fails exactly here.
     const sSybil = foldChain(cSybil)
@@ -1035,20 +1035,20 @@ async function run(outdir) {
       'A4-02 PIN: the folded rating is strictly below a live 3200-pin win (the fabrication bought nothing)')
     // ── THE PIN (read-time layer): under the honest roster (real witness +
     // real cosigners; the sybil keys are in NOBODY's directory) the vouched
-    // rating equals the floor — the sybil cosigners earn no uplift for any
+    // rating equals the floor. The sybil cosigners earn no uplift for any
     // verifier. Reverting the eligibility rule in vouchedOpponent fails here.
     const honest = roster(wit, ...cosigners)
     eq(stateHash(fold.ratingEvidenceOf(cSybil, honest).ladders), stateHash(sBase.ladders),
       'A4-02 PIN: the roster-vouched read-time rating REFUSES the sybil cosigners (vouched ≡ floor)')
     eq(stateHash(fold.ratingEvidenceOf(cSybil).ladders), stateHash(sSybil.ladders),
       'no-roster evidence ≡ the embedded floor on the attack chain (zero drift)')
-    // determinism (A4-04 safety): embedded state is roster-independent — the
+    // determinism (A4-04 safety): embedded state is roster-independent. The
     // same attack chain folds to identical bytes on every walk, so honest
     // verifiers can never split over it.
     eq(stateHash(foldChain(cSybil)), stateHash(sSybil), 'the sybil chain folds to identical embedded bytes on every walk')
     // and the trust layer keeps its own A4-05 discipline on the same chain:
     // under the honest roster the sybil-cosigned checkpoint unlocks NO
-    // established-opponent proxy — only the young-opponent floor the real
+    // established-opponent proxy: only the young-opponent floor the real
     // witnessed game earns on its own.
     const tEv = trust.trustEvidenceOf(cSybil, honest)
     eq(tEv.oppEligProxy[oppB.pubB] ?? 0, trust.TRUST_OPP_PROXY_FLOOR_MICRO,
@@ -1056,10 +1056,10 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // A7 — A4-02 fidelity + A4-10 freshness CLOSED via the pairing witAttest
+  // A7, A4-02 fidelity + A4-10 freshness CLOSED via the pairing witAttest
   // (placed LAST: consumes ts++, and the golden hashes above must not move)
   // ============================================================================
-  console.log('\n· A7: pairing witAttest — fidelity upgrade (A4-02) + freshness bound (A4-10) …')
+  console.log('\n· A7: pairing witAttest. Fidelity upgrade (A4-02) + freshness bound (A4-10) …')
   {
     const oppLadder = { r: 1_600_000_000, rd: 80_000_000, vol: 60_000, n: 150, placed: 1 }
     const honest = roster(wit, ...cosigners)
@@ -1091,7 +1091,7 @@ async function run(outdir) {
       'upgrade-only: an attest below the embedded floor never downgrades the pin')
     // (3) forged attest ⇒ floor (sig broken by the payload tamper above)
     eq(fold.ratingEvidenceOf(mkAttested({ ...att1800, ratingMicro: 1_900_000_000 }), honest).ladders['chess:Blitz'].r,
-      expected1600.ratingMicro, 'a forged witAttest is ignored — the sound floor pin remains')
+      expected1600.ratingMicro, 'a forged witAttest is ignored, the sound floor pin remains')
     // (4) attest from an INELIGIBLE key ⇒ floor (roster judgment at read time)
     const attSybil = watt.makePairingAttest(game, oppB.pubB, 1_800_000_000, 6, oppB.pubB, oppB.priv, 9100)
     eq(fold.ratingEvidenceOf(mkAttested(attSybil), honest).ladders['chess:Blitz'].r, expected1600.ratingMicro,
@@ -1100,13 +1100,13 @@ async function run(outdir) {
     const attStale = watt.makePairingAttest(game, oppB.pubB, 1_800_000_000, 5, wit.pubB, wit.priv, 9100)
     const expectedSeed = glicko.glickoUpdateMicro(seedMicro, [{ ratingMicro: P.seedRating * M6, rdMicro: P.seedRd * M6, score: 1 }])
     eq(fold.ratingEvidenceOf(mkAttested(attStale), honest).ladders['chess:Blitz'].r, expectedSeed.ratingMicro,
-      'A4-10 CLOSED: an oppCkpt folding PAST the witness-attested head is refused — vouched read falls to seeds')
+      'A4-10 CLOSED: an oppCkpt folding PAST the witness-attested head is refused. Vouched read falls to seeds')
     // (6) direct bound: verifyEmbeddedOppCkpt(p, owner, attestedHeadHeight)
     const p = cUp.events.filter((e) => e.body.type === 'segment').at(-1).body.payload
     ok(seg.verifyEmbeddedOppCkpt(p, meB, 6), 'verifyEmbeddedOppCkpt passes at attested head = through')
     ok(!seg.verifyEmbeddedOppCkpt(p, meB, 5), 'verifyEmbeddedOppCkpt refuses through > attested head (A4-10 bound)')
     // (7) zero-drift: the attested chain's EMBEDDED fold is byte-identical to
-    // the unattested one (read-time only — no fold input, ever)
+    // the unattested one (read-time only: no fold input, ever)
     eq(stateHash(foldChain(cUp).ladders), stateHash(foldChain(mkAttested(undefined)).ladders),
       'witAttest never reaches the embedded fold (attested ≡ unattested fold bytes)')
   }

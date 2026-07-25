@@ -1,8 +1,8 @@
-// Play setup — a three-tab experience:
+// Play setup. A three-tab experience:
 //   "Local"         play on this machine: vs Stockfish (tiered Elo slider,
 //                   piece-icon color picker, shared TimeControlPicker) OR
-//                   "Over the board" (two humans, one screen — OtbSetup).
-//   "Online"        internet play — renders <OnlineTab/> (owned by another builder).
+//                   "Over the board" (two humans, one screen: OtbSetup).
+//   "Online"        internet play. Renders <OnlineTab/> (owned by another builder).
 //   "Grandmasters"  the persona gallery (PersonaGallery) + detail (PersonaDetail)
 //                   with its own Challenge flow.
 // State stays in PlayView (this component is controlled). All styling lives in
@@ -32,7 +32,7 @@ export type ColorChoice = 'white' | 'black' | 'random'
 export type PlayTab = 'local' | 'online' | 'grandmasters'
 /** Which Local sub-mode is active. */
 export type LocalMode = 'engine' | 'otb'
-/** vs-Computer engine style: Classic Stockfish (any Elo) or Human (Maia nets —
+/** vs-Computer engine style: Classic Stockfish (any Elo) or Human (Maia nets;
  *  only offered once the maia dataset group is installed). */
 export type BotStyle = 'classic' | 'human'
 
@@ -50,7 +50,7 @@ export interface SetupCardProps {
   elo: number
   /** vs-Computer style toggle state (Classic Stockfish / Human Maia). */
   botStyle: BotStyle
-  /** Selected Human level — one lc0 net per band (maia-1100..1900). */
+  /** Selected Human level. One lc0 net per band (maia-1100..1900). */
   maiaLevel: MaiaLevel
   /** True when the maia dataset group is installed (lc0 + >=1 weight): the
    *  style toggle only renders then. */
@@ -87,7 +87,7 @@ export interface SetupCardProps {
   onOpenFamousGame?: (famousId: string) => void
   /** True when the Stockfish dataset isn't on disk (fresh install): the
    *  engine-dependent starts (vs Computer, Grandmasters) swap their Start
-   *  button for the install CTA — same pattern as the go bots' KataGo card. */
+   *  button for the install CTA: same pattern as the go bots' KataGo card. */
   engineMissing?: boolean
   /** Deep link to Settings → Datasets (the engine download lives there). */
   onOpenSettings?: () => void
@@ -99,7 +99,7 @@ const ELO_MAX = 3190
 // Named strength tiers along the slider. `min` bounds the band (a tier is
 // active from its min up to the next tier's min); `jump` is the representative
 // Elo a chip click sets. Below ENGINE_ELO_FLOOR (1320) Stockfish can't be
-// weakened natively — the main process approximates those tiers with an
+// weakened natively: the main process approximates those tiers with an
 // Elo-scaled softmax over MultiPV lines, hence the honesty footnote in the UI.
 interface Tier {
   name: string
@@ -113,7 +113,7 @@ const TIERS: Tier[] = [
     name: 'Beginner',
     min: ELO_MIN,
     jump: 250,
-    blurb: 'Just learned the moves — hangs pieces and misses mate in one.'
+    blurb: 'Just learned the moves. Hangs pieces and misses mate in one.'
   },
   {
     name: 'Novice',
@@ -155,7 +155,7 @@ const TIERS: Tier[] = [
     name: 'Master',
     min: 2350,
     jump: 2500,
-    blurb: 'Master strength — precise, patient and unforgiving.'
+    blurb: 'Master strength. Precise, patient and unforgiving.'
   },
   {
     name: 'Grandmaster',
@@ -167,7 +167,7 @@ const TIERS: Tier[] = [
     name: 'Maximum',
     min: 3050,
     jump: ELO_MAX,
-    blurb: 'Full-power Stockfish. Objectively hopeless — good luck.'
+    blurb: 'Full-power Stockfish. Objectively hopeless. Good luck.'
   }
 ]
 
@@ -201,7 +201,7 @@ function ColorDisc({ choice }: { choice: ColorChoice }) {
 }
 
 /** The vs-Computer configurator (Local → vs Computer): Classic Stockfish at
- *  any Elo, or — once the maia dataset is installed — the Human style, five
+ *  any Elo, or (once the maia dataset is installed) the Human style, five
  *  Maia nets that play the moves people actually play at each band. */
 function EngineSetup({
   elo,
@@ -245,8 +245,8 @@ function EngineSetup({
           <h2>{human ? `Maia ${maiaLevel}` : 'Stockfish'}</h2>
           <span className="muted small">
             {human
-              ? 'A neural net trained on millions of real games — human moves, human mistakes.'
-              : 'The classic engine opponent — dial it from first-timer to world-beater.'}
+              ? 'A neural net trained on millions of real games. Human moves, human mistakes.'
+              : 'The classic engine opponent. Dial it from first-timer to world-beater.'}
           </span>
         </div>
       </header>
@@ -302,11 +302,11 @@ function EngineSetup({
             ))}
           </div>
           <p className="qm-blurb" aria-live="polite">
-            <strong>Maia {maiaLevel}</strong> — plays like a ~{maiaLevel} human: the openings,
-            plans and typical mistakes of real players at that rating.
+            <strong>Maia {maiaLevel}</strong> plays like a ~{maiaLevel} human: the openings, plans
+            and typical mistakes of real players at that rating.
           </p>
           <p className="qm-floor-note muted">
-            Human levels are estimates — your rating is updated against ~{maiaLevel}.
+            Human levels are estimates. Your rating is updated against ~{maiaLevel}.
           </p>
         </div>
       ) : (
@@ -328,7 +328,7 @@ function EngineSetup({
             step={10}
             value={elo}
             aria-labelledby="qm-strength-label"
-            aria-valuetext={`${elo} Elo — ${tier.name}`}
+            aria-valuetext={`${elo} Elo, ${tier.name}`}
             style={{ '--fill': `${fillPct}%` } as CSSProperties}
             onChange={(e) => onElo(Number(e.target.value))}
           />
@@ -346,11 +346,11 @@ function EngineSetup({
             ))}
           </div>
           <p className="qm-blurb" aria-live="polite">
-            <strong>{tier.name}</strong> — {tier.blurb}
+            <strong>{tier.name}</strong>: {tier.blurb}
           </p>
           {elo < ENGINE_ELO_FLOOR && (
             <p className="qm-floor-note muted">
-              Below {ENGINE_ELO_FLOOR} the engine is softened artificially — this level is measured
+              Below {ENGINE_ELO_FLOOR} the engine is softened artificially. This level is measured
               to play at roughly ~{measuredElo({ kind: 'engine', elo })} strength, and your rating
               is updated against that measured number.
             </p>
@@ -384,7 +384,7 @@ function EngineSetup({
 
       {engineMissing ? (
         // Fresh install: no Stockfish on disk. Starting would dead-end (the
-        // engine spawn rejects), so swap Start for the install CTA — the same
+        // engine spawn rejects), so swap Start for the install CTA. The same
         // inline pattern as the go bots' KataGo card.
         <EngineRequiredNotice context="play" onOpenSettings={onOpenSettings} />
       ) : (
@@ -443,7 +443,7 @@ export function SetupCard({
   // dies / live game is abandoned). Lock the other tabs until the user leaves
   // via the tab's own Cancel/Leave affordances.
   const onlineLocked = tab === 'online' && onlineStage !== 'idle'
-  // A live online game reuses GameView — hand it the full play width.
+  // A live online game reuses GameView. Hand it the full play width.
   const onlineGameLive = tab === 'online' && onlineStage === 'game'
 
   return (
@@ -536,7 +536,7 @@ export function SetupCard({
         />
       ) : selectedPersona ? (
         <>
-          {/* Persona games run on the same main-process Stockfish — a missing
+          {/* Persona games run on the same main-process Stockfish. A missing
               engine dataset must not dead-end the Challenge button either. */}
           {engineMissing && <EngineRequiredNotice context="play" onOpenSettings={onOpenSettings} />}
           <PersonaDetail

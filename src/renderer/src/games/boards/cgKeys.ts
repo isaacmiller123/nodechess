@@ -1,12 +1,12 @@
-// cgKeys — the ONE translation boundary between kernel/UCI square names and
+// cgKeys: the ONE translation boundary between kernel/UCI square names and
 // chessgroundx keys.
 //
 // chessgroundx Key ranks are SINGLE characters (types.d.ts `ranks`): '1'..'9'
-// then ':' ';' '<' '=' '>' '?' '@' for ranks 10..16 — i.e. rank 10 is ':' and
+// then ':' ';' '<' '=' '>' '?' '@' for ranks 10..16, i.e. rank 10 is ':' and
 // the key for xiangqi's a10 is 'a:'. Kernel canonical moves (ffish /
 // Fairy-Stockfish UCI, customVariants codec) spell the same square 'a10'.
 // Casting 'a10' to cg.Key silently breaks every chessground lookup on rank 10
-// (movable.dests, lastMove, fen-read piece lookups…) — that was the
+// (movable.dests, lastMove, fen-read piece lookups…): that was the
 // xiangqi/janggi "black can't move back-rank pieces" bug. EVERY square that
 // crosses the chessground boundary must go through these two helpers; never
 // cast a UCI square string to cg.Key directly.
@@ -17,7 +17,7 @@
 import type * as cg from 'chessgroundx/types'
 import { key2pos, pos2key } from 'chessgroundx/util'
 
-/** files a–p, ranks 1–16 — chessgroundx's hard limits (fairy-sf largeboard
+/** files a–p, ranks 1–16. Chessgroundx's hard limits (fairy-sf largeboard
  *  uses at most a–l / 1–10, comfortably inside). */
 const UCI_SQUARE_RE = /^([a-p])(1[0-6]|[1-9])$/
 

@@ -9,7 +9,7 @@
 //
 // esbuild-bundles the renderer games tree with a MOCK window.api installed
 // BEFORE import, so the engine-backed provider paths run without Electron.
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -121,7 +121,7 @@ try {
     const s = goSpec.init({ size: 9, komi: 7 })
     // main's not-installed rejection → actionable BotUnavailableError
     playGoImpl = async () => {
-      throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+      throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
     }
     let err = null
     try {
@@ -209,7 +209,7 @@ try {
     )
   }
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
   rmSync(tmp, { recursive: true, force: true })
   process.exit(0)
 } catch (err) {

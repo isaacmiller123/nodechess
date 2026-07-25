@@ -1,5 +1,5 @@
 /* ============================================================
-   Openings explorer — feature-scoped styles. Tokens only (tokens.css).
+   Openings explorer: feature-scoped styles. Tokens only (tokens.css).
    Reuses global primitives (.board-area .board-stage .board-wrap
    .board-controls .nav-group .icon-btn .panel .panel-head .panel-title
    .eval-chip .seg .move .move-num .move-san) and adds layout + the
@@ -64,7 +64,7 @@
   font-weight: var(--fw-medium);
   color: var(--text-muted);
 }
-/* "Family · Variation" split — the family carries the weight. */
+/* "Family · Variation" split: the family carries the weight. */
 .opening-banner-variation {
   color: var(--text-secondary);
   font-weight: var(--fw-regular);

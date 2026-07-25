@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Web server suite (web port W1 — docs/WEB-PORT-SPEC.md).
+// Web server suite (web port W1, docs/WEB-PORT-SPEC.md).
 //
 //   node scripts/test-web-server.mjs
 //

@@ -8,7 +8,7 @@
 // - WebGL unavailable → the toggle renders nothing and every view keeps its
 //   2D board silently (isTabletopSupported probes without pulling three.js).
 // - The three.js bundle loads ONLY here, via React.lazy, the first time a 3D
-//   board actually mounts — the toggle itself imports no 3D code.
+//   board actually mounts: the toggle itself imports no 3D code.
 // - A runtime failure (context lost) flips the preference back to 2D so the
 //   user lands on a working board, not a black canvas.
 
@@ -36,7 +36,7 @@ const WILL_3D: ReadonlySet<string> = new Set([
 ])
 
 /** Non-hook probe: does this kind get a 3D table on THIS machine? (WILL-tier
- *  kind + WebGL present — the same gate useBoardMode applies, minus the user
+ *  kind + WebGL present: the same gate useBoardMode applies, minus the user
  *  preference.) Replay Theater uses it to pick its 3D stage vs 2D autoplay. */
 export function tabletop3dOffered(kind: string): boolean {
   return WILL_3D.has(kind) && isTabletopSupported()
@@ -59,7 +59,7 @@ export function useBoardMode(kind: string): {
   return { is3d, set3d, available }
 }
 
-/** Segmented 2D/3D control — renders nothing when 3D isn't offered here. */
+/** Segmented 2D/3D control: renders nothing when 3D isn't offered here. */
 export function BoardModeToggle({ kind }: { kind: string }): JSX.Element | null {
   const { is3d, set3d, available } = useBoardMode(kind)
   if (!available) return null

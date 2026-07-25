@@ -8,7 +8,7 @@
 // Range requests so a puzzle costs the handful of B-tree pages it actually
 // touches, not the 2 GB the file weighs.
 //
-//   chunkedDb.ts    the WASM SQLite + range VFS (sql.js-httpvfs) — connection only
+//   chunkedDb.ts    the WASM SQLite + range VFS (sql.js-httpvfs). Connection only
 //   manifest.ts     the build manifest, and the rowid arithmetic it enables
 //   puzzleSource.ts the query surface, mirroring the puzzle IPC channels
 //
@@ -18,7 +18,7 @@
 //   const { puzzle } = await puzzles.next({ ratingLo: 900, ratingHi: 1400 })
 //
 // Hold ONE reader for the life of the page: it owns a worker and its page cache,
-// and nothing here is per-user. The reader serves the read-only channels only —
+// and nothing here is per-user. The reader serves the read-only channels only:
 // next/get/themes/batch/daily. Attempts, ratings, rush runs and daily results
 // are user state that does not exist in a static artifact; `daily()` returns
 // `result: null` and the caller merges the local outcome.

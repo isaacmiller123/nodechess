@@ -1,5 +1,5 @@
 /* ============================================================
-   Home dashboard — feature-scoped styles. Tokens only (tokens.css).
+   Home dashboard: feature-scoped styles. Tokens only (tokens.css).
    ============================================================ */
 
 .home-view {
@@ -448,7 +448,7 @@
   transform: translateX(0);
 }
 
-/* Result chip — its own semantics (not .eval-chip) */
+/* Result chip: its own semantics (not .eval-chip) */
 .result-chip {
   flex: none;
   min-width: 48px;

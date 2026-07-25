@@ -1,5 +1,5 @@
 // Public API of the A2 witness fabric (spec §1 PIN, §4 witness fabric, §2
-// checkpoints). Platform-neutral + deterministic — same inputs → same bytes on
+// checkpoints). Platform-neutral + deterministic: same inputs → same bytes on
 // node and in the browser bundle.
 //
 // This barrel re-exports the fabric-core module set. The lease builder

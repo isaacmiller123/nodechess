@@ -14,7 +14,7 @@ import {
 import { useSound } from '../../../sound'
 
 // ============================================================================
-// SLICE B — Puzzle Rush / Storm solve engine.  ★ OWNED BY THE RUSH BUILDER ★
+// SLICE B: Puzzle Rush / Storm solve engine.  ★ OWNED BY THE RUSH BUILDER ★
 //
 // A self-contained, clock-driven solve loop for the four timed variants. It
 // mirrors usePuzzleSession's lead-in -> solve -> auto-reply rhythm but is built
@@ -22,7 +22,7 @@ import { useSound } from '../../../sound'
 // and the queue is REFILLED in the background before it drains, walking the
 // rating band UP as the score climbs. The clock never blocks on IPC.
 //
-// Per-puzzle attempts log via puzzles:attempt({ mode:'rush' }) — that path does
+// Per-puzzle attempts log via puzzles:attempt({ mode:'rush' }): that path does
 // NOT move the Glicko ladder. The finished run persists via puzzles:saveRush.
 // ============================================================================
 
@@ -80,7 +80,7 @@ export const RUSH_VARIANTS: Record<RushMode, RushVariant> = {
   rush3: {
     mode: 'rush3',
     label: 'Rush 3',
-    blurb: 'Three lives. Solve as many as you can — three misses and it ends.',
+    blurb: 'Three lives. Solve as many as you can, three misses and it ends.',
     lives: 3,
     clock: false,
     startSec: 0,
@@ -90,7 +90,7 @@ export const RUSH_VARIANTS: Record<RushMode, RushVariant> = {
   rush5: {
     mode: 'rush5',
     label: 'Rush 5',
-    blurb: 'Five lives. A longer run for a bigger score — five misses ends it.',
+    blurb: 'Five lives. A longer run for a bigger score, five misses ends it.',
     lives: 5,
     clock: false,
     startSec: 0,
@@ -211,7 +211,7 @@ export function useRushSession(mode: RushMode): RushSession {
   const fetchingRef = useRef(false)
   // Whether the last COMPLETED refill actually added puzzles (false = band exhausted).
   const lastRefillGainedRef = useRef(true)
-  // Consecutive empty-queue waits in advance() — backstop cap for persistent IPC errors.
+  // Consecutive empty-queue waits in advance(). Backstop cap for persistent IPC errors.
   const emptyRetriesRef = useRef(0)
   const solutionIdxRef = useRef(1)
   const puzzleRef = useRef<Puzzle | null>(null)
@@ -293,7 +293,7 @@ export function useRushSession(mode: RushMode): RushSession {
         }
         lastRefillGainedRef.current = gained
       } catch {
-        /* transient IPC failure — try again on the next drain check */
+        /* transient IPC failure: try again on the next drain check */
       } finally {
         fetchingRef.current = false
       }
@@ -354,7 +354,7 @@ export function useRushSession(mode: RushMode): RushSession {
           setResult(res)
         })
         .catch(() => {
-          /* persistence failed — leave the results card without a saved best */
+          /* persistence failed: leave the results card without a saved best */
         })
         .finally(() => {
           if (runTokenRef.current === token) setSaving(false)
@@ -373,7 +373,7 @@ export function useRushSession(mode: RushMode): RushSession {
         ? applyMove(p.fen, m0.slice(0, 2), m0.slice(2, 4), promoRole(m0))
         : null
       if (!shown) {
-        // Corrupt puzzle — skip to the next without penalty.
+        // Corrupt puzzle: skip to the next without penalty.
         advanceRef.current(token)
         return
       }
@@ -420,8 +420,8 @@ export function useRushSession(mode: RushMode): RushSession {
       maybeRefill(token)
       const next = queueRef.current.shift()
       if (!next) {
-        // Queue empty mid-run. If a fetch is in flight, wait a beat and retry —
-        // capped so persistently failing IPC ends the run instead of spinning;
+        // Queue empty mid-run. If a fetch is in flight, wait a beat and retry.
+        // Capped so persistently failing IPC ends the run instead of spinning;
         // otherwise (no puzzles API at all) the run is cleared.
         if (fetchingRef.current) {
           emptyRetriesRef.current += 1
@@ -485,7 +485,7 @@ export function useRushSession(mode: RushMode): RushSession {
     [variant.clock, setClock]
   )
 
-  // --- Record one attempt (rush mode — does NOT move the Glicko ladder). ---
+  // --- Record one attempt (rush mode does NOT move the Glicko ladder). ---
   const recordAttempt = useCallback((p: Puzzle, ok: boolean, ms: number) => {
     const api = window.api?.puzzles
     if (!api) return
@@ -614,7 +614,7 @@ export function useRushSession(mode: RushMode): RushSession {
         if (runTokenRef.current !== token || endedRef.current) return
         const reply = applyMove(replyFromFen, replyUci.slice(0, 2), replyUci.slice(2, 4), promoRole(replyUci))
         if (!reply) {
-          // Corrupt reply — treat the puzzle as solved (we got this far legitimately).
+          // Corrupt reply: treat the puzzle as solved (we got this far legitimately).
           onSolved(p, token)
           return
         }

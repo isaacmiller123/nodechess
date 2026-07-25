@@ -1,7 +1,7 @@
 // Local over-the-board play for every kernel game (non-chessops kinds).
 // Two humans, one machine, rules end-to-end through the registry GameSpec:
 // the board proposes moves, this owner answers via spec.play, terminal states
-// come from spec.result. Flip policy is respected exactly — 'rotate' kinds
+// come from spec.result. Flip policy is respected exactly, 'rotate' kinds
 // (checkers, morris) get the auto-flip toggle, 'none' kinds (go, gomoku,
 // othello, hex, connect4, tictactoe) never rotate.
 //
@@ -10,7 +10,7 @@
 //     and Swap for hex's pie rule when enabled;
 //   - go's scoring phase: the board proposes onAction('markdead <v>') /
 //     onAction('finalize'), resolved here through the GoSpec seam;
-//   - go board-size picker (9/13/19) — picking a size starts a fresh game;
+//   - go board-size picker (9/13/19): picking a size starts a fresh game;
 //   - ffish kinds (requiresPreload) await spec.preload() before init.
 
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type JSX } from 'react'
@@ -86,7 +86,7 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   const [ready, setReady] = useState(() => game.requiresPreload !== true)
   const [state, setState] = useState<unknown>(() => (game.requiresPreload ? null : spec.init(initOptions)))
   const [autoFlip, setAutoFlip] = useState(true)
-  // A side lost on time (local go clocks) — a terminal state the SPEC cannot
+  // A side lost on time (local go clocks). A terminal state the SPEC cannot
   // know about, so it lives beside `result` and freezes the board the same way.
   const [timeLoss, setTimeLoss] = useState<PlayerColor | null>(null)
   // Bumped on every fresh game so the clock hook re-inits from its config.
@@ -135,7 +135,7 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
     state !== null && ready && !result && !goScoring && timeLoss === null && moves.length > 0
   const goClock = useLocalGoClock(goClockCfg, turn, clockRunning, clockEpoch, setTimeLoss)
 
-  // Territory estimate (KataGo ownership overlay + score strip) — hidden
+  // Territory estimate (KataGo ownership overlay + score strip). Hidden
   // entirely unless the engine is installed; scoring phase has its own exact
   // paint, so the live estimate stands down there.
   const territory = useTerritoryEstimate(
@@ -209,16 +209,16 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   const canSwap = timeLoss === null && legal.includes('swap')
 
   const resultLabel = timeLoss
-    ? `${kernelColorLabel(kind, timeLoss === 'white' ? 'black' : 'white')} wins — time`
+    ? `${kernelColorLabel(kind, timeLoss === 'white' ? 'black' : 'white')} wins on time`
     : result &&
       (result.winner === null
-        ? `Draw — ${result.reason.replace(/-/g, ' ')}`
-        : `${kernelColorLabel(kind, result.winner)} wins — ${result.reason.replace(/-/g, ' ')}`)
+        ? `Draw: ${result.reason.replace(/-/g, ' ')}`
+        : `${kernelColorLabel(kind, result.winner)} wins: ${result.reason.replace(/-/g, ' ')}`)
 
   const over = result !== null || timeLoss !== null
   const dot = DOT_COLORS[kind]
   const turnLabel = goScoring
-    ? 'Scoring — tap dead groups'
+    ? 'Scoring: tap dead groups'
     : over
       ? 'Game over'
       : `${kernelColorLabel(kind, turn)} to move`
@@ -348,8 +348,8 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
                   className={`kotb-chip is-mini${goByoId === p.id ? ' is-active' : ''}`}
                   title={
                     p.byo
-                      ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s — a move inside a period resets it`
-                      : 'No overtime — main time only'
+                      ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s. A move inside a period resets it.`
+                      : 'No overtime, main time only'
                   }
                   onClick={() => {
                     setGoByoId(p.id)
@@ -375,7 +375,7 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         )}
         {canPass && (
           <button type="button" className="votb-btn" onClick={() => onMove('pass')}>
-            Pass{kind === 'othello' ? ' — no legal placement' : ''}
+            Pass{kind === 'othello' ? ' (no legal placement)' : ''}
           </button>
         )}
         {canSwap && (
@@ -388,7 +388,6 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         </button>
         <p className="votb-note">
           Over-the-board: pass the machine between moves.
-          {kind === 'go' && ' Two passes end the game — then tap dead groups and finalize the score.'}
         </p>
       </aside>
     </div>

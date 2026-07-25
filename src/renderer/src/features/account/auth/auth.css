@@ -1,7 +1,7 @@
 /*
  * Auth surfaces for the accounts preview (.aauth-): the signed-out hero,
  * the create / sign-in dialog (§1 derivation, §10 sign-in anywhere), and the
- * recovery export (C-5 — the mnemonic/keyfile is the lifeline).
+ * recovery export (C-5: the mnemonic/keyfile is the lifeline).
  * Tokens only. Composes the shared primitives: .card, .btn, .field,
  * .text-input, .segmented/.seg, and the .shell-modal head/body/foot pattern.
  */
@@ -190,7 +190,7 @@
   cursor: default;
 }
 
-/* Live tag preview (§1: name#TAG is self-derived — no registry). */
+/* Live tag preview (§1: name#TAG is self-derived, no registry). */
 .aauth-tagprev {
   display: flex;
   align-items: flex-start;

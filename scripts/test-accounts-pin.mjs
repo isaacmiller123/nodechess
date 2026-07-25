@@ -1,5 +1,5 @@
 // Headless test for the A2 tOPRF PIN committee
-// (src/shared/accounts/witness/{shamir,oprf,pin}.ts — spec §1).
+// (src/shared/accounts/witness/{shamir,oprf,pin}.ts, spec §1).
 //
 //   node scripts/test-accounts-pin.mjs
 //
@@ -75,7 +75,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -139,7 +139,7 @@ async function run(outdir) {
   const T = P.pinT // 6
   const members = Array.from({ length: N }, (_, i) => {
     const k = kp(10 + i * 7)
-    // nodeId = sha256(memberRootPub) — here we use the signing pub as the identity seed
+    // nodeId = sha256(memberRootPub): here we use the signing pub as the identity seed
     const nodeId = hash.toB64u(hash.sha256(k.pub))
     return { i: i + 1, key: k, nodeId }
   })
@@ -166,7 +166,7 @@ async function run(outdir) {
     eq(shamir.recoverScalar(subsetB, T), secret, 'any T shares recover the secret (subset B)')
     ok(shamir.recoverScalar(shuffled.slice(0, T), T) === secret, 'first T shares recover the secret')
 
-    // T-1 shares recover a DIFFERENT value (no error — the field gives garbage)
+    // T-1 shares recover a DIFFERENT value (no error: the field gives garbage)
     const tMinus1 = deal.shares.slice(0, T - 1)
     throws(() => shamir.recoverScalar(tMinus1, T), 'recoverScalar throws when given < T shares')
     // interpolate the T-1 set as if it were a (T-1)-of-* poly → different secret
@@ -195,7 +195,7 @@ async function run(outdir) {
 
   // ============================================================================
   // 2. single-key OPRF output  ≡  threshold (share-split) OPRF output
-  //    THE correctness test — multiple pins × committees.
+  //    THE correctness test: multiple pins × committees.
   // ============================================================================
   console.log('\n· single-key OPRF  ≡  threshold OPRF (the key invariant) …')
   function thresholdRound(pinStr, secret, deal, respondingIdx, rngSeed) {
@@ -261,7 +261,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 4. DLEQ — a member returning a wrong partial is detectable
+  // 4. DLEQ. A member returning a wrong partial is detectable
   // ============================================================================
   console.log('\n· DLEQ partial-evaluation proofs …')
   {
@@ -283,7 +283,7 @@ async function run(outdir) {
 
     // deterministic prover (RNG-free, what committee members use): verifies, is
     // reproducible, and its nonce is transcript-bound (a different blinded ⇒ a
-    // different proof — no nonce reuse across evaluations).
+    // different proof: no nonce reuse across evaluations).
     const detA = oprf.dleqProveDeterministic(share.share, bl.blinded, partial, commitment)
     ok(oprf.dleqVerify(bl.blinded, partial, commitment, detA), 'deterministic DLEQ proof verifies against the shareCommitment')
     const detB = oprf.dleqProveDeterministic(share.share, bl.blinded, partial, commitment)
@@ -299,7 +299,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 5. PIN record — build + standalone verify
+  // 5. PIN record. Build + standalone verify
   // ============================================================================
   console.log('\n· PIN record (root-signed standalone) …')
   let pinRec, pinPub, pinPriv
@@ -326,7 +326,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 6. Attempt counter — never resets; effectiveCount resists a lowballing minority
+  // 6. Attempt counter. Never resets; effectiveCount resists a lowballing minority
   // ============================================================================
   console.log('\n· attempt counter + effectiveCount …')
   {
@@ -335,7 +335,7 @@ async function run(outdir) {
     eq(pin.memberFails(s), 100, '100 evaluations, 0 successes → 100 fails')
     s = pin.applySuccess(s)
     eq(pin.memberFails(s), 99, 'a proven success reduces the count by 1 (net)')
-    // more evals keep raising evaluations — the counter never resets
+    // more evals keep raising evaluations: the counter never resets
     for (let i = 0; i < 30; i++) s = pin.applyEval(s)
     eq(s.evaluations, 130, 'evaluations only ever grow (never reset)')
     eq(pin.memberFails(s), 129, 'fails = evaluations − successes tracks lifetime')
@@ -357,7 +357,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 7. Fuse — trips at exactly 100, threshold-signed, verifies, expiry + refill
+  // 7. Fuse. Trips at exactly 100, threshold-signed, verifies, expiry + refill
   // ============================================================================
   console.log('\n· fuse (trip / sign / verify / expiry / refill) …')
   let fuse
@@ -407,7 +407,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 8. PIN session — verify + wrong-pin / wrong-key rejection
+  // 8. PIN session. Verify + wrong-pin / wrong-key rejection
   // ============================================================================
   console.log('\n· PIN session (takeover / device-witness) …')
   {
@@ -427,7 +427,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 9. Committee handoff — carries the counter forward, rejects reset-to-zero
+  // 9. Committee handoff carries the counter forward, rejects reset-to-zero
   // ============================================================================
   console.log('\n· committee handoff (counter carried forward) …')
   {

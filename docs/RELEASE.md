@@ -1,7 +1,7 @@
-# nodechess desktop release runbook — mac + win. Status: verified live (2026-07-24).
+# nodechess desktop release runbook: mac + win. Status: verified live (2026-07-24).
 
 How a nodechess **desktop** build gets from this repo to the public download page. The web
-target is a separate artifact — see [`WEB-DEPLOY.md`](WEB-DEPLOY.md).
+target is a separate artifact: see [`WEB-DEPLOY.md`](WEB-DEPLOY.md).
 
 The whole release is one idea: **push a `vX.Y.Z` git tag, and CI builds the mac + Windows
 installers and attaches them to a GitHub Release.** Everything below is the detail around
@@ -16,8 +16,8 @@ bump); a human pushes the tag.
 |---|---|
 | Download page | GitHub Releases of **`isaacmiller123/nodechess`** (public) |
 | What triggers a build | pushing a tag matching `v*` (also runnable manually via Actions) |
-| Who builds | `.github/workflows/build.yml` — `macos-latest` + `windows-latest`, in parallel |
-| Signing | **none** — mac + win ship unsigned (users clear Gatekeeper / SmartScreen once) |
+| Who builds | `.github/workflows/build.yml`: `macos-latest` + `windows-latest`, in parallel |
+| Signing | **none**: mac + win ship unsigned (users clear Gatekeeper / SmartScreen once) |
 | Auto-update | Windows = in-place (electron-updater); macOS = check-and-notify + `.dmg` download |
 | Installer size | ~186–188 MB per mac artifact (lean: engine + puzzle DB are **not** bundled) |
 | Datasets | imported at runtime from a **separate** `datasets-v1` release, not the app tag |
@@ -37,17 +37,17 @@ produced every mac artifact into `release/` (git-ignored):
 | `nodechess-1.2.1-x64.dmg` | 187,820,866 | 188 MB | Intel installer |
 | `nodechess-1.2.1-mac-arm64.zip` | 185,672,134 | 186 MB | Apple Silicon (update feed / no-DMG) |
 | `nodechess-1.2.1-mac-x64.zip` | 187,692,632 | 188 MB | Intel (update feed / no-DMG) |
-| `*.blockmap` (×4) | ~0.2 MB each | — | delta-update maps |
-| `latest-mac.yml` | 801 B | — | update-feed metadata (lists all four) |
+| `*.blockmap` (×4) | ~0.2 MB each | n/a | delta-update maps |
+| `latest-mac.yml` | 801 B | n/a | update-feed metadata (lists all four) |
 
 Notes from the run:
 - electron-builder **26.15.3**, electron **42.5.0**, dmg tooling (`hdiutil`) present.
-- `skipped macOS code signing — reason=identity explicitly is set to null` — expected.
+- `skipped macOS code signing` with `reason=identity explicitly is set to null`. Expected.
 - Both arches are built in one pass: electron-builder rebuilds native deps for arm64, then
   for x64, downloading the x64 Electron once (cached afterward). A cold first run also
   downloads the `dmgbuild` bundle.
 - On macOS this command builds **mac only**. The Windows `.exe`/`.zip` come from the
-  `windows-latest` CI leg — electron-builder cannot cross-compile the native installers.
+  `windows-latest` CI leg: electron-builder cannot cross-compile the native installers.
 
 Reproduce (this lane owns `out/` and `release/`):
 
@@ -59,13 +59,13 @@ ls -la release/*.dmg release/*.zip
 
 The built app is **ad-hoc signed only** (`codesign -dv` → `Signature=adhoc`,
 `Identifier=Electron`); `spctl -a -t exec` rejects it. That is the unsigned state the
-Gatekeeper story in §6 is written for — not a build defect.
+Gatekeeper story in §6 is written for, not a build defect.
 
 ---
 
 ## 2. One-time owner setup (mostly already done)
 
-The classic "it's not a git repo yet" step is **already complete** — this tree is a git repo
+The classic "it's not a git repo yet" step is **already complete**: this tree is a git repo
 with remote `origin → https://github.com/isaacmiller123/nodechess.git` and tags through
 `v1.2.1`. Kept here so the flow is reproducible from scratch:
 
@@ -78,13 +78,13 @@ with remote `origin → https://github.com/isaacmiller123/nodechess.git` and tag
    git add -A && git commit -m "…" && git push -u origin main
    ```
 3. **No secrets required for building.** CI signs nothing and uses the ambient
-   `GITHUB_TOKEN` (workflow grants `contents: write`) to create the Release — no personal
+   `GITHUB_TOKEN` (workflow grants `contents: write`) to create the Release. No personal
    access token, no signing certs.
 4. **Datasets release must exist** (it does): a **separate, stable** release tagged
    `datasets-v1` holds the engine + puzzle assets the app imports at runtime (see §4). App
    version bumps do **not** touch it.
 
-Three places name the GitHub repo and **must stay in agreement** — `release.mjs check`
+Three places name the GitHub repo and **must stay in agreement**. `release.mjs check`
 verifies this:
 - `electron-builder.yml` → `publish: { owner, repo }`
 - the `origin` git remote
@@ -121,7 +121,7 @@ build inputs exist (`electron-builder.yml`, `build/icon.icns`, `build/icon.ico`,
 
 `package.json` `version` is the single source of truth (Electron reads it via
 `app.getVersion()`; the updater compares against the newest release tag). Bump it with the
-helper — it edits **only** the version string, so formatting is preserved:
+helper. It edits **only** the version string, so formatting is preserved:
 
 ```sh
 node scripts/release.mjs bump patch            # 1.2.1 → 1.2.2 (also: minor | major | 1.3.0)
@@ -129,7 +129,7 @@ node scripts/release.mjs bump patch --dry-run  # print the plan, write nothing
 ```
 
 By default `bump` writes `package.json` and stops, printing the exact next git commands. It
-never commits, tags, or pushes unless you opt in — and every git-mutating step prints its
+never commits, tags, or pushes unless you opt in, and every git-mutating step prints its
 plan and asks `[y/N]` first (`--yes` to skip the prompt):
 
 ```sh
@@ -161,7 +161,7 @@ both platforms and uploads them as 14-day **workflow artifacts** without creatin
 The installer is deliberately small: it bundles only tiny, always-on content
 (`resources/openings`, `famous`, `curriculum`, `personas`, `games-art` ≈ 33 MB, plus the
 ~750 KB mac Fairy-Stockfish). The **heavy** datasets are **not** in the repo or the
-installer — they download on first run via **Settings → Datasets** from the separate
+installer. They download on first run via **Settings → Datasets** from the separate
 `datasets-v1` release (`src/main/datasets/datasets.service.ts`, streamed + sha256-verified):
 
 | Dataset | Asset | Download | On disk |
@@ -175,10 +175,10 @@ installer — they download on first run via **Settings → Datasets** from the 
 Consequences for releasing:
 - **App version bumps never re-upload datasets.** The `RELEASE_BASE` URL is pinned to the
   `datasets-v1` tag. Only touch that release when the engine/puzzle **data** itself changes.
-- **Known gap — Intel Mac (`darwin-x64`) has no Stockfish artifact.** `ENGINE_ARTIFACTS`
+- **Known gap: Intel Mac (`darwin-x64`) has no Stockfish artifact.** `ENGINE_ARTIFACTS`
   publishes `win32-x64` and `darwin-arm64` only, so on an Intel Mac the main analysis engine
   is unavailable (puzzles/Maia/KataGo still import; the tiny bundled Fairy-Stockfish still
-  works). The `.dmg`/`.zip` still build and ship — this is a datasets-coverage gap, not a
+  works). The `.dmg`/`.zip` still build and ship. This is a datasets-coverage gap, not a
   packaging one. Closing it = add a verified `darwin-x64` row (owned by the datasets lane).
 
 ---
@@ -193,17 +193,17 @@ packaged builds only) to keep online-play peers on matching versions. The path i
   `*.blockmap` off the Release, downloads in the background, and installs on confirm /
   on-quit. This is why CI must attach `latest.yml` and the blockmaps for the win leg.
 - **macOS → check-and-notify only.** Squirrel.Mac refuses unsigned bundles, so there is
-  **no** in-place mac update — ever. The app queries the releases API, and if newer, opens
+  **no** in-place mac update, ever. The app queries the releases API, and if newer, opens
   the browser to the right `.dmg` for the user's chip (picker prefers `nodechess-<v>-<arch>.dmg`
   → `nodechess-<v>-mac-<arch>.zip` → any `.dmg`). The user installs it over the old app.
   `latest-mac.yml` is emitted for symmetry but the mac app doesn't consume it.
 
-So the artifact **names** are an API the updater depends on — don't rename them without
+So the artifact **names** are an API the updater depends on. Don't rename them without
 updating `pickMacAsset` / `pickWinAsset` in `updateLogic.ts`.
 
 ---
 
-## 6. Unsigned builds — the first-run story (tell users this)
+## 6. Unsigned builds: the first-run story (tell users this)
 
 `electron-builder.yml` sets `identity: null` / `hardenedRuntime: false` (mac) and the win
 build is unsigned too. Distributable, but the OS warns once. This copy also lives in the
@@ -211,7 +211,7 @@ README and the release notes:
 
 **macOS (Gatekeeper).** First launch may say *"…cannot be opened because Apple cannot check
 it for malicious software."* Either:
-- **Right-click (Control-click) the app → Open → Open** — the per-app override (first launch
+- **Right-click (Control-click) the app → Open → Open**. The per-app override (first launch
   only), **or**
 - **System Settings → Privacy & Security → Open Anyway**, **or**
 - if a browser quarantined the download, clear the flag in Terminal:
@@ -226,16 +226,16 @@ download → right-click → **Properties** → tick **Unblock** → **OK**.
 
 ---
 
-## 7. Local build — troubleshooting (mac, this lane only)
+## 7. Local build: troubleshooting (mac, this lane only)
 
 `npm run package` needs, on macOS: network (first run downloads the x64 Electron + dmg
-tooling), `hdiutil` (Xcode Command Line Tools — `xcode-select --install`), and free disk
+tooling), `hdiutil` (Xcode Command Line Tools: `xcode-select --install`), and free disk
 (~1–2 GB working set). Common outcomes:
 
 | Symptom | Cause / fix |
 |---|---|
-| `skipped macOS code signing — identity is set to null` | **Expected**, not an error. |
-| Hangs on `downloaded label=electron` | Network fetch of the x64 Electron zip — let it finish or retry; it caches under `~/Library/Caches/electron`. |
+| `skipped macOS code signing` (identity is set to null) | **Expected**, not an error. |
+| Hangs on `downloaded label=electron` | Network fetch of the x64 Electron zip. Let it finish or retry; it caches under `~/Library/Caches/electron`. |
 | `GH_TOKEN is not set` at the very end | Publish was attempted. Run `npm run package -- --publish never` (CI already passes this). |
 | dmg step fails | `hdiutil` missing → install Xcode Command Line Tools. |
 | Native module ABI error | Re-run `npm ci` so `electron-rebuild` rebuilds against Electron 42. |
@@ -249,13 +249,13 @@ for the Windows set.
 
 Unsigned is the current, deliberate policy. To upgrade later:
 
-- **macOS — Apple Developer ID** ($99/yr). Set `mac.identity` to the Developer ID Application
+- **macOS: Apple Developer ID** ($99/yr). Set `mac.identity` to the Developer ID Application
   name in `electron-builder.yml`, restore `hardenedRuntime: true`, add a notarization step,
   and supply `APPLE_ID` / `APPLE_APP_SPECIFIC_PASSWORD` / `APPLE_TEAM_ID` as repo secrets.
-  Then **mac in-place auto-update becomes possible** (Squirrel.Mac accepts signed bundles) —
-  a follow-up change in `src/main/updates/`. Also lets you drop the imported-Stockfish
+  Then **mac in-place auto-update becomes possible** (Squirrel.Mac accepts signed bundles),
+  with a follow-up change in `src/main/updates/`. Also lets you drop the imported-Stockfish
   hardened-runtime exception.
-- **Windows — code-signing certificate** (OV/EV). Provide `CSC_LINK` + `CSC_KEY_PASSWORD`
+- **Windows: code-signing certificate** (OV/EV). Provide `CSC_LINK` + `CSC_KEY_PASSWORD`
   secrets; removes SmartScreen and improves the install trust prompt.
 
 Neither is required to ship. `CSC_IDENTITY_AUTO_DISCOVERY: "false"` in CI keeps builds
@@ -263,7 +263,7 @@ unsigned regardless of any local keychain identity.
 
 ---
 
-## 9. Reference — artifact names
+## 9. Reference: artifact names
 
 From `electron-builder.yml` (`${version}` = `package.json` version):
 
@@ -289,9 +289,9 @@ The Windows installer name is pinned rather than left to electron-builder's defa
 - [x] `datasets-v1` release exists with the engine + puzzle assets.
 - [ ] **Per release:** bump `package.json`, push `vX.Y.Z`, confirm both CI legs green + the
       Release page shows the installers.
-- [ ] *(optional)* Apple Developer ID for mac signing/notarization ($99/yr) — enables mac
+- [ ] *(optional)* Apple Developer ID for mac signing/notarization ($99/yr). Enables mac
       in-place updates and removes the Gatekeeper prompt.
-- [ ] *(optional)* Windows code-signing certificate — removes SmartScreen.
+- [ ] *(optional)* Windows code-signing certificate: removes SmartScreen.
 - [ ] *(follow-up, datasets lane)* publish a `darwin-x64` Stockfish artifact so Intel Macs
       get the analysis engine.
 

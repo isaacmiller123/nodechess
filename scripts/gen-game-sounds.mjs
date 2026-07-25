@@ -1,9 +1,9 @@
-// gen-game-sounds.mjs — offline procedural synthesis of the GAMES-PLATFORM
+// gen-game-sounds.mjs: offline procedural synthesis of the GAMES-PLATFORM
 // sound events for nodechess (docs/GAMES-PLATFORM-SPEC.md).
 //
 //   node scripts/gen-game-sounds.mjs
 //
-// Renders 16-bit PCM mono 44.1 kHz WAV files in pure Node (no dependencies —
+// Renders 16-bit PCM mono 44.1 kHz WAV files in pure Node (no dependencies;
 // WAV headers written by hand) into:
 //
 //   src/renderer/src/assets/sounds/games/<event>.<1|2|3>.wav   (3 variants)
@@ -11,21 +11,21 @@
 //
 // The games/ directory is a THEME-AGNOSTIC pool: SoundManager serves these
 // samples for every theme (standard/classic/real) unless a theme dir ships
-// its own file for the event — so per-theme overrides need zero code.
+// its own file for the event, so per-theme overrides need zero code.
 //
 // Events (all physically layered: noise-burst contact transients + tuned
 // modal resonances + exponential decays; every variant re-rolls seeded
 // micro-variation so rapid play never machine-guns one take):
-//   goStone           slate stone snapped onto a kaya goban — glassy click,
+//   goStone           slate stone snapped onto a kaya goban, glassy click,
 //                     deep resonant board 'pok' (goban cavity)
-//   discFlip          othello disc flipping — quick light double-click flutter
+//   discFlip          othello disc flipping: quick light double-click flutter
 //   discPlace         felt-damped wooden disc tap (checkers/morris)
-//   discDrop          connect-4 — disc chattering down the slot rails,
+//   discDrop          connect-4: disc chattering down the slot rails,
 //                     accelerating + descending, then a plastic landing clack
-//   pieceSlideCapture checkers jump — felt swoosh, landing tap, taken-piece
+//   pieceSlideCapture checkers jump: felt swoosh, landing tap, taken-piece
 //                     rattle
 //   penStroke         soft marker squeak on paper (tic-tac-toe/hex)
-//   shogiPiece        shogi wedge snapped down ("pachi") — sharper and
+//   shogiPiece        shogi wedge snapped down ("pachi"): sharper and
 //                     brighter than the western chess move
 //   gameStartGong     subtle low gong swell (go game start)
 //
@@ -129,7 +129,7 @@ function biquad(x, type, f0, q) {
   }
 }
 
-/** Band-passed white-noise burst — the contact "click" of two hard surfaces. */
+/** Band-passed white-noise burst: the contact "click" of two hard surfaces. */
 function noiseBurst(out, rng, { t = 0, dur, center, q = 0.9, gain, attack = 0.0003, decay }) {
   const n = Math.ceil(dur * SR)
   const tmp = new Float64Array(n)
@@ -144,7 +144,7 @@ function noiseBurst(out, rng, { t = 0, dur, center, q = 0.9, gain, attack = 0.00
   }
 }
 
-/** Felt-slide / scuff — low-passed noise with a swell-and-fade envelope. */
+/** Felt-slide / scuff: low-passed noise with a swell-and-fade envelope. */
 function slide(out, rng, { t = 0, dur, cutoff = 1100, gain, swell = 0.35 }) {
   const n = Math.ceil(dur * SR)
   const tmp = new Float64Array(n)
@@ -159,7 +159,7 @@ function slide(out, rng, { t = 0, dur, cutoff = 1100, gain, swell = 0.35 }) {
   }
 }
 
-/** Band-emphasized stroke noise — marker/pen on paper (bandpass, swell env). */
+/** Band-emphasized stroke noise: marker/pen on paper (bandpass, swell env). */
 function stroke(out, rng, { t = 0, dur, center = 1700, q = 1.6, gain, swell = 0.4 }) {
   const n = Math.ceil(dur * SR)
   const tmp = new Float64Array(n)
@@ -284,15 +284,15 @@ function wavBytes(x) {
 }
 
 // ---------------------------------------------------------------------------
-// Event builders — every call re-rolls seeded micro-structure from `rng`
+// Event builders: every call re-rolls seeded micro-structure from `rng`
 // ---------------------------------------------------------------------------
 
 const GAMES = {
   // Slate stone snapped onto a kaya goban. Signature: a hard glassy contact
-  // (stone is much harder than boxwood) over the goban's deep cavity 'pok' —
+  // (stone is much harder than boxwood) over the goban's deep cavity 'pok':
   // traditional boards are hollowed underneath and genuinely resonant.
   goStone(out, rng) {
-    // contact snap — very bright, ~1–2 ms
+    // contact snap: very bright, ~1–2 ms
     noiseBurst(out, rng, {
       t: 0,
       dur: uni(rng, 0.001, 0.002),
@@ -301,10 +301,10 @@ const GAMES = {
       gain: uni(rng, 0.5, 0.62),
       decay: 0.0009
     })
-    // stone modes — glassy, very quickly damped
+    // stone modes. Glassy, very quickly damped
     mode(out, { t: 0, freq: uni(rng, 2600, 3200), tau: uni(rng, 0.004, 0.007), gain: 0.4 * jit(rng, 0.2), attack: 0.0006, phase: rng() * 6.28 })
     mode(out, { t: 0, freq: uni(rng, 4200, 5000), tau: uni(rng, 0.003, 0.005), gain: 0.22 * jit(rng, 0.25), attack: 0.0005, phase: rng() * 6.28 })
-    // goban cavity — the deep 'pok' that makes go sound like go
+    // goban cavity: the deep 'pok' that makes go sound like go
     const f0 = 218 * jit(rng, 0.05)
     mode(out, { t: 0.0008, freq: f0, tau: uni(rng, 0.05, 0.07), gain: 1.0, attack: 0.0015, drift: 0.05, phase: rng() * 6.28 })
     mode(out, { t: 0.0008, freq: f0 * 1.58 * jit(rng, 0.04), tau: 0.03 * jit(rng, 0.15), gain: 0.42, attack: 0.0015, phase: rng() * 6.28 })
@@ -313,14 +313,14 @@ const GAMES = {
     mode(out, { t: 0, freq: f0 * 0.5, tau: 0.07, gain: 0.3 * jit(rng, 0.2), attack: 0.003, phase: rng() * 6.28 })
   },
 
-  // Othello disc flipping over — a light tick as it lifts, a slightly deeper
+  // Othello disc flipping over: a light tick as it lifts, a slightly deeper
   // tap as the other face lands, and a tiny settle: a double-click flutter.
   discFlip(out, rng) {
     const t2 = uni(rng, 0.028, 0.042)
-    // face lifts — light plastic tick
+    // face lifts. Light plastic tick
     noiseBurst(out, rng, { t: 0, dur: 0.0012, center: uni(rng, 2900, 3500), q: 1, gain: uni(rng, 0.3, 0.4), decay: 0.0007 })
     mode(out, { t: 0, freq: uni(rng, 1300, 1600), tau: uni(rng, 0.005, 0.008), gain: 0.4 * jit(rng, 0.2), attack: 0.0006, phase: rng() * 6.28 })
-    // lands on the opposite face — slightly deeper
+    // lands on the opposite face. Slightly deeper
     noiseBurst(out, rng, { t: t2, dur: 0.0015, center: uni(rng, 2300, 2800), q: 1, gain: uni(rng, 0.36, 0.48), decay: 0.0009 })
     mode(out, { t: t2, freq: uni(rng, 900, 1100), tau: uni(rng, 0.008, 0.012), gain: 0.55 * jit(rng, 0.2), attack: 0.0008, phase: rng() * 6.28 })
     mode(out, { t: t2, freq: 236 * jit(rng, 0.06), tau: uni(rng, 0.025, 0.035), gain: 0.5, attack: 0.0015, drift: 0.05, phase: rng() * 6.28 })
@@ -328,7 +328,7 @@ const GAMES = {
     mode(out, { t: t2 + uni(rng, 0.02, 0.032), freq: uni(rng, 1000, 1250), tau: 0.004, gain: 0.16 * jit(rng, 0.3), attack: 0.0007, phase: rng() * 6.28 })
   },
 
-  // Felt-damped wooden disc tap — checkers/morris. Duller and rounder than a
+  // Felt-damped wooden disc tap, checkers/morris. Duller and rounder than a
   // chess piece: low contact brightness, tight ring, a whisper of felt.
   discPlace(out, rng) {
     placement(out, rng, {
@@ -341,7 +341,7 @@ const GAMES = {
     slide(out, rng, { t: uni(rng, 0.016, 0.026), dur: uni(rng, 0.04, 0.06), cutoff: uni(rng, 700, 900), gain: uni(rng, 0.05, 0.08) })
   },
 
-  // Connect-4 drop — the disc chatters down the slot rails (accelerating,
+  // Connect-4 drop. The disc chatters down the slot rails (accelerating,
   // descending ticks), lands with a hollow plastic clack into the frame,
   // then one small bounce.
   discDrop(out, rng) {
@@ -357,7 +357,7 @@ const GAMES = {
       f *= 0.88 // and lower as it nears the bottom
       g *= 1.09 // and a touch louder
     }
-    // landing clack — hollow plastic disc into the stack/frame
+    // landing clack. Hollow plastic disc into the stack/frame
     noiseBurst(out, rng, { t: at, dur: 0.002, center: uni(rng, 2700, 3300), q: 0.9, gain: uni(rng, 0.5, 0.6), decay: 0.0012 })
     mode(out, { t: at, freq: uni(rng, 700, 850), tau: uni(rng, 0.012, 0.017), gain: 0.8, attack: 0.0008, phase: rng() * 6.28 })
     mode(out, { t: at, freq: uni(rng, 1400, 1700), tau: 0.007, gain: 0.3, attack: 0.0007, phase: rng() * 6.28 })
@@ -368,7 +368,7 @@ const GAMES = {
     noiseBurst(out, rng, { t: tb, dur: 0.001, center: 3000, q: 1, gain: 0.14, decay: 0.0006 })
   },
 
-  // Checkers jump — the piece swooshes over the taken one (felt slide with a
+  // Checkers jump: the piece swooshes over the taken one (felt slide with a
   // swell), lands with a wooden tap, and the captured piece rattles aside.
   pieceSlideCapture(out, rng) {
     const land = uni(rng, 0.1, 0.125)
@@ -389,22 +389,22 @@ const GAMES = {
     rattle(out, rng, { t: land + uni(rng, 0.015, 0.025), count: 2, gain: uni(rng, 0.26, 0.34) })
   },
 
-  // Soft marker squeak — tic-tac-toe / hex. Mostly band-emphasized stroke
+  // Soft marker squeak: tic-tac-toe / hex. Mostly band-emphasized stroke
   // hiss with a faint gliding squeak resonance and a tiny pen-lift tick.
   penStroke(out, rng) {
     const dur = uni(rng, 0.11, 0.15)
     stroke(out, rng, { t: 0, dur, center: uni(rng, 1500, 2000), q: uni(rng, 1.4, 1.9), gain: uni(rng, 0.5, 0.62), swell: uni(rng, 0.3, 0.5) })
-    // felt-tip squeak — quiet, slightly falling
+    // felt-tip squeak. Quiet, slightly falling
     mode(out, { t: dur * 0.15, freq: uni(rng, 1500, 1900), tau: dur * 0.45, gain: uni(rng, 0.1, 0.16), attack: dur * 0.25, drift: 0.12, phase: rng() * 6.28 })
     // pen lifts off the board
     noiseBurst(out, rng, { t: dur * uni(rng, 0.92, 1), dur: 0.001, center: 2800, q: 1, gain: 0.12, decay: 0.0006 })
   },
 
-  // Shogi wedge snapped onto the board — the famous "pachi": a fingertip
+  // Shogi wedge snapped onto the board: the famous "pachi": a fingertip
   // drive, a hard dry boxwood crack (higher than a western piece), and a
   // tight, punchy board note (shogi boards are thick and legged, like goban).
   shogiPiece(out, rng) {
-    // fingertip snap — extremely bright, ~1.5 ms
+    // fingertip snap: extremely bright, ~1.5 ms
     noiseBurst(out, rng, {
       t: 0,
       dur: uni(rng, 0.001, 0.0018),
@@ -413,10 +413,10 @@ const GAMES = {
       gain: uni(rng, 0.52, 0.64),
       decay: 0.0008
     })
-    // wedge modes — hard, dry, high
+    // wedge modes. Hard, dry, high
     mode(out, { t: 0, freq: uni(rng, 1500, 1900), tau: uni(rng, 0.006, 0.01), gain: 0.55 * jit(rng, 0.2), attack: 0.0006, phase: rng() * 6.28 })
     mode(out, { t: 0, freq: uni(rng, 3000, 3600), tau: uni(rng, 0.003, 0.005), gain: 0.28 * jit(rng, 0.25), attack: 0.0005, phase: rng() * 6.28 })
-    // board — deep but tighter/faster than the goban 'pok'
+    // board: deep but tighter/faster than the goban 'pok'
     const f0 = 196 * jit(rng, 0.05)
     mode(out, { t: 0.0008, freq: f0, tau: uni(rng, 0.042, 0.055), gain: 1.0, attack: 0.0014, drift: 0.06, phase: rng() * 6.28 })
     mode(out, { t: 0.0008, freq: f0 * 1.55 * jit(rng, 0.05), tau: 0.024 * jit(rng, 0.15), gain: 0.4, attack: 0.0014, phase: rng() * 6.28 })
@@ -424,7 +424,7 @@ const GAMES = {
     mode(out, { t: 0, freq: f0 * 0.5, tau: 0.055, gain: 0.26 * jit(rng, 0.2), attack: 0.003, phase: rng() * 6.28 })
   },
 
-  // Subtle low gong for a go game start — soft mallet, inharmonic metal
+  // Subtle low gong for a go game start. Soft mallet, inharmonic metal
   // partials with a slight beating shimmer, long gentle decay. Deliberately
   // understated: an invitation, not a temple ceremony.
   gameStartGong(out, rng) {
@@ -443,7 +443,7 @@ const GAMES = {
         phase: rng() * 6.28
       })
     }
-    // beating partner just off the fundamental — slow gong shimmer
+    // beating partner just off the fundamental. Slow gong shimmer
     mode(out, { t: 0.004, freq: f0 * 1.006, tau: 0.42, gain: 0.45, attack: 0.02, phase: rng() * 6.28 })
     // felt mallet thump
     noiseBurst(out, rng, { t: 0, dur: 0.01, center: 380, q: 0.7, gain: 0.22, decay: 0.006 })
@@ -481,7 +481,7 @@ async function main() {
       const name = variants > 1 ? `${event}.${v}.wav` : `${event}.wav`
       const wav = wavBytes(out)
       if (wav.length > 120 * 1024) {
-        throw new Error(`${name} is ${(wav.length / 1024).toFixed(1)} KiB — over the 120 KiB per-file budget`)
+        throw new Error(`${name} is ${(wav.length / 1024).toFixed(1)} KiB, over the 120 KiB per-file budget`)
       }
       await writeFile(path.join(OUT_DIR, name), wav)
       files++

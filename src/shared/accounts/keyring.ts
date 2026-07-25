@@ -1,6 +1,6 @@
 // Local keyring (spec §14-A1: "local keyring"; contract: types.ts KeyStore /
 // StoredAccount). Persists per-device account records and chain files through
-// a minimal async KV. THE ROOT SEED IS NOT STORED by default — sign-in
+// a minimal async KV. THE ROOT SEED IS NOT STORED by default: sign-in
 // re-derives it; StoredAccount.seedB64u is the explicit "keep me signed in"
 // opt-in (types.ts doc).
 //
@@ -22,7 +22,7 @@ const NS = 'acct.v1.'
 const ACCOUNT_PREFIX = `${NS}a.`
 const CHAIN_PREFIX = `${NS}c.`
 
-/** Records are keyed by (foldedName, tag) — spec §1: identities sharing a
+/** Records are keyed by (foldedName, tag). Spec §1: identities sharing a
  *  folded name are disambiguated by tag and must coexist on one device.
  *  '#' cannot survive normalizeUsername, so the delimiter is unambiguous. */
 export const accountKeyFor = (foldedName: string, tag: string): string =>
@@ -32,14 +32,14 @@ export const chainKeyFor = (root: B64u): string => CHAIN_PREFIX + root
 const tagFromKey = (key: string): string => key.slice(key.lastIndexOf('#') + 1)
 
 /** Thrown by tag-less getAccount/removeAccount when several identities share
- *  one folded name — the caller must disambiguate by tag (spec §1). */
+ *  one folded name. The caller must disambiguate by tag (spec §1). */
 export class AmbiguousAccountError extends Error {
   constructor(
     readonly foldedName: string,
     readonly tags: string[],
   ) {
     super(
-      `keyring: '${foldedName}' matches ${tags.length} accounts on this device (tags: ${tags.join(', ')}) — disambiguate by tag`,
+      `keyring: '${foldedName}' matches ${tags.length} accounts on this device (tags: ${tags.join(', ')}): disambiguate by tag`,
     )
     this.name = 'AmbiguousAccountError'
   }
@@ -49,7 +49,7 @@ export class AmbiguousAccountError extends Error {
 // KeyStore implementations
 // ---------------------------------------------------------------------------
 
-/** In-memory KeyStore — tests and ephemeral sessions. */
+/** In-memory KeyStore: tests and ephemeral sessions. */
 export class MemoryKeyStore implements KeyStore {
   private readonly map = new Map<string, Uint8Array>()
 
@@ -73,7 +73,7 @@ export class MemoryKeyStore implements KeyStore {
 
 /**
  * The minimal structural shape of the Web Storage API (localStorage /
- * sessionStorage) — declared locally so this module needs NO DOM lib types
+ * sessionStorage): declared locally so this module needs NO DOM lib types
  * and still typechecks under tsconfig.node.json.
  */
 export interface StorageLike {
@@ -86,8 +86,8 @@ export interface StorageLike {
 
 /**
  * KeyStore over any StorageLike (sync, string-valued). Bytes are stored as
- * base64url-no-pad strings via the manual codec below (no atob/btoa — DOM;
- * no Buffer — node) so the SAME bytes round-trip on every engine.
+ * base64url-no-pad strings via the manual codec below (no atob/btoa: DOM;
+ * no Buffer: node) so the SAME bytes round-trip on every engine.
  */
 export class StorageLikeKeyStore implements KeyStore {
   constructor(private readonly storage: StorageLike) {}
@@ -115,7 +115,7 @@ export class StorageLikeKeyStore implements KeyStore {
   }
 }
 
-// Manual base64url-no-pad for the storage value encoding — engine-independent,
+// Manual base64url-no-pad for the storage value encoding: engine-independent,
 // no atob/btoa (not in workers everywhere historically, and typing them would
 // drag DOM libs in), no Buffer (node-only).
 const B64U_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'
@@ -201,7 +201,7 @@ function accountFromBytes(bytes: Uint8Array): StoredAccount {
  * The device keyring: account records + chain files over a KeyStore.
  * Chains persist through the canonical file format (chainToBytes /
  * chainFromBytes) so stored bytes are bit-identical across platforms for
- * equal chains — a stored chain IS the self-carried file (§0).
+ * equal chains: a stored chain IS the self-carried file (§0).
  */
 export class Keyring {
   constructor(private readonly store: KeyStore) {}
@@ -218,14 +218,14 @@ export class Keyring {
     await this.store.set(accountKeyFor(acct.foldedName, acct.tag), accountToBytes(acct))
   }
 
-  /** All record keys for one folded name — the '#' delimiter (never in a
+  /** All record keys for one folded name, the '#' delimiter (never in a
    *  folded name) makes the prefix exact per name. */
   private async accountKeysFor(foldedName: string): Promise<string[]> {
     return (await this.store.list(`${ACCOUNT_PREFIX}${foldedName}#`)).sort()
   }
 
   /** Exact lookup with `tag`; without it, the sole record for the folded name
-   *  (null when none) — several tags under one name throw AmbiguousAccountError. */
+   *  (null when none): several tags under one name throw AmbiguousAccountError. */
   async getAccount(foldedName: string, tag?: string): Promise<StoredAccount | null> {
     if (tag !== undefined) {
       const bytes = await this.store.get(accountKeyFor(foldedName, tag))
@@ -250,7 +250,7 @@ export class Keyring {
     return out
   }
 
-  /** Removes the account RECORD only — never the chain (the chain is the
+  /** Removes the account RECORD only: never the chain (the chain is the
    *  self-carried history; dropping it is a separate, deliberate act).
    *  Mirrors getAccount: exact with `tag`, sole-match without,
    *  AmbiguousAccountError when several tags share the name. */
@@ -270,7 +270,7 @@ export class Keyring {
   }
 
   /** Loads + strictly parses the stored chain file (null when absent).
-   *  Throws on corrupt bytes — semantic verdicts stay with verifyChain. */
+   *  Throws on corrupt bytes. Semantic verdicts stay with verifyChain. */
   async loadChain(root: B64u): Promise<Chain | null> {
     const bytes = await this.store.get(chainKeyFor(root))
     return bytes === null ? null : chainFromBytes(bytes)

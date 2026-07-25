@@ -1,5 +1,5 @@
 /**
- * Static positional heuristics (docs/content-coaching.md — positional() surface,
+ * Static positional heuristics (docs/content-coaching.md, positional() surface,
  * §3.5 "only emit a positional comment when notable"). Space / development /
  * pawn-structure / open-file / outpost terms over a single FEN, with a short
  * natural-language summary. No engine call, no LLM.
@@ -196,7 +196,7 @@ export function positionalReport(fen: string): PositionalResult {
     phrases.push('your king is the safer of the two')
   } else if (!castledLike(pos, mover) && castledLike(pos, enemy)) {
     terms.push('kingSafety')
-    phrases.push('your king is still in the centre — consider castling')
+    phrases.push('your king is still in the centre: consider castling')
   }
 
   // Space.
@@ -274,7 +274,7 @@ export function positionalReport(fen: string): PositionalResult {
   const uniqueTerms = Array.from(new Set(terms))
   if (phrases.length === 0) {
     return {
-      text: 'The position is roughly balanced — no single static feature stands out.',
+      text: 'The position is roughly balanced. No single static feature stands out.',
       terms: uniqueTerms
     }
   }

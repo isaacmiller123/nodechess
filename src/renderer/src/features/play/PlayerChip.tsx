@@ -4,7 +4,7 @@ import { PieceIcon } from '../../board/PieceIcon'
 import { Clock, type ClockInterp } from './Clock'
 
 /* ---------------------------------------------------------------------------
-   Captured-material model — pure helpers, derived from the current FEN alone
+   Captured-material model: pure helpers, derived from the current FEN alone
    (standard-start baseline). Kept in this file per the play-UI contract.
    --------------------------------------------------------------------------- */
 
@@ -101,7 +101,7 @@ export interface PlayerChipProps {
    *  "thinking deeply…" caption (the dots themselves are slowed/warmed by
    *  GameView's `.play-view.is-deepthink` rules in play.css). */
   deepThink?: boolean
-  /** Current position FEN — drives the captured-pieces row + material badge. */
+  /** Current position FEN. Drives the captured-pieces row + material badge. */
   fen?: string
   /** Which color this player commands (needed to attribute captures). */
   color?: Color

@@ -1,15 +1,15 @@
 // Headless test for Replay Theater:
 //
-//   1. PURE choreography math (src/renderer/src/games/three/theater.ts —
+//   1. PURE choreography math (src/renderer/src/games/three/theater.ts;
 //      three-free by contract): cadence, capture slow-mo / dolly / pull
 //      envelopes, orbit keyframes, spherical→cartesian, action-square diffs.
 //   2. Smoke: the theater 3D modules IMPORT cleanly in bare node (TheaterRig
 //      pulls three + R3F; GameBoard3D re-exports the bridge with the theater
-//      seam) — the same esbuild+DOM-shim bundling as test-board3d.mjs.
+//      seam): the same esbuild+DOM-shim bundling as test-board3d.mjs.
 //
 //   node scripts/test-theater.mjs
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -185,7 +185,7 @@ try {
   ok(typeof smoke.occupancyOf === 'function', 'occupancyOf is exported for the theater bridge')
   ok(typeof smoke.Tabletop3D === 'function', 'Tabletop3D still exports with the theater prop')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } finally {
   rmSync(outDir, { recursive: true, force: true })
 }

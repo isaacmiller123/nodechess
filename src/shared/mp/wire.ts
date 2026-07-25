@@ -1,12 +1,12 @@
 // Internet-multiplayer wire protocol (v3): message schemas, the version hello,
-// wire-level heartbeat, and the room-code codec. ISOMORPHIC by design — ZERO node
+// wire-level heartbeat, and the room-code codec. ISOMORPHIC by design, ZERO node
 // imports (no 'node:os', no Buffer) so this module bundles into the renderer AND
 // runs unchanged under bare node for tests. The transport lives in the renderer
 // (WebRTC via trystero); this file only knows how to (de)serialize and validate.
 //
 // v3 (docs/MP-V3-SPEC.md §1) over v2:
-//   - hello carries `role` (host|guest) — a guest that hears hello{role:'guest'}
-//     knows nobody is hosting and fails fast (kills the guest×guest deadlock) —
+//   - hello carries `role` (host|guest). A guest that hears hello{role:'guest'}
+//     knows nobody is hosting and fails fast (kills the guest×guest deadlock),
 //     and an optional `name` (the player's display name).
 //   - ALL in-game messages carry the host-owned `gameId` (monotonic per session,
 //     starts 1). Receivers DROP any in-game message whose gameId ≠ the current
@@ -30,37 +30,37 @@ import type { MpGameConfig } from '@shared/types'
 //   - MpGameConfig gains `game?: { kind, options }` (absent = chess).
 //   - move strings are game-defined codecs: uci-regex → non-empty string ≤ 64
 //     chars. Legality is validated by the game kernel on the HOST before a move
-//     is committed/relayed (authority unchanged) — the wire only bounds size.
+//     is committed/relayed (authority unchanged). The wire only bounds size.
 //   - resync additionally carries the game config so a resumed guest can rebuild
 //     a non-chess game. v3 peers are refused politely by the hello version gate.
 //
 // v5 over v4: Japanese byo-yomi (go quality-of-life).
 //   - MpGameConfig.tc gains optional `byoyomi { periods, periodMs }`.
 //   - move/clock/flag/resync gain an optional per-side `byo` snapshot
-//     ({ periodsLeft, inByo } each) riding beside clockMs — with byo-yomi the
+//     ({ periodsLeft, inByo } each) riding beside clockMs: with byo-yomi the
 //     clockMs NUMBER means "current period remaining" once a side is inByo, so
 //     the clock semantics themselves changed → v4 peers must be refused (the
 //     hello version gate already does). Absent tc.byoyomi keeps every message
 //     byte-identical to v4.
 //
 // v6 over v5: signed play + the witness seat (docs/ACCOUNTS-SPEC.md §3).
-//   - `role` gains 'witness' — a third, non-playing peer that follows the game
+//   - `role` gains 'witness': a third, non-playing peer that follows the game
 //     and countersigns the move stream. The session admits exactly ONE.
 //   - hello gains OPTIONAL identity fields `root`/`key` (account root + device
 //     signing key, b64u). Both sides sending identity = signed play.
 //   - start/rematchStart/resync gain OPTIONAL `gameKey` + `players` (roots by
-//     color) — the host-minted global game key every signature covers
+//     color): the host-minted global game key every signature covers
 //     (accounts segment.ts gameKey), binding sigs to THIS game so nothing is
 //     replayable into another.
 //   - move gains an OPTIONAL `sig`: ed25519 by the mover over segment.ts
-//     moveSigBytes(gameKey, ply, uci, clockMs, prevSig) — the per-move chain.
+//     moveSigBytes(gameKey, ply, uci, clockMs, prevSig): the per-move chain.
 //   - gameOver/resign/flag gain an OPTIONAL `esig`: the sender's terminal
 //     countersignature over segment.ts witnessEndBytes.
 //   - NEW witness→player messages `wclk`/`wend` carry the witness's periodic
 //     clock countersignature and terminal stream signature.
 //   The wire only BOUNDS these shapes (b64u lengths, string caps); signature
 //   verification lives in the sessions (mpSession/witnessCore). Every addition
-//   is optional, so an unsigned session's messages stay byte-identical to v5 —
+//   is optional, so an unsigned session's messages stay byte-identical to v5,
 //   but signed clock semantics ride on hello identity, so v5 peers are refused
 //   by the hello version gate as usual.
 export const PROTOCOL_VERSION = 6
@@ -68,7 +68,7 @@ export const PROTOCOL_VERSION = 6
 const roleSchema = z.enum(['host', 'guest', 'witness'])
 
 // v6 signature-material bounds. Deliberately REDECLARED here rather than
-// imported from src/shared/accounts (events.ts zB64u32/zB64u64) — the mp wire
+// imported from src/shared/accounts (events.ts zB64u32/zB64u64). The mp wire
 // stays standalone (zod + shared types only) so it keeps bundling anywhere
 // without dragging the accounts layer in. Shapes must stay in lockstep.
 const B64U_RE = /^[A-Za-z0-9_-]+$/
@@ -82,7 +82,7 @@ const playersSchema = z.object({ w: b64u32Schema, b: b64u32Schema }).strict()
 export const helloMsgSchema = z
   .object({
     t: z.literal('hello'),
-    /** Protocol version — must equal PROTOCOL_VERSION on both sides. */
+    /** Protocol version must equal PROTOCOL_VERSION on both sides. */
     v: z.number().int(),
     /** Sender's role. A guest hearing hello{role:'guest'} fails fast: that code
      *  has no host (kills the guest×guest deadlock, MP-V3 §1/T5). */
@@ -94,7 +94,7 @@ export const helloMsgSchema = z
     /** v6: sender's account root (b64u). Present ⇒ the sender offers signed
      *  play (players) or names its signing identity (witness). */
     root: b64u32Schema.optional(),
-    /** v6: sender's device signing key (b64u) — what its move/stream sigs
+    /** v6: sender's device signing key (b64u). What its move/stream sigs
      *  verify against. Rides with `root`; absent = unsigned, exactly v5. */
     key: b64u32Schema.optional()
   })
@@ -163,13 +163,13 @@ export const mpTimeControlSchema = z
  *  `options` is an opaque, game-defined JSON blob (validated by the game's own
  *  kernel init, not by the wire). Absent `game` on the config means chess.
  *  `firstMover` is which color moves FIRST (black in go/gomoku/othello/
- *  checkers); absent = white — chess configs stay byte-identical to pre-
+ *  checkers); absent = white: chess configs stay byte-identical to pre-
  *  firstMover builds, so the wire stays v4. */
 export const mpGameSelectorSchema = z
   .object({
     kind: z.string().min(1).max(64),
     // Opaque per-game options; must survive JSON round-trip untouched. unknown()
-    // accepts anything INCLUDING absent — mirrors `options?: unknown`.
+    // accepts anything INCLUDING absent, mirrors `options?: unknown`.
     options: z.unknown().optional(),
     firstMover: z.enum(['white', 'black']).optional()
   })
@@ -214,7 +214,7 @@ export const wireMsgSchema = z.discriminatedUnion('t', [
       config: mpGameConfigSchema,
       name: z.string().optional(),
       // v6: host-minted global game key + player roots by color (signed play
-      // only — segment.ts gameKey binds every signature to THIS game). Absent
+      // only: segment.ts gameKey binds every signature to THIS game). Absent
       // = unsigned, byte-identical to v5.
       gameKey: b64u32Schema.optional(),
       players: playersSchema.optional()
@@ -224,7 +224,7 @@ export const wireMsgSchema = z.discriminatedUnion('t', [
   // sender's clocks after it. clockMs is authoritative only host -> guest.
   // v5: `byo` rides along whenever the config has byo-yomi (host-authoritative).
   // v6: `sig` = the mover's ed25519 over segment.ts moveSigBytes(gameKey, ply,
-  // uci, clockMs, prevSig) — the per-move chain (signed play only).
+  // uci, clockMs, prevSig): the per-move chain (signed play only).
   z
     .object({
       t: z.literal('move'),
@@ -328,7 +328,7 @@ export const wireMsgSchema = z.discriminatedUnion('t', [
     })
     .strict(),
   // v6 witness -> players: periodic countersignature over the interleaved
-  // clock stream — the witness's ed25519 over segment.ts witnessClockBytes
+  // clock stream: the witness's ed25519 over segment.ts witnessClockBytes
   // (gameKey, ply, clockMs, wts) at its own clock reading `wts` (unix ms).
   z
     .object({
@@ -340,7 +340,7 @@ export const wireMsgSchema = z.discriminatedUnion('t', [
       sig: b64u64Schema
     })
     .strict(),
-  // v6 witness -> players: terminal stream signature — the witness's ed25519
+  // v6 witness -> players: terminal stream signature. The witness's ed25519
   // over segment.ts witnessEndBytes(gameKey, result, plies, transcript). This
   // is exactly what SegmentPayload.wstream carries into BOTH players' chains.
   z
@@ -366,7 +366,7 @@ export const wireMsgSchema = z.discriminatedUnion('t', [
 export type WireMsg = z.infer<typeof wireMsgSchema>
 
 /** Decode one raw data-channel payload (a string) into a WireMsg, or null if
- *  malformed. String input only — the transport hands us text. */
+ *  malformed. String input only. The transport hands us text. */
 export function parseWireMsg(text: string): WireMsg | null {
   if (typeof text !== 'string') return null
   let json: unknown

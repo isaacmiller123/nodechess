@@ -1,14 +1,14 @@
-// Game archive envelope — the storage contract for NON-chess finished games
+// Game archive envelope. The storage contract for NON-chess finished games
 // (platform foundation: every game from every mode becomes reviewable).
 //
 // The game table's `pgn` column holds exactly one of two formats:
 //   - kind 'chess'  → real PGN (headers + numbered SAN movetext), written by
-//     the chess PlayView / onlineStore chess path — byte-for-byte the historic
+//     the chess PlayView / onlineStore chess path: byte-for-byte the historic
 //     output, parsed by the chess Analysis/review pipeline (game_kind filter);
 //   - every other kind (chess variants, ffish family, custom-<id>, go,
 //     checkers, small games) → ONE compact JSON envelope (GameArchive below):
-//     the verbatim wire-codec move list — replayable 1:1 through the kernel
-//     spec.play — plus per-move human notation (GameSpec.notate) and display
+//     the verbatim wire-codec move list. Replayable 1:1 through the kernel
+//     spec.play, plus per-move human notation (GameSpec.notate) and display
 //     metadata. An envelope never collides with PGN: PGN text begins with '['
 //     or a movetext token, never '{'.
 //
@@ -29,7 +29,7 @@ export interface GameArchiveMeta {
    *  'score', 'five-in-a-row', …). */
   reason?: string
   /** Display names in kernel color space (the spec's players order maps
-   *  white/black onto per-game side names — shogi sente, go black, …). */
+   *  white/black onto per-game side names. Shogi sente, go black, …). */
   white?: string
   black?: string
   /** The GameSpec.init options value that reproduces the START position
@@ -57,7 +57,7 @@ export interface GameArchive {
 const RESULTS: readonly string[] = ['1-0', '0-1', '1/2-1/2']
 
 /** Serialize an envelope for the game table's `pgn` column (stable field
- *  order, v first — greppable and diff-friendly). */
+ *  order, v first. Greppable and diff-friendly). */
 export function encodeGameArchive(a: GameArchive): string {
   return JSON.stringify({
     v: a.v,
@@ -79,7 +79,7 @@ const isStringArray = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((m) => typeof m === 'string')
 
 /** Strict parse of a v1 envelope. Null = not an envelope this build can
- *  replay (PGN text, corrupt JSON, wrong shape, or a FUTURE version — callers
+ *  replay (PGN text, corrupt JSON, wrong shape, or a FUTURE version; callers
  *  degrade to a raw view rather than guessing). */
 export function parseGameArchive(pgn: string): GameArchive | null {
   if (!isArchiveJson(pgn)) return null

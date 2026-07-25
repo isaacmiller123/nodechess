@@ -1,4 +1,4 @@
-// WebGL availability probe — Tabletop3D refuses to mount a <Canvas> without it
+// WebGL availability probe: Tabletop3D refuses to mount a <Canvas> without it
 // and reports through onUnavailable so callers fall back to the 2D board.
 
 let cached: { ok: boolean; reason?: string } | null = null

@@ -5,13 +5,13 @@ export interface ResultBannerProps {
   result: GameResult
   reason: string
   outcomeForUser: 'win' | 'loss' | 'draw'
-  /** Overrides the headline (Over-the-board has no "you" — e.g. "White wins").
+  /** Overrides the headline (Over-the-board has no "you", e.g. "White wins").
    *  When omitted, the default You won/lost/Draw copy for `outcomeForUser`. */
   title?: string
   /** vs-bot rating change (signed). */
   delta?: number
   newRating?: number
-  /** Post-game accuracy %, 0–100 (reserved slot — renders when provided). */
+  /** Post-game accuracy %, 0–100 (reserved slot; renders when provided). */
   accuracy?: number
   onNewGame: () => void
   /** Open the just-finished game in the Analysis board (when it was saved). */
@@ -76,7 +76,7 @@ export function ResultBanner({
               </span>
             </div>
           )}
-          {/* Accuracy teaser slot — fed by a future post-game quick review. */}
+          {/* Accuracy teaser slot: fed by a future post-game quick review. */}
           {accuracy !== undefined && (
             <div className="banner-stat">
               <span className="eval-chip banner-accuracy num">{accuracy.toFixed(1)}%</span>

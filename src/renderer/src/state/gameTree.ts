@@ -39,10 +39,10 @@ export interface GameTree {
   last: () => void
   reset: (fen?: string) => void
   /**
-   * TAKEBACK SUPPORT (additive — every existing member is untouched): remove
+   * TAKEBACK SUPPORT (additive; every existing member is untouched): remove
    * the last `n` mainline plies at the TIP of the mainline (the children[0]
    * chain from the root), regardless of where `current` points. The removed
-   * subtree — including any variations hanging off the removed nodes — is
+   * subtree (including any variations hanging off the removed nodes) is
    * forgotten, and `current` jumps to the new tip. No-ops when n <= 0 or the
    * mainline is already at (or shorter than) the requested cut. Play's game
    * tree is strictly linear; if a caller ever had variations at the cut node,
@@ -121,7 +121,7 @@ export function useGameTree(initialFen: string = INITIAL_FEN): GameTree {
     let target: TreeNode = tip
     for (let i = 0; i < n && target.parent; i++) target = target.parent
     const drop = target.children[0]
-    if (!drop) return // nothing below the cut — already the tip
+    if (!drop) return // nothing below the cut. Already the tip
     target.children.splice(0, 1)
     // Forget every removed node so goTo can never resurrect a cut position.
     const stack: TreeNode[] = [drop]

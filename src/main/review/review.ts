@@ -8,7 +8,7 @@
 //
 // content-coaching.md is authoritative for all formulas/thresholds; architecture.md
 // §6 for the engine contract. This module owns its own DB tables (game_review,
-// move_eval) created lazily with CREATE TABLE IF NOT EXISTS — it does NOT touch the
+// move_eval) created lazily with CREATE TABLE IF NOT EXISTS. It does NOT touch the
 // shared migration. It stays decoupled from the coach: it returns enough per-move
 // data for the renderer to call coach:explainMove later (or for a coach module to
 // consume directly), rather than importing the coach itself.
@@ -210,7 +210,7 @@ function analyzeFen(engine: UciEngine, fen: string, depth: number, multipv: numb
     const onErr = (err: Error): void =>
       fail(err instanceof Error ? err : new Error('engine error during review'))
     // Depth-scaled hard ceiling so a crashed or stuck search can never hang the
-    // whole review forever — that used to wedge the single-flight `reviewing` flag
+    // whole review forever: that used to wedge the single-flight `reviewing` flag
     // (review.ipc.ts) until an app restart. Generous: ~2.5s/depth, floored at 20s.
     const timer = setTimeout(
       () => fail(new Error('engine analysis timeout')),
@@ -281,7 +281,7 @@ function buildComment(a: {
         a.sacrificedRole ? `the ${ROLE_NAME[a.sacrificedRole] ?? 'piece'}` : 'material'
       } is the strongest move here.`
     case 'Great':
-      return `${playedSan} is a great find — the only good move in the position.`
+      return `${playedSan} is a great find. The only good move in the position.`
     case 'Best':
       return `${playedSan} is the best move.`
     case 'Excellent':
@@ -295,7 +295,7 @@ function buildComment(a: {
     case 'Inaccuracy':
       return `${playedSan} is an inaccuracy. ${bestSan} was best.${allowsMate}`
     case 'Miss':
-      return `${playedSan} misses the chance — ${bestSan} was much stronger.${missedMate}`
+      return `${playedSan} misses the chance: ${bestSan} was much stronger.${missedMate}`
     case 'Mistake':
       return `${playedSan} is a mistake. ${bestSan} was best.${allowsMate}${
         ref ? ` The problem: ${ref}.` : ''
@@ -419,7 +419,7 @@ export async function runReview(opts: RunReviewOptions): Promise<GameReview> {
         afterPos.play(playedMove)
         fenAfter = makeFen(afterPos.toSetup())
         if (afterPos.isCheckmate()) {
-          // mover delivered mate — by definition the best practical outcome, even
+          // mover delivered mate: by definition the best practical outcome, even
           // when the engine's PV preferred a different (e.g. faster-mate) move.
           playedEval = { cp: null, mate: 1 }
           playedPv = [m.uci]
@@ -471,7 +471,7 @@ export async function runReview(opts: RunReviewOptions): Promise<GameReview> {
       const cpAfter = playedEval.mate != null ? mateToCpSide(playedEval.mate) : (playedEval.cp ?? 0)
       const cpLoss = Math.max(0, Math.min(1000, cpBefore - cpAfter))
 
-      // Book: an unbroken openings-DB prefix — this move is theory only while every
+      // Book: an unbroken openings-DB prefix. This move is theory only while every
       // move before it was, the resulting position is still in the book, and we are
       // within the book ply window.
       const inBook = stillInBook && i + 1 <= BOOK_MAX_PLY && lookupByFen(fenAfter) != null
@@ -495,7 +495,7 @@ export async function runReview(opts: RunReviewOptions): Promise<GameReview> {
         prevOppFinalBadge
       })
 
-      // 5) Factual comment (engine data only — no motif guessing).
+      // 5) Factual comment (engine data only: no motif guessing).
       const comment = buildComment({
         badge,
         playedSan: m.san,
@@ -626,12 +626,12 @@ export function initReviewTables(): void {
 }
 
 /**
- * Create the review cache tables on the CURRENT app DB — idempotent DDL with NO
+ * Create the review cache tables on the CURRENT app DB, idempotent DDL with NO
  * module flag. The desktop path uses initReviewTables() (one process-singleton
  * DB, so the flag short-circuit is safe); the web server (docs/WEB-PORT-SPEC.md
  * W3) reroutes getAppDb() to a DIFFERENT per-user DB per request via
  * setDbOverride, where a process-wide flag would skip table creation for every
- * user after the first — so the server calls this, per user DB, instead.
+ * user after the first, so the server calls this, per user DB, instead.
  */
 export function ensureReviewTables(): void {
   getAppDb().exec(`
@@ -672,7 +672,7 @@ export function ensureReviewTables(): void {
  * desktop persists inside runReview(); the web server stores client-computed
  * reviews via POST /api/review/save, which calls this under its per-user DB
  * override (docs/WEB-PORT-SPEC.md W3). Same transactional DELETE+INSERT as the
- * desktop path — the two share persistReview().
+ * desktop path. The two share persistReview().
  */
 export function saveReviewCache(gameId: number, review: GameReview): void {
   ensureReviewTables()

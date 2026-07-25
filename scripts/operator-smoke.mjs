@@ -1,13 +1,13 @@
 // Operator-peer smoke (spec §11 / §4 C-10): construct the always-awake operator
-// peer against a MockFabric (NOT real relays — CI stays offline/deterministic)
+// peer against a MockFabric (NOT real relays: CI stays offline/deterministic)
 // and prove it serves lease grants + PIN evaluations as an ordinary eligible
 // node, plus that its judge integration content-hash-verifies + constructs the
 // pinned canonical WASM at startup AS the canonical §8 JudgeEngine surface:
 // a judgeGame run through the peer-held handle must reproduce a fresh canonical
-// re-run's judgeOutputDigest bit-for-bit (A5-32 regression — the raw A2
+// re-run's judgeOutputDigest bit-for-bit (A5-32 regression: the raw A2
 // analyseFixedNodes protocol, per-position TT clear + divergent parse, must
 // never be the peer's judge capability). A5-24 regression: the peer's judge
-// path is exercised END-TO-END here — driven over a MULTI-position fixture
+// path is exercised END-TO-END here. Driven over a MULTI-position fixture
 // (TT-granularity-sensitive), bit-cross-checked against the canonical surface,
 // config-echo-bound to PARAMS_A5_DIGEST, and judgeGame is asserted to
 // fail-close on per-position TT reset BEFORE any engine I/O. CI-safe by
@@ -16,7 +16,7 @@
 //
 //   node scripts/operator-smoke.mjs
 //
-// Bundles server/operator/peer.ts (trystero + werift marked external — the
+// Bundles server/operator/peer.ts (trystero + werift marked external; the
 // TrysteroFabric path is never entered here) alongside the shared witness tree,
 // then drives the peer through the fabric from a client endpoint.
 
@@ -60,7 +60,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -74,7 +74,7 @@ async function run(outdir) {
     mainFields: ['module', 'main'], conditions: ['import', 'module', 'default'],
     alias: { '@shared': resolve(ROOT, 'src/shared') },
     // The trystero/werift path is only reached by createTrysteroFabric, which
-    // this smoke never calls — keep them external so no browser-WebRTC bundling.
+    // this smoke never calls. Keep them external so no browser-WebRTC bundling.
     external: ['trystero', 'werift'],
     absWorkingDir: ROOT, logLevel: 'warning',
   })
@@ -138,16 +138,16 @@ async function run(outdir) {
   ok(op.judge.analyseFixedNodes === undefined && op.judge.quit === undefined, 'the non-canonical A2 analyseFixedNodes/quit surface is NOT reachable from the peer handle')
   // Cross-check the surfaces: judge the MULTI-position parity fixture through
   // the peer-held handle via canonical judgeGame, then re-run it on a FRESH
-  // canonical newNodeJudgeEngine — the judgeOutputDigest must match bit-for-bit
+  // canonical newNodeJudgeEngine: the judgeOutputDigest must match bit-for-bit
   // (the TT evolves across positions within a judged game, so any
   // per-position-reset or parse fork splits position i>0's bits). SMOKE-ONLY
   // node trim for wall-time: `nodes` ONLY may differ from PARAMS_A5
   // (multiPv/hashMb/ttReset stay pinned via judgeConfigForTier(2)).
   const SMOKE_T2 = { ...J.judgeConfigForTier(2), nodes: 20000 }
-  // A5-24: the digest parity below has teeth ONLY over a multi-position game —
-  // with a single position, per-game and per-position TT reset coincide and
+  // A5-24: the digest parity below has teeth ONLY over a multi-position game.
+  // With a single position, per-game and per-position TT reset coincide and
   // the cross-check would be vacuously green against the A5-32 fork.
-  ok(JUDGE_PARITY_POSITIONS.length >= 2, `the parity fixture is multi-position (${JUDGE_PARITY_POSITIONS.length} positions) — digest parity is TT-granularity-sensitive`)
+  ok(JUDGE_PARITY_POSITIONS.length >= 2, `the parity fixture is multi-position (${JUDGE_PARITY_POSITIONS.length} positions). Digest parity is TT-granularity-sensitive`)
   const viaPeer = await J.judgeGame(op.judge, JUDGE_PARITY_POSITIONS, SMOKE_T2)
   const freshCanonical = await adapter.newNodeJudgeEngine({ enginePath: ENGINE_JS, wasmPath: ENGINE_WASM })
   const viaCanonical = await J.judgeGame(freshCanonical, JUDGE_PARITY_POSITIONS, SMOKE_T2)
@@ -156,11 +156,11 @@ async function run(outdir) {
   eq(viaPeer.positions[2].lines[0].mate, 1, 'mate-in-1 parity position judged {mate: 1} at rank 1 through the peer-held judge')
   eq(J.judgeOutputDigest(viaPeer), J.judgeOutputDigest(viaCanonical), 'the peer-held judge reproduces a canonical re-run judgeOutputDigest bit-for-bit (Tier-2 config, warm per-game TT)')
   // A5-24: a receipt computed through the peer handle names the CURRENT rule
-  // set — the config echo folds PARAMS_A5_DIGEST into every JudgeOutput, so
+  // set. The config echo folds PARAMS_A5_DIGEST into every JudgeOutput, so
   // canonical verifiers can bind the peer's bits to the params they check.
   eq(viaPeer.config.params, J.PARAMS_A5_DIGEST, 'the peer-run JudgeOutput config echo is stamped with the current PARAMS_A5_DIGEST')
   // A5-24: the canonical surface FAIL-CLOSES on the A2 harness's TT
-  // granularity BEFORE any engine I/O — judgeGame can never be driven
+  // granularity BEFORE any engine I/O: judgeGame can never be driven
   // per-position, so the analyseFixedNodes bit surface is structurally
   // excluded from §8 verdicts (not merely untested). If the canonical adapter
   // ever collapsed into the per-position protocol, test-judge-node's frozen
@@ -199,7 +199,7 @@ async function run(outdir) {
   const output = W.singleKeyOutput(pin, k, rng)
   const pinPub = A.toB64u(W.pinKeyFromOutput(output).pub)
   const commit = A.toB64u(W.pointToBytes(W.shareCommitment(k)))
-  // degenerate 1-member committee (smoke only, no fuse-trip) — placeholder record id.
+  // degenerate 1-member committee (smoke only, no fuse-trip): placeholder record id.
   const smokeRecId = A.toB64u(A.sha256(A.utf8('operator-smoke-pin-record')))
   op.member.provision(subject.pubB, 1, k, commit, pinPub, smokeRecId)
   const committee = { members: [opNodeId], t: 1, shareCommitments: [commit], pinPub }
@@ -211,7 +211,7 @@ async function run(outdir) {
 
   // --- removable, holds zero authority ---------------------------------------
   await op.stop()
-  ok(true, 'the operator peer stops cleanly (removable — its loss costs only availability)')
+  ok(true, 'the operator peer stops cleanly (removable: its loss costs only availability)')
 }
 
 main().catch((e) => { console.error(e); process.exit(1) })

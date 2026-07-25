@@ -1,4 +1,4 @@
-# nodechess — project instructions
+# nodechess: project instructions
 
 Offline-first chess app: Electron desktop (mac + Windows) and a web target built from the same
 source. Bundled Stockfish, ~4.7M Lichess puzzles, a 40-chapter school, 20+ board games, online
@@ -6,14 +6,14 @@ multiplayer, and a decentralized account system.
 
 ## Build / run
 
-Node, npm and brew live at `/opt/homebrew/bin`, which is NOT on the default PATH — prepend it
+Node, npm and brew live at `/opt/homebrew/bin`, which is NOT on the default PATH. Prepend it
 before any npm/node command.
 
 | | |
 |---|---|
 | Desktop dev | `npm run dev` (electron-vite) |
 | Web dev | `npm run dev:web`; `npm run start:web` builds SPA + server and serves it |
-| Typecheck | `npm run typecheck` — three targets (node, web, server); all must be green |
+| Typecheck | `npm run typecheck` runs three targets (node, web, server); all must be green |
 | Tests | `npm run test:*` / `npm run smoke:*`, one script per area under `scripts/` |
 | Datasets | `npm run setup` fetches engines + puzzles and builds the derived DBs |
 
@@ -21,7 +21,7 @@ Docs live flat in `docs/`. Start with `docs/architecture.md`; `docs/STATUS.md` i
 
 ## Chess School is governed by a binding spec
 
-**[docs/SCHOOL-SPEC.md](docs/SCHOOL-SPEC.md) is the source of truth for all School work** —
+**[docs/SCHOOL-SPEC.md](docs/SCHOOL-SPEC.md) is the source of truth for all School work**:
 curriculum, lessons, tests, placement/Elo, and UI. Read it before any School change and conform to
 it exactly. It outranks any code comment or prior plan; changes need the owner's approval. The
 40-chapter arc it governs is in [docs/school-curriculum.md](docs/school-curriculum.md).

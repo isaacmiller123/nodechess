@@ -1,4 +1,4 @@
-// Chess-variant wave — GameSpec adapters over chessops for the 8 lichess
+// Chess-variant wave: GameSpec adapters over chessops for the 8 lichess
 // variants + standard chess (docs/GAMES-PLATFORM-SPEC.md §Phases P1).
 //
 // Mirrors the patterns of src/renderer/src/chess/chess.ts (thin, stateless
@@ -7,7 +7,7 @@
 //
 // Move codec: UCI. Crazyhouse drops are `P@e4` / `N@f3` (chessops parseUci /
 // makeUci handle these). Castling is canonically king-takes-rook UCI
-// ('e1h1'), as chessops enumerates it — `play` ALSO accepts standard 'e1g1'
+// ('e1h1'), as chessops enumerates it: `play` ALSO accepts standard 'e1g1'
 // via normalizeMove, so engine output works either way.
 // TODO(P2): translate castling to 'e1g1' form at the engine/wire boundary for
 // non-960 UCI engines that emit/expect standard notation.
@@ -97,7 +97,7 @@ export function chess960Fen(positionNumber: number): string {
   const arrangement = scharnaglArrangement(positionNumber)
   const rookFiles = [...arrangement].flatMap((p, i) => (p === 'R' ? [i] : []))
   const fileChar = (i: number): string => String.fromCharCode(97 + i)
-  // Shredder-FEN castling (rook file letters) — chessops parses these.
+  // Shredder-FEN castling (rook file letters): chessops parses these.
   const castling =
     rookFiles.map((f) => fileChar(f).toUpperCase()).join('') +
     rookFiles.map(fileChar).join('')
@@ -284,14 +284,14 @@ export const CHESS_VARIANT_SPECS: Readonly<
     kind: 'chess960',
     rules: 'chess', // 960 is standard rules from a shuffled start; chessops castling is start-agnostic
     title: 'Chess960',
-    tagline: 'Fischer random — a shuffled back rank, pure skill from move one.',
+    tagline: 'Fischer random: a shuffled back rank, pure skill from move one.',
     init: initChess960
   }),
   crazyhouse: makeSpec({
     kind: 'crazyhouse',
     rules: 'crazyhouse',
     title: 'Crazyhouse',
-    tagline: 'Captured pieces switch sides — drop them back anywhere.'
+    tagline: 'Captured pieces switch sides. Drop them back anywhere.'
   }),
   atomic: makeSpec({
     kind: 'atomic',
@@ -327,6 +327,6 @@ export const CHESS_VARIANT_SPECS: Readonly<
     kind: 'racingkings',
     rules: 'racingkings',
     title: 'Racing Kings',
-    tagline: 'No checks allowed — race your king to the eighth rank.'
+    tagline: 'No checks allowed. Race your king to the eighth rank.'
   })
 }

@@ -1,26 +1,26 @@
-// A7 brick 2 — Tier-2 VERDICT-ROW TRANSPORT over the A3 overlay: the
+// A7 brick 2, Tier-2 VERDICT-ROW TRANSPORT over the A3 overlay: the
 // fuse-record/pointers publish pattern (storage/pointers.ts: make → check →
 // merge → store-validator → publish/enumerate) applied to the verdict rows
 // tier2.ts/embed.ts left "embedder work". This module owns:
 //
-//   WRITE side — publishVerdicts: embed.publishVerdictRow's {key, row} pair
+//   WRITE side, publishVerdicts: embed.publishVerdictRow's {key, row} pair
 //     → a real overlay put under tier2VerdictKey(accusedRoot), guarded by a
 //     STORE GATE (makeVerdictStoreValidator) verifying everything verifiable
-//     WITHOUT window inputs — schema, sizes, the PARAMS_A5 pin, the lifetime
+//     WITHOUT window inputs: schema, sizes, the PARAMS_A5 pin, the lifetime
 //     receipt, the suppression claim's necessary condition, the record
-//     signature, commend-pattern key provenance, and the key binding — and a
+//     signature, commend-pattern key provenance, and the key binding, and a
 //     deterministic MERGE (makeVerdictMerge) that accumulates rows across
 //     publishers, bounded by ADOPT_ROW_MAX semantics.
 //
-//   READ side — fetchVerdictRow → verdictEvidence: fetch the merged row,
+//   READ side, fetchVerdictRow → verdictEvidence: fetch the merged row,
 //     adopt it through embed.adoptVerdictRowJudge (the A5-33 judge-anchors
-//     pin — NEVER weakened here: the ban path adopts ONLY records computed
+//     pin, NEVER weakened here: the ban path adopts ONLY records computed
 //     under TIER2_ANCHORS_JUDGE, each fully re-verified from caller-supplied
 //     window inputs), run embed.suppressionScan on the caller's VERIFIED
 //     chain for every adopted CONVICTION-bearing record, and surface the
 //     result as INJECTED evidence for ratings/display.ts displayState /
 //     pairViewOf and mm/pairing.ts pairingLegal (their additive `ban` /
-//     `banUntilWts` parameters — explicit arguments, never ambient state).
+//     `banUntilWts` parameters: explicit arguments, never ambient state).
 //
 // ─── VALUE-KIND DECISION (registered for the lead) ─────────────────────────
 // overlay/types.ts ValueKind is 'pointers'|'events'|'shard'|'record' and this
@@ -34,50 +34,50 @@
 // ─── THE ANTI-SUPPRESSION MERGE ORDER (spec-silent → decided fail-closed,
 //     documented per the A7 owner directives) ───────────────────────────────
 // The row is a capped union (dedup by record hash) in a TOTAL deterministic
-// order — set-deterministic like the pointer cap fold: same record set ⇒ the
+// order, set-deterministic like the pointer cap fold: same record set ⇒ the
 // same row bytes in every arrival order, so every carrier and every getMerged
 // reader converge. The order is built from what a junk flood cannot freely
 // dominate, most-protected first:
 //   1. CLASS: conviction-shaped records (a full-reganK window whose CLAIMED
 //      zMicro meets zThresholdMicro, or a lifetime receipt that RECOMPUTES to
-//      conviction — exactly verifyTier2Verdict's two conviction arms, and for
+//      conviction: exactly verifyTier2Verdict's two conviction arms, and for
 //      kind 'suppression' the gate already refused anything else) before all
 //      sub-conviction records. Junk that does not IMPERSONATE a 5σ conviction
 //      can therefore NEVER displace conviction evidence, whatever its volume;
 //      junk that does impersonate one is a SIGNED, permanently attributable
-//      false-accusation artifact naming the accused (its signer is burned —
+//      false-accusation artifact naming the accused (its signer is burned;
 //      adoption always fails, §0 holds, but the signature survives as
 //      misbehavior evidence).
 //   2. FAIR SHARE per signer (the pointers rank2 rule): within a class, each
 //      signer's records are indexed 0,1,2,… (its own order below) and round r
-//      of every signer outranks round r+1 of any signer — ONE signer (the
+//      of every signer outranks round r+1 of any signer. ONE signer (the
 //      realistic flood: the cheater's own device) can never crowd other
 //      signers' round-0 records out, however many records it mints.
 //   3. Judge-anchored records (body.anchors = TIER2_ANCHORS_JUDGE digest, the
 //      only bundle the ban path adopts) before foreign-anchored ones; final
 //      tie-break: record hash byte order (total order ⇒ byte-determinism).
-// A signer's OWN records order by (anchorRank, ladder, window, kind, recId) —
-// deterministic, so its round-0 pick is stable.
-// RESIDUAL (documented, priced, non-destructive — Round-A adjudication of
+// A signer's OWN records order by (anchorRank, ladder, window, kind, recId).
+// Deterministic, so its round-0 pick is stable.
+// RESIDUAL (documented, priced, non-destructive, Round-A adjudication of
 // flag [d]): a MAINTAINED set of >ADOPT_ROW_MAX DISTINCT sybil signers, each
 // minting a conviction-impersonating record (conviction class + judgeAnchored
 // are body-claimable, round 0 is one-record-per-signer, recId is grindable via
 // verdictWts), can crowd BOTH genuine judge records out of the top-ADOPT_ROW_MAX
 // STORED row. §0 is intact: this can neither FORGE (adoption re-verifies every
-// record from the reader's own window inputs — §0 absolute; an impersonator
+// record from the reader's own window inputs: §0 absolute; an impersonator
 // never adopts) NOR ERASE the conviction (it stays recomputable by anyone from
 // chain bytes + Tier1Records, which entanglement makes unerasable). But the
 // honest characterization is SUSTAINED denial of the STORED row's portability
 // to fetch-only readers, not a transient "delay": the merge is a pure rank of
 // the stored SET with no expiry, and recId is a canonical hash of the record,
 // so an honest judge RE-PUBLISHING the SAME record yields the SAME recId and
-// deterministically re-loses the same tie-break — re-publish is NOT a fix.
+// deterministically re-loses the same tie-break: re-publish is NOT a fix.
 // Row portability returns only when carriers' stored rows expire, or when a
 // serious §0 verifier RECOMPUTES the conviction from chain bytes rather than
 // trusting a fetched row (the authoritative §8 path is independent of this
 // transport row). Price: per-record attributable defamation signatures naming
 // the accused (nil for a cheater flooding their OWN slot with burner keys).
-// Round-B mitigation TRACKED (not landed here — needs a rank input sybils
+// Round-B mitigation TRACKED (not landed here; needs a rank input sybils
 // cannot mint, e.g. carrier-side per-signer admission pricing or reserving
 // merged-row capacity for the accused's own on-chain selfban / for signers
 // entangled with the accused). Fail-toward-no-forgery.
@@ -87,7 +87,7 @@
 // verifiers/gates/merges fail closed and never throw into the overlay.
 //
 // TWIN-SCHEMA NOTE: zVerdictRecord below structurally mirrors tier2.ts's
-// PRIVATE record schema (zTier2VerdictBody/zTier2VerdictRecord — deliberately
+// PRIVATE record schema (zTier2VerdictBody/zTier2VerdictRecord; deliberately
 // not exported there; the display.ts/pairing.ts twin-shape precedent). Do not
 // let them drift: the transport suite feeds real makeTier2Verdict outputs
 // through this gate, so any drift breaks it loudly.
@@ -131,7 +131,7 @@ import {
 } from './tier2'
 
 // ---------------------------------------------------------------------------
-// Bounds (deterministic hygiene caps — validity rules, not revisable params)
+// Bounds (deterministic hygiene caps: validity rules, not revisable params)
 // ---------------------------------------------------------------------------
 
 /** Canonical-byte ceiling for ONE verdict record. Generous for the largest
@@ -145,11 +145,11 @@ export const VERDICT_MAX_BYTES = 256 * 1024
 export const VERDICT_ROW_MAX_BYTES = 2 * 1024 * 1024
 
 /** The judge anchor-bundle digest (A5-33): ranking prefers records the ban
- * path can actually adopt. Derived once — pure and deterministic. */
+ * path can actually adopt. Derived once. Pure and deterministic. */
 const JUDGE_ANCHORS_DIGEST: B64u = tier2AnchorsDigest(TIER2_ANCHORS_JUDGE)
 
 // ---------------------------------------------------------------------------
-// Boundary schemas (twin of tier2.ts's private record schema — header note)
+// Boundary schemas (twin of tier2.ts's private record schema, header note)
 // ---------------------------------------------------------------------------
 
 const zGameKey = z.string().min(1).max(128)
@@ -202,7 +202,7 @@ const zVerdictRecord = z.strictObject({
   certs: z.array(z.unknown()).max(8).optional(),
 })
 
-/** The stored row shape at tier2VerdictKey(root) — tier2.ts Tier2VerdictRow,
+/** The stored row shape at tier2VerdictKey(root): tier2.ts Tier2VerdictRow,
  * shape-parsed here at every untrusted boundary. */
 const zVerdictRowShape = z.strictObject({
   v: z.literal(1),
@@ -210,7 +210,7 @@ const zVerdictRowShape = z.strictObject({
 })
 
 /** Is this 'record' value shaped like a verdict row? (The kind-discrimination
- * test — header VALUE-KIND DECISION.) */
+ * test. Header VALUE-KIND DECISION.) */
 export function isVerdictRowShaped(value: unknown): boolean {
   return zVerdictRowShape.safeParse(value).success
 }
@@ -230,10 +230,10 @@ export type VerdictRecVerdict =
   | 'uncertified-key' // key/signer/certs violate the commend-pattern provenance
   | 'wrong-key' // record not bound to the target key (tier2VerdictKey(root) ≠ target)
 
-/** What 'ok' verification yields — everything the merge ranks by. */
+/** What 'ok' verification yields: everything the merge ranks by. */
 export interface CheckedVerdictRec {
   rec: Tier2VerdictRecord
-  /** b64u(canonicalHash(record)) — dedupe identity + final tie-break. */
+  /** b64u(canonicalHash(record)). Dedupe identity + final tie-break. */
   recId: B64u
   /** Canonical record bytes (the merge's byte-budget unit). */
   bytes: number
@@ -253,7 +253,7 @@ export interface VerdictCheckOpts {
   maxBytes?: number
 }
 
-/** The two conviction arms, on the record's OWN claims — exactly the shape
+/** The two conviction arms, on the record's OWN claims. Exactly the shape
  * verifyTier2Verdict recomputes (window: a FULL reganK window meeting
  * zThresholdMicro; lifetime: lifetimeVerdict(windowZs).convicted). The window
  * zMicro is a CLAIM here (entries live with the adopter); the lifetime arm is
@@ -267,24 +267,24 @@ function convictionShaped(b: Tier2VerdictRecord['body']): boolean {
 }
 
 /**
- * The WINDOW conviction arm, CHAIN-RE-VERIFIED — the ONLY arm that may ground
+ * The WINDOW conviction arm, CHAIN-RE-VERIFIED: the ONLY arm that may ground
  * a transport-injected ban (verdictEvidence).
  *
  * Applied to a record AFTER adoptVerdictRowJudge, b.zMicro IS the value
  * verifyTier2Verdict recomputed from the READER's OWN window entries (any
  * mismatch was rejected at adopt), so a full reganK window at/above threshold
- * is a 5σ conviction proven over the reader's chain bytes — never a claim.
+ * is a 5σ conviction proven over the reader's chain bytes, never a claim.
  *
  * The LIFETIME arm is deliberately EXCLUDED here (it is NOT a substitute
  * conviction for the ban path): its windowZs are the record author's CLAIMS,
  * and neither the store gate nor adopt ever recomputes them against the
- * reader's chain — the auditor supplies entries for the ONE named window only,
+ * reader's chain: the auditor supplies entries for the ONE named window only,
  * so the fabricated prior-window zs are never checked. Treating a convicting
  * lifetime receipt as ban-grounding is exactly the §0 catastrophe: an honest
  * player whose real window is honest (window arm below threshold) but who
  * carries an attacker-fabricated `lifetime` would be permanently banned by
  * every verifier from network bytes alone. Until an auditor discharges the
- * windowZs chain-check (per-window reconstruction from the accused's chain —
+ * windowZs chain-check (per-window reconstruction from the accused's chain;
  * caller wiring, brick 3/4), the lifetime arm grounds NO ban here: fail toward
  * no-forgery (§0), 5σ-window-conviction-only (A5-21). A record adopted purely
  * on its lifetime arm still travels and still adopts; it simply injects no ban.
@@ -298,8 +298,8 @@ function windowConvictionProven(b: Tier2VerdictRecord['body']): boolean {
  * shape, size, the PARAMS_A5 pin, the lifetime receipt, the suppression
  * claim's necessary condition, the record signature, and commend-pattern key
  * provenance (certs are inline, so provenance is fully context-free). What
- * this deliberately CANNOT verify — that zMicro recomputes from the window's
- * real entries — is exactly what adoption verifies on every reader (§0:
+ * this deliberately CANNOT verify, that zMicro recomputes from the window's
+ * real entries, is exactly what adoption verifies on every reader (§0:
  * storing confers nothing; embed.adoptVerdictRow re-verifies everything).
  * `target` present ⇒ the key binding is checked too. Never throws.
  */
@@ -324,8 +324,8 @@ export function checkVerdictRecord(
     }
     if (recBytes.length > (opts.maxBytes ?? VERDICT_MAX_BYTES)) return { verdict: 'oversize' }
 
-    // Necessary conditions of EVER adopting (verifyTier2Verdict mirrors) —
-    // a record failing any of these is dead weight no reader can ever use.
+    // Necessary conditions of EVER adopting (verifyTier2Verdict mirrors).
+    // A record failing any of these is dead weight no reader can ever use.
     if (b.params !== PARAMS_A5_DIGEST) return { verdict: 'bad-params' }
     if (b.lifetime !== undefined && lifetimeVerdict(b.lifetime.windowZs).zLifeMicro !== b.lifetime.zLifeMicro)
       return { verdict: 'bad-lifetime' }
@@ -350,7 +350,7 @@ export function checkVerdictRecord(
       if (!proven) return { verdict: 'uncertified-key' }
     }
 
-    // Key binding: the row slot is the ACCUSED's, derived — never claimed.
+    // Key binding: the row slot is the ACCUSED's, derived. Never claimed.
     if (target !== undefined && tier2VerdictKey(b.root) !== target) return { verdict: 'wrong-key' }
 
     return {
@@ -374,7 +374,7 @@ export function verifyVerdictRecord(rec: unknown, opts: VerdictCheckOpts = {}, t
 }
 
 // ---------------------------------------------------------------------------
-// Deterministic merge (capped union — header ANTI-SUPPRESSION ORDER)
+// Deterministic merge (capped union: header ANTI-SUPPRESSION ORDER)
 // ---------------------------------------------------------------------------
 
 export interface VerdictMergeOpts {
@@ -394,8 +394,8 @@ export interface VerdictMergeOpts {
 const asValue = (v: unknown): CanonicalObject => v as CanonicalObject
 const baseReplace: MergeFn = (_prev, next) => next
 
-/** Shape-parse a row into candidate records (individually schema-shaped ONLY
- * — verification is the caller's). Rows beyond `cap` records are sliced to
+/** Shape-parse a row into candidate records (individually schema-shaped ONLY.
+ * Verification is the caller's). Rows beyond `cap` records are sliced to
  * the first `cap` (the adopt path's deterministic-prefix rule: row order is
  * part of the published bytes, so every honest party examines the same
  * prefix; this also CPU-bounds hostile rows fed raw into getMerged folds). */
@@ -453,9 +453,9 @@ function orderVerdictEntries(list: CheckedVerdictRec[]): RankEntry[] {
  * every record a reader accumulates has passed it), enforce the per-subject
  * key binding, order per the header rules, and cap deterministically (record
  * count ≤ capPerRow AND record bytes ≤ rowMaxBytes; a record that would
- * overflow the byte budget is skipped, later smaller records still fit —
+ * overflow the byte budget is skipped, later smaller records still fit,
  * deterministic skip-and-continue). A stored verdict row is NEVER replaced by
- * a non-verdict 'record' value (prev is protected — an attacker cannot blank
+ * a non-verdict 'record' value (prev is protected; an attacker cannot blank
  * a row by writing junk over it). On internal error: prev (fail closed).
  */
 export function makeVerdictMerge(o: VerdictMergeOpts = {}): MergeFn {
@@ -466,7 +466,7 @@ export function makeVerdictMerge(o: VerdictMergeOpts = {}): MergeFn {
   return (prev, next, kind, target) => {
     if (kind !== 'record') return base(prev, next, kind, target)
     try {
-      // KEY-DOMAIN DISCIPLINE (composition-safe — Round-A finding fix). Verdict
+      // KEY-DOMAIN DISCIPLINE (composition-safe: Round-A finding fix). Verdict
       // rows are shape-discriminated but the STORE KEY is what actually owns a
       // record: a record belongs at `target` only when tier2VerdictKey(root) ===
       // target (checkVerdictRecord's binding check). So this fold NEVER decides
@@ -476,7 +476,7 @@ export function makeVerdictMerge(o: VerdictMergeOpts = {}): MergeFn {
       // BOTH sides re-check through the same context-free core (a deliberate
       // divergence from the pointers fold, which trusts prev inductively): the
       // row is capped, publishes are rare, and full re-verification keeps the
-      // emitted row's invariant one-line — every record passed checkVerdictRecord
+      // emitted row's invariant one-line: every record passed checkVerdictRecord
       // against THIS target in THIS fold. It also makes genuine-prev protection
       // structural: a stored row's own records re-bind and re-enter the union,
       // so junk written over a real row can never blank it (no shape-based
@@ -518,7 +518,7 @@ export function makeVerdictMerge(o: VerdictMergeOpts = {}): MergeFn {
 }
 
 // ---------------------------------------------------------------------------
-// Store gate (installed on the overlay node) — the write-time index
+// Store gate (installed on the overlay node), the write-time index
 // ---------------------------------------------------------------------------
 
 export interface VerdictStoreOpts {
@@ -545,10 +545,10 @@ export interface VerdictStoreGate {
  * Build the verdict layer's STORE gate for one node. A kind-'record' value
  * shaped like a verdict row is accepted only when it is within the row caps
  * and EVERY record in it (1) passes the full context-free verification
- * (checkVerdictRecord — schema, size, params pin, lifetime receipt,
+ * (checkVerdictRecord: schema, size, params pin, lifetime receipt,
  * suppression claim, signature, key provenance) and (2) is bound to the
  * target key: tier2VerdictKey(record.body.root) === target. All-or-nothing
- * per offered row (an honest publisher's row is entirely its own — junk rides
+ * per offered row (an honest publisher's row is entirely its own; junk rides
  * only by DISCARDING the publisher's own put). Non-verdict-shaped 'record'
  * values and all other kinds fall through to `base`. Growth is bounded by the
  * merge's deterministic cap. Refusal is honest degradation (StoreRes
@@ -592,7 +592,7 @@ export function makeVerdictStoreValidator(opts: VerdictStoreOpts = {}): VerdictS
 // consensusSaltOpts (any valid reveal ⇒ the same salt when the witnessSet is
 // supplied), so this slot's whole job is CONVERGENT PUBLICATION: every peer
 // deterministically keeps the same single reveal. Canonical pick = the valid,
-// key-bound reveal with the lexicographic-least canonical hash — pure
+// key-bound reveal with the lexicographic-least canonical hash. Pure
 // function of the record set, no arrival-order dependence. Anchorless
 // reveals are refused at the gate (the consensus-path duty; a reveal that
 // commits to no post-game entropy has no business in the slot).
@@ -639,7 +639,7 @@ export interface SaltRevealGateOpts {
 }
 
 /** The reveal slot's store gate + merge, composable via base hooks exactly
- * like the verdict layer (install order between the two is irrelevant —
+ * like the verdict layer (install order between the two is irrelevant;
  * their key families are disjoint and both delegate non-owned values). */
 export function makeSaltRevealGate(opts: SaltRevealGateOpts = {}): VerdictStoreGate {
   const base: StoreValidator = opts.base ?? ((_f, _t, kind, _v) => kind === 'record')
@@ -662,7 +662,7 @@ export function makeSaltRevealGate(opts: SaltRevealGateOpts = {}): VerdictStoreG
         const r = value as unknown as SaltReveal
         candidates.push({ r, h: toB64u(canonicalHash(r as unknown as CanonicalObject)) })
       }
-      // Nothing binds ⇒ not a reveal slot in THIS fold — delegate, never
+      // Nothing binds ⇒ not a reveal slot in THIS fold. Delegate, never
       // manufacture (the verdict merge's composition discipline, verbatim).
       if (candidates.length === 0) return baseMerge(prev, next, kind, target)
       candidates.sort((a, b) => compareKeys(a.h, b.h))
@@ -722,7 +722,7 @@ export interface VerdictReadNode {
   getMerged?(target: B64u, kind: ValueKind): Promise<CanonicalObject | null>
 }
 
-/** Fetch a subject's merged verdict row. The row is UNVERIFIED bytes — feed
+/** Fetch a subject's merged verdict row. The row is UNVERIFIED bytes. Feed
  * it to verdictEvidence (judge-pinned adopt) / embed.adoptVerdictRow. */
 export async function fetchVerdictRow(
   node: VerdictReadNode,
@@ -746,7 +746,7 @@ export interface VerdictScanEntry {
   /** The adopted (fully re-verified) conviction-bearing record. */
   rec: Tier2VerdictRecord
   /** The record's window-completing game the §8 scan anchored on
-   * (body.games[last] — the final ordinal of the convicting full window /
+   * (body.games[last]: the final ordinal of the convicting full window /
    * the lifetime claim's closing window). */
   convictionGame: string
   /** The reader's OWN chain-side §8 scan from that game. */
@@ -760,12 +760,12 @@ export interface VerdictScanEntry {
 export interface LadderVerdictEvidence {
   ladder: string
   /** True iff the reader's own scan proved a §8 suppression for ANY adopted
-   * conviction on this ladder (5σ recomputed + chain-side absence — the
+   * conviction on this ladder (5σ recomputed + chain-side absence; the
    * exact tier2.ts auditor facts). */
   suppressed: boolean
   /** Present iff suppressed: the injected evidence for displayState /
    * pairViewOf (`ban`) and PairView.banUntilWts (`ban.until`). Permanent
-   * (§9). A COMPLIANT selfban never appears here — the chain fold's banStep
+   * (§9). A COMPLIANT selfban never appears here. The chain fold's banStep
    * owns the served 90-day term (read it from fold state, not transport). */
   ban?: { until: number }
   /** Every adopted conviction-bearing record + its scan, in adopt order. */
@@ -777,7 +777,7 @@ export interface VerdictEvidence {
    * are rejected here with typed errors; only `adopted` fed the scans. */
   adopt: AdoptVerdictRow
   /** Per-ladder evidence, keyed by ladder id (only ladders with ≥1 adopted
-   * CONVICTION-bearing record appear — sub-conviction records never do). */
+   * CONVICTION-bearing record appear. Sub-conviction records never do). */
   ladders: { [ladder: string]: LadderVerdictEvidence }
 }
 
@@ -792,7 +792,7 @@ export interface VerdictEvidenceOpts {
    * contract: null ⇒ that record is rejected, never adopted unverified). */
   entriesFor: (rec: Tier2VerdictRecord, index: number) => readonly WindowEntry[] | null
   /** The accused's chain events IN CHAIN ORDER from the reader's own
-   * ALREADY-VERIFIED chain (verifyChain truth — same layering as every
+   * ALREADY-VERIFIED chain (verifyChain truth: same layering as every
    * fold). Malformed input THROWS (embed.suppressionScan's fail-closed
    * builder rule): this is the caller's own trusted data, not network junk. */
   chainEvents: readonly SignedEvent[]
@@ -804,20 +804,20 @@ export interface VerdictEvidenceOpts {
  *
  * BAN-PATH INVARIANTS (asserted end-to-end in the transport suite):
  *  · 5σ-WINDOW-CONVICTION-ONLY (A5-21 + §0): only adopted records whose
- *    RE-VERIFIED window carries a conviction — a full reganK window whose
- *    zMicro RECOMPUTED from the reader's own entries meets zThresholdMicro —
- *    reach the scan (windowConvictionProven). A 3σ escalation-shaped record,
+ *    RE-VERIFIED window carries a conviction. A full reganK window whose
+ *    zMicro RECOMPUTED from the reader's own entries meets zThresholdMicro.
+ *    Reach the scan (windowConvictionProven). A 3σ escalation-shaped record,
  *    a sub-conviction record, AND a record convicting only on its lifetime
  *    windowZs (author claims this auditor never recomputes against the chain)
- *    all contribute NOTHING here and never yield any ban input — grounding a
+ *    all contribute NOTHING here and never yield any ban input. Grounding a
  *    ban on an unrecomputed lifetime receipt would permanently ban an honest
  *    player from fabricated bytes (escalation obliges analysis, never a
  *    deadline; banDeadline / lifetime semantics live untouched in embed.ts).
- *  · §0 NO-FALSE-FRAUD: the ban evidence rests on the READER's OWN facts —
- *    the conviction re-verified from its own window inputs and the §8
+ *  · §0 NO-FALSE-FRAUD: the ban evidence rests on the READER's OWN facts.
+ *    The conviction re-verified from its own window inputs and the §8
  *    absence scan over its own verified chain (embed-1 leniency included: a
  *    compliant same-ladder selfban ALWAYS discharges, junk in the row
- *    notwithstanding, and yields NO evidence here — the fold's banStep owns
+ *    notwithstanding, and yields NO evidence here: the fold's banStep owns
  *    the served term). An adopted 'suppression' record whose deadlineEvent
  *    the reader's scan does not reproduce is reported (claimConfirmed:
  *    false) but grounds nothing.
@@ -829,8 +829,8 @@ export interface VerdictEvidenceOpts {
  * PERMANENT_BAN_UNTIL_WTS. Thread the result explicitly:
  *   displayState(ladderState, cat, evidence.ban, atWts)   → 'banned'
  *   pairViewOf(..., mergedBan(foldBan, evidence.ban), atWts)
- *   pairingLegal(view, other, atWts)                      → 'banned'
- * — never ambient state; the evidence parameter is the injection seam.
+ *   pairingLegal(view, other, atWts)                      → 'banned'.
+ * Never ambient state; the evidence parameter is the injection seam.
  */
 export function verdictEvidence(o: VerdictEvidenceOpts): VerdictEvidence {
   const adopt = adoptVerdictRowJudge({
@@ -845,7 +845,7 @@ export function verdictEvidence(o: VerdictEvidenceOpts): VerdictEvidence {
     // A5-21 + §0: ONLY the CHAIN-RE-VERIFIED window arm may feed the ban path.
     // Post-adopt, b.zMicro IS the value recomputed from THIS reader's own
     // window entries (a mismatch was rejected at adopt), so this is a proven 5σ
-    // conviction — never a claim. A sub-conviction record, an escalation, OR a
+    // conviction: never a claim. A sub-conviction record, an escalation, OR a
     // record convicting only on its (unrecomputed) lifetime windowZs all
     // contribute NOTHING here: the lifetime windowZs are author claims this
     // auditor never checks against the chain, so grounding a permanent ban on
@@ -873,7 +873,7 @@ export function verdictEvidence(o: VerdictEvidenceOpts): VerdictEvidence {
 }
 
 /** Convenience accessor: the injected ban evidence for one ladder (undefined
- * = transport contributes no ban — fold state may still carry a selfban). */
+ * = transport contributes no ban. Fold state may still carry a selfban). */
 export function banEvidenceOf(ev: VerdictEvidence, ladder: string): { until: number } | undefined {
   return Object.prototype.hasOwnProperty.call(ev.ladders, ladder) ? ev.ladders[ladder].ban : undefined
 }
@@ -882,7 +882,7 @@ export function banEvidenceOf(ev: VerdictEvidence, ladder: string): { until: num
  * Compose the fold's in-chain selfban entry with injected suppression
  * evidence into the ONE `ban` argument displayState/pairViewOf take: the
  * later expiry wins (the same monotonic-max rule as the fold's banStep).
- * Malformed entries are ignored (displayState's own tolerance — a malformed
+ * Malformed entries are ignored (displayState's own tolerance; a malformed
  * ban is no ban, never a crash). */
 export function mergedBan(
   foldBan: { until: number } | undefined,

@@ -1,4 +1,4 @@
-/* Custom training mode — slice A styles. Owned by the custom-training builder.
+/* Custom training mode: slice A styles. Owned by the custom-training builder.
    Tokens only (var(--…)); mirrors the look of puzzles.css / the app shell.
    Reuses shared classes (.panel .pad .btn .btn.ghost .panel-head .panel-title
    .num .muted .small .board-area .board-stage .board-wrap). Do NOT edit the
@@ -363,7 +363,7 @@
   letter-spacing: 0.04em;
   color: var(--text-secondary);
 }
-/* Segmented control — 2 columns by default (length: 4 items → 2×2). */
+/* Segmented control, 2 columns by default (length: 4 items → 2×2). */
 .custom-seg {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -678,7 +678,7 @@
   color: var(--danger);
 }
 /* Retry-on-wrong: recorded failed, still solving. Warning tone, not the harsh
-   danger tone — the learner is meant to keep going, not stop. */
+   danger tone: the learner is meant to keep going, not stop. */
 .custom-prompt.is-keeptrying {
   background: var(--warning-soft);
   border-color: transparent;
@@ -731,7 +731,7 @@
 /* ---- Solve actions ----
    The hint ladder + Retry/Next row reuses the trainer's shared chrome from
    puzzles.css (.hint-row .hint-btn .hint-actions), loaded by the parent
-   PuzzlesView shell — no custom styles needed here. */
+   PuzzlesView shell: no custom styles needed here. */
 
 /* ---- Empty / error ---- */
 .custom-empty-wrap {

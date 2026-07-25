@@ -3,7 +3,7 @@
  "band": "02",
  "order": 2,
  "title": "Special Moves & the Two Goals",
- "subtitle": "Castling, en passant, promotion — and what the whole game is for.",
+ "subtitle": "Castling, en passant, promotion, and what the whole game is for.",
  "estMinutes": 22,
  "concepts": [
   {
@@ -19,28 +19,28 @@
   {
    "id": "en-passant",
    "name": "En Passant",
-   "short": "When an enemy pawn jumps two squares and lands beside yours, you may capture it as if it had moved only one — but only on the very next move."
+   "short": "When an enemy pawn jumps two squares and lands beside yours, you may capture it as if it had moved only one, but only on the very next move."
   },
   {
    "id": "promotion",
    "name": "Promotion",
-   "short": "A pawn that reaches the far end becomes any piece you choose — almost always a queen. The humblest man becomes the strongest."
+   "short": "A pawn that reaches the far end becomes any piece you choose, almost always a queen. The humblest man becomes the strongest."
   },
   {
    "id": "check",
    "name": "Check",
-   "short": "Your king is under attack. You must answer it this very move — by moving the king, blocking the line, or capturing the attacker. There is no fourth option."
+   "short": "Your king is under attack. You must answer it this very move. By moving the king, blocking the line, or capturing the attacker. There is no fourth option."
   },
   {
    "id": "the-goal",
-   "name": "The Goal — Checkmate",
+   "name": "The Goal: Checkmate",
    "short": "The whole game aims at one thing: trap the enemy king so it cannot escape check. That is checkmate. Keep your own king from the same fate."
   }
  ],
  "lessons": [
   {
    "id": "l1-castling",
-   "title": "Castling — Get Your King Safe",
+   "title": "Castling: Get Your King Safe",
    "kind": "concept",
    "summary": "The one move where two pieces move at once. Castle to tuck the king into the corner and wake the rook.",
    "segments": [
@@ -82,7 +82,7 @@
        "conceptId": "castling",
        "coach": {
         "conceptId": "castling",
-        "text": "The other side is queenside castling: the king goes e1 to c1, the rook a1 to d1. We write it O-O-O — three letters, the longer journey. The king travels the same two squares; the rook travels further.",
+        "text": "The other side is queenside castling: the king goes e1 to c1, the rook a1 to d1. We write it O-O-O, three letters, the longer journey. The king travels the same two squares; the rook travels further.",
         "annotations": [
          {
           "kind": "circle",
@@ -111,7 +111,7 @@
        "conceptId": "castling",
        "coach": {
         "conceptId": "castling",
-        "text": "Why bother? Two reasons, and both matter for your whole career. First, safety: the king hides behind a wall of pawns in the corner, far from the centre where the fighting is. Second, the rook. A rook in the corner does nothing; castling drops it onto a central file where it can work. Castle early — it is the most important move you will make in the opening.",
+        "text": "Why bother? Two reasons, and both matter for your whole career. First, safety: the king hides behind a wall of pawns in the corner, far from the centre where the fighting is. Second, the rook. A rook in the corner does nothing; castling drops it onto a central file where it can work. Castle early: it is the most important move you will make in the opening.",
         "annotations": [
          {
           "kind": "highlight",
@@ -139,7 +139,7 @@
        "conceptId": "castling",
        "coach": {
         "conceptId": "castling",
-        "text": "White to move. Your king sits in the centre, exposed. The path between king and the h-rook is clear, and neither has moved. Tuck the king away — castle kingside. Take the king to g1.",
+        "text": "White to move. Your king sits in the centre, exposed. The path between king and the h-rook is clear, and neither has moved. Tuck the king away: castle kingside. Take the king to g1.",
         "annotations": [
          {
           "kind": "circle",
@@ -164,7 +164,7 @@
        ],
        "successLine": {
         "conceptId": "castling",
-        "text": "Good. O-O. King safe in the corner, rook swung to f1 and staring down the half-open file. That is how an opening should end — king tucked, rook working.",
+        "text": "Good. O-O. King safe in the corner, rook swung to f1 and staring down the half-open file. That is how an opening should end, king tucked, rook working.",
         "annotations": [
          {
           "kind": "circle",
@@ -181,7 +181,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. To castle, move the king itself two squares toward the rook — pick up the king on e1 and set it on g1. The rook moves on its own."
+        "text": "No. To castle, move the king itself two squares toward the rook. Pick up the king on e1 and set it on g1. The rook moves on its own."
        }
       },
       {
@@ -189,7 +189,7 @@
        "conceptId": "castling",
        "coach": {
         "conceptId": "castling",
-        "text": "White to move. This time the queenside is clear — king, queen, knight and bishop are all out of the way between the king and the a-rook. Castle long. Take the king to c1.",
+        "text": "White to move. This time the queenside is clear. King, queen, knight and bishop are all out of the way between the king and the a-rook. Castle long. Take the king to c1.",
         "annotations": [
          {
           "kind": "circle",
@@ -214,7 +214,7 @@
        ],
        "successLine": {
         "conceptId": "castling",
-        "text": "Correct. O-O-O. King safe on c1, rook lands on d1 behind your centre pawn. Long castling is bolder — the king sits a touch nearer the edge files — but the rook on d1 is magnificent.",
+        "text": "Correct. O-O-O. King safe on c1, rook lands on d1 behind your centre pawn. Long castling is bolder (the king sits a touch nearer the edge files) but the rook on d1 is magnificent.",
         "annotations": [
          {
           "kind": "circle",
@@ -231,7 +231,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. Queenside castling sends the king from e1 to c1 — two squares toward the a-rook. Move the king there."
+        "text": "Not yet. Queenside castling sends the king from e1 to c1, two squares toward the a-rook. Move the king there."
        }
       },
       {
@@ -239,7 +239,7 @@
        "conceptId": "castling",
        "coach": {
         "conceptId": "castling",
-        "text": "Now you are Black. White has already castled — see the king on g1. Do the same: your king and h-rook are ready, the path is clear. Castle kingside, king to g8.",
+        "text": "Now you are Black. White has already castled. See the king on g1. Do the same: your king and h-rook are ready, the path is clear. Castle kingside, king to g8.",
         "annotations": [
          {
           "kind": "circle",
@@ -264,7 +264,7 @@
        ],
        "successLine": {
         "conceptId": "castling",
-        "text": "Yes. Both kings are home. Black castles exactly as White does — king two squares toward the rook, rook hops over. Memorise the motion until it is automatic.",
+        "text": "Yes. Both kings are home. Black castles exactly as White does. King two squares toward the rook, rook hops over. Memorise the motion until it is automatic.",
         "annotations": [
          {
           "kind": "circle",
@@ -295,7 +295,7 @@
        "conceptId": "castling-rules",
        "coach": {
         "conceptId": "castling-rules",
-        "text": "Castling has rules, and they trip up every beginner. Rule one: you may never castle out of check. Here that black bishop on b4 stares straight down the diagonal at your king on e1 — you are in check. You must answer the check first. Castling is forbidden while the king is attacked.",
+        "text": "Castling has rules, and they trip up every beginner. Rule one: you may never castle out of check. Here that black bishop on b4 stares straight down the diagonal at your king on e1. You are in check. You must answer the check first. Castling is forbidden while the king is attacked.",
         "annotations": [
          {
           "kind": "arrow",
@@ -317,7 +317,7 @@
        "conceptId": "castling-rules",
        "coach": {
         "conceptId": "castling-rules",
-        "text": "Rule two: the king may not pass through an attacked square. Look at that bishop on a6 — it rakes the whole diagonal and hits f1. To castle kingside, your king must travel through f1, and a king is never allowed to step through fire. So O-O is illegal here, even though the king itself is not yet in check.",
+        "text": "Rule two: the king may not pass through an attacked square. Look at that bishop on a6: it rakes the whole diagonal and hits f1. To castle kingside, your king must travel through f1, and a king is never allowed to step through fire. So O-O is illegal here, even though the king itself is not yet in check.",
         "annotations": [
          {
           "kind": "arrow",
@@ -344,7 +344,7 @@
        "conceptId": "castling-rules",
        "coach": {
         "conceptId": "castling-rules",
-        "text": "And the subtlest case — the king may not LAND on an attacked square either. Here the king is not in check, and f1, the square it passes over, is clean — the king could even walk to f1 by hand. But the bishop on a7 rakes the long diagonal onto g1, the very square the king would land on. So O-O is illegal. The king's destination must be safe too, not only its path.",
+        "text": "And the subtlest case: the king may not LAND on an attacked square either. Here the king is not in check, and f1, the square it passes over, is clean. The king could even walk to f1 by hand. But the bishop on a7 rakes the long diagonal onto g1, the very square the king would land on. So O-O is illegal. The king's destination must be safe too, not only its path.",
         "annotations": [
          {
           "kind": "arrow",
@@ -377,7 +377,7 @@
        "conceptId": "castling-rules",
        "coach": {
         "conceptId": "castling-rules",
-        "text": "The full list, learn it cold. You may castle only if: the king and that rook have NOT moved; no piece stands between them; you are NOT in check; and the king neither passes through nor lands on an attacked square. Note carefully — the rook may be attacked, that is fine. It is the KING's three squares — start, pass, land — that must be clean. And one more trap that fools everyone: castling once and for all spends the right; even if the king returns home later, it can never castle again.",
+        "text": "The full list, learn it cold. You may castle only if: the king and that rook have NOT moved; no piece stands between them; you are NOT in check; and the king neither passes through nor lands on an attacked square. Note carefully: the rook may be attacked, that is fine. It is the KING's three squares (start, pass, land) that must be clean. And one more trap that fools everyone: castling once and for all spends the right; even if the king returns home later, it can never castle again.",
         "annotations": [
          {
           "kind": "highlight",
@@ -422,20 +422,20 @@
   },
   {
    "id": "l2-enpassant-promotion",
-   "title": "En Passant & Promotion — the Pawn's Secret Powers",
+   "title": "En Passant & Promotion: the Pawn's Secret Powers",
    "kind": "concept",
    "summary": "Two strange and wonderful pawn rules: the in-passing capture, and the pawn that becomes a queen.",
    "segments": [
     {
      "kind": "teach",
-     "title": "En passant — capture in passing",
+     "title": "En passant: capture in passing",
      "steps": [
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1",
        "conceptId": "en-passant",
        "coach": {
         "conceptId": "en-passant",
-        "text": "The strangest rule in chess, and a real one. Black has just slid the d-pawn two squares, from d7 to d5, hoping to sail past your pawn on e5. The two-square jump does not save it. Your pawn may capture it 'in passing' — en passant — exactly as if it had moved only one square, to d6.",
+        "text": "The strangest rule in chess, and a real one. Black has just slid the d-pawn two squares, from d7 to d5, hoping to sail past your pawn on e5. The two-square jump does not save it. Your pawn may capture it 'in passing' (en passant) exactly as if it had moved only one square, to d6.",
         "annotations": [
          {
           "kind": "circle",
@@ -464,7 +464,7 @@
        "conceptId": "en-passant",
        "coach": {
         "conceptId": "en-passant",
-        "text": "Two conditions, no exceptions. One: your pawn must be on its fifth rank, side by side with the enemy pawn that just jumped. Two: you must take immediately — the very next move. Hesitate one turn and the chance is gone forever. The capturing pawn lands on the square the enemy pawn skipped over, here d6, and the jumped pawn comes off the board.",
+        "text": "Two conditions, no exceptions. One: your pawn must be on its fifth rank, side by side with the enemy pawn that just jumped. Two: you must take immediately. The very next move. Hesitate one turn and the chance is gone forever. The capturing pawn lands on the square the enemy pawn skipped over, here d6, and the jumped pawn comes off the board.",
         "annotations": [
          {
           "kind": "highlight",
@@ -486,7 +486,7 @@
        "conceptId": "en-passant",
        "coach": {
         "conceptId": "en-passant",
-        "text": "So the move is exd6 — the pawn on e5 steps diagonally to d6, the empty square the enemy pawn skipped, and the pawn on d5 is lifted off. Notice the oddity: you land where no enemy piece stood, yet you have captured. In a moment you will play this yourself.",
+        "text": "So the move is exd6. The pawn on e5 steps diagonally to d6, the empty square the enemy pawn skipped, and the pawn on d5 is lifted off. Notice the oddity: you land where no enemy piece stood, yet you have captured. In a moment you will play this yourself.",
         "annotations": [
          {
           "kind": "circle",
@@ -521,7 +521,7 @@
        "conceptId": "en-passant",
        "coach": {
         "conceptId": "en-passant",
-        "text": "White to move. The enemy b-pawn just jumped from b7 to b5, landing beside your pawn on c5. You know the rule — capture it in passing. Take to b6.",
+        "text": "White to move. The enemy b-pawn just jumped from b7 to b5, landing beside your pawn on c5. You know the rule. Capture it in passing. Take to b6.",
         "annotations": [
          {
           "kind": "circle",
@@ -556,7 +556,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. The capturing pawn moves diagonally forward onto the skipped square, b6 — and the enemy pawn on b5 is removed. Try the diagonal capture to b6."
+        "text": "No. The capturing pawn moves diagonally forward onto the skipped square, b6, and the enemy pawn on b5 is removed. Try the diagonal capture to b6."
        }
       },
       {
@@ -564,7 +564,7 @@
        "conceptId": "en-passant",
        "coach": {
         "conceptId": "en-passant",
-        "text": "Now from Black's side — the rule works for both colours. White's b-pawn just leapt from b2 to b4, beside your pawn on c4. Capture it in passing. Take to b3.",
+        "text": "Now from Black's side: the rule works for both colours. White's b-pawn just leapt from b2 to b4, beside your pawn on c4. Capture it in passing. Take to b3.",
         "annotations": [
          {
           "kind": "circle",
@@ -588,7 +588,7 @@
        ],
        "successLine": {
         "conceptId": "en-passant",
-        "text": "Yes. cxb3 en passant — Black captures in passing just as White does. The capturing pawn lands on b3, the square the enemy pawn skipped. One rule, both colours, same shape.",
+        "text": "Yes. cxb3 en passant. Black captures in passing just as White does. The capturing pawn lands on b3, the square the enemy pawn skipped. One rule, both colours, same shape.",
         "annotations": [
          {
           "kind": "circle",
@@ -606,14 +606,14 @@
     },
     {
      "kind": "teach",
-     "title": "Promotion — the pawn becomes a queen",
+     "title": "Promotion: the pawn becomes a queen",
      "steps": [
       {
        "fen": "k7/4P3/8/8/8/8/8/4K3 w - - 0 1",
        "conceptId": "promotion",
        "coach": {
         "conceptId": "promotion",
-        "text": "Here is the pawn's reward for the long march. Reach the far rank — the 8th for White, the 1st for Black — and the pawn is promoted: it transforms into any piece you name. The humble foot soldier becomes the strongest piece on the board. Push to e8 and choose a queen.",
+        "text": "Here is the pawn's reward for the long march. Reach the far rank (the 8th for White, the 1st for Black) and the pawn is promoted: it transforms into any piece you name. The humble foot soldier becomes the strongest piece on the board. Push to e8 and choose a queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -636,7 +636,7 @@
        "conceptId": "promotion",
        "coach": {
         "conceptId": "promotion",
-        "text": "Almost always you take the queen — nine points from a one-point pawn, why refuse it? But you may choose a rook, bishop, or knight instead. This is under-promotion, and the one piece worth it is the knight, because a knight moves where a queen cannot. Watch: promote to a knight on e8 and it forks — it checks the black king on d6 in the same instant it is born. A new queen could not give that check.",
+        "text": "Almost always you take the queen. Nine points from a one-point pawn, why refuse it? But you may choose a rook, bishop, or knight instead. This is under-promotion, and the one piece worth it is the knight, because a knight moves where a queen cannot. Watch: promote to a knight on e8 and it forks. It checks the black king on d6 in the same instant it is born. A new queen could not give that check.",
         "annotations": [
          {
           "kind": "arrow",
@@ -664,7 +664,7 @@
        "conceptId": "promotion",
        "coach": {
         "conceptId": "promotion",
-        "text": "So the rule of thumb: take the queen — always — unless a knight does something the queen cannot, the way e8=N+ checks here while a new queen on e8 would not. That is the whole of under-promotion. Now to your own hands: in the practice that follows, the queen is the right choice every time.",
+        "text": "So the rule of thumb: take the queen (always) unless a knight does something the queen cannot, the way e8=N+ checks here while a new queen on e8 would not. That is the whole of under-promotion. Now to your own hands: in the practice that follows, the queen is the right choice every time.",
         "annotations": [
          {
           "kind": "arrow",
@@ -693,7 +693,7 @@
        "conceptId": "promotion",
        "coach": {
         "conceptId": "promotion",
-        "text": "White to move. The pawn on c7 stands one step from glory and nothing guards the queening square. Promote — push to c8 and take the queen.",
+        "text": "White to move. The pawn on c7 stands one step from glory and nothing guards the queening square. Promote: push to c8 and take the queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -713,7 +713,7 @@
        ],
        "successLine": {
         "conceptId": "promotion",
-        "text": "There it is. c8=Q — a pawn walked the length of the board and returned a queen. With a queen against a bare king this is now a simple win, the kind you will finish in your sleep by the end of the next chapter.",
+        "text": "There it is. c8=Q. A pawn walked the length of the board and returned a queen. With a queen against a bare king this is now a simple win, the kind you will finish in your sleep by the end of the next chapter.",
         "annotations": [
          {
           "kind": "circle",
@@ -724,7 +724,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. The pawn promotes by reaching the last rank — push from c7 to c8 and select a queen."
+        "text": "No. The pawn promotes by reaching the last rank. Push from c7 to c8 and select a queen."
        }
       },
       {
@@ -732,7 +732,7 @@
        "conceptId": "promotion",
        "coach": {
         "conceptId": "promotion",
-        "text": "One more, cleanly. The h-pawn is home in a single step. Queen it — push to h8.",
+        "text": "One more, cleanly. The h-pawn is home in a single step. Queen it: push to h8.",
         "annotations": [
          {
           "kind": "circle",
@@ -752,7 +752,7 @@
        ],
        "successLine": {
         "conceptId": "promotion",
-        "text": "Good. h8=Q. Whenever a pawn reaches the edge with the road clear, you take the queen without a second thought. Promotion is how most endgames are won — get a pawn through, and the game is decided.",
+        "text": "Good. h8=Q. Whenever a pawn reaches the edge with the road clear, you take the queen without a second thought. Promotion is how most endgames are won. Get a pawn through, and the game is decided.",
         "annotations": [
          {
           "kind": "circle",
@@ -788,7 +788,7 @@
   },
   {
    "id": "l3-check",
-   "title": "Check — Your King Is Attacked",
+   "title": "Check: Your King Is Attacked",
    "kind": "concept",
    "summary": "When the king is attacked you must answer at once. There are exactly three ways, and never a fourth.",
    "segments": [
@@ -801,7 +801,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "Your king is under attack — that is check. The black bishop on b4 looks straight down the open diagonal to your king on e1. Check is not optional: you must deal with it this very move. The good news is there are only ever three ways to answer, and one of them must work or the game is lost. Let me show you all three from this single position.",
+        "text": "Your king is under attack. That is check. The black bishop on b4 looks straight down the open diagonal to your king on e1. Check is not optional: you must deal with it this very move. The good news is there are only ever three ways to answer, and one of them must work or the game is lost. Let me show you all three from this single position.",
         "annotations": [
          {
           "kind": "arrow",
@@ -823,7 +823,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "Answer one: MOVE the king off the attacked line. Step the king to f1 — out of the bishop's diagonal, out of check. The simplest reply, and often the right one. Just be sure the new square is not attacked too.",
+        "text": "Answer one: MOVE the king off the attacked line. Step the king to f1: out of the bishop's diagonal, out of check. The simplest reply, and often the right one. Just be sure the new square is not attacked too.",
         "annotations": [
          {
           "kind": "arrow",
@@ -846,7 +846,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "Answer two: BLOCK the line. Step a piece between the attacker and the king. Your knight on b1 jumps to d2 and stands squarely on the diagonal — the bishop's path to the king is shut. Blocking works only against the long-range pieces, the queen, rook, and bishop; you can never block a knight's check or a pawn's.",
+        "text": "Answer two: BLOCK the line. Step a piece between the attacker and the king. Your knight on b1 jumps to d2 and stands squarely on the diagonal. The bishop's path to the king is shut. Blocking works only against the long-range pieces, the queen, rook, and bishop; you can never block a knight's check or a pawn's.",
         "annotations": [
          {
           "kind": "arrow",
@@ -868,7 +868,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "Answer three: CAPTURE the checker. Remove the attacker from the board and the check is over. Your pawn on a3 takes the bishop on b4. No attacker, no check. Move, block, or capture — those are the three, and there is never a fourth.",
+        "text": "Answer three: CAPTURE the checker. Remove the attacker from the board and the check is over. Your pawn on a3 takes the bishop on b4. No attacker, no check. Move, block, or capture. Those are the three, and there is never a fourth.",
         "annotations": [
          {
           "kind": "arrow",
@@ -890,7 +890,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "And what you may NEVER do: ignore the check. You cannot push a pawn on the far side of the board and pretend the attack is not there — the rules forbid any move that leaves your king in check. The same law means you may never move INTO check, nor leave your king exposed by moving a piece that was shielding it. The king's safety comes before everything.",
+        "text": "And what you may NEVER do: ignore the check. You cannot push a pawn on the far side of the board and pretend the attack is not there. The rules forbid any move that leaves your king in check. The same law means you may never move INTO check, nor leave your king exposed by moving a piece that was shielding it. The king's safety comes before everything.",
         "annotations": [
          {
           "kind": "arrow",
@@ -919,7 +919,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "White to move, and in check — the black queen on e8 bears down the open e-file at your king. You have no piece to block with and none to capture her. That leaves one answer: move the king off the file. Step it aside to d2.",
+        "text": "White to move, and in check. The black queen on e8 bears down the open e-file at your king. You have no piece to block with and none to capture her. That leaves one answer: move the king off the file. Step it aside to d2.",
         "annotations": [
          {
           "kind": "arrow",
@@ -944,7 +944,7 @@
        ],
        "successLine": {
         "conceptId": "check",
-        "text": "Good — the king steps off the e-file and the check is answered. When you can neither block nor capture, you move. Always check that the square you run to is itself safe.",
+        "text": "Good: the king steps off the e-file and the check is answered. When you can neither block nor capture, you move. Always check that the square you run to is itself safe.",
         "annotations": [
          {
           "kind": "circle",
@@ -955,7 +955,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. There is nothing to block with and nothing to capture, so you must move the king off the e-file — step it to d1, d2, f1, or f2."
+        "text": "No. There is nothing to block with and nothing to capture, so you must move the king off the e-file. Step it to d1, d2, f1, or f2."
        }
       },
       {
@@ -963,7 +963,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "White to move, in check from the queen on e8 down the e-file. The king could step aside — that is always legal — but here I want the second answer drilled. You have a bishop on f1: rather than run, shut the door. Block the check by interposing the bishop on e2.",
+        "text": "White to move, in check from the queen on e8 down the e-file. The king could step aside (that is always legal) but here I want the second answer drilled. You have a bishop on f1: rather than run, shut the door. Block the check by interposing the bishop on e2.",
         "annotations": [
          {
           "kind": "arrow",
@@ -985,7 +985,7 @@
        ],
        "successLine": {
         "conceptId": "check",
-        "text": "Correct. Be2 plants a wall on the e-file between queen and king. Blocking lets the king stay home and keeps your structure intact — a fine answer when you have a piece to spare for the job.",
+        "text": "Correct. Be2 plants a wall on the e-file between queen and king. Blocking lets the king stay home and keeps your structure intact. A fine answer when you have a piece to spare for the job.",
         "annotations": [
          {
           "kind": "circle",
@@ -996,7 +996,7 @@
         ]
        },
        "retryLine": {
-        "text": "A king move would also be legal here, but this drill is for the block. You have a bishop on f1 — step it onto the e-file, to e2, to wall off the queen's check."
+        "text": "A king move would also be legal here, but this drill is for the block. You have a bishop on f1. Step it onto the e-file, to e2, to wall off the queen's check."
        }
       },
       {
@@ -1004,7 +1004,7 @@
        "conceptId": "check",
        "coach": {
         "conceptId": "check",
-        "text": "White to move, in check — the black bishop sits right next to your king on f2, attacking it. It is undefended. Take the cleanest answer of all: capture the checker. King takes f2.",
+        "text": "White to move, in check. The black bishop sits right next to your king on f2, attacking it. It is undefended. Take the cleanest answer of all: capture the checker. King takes f2.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1027,7 +1027,7 @@
        ],
        "successLine": {
         "conceptId": "check",
-        "text": "Yes. Kxf2 — the attacker is gone, so the check is gone. When you can safely capture the piece giving check, it is often the best of the three, because you win the attacker as well. Move, block, capture: now you have used all three.",
+        "text": "Yes. Kxf2: the attacker is gone, so the check is gone. When you can safely capture the piece giving check, it is often the best of the three, because you win the attacker as well. Move, block, capture: now you have used all three.",
         "annotations": [
          {
           "kind": "circle",
@@ -1038,7 +1038,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. The bishop on f2 is right beside your king and nothing defends it — capture the checker. King takes on f2."
+        "text": "No. The bishop on f2 is right beside your king and nothing defends it. Capture the checker. King takes on f2."
        }
       }
      ]
@@ -1047,7 +1047,7 @@
      "kind": "puzzle",
      "title": "Cool-down: answer the check",
      "intro": {
-      "text": "Three positions, three checks — one for each answer. The enemy moves first and gives check; you must reply at once. Move the king, block the line, or capture the checker — in each, exactly one legal answer exists. Find it."
+      "text": "Three positions, three checks. One for each answer. The enemy moves first and gives check; you must reply at once. Move the king, block the line, or capture the checker. In each, exactly one legal answer exists. Find it."
      },
      "puzzle": {
       "themes": [
@@ -1091,7 +1091,7 @@
   },
   {
    "id": "l4-the-goal",
-   "title": "The Goal of Chess — Checkmate",
+   "title": "The Goal of Chess: Checkmate",
    "kind": "concept",
    "summary": "Everything you have learned serves one aim: trap the enemy king, keep your own free. That is the whole game.",
    "segments": [
@@ -1104,7 +1104,7 @@
        "conceptId": "the-goal",
        "coach": {
         "conceptId": "the-goal",
-        "text": "Here is the point of the entire game. The black king on g8 is in check from the rook on e8. Now apply the three answers you just learned — and watch them all fail. Move? Every square the king could run to is blocked by its own pawns or covered by the rook. Block? There is nothing to put on the 8th rank. Capture? Nothing reaches the rook. In check, and no answer exists. That is checkmate. The game is over; this side has won.",
+        "text": "Here is the point of the entire game. The black king on g8 is in check from the rook on e8. Now apply the three answers you just learned, and watch them all fail. Move? Every square the king could run to is blocked by its own pawns or covered by the rook. Block? There is nothing to put on the 8th rank. Capture? Nothing reaches the rook. In check, and no answer exists. That is checkmate. The game is over; this side has won.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1141,7 +1141,7 @@
        "conceptId": "the-goal",
        "coach": {
         "conceptId": "the-goal",
-        "text": "Another checkmate, a different shape. The white queen on g7 sits right against the black king and attacks it — but why can the king not simply take the queen? Because the white king on f6 guards her. The black king cannot move to h7 or g8 either; the queen covers them. In check, no escape, no capture, no block. Checkmate. Burn this picture in: a queen supported by her king, pressed to the enemy king's face.",
+        "text": "Another checkmate, a different shape. The white queen on g7 sits right against the black king and attacks it, but why can the king not simply take the queen? Because the white king on f6 guards her. The black king cannot move to h7 or g8 either; the queen covers them. In check, no escape, no capture, no block. Checkmate. Burn this picture in: a queen supported by her king, pressed to the enemy king's face.",
         "annotations": [
          {
           "kind": "circle",
@@ -1169,7 +1169,7 @@
        "conceptId": "the-goal",
        "coach": {
         "conceptId": "the-goal",
-        "text": "Now learn the difference that decides games. The queen on b8 checks the king along the 8th rank — but this is NOT mate. The king simply walks to h7, off the rank and out of check. Check that the enemy can answer is just check; the game goes on. Only when the king has no move, no block, and no capture is it checkmate. Knowing one from the other is half of chess.",
+        "text": "Now learn the difference that decides games. The queen on b8 checks the king along the 8th rank, but this is NOT mate. The king simply walks to h7, off the rank and out of check. Check that the enemy can answer is just check; the game goes on. Only when the king has no move, no block, and no capture is it checkmate. Knowing one from the other is half of chess.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1199,7 +1199,7 @@
        "conceptId": "the-goal",
        "coach": {
         "conceptId": "the-goal",
-        "text": "White to move. The black king on g8 is hemmed in by its own pawns on f7, g7, h7 — it has no flight on the back rank. Your rook can reach the 8th and there is nothing to stop it. Finish the game: deliver checkmate on e8.",
+        "text": "White to move. The black king on g8 is hemmed in by its own pawns on f7, g7, h7. It has no flight on the back rank. Your rook can reach the 8th and there is nothing to stop it. Finish the game: deliver checkmate on e8.",
         "annotations": [
          {
           "kind": "circle",
@@ -1225,7 +1225,7 @@
        ],
        "successLine": {
         "conceptId": "the-goal",
-        "text": "Checkmate. Re8 — the king is attacked on its back rank and its own pawns seal every escape. This is the back-rank mate, and you will win and lose many games by it. Castle, yes — but always leave the king a breathing square.",
+        "text": "Checkmate. Re8: the king is attacked on its back rank and its own pawns seal every escape. This is the back-rank mate, and you will win and lose many games by it. Castle, yes, but always leave the king a breathing square.",
         "annotations": [
          {
           "kind": "circle",
@@ -1241,7 +1241,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. The king is trapped on its back rank by its own pawns. Bring the rook to the 8th rank — to e8 — where it gives check with no escape."
+        "text": "No. The king is trapped on its back rank by its own pawns. Bring the rook to the 8th rank (to e8) where it gives check with no escape."
        }
       },
       {
@@ -1249,7 +1249,7 @@
        "conceptId": "the-goal",
        "coach": {
         "conceptId": "the-goal",
-        "text": "White to move. Your king already stands guard on f6, covering g7. Bring the queen to that king's side, right against the enemy on g7 — supported, unanswerable. Deliver mate on g7.",
+        "text": "White to move. Your king already stands guard on f6, covering g7. Bring the queen to that king's side, right against the enemy on g7. Supported, unanswerable. Deliver mate on g7.",
         "annotations": [
          {
           "kind": "circle",
@@ -1275,7 +1275,7 @@
        ],
        "successLine": {
         "conceptId": "the-goal",
-        "text": "Checkmate. Qg7 — the king cannot take her, for your own king defends the square, and it has nowhere to run. The supported queen beside the enemy king is the most common mate in all of chess. You have just delivered the goal of the game.",
+        "text": "Checkmate. Qg7: the king cannot take her, for your own king defends the square, and it has nowhere to run. The supported queen beside the enemy king is the most common mate in all of chess. You have just delivered the goal of the game.",
         "annotations": [
          {
           "kind": "circle",
@@ -1323,17 +1323,17 @@
     "kind": "mc",
     "prompt": "When can you capture a pawn en passant?",
     "options": [
-     "Immediately after the enemy pawn makes its two-square jump and lands beside yours — only on the very next move",
+     "Immediately after the enemy pawn makes its two-square jump and lands beside yours. Only on the very next move",
      "Any time your pawn sits on the fifth rank",
      "Only when you are in check",
      "Whenever two enemy pawns stand side by side"
     ],
     "answerIndex": 0,
-    "explain": "En passant is a one-time offer. Your pawn must be on its fifth rank beside an enemy pawn that has just jumped two squares, and you must take it that very move — the right is lost the instant you play anything else."
+    "explain": "En passant is a one-time offer. Your pawn must be on its fifth rank beside an enemy pawn that has just jumped two squares, and you must take it that very move. The right is lost the instant you play anything else."
    },
    {
     "kind": "mc",
-    "prompt": "Your king is in check. Which list gives the three — and only three — legal ways to answer it?",
+    "prompt": "Your king is in check. Which list gives the three (and only three) legal ways to answer it?",
     "options": [
      "Move the king, block the line, or capture the checker",
      "Move the king, offer a draw, or castle away",
@@ -1341,19 +1341,19 @@
      "Promote a pawn, move the king, or push a pawn in front"
     ],
     "answerIndex": 0,
-    "explain": "Move, block, or capture — there is never a fourth answer, and you may never ignore a check or leave your king attacked. Blocking works only against the long-range pieces (queen, rook, bishop)."
+    "explain": "Move, block, or capture. There is never a fourth answer, and you may never ignore a check or leave your king attacked. Blocking works only against the long-range pieces (queen, rook, bishop)."
    },
    {
     "kind": "mc",
-    "prompt": "What, exactly, is checkmate — the goal of the whole game?",
+    "prompt": "What, exactly, is checkmate, the goal of the whole game?",
     "options": [
-     "The king is in check and has no legal reply — it cannot move to safety, block the line, or capture the attacker",
+     "The king is in check and has no legal reply. It cannot move to safety, block the line, or capture the attacker",
      "You capture the enemy king and lift it off the board",
-     "The enemy king is attacked — any time the king is in check, that is checkmate",
+     "The enemy king is attacked: any time the king is in check, that is checkmate",
      "The side to move has no legal move at all"
     ],
     "answerIndex": 0,
-    "explain": "Checkmate is check with no answer: none of move, block, or capture is available. The king is never actually captured. Plain check is not mate (the enemy can answer it), and having no legal move while NOT in check is stalemate — a draw, not a win."
+    "explain": "Checkmate is check with no answer: none of move, block, or capture is available. The king is never actually captured. Plain check is not mate (the enemy can answer it), and having no legal move while NOT in check is stalemate. A draw, not a win."
    },
    {
     "kind": "play",
@@ -1362,7 +1362,7 @@
     "solutionUci": [
      "e1g1"
     ],
-    "explain": "O-O: the king goes from e1 to g1 and the rook hops to f1. King safe in the corner, rook activated on the central file — the ideal end to the opening."
+    "explain": "O-O: the king goes from e1 to g1 and the rook hops to f1. King safe in the corner, rook activated on the central file, the ideal end to the opening."
    },
    {
     "kind": "play",
@@ -1378,17 +1378,17 @@
     "prompt": "White to move. The king and h-rook have not moved and the squares between them are empty. May White castle kingside (O-O) here?",
     "fen": "rnbqk1nr/1ppp1ppp/b7/8/8/8/PPPP1PPP/RNBQK2R w KQkq - 0 1",
     "options": [
-     "No — the bishop on a6 attacks f1, and the king may not pass through an attacked square",
-     "Yes — the king and rook are unmoved and nothing stands between them, so castling is legal",
-     "No — castling is never allowed while any enemy bishop is developed",
-     "Yes — and it is the best move, getting the king to safety at once"
+     "No: the bishop on a6 attacks f1, and the king may not pass through an attacked square",
+     "Yes: the king and rook are unmoved and nothing stands between them, so castling is legal",
+     "No: castling is never allowed while any enemy bishop is developed",
+     "Yes, and it is the best move, getting the king to safety at once"
     ],
     "answerIndex": 0,
-    "explain": "O-O is illegal. The bishop on a6 rakes the diagonal onto f1 — the square the king must cross to reach g1 — and a king may never pass through a square under attack. The king itself is not yet in check, and the path is clear, but that single attacked crossing square forbids the castle."
+    "explain": "O-O is illegal. The bishop on a6 rakes the diagonal onto f1 (the square the king must cross to reach g1) and a king may never pass through a square under attack. The king itself is not yet in check, and the path is clear, but that single attacked crossing square forbids the castle."
    },
    {
     "kind": "play",
-    "prompt": "The enemy e-pawn just jumped from e7 to e5, landing beside your pawn on f5. Punish the jump — capture in passing.",
+    "prompt": "The enemy e-pawn just jumped from e7 to e5, landing beside your pawn on f5. Punish the jump. Capture in passing.",
     "fen": "rnbqkbnr/pppp1ppp/8/4pP2/8/8/PPPPP1PP/RNBQKBNR w KQkq e6 0 1",
     "solutionUci": [
      "f5e6"
@@ -1397,24 +1397,24 @@
    },
    {
     "kind": "judge",
-    "prompt": "Black had just jumped a pawn from e7 to e5 beside White's pawn. White answered at once with fxe6 — capturing en passant on the very next move. Was that timing correct, or did White have to wait?",
+    "prompt": "Black had just jumped a pawn from e7 to e5 beside White's pawn. White answered at once with fxe6: capturing en passant on the very next move. Was that timing correct, or did White have to wait?",
     "fen": "rnbqkbnr/pppp1ppp/4P3/8/8/8/PPPPP1PP/RNBQKBNR b KQkq - 0 1",
     "lastMoveUci": "f5e6",
     "verdict": "correct",
-    "explain": "Correct — and the timing was the whole point. En passant may be played ONLY on the move immediately after the enemy pawn's two-square jump. White took it at once; one quiet move in between and the right would have vanished forever. There is no waiting with en passant."
+    "explain": "Correct, and the timing was the whole point. En passant may be played ONLY on the move immediately after the enemy pawn's two-square jump. White took it at once; one quiet move in between and the right would have vanished forever. There is no waiting with en passant."
    },
    {
     "kind": "play",
-    "prompt": "The pawn on e7 will promote — but a new queen gives no check, while a knight does. Promote to the piece that checks the king on c7 and forks the queen on g7.",
+    "prompt": "The pawn on e7 will promote, but a new queen gives no check, while a knight does. Promote to the piece that checks the king on c7 and forks the queen on g7.",
     "fen": "8/2k1P1q1/8/8/8/8/8/7K w - - 0 1",
     "solutionUci": [
      "e7e8n"
     ],
-    "explain": "e8=N+: under-promotion. The knight checks the king on c7 and attacks the queen on g7 — a royal fork that wins the queen. A new queen on e8 gives no check at all, so here the humble knight is far stronger. Take the queen by reflex, but always check whether a knight does what she cannot."
+    "explain": "e8=N+: under-promotion. The knight checks the king on c7 and attacks the queen on g7. A royal fork that wins the queen. A new queen on e8 gives no check at all, so here the humble knight is far stronger. Take the queen by reflex, but always check whether a knight does what she cannot."
    },
    {
     "kind": "play",
-    "prompt": "Your king is in check from the rook down the open e-file. There is nothing to block or capture with — answer the check.",
+    "prompt": "Your king is in check from the rook down the open e-file. There is nothing to block or capture with. Answer the check.",
     "fen": "4r1k1/8/8/8/8/8/8/4K3 w - - 0 1",
     "solutionUci": [
      "e1d1",
@@ -1422,7 +1422,7 @@
      "e1f2",
      "e1f1"
     ],
-    "explain": "With no piece to interpose and no way to capture the rook, the only legal answer is to move the king off the e-file — d1, d2, f1, or f2 all escape the check."
+    "explain": "With no piece to interpose and no way to capture the rook, the only legal answer is to move the king off the e-file: d1, d2, f1, or f2 all escape the check."
    },
    {
     "kind": "play",
@@ -1431,7 +1431,7 @@
     "solutionUci": [
      "e1f2"
     ],
-    "explain": "Kxf2: capture the checker. The attacker is removed, the check ends, and you win the bishop into the bargain — the best of the three answers when the capture is safe."
+    "explain": "Kxf2: capture the checker. The attacker is removed, the check ends, and you win the bishop into the bargain. The best of the three answers when the capture is safe."
    },
    {
     "kind": "play",
@@ -1440,15 +1440,15 @@
     "solutionUci": [
      "a1a8"
     ],
-    "explain": "Ra8#: the rook gives check along the 8th rank, and the king's own pawns on f7, g7, h7 leave it no escape — no move, no block, no capture. That is checkmate, the back-rank pattern. The whole game aims at exactly this."
+    "explain": "Ra8#: the rook gives check along the 8th rank, and the king's own pawns on f7, g7, h7 leave it no escape. No move, no block, no capture. That is checkmate, the back-rank pattern. The whole game aims at exactly this."
    },
    {
     "kind": "judge",
-    "prompt": "With the kingside minor pieces developed, White chose to castle short — O-O — rather than grab space or start an early attack. Good judgement, or a blunder?",
+    "prompt": "With the kingside minor pieces developed, White chose to castle short (O-O) rather than grab space or start an early attack. Good judgement, or a blunder?",
     "fen": "r1bqk2r/pppp1ppp/2n2n2/2b1p3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 b kq - 1 5",
     "lastMoveUci": "e1g1",
     "verdict": "correct",
-    "explain": "Good judgement. Castling tucks the king safely into the corner and lifts the h1-rook to f1 — exactly what the opening is for. With development in hand, getting the king to safety before opening the position is almost always the right call."
+    "explain": "Good judgement. Castling tucks the king safely into the corner and lifts the h1-rook to f1. Exactly what the opening is for. With development in hand, getting the king to safety before opening the position is almost always the right call."
    },
    {
     "kind": "judge",
@@ -1456,7 +1456,7 @@
     "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b1p3/4P1Q1/2NP4/PPP2PPP/R1B1KB1R b KQ - 3 8",
     "lastMoveUci": "d1g4",
     "verdict": "blunder",
-    "explain": "A blunder. The queen on g4 is attacked by the knight on f6 and no white piece defends g4 — Black simply plays Nxg4 and wins the queen for a knight. Always check that the square your piece lands on is safe before you release it."
+    "explain": "A blunder. The queen on g4 is attacked by the knight on f6 and no white piece defends g4. Black simply plays Nxg4 and wins the queen for a knight. Always check that the square your piece lands on is safe before you release it."
    }
   ]
  },

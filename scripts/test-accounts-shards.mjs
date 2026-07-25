@@ -1,4 +1,4 @@
-// THE A3 SHARD DUTY + REPAIR SUITE — storage brick 3 (spec §5 retention layer
+// THE A3 SHARD DUTY + REPAIR SUITE: storage brick 3 (spec §5 retention layer
 // 3 / publish-on-write, §11 platform parity; module: src/shared/accounts/
 // storage/shards.ts; params: docs/ACCOUNTS-PARAMS.md §Storage N=40/K=12).
 //
@@ -52,7 +52,7 @@ function throws(fn, msg) {
 }
 
 // ---- goldens (recorded from a green run; byte-parity anchors) ---------------
-// b64u(sha256(canonicalBytes(PARAMS_A3))) — NOT frozen-at-genesis (C-3): a
+// b64u(sha256(canonicalBytes(PARAMS_A3))), NOT frozen-at-genesis (C-3): a
 // deliberate params revision updates this golden alongside the docs.
 const GOLDEN_PARAMS_A3_DIGEST = 'ACxJEbqGQj7VOdWBvaLMiYuhfDHluYo0bZ0gbu_1yNE'
 // shardKey(subject, idx) for subject = b64u(sha256(utf8('shard-golden-subject')))
@@ -73,7 +73,7 @@ export * as O from '@shared/accounts/overlay'
 export * as S from '@shared/accounts/storage'
 `
 
-// The full shard decision core — bundled twice (platform node vs browser),
+// The full shard decision core: bundled twice (platform node vs browser),
 // driven through one scripted build/verify/duty/reconstruct/merge sequence;
 // the digests must match byte-for-byte (spec §11: browser is the design point).
 const PARITY_ENTRY = `
@@ -177,7 +177,7 @@ async function main() {
   } finally {
     for (const d of [outdir, outNode, outBrowser]) rmSync(d, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -211,7 +211,7 @@ async function run(M, outNode, outBrowser) {
   {
     const src = readFileSync(resolve(ROOT, 'src/shared/accounts/storage/shards.ts'), 'utf8')
     ok(!/\bDate\.now\s*\(|\bMath\.random\s*\(|\bsetTimeout\s*\(|\bsetInterval\s*\(|\bperformance\.now\s*\(/.test(src),
-      'shards.ts calls no ambient time, randomness, or timers — repair runs ONLY when ticked')
+      'shards.ts calls no ambient time, randomness, or timers. Repair runs ONLY when ticked')
     ok(!/from 'node:|from "node:/.test(src), "shards.ts imports no node: builtins (platform-neutral)")
     ok(src.includes('PARAMS_A3_DIGEST'), 'shards.ts embeds the revisable-params digest seam')
     eq(S.PARAMS_A3.nShards, 40, 'PARAMS_A3.nShards = 40 (ACCOUNTS-PARAMS §Storage)')
@@ -242,7 +242,7 @@ async function run(M, outNode, outBrowser) {
   console.log('\n· 2. cutSnapshot + shardJob → verifyShardEnvelope (k=3, n=6) …')
   // ==========================================================================
   // Subject chain: root-signed genesis, device cert, then a witnessed event
-  // SIGNED BY THE DEVICE — so the accept path exercises the embedded-cert
+  // SIGNED BY THE DEVICE, so the accept path exercises the embedded-cert
   // proof, not just root signatures. One witness attests the head.
   const sub = {
     root: kpOf('shard-subject-root'),
@@ -305,7 +305,7 @@ async function run(M, outNode, outBrowser) {
     eq(S.verifyShardEnvelope(soloEnvs[0], VOPT), 'ok', 'a root-signed attested head verifies with an EMPTY cert set')
   }
 
-  console.log('\n· 2b. REJECT matrix — every ShardVerdict variant …')
+  console.log('\n· 2b. REJECT matrix, every ShardVerdict variant …')
   {
     const V = (env, want, msg) => eq(S.verifyShardEnvelope(env, VOPT), want, msg)
     const T = (mut) => { const e = clone(envs[0]); mut(e); return e }
@@ -325,7 +325,7 @@ async function run(M, outNode, outBrowser) {
     V(JSON.parse('{"v":1,"__proto__":{"x":1}}'), 'bad-envelope', "a '__proto__'-key object → bad-envelope (no throw)")
     // --- wrong-params: foreign rule set / geometry
     V(T((e) => { e.header.params = fakeId('other-params') }), 'wrong-params', 'a foreign params digest → wrong-params')
-    eq(S.verifyShardEnvelope(envs[0]), 'wrong-params', 'the k=3/n=6 job is REFUSED under default production geometry (12/40) — foreign geometry never guessed')
+    eq(S.verifyShardEnvelope(envs[0]), 'wrong-params', 'the k=3/n=6 job is REFUSED under default production geometry (12/40), foreign geometry never guessed')
     V(T((e) => { e.header.k = 4 }), 'wrong-params', 'header.k differing from the advertised k → wrong-params')
     {
       const e = clone(envs[0]); e.header.k = 4; e.header.n = 2
@@ -390,7 +390,7 @@ async function run(M, outNode, outBrowser) {
   }
   {
     // idx >= n: relabel the shard row outside the job geometry. The HEADER is
-    // untouched (so its owner commit stays valid — mutating header.n would break
+    // untouched (so its owner commit stays valid; mutating header.n would break
     // the commit and surface as uncommitted-blob first), and the framing check
     // must still reject a row idx at/beyond n.
     const e = clone(envs[5])
@@ -399,7 +399,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· 3. dutyCarriers / isOnDuty — closestEligible agreement …')
+  console.log('\n· 3. dutyCarriers / isOnDuty, closestEligible agreement …')
   // ==========================================================================
   {
     const STALE = 600_000
@@ -503,9 +503,9 @@ async function run(M, outNode, outBrowser) {
     ok(merged !== null && merged.events.length === 2
       && A.eventId(merged.events[0].body) === A.eventId(genesisAtt.body)
       && A.eventId(merged.events[1].body) === header.headId,
-      'getMerged unions the event rows across holders, sorted (height, id) — deterministic set fold')
+      'getMerged unions the event rows across holders, sorted (height, id). Deterministic set fold')
     const forged = clone(headAtt); forged.sig = flip(forged.sig)
-    eq(await S.publishWitnessedEvent(nodes[3].node, sub.root.pubB, forged), 0, 'a forged (bad-sig) event stores NOWHERE — rejected at every gate')
+    eq(await S.publishWitnessedEvent(nodes[3].node, sub.root.pubB, forged), 0, 'a forged (bad-sig) event stores NOWHERE: rejected at every gate')
     eq(await S.publishWitnessedEvent(nodes[4].node, sub.root.pubB, headPlain, [certEv]), 0, 'an UNATTESTED event stores nowhere (witness countersignature is the §0 authority)')
     eq(await nodes[5].node.put(W.nodeIdOf(sub.stranger.pub), 'events', { v: 1, events: [headAtt] }), 0,
       "a real event published under ANOTHER subject's key stores nowhere (subject-key binding)")
@@ -563,22 +563,22 @@ async function run(M, outNode, outBrowser) {
     const atk = makeShardNode(fab, 'attacker', { validator: () => false })
     await atk.node.bootstrap()
     const forged = clone(envsMain[0]); forged.header.head.sig = flip(forged.header.head.sig)
-    eq(await atk.node.put(key0, 'shard', forged), 0, 'a forged envelope (bad head sig) stores NOWHERE — rejected at the gate, not by policy')
+    eq(await atk.node.put(key0, 'shard', forged), 0, 'a forged envelope (bad head sig) stores NOWHERE: rejected at the gate, not by policy')
     eq(await atk.node.put(S.shardKey(W.nodeIdOf(sub.stranger.pub), 0), 'shard', clone(envsMain[0])), 0,
       "a VALID envelope re-keyed to another subject's slot stores nowhere (wrong-subject replay)")
     eq(await atk.node.put(S.shardKey(subjectId, 1), 'shard', clone(envsMain[0])), 0,
       "a valid row offered at a DIFFERENT row's key stores nowhere (idx-key binding)")
     // THE POISONING CASE (regression for the per-row body-commit fix): same
-    // height, same head, same blob-level framing — the shard BODY byte-flipped.
+    // height, same head, same blob-level framing: the shard BODY byte-flipped.
     // The owner commits sha256(body) per row (header.bodyHashes[idx]), so a
-    // keyless attacker cannot mint a same-length garbage body that verifies —
-    // it is refused at the GATE (not merely at reconstruction), so it can never
+    // keyless attacker cannot mint a same-length garbage body that verifies.
+    // It is refused at the GATE (not merely at reconstruction), so it can never
     // FIRST-store to pin a slot and strand the honest snapshot.
     const poisoned = clone(envsMain[0])
     const body = A.fromB64u(poisoned.shard.body); body[0] ^= 0xff
     poisoned.shard.body = b64(body)
     eq(S.verifyShardEnvelope(poisoned), 'bad-shard', 'the byte-flipped body FAILS store-time verification: the owner commits a per-row body hash the framing now authenticates')
-    eq(await atk.node.put(key0, 'shard', poisoned), 0, 'a keyless body-flip of a public row stores NOWHERE — refused at every gate')
+    eq(await atk.node.put(key0, 'shard', poisoned), 0, 'a keyless body-flip of a public row stores NOWHERE, refused at every gate')
     eq(canon(holder0.node.localGet(key0, 'shard')), canon(envsMain[0]), "the holder's row is byte-identical to the honest envelope after the attack")
     // BODY-POISON FIRST-OFFERED to an EMPTY slot (the actual keyless attack: a
     // churned duty slot the attacker races). Pre-fix it verified 'ok', first-store
@@ -588,7 +588,7 @@ async function run(M, outNode, outBrowser) {
       const freshGate = S.makeShardStoreValidator({ shardMb: 50 })
       const flip5 = clone(envsMain[5]); const bb = A.fromB64u(flip5.shard.body); bb[0] ^= 0xff; flip5.shard.body = b64(bb)
       const k5 = S.shardKey(subjectId, 5)
-      ok(!freshGate.validator(fakeId('atk-first'), k5, 'shard', flip5), 'a body-flip poison offered FIRST to a fresh gate is refused — it can never pin a slot against the honest row')
+      ok(!freshGate.validator(fakeId('atk-first'), k5, 'shard', flip5), 'a body-flip poison offered FIRST to a fresh gate is refused. It can never pin a slot against the honest row')
       ok(freshGate.validator(fakeId('honest'), k5, 'shard', clone(envsMain[5])), '…and the honest committed row is accepted at that same key')
     }
     // TWO poisoned rows can no longer strand a recoverable snapshot: because the
@@ -608,13 +608,13 @@ async function run(M, outNode, outBrowser) {
     // DEFECT-A REGRESSION: an attacker replays the REAL public head with a
     // FOREIGN blobHash (self-consistent framing). Pre-fix it verified 'ok' and,
     // raced first, pinned the slot so the honest same-height row was refused
-    // FOREVER — permanent owner-gone loss. The owner commitment makes it fail.
+    // FOREVER: permanent owner-gone loss. The owner commitment makes it fail.
     const foreignBlob = clone(envsMain[0])
     foreignBlob.header.blobHash = fakeId('foreign-blob-poison')
     foreignBlob.shard.dataHash = foreignBlob.header.blobHash // self-consistent framing
     eq(S.verifyShardEnvelope(foreignBlob), 'uncommitted-blob', 'a real head + foreign blobHash is refused: blobHash is owner-committed')
     const freshGate = S.makeShardStoreValidator({ shardMb: 50 })
-    ok(!freshGate.validator(fakeId('atk-first'), key0, 'shard', foreignBlob), 'the foreign-blob poison is refused even when FIRST-offered — it can never pin a slot against the real snapshot')
+    ok(!freshGate.validator(fakeId('atk-first'), key0, 'shard', foreignBlob), 'the foreign-blob poison is refused even when FIRST-offered. It can never pin a slot against the real snapshot')
     ok(freshGate.validator(fakeId('honest'), key0, 'shard', clone(envsMain[0])), '…and the honest committed row is accepted at that same key')
   }
   {
@@ -677,9 +677,9 @@ async function run(M, outNode, outBrowser) {
   {
     // Defect D: the merged events row is BOUNDED (an active lane cannot grow it
     // without limit off the advertised byte budget). Synthetic root-signed
-    // rows (merge does not verify — only the SET/order/cap matter here). Height
+    // rows (merge does not verify; only the SET/order/cap matter here). Height
     // 0 is a genuine root-signed GENESIS (the merge now identifies the preserved
-    // genesis by type+key+subject-binding, not height alone — defect: height-0
+    // genesis by type+key+subject-binding, not height alone, defect: height-0
     // flood evicting the real genesis).
     const cap = S.EVENTS_ROW_MAX
     const synthEv = (h) => ({
@@ -699,7 +699,7 @@ async function run(M, outNode, outBrowser) {
     ok(!capped.events.some((e) => e.body.height === 50), 'older rows past the cap are dropped (full history stays in shard space)')
     // getMerged folds RAW find-value responses through storageMerge, so an
     // OVERSIZED hostile events array must be pre-bounded BEFORE the per-event
-    // hashing — each side is sliced to EVENTS_ROW_MAX first, so the work (and the
+    // hashing: each side is sliced to EVENTS_ROW_MAX first, so the work (and the
     // result) is bounded regardless of the offered length (reader CPU-DoS closed).
     const oversized = { v: 1, events: Array.from({ length: cap * 2 }, (_, i) => synthEv(i)) }
     const bounded = S.storageMerge(oversized, { v: 1, events: [synthEv(0)] }, 'events', subjectId)
@@ -732,9 +732,9 @@ async function run(M, outNode, outBrowser) {
     const rowFlood = { v: 1, events: [genesisAtt], certs: realCerts.slice(0, S.EVENTS_CERTS_MAX) }
     const mA = S.storageMerge(rowFlood, rowNeeded, 'events', subjectId)
     const mB = S.storageMerge(rowNeeded, rowFlood, 'events', subjectId)
-    eq(canon(mA), canon(mB), 'storageMerge cert union is arrival-order INDEPENDENT above the cap (byte-identical both directions — set-deterministic)')
+    eq(canon(mA), canon(mB), 'storageMerge cert union is arrival-order INDEPENDENT above the cap (byte-identical both directions, set-deterministic)')
     eq(mA.certs.length, S.EVENTS_CERTS_MAX, `the unioned certs are bounded at EVENTS_CERTS_MAX=${S.EVENTS_CERTS_MAX}`)
-    ok(mA.certs.some((c) => A.eventId(c.body) === A.eventId(certEv.body)), 'the NEEDED device cert (proving a surviving event) survives an unneeded valid-cert flood (never evicted by arrival order — defects: cert-channel eviction + non-determinism)')
+    ok(mA.certs.some((c) => A.eventId(c.body) === A.eventId(certEv.body)), 'the NEEDED device cert (proving a surviving event) survives an unneeded valid-cert flood (never evicted by arrival order, defects: cert-channel eviction + non-determinism)')
   }
 
   console.log('\n· 5b-r3. events-row FLOOD cannot evict the real head/genesis …')
@@ -769,8 +769,8 @@ async function run(M, outNode, outBrowser) {
     const realHeadId = A.eventId(realW.find((e) => e.body.height === 6).body)
     ok(gate.validator('atk', subjId, 'events', { v: 1, events: realW, certs: [certEv] }), 'gate: the real chain events (genesis + 6 linked device revokes) are accepted (control)')
 
-    // (defect 6) a height-0 flood — ids ground ABOVE the real genesis so it would
-    // win a "keep highest id" cap — cannot evict the real genesis.
+    // (defect 6) a height-0 flood: ids ground ABOVE the real genesis so it would
+    // win a "keep highest id" cap: cannot evict the real genesis.
     const h0Flood = []
     for (let i = 0; h0Flood.length < cap + 20; i++) {
       const ev = forge({ v: 1, lane: 'w', type: 'genesis', root: sub.root.pubB, key: sub.dev.pubB, height: 0, ts: i, payload: { params: fakeId('r3-p'), name: 'E' + i } })
@@ -794,7 +794,7 @@ async function run(M, outNode, outBrowser) {
     // (round 4) a SINGLE LINKING forgery must not collapse the preserved spine.
     // The round-3 walk followed the UNIQUE successor and ended at the first
     // fork, so ONE forged event claiming prev = realGenesisId turned the whole
-    // spine into genesis-only — and the disconnected height-999999 flood then
+    // spine into genesis-only, and the disconnected height-999999 flood then
     // evicted the real h1..h6 anyway. The walk is now a reachable-set over
     // chain-shaped links (prev matches AND height steps +1): a forged SIBLING
     // costs the attacker one spine slot but never unseats the real branch, and
@@ -824,7 +824,7 @@ async function run(M, outNode, outBrowser) {
       // A fresh prober (no local holdings) resolves closest-first: every row it
       // reaches is the height-2 snapshot, and shard space reconstructs the NEW
       // chain. (A pre-viewer holder crowded out of the closest-8 window may
-      // keep a stale copy locally — it sits outside the duty window and behind
+      // keep a stale copy locally. It sits outside the duty window and behind
       // 8 fresher holders, so resolution never surfaces it.)
       const probe = makeShardNode(fab, 'probe-h2')
       await probe.node.bootstrap()
@@ -843,7 +843,7 @@ async function run(M, outNode, outBrowser) {
     await atk.node.bootstrap()
     eq(await atk.node.put(key0, 'shard', clone(envsMain[0])), 0, 'replaying the STALE height-1 row stores nowhere (downgrade refused network-wide)')
     // Same-height fork: a second witnessed event at height 2 (equivocation),
-    // attested by a rogue witness — the context-free floor admits it as a HEAD,
+    // attested by a rogue witness: the context-free floor admits it as a HEAD,
     // but holders of the honest height-2 row refuse the fork (first-held wins).
     const forkPlain = A.signBody({ ...h2Plain.body, ts: h2Plain.body.ts + 7 }, sub.dev.priv)
     const forkAtt = attest(forkPlain, sub.wit, 1210)
@@ -857,7 +857,7 @@ async function run(M, outNode, outBrowser) {
   }
 
   // ==========================================================================
-  console.log('\n· 6. reconstructTolerant — any 12 of 40, corruption, floors …')
+  console.log('\n· 6. reconstructTolerant, any 12 of 40, corruption, floors …')
   // ==========================================================================
   {
     const blob = Uint8Array.from({ length: 2531 }, (_, i) => (i * 31 + 7) & 0xff)
@@ -886,7 +886,7 @@ async function run(M, outNode, outBrowser) {
       const set = pick([0, 5, 9, 13, 17, 20, 22, 25, 28, 31, 34, 37, 39])
       const bad = A.fromB64u(set[4].body); bad[10] ^= 0x55; set[4].body = b64(bad)
       const got = S.reconstructTolerant(set)
-      ok(got !== null && shaB(got) === want, 'a corrupt row among 13 is detected via the integrity hash and EXCLUDED — output verified')
+      ok(got !== null && shaB(got) === want, 'a corrupt row among 13 is detected via the integrity hash and EXCLUDED, output verified')
     }
     {
       const set = pick([0, 5, 9, 13, 17, 20, 22, 25, 28, 31, 34, 37])
@@ -988,7 +988,7 @@ async function run(M, outNode, outBrowser) {
         if (got !== null && S.verifyShardEnvelope(got, GEO) === 'ok') rows.push(got.shard)
       }
       const blob = S.reconstructTolerant(rows)
-      ok(blob !== null && shaB(blob) === shaB(subChainBytes), 'END TO END: eviction = churn = healed — the chain reconstructs bit-identically after repair')
+      ok(blob !== null && shaB(blob) === shaB(subChainBytes), 'END TO END: eviction = churn = healed. The chain reconstructs bit-identically after repair')
     }
     eq((await S.runRepair(ctxOf(repairer), T2))[0].outcome, 'healthy', 'the tick after a heal reports healthy (repair converges, no oscillation)')
 
@@ -1003,7 +1003,7 @@ async function run(M, outNode, outBrowser) {
     const unrec = (await S.runRepair(ctxOf(survivorHolder), T3))[0]
     eq(unrec.outcome, 'unrecoverable', 'live<kRec=3 → unrecoverable (honest unavailability, no crash, no truncation)')
     ok(unrec.live >= 1 && unrec.live < GEO.k,
-      `the report carries the observed live count (${unrec.live}) — ≥1 seen, under kRec (observation may honestly undercount held rows once routing decays under churn)`)
+      `the report carries the observed live count (${unrec.live}): ≥1 seen, under kRec (observation may honestly undercount held rows once routing decays under churn)`)
     eq(unrec.redistributed.length, 0, 'nothing is redistributed below kRec')
     const T4 = T3 + 3_600_000
     while (liveRows().length > 0) await kill(holdersOf(liveRows()[0])[0])
@@ -1019,7 +1019,7 @@ async function run(M, outNode, outBrowser) {
   // ==========================================================================
   {
     // Defect C: when the heal band is reached but the missing rows' carriers
-    // all refuse (over budget), stored==0 — the outcome must be 'heal-incomplete',
+    // all refuse (over budget), stored==0: the outcome must be 'heal-incomplete',
     // never a false 'healed' a scheduler would treat as safe.
     const GEO2 = { k: 3, n: 8 }
     const ROPT2 = { ...GEO2, dutyK: 1, repairHeadroom: 2 } // heal band: 3 ≤ live < 5
@@ -1046,7 +1046,7 @@ async function run(M, outNode, outBrowser) {
     const acts = await S.runRepair({ node: fakeNode, directory: dm.directory, subjects: [subjectId], opts: ROPT2 }, NOW)
     eq(acts.length, 1, 'the tick scanned the subject')
     eq(acts[0].outcome, 'heal-incomplete', 'reconstructed but every re-store refused (stored==0) → heal-incomplete, NOT a false healed')
-    eq(acts[0].stored, 0, '…and stored is 0 (nothing re-replicated — a scheduler must escalate, not mark safe)')
+    eq(acts[0].stored, 0, '…and stored is 0 (nothing re-replicated: a scheduler must escalate, not mark safe)')
     eq(acts[0].redistributed.length, 4, 'the 4 missing rows were attempted (redistributed list is honest)')
     eq(acts[0].live, 4, 'live reports the 4 observed rows')
   }
@@ -1074,7 +1074,7 @@ async function run(M, outNode, outBrowser) {
     // --- MULTI-GROUP (the round-1 critical/major repair fix, previously UNPINNED):
     // a partial NEWER snapshot (below kRec) sits over an intact OLDER one. Repair
     // must SKIP the freshest-but-starved group and heal the older RECONSTRUCTABLE
-    // one — pre-fix it committed to the single tie-broken freshest group and
+    // one: pre-fix it committed to the single tie-broken freshest group and
     // reported 'unrecoverable', stranding a recoverable snapshot.
     {
       const hdr1 = S.cutSnapshot(subChain, headAtt, [certEv], sub.dev.priv, GEO3) // height 1
@@ -1099,7 +1099,7 @@ async function run(M, outNode, outBrowser) {
     // --- UNRESOLVABLE CHAIN: a publisher finalSyncs a structurally-serializable
     // but SEMANTICALLY-INVALID chain (an interior witnessed event dropped → lane
     // gap). Every envelope verifies (real head, real commit, real per-row body)
-    // and the group reconstructs, but verifyChain FAILS — so no viewer can resolve
+    // and the group reconstructs, but verifyChain FAILS, so no viewer can resolve
     // it. Repair must NOT report healed/healthy; it must match the viewer's
     // 'bad-chain' (repair's health verdict tracks viewer resolvability).
     {
@@ -1115,10 +1115,10 @@ async function run(M, outNode, outBrowser) {
       const byKey = new Map()
       for (let i = 0; i < 5; i++) byKey.set(keys8[i], envsGap[i]) // 5 rows ≥ kRec=3, reconstructs
       const act = (await S.runRepair({ node: mkFakeNode(byKey), directory: dm.directory, subjects: [subjectId], opts: ROPT3 }, NOW))[0]
-      eq(act.outcome, 'unrecoverable', "repair reports 'unrecoverable' for a reconstructable-but-verify-FAILING chain — never a false 'healed'")
+      eq(act.outcome, 'unrecoverable', "repair reports 'unrecoverable' for a reconstructable-but-verify-FAILING chain, never a false 'healed'")
       eq(act.redistributed.length, 0, '…and re-replicates nothing (no budget spent maintaining a snapshot no viewer can accept)')
       const vres = await S.readChainFromShards({ get: async (k) => byKey.get(k) ?? null }, sub.root.pubB, GEO3)
-      ok(vres.chain === undefined && vres.report.reason === 'bad-chain', 'readChainFromShards rejects the identical rows as bad-chain — repair and viewer now agree')
+      ok(vres.chain === undefined && vres.report.reason === 'bad-chain', 'readChainFromShards rejects the identical rows as bad-chain, repair and viewer now agree')
     }
   }
 

@@ -1,9 +1,9 @@
-/* School header-band surfaces — the "Today" card (daily lesson + local-day
+/* School header-band surfaces: the "Today" card (daily lesson + local-day
    streak + folded-in SRS reviews) and Viktor's weakness-driven "Recommended
    next", sitting side by side inside the School header band (see SchoolView).
    COMPACT by design: they are header surfaces above the journey, not the page
    content itself. Namespaced .school-today-* / .school-rec-* so they never
-   collide with school.css. Tokens only — no hard-coded color/space/radius.
+   collide with school.css. Tokens only, no hard-coded color/space/radius.
    (The .school-skel base shimmer lives in school.css.) */
 
 /* The two-up shell. Today leads slightly wider; Recommended rides alongside and
@@ -48,7 +48,7 @@
 }
 
 /* ============================================================
-   TODAY CARD — the one daily surface (compact)
+   TODAY CARD: the one daily surface (compact)
    ============================================================ */
 .school-today-card {
   gap: 0;
@@ -263,7 +263,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* "Studied — come back tomorrow" rest state */
+/* "Studied: come back tomorrow" rest state */
 .school-today-rest {
   display: flex;
   align-items: flex-start;
@@ -571,7 +571,7 @@
   margin: 0;
 }
 
-/* Drill complete — small celebratory summary inside the Today card. */
+/* Drill complete: small celebratory summary inside the Today card. */
 .school-drill-done {
   display: flex;
   flex-direction: column;
@@ -616,7 +616,7 @@
 }
 
 /* ============================================================
-   RECOMMENDED NEXT CARD — Viktor's weakness-driven pick (compact)
+   RECOMMENDED NEXT CARD: Viktor's weakness-driven pick (compact)
    ============================================================ */
 .school-rec-card {
   text-align: left;
@@ -698,7 +698,7 @@
   line-height: var(--lh-body);
 }
 
-/* Viktor's name-based reason — a quoted line, never an Elo. */
+/* Viktor's name-based reason: a quoted line, never an Elo. */
 .school-rec-reason {
   display: flex;
   gap: var(--space-3);

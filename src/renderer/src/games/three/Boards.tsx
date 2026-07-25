@@ -1,4 +1,4 @@
-// Board-plane generators — spec §3D: 'cells' checkered/solid slab with beveled
+// Board-plane generators. Spec §3D: 'cells' checkered/solid slab with beveled
 // frame, 'intersections' line-grid goban block, 'holes' upright connect-four
 // frame on a plinth. Tops are baked canvases (procedural.ts) so lines stay
 // crisp; slabs/frames are real beveled geometry so edges catch the key light.
@@ -31,7 +31,7 @@ function fallbackVeneer(color: string, wantsWood: boolean, seed: number): Veneer
 
 /**
  * Frame/side material: art wood when available, tinted rough fallback
- * otherwise. Built imperatively and re-created when the maps arrive — adding a
+ * otherwise. Built imperatively and re-created when the maps arrive. Adding a
  * map to a live material would need a shader recompile (needsUpdate), a fresh
  * material sidesteps the whole class of bug.
  */
@@ -119,8 +119,8 @@ export function IntersectionsBoard({ layout, style, artBase }: BoardProps): JSX.
       lineColor: style.lineColor ?? '#3b2a12',
       starPoints: stars
     })
-    // Sides carry the SAME veneer as the top (a goban is one solid block) —
-    // procedural amber next to pale art veneer reads as mismatched plastic.
+    // Sides carry the SAME veneer as the top (a goban is one solid block).
+    // Procedural amber next to pale art veneer reads as mismatched plastic.
     let sideSrc: HTMLCanvasElement
     if (src instanceof HTMLCanvasElement) {
       sideSrc = src

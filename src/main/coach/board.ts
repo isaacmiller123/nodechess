@@ -8,7 +8,7 @@
  * occupancy set. Varying the occupancy set lets us model ray-defence reveals and
  * x-ray relations exactly as the spec describes.
  *
- * All logic here is re-implemented from documented behaviour — no AGPL/GPL text
+ * All logic here is re-implemented from documented behaviour. No AGPL/GPL text
  * is copied.
  */
 
@@ -63,7 +63,7 @@ export function pieceName(piece: Piece): string {
 
 /**
  * isDefended: a same-colour (relative to the piece on `sq`) attacker exists, OR
- * a ray-defence reveal — removing a same-colour ray attacker on the line reveals
+ * a ray-defence reveal: removing a same-colour ray attacker on the line reveals
  * a same-colour ray defender behind it. We approximate the reveal by recomputing
  * defenders against an occupancy with the nearest same-colour defender removed.
  */

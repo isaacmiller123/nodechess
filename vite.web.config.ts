@@ -7,8 +7,8 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // Web-target build (docs/WEB-PORT-SPEC.md): the UNCHANGED renderer compiled as
 // a plain SPA against src/web/main.web.tsx (which installs the web `Api`
-// implementation before booting '@/main'). Fully separate from
-// electron.vite.config.ts — the desktop build never reads this file.
+// implementation before booting '@/main'). This is fully separate from
+// electron.vite.config.ts. The desktop build never reads this file.
 //
 // The output is a STATIC SITE: no server process anywhere in the request path.
 // Puzzles come from the chunked SQLite artifact (src/web/data), the curriculum/
@@ -31,22 +31,22 @@ const CROSS_ORIGIN_ISOLATION = {
 
 // Engine WASM assets (web port W2, src/web/engines): copied verbatim to
 // <outDir>/engines/ on build AND served at /engines/ by the dev server
-// (vite-plugin-static-copy does both), so the engine workers load same-origin
-// — which is what COEP require-corp demands and what lets the multithreaded
+// (vite-plugin-static-copy does both), so the engine workers load same-origin,
+// which is what COEP require-corp demands and what lets the multithreaded
 // builds spawn their nested pthread workers.
 //
 //  - stockfish-18-lite[.js/.wasm]        chess: multithreaded, small NNUE
-//                                        EMBEDDED (~7 MB — no separate net).
+//                                        EMBEDDED (~7 MB, no separate net).
 //  - stockfish-18-lite-single[.js/.wasm] chess fallback when the page is not
 //                                        crossOriginIsolated.
 //    (each stockfish.js worker resolves its .wasm as <same basename>.wasm
-//     next to the script — the js/wasm pairs MUST stay together)
+//     next to the script, so the js/wasm pairs MUST stay together)
 //  - fairy/*                             Fairy-Stockfish 14 (pychess build):
 //                                        UMD script + wasm + its pthread
 //                                        worker glue (stockfish.worker.js),
 //                                        kept in their own dir because all
 //                                        three files resolve relative paths.
-// (rename stripBase flattens the copies to <dest>/<basename> — without it the
+// (rename stripBase flattens the copies to <dest>/<basename>. Without it the
 // plugin recreates the whole node_modules/... path under dest.)
 const ENGINE_ASSETS = [
   ...[
@@ -76,7 +76,7 @@ const ENGINE_ASSETS = [
 // its directory structure preserved and the copy plugin's rename modes either
 // flatten the tree or keep the repo path.
 //
-// Emission is deliberately DUMB — copy the bytes, derive only the chapter index
+// Emission is deliberately DUMB. Copy the bytes, derive only the chapter index
 // and the photo split. Every decision about the DATA (which chapter is locked,
 // how SAN movetext expands, how a persona row is coerced) stays in typechecked
 // TypeScript next to the shared types it has to satisfy, mirroring the desktop
@@ -88,7 +88,7 @@ const RESOURCES = resolve(__dirname, 'resources')
 interface ContentFile {
   /** Path under <outDir>, e.g. 'content/famous.json'. */
   fileName: string
-  /** Read on demand — the art tree alone is 24 MB, and the dev server only
+  /** Read on demand. The art tree alone is 24 MB, and the dev server only
    *  ever wants one file at a time. */
   source: () => Buffer | string
 }
@@ -111,7 +111,7 @@ function schoolContent(): ContentFile[] {
   try {
     files = readdirSync(dir).filter((f) => f.toLowerCase().endsWith('.json'))
   } catch {
-    return [] // lean checkout without the curriculum — the loader reports it
+    return [] // lean checkout without the curriculum. The loader reports it
   }
 
   const out: ContentFile[] = []
@@ -139,7 +139,7 @@ function schoolContent(): ContentFile[] {
       eloFloor: typeof ch.eloFloor === 'number' ? ch.eloFloor : 0
     })
   }
-  // Curriculum order (band, then order within band) — allChapters()'s sort.
+  // Curriculum order (band, then order within band): allChapters()'s sort.
   index.sort((a, b) =>
     a.band === b.band
       ? (a.order as number) - (b.order as number)
@@ -153,7 +153,7 @@ function schoolContent(): ContentFile[] {
 }
 
 /** Famous games: the two shards merged the way famous.repo.ts merges them
- *  (curated wins an id collision). Movetext stays SAN — the per-ply expansion
+ *  (curated wins an id collision). Movetext stays SAN. The per-ply expansion
  *  is chessops work the browser already has. */
 function famousContent(): ContentFile[] {
   interface Shard {
@@ -171,7 +171,7 @@ function famousContent(): ContentFile[] {
 }
 
 /** Personas: the catalog (~35 KB) plus one image file per portrait.
- *  photos.json inlines every portrait as a base64 data URI — 6.6 MB of JSON the
+ *  photos.json inlines every portrait as a base64 data URI: 6.6 MB of JSON the
  *  gallery would have to download and parse before its first paint. Split back
  *  into real image files the browser fetches per card and caches. */
 function personaContent(): ContentFile[] {
@@ -208,7 +208,7 @@ function personaContent(): ContentFile[] {
 /** The 3D tabletop's PBR sets, meshes and piece SVGs (24 MB, 196 files).
  *  main.web.tsx points window.__gamesArtBase at <base>games-art in production;
  *  without these the boards fall back to procedural materials, so the whole
- *  tree ships with the site — read per file at emit time, never all at once. */
+ *  tree ships with the site. Read per file at emit time, never all at once. */
 function gamesArtContent(): ContentFile[] {
   const root = resolve(RESOURCES, 'games-art')
   const out: ContentFile[] = []
@@ -223,7 +223,7 @@ function gamesArtContent(): ContentFile[] {
   try {
     walk(root, '')
   } catch {
-    return [] // no art tree in this checkout — the loader has its fallback
+    return [] // no art tree in this checkout. The loader has its fallback
   }
   return out
 }

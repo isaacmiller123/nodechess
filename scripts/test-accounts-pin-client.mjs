@@ -1,4 +1,4 @@
-// THE A6-M4 LANE L-pin SUITE — the LIVE tOPRF PIN committee over the account
+// THE A6-M4 LANE L-pin SUITE: the LIVE tOPRF PIN committee over the account
 // peer overlay (src/renderer/src/features/account/net/pinClient.ts, spec §1),
 // headless over an in-process MockFabric committee.
 //
@@ -7,14 +7,14 @@
 // pinClient is fabric-agnostic: the same orchestration that runs over Lane A's
 // browser fabric in production runs here over a MockFabric bus of real account
 // peers (each `memberServe` registered by peerService, exactly as in prod). The
-// crypto is the tested shared substrate — this suite proves the WIRING:
+// crypto is the tested shared substrate. This suite proves the WIRING:
 //   1. draw a distance-ranked pinN-of committee from live presence;
 //   2. provision Shamir shares to it + root-sign the PIN record (verifies);
 //   3. verify a correct PIN via the threshold OPRF (net-zero counter);
 //   4. a WRONG-PIN streak increments the replicated committee counter and, at the
 //      lifetime cap (not before), trips a threshold-signed fuse that verifies;
 //   5. a fuse-banned root is REFUSED witnessed-zone entry (honest members refuse
-//      to serve — the committee enforces the ban, not one client-side gate);
+//      to serve: the committee enforces the ban, not one client-side gate);
 //   6. the UI-facing controller: provision → 'set', wrong bumps the meter,
 //      correct passes, a loaded fuse → 'banned'; honest degradation with < pinN
 //      committee-capable machines and with no controller live (no fixtures).
@@ -61,7 +61,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -103,7 +103,7 @@ async function run(M) {
   }
 
   // A shared fuse view: memberServe consults it before serving pin-eval, so a
-  // fuse-banned root is refused BY THE COMMITTEE (spec §1) — not one member's
+  // fuse-banned root is refused BY THE COMMITTEE (spec §1), not one member's
   // word. Empty until a fuse is genuinely tripped + published.
   const fuseStore = new Map()
   const fuseOf = (root) => fuseStore.get(root) ?? null
@@ -126,7 +126,7 @@ async function run(M) {
     )
   }
 
-  // The account setting up a PIN — its own peer over the same bus.
+  // The account setting up a PIN: its own peer over the same bus.
   const clientSpec = makeIdentity('client-A')
   const clientPeer = await P.startAccountPeer({
     identity: clientSpec.identity,
@@ -201,7 +201,7 @@ async function run(M) {
 
   const keyOfA = draw.keyOf
   const countAfterGood = await PC.readCommitteeCount(clientPeer.fabric, rootA, recordA.payload.committee, keyOfA)
-  eq(countAfterGood, 0, 'a proven success leaves the committee counter at 0 (net-zero — C-2)')
+  eq(countAfterGood, 0, 'a proven success leaves the committee counter at 0 (net-zero, C-2)')
 
   // ==========================================================================
   console.log('\n· 4. a wrong-PIN streak increments the replicated counter …')
@@ -256,7 +256,7 @@ async function run(M) {
   // ==========================================================================
   console.log('\n· 6. a fuse-banned root is REFUSED witnessed-zone entry …')
   // ==========================================================================
-  // Publish the fuse into the shared view the committee consults — honest
+  // Publish the fuse into the shared view the committee consults. Honest
   // members now refuse to serve, so even the CORRECT PIN cannot reach a quorum.
   fuseStore.set(rootA, fuse)
   const banned = await PC.verifyPinAgainstCommittee({
@@ -267,7 +267,7 @@ async function run(M) {
     wts: NOW,
     rng: seededRng('verify-banned'),
   })
-  ok(!banned.ok && banned.reason === 'fuse-active', 'a fuse-banned root is refused entry — the committee will not serve (correct PIN or not)')
+  ok(!banned.ok && banned.reason === 'fuse-active', 'a fuse-banned root is refused entry: the committee will not serve (correct PIN or not)')
   // The ban is COMMITTEE-enforced: with the fuse lifted, the correct PIN works again.
   fuseStore.delete(rootA)
   const reopened = await PC.verifyPinAgainstCommittee({
@@ -281,7 +281,7 @@ async function run(M) {
   ok(reopened.ok, 'lifting the fuse re-opens the committee (the refusal was the live fuse, not a dead gate)')
 
   // ==========================================================================
-  console.log('\n· 7. the UI-facing controller — provision / meter / banned …')
+  console.log('\n· 7. the UI-facing controller, provision / meter / banned …')
   // ==========================================================================
   // A fresh account B on the same committee bus, driven through the controller.
   const clientSpecB = makeIdentity('client-B')
@@ -343,7 +343,7 @@ async function run(M) {
   fuseStore.delete(rootA)
 
   // ==========================================================================
-  console.log('\n· 8. honest degradation — no committee / no controller …')
+  console.log('\n· 8. honest degradation, no committee / no controller …')
   // ==========================================================================
   // A bus with too few committee-capable machines → draw is not "enough".
   const tinyBus = new W.MockFabric()

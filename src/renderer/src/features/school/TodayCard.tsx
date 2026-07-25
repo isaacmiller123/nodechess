@@ -14,7 +14,7 @@ import type { SchoolDaily, DailyStreak, DueConcept } from '@shared/types'
 import './school-home.css'
 
 // ============================================================================
-// FEATURE 4 surface — the single "Today" card on the School home.
+// FEATURE 4 surface: the single "Today" card on the School home.
 //
 // ONE Today surface: today's recommended lesson + the LOCAL-day study streak, with
 // the SRS review queue folded in (no separate Reviews screen). Reads:
@@ -28,10 +28,10 @@ import './school-home.css'
 //                                 window.api.school.reviewConcept({conceptId,correct}).
 //                                 A review counts the day server-side, so on exit we
 //                                 re-pull daily()+streak() and the card flips to rest.
-//   • done today               -> "studied — come back tomorrow" rest state
+//   • done today               -> "studied: come back tomorrow" rest state
 // A calendar strip of the last days (from streak.recent) sits at the foot always.
 //
-// Renders nothing only when the desktop bridge is absent (web/dev) — otherwise it
+// Renders nothing only when the desktop bridge is absent (web/dev). Otherwise it
 // always shows a valid Today surface (even an empty curriculum is valid).
 // ============================================================================
 
@@ -160,7 +160,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
 
   const drillCard = queue[idx]
   const drillDone = drillOpen && queue.length > 0 && idx >= queue.length
-  // Only a RESOLVED empty queue means "all caught up" — never the loading gap.
+  // Only a RESOLVED empty queue means "all caught up". Never the loading gap.
   const drillEmpty = drillOpen && !drillLoading && queue.length === 0
 
   return (
@@ -210,8 +210,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
               <span className="muted">/ {results.total} recalled</span>
             </p>
             <p className="school-drill-done-sub">
-              Today counts — your streak is safe. Viktor spaces the next sighting of each idea by
-              how well you knew it.
+              Today counts. Your streak is safe.
             </p>
             <button type="button" className="btn ghost" onClick={closeDrill}>
               Back to Today
@@ -283,7 +282,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
                     </button>
                   </div>
                   <p className="school-drill-hint muted small">
-                    Honest grades make the schedule work — “Missed it” brings it back sooner.
+                    Honest grades make the schedule work. “Missed it” brings it back sooner.
                   </p>
                 </>
               )}
@@ -291,7 +290,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
           </div>
         ) : null
       ) : !loaded ? (
-        /* Loading skeleton — mirrors the lesson block + CTA shape to avoid jump. */
+        /* Loading skeleton: mirrors the lesson block + CTA shape to avoid jump. */
         <div className="school-today-body" aria-hidden>
           <div className="school-skel skel-line is-sm" />
           <div className="school-skel skel-line is-lg" />
@@ -309,7 +308,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
                 <span className="school-today-rest-title">Studied today</span>
                 <span className="school-today-rest-sub">
                   {current > 1
-                    ? `That's ${current} days running — come back tomorrow to keep it alive.`
+                    ? `That's ${current} days running. Come back tomorrow to keep it alive.`
                     : 'Come back tomorrow to build your streak.'}
                 </span>
                 {reviewsDue > 0 && (
@@ -344,13 +343,13 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
               <span className="school-today-empty-title">No lesson queued</span>
               <span className="muted small">
                 {reviewsDue > 0
-                  ? 'You’re ahead of the curriculum — keep your knowledge sharp with a review below.'
+                  ? 'You’re ahead of the curriculum. Keep your knowledge sharp with a review below.'
                   : 'You’ve cleared every unlocked lesson. Pass a chapter test to open the next band.'}
               </span>
             </div>
           )}
 
-          {/* Reviews-due row — folded into the one Today surface. Shown unless we
+          {/* Reviews-due row: folded into the one Today surface. Shown unless we
               already offered "review anyway" inside the rest state. */}
           {reviewsDue > 0 && !doneToday && (
             <button type="button" className="school-today-reviews" onClick={openDrill}>
@@ -360,15 +359,15 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
               <span className="school-today-reviews-body">
                 <span className="school-today-reviews-title">Spaced review</span>
                 <span className="school-today-reviews-sub">
-                  {reviewsDue} concept{reviewsDue === 1 ? '' : 's'} due — a quick refresh counts for
-                  today
+                  {reviewsDue} concept{reviewsDue === 1 ? '' : 's'} due. A quick refresh counts for
+                  today.
                 </span>
               </span>
               <span className="school-today-reviews-count">{reviewsDue}</span>
             </button>
           )}
 
-          {/* Calendar strip — last local days. */}
+          {/* Calendar strip: last local days. */}
           {strip.length > 0 && (
             <div className="school-today-strip">
               <div className="school-today-strip-label">
@@ -382,7 +381,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
                     <span
                       key={day.ymd}
                       className="school-today-cell"
-                      title={`${day.ymd} — ${day.solved ? 'studied' : 'no study'}`}
+                      title={`${day.ymd}: ${day.solved ? 'studied' : 'no study'}`}
                     >
                       <span
                         className={`school-today-cell-dot${day.solved ? ' is-studied' : ''}${

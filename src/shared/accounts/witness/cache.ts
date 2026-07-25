@@ -1,4 +1,4 @@
-// A2 fabric-core — the witness-side cache (spec §4 / types.ts WitnessStore,
+// A2 fabric-core. The witness-side cache (spec §4 / types.ts WitnessStore,
 // C-1 gossip memory: reconstructible, unauthoritative; losing it is safe, but
 // holding it is what gives fork detection memory). Platform-neutral.
 
@@ -30,7 +30,7 @@ export class MemoryWitnessStore implements WitnessStore {
  * Advance a cache entry to a newly-admitted witnessed event: records the head
  * id/height and the epoch it was admitted under. Never regresses height (an
  * older or same-height event leaves the head untouched, only refreshing the
- * epoch high-water mark). Pure — returns a new entry; the store persists it.
+ * epoch high-water mark). Pure: returns a new entry; the store persists it.
  */
 export function updateHeadFromEvent(
   entry: WitnessCacheEntry | null,
@@ -52,7 +52,7 @@ export function updateHeadFromEvent(
 
 /**
  * Record that a fork was observed for a root (an equivocation proof was seen).
- * Latches forkProofSeen — never cleared. Pure. The proof itself lives with the
+ * Latches forkProofSeen: never cleared. Pure. The proof itself lives with the
  * transport/slashing layer; the cache only remembers that one exists.
  */
 export function recordFork(entry: WitnessCacheEntry | null, root: B64u): WitnessCacheEntry {

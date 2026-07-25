@@ -1,7 +1,7 @@
-// THE A6-M3 LANE L-view SUITE — the LIVE reconstruction viewing client, headless
+// THE A6-M3 LANE L-view SUITE: the LIVE reconstruction viewing client, headless
 // over MockFabric (spec §5 viewing flow, §2 checkpoint verification, §11 budgets;
 // module: src/renderer/src/features/account/net/viewerClient.ts, which COMPOSES
-// the frozen storage/viewer.ts substrate — resolveProfile + openHistory — and
+// the frozen storage/viewer.ts substrate (resolveProfile + openHistory) and
 // maps the verified view onto the profile-page UI shapes via store/derive.ts).
 //
 //   node scripts/test-accounts-viewer-client.mjs
@@ -10,20 +10,20 @@
 // over Lane A's browser fabric in production runs here over an in-process
 // MockFabric overlay, so the whole decision path is proven deterministic and
 // offline. Sections:
-//   1. pure units — isAccountRoot; checkpointCosigRule; buildEligibleWitnesses
+//   1. pure units: isAccountRoot; checkpointCosigRule; buildEligibleWitnesses
 //      over a live presence directory; gameRowsFromEvents; the empty-floor view.
-//   2. THE PROOF — a subject with 24 witnessed games + 3 M-of-N-cosigned
+//   2. THE PROOF: a subject with 24 witnessed games + 3 M-of-N-cosigned
 //      checkpoints on a real overlay of holders (opponents publish segment
 //      pointers, a friend a full-chain pointer, the duty carriers hold shards);
 //      THE OWNER LEAVES; viewerClient resolves the subject over the viewer's
 //      overlay → the full chain reconstructs BIT-FAITHFUL, the UiProfile maps
 //      the real fold (name/bio/ladders/reputation/games/checkpoint), and the
 //      lazy history pager delivers every game verified against the pinned head.
-//   3. DEGRADED (§5/C-8) — carriers die below K_rec: viewerClient surfaces TYPED
+//   3. DEGRADED (§5/C-8). Carriers die below K_rec: viewerClient surfaces TYPED
 //      temporary unavailability (status 'floor', honest report), NEVER a crash
 //      and NEVER a fabricated profile; the mappers stay total; an injected
 //      verified holder summary restores the profile fold on the floor; then the
-//      carriers RETURN and reconstruction HEALS bit-faithful — unavailability
+//      carriers RETURN and reconstruction HEALS bit-faithful. Unavailability
 //      was temporary.
 //
 // House style: esbuild-bundle on the fly (alias @shared; the renderer net module
@@ -69,7 +69,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -107,7 +107,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 1. pure units — root shape, cosig rule, eligibility, mappers …')
+  console.log('\n· 1. pure units, root shape, cosig rule, eligibility, mappers …')
   // ==========================================================================
   {
     const realRoot = kpOf('vc-shape').pubB
@@ -155,7 +155,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 2. THE PROOF — 24 games, owner gone, viewerClient reconstructs …')
+  console.log('\n· 2. THE PROOF: 24 games, owner gone, viewerClient reconstructs …')
   // ==========================================================================
   const subj = kpOf('vc-subject-root')
   const subDev = kpOf('vc-subject-dev')
@@ -185,7 +185,7 @@ async function run(M) {
     const transcript = SEG.transcriptDigest(game, [], result, reason)
     // A4 rated binding (§6): the witness terminal signature must cover kind/tc/
     // players/reason, players derived from (root, opp, color) exactly as
-    // verifySegmentEvent reconstructs them — else 'bad-ladder-binding'.
+    // verifySegmentEvent reconstructs them: else 'bad-ladder-binding'.
     const players = color === 'w' ? { w: subj.pubB, b: opp.pubB } : { w: opp.pubB, b: subj.pubB }
     const binding = { kind: 'chess', tc: TC, players, reason }
     const payload = SEG.makeSegmentPayload({
@@ -261,7 +261,7 @@ async function run(M) {
   const blobHash = shaB(chainBytes)
   // The freshest entanglement partners publish segment pointers. opp i's NEWEST
   // game is the largest g < NGAMES with g % NOPP === i (so the embedded segment's
-  // payload.opp === holder — the anti-poisoning naming rule makeSegmentPointer enforces).
+  // payload.opp === holder: the anti-poisoning naming rule makeSegmentPointer enforces).
   for (let i = 0; i < NOPP; i++) {
     const g = i + NOPP < NGAMES ? i + NOPP : i
     await S.publishPointer(oppNodes[i].node, S.makeSegmentPointer({
@@ -340,7 +340,7 @@ async function run(M) {
   eq(ui.games.length, Math.min(NGAMES, V.VIEWER_GAMES_PREVIEW), 'viewToUiProfile: the head-card game preview is capped')
   ok(ui.games.every((g) => g.witnessed), 'viewToUiProfile: every previewed game is witnessed (attested segment)')
   // the ladders are EXACTLY the shared a4 fold over the reconstructed chain
-  // (store/derive.ts), not a fabrication — the same fold the owner's own client runs.
+  // (store/derive.ts), not a fabrication. The same fold the owner's own client runs.
   const foldLadders = D.deriveLadders(D.foldChainA4(view.chain), now)
   eq(canon(ui.ladders.map((l) => [l.key, l.state])), canon(foldLadders.map((l) => [l.key, l.state])), 'viewToUiProfile: ladders EXACTLY equal the shared a4 fold over the reconstructed chain')
   eq(ui.ladders.find((l) => l.key === 'Blitz').games, NGAMES, `viewToUiProfile: the a4 fold rated all ${NGAMES} Blitz games (ladders come from the real fold)`)
@@ -359,12 +359,12 @@ async function run(M) {
   eq(pagedGames, NGAMES, `the pages deliver all ${NGAMES} games exactly once`)
 
   // ==========================================================================
-  console.log('\n· 3. DEGRADED (§5/C-8) — below K_rec → honest unavailability → HEAL …')
+  console.log('\n· 3. DEGRADED (§5/C-8), below K_rec → honest unavailability → HEAL …')
   // ==========================================================================
   // Kill EVERY carrier for the subject (small network → all-or-nothing rows):
   // the viewer must degrade honestly, never crash, never fabricate.
   for (const n of [...alive]) if (n !== viewer) await kill(n)
-  eq(liveRowCount(), 0, 'every carrier died — no shard rows reachable')
+  eq(liveRowCount(), 0, 'every carrier died, no shard rows reachable')
 
   const down = await V.resolveAccountView(viewer.node, subj.pubB, { directory: viewer.ep.directory(), nowMs: now })
   eq(down.status, 'floor', 'below K_rec: viewerClient degrades to the floor (never wrong bytes)')
@@ -373,7 +373,7 @@ async function run(M) {
   ok(!downAv.available, 'summarizeAvailability: honestly UNAVAILABLE (nothing verified reached us)')
   ok(downAv.reason === 'no-pointers' || downAv.reason === 'no-rows', `…with a TYPED temporary-unavailability reason (${downAv.reason})`)
   eq(downAv.liveRows, 0, '…reporting 0 live shard rows honestly')
-  // the mappers stay TOTAL on the degraded view — no crash, no fabricated profile
+  // the mappers stay TOTAL on the degraded view. No crash, no fabricated profile
   const downUi = V.viewToUiProfile(down, { atWts: now })
   eq(downUi.displayName, 'Unknown account', 'viewToUiProfile stays total on the degraded view (no throw, no fake name)')
   eq(downUi.games.length, 0, '…and invents no games')
@@ -381,7 +381,7 @@ async function run(M) {
 
   // The §5 guaranteed floor / A6 fast-path seam: a verified holder summary (the
   // friend still holds the chain) restores the profile surface even while the
-  // shard layer is unreachable — the view never pretends the chain came back.
+  // shard layer is unreachable. The view never pretends the chain came back.
   const floorWithSummary = await V.resolveAccountView(viewer.node, subj.pubB, {
     directory: viewer.ep.directory(), nowMs: now, summaries: [S.buildHolderSummary(chain)],
   })
@@ -401,7 +401,7 @@ async function run(M) {
   ok(liveRowCount() >= 12, 'the returning carriers restore ≥ K_rec shard rows')
   const healed = await V.resolveAccountView(viewer.node, subj.pubB, { directory: viewer.ep.directory(), nowMs: now, rng: () => 0 })
   eq(healed.status, 'expected', 'after the carriers return, reconstruction succeeds again')
-  eq(shaB(A.chainToBytes(healed.chain)), shaB(chainBytes), 'HEALED: bit-faithful after die → floor → return — the unavailability was TEMPORARY')
+  eq(shaB(A.chainToBytes(healed.chain)), shaB(chainBytes), 'HEALED: bit-faithful after die → floor → return. The unavailability was TEMPORARY')
   eq(V.viewToUiProfile(healed, { atWts: now }).bio, 'They reconstructed me from shards.', 'the healed UiProfile carries the real folded profile again')
 }
 

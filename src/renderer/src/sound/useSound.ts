@@ -1,4 +1,4 @@
-// useSound — React binding for the SoundManager singleton.
+// useSound: React binding for the SoundManager singleton.
 //
 // Reads the live `sound` flag, `soundVolume`, and `soundTheme` from the shared
 // settings context so the Settings controls act in real time, and installs the
@@ -12,7 +12,7 @@ import { getSoundManager, type SoundManager, type SoundName } from './SoundManag
 export type { SoundName } from './SoundManager'
 
 /** Minimal shape of an applied move needed to pick a sound. Compatible with
- *  `AppliedMove` from chess/chess.ts (san/capture/check) — pass it directly. */
+ *  `AppliedMove` from chess/chess.ts (san/capture/check). Pass it directly. */
 export interface MoveSoundInput {
   san: string
   capture: boolean

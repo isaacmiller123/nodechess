@@ -14,7 +14,7 @@
 // Browser provisioning: uses playwright-core's registry; if no chromium is
 // present it attempts `npx playwright-core install chromium-headless-shell`.
 // If that fails (offline): SKIP (exit 0) locally, HARD FAIL (exit 1) when
-// process.env.CI is set — CI must never silently skip the gate.
+// process.env.CI is set. CI must never silently skip the gate.
 //
 // Style: failures counter, per-assert one-line output, exit(failures ? 1 : 0).
 
@@ -68,7 +68,7 @@ async function launchChromium(chromium) {
 async function ensureBrowser(chromium) {
   let attempt = await launchChromium(chromium)
   if (attempt.browser) return attempt.browser
-  console.log('· no chromium available — attempting `npx playwright-core install chromium-headless-shell` …')
+  console.log('· no chromium available: attempting `npx playwright-core install chromium-headless-shell` …')
   // shell:true on Windows: 'npx' is npx.cmd there, and spawning .cmd files
   // directly is both ENOENT-prone and blocked by node's batch-file hardening.
   const res = spawnSync('npx', ['playwright-core', 'install', 'chromium-headless-shell'], {
@@ -77,7 +77,7 @@ async function ensureBrowser(chromium) {
     timeout: 300_000,
     shell: process.platform === 'win32',
   })
-  // res.error (spawn failure, e.g. ENOENT) never sets status — check BOTH,
+  // res.error (spawn failure, e.g. ENOENT) never sets status. Check BOTH,
   // and say WHY provisioning failed instead of silently skipping.
   if (res.error || res.status !== 0) {
     console.error(
@@ -88,7 +88,7 @@ async function ensureBrowser(chromium) {
     if (attempt.browser) return attempt.browser
   }
   if (process.env.CI) {
-    console.error('❌ CI is set and no browser could be provisioned — the browser gate MUST run in CI.')
+    console.error('❌ CI is set and no browser could be provisioned. The browser gate MUST run in CI.')
     console.error(String(attempt.err))
     process.exit(1)
   }
@@ -122,7 +122,7 @@ function serveDir(dir) {
       'content-type': MIME[extname(path)] ?? 'application/octet-stream',
       // Same two headers the production server sets (server/index.ts /
       // vite.web.config.ts): the page must work under full cross-origin
-      // isolation — the strictest environment the app ever runs in.
+      // isolation. The strictest environment the app ever runs in.
       'cross-origin-opener-policy': 'same-origin',
       'cross-origin-embedder-policy': 'require-corp',
       'cache-control': 'no-store',
@@ -141,10 +141,10 @@ async function main() {
   try {
     await run(outdir)
   } finally {
-    // cleanup on failure paths too — a crashed run must not leak temp dirs
+    // cleanup on failure paths too. A crashed run must not leak temp dirs
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -181,7 +181,7 @@ async function run(outdir) {
     await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'load' })
 
     const isolated = await page.evaluate('self.crossOriginIsolated')
-    eq(isolated, true, 'page is crossOriginIsolated (COOP/COEP served — production semantics)')
+    eq(isolated, true, 'page is crossOriginIsolated (COOP/COEP served, production semantics)')
 
     // The in-page flow: argon2id (~sub-second) + chain build + verify.
     await page.waitForFunction('window.__result !== undefined || window.__error !== undefined', {
@@ -231,9 +231,9 @@ async function run(outdir) {
     }
     eq(pageErrors.length, 0, `no uncaught page errors${pageErrors.length ? `: ${pageErrors[0]}` : ''}`)
 
-    // ═══ A5 J6 — judge verdict-bit parity (spec §14-A5 cross-platform gate) ═══
+    // ═══ A5 J6: judge verdict-bit parity (spec §14-A5 cross-platform gate) ═══
     // Section 1 (always): tier1Record + windowVerdict + anchor digests over
-    // FIXED synthetic inputs — the browser must compute the same verdict bits
+    // FIXED synthetic inputs: the browser must compute the same verdict bits
     // as node, byte for byte, no engine required.
     console.log('\n· A5 judge core parity: tier1Record + windowVerdict, browser vs node …')
     const judgeEntry = resolve(outdir, 'judge.entry.ts')
@@ -273,14 +273,14 @@ async function run(outdir) {
     await judgePage.close()
 
     // Section 2 (engine, LOCAL-ONLY): the REAL web judge adapter
-    // (src/web/engines/judge.ts — hash-verified pinned wasm in a dedicated
+    // (src/web/engines/judge.ts: hash-verified pinned wasm in a dedicated
     // worker) judges 3 of J1's golden positions at the TRUE Tier-1 config;
     // the digest must equal the node adapter's LIVE digest for the same
     // subset. Engine work never runs in default CI suites (A5 convention,
-    // test-judge-node gating) — CI prints the skip loudly and the cheap
+    // test-judge-node gating): CI prints the skip loudly and the cheap
     // section above still proves verdict-bit parity there.
     if (process.env.CI) {
-      console.log('\n· A5 judge ENGINE parity: SKIP under CI (engine-heavy suites are local-only — test-judge-node convention)')
+      console.log('\n· A5 judge ENGINE parity: SKIP under CI (engine-heavy suites are local-only, test-judge-node convention)')
     } else {
       console.log('\n· A5 judge ENGINE parity: real web adapter, 3 golden positions at TRUE t1 (≈1 min) …')
       const enginesDirPath = resolve(outdir, 'engines')

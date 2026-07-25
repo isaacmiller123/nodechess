@@ -3,11 +3,11 @@
 //
 // Every renderer takes a normalized prop shape so it doesn't care whether it was
 // fed a legacy SchoolSegment or a new LessonSegment. The five kinds:
-//   teach   — Viktor narrates a position; "Next" walks the steps.
-//   guided  — interactive; the learner plays one of step.solutionUci.
-//   model   — walk through a commented line move-by-move.
-//   puzzle  — solve query.count puzzles pulled from the bundled DB (skippable).
-//   boss    — beat a rating-capped engine, then a Viktor debrief.
+//   teach:    Viktor narrates a position; "Next" walks the steps.
+//   guided:   interactive; the learner plays one of step.solutionUci.
+//   model:    walk through a commented line move-by-move.
+//   puzzle:   solve query.count puzzles pulled from the bundled DB (skippable).
+//   boss:     beat a rating-capped engine, then a Viktor debrief.
 //
 // IMPORTANT (React #300): in every component, ALL hooks run before any early
 // return. We never short-circuit above a hook.
@@ -89,8 +89,8 @@ export function hashPick<T>(arr: T[], key: string): T {
 /** Labels for the shared 3-stage hint ladder (School puzzles + guided steps). */
 const HINT_LABEL: Record<SchoolHintStage, string> = {
   0: 'Hint',
-  1: 'Hint — which square it leaves',
-  2: 'Hint — show the move',
+  1: 'Hint: which square it leaves',
+  2: 'Hint: show the move',
   3: 'No more help'
 }
 
@@ -102,7 +102,7 @@ const HINT_LINE: Record<Exclude<SchoolHintStage, 0>, string> = {
 }
 
 // ===========================================================================
-// MOVE STRIP — compact SAN history shown under School boards (boss games,
+// MOVE STRIP: compact SAN history shown under School boards (boss games,
 // placement games, model lines, debriefs). Numbered pairs, current move
 // highlighted, auto-scrolls to keep the current move in view.
 // ===========================================================================
@@ -139,7 +139,7 @@ export function MoveStrip({
     activeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
   }, [cur, sans.length])
 
-  // Hooks above — safe to bail now (#300).
+  // Hooks above: safe to bail now (#300).
   if (sans.length === 0) return null
 
   const parts = startFen.split(' ')
@@ -185,7 +185,7 @@ export function MoveStrip({
 }
 
 // ===========================================================================
-// TEACH — Viktor narrates a position; annotations painted; "Next" advances.
+// TEACH: Viktor narrates a position; annotations painted; "Next" advances.
 // ===========================================================================
 
 export function TeachSegment({
@@ -203,7 +203,7 @@ export function TeachSegment({
 
   const step: SchoolStep | undefined = steps[stepIdx]
   const isLast = stepIdx >= steps.length - 1
-  // The STEP fen is the board (a coach line may pin its own via CoachLine.fen —
+  // The STEP fen is the board (a coach line may pin its own via CoachLine.fen;
   // same contract the debrief uses; fall back to the step's position).
   const fen = step?.coach.fen ?? step?.fen ?? ''
   const orientation: Color = useMemo(() => (fen ? turnColor(fen) : 'white'), [fen])
@@ -214,7 +214,7 @@ export function TeachSegment({
     [step, orientation]
   )
 
-  // Empty teach segment — advance once on mount.
+  // Empty teach segment: advance once on mount.
   useEffect(() => {
     if (!step) onDone()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -263,7 +263,7 @@ export function TeachSegment({
 }
 
 // ===========================================================================
-// GUIDED — board interactive; user must play one of step.solutionUci.
+// GUIDED: board interactive; user must play one of step.solutionUci.
 // ===========================================================================
 
 type GuidedPhase = 'solving' | 'solved'
@@ -373,7 +373,7 @@ export function GuidedSegment({
       }
 
       setWrong(true)
-      setLine(step.retryLine ?? { text: 'No — look again.' })
+      setLine(step.retryLine ?? { text: 'No. Look again.' })
       setBoardFen(step.fen)
       setLastMove(undefined)
       setNonce((n) => n + 1)
@@ -466,7 +466,7 @@ export function GuidedSegment({
 }
 
 // ===========================================================================
-// MODEL — walk through a commented line move-by-move with "Next".
+// MODEL: walk through a commented line move-by-move with "Next".
 // ===========================================================================
 
 interface ModelFrame {
@@ -517,7 +517,7 @@ export function ModelSegment({
   const shownLastMove =
     frame?.coach?.fen && frame.coach.fen !== frame.fen ? undefined : frame?.lastMove
 
-  const sans = useMemo(() => frames.slice(1).map((f) => f.san ?? '—'), [frames])
+  const sans = useMemo(() => frames.slice(1).map((f) => f.san ?? '·'), [frames])
 
   const orientation: Color = useMemo(
     () => (startFen ? turnColor(startFen) : 'white'),
@@ -588,7 +588,7 @@ export function ModelSegment({
 }
 
 // ===========================================================================
-// PUZZLE — solve query.count puzzles from the bundled DB (skippable).
+// PUZZLE: solve query.count puzzles from the bundled DB (skippable).
 // ===========================================================================
 
 type PzPhase = 'loading' | 'solving' | 'solved' | 'failed' | 'empty'
@@ -627,7 +627,7 @@ export function PuzzleSegment({
   const [nonce, setNonce] = useState(0)
   const [hintStage, setHintStage] = useState<SchoolHintStage>(0)
   const [feedback, setFeedback] = useState<CoachLine>(
-    intro ?? { text: 'Warm up — solve a few before we continue.' }
+    intro ?? { text: 'Warm up. Solve a few before we continue.' }
   )
 
   const solIdxRef = useRef(1)
@@ -635,7 +635,7 @@ export function PuzzleSegment({
   const tokenRef = useRef(0)
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   // Read inside loadPuzzle via a ref so loadPuzzle's identity stays stable across
-  // advances — otherwise bumping solvedCount would recreate it and re-fire the mount
+  // advances: otherwise bumping solvedCount would recreate it and re-fire the mount
   // effect, double-loading a puzzle on every "Next puzzle".
   const solvedCountRef = useRef(0)
 
@@ -732,9 +732,9 @@ export function PuzzleSegment({
         setFeedback({
           text: hashPick(
             [
-              'Your move — find the idea.',
+              'Your move. Find the idea.',
               'Your move. Look for what is undefended.',
-              'Your move. Something in his camp is loose — find it.'
+              'Your move. Something in his camp is loose. Find it.'
             ],
             next.id
           )
@@ -777,7 +777,7 @@ export function PuzzleSegment({
 
   const recordAttempt = useCallback(
     (p: Puzzle, solved: boolean) => {
-      // Hand-authored teaching boards aren't real DB puzzles — don't log them to
+      // Hand-authored teaching boards aren't real DB puzzles. Don't log them to
       // the puzzle-rating system (their ids don't exist there).
       if (query.boards && query.boards.some((b) => b.id === p.id)) return
       void window.api?.puzzles
@@ -822,7 +822,7 @@ export function PuzzleSegment({
         setPhase('failed')
         setFeedback({
           text: right?.san
-            ? `Not quite — the move was ${right.san}. Reset and try, or move on.`
+            ? `Not quite. The move was ${right.san}. Reset and try, or move on.`
             : 'Not quite. Reset and try again, or move on.'
         })
         recordAttempt(puzzle, false)
@@ -845,7 +845,7 @@ export function PuzzleSegment({
         setPhase('solved')
         setFeedback({
           text: hashPick(
-            ['Correct. Good eye.', 'Yes — clean.', 'Good. You are seeing it faster now.'],
+            ['Correct. Good eye.', 'Yes. Clean.', 'Good. You are seeing it faster now.'],
             puzzle.id
           )
         })
@@ -884,15 +884,15 @@ export function PuzzleSegment({
     setPhase('solving')
     setHintStage(0)
     setNonce((n) => n + 1)
-    setFeedback({ text: 'Again — your move.' })
+    setFeedback({ text: 'Again. Your move.' })
   }, [puzzle, clearTimers])
 
   const isLastPuzzle = solvedCount + 1 >= count
 
-  // Nothing to solve. All hooks above have run — safe to branch (#300). Two
+  // Nothing to solve. All hooks above have run, safe to branch (#300). Two
   // honest states, NEITHER of which renders a board (an empty-fen board shows
   // the standard START POSITION, which under a "mate in one" intro reads as a
-  // fake puzzle — spec: never fake content):
+  // fake puzzle, spec: never fake content):
   //   • fresh install, puzzle DB absent → the Settings → Datasets install card;
   //   • DB present but the query matched nothing → skip with plain copy.
   if (phase === 'empty') {
@@ -902,8 +902,8 @@ export function PuzzleSegment({
         <ViktorPanel
           text={
             dbMissing
-              ? 'No drills today — the puzzle database is not installed on this machine. Fetch it in Settings, or we move on.'
-              : 'No puzzles matched this drill. We move on — you lose nothing.'
+              ? 'No drills today. The puzzle database is not installed on this machine. Fetch it in Settings, or we move on.'
+              : 'No puzzles matched this drill. We move on. You lose nothing.'
           }
           eyebrow={title}
           thinking={authoredCount === 0 && puzzlesReady === null}
@@ -984,7 +984,7 @@ export function PuzzleSegment({
 }
 
 // ===========================================================================
-// BOSS — full game vs a rating-capped engine, then a Viktor debrief walk.
+// BOSS: full game vs a rating-capped engine, then a Viktor debrief walk.
 // ===========================================================================
 
 type BossPhase = 'intro' | 'playing' | 'over' | 'debrief'
@@ -1178,7 +1178,7 @@ export function BossSegment({
 
     return () => {
       cancelled = true
-      // The cancelled path above skips setThinking(false) — clear it here so
+      // The cancelled path above skips setThinking(false): clear it here so
       // "thinking…" can't outlive the game (e.g. resign mid-think → Play again).
       setThinking(false)
     }
@@ -1224,7 +1224,7 @@ export function BossSegment({
           />
         </BoardFrame>
         <ViktorPanel
-          text={boss.bossIntro?.text ?? 'Now — the test. Show me what you have learned.'}
+          text={boss.bossIntro?.text ?? 'Now the test. Show me what you have learned.'}
           eyebrow={title}
         >
           <div className="school-boss-facts">
@@ -1251,15 +1251,15 @@ export function BossSegment({
     const isLastLine = debriefIdx >= lines.length - 1
 
     // THE BLANK-SQUARE FIX: each debrief line pins the position it discusses
-    // (CoachLine.fen = fenBefore of that move). Show THAT board — not the final
-    // position — so Viktor's highlights/arrows land on occupied squares. Lines
+    // (CoachLine.fen = fenBefore of that move). Show THAT board. Not the final
+    // position, so Viktor's highlights/arrows land on occupied squares. Lines
     // without a fen (e.g. the closing verdict) fall back to the final board.
     const shownFen = cur?.fen ?? fen
     const log = movesRef.current
     const discussedIdx = cur?.fen ? log.findIndex((m) => m.fenBefore === cur.fen) : -1
     const discussed = discussedIdx >= 0 ? log[discussedIdx] : undefined
     // Highlight the move under discussion as the board's lastMove (it has not
-    // been played on shownFen yet — the squares are the point, and Viktor's own
+    // been played on shownFen yet. The squares are the point, and Viktor's own
     // verdict-colored cues draw on top).
     const shownLastMove = cur?.fen
       ? discussed
@@ -1298,7 +1298,7 @@ export function BossSegment({
         </BoardFrame>
         <ViktorPanel
           text={cur?.text ?? debrief?.verdict ?? 'That is the lesson.'}
-          eyebrow={debrief?.verdict ? `Debrief — ${debrief.verdict}` : 'Debrief'}
+          eyebrow={debrief?.verdict ? `Debrief: ${debrief.verdict}` : 'Debrief'}
         >
           {lines.length > 0 && (
             <div className="school-step-meta">
@@ -1363,7 +1363,7 @@ export function BossSegment({
           over
             ? result?.won
               ? 'Well played. You passed the test.'
-              : 'The test is over. Now — let us see what happened.'
+              : 'The test is over. Now let us see what happened.'
             : ''
         }
         eyebrow={title}
@@ -1409,7 +1409,7 @@ export function BossSegment({
 
 /** Large board column wrapper used by every static (non-control) segment.
  *  `below` renders under the board inside the column (e.g. a MoveStrip).
- *  `labels` render as readable pills positioned over the board — chessground's
+ *  `labels` render as readable pills positioned over the board: chessground's
  *  own shape labels shrink multi-word text to an unreadable dot. */
 export function BoardFrame({
   env,

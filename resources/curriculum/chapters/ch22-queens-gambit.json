@@ -3,18 +3,18 @@
  "band": "22",
  "order": 22,
  "title": "The Queen's Gambit & the d4 Closed Games",
- "subtitle": "1.d4 d5: the QGD, the Slav & Semi-Slav, the QGA — and the structures that decide them.",
+ "subtitle": "1.d4 d5: the QGD, the Slav & Semi-Slav, the QGA, and the structures that decide them.",
  "estMinutes": 42,
  "concepts": [
   {
    "id": "central-tension",
    "name": "The c4-vs-d5 Tension",
-   "short": "The Queen's Gambit is not a real gambit — c4 offers a pawn Black cannot safely keep. Its true point is to pressure d5 and fight for the centre."
+   "short": "The Queen's Gambit is not a real gambit: c4 offers a pawn Black cannot safely keep. Its true point is to pressure d5 and fight for the centre."
   },
   {
    "id": "qgd-structure",
    "name": "The QGD Triangle",
-   "short": "Black answers 2.c4 with 2...e6, holding d5 with a pawn. Solid and reliable — but it locks in the c8-bishop, Black's lifelong problem piece."
+   "short": "Black answers 2.c4 with 2...e6, holding d5 with a pawn. Solid and reliable, but it locks in the c8-bishop, Black's lifelong problem piece."
   },
   {
    "id": "carlsbad",
@@ -29,12 +29,12 @@
   {
    "id": "slav-bishop",
    "name": "The Slav's Free Bishop",
-   "short": "The Slav (2...c6) holds d5 with the c-pawn, so the c8-bishop can leave to f5 or g4 BEFORE ...e6 shuts it in — solving the QGD's one structural flaw."
+   "short": "The Slav (2...c6) holds d5 with the c-pawn, so the c8-bishop can leave to f5 or g4 BEFORE ...e6 shuts it in, solving the QGD's one structural flaw."
   },
   {
    "id": "iqp",
    "name": "The Isolated Queen's Pawn",
-   "short": "A lone d-pawn with no neighbours. It grants space, open files and a great e5/d5 outpost for the middlegame — but in an endgame it is a fixed weakness. Attack while pieces are on."
+   "short": "A lone d-pawn with no neighbours. It grants space, open files and a great e5/d5 outpost for the middlegame, but in an endgame it is a fixed weakness. Attack while pieces are on."
   },
   {
    "id": "elephant-trap",
@@ -45,15 +45,15 @@
  "lessons": [
   {
    "id": "l1-qgd-mainline",
-   "title": "The Queen's Gambit Declined — the Orthodox Centre",
+   "title": "The Queen's Gambit Declined: the Orthodox Centre",
    "kind": "opening",
    "summary": "Why 2.c4 is not a true gambit, why 2...e6 is the soundest reply, and the Orthodox tabiya every d4 player must know.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the blow in a closed middlegame",
+     "title": "Warm-up: find the blow in a closed middlegame",
      "intro": {
-      "text": "These positions come from quiet d4-d5 middlegames — the kind the Queen's Gambit produces. The pieces look calm, but a tactic is waiting. Find it. Train the eye that the slow opening will reward."
+      "text": "These positions come from quiet d4-d5 middlegames. The kind the Queen's Gambit produces. The pieces look calm, but a tactic is waiting. Find it. Train the eye that the slow opening will reward."
      },
      "puzzle": {
       "themes": [
@@ -70,26 +70,26 @@
      "kind": "model",
      "title": "Watch the Orthodox QGD unfold",
      "intro": {
-      "text": "I will play the main line for both sides so you see the IDEAS, not just the moves. This is the backbone of 1.d4 — learn it and half of closed chess opens to you."
+      "text": "I will play the main line for both sides so you see the IDEAS, not just the moves. This is the backbone of 1.d4. Learn it and half of closed chess opens to you."
      },
      "line": [
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4. I stake the centre and, unlike 1.e4, I do it with a pawn already defended by the queen. d4 is harder to knock down — this is the quieter, more positional half of chess."
+        "text": "1.d4. I stake the centre and, unlike 1.e4, I do it with a pawn already defended by the queen. d4 is harder to knock down. This is the quieter, more positional half of chess."
        }
       },
       {
        "uci": "d7d5",
        "coach": {
-        "text": "1...d5. Black answers symmetrically, contesting the centre at once. Now we have the great Closed Games — the c4-vs-d5 battle."
+        "text": "1...d5. Black answers symmetrically, contesting the centre at once. Now we have the great Closed Games, the c4-vs-d5 battle."
        }
       },
       {
        "uci": "c2c4",
        "coach": {
         "conceptId": "central-tension",
-        "text": "2.c4 — the Queen's Gambit. I do NOT want to win this pawn; I want to REMOVE Black's d5-pawn from the centre. If Black grabs it with ...dxc4, he cannot hold it, and I get the centre and a tempo on the loose pawn. So it is a gambit in name only.",
+        "text": "2.c4: the Queen's Gambit. I do NOT want to win this pawn; I want to REMOVE Black's d5-pawn from the centre. If Black grabs it with ...dxc4, he cannot hold it, and I get the centre and a tempo on the loose pawn. So it is a gambit in name only.",
         "annotations": [
          {
           "kind": "arrow",
@@ -109,7 +109,7 @@
        "uci": "e7e6",
        "coach": {
         "conceptId": "qgd-structure",
-        "text": "2...e6 — the Queen's Gambit DECLINED, the most solid answer. Black props up d5 with a second pawn. Rock-solid... but see the cost: the c8-bishop is now walled in behind its own pawns. That bad bishop is the story of Black's whole game.",
+        "text": "2...e6: the Queen's Gambit DECLINED, the most solid answer. Black props up d5 with a second pawn. Rock-solid... but see the cost: the c8-bishop is now walled in behind its own pawns. That bad bishop is the story of Black's whole game.",
         "annotations": [
          {
           "kind": "circle",
@@ -132,7 +132,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "3.Nc3. I develop AND add a third attacker to d5. Every piece I bring out leans on that d5-pawn — that is the QGD's hidden pressure."
+        "text": "3.Nc3. I develop AND add a third attacker to d5. Every piece I bring out leans on that d5-pawn. That is the QGD's hidden pressure."
        }
       },
       {
@@ -144,7 +144,7 @@
       {
        "uci": "c1g5",
        "coach": {
-        "text": "4.Bg5 — the Orthodox move. The bishop pins the f6-knight to the queen, indirectly piling onto d5 again: if the knight ever leaves, d5 may fall. Pressure, always pressure on that square.",
+        "text": "4.Bg5: the Orthodox move. The bishop pins the f6-knight to the queen, indirectly piling onto d5 again: if the knight ever leaves, d5 may fall. Pressure, always pressure on that square.",
         "annotations": [
          {
           "kind": "arrow",
@@ -163,7 +163,7 @@
       {
        "uci": "f8e7",
        "coach": {
-        "text": "4...Be7 breaks the pin's sting — now ...Nf6 is no longer loose, and Black prepares to castle into safety. Solid and unhurried."
+        "text": "4...Be7 breaks the pin's sting. Now ...Nf6 is no longer loose, and Black prepares to castle into safety. Solid and unhurried."
        }
       },
       {
@@ -175,7 +175,7 @@
       {
        "uci": "e8g8",
        "coach": {
-        "text": "5...O-O. King to safety. This is the Orthodox tabiya — White will finish with Bd3, Nf3, O-O and only THEN choose a plan: the minority attack, or a central break. Remember the shape.",
+        "text": "5...O-O. King to safety. This is the Orthodox tabiya. White will finish with Bd3, Nf3, O-O and only THEN choose a plan: the minority attack, or a central break. Remember the shape.",
         "annotations": [
          {
           "kind": "circle",
@@ -196,7 +196,7 @@
        "conceptId": "central-tension",
        "coach": {
         "conceptId": "central-tension",
-        "text": "Suppose Black tries to be greedy: 2...dxc4 and then clings to the pawn with ...b5. Watch what it costs him. Here White plays a2-a4, hitting b5. To hold the pawn chain Black must play ...c6, but then axb5 cxb5 and the queen comes to f3 forking the a8-rook. The 'extra' pawn becomes a wrecked queenside. THAT is why the gambit pawn cannot be kept — taking it is fine, holding it is fatal.",
+        "text": "Suppose Black tries to be greedy: 2...dxc4 and then clings to the pawn with ...b5. Watch what it costs him. Here White plays a2-a4, hitting b5. To hold the pawn chain Black must play ...c6, but then axb5 cxb5 and the queen comes to f3 forking the a8-rook. The 'extra' pawn becomes a wrecked queenside. THAT is why the gambit pawn cannot be kept. Taking it is fine, holding it is fatal.",
         "annotations": [
          {
           "kind": "circle",
@@ -216,7 +216,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — convert the quiet edge",
+     "title": "Cool-down: convert the quiet edge",
      "intro": {
       "text": "Slow openings end in tactics all the same. Each position rewards the patient eye with a concrete blow. Find it and finish."
      },
@@ -235,7 +235,7 @@
   },
   {
    "id": "l2-exchange-carlsbad",
-   "title": "The Exchange QGD & the Carlsbad — the Minority Attack",
+   "title": "The Exchange QGD & the Carlsbad: the Minority Attack",
    "kind": "positional",
    "summary": "When White trades cxd5 exd5, a defining pawn structure appears. Learn the Carlsbad and the plan that has won a thousand games: b4-b5.",
    "segments": [
@@ -248,7 +248,7 @@
        "conceptId": "carlsbad",
        "coach": {
         "conceptId": "carlsbad",
-        "text": "From the Orthodox tabiya, White chooses the Exchange Variation: cxd5. After ...exd5 the c-file opens and a fixed structure is set — Black's d5-pawn faces White's e3. Look at the pawns. White has a c+d+e cluster; Black has an a+b+c majority on the queenside but his d5-pawn is the one fixed target. This is the Carlsbad, named for the 1923 tournament. The structure dictates the plan.",
+        "text": "From the Orthodox tabiya, White chooses the Exchange Variation: cxd5. After ...exd5 the c-file opens and a fixed structure is set. Black's d5-pawn faces White's e3. Look at the pawns. White has a c+d+e cluster; Black has an a+b+c majority on the queenside but his d5-pawn is the one fixed target. This is the Carlsbad, named for the 1923 tournament. The structure dictates the plan.",
         "annotations": [
          {
           "kind": "arrow",
@@ -270,7 +270,7 @@
        "conceptId": "minority-attack",
        "coach": {
         "conceptId": "minority-attack",
-        "text": "Here is the Carlsbad fully formed, White to plan. Black's pawns sit on a7-b7-c6-d5. White's classic idea is the MINORITY ATTACK: push b2-b4-b5, attacking c6 with the b-pawn even though White has FEWER queenside pawns. When b5xc6 lands, Black must recapture ...bxc6, and now c6 is backward, fixed, and stuck on the half-open c-file — a permanent target for White's rooks and queen. Two pawns deliberately trade to create one chronic weakness. That is the whole point.",
+        "text": "Here is the Carlsbad fully formed, White to plan. Black's pawns sit on a7-b7-c6-d5. White's classic idea is the MINORITY ATTACK: push b2-b4-b5, attacking c6 with the b-pawn even though White has FEWER queenside pawns. When b5xc6 lands, Black must recapture ...bxc6, and now c6 is backward, fixed, and stuck on the half-open c-file. A permanent target for White's rooks and queen. Two pawns deliberately trade to create one chronic weakness. That is the whole point.",
         "annotations": [
          {
           "kind": "arrow",
@@ -305,7 +305,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.cxd5 — straight into the Exchange. I'll narrate the plan from here."
+        "text": "1.d4 d5 2.c4 e6 3.Nc3 Nf6 4.cxd5, straight into the Exchange. I'll narrate the plan from here."
        }
       },
       {
@@ -327,7 +327,7 @@
        "uci": "c4d5",
        "coach": {
         "conceptId": "carlsbad",
-        "text": "4.cxd5 — I commit to the Carlsbad early, before Black can develop his bishop actively.",
+        "text": "4.cxd5: I commit to the Carlsbad early, before Black can develop his bishop actively.",
         "annotations": [
          {
           "kind": "arrow",
@@ -341,7 +341,7 @@
       {
        "uci": "e6d5",
        "coach": {
-        "text": "4...exd5, the only good recapture — ...Nxd5 would surrender the centre. The structure is set."
+        "text": "4...exd5, the only good recapture: ...Nxd5 would surrender the centre. The structure is set."
        }
       },
       {
@@ -362,7 +362,7 @@
       {
        "uci": "b8d7",
        "coach": {
-        "text": "Black develops ...Nbd7. Now White's route is fixed: Bd3, Nge2 (not f3 — it keeps the f-pawn free and the e2-knight heads to g3/f4), O-O, Rab1, and then b4-b5. Memorize that piece setup; it is the minority attack on autopilot."
+        "text": "Black develops ...Nbd7. Now White's route is fixed: Bd3, Nge2 (not f3; it keeps the f-pawn free and the e2-knight heads to g3/f4), O-O, Rab1, and then b4-b5. Memorize that piece setup; it is the minority attack on autopilot."
        }
       }
      ]
@@ -376,7 +376,7 @@
        "conceptId": "minority-attack",
        "coach": {
         "conceptId": "minority-attack",
-        "text": "It is Black to move here, but think like White: I have just played b2-b4, the first step. The whole plan is to follow with b4-b5, hit c6, and after the trade leave a backward pawn. The structure, not a tactic, wins this. There is nothing to calculate — only to understand. Black's job is to find counterplay before c6 cracks: in the centre with ...Ne4, or on the kingside. Play Black's most active try, ...Ne4, to fight back.",
+        "text": "It is Black to move here, but think like White: I have just played b2-b4, the first step. The whole plan is to follow with b4-b5, hit c6, and after the trade leave a backward pawn. The structure, not a tactic, wins this. There is nothing to calculate. Only to understand. Black's job is to find counterplay before c6 cracks: in the centre with ...Ne4, or on the kingside. Play Black's most active try, ...Ne4, to fight back.",
         "annotations": [
          {
           "kind": "highlight",
@@ -395,7 +395,7 @@
        ],
        "successLine": {
         "conceptId": "minority-attack",
-        "text": "...Ne4! Exactly — Black does NOT sit and wait for b5 to chew up his queenside; he generates central play and trades a pair of pieces to ease the cramp. The lesson cuts both ways: White grinds with b4-b5 against c6; Black must hit back in the centre or on the kingside, never just defend. Whoever knows the plan, plays first.",
+        "text": "...Ne4! Exactly: Black does NOT sit and wait for b5 to chew up his queenside; he generates central play and trades a pair of pieces to ease the cramp. The lesson cuts both ways: White grinds with b4-b5 against c6; Black must hit back in the centre or on the kingside, never just defend. Whoever knows the plan, plays first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -406,14 +406,14 @@
         ]
        },
        "retryLine": {
-        "text": "A passive move just lets White play b5, trade on c6, and besiege the backward pawn for the rest of the game. Black must seek ACTIVITY. The thematic counter is to jump a knight to e4 — its most active central square."
+        "text": "A passive move just lets White play b5, trade on c6, and besiege the backward pawn for the rest of the game. Black must seek ACTIVITY. The thematic counter is to jump a knight to e4. Its most active central square."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — exploit the weak square",
+     "title": "Cool-down: exploit the weak square",
      "intro": {
       "text": "The minority attack creates targets; tactics finish them. Each position turns a structural weakness into a concrete win. Find the blow."
      },
@@ -432,15 +432,15 @@
   },
   {
    "id": "l3-slav-semislav",
-   "title": "The Slav & Semi-Slav — Solving the Bad Bishop",
+   "title": "The Slav & Semi-Slav: Solving the Bad Bishop",
    "kind": "variation",
    "summary": "2...c6 instead of 2...e6. The Slav holds d5 while freeing the c8-bishop; the Semi-Slav fights for ...c5 and ...b5 with razor-sharp play.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — sharp Slav middlegames",
+     "title": "Warm-up: sharp Slav middlegames",
      "intro": {
-      "text": "The Slav and especially the Semi-Slav are far from quiet — the Botvinnik and Meran lines are some of the sharpest in chess. Warm up on these tactical shots."
+      "text": "The Slav and especially the Semi-Slav are far from quiet. The Botvinnik and Meran lines are some of the sharpest in chess. Warm up on these tactical shots."
      },
      "puzzle": {
       "themes": [
@@ -462,7 +462,7 @@
        "conceptId": "slav-bishop",
        "coach": {
         "conceptId": "slav-bishop",
-        "text": "The Slav: 2...c6. Like ...e6 it defends d5 with a pawn — but it does NOT block the c8-bishop in. That single difference is the whole reason the Slav exists. Black plans ...Bf5 or ...Bg4, developing the 'problem' bishop OUTSIDE the pawn chain, and only THEN ...e6. He gets the QGD's solidity without the QGD's bad bishop.",
+        "text": "The Slav: 2...c6. Like ...e6 it defends d5 with a pawn, but it does NOT block the c8-bishop in. That single difference is the whole reason the Slav exists. Black plans ...Bf5 or ...Bg4, developing the 'problem' bishop OUTSIDE the pawn chain, and only THEN ...e6. He gets the QGD's solidity without the QGD's bad bishop.",
         "annotations": [
          {
           "kind": "circle",
@@ -484,7 +484,7 @@
        "conceptId": "slav-bishop",
        "coach": {
         "conceptId": "slav-bishop",
-        "text": "The Slav main line: ...dxc4 followed by ...Bf5. Black took on c4 — but ONLY after ...Bf5 first, so the light bishop is already out and active before the centre is conceded. White plays a4 to stop ...b5 holding the pawn, regains c4 with the bishop, and gets a small space edge; Black has a sound, harmonious position with no bad pieces. This is why the Slav is a world-championship workhorse.",
+        "text": "The Slav main line: ...dxc4 followed by ...Bf5. Black took on c4, but ONLY after ...Bf5 first, so the light bishop is already out and active before the centre is conceded. White plays a4 to stop ...b5 holding the pawn, regains c4 with the bishop, and gets a small space edge; Black has a sound, harmonious position with no bad pieces. This is why the Slav is a world-championship workhorse.",
         "annotations": [
          {
           "kind": "circle",
@@ -510,7 +510,7 @@
        "fen": "rnbqkb1r/pp3ppp/2p1pn2/3p4/2PP4/2N2N2/PP2PPPP/R1BQKB1R w KQkq - 0 5",
        "conceptId": "slav-bishop",
        "coach": {
-        "text": "The Semi-Slav: ...c6 AND ...e6 together. Here Black accepts a slightly worse bishop in return for a rock-solid pawn triangle (c6-d5-e6) and the explosive plan ...dxc4 followed by ...b5 and ...c5, blowing open the queenside with the bishop already eyeing the long diagonal. The Meran and Botvinnik systems live here — deeply theoretical, double-edged, played for a win by both sides.",
+        "text": "The Semi-Slav: ...c6 AND ...e6 together. Here Black accepts a slightly worse bishop in return for a rock-solid pawn triangle (c6-d5-e6) and the explosive plan ...dxc4 followed by ...b5 and ...c5, blowing open the queenside with the bishop already eyeing the long diagonal. The Meran and Botvinnik systems live here. Deeply theoretical, double-edged, played for a win by both sides.",
         "annotations": [
          {
           "kind": "highlight",
@@ -541,7 +541,7 @@
        "conceptId": "slav-bishop",
        "coach": {
         "conceptId": "slav-bishop",
-        "text": "You are Black in a Slav. You have NOT yet played ...e6 — and that is deliberate. Before you lock your light-squared bishop behind a pawn, get it OUT. Develop the c8-bishop to its best, active square outside the chain.",
+        "text": "You are Black in a Slav. You have NOT yet played ...e6, and that is deliberate. Before you lock your light-squared bishop behind a pawn, get it OUT. Develop the c8-bishop to its best, active square outside the chain.",
         "annotations": [
          {
           "kind": "circle",
@@ -556,7 +556,7 @@
        ],
        "successLine": {
         "conceptId": "slav-bishop",
-        "text": "...Bf5 (or ...Bg4) — the heart of the Slav. The bishop is developed BEFORE ...e6 seals it in. Now you can play ...e6 with a clear conscience: the triangle is solid AND your light bishop is active. That is the QGD's one weakness, cured.",
+        "text": "...Bf5 (or ...Bg4): the heart of the Slav. The bishop is developed BEFORE ...e6 seals it in. Now you can play ...e6 with a clear conscience: the triangle is solid AND your light bishop is active. That is the QGD's one weakness, cured.",
         "annotations": [
          {
           "kind": "arrow",
@@ -568,14 +568,14 @@
        },
        "retryLine": {
         "conceptId": "slav-bishop",
-        "text": "Not ...e6 — that is the QGD move, and it would trap your bishop behind the e6-pawn, throwing away the entire point of the Slav. Develop the c8-bishop OUTSIDE the chain first, to f5 or g4."
+        "text": "Not ...e6: that is the QGD move, and it would trap your bishop behind the e6-pawn, throwing away the entire point of the Slav. Develop the c8-bishop OUTSIDE the chain first, to f5 or g4."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — Meran & Botvinnik fireworks",
+     "title": "Cool-down: Meran & Botvinnik fireworks",
      "intro": {
       "text": "The Semi-Slav produces some of the most violent middlegames in chess. Each of these hides a forcing blow. Calculate and strike."
      },
@@ -596,7 +596,7 @@
    "id": "l4-qga-iqp",
    "title": "The QGA & the Isolated Queen's Pawn",
    "kind": "variation",
-   "summary": "Black takes on c4 and gives it back for free development. From the standard ...c5 trade arises the IQP — the most important middlegame structure in chess.",
+   "summary": "Black takes on c4 and gives it back for free development. From the standard ...c5 trade arises the IQP, the most important middlegame structure in chess.",
    "segments": [
     {
      "kind": "model",
@@ -608,7 +608,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "1.d4 d5 2.c4 dxc4 — the Queen's Gambit ACCEPTED. Black takes the pawn, but as we learned, he will give it back rather than waste moves defending it."
+        "text": "1.d4 d5 2.c4 dxc4: the Queen's Gambit ACCEPTED. Black takes the pawn, but as we learned, he will give it back rather than waste moves defending it."
        }
       },
       {
@@ -634,7 +634,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "3.Nf3 — develop first, recapture c4 later. There is no hurry; the pawn cannot run far and ...b5 to hold it is refuted by a4 as we saw."
+        "text": "3.Nf3: develop first, recapture c4 later. There is no hurry; the pawn cannot run far and ...b5 to hold it is refuted by a4 as we saw."
        }
       },
       {
@@ -658,7 +658,7 @@
       {
        "uci": "f1c4",
        "coach": {
-        "text": "5.Bxc4 — the gambit pawn returns home, and White's bishop lands on the active a2-g8 diagonal, aiming at f7. White has a lead in development and a strong centre.",
+        "text": "5.Bxc4: the gambit pawn returns home, and White's bishop lands on the active a2-g8 diagonal, aiming at f7. White has a lead in development and a strong centre.",
         "annotations": [
          {
           "kind": "arrow",
@@ -673,7 +673,7 @@
        "uci": "c7c5",
        "coach": {
         "conceptId": "iqp",
-        "text": "5...c5 — the critical freeing break. Black strikes at White's d4-pawn. When the dust settles (dxc5 Bxc5, or ...cxd4 exd4), White is often left with a pawn on d4 and NO c- or e-pawn beside it: the Isolated Queen's Pawn. Whether that pawn is a strength or a weakness is the question of the whole middlegame.",
+        "text": "5...c5: the critical freeing break. Black strikes at White's d4-pawn. When the dust settles (dxc5 Bxc5, or ...cxd4 exd4), White is often left with a pawn on d4 and NO c- or e-pawn beside it: the Isolated Queen's Pawn. Whether that pawn is a strength or a weakness is the question of the whole middlegame.",
         "annotations": [
          {
           "kind": "arrow",
@@ -693,14 +693,14 @@
     },
     {
      "kind": "teach",
-     "title": "The IQP — strength or weakness?",
+     "title": "The IQP: strength or weakness?",
      "steps": [
       {
        "fen": "rn1qk2r/1b3ppp/p3pn2/1pb5/8/1B2PN2/PP2QPPP/RNB2RK1 w kq - 0 10",
        "conceptId": "iqp",
        "coach": {
         "conceptId": "iqp",
-        "text": "Picture the typical IQP middlegame (here Black holds the isolani). The two faces of the lone d-pawn: it has no fellow pawn to defend it, so it can be blockaded and besieged — a long-term WEAKNESS. But it controls two central squares, hands its owner the half-open c- and e-files, extra space, and superb outposts on the squares beside it (here d5/e5-type squares for pieces). The rule is iron: the side WITH the isolani must attack with the pieces while they are all on the board; the side AGAINST it must trade pieces and steer toward the endgame, where the pawn is simply weak.",
+        "text": "Picture the typical IQP middlegame (here Black holds the isolani). The two faces of the lone d-pawn: it has no fellow pawn to defend it, so it can be blockaded and besieged, a long-term WEAKNESS. But it controls two central squares, hands its owner the half-open c- and e-files, extra space, and superb outposts on the squares beside it (here d5/e5-type squares for pieces). The rule is iron: the side WITH the isolani must attack with the pieces while they are all on the board; the side AGAINST it must trade pieces and steer toward the endgame, where the pawn is simply weak.",
         "annotations": [
          {
           "kind": "circle",
@@ -720,7 +720,7 @@
        "conceptId": "iqp",
        "coach": {
         "conceptId": "iqp",
-        "text": "Now the side WITH the isolani in full swing (White's pawn was on d4, just traded; imagine it back on d4). The owner's dream is the d4-d5 break — at the right moment the isolani sacrifices itself to rip open the centre while the pieces are aimed at the enemy king, or it leaves behind a powerful protected knight on the e5/d5 outpost. Space, files, outposts, the d5 break: that is the isolani's army. Use it before the queens come off — once they do, you are simply nursing a weak pawn.",
+        "text": "Now the side WITH the isolani in full swing (White's pawn was on d4, just traded; imagine it back on d4). The owner's dream is the d4-d5 break. At the right moment the isolani sacrifices itself to rip open the centre while the pieces are aimed at the enemy king, or it leaves behind a powerful protected knight on the e5/d5 outpost. Space, files, outposts, the d5 break: that is the isolani's army. Use it before the queens come off. Once they do, you are simply nursing a weak pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -748,7 +748,7 @@
        "conceptId": "iqp",
        "coach": {
         "conceptId": "iqp",
-        "text": "White to move. Black has just played ...cxd4. You can recapture two ways, and they are NOT equal. Recapture with the pawn — exd4 — and you accept the Isolated Queen's Pawn on d4, but in return you get the half-open e-file, the d4-pawn controlling c5 and e5, and a free-flowing attacking game. Take the isolani on purpose.",
+        "text": "White to move. Black has just played ...cxd4. You can recapture two ways, and they are NOT equal. Recapture with the pawn (exd4) and you accept the Isolated Queen's Pawn on d4, but in return you get the half-open e-file, the d4-pawn controlling c5 and e5, and a free-flowing attacking game. Take the isolani on purpose.",
         "annotations": [
          {
           "kind": "circle",
@@ -768,7 +768,7 @@
        ],
        "successLine": {
         "conceptId": "iqp",
-        "text": "exd4 — you have voluntarily taken the IQP, and that is the RIGHT decision when you have the initiative. The pawn gives you space and open lines; you will develop, point your pieces at Black's king, and aim for the d4-d5 break before any mass trade. The isolani is a sword in the middlegame — wield it.",
+        "text": "exd4: you have voluntarily taken the IQP, and that is the RIGHT decision when you have the initiative. The pawn gives you space and open lines; you will develop, point your pieces at Black's king, and aim for the d4-d5 break before any mass trade. The isolani is a sword in the middlegame, wield it.",
         "annotations": [
          {
           "kind": "circle",
@@ -786,9 +786,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the isolani strikes",
+     "title": "Cool-down: the isolani strikes",
      "intro": {
-      "text": "The IQP exists to attack. Each position is the moment the central pawn's energy converts into a tactic — a break, an outpost, a king hunt. Find it."
+      "text": "The IQP exists to attack. Each position is the moment the central pawn's energy converts into a tactic. A break, an outpost, a king hunt. Find it."
      },
      "puzzle": {
       "themes": [
@@ -805,7 +805,7 @@
   },
   {
    "id": "l5-punish-traps",
-   "title": "Punishing the Bad Replies — and the Elephant Trap",
+   "title": "Punishing the Bad Replies, and the Elephant Trap",
    "kind": "tactics",
    "summary": "How to refute the greedy ...b5 in the QGA, and the famous Elephant Trap that punishes a careless grab on d5 in the QGD.",
    "segments": [
@@ -818,7 +818,7 @@
        "conceptId": "central-tension",
        "coach": {
         "conceptId": "central-tension",
-        "text": "Black has tried to KEEP the gambit pawn: 2...dxc4 3.e3 b5?! 4.a4 c6 5.axb5 cxb5. He thinks he has a protected extra pawn on c4. He is about to be punished. White to move — find the move that wins material by hitting two things at once. Look at the long light diagonal from f3 to a8.",
+        "text": "Black has tried to KEEP the gambit pawn: 2...dxc4 3.e3 b5?! 4.a4 c6 5.axb5 cxb5. He thinks he has a protected extra pawn on c4. He is about to be punished. White to move. Find the move that wins material by hitting two things at once. Look at the long light diagonal from f3 to a8.",
         "annotations": [
          {
           "kind": "arrow",
@@ -839,7 +839,7 @@
        "conceptId": "central-tension",
        "coach": {
         "conceptId": "central-tension",
-        "text": "6.Qf3! The queen forks the undefended a8-rook (down the open a8-f3 diagonal) AND the loose b5-pawn. Black cannot save both: ...Bb7 runs into Qxb7, ...Nc6 into Qxc6+ then Qxb5, and there is no way to guard the rook and the pawn together. White regains the pawn with a crushing position. THIS is why greed in the Queen's Gambit is fatal — take the pawn if you like, but never try to hold it.",
+        "text": "6.Qf3! The queen forks the undefended a8-rook (down the open a8-f3 diagonal) AND the loose b5-pawn. Black cannot save both: ...Bb7 runs into Qxb7, ...Nc6 into Qxc6+ then Qxb5, and there is no way to guard the rook and the pawn together. White regains the pawn with a crushing position. THIS is why greed in the Queen's Gambit is fatal. Take the pawn if you like, but never try to hold it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -860,14 +860,14 @@
     },
     {
      "kind": "teach",
-     "title": "The Elephant Trap — punish the d5 grab",
+     "title": "The Elephant Trap: punish the d5 grab",
      "steps": [
       {
        "fen": "r1bqkb1r/pppn1ppp/5n2/3p2B1/3P4/2N5/PP2PPPP/R2QKBNR w KQkq - 0 6",
        "conceptId": "elephant-trap",
        "coach": {
         "conceptId": "elephant-trap",
-        "text": "A famous trap every QGD player must know — for BOTH colours. We reached this by 4...Nbd7 (instead of ...Be7) and 5.cxd5 exd5. The d5-pawn looks like it hangs: it is attacked by the c3-knight and the g5-bishop pins the f6-knight, so it seems the f6-knight cannot recapture. White, sensing free material, plays 6.Nxd5?? — and walks into the Elephant Trap. Watch.",
+        "text": "A famous trap every QGD player must know, for BOTH colours. We reached this by 4...Nbd7 (instead of ...Be7) and 5.cxd5 exd5. The d5-pawn looks like it hangs: it is attacked by the c3-knight and the g5-bishop pins the f6-knight, so it seems the f6-knight cannot recapture. White, sensing free material, plays 6.Nxd5??, and walks into the Elephant Trap. Watch.",
         "annotations": [
          {
           "kind": "circle",
@@ -888,7 +888,7 @@
        "conceptId": "elephant-trap",
        "coach": {
         "conceptId": "elephant-trap",
-        "text": "Black ignored the pin: 6...Nxd5! When White grabs the queen with 7.Bxd8, Black does not recapture — he plays the in-between check 7...Bb4+! Now White must block, and after 8.Qd2 Bxd2+ 9.Kxd2 Kxd8, Black has won the bishop back and stands a whole PIECE up. The pin was an illusion: ...Nxd5 was legal because the zwischenzug ...Bb4+ regains the queen with interest. Never snatch a pinned defender without checking for an in-between check.",
+        "text": "Black ignored the pin: 6...Nxd5! When White grabs the queen with 7.Bxd8, Black does not recapture. He plays the in-between check 7...Bb4+! Now White must block, and after 8.Qd2 Bxd2+ 9.Kxd2 Kxd8, Black has won the bishop back and stands a whole PIECE up. The pin was an illusion: ...Nxd5 was legal because the zwischenzug ...Bb4+ regains the queen with interest. Never snatch a pinned defender without checking for an in-between check.",
         "annotations": [
          {
           "kind": "arrow",
@@ -917,7 +917,7 @@
        "conceptId": "elephant-trap",
        "coach": {
         "conceptId": "elephant-trap",
-        "text": "You are Black. White has just blundered with 6.Nxd5, thinking the f6-knight is pinned and cannot recapture. It is not — capturing leads to a winning in-between check. Take the knight on d5.",
+        "text": "You are Black. White has just blundered with 6.Nxd5, thinking the f6-knight is pinned and cannot recapture. It is not. Capturing leads to a winning in-between check. Take the knight on d5.",
         "annotations": [
          {
           "kind": "circle",
@@ -949,14 +949,14 @@
        },
        "retryLine": {
         "conceptId": "elephant-trap",
-        "text": "Trust the trap — the f6-knight is NOT truly pinned, because after you take on d5 and White grabs your queen on d8, you have the zwischenzug ...Bb4+ that wins the queen back with an extra piece. Capture the knight on d5."
+        "text": "Trust the trap: the f6-knight is NOT truly pinned, because after you take on d5 and White grabs your queen on d8, you have the zwischenzug ...Bb4+ that wins the queen back with an extra piece. Capture the knight on d5."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — punish the loose piece",
+     "title": "Cool-down: punish the loose piece",
      "intro": {
       "text": "Opening greed leaves loose pieces, and loose pieces drop. Each position has a tactic that punishes a careless move. Find the refutation."
      },
@@ -975,7 +975,7 @@
   },
   {
    "id": "l6-review-boss",
-   "title": "Putting It Together — Play the Queen's Gambit",
+   "title": "Putting It Together: Play the Queen's Gambit",
    "kind": "practice",
    "summary": "Pull the chapter into one game: open with the gambit, steer toward a structure you understand, and out-plan a real opponent.",
    "segments": [
@@ -988,7 +988,7 @@
        "conceptId": "central-tension",
        "coach": {
         "conceptId": "central-tension",
-        "text": "You are White. You have played 1.d4 and Black has answered 1...d5. Play the move that defines this entire chapter — the one that pressures d5 and offers the pawn Black cannot safely keep.",
+        "text": "You are White. You have played 1.d4 and Black has answered 1...d5. Play the move that defines this entire chapter. The one that pressures d5 and offers the pawn Black cannot safely keep.",
         "annotations": [
          {
           "kind": "circle",
@@ -1002,7 +1002,7 @@
        ],
        "successLine": {
         "conceptId": "central-tension",
-        "text": "2.c4 — the Queen's Gambit. Not a pawn sacrifice but a pry-bar against d5. Whatever Black chooses — ...e6 (QGD), ...c6 (Slav), or ...dxc4 (QGA) — you now know the structure and the plan that follows.",
+        "text": "2.c4: the Queen's Gambit. Not a pawn sacrifice but a pry-bar against d5. Whatever Black chooses: ...e6 (QGD), ...c6 (Slav), or ...dxc4 (QGA). You now know the structure and the plan that follows.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1014,7 +1014,7 @@
        },
        "retryLine": {
         "conceptId": "central-tension",
-        "text": "This is the Queen's Gambit chapter — the defining second move attacks d5 from the side. Play the c-pawn two squares."
+        "text": "This is the Queen's Gambit chapter. The defining second move attacks d5 from the side. Play the c-pawn two squares."
        }
       },
       {
@@ -1022,7 +1022,7 @@
        "conceptId": "qgd-structure",
        "coach": {
         "conceptId": "qgd-structure",
-        "text": "Black declined with 2...e6 — the QGD. Develop a piece that adds a THIRD attacker to the d5-pawn, the square this whole opening fights over.",
+        "text": "Black declined with 2...e6: the QGD. Develop a piece that adds a THIRD attacker to the d5-pawn, the square this whole opening fights over.",
         "annotations": [
          {
           "kind": "circle",
@@ -1037,7 +1037,7 @@
        ],
        "successLine": {
         "conceptId": "qgd-structure",
-        "text": "3.Nc3 (3.Nf3 is also fine) — every developing move leans on d5. That relentless pressure on one square is the soul of the Queen's Gambit. Build naturally: Nc3, Bg5, e3, Nf3, Bd3, O-O — then choose your plan.",
+        "text": "3.Nc3 (3.Nf3 is also fine). Every developing move leans on d5. That relentless pressure on one square is the soul of the Queen's Gambit. Build naturally: Nc3, Bg5, e3, Nf3, Bd3, O-O. Then choose your plan.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1056,13 +1056,13 @@
     },
     {
      "kind": "boss",
-     "title": "Boss — win with the Queen's Gambit",
+     "title": "Boss: win with the Queen's Gambit",
      "bossFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
      "bossEngineElo": 1600,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "central-tension",
-      "text": "Now play it for real. You are White — open 1.d4 and 2.c4 and steer the game into a structure you understand. If Black declines, head for the Carlsbad and the minority attack, or take the isolani and attack. Do not chase the gambit pawn; pressure d5, develop with purpose — Nc3, Bg5, e3, Bd3, Nf3, castle — and let the structure hand you the plan. Out-understand your opponent. Begin."
+      "text": "Now play it for real. You are White. Open 1.d4 and 2.c4 and steer the game into a structure you understand. If Black declines, head for the Carlsbad and the minority attack, or take the isolani and attack. Do not chase the gambit pawn; pressure d5, develop with purpose (Nc3, Bg5, e3, Bd3, Nf3, castle) and let the structure hand you the plan. Out-understand your opponent. Begin."
      }
     }
    ]
@@ -1076,12 +1076,12 @@
     "prompt": "Why is the Queen's Gambit (2.c4) not considered a true gambit?",
     "options": [
      "Because Black is forced to accept the pawn",
-     "Because if Black takes on c4, he cannot hold the pawn — White regains it and gets the centre and tempo",
+     "Because if Black takes on c4, he cannot hold the pawn. White regains it and gets the centre and tempo",
      "Because White always gets the pawn back with check",
      "Because the c4-pawn is defended by the b-pawn"
     ],
     "answerIndex": 1,
-    "explain": "2...dxc4 is playable, but Black cannot KEEP the pawn — attempts to hold it with ...b5 are refuted by a4 and Qf3. White recovers the pawn with a better centre and development, so it is a gambit in name only."
+    "explain": "2...dxc4 is playable, but Black cannot KEEP the pawn. Attempts to hold it with ...b5 are refuted by a4 and Qf3. White recovers the pawn with a better centre and development, so it is a gambit in name only."
    },
    {
     "kind": "mc",
@@ -1089,11 +1089,11 @@
     "options": [
      "The d5-pawn is permanently weak",
      "The king cannot castle",
-     "The c8-bishop is shut in behind its own pawns — the 'bad bishop'",
+     "The c8-bishop is shut in behind its own pawns, the 'bad bishop'",
      "Black falls badly behind in development"
     ],
     "answerIndex": 2,
-    "explain": "Playing ...e6 to support d5 walls the light-squared bishop on c8 behind the e6/d5 pawns. Freeing that bad bishop is Black's main problem in the QGD — and exactly what the Slav (2...c6) avoids."
+    "explain": "Playing ...e6 to support d5 walls the light-squared bishop on c8 behind the e6/d5 pawns. Freeing that bad bishop is Black's main problem in the QGD, and exactly what the Slav (2...c6) avoids."
    },
    {
     "kind": "mc",
@@ -1105,7 +1105,7 @@
      "Trade all the pieces and win the d5-pawn in the endgame"
     ],
     "answerIndex": 0,
-    "explain": "With fewer queenside pawns, White still pushes b4-b5 and trades on c6. Black recaptures ...bxc6 and is left with a backward c6-pawn fixed on the half-open c-file — a permanent target for White's heavy pieces."
+    "explain": "With fewer queenside pawns, White still pushes b4-b5 and trades on c6. Black recaptures ...bxc6 and is left with a backward c6-pawn fixed on the half-open c-file, a permanent target for White's heavy pieces."
    },
    {
     "kind": "mc",
@@ -1121,7 +1121,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Queen's Gambit Accepted. Black greedily tried to keep the pawn: 2...dxc4 3.e3 b5?! 4.a4 c6 5.axb5 cxb5. White to move — win material with one move that hits the a8-rook and the b5-pawn at once.",
+    "prompt": "Queen's Gambit Accepted. Black greedily tried to keep the pawn: 2...dxc4 3.e3 b5?! 4.a4 c6 5.axb5 cxb5. White to move. Win material with one move that hits the a8-rook and the b5-pawn at once.",
     "fen": "rnbqkbnr/p3pppp/8/1p6/2pP4/4P3/1P3PPP/RNBQKBNR w KQkq - 0 6",
     "solutionUci": [
      "d1f3"
@@ -1130,7 +1130,7 @@
    },
    {
     "kind": "play",
-    "prompt": "The Elephant Trap. White has just blundered 6.Nxd5, thinking your f6-knight is pinned. It is not. Black to move — capture, knowing an in-between check wins the queen back with an extra piece.",
+    "prompt": "The Elephant Trap. White has just blundered 6.Nxd5, thinking your f6-knight is pinned. It is not. Black to move. Capture, knowing an in-between check wins the queen back with an extra piece.",
     "fen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
     "solutionUci": [
      "f6d5"
@@ -1154,16 +1154,16 @@
     "solutionUci": [
      "e3d4"
     ],
-    "explain": "exd4 takes on the isolani by choice. The d4-pawn controls c5/e5, opens the e-file, and supports an attack — the dynamic, ambitious recapture. Nxd4 would dissolve into a duller, equal game."
+    "explain": "exd4 takes on the isolani by choice. The d4-pawn controls c5/e5, opens the e-file, and supports an attack, the dynamic, ambitious recapture. Nxd4 would dissolve into a duller, equal game."
    },
    {
     "kind": "play",
-    "prompt": "You are White after 1.d4 d5. Play the move that defines the Queen's Gambit — pressuring d5 from the side.",
+    "prompt": "You are White after 1.d4 d5. Play the move that defines the Queen's Gambit, pressuring d5 from the side.",
     "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
     "solutionUci": [
      "c2c4"
     ],
-    "explain": "2.c4 attacks d5 and offers the pawn Black cannot safely keep. It leads to the QGD (2...e6), the Slav (2...c6) or the QGA (2...dxc4) — all structures you now understand."
+    "explain": "2.c4 attacks d5 and offers the pawn Black cannot safely keep. It leads to the QGD (2...e6), the Slav (2...c6) or the QGA (2...dxc4). All structures you now understand."
    },
    {
     "kind": "judge",
@@ -1171,7 +1171,7 @@
     "fen": "rnbqkb1r/ppp2ppp/5n2/3p2B1/3P4/2N1P3/PP3PPP/R2QKBNR b KQkq - 0 5",
     "lastMoveUci": "e6d5",
     "verdict": "correct",
-    "explain": "Correct — ...exd5 keeps a pawn in the centre and sets up the standard Carlsbad structure. The alternative ...Nxd5 would hand White an unopposed d4-pawn and a free, mobile centre."
+    "explain": "Correct: ...exd5 keeps a pawn in the centre and sets up the standard Carlsbad structure. The alternative ...Nxd5 would hand White an unopposed d4-pawn and a free, mobile centre."
    },
    {
     "kind": "judge",
@@ -1187,7 +1187,7 @@
     "fen": "r1bqkb1r/pppn1ppp/5n2/3N2B1/3P4/8/PP2PPPP/R2QKBNR b KQkq - 0 6",
     "lastMoveUci": "c3d5",
     "verdict": "blunder",
-    "explain": "A blunder — the Elephant Trap. 6...Nxd5! 7.Bxd8 Bb4+! 8.Qd2 Bxd2+ 9.Kxd2 Kxd8 leaves Black a clean piece up. The 'pin' is broken by the in-between check ...Bb4+."
+    "explain": "A blunder: the Elephant Trap. 6...Nxd5! 7.Bxd8 Bb4+! 8.Qd2 Bxd2+ 9.Kxd2 Kxd8 leaves Black a clean piece up. The 'pin' is broken by the in-between check ...Bb4+."
    },
    {
     "kind": "judge",
@@ -1195,7 +1195,7 @@
     "fen": "r1bqr1k1/pp1nbppp/2p2n2/3p2B1/1P1P4/2NBPN2/P1Q2PPP/R3R1K1 b - b3 0 12",
     "lastMoveUci": "b2b4",
     "verdict": "correct",
-    "explain": "Correct — b4 prepares b4-b5xc6, the textbook minority attack. After the trade Black is saddled with a backward c6-pawn on the half-open c-file, exactly the long-term target White wants in the Carlsbad."
+    "explain": "Correct: b4 prepares b4-b5xc6, the textbook minority attack. After the trade Black is saddled with a backward c6-pawn on the half-open c-file, exactly the long-term target White wants in the Carlsbad."
    },
    {
     "kind": "mc",
@@ -1207,7 +1207,7 @@
      "The Slav wins a pawn by force"
     ],
     "answerIndex": 1,
-    "explain": "Both hold d5 with a pawn, but ...c6 keeps the c8-bishop's diagonal open. Black develops it to f5 or g4 BEFORE playing ...e6 — solving the QGD's bad-bishop problem while keeping the same solidity."
+    "explain": "Both hold d5 with a pawn, but ...c6 keeps the c8-bishop's diagonal open. Black develops it to f5 or g4 BEFORE playing ...e6. Solving the QGD's bad-bishop problem while keeping the same solidity."
    }
   ]
  },

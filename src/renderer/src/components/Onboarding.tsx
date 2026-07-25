@@ -13,7 +13,7 @@ export interface OnboardingProps {
 const TOUR: { view: ViewKey; title: string; body: string; Icon: LucideIcon }[] = [
   { view: 'play', title: 'Play', body: 'Face Stockfish at any strength, or grandmaster-style personas.', Icon: Swords },
   { view: 'puzzles', title: 'Puzzles', body: 'Train tactics with a personal rating that adapts to you.', Icon: Puzzle },
-  { view: 'school', title: 'School', body: 'Learn with Viktor — a guided course from the basics to 2000.', Icon: GraduationCap }
+  { view: 'school', title: 'School', body: 'Learn with Viktor, a guided course from the basics to 2000.', Icon: GraduationCap }
 ]
 
 export function Onboarding({ onClose, onNavigate }: OnboardingProps): JSX.Element {
@@ -47,11 +47,11 @@ export function Onboarding({ onClose, onNavigate }: OnboardingProps): JSX.Elemen
       </div>
       <div className="shell-modal-body">
         <p className="onboarding-lead">
-          {/* Web: it's served over the internet with an optional account — only the
+          {/* Web: it's served over the internet with an optional account. Only the
               desktop app can honestly claim "no account, no internet". */}
           {isWebBuild
             ? 'Set a name to personalize your profile, then dive in.'
-            : 'Everything runs locally — no account, no internet. Set a name to personalize your profile, then dive in.'}
+            : 'Everything runs locally: no account, no internet. Set a name to personalize your profile, then dive in.'}
         </p>
         <form onSubmit={onSubmit}>
           <label className="onboarding-field">

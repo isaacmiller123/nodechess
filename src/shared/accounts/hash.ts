@@ -1,4 +1,4 @@
-// Accounts crypto primitives — the ONE place ed25519/sha are wired.
+// Accounts crypto primitives: the ONE place ed25519/sha are wired.
 // Everything here must behave bit-identically in node, the desktop renderer,
 // the web bundle, and workers. No `node:` imports, no DOM globals.
 import * as ed from '@noble/ed25519'

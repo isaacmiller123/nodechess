@@ -1,7 +1,7 @@
 import { getAppDb } from './database'
 import type { CustomVariantRow } from '@shared/types'
 
-// Variant Lab persistence — CRUD over the custom_variant table (migration v9).
+// Variant Lab persistence: CRUD over the custom_variant table (migration v9).
 // The renderer owns validation (ffish loadVariantConfig round-trip); main only
 // stores the authored definition. Shapes cross IPC camelCased (CustomVariantRow).
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-fetch_engines.py — download + verify the Stockfish engine binary (v0).
+fetch_engines.py: download + verify the Stockfish engine binary (v0).
 
 Implements docs/architecture.md §6 with the review's provenance assertion:
 download a PINNED Stockfish release, extract the binary, then UCI-PROBE it to
@@ -105,7 +105,7 @@ def uci_probe(exe: str) -> str:
     )
     out, _ = p.communicate(input="uci\nisready\nquit\n", timeout=30)
     if "uciok" not in out:
-        sys.exit(f"UCI probe FAILED — no 'uciok' in engine output:\n{out[:500]}")
+        sys.exit(f"UCI probe FAILED, no 'uciok' in engine output:\n{out[:500]}")
     id_line = next((ln for ln in out.splitlines() if ln.startswith("id name")), "id name <unknown>")
     return id_line.replace("id name ", "").strip()
 

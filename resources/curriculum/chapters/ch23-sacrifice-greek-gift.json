@@ -3,13 +3,13 @@
  "band": "23",
  "order": 23,
  "title": "The Sacrifice & the Greek Gift",
- "subtitle": "Give material to win the king — and know when the gift is poisoned",
+ "subtitle": "Give material to win the king, and know when the gift is poisoned",
  "estMinutes": 44,
  "concepts": [
   {
    "id": "intermezzo",
    "name": "Intermezzo (the in-between move)",
-   "short": "Before you recapture, look for a more forcing move — a check or threat that must be answered first."
+   "short": "Before you recapture, look for a more forcing move. A check or threat that must be answered first."
   },
   {
    "id": "sacrifice",
@@ -24,7 +24,7 @@
   {
    "id": "exchange-sac",
    "name": "The exchange sacrifice",
-   "short": "Give a rook for a minor piece (the 'exchange') to smash the king's shield or win a decisive attack — material for impact."
+   "short": "Give a rook for a minor piece (the 'exchange') to smash the king's shield or win a decisive attack, material for impact."
   },
   {
    "id": "sac-soundness",
@@ -43,13 +43,13 @@
      "kind": "teach",
      "title": "Why recapturing first can be a mistake",
      "intro": {
-      "text": "A sacrifice gives up material on purpose. Before we learn to give material away, we must master the move that lets us KEEP more than our share: the intermezzo. The principle that drives this whole chapter is the same one — the most forcing move comes first."
+      "text": "A sacrifice gives up material on purpose. Before we learn to give material away, we must master the move that lets us KEEP more than our share: the intermezzo. The principle that drives this whole chapter is the same one. The most forcing move comes first."
      },
      "steps": [
       {
        "fen": "1r3rk1/pb3pbp/1p2pnp1/8/1P2N3/P1P3P1/4N1BP/R1Bq1RK1 w - - 0 16",
        "coach": {
-        "text": "Black has just grabbed your queen on d1. Your hand reaches for Rxd1 — recapture, stay level. Stop. Is there a move MORE forcing than recapturing? Your knight eyes f6, and f6 is a check.",
+        "text": "Black has just grabbed your queen on d1. Your hand reaches for Rxd1. Recapture, stay level. Stop. Is there a move MORE forcing than recapturing? Your knight eyes f6, and f6 is a check.",
         "annotations": [
          {
           "kind": "highlight",
@@ -75,7 +75,7 @@
       {
        "fen": "1r3rk1/pb3pbp/1p2pNp1/8/1P6/P1P3P1/4N1BP/R1Bq1RK1 b - - 0 16",
        "coach": {
-        "text": "Nxf6+! The check must be answered before Black can save the queen. Black's only replies are ...Bxf6 (the g7-bishop recaptures) or ...Kh8 (stepping aside, leaving my knight on f6). THEN you play Rxd1 — and you have won a whole knight compared with the lazy recapture. The queen on d1 isn't going anywhere; the check is. Forcing move first.",
+        "text": "Nxf6+! The check must be answered before Black can save the queen. Black's only replies are ...Bxf6 (the g7-bishop recaptures) or ...Kh8 (stepping aside, leaving my knight on f6). THEN you play Rxd1, and you have won a whole knight compared with the lazy recapture. The queen on d1 isn't going anywhere; the check is. Forcing move first.",
         "annotations": [
          {
           "kind": "highlight",
@@ -105,7 +105,7 @@
       {
        "fen": "1r3rk1/pb3pbp/1p2pnp1/8/1P2N3/P1P3P1/4N1BP/R1Bq1RK1 w - - 0 16",
        "coach": {
-        "text": "Black took your queen on d1. Don't recapture yet — play the most forcing move on the board.",
+        "text": "Black took your queen on d1. Don't recapture yet. Play the most forcing move on the board.",
         "annotations": [
          {
           "kind": "arrow",
@@ -120,11 +120,11 @@
         "e4f6"
        ],
        "successLine": {
-        "text": "Nxf6+. Black must answer the check with ...Bxf6 (or step aside with ...Kh8), and only THEN Rxd1 — you come out a clean knight ahead. The check jumped the queue.",
+        "text": "Nxf6+. Black must answer the check with ...Bxf6 (or step aside with ...Kh8), and only THEN Rxd1. You come out a clean knight ahead. The check jumped the queue.",
         "conceptId": "intermezzo"
        },
        "retryLine": {
-        "text": "Rxd1 just trades queens and lets Black off. Look for a CHECK first — the knight has one.",
+        "text": "Rxd1 just trades queens and lets Black off. Look for a CHECK first. The knight has one.",
         "conceptId": "intermezzo"
        }
       }
@@ -149,7 +149,7 @@
   },
   {
    "id": "l2-greek-gift",
-   "title": "The Greek Gift — Bxh7+",
+   "title": "The Greek Gift: Bxh7+",
    "kind": "tactics",
    "summary": "The classic bishop sacrifice on h7 that drags the king out and brings the knight and queen down for the kill.",
    "segments": [
@@ -157,13 +157,13 @@
      "kind": "teach",
      "title": "The three-move machine",
      "intro": {
-      "text": "The Greek Gift is the most famous sacrifice in chess. You give a bishop for the h7 pawn — but what you really buy is the enemy king. Here Black has traded his dark-squared bishop and developed the knight to d7 instead of f6. Watch why that matters."
+      "text": "The Greek Gift is the most famous sacrifice in chess. You give a bishop for the h7 pawn, but what you really buy is the enemy king. Here Black has traded his dark-squared bishop and developed the knight to d7 instead of f6. Watch why that matters."
      },
      "steps": [
       {
        "fen": "r1bq1rk1/pppn1ppp/4p3/3pP3/3P4/3B1N2/PPP2PPP/RNBQ1RK1 w - - 0 1",
        "coach": {
-        "text": "Three things make this gift sound. One: my bishop on d3 already stares at h7. Two: my knight on f3 can leap to g5 with check. Three: my queen has a clear road to h5. And crucially — Black has NO knight on f6 to guard h7 or h5, and NO dark-squared bishop to chase my knight off g5. The defences are missing.",
+        "text": "Three things make this gift sound. One: my bishop on d3 already stares at h7. Two: my knight on f3 can leap to g5 with check. Three: my queen has a clear road to h5. And crucially. Black has NO knight on f6 to guard h7 or h5, and NO dark-squared bishop to chase my knight off g5. The defences are missing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -190,7 +190,7 @@
       {
        "fen": "r1bq1rk1/pppn1ppB/4p3/3pP3/3P4/5N2/PPP2PPP/RNBQ1RK1 b - - 0 1",
        "coach": {
-        "text": "Bxh7+! The king has nothing better than to take — declining with ...Kh8 just leaves me a pawn up with the attack still loaded. So ...Kxh7, and the king steps onto the open square where I want him.",
+        "text": "Bxh7+! The king has nothing better than to take. Declining with ...Kh8 just leaves me a pawn up with the attack still loaded. So ...Kxh7, and the king steps onto the open square where I want him.",
         "annotations": [
          {
           "kind": "highlight",
@@ -210,7 +210,7 @@
       {
        "fen": "r1bq1r2/pppn1ppk/4p3/3pP3/3P4/5N2/PPP2PPP/RNBQ1RK1 w - - 0 2",
        "coach": {
-        "text": "Ng5+! The second piece arrives with check. The king must move. To g8 it scuttles back home — but home is no longer safe — or to g6, walking into the open. Either way the knight has done its job: it has fixed the king and opened the door for the queen.",
+        "text": "Ng5+! The second piece arrives with check. The king must move. To g8 it scuttles back home (but home is no longer safe) or to g6, walking into the open. Either way the knight has done its job: it has fixed the king and opened the door for the queen.",
         "annotations": [
          {
           "kind": "arrow",
@@ -231,7 +231,7 @@
       {
        "fen": "r1bq1rk1/pppn1pp1/4p3/3pP1N1/3P4/8/PPP2PPP/RNBQ1RK1 w - - 2 3",
        "coach": {
-        "text": "After ...Kg8, the queen lands: Qh5! Qh7# is the threat, and Black can only delay it. ...Qxg5 throws the queen away (then Bxg5 and I am simply winning); the one cool try, ...Nf6 (guarding h7), runs into exf6 — the e5-pawn removes the guard, and Black's king cannot survive the attack that follows. Calculate the defence and you see there is no rescue. The gift has been collected with interest.",
+        "text": "After ...Kg8, the queen lands: Qh5! Qh7# is the threat, and Black can only delay it. ...Qxg5 throws the queen away (then Bxg5 and I am simply winning); the one cool try, ...Nf6 (guarding h7), runs into exf6. The e5-pawn removes the guard, and Black's king cannot survive the attack that follows. Calculate the defence and you see there is no rescue. The gift has been collected with interest.",
         "annotations": [
          {
           "kind": "arrow",
@@ -277,11 +277,11 @@
         "d3h7"
        ],
        "successLine": {
-        "text": "Bxh7+! The king is forced to take — ...Kxh7 — and steps into the storm.",
+        "text": "Bxh7+! The king is forced to take (...Kxh7) and steps into the storm.",
         "conceptId": "greek-gift"
        },
        "retryLine": {
-        "text": "The gift starts with the bishop. Take h7 with check — Bxh7+.",
+        "text": "The gift starts with the bishop. Take h7 with check, Bxh7+.",
         "conceptId": "greek-gift"
        }
       },
@@ -307,7 +307,7 @@
         "conceptId": "greek-gift"
        },
        "retryLine": {
-        "text": "A piece sac needs follow-up speed. Jump the knight to g5 — it's a check.",
+        "text": "A piece sac needs follow-up speed. Jump the knight to g5: it's a check.",
         "conceptId": "greek-gift"
        }
       },
@@ -329,11 +329,11 @@
         "d1h5"
        ],
        "successLine": {
-        "text": "Qh5! Black can only delay Qh7#: ...Qxg5 gives up the queen (Bxg5 and you are winning), and ...Nf6 is met by exf6, when the king cannot survive the attack. That is the whole Greek Gift: bishop, knight, queen — h7, g5, h5.",
+        "text": "Qh5! Black can only delay Qh7#: ...Qxg5 gives up the queen (Bxg5 and you are winning), and ...Nf6 is met by exf6, when the king cannot survive the attack. That is the whole Greek Gift: bishop, knight, queen, h7, g5, h5.",
         "conceptId": "greek-gift"
        },
        "retryLine": {
-        "text": "The king is on g8 with no guard on h7. Swing the queen to h5 — Qh7# is the threat.",
+        "text": "The king is on g8 with no guard on h7. Swing the queen to h5. Qh7# is the threat.",
         "conceptId": "greek-gift"
        }
       }
@@ -345,19 +345,19 @@
    "id": "l3-king-escapes",
    "title": "When the King Runs to g6",
    "kind": "tactics",
-   "summary": "If the king tries g6 instead of g8, the h-pawn — not the queen — does the hunting.",
+   "summary": "If the king tries g6 instead of g8, the h-pawn (not the queen) does the hunting.",
    "segments": [
     {
      "kind": "teach",
      "title": "The pawn-storm finish",
      "intro": {
-      "text": "After Bxh7+ Kxh7 Ng5+, the king has a second choice: ...Kg6, refusing to go home. Now the queen check isn't the cleanest tool — the king is too exposed to a humble pawn."
+      "text": "After Bxh7+ Kxh7 Ng5+, the king has a second choice: ...Kg6, refusing to go home. Now the queen check isn't the cleanest tool. The king is too exposed to a humble pawn."
      },
      "steps": [
       {
        "fen": "r1bq1r2/pppn1pp1/4p1k1/3pP1N1/3P4/8/PPP2PPP/RNBQ1RK1 w - - 2 3",
        "coach": {
-        "text": "The king stands on g6, out in the open. The killer is h4! — threatening h5+, which forks the king and chases it to its death. The whole point of a sacrifice: you spend the bishop to reach a position this decisive.",
+        "text": "The king stands on g6, out in the open. The killer is h4!. Threatening h5+, which forks the king and chases it to its death. The whole point of a sacrifice: you spend the bishop to reach a position this decisive.",
         "annotations": [
          {
           "kind": "arrow",
@@ -407,7 +407,7 @@
      "kind": "guided",
      "title": "Trap the running king",
      "intro": {
-      "text": "The king chose g6. Don't reach for a flashy piece — reach for the pawn that traps him."
+      "text": "The king chose g6. Don't reach for a flashy piece. Reach for the pawn that traps him."
      },
      "steps": [
       {
@@ -428,11 +428,11 @@
         "h2h4"
        ],
        "successLine": {
-        "text": "h4! Threatening h5+ to drive the king onto a mating net. A sacrifice doesn't always end in a queen check — sometimes a pawn delivers the verdict.",
+        "text": "h4! Threatening h5+ to drive the king onto a mating net. A sacrifice doesn't always end in a queen check, sometimes a pawn delivers the verdict.",
         "conceptId": "greek-gift"
        },
        "retryLine": {
-        "text": "The king on g6 fears one thing most: h5+. Prepare it — push the h-pawn one square.",
+        "text": "The king on g6 fears one thing most: h5+. Prepare it: push the h-pawn one square.",
         "conceptId": "greek-gift"
        }
       }
@@ -460,19 +460,19 @@
    "id": "l4-exchange-sac",
    "title": "The Exchange Sacrifice",
    "kind": "tactics",
-   "summary": "Give a rook for a minor piece to tear down the king's shield. The point is never the material — it's the king behind it.",
+   "summary": "Give a rook for a minor piece to tear down the king's shield. The point is never the material, it's the king behind it.",
    "segments": [
     {
      "kind": "teach",
-     "title": "Rook for knight — to reach the king",
+     "title": "Rook for knight: to reach the king",
      "intro": {
-      "text": "The Greek Gift spends a bishop. The exchange sacrifice spends MORE: a rook for a minor piece — that is the 'exchange'. You give roughly two points of material, and in return you rip away the last guard of the enemy king. Same logic as every sacrifice in this chapter: material is the currency, the king is the prize."
+      "text": "The Greek Gift spends a bishop. The exchange sacrifice spends MORE: a rook for a minor piece. That is the 'exchange'. You give roughly two points of material, and in return you rip away the last guard of the enemy king. Same logic as every sacrifice in this chapter: material is the currency, the king is the prize."
      },
      "steps": [
       {
        "fen": "q4rk1/1b3ppp/p2p1n2/1p6/3NP3/2NB1R2/PPPQ2PP/2B3K1 w - - 0 1",
        "coach": {
-        "text": "Look at Black's king: the only thing standing between it and my pieces is the knight on f6. Everything else — queen on a8, bishop on b7, rook will be slow — is far away on the queenside. My rook on f3 can take that knight. Rxf6! A rook for a knight: I hand back two points of material, but I demolish the king's cover.",
+        "text": "Look at Black's king: the only thing standing between it and my pieces is the knight on f6. Everything else (queen on a8, bishop on b7, rook will be slow) is far away on the queenside. My rook on f3 can take that knight. Rxf6! A rook for a knight: I hand back two points of material, but I demolish the king's cover.",
         "annotations": [
          {
           "kind": "arrow",
@@ -500,7 +500,7 @@
       {
        "fen": "q4rk1/1b3p1p/p2p1p2/1p6/3NP3/2NB4/PPPQ2PP/2B3K1 w - - 0 2",
        "coach": {
-        "text": "Black recaptured ...gxf6, and now the king sits in a torn-open shell. Qh6! The queen storms in, and Black's defenders simply cannot get back in time — the position is a forced mating attack (the engine sees mate, and Black's queen on a8 can only watch). I gave the exchange; I collected the king. That is the whole idea: count what the sacrifice BUYS, not only what it costs.",
+        "text": "Black recaptured ...gxf6, and now the king sits in a torn-open shell. Qh6! The queen storms in, and Black's defenders simply cannot get back in time. The position is a forced mating attack (the engine sees mate, and Black's queen on a8 can only watch). I gave the exchange; I collected the king. That is the whole idea: count what the sacrifice BUYS, not only what it costs.",
         "annotations": [
          {
           "kind": "arrow",
@@ -530,7 +530,7 @@
       {
        "fen": "q4rk1/1b3ppp/p2p1n2/1p6/3NP3/2NB1R2/PPPQ2PP/2B3K1 w - - 0 1",
        "coach": {
-        "text": "Don't count only the points you lose. The knight on f6 is the last defender — remove it with the rook and the king is yours.",
+        "text": "Don't count only the points you lose. The knight on f6 is the last defender. Remove it with the rook and the king is yours.",
         "annotations": [
          {
           "kind": "arrow",
@@ -545,11 +545,11 @@
         "f3f6"
        ],
        "successLine": {
-        "text": "Rxf6! Rook for knight — and after ...gxf6 Qh6 the king has no shield and no help arriving. You spent the exchange and bought a winning attack. That is the exchange sacrifice.",
+        "text": "Rxf6! Rook for knight, and after ...gxf6 Qh6 the king has no shield and no help arriving. You spent the exchange and bought a winning attack. That is the exchange sacrifice.",
         "conceptId": "exchange-sac"
        },
        "retryLine": {
-        "text": "A rook is worth more than a knight — but a king is worth everything. Take the f6-knight with the rook: Rxf6.",
+        "text": "A rook is worth more than a knight, but a king is worth everything. Take the f6-knight with the rook: Rxf6.",
         "conceptId": "exchange-sac"
        }
       }
@@ -589,7 +589,7 @@
       {
        "fen": "r1bq1rk1/ppp1bppp/2n2n2/3p4/3P4/3B1N2/PPP2PPP/RNBQ1RK1 w - - 0 1",
        "coach": {
-        "text": "Refutation one: the knight on f6. It guards h7, so Bxh7+ isn't even check that wins — and it guards h5, so the queen can never land there. With a knight on f6 the Greek Gift is simply dead. Here White must play quietly; the position is only equal.",
+        "text": "Refutation one: the knight on f6. It guards h7, so Bxh7+ isn't even check that wins, and it guards h5, so the queen can never land there. With a knight on f6 the Greek Gift is simply dead. Here White must play quietly; the position is only equal.",
         "annotations": [
          {
           "kind": "circle",
@@ -616,7 +616,7 @@
       {
        "fen": "r1bq1rk1/pppnbppp/4p3/3pP3/3P4/3B1N2/PPPN1PPP/R1BQ1RK1 w - - 0 1",
        "coach": {
-        "text": "Refutation two: the dark-squared bishop on e7. Now if Bxh7+ Kxh7 Ng5+, Black plays ...Bxg5! — handing the bishop back to kill the attacking knight. The fire goes out, and White is simply down material with nothing to show. The cool defence beats the greedy sac.",
+        "text": "Refutation two: the dark-squared bishop on e7. Now if Bxh7+ Kxh7 Ng5+, Black plays ...Bxg5!. Handing the bishop back to kill the attacking knight. The fire goes out, and White is simply down material with nothing to show. The cool defence beats the greedy sac.",
         "annotations": [
          {
           "kind": "circle",
@@ -637,7 +637,7 @@
       {
        "fen": "r1bq1rk1/pppn1ppp/4p3/3pP3/3P4/3B1N2/PPP2PPP/RNBQ1RK1 w - - 0 1",
        "coach": {
-        "text": "Back to the sound version. No f6 knight, no e7 bishop — both refutations are absent. THIS is when you give the gift. Same bishop, same h7 square; the difference is entirely in the defenders. Always count the defence before you sacrifice.",
+        "text": "Back to the sound version. No f6 knight, no e7 bishop: both refutations are absent. THIS is when you give the gift. Same bishop, same h7 square; the difference is entirely in the defenders. Always count the defence before you sacrifice.",
         "annotations": [
          {
           "kind": "circle",
@@ -673,7 +673,7 @@
       {
        "fen": "r1bq1rk1/ppp1bppp/2n2n2/3p4/3P4/3B1N2/PPP2PPP/RNBQ1RK1 w - - 0 1",
        "coach": {
-        "text": "The knight on f6 guards both h7 and h5. The gift is poisoned — don't throw your bishop away. Develop the dark-squared bishop to a good diagonal instead and keep the position healthy.",
+        "text": "The knight on f6 guards both h7 and h5. The gift is poisoned. Don't throw your bishop away. Develop the dark-squared bishop to a good diagonal instead and keep the position healthy.",
         "annotations": [
          {
           "kind": "circle",
@@ -695,11 +695,11 @@
         "c1e3"
        ],
        "successLine": {
-        "text": "Good — you declined the unsound sac and developed. A sacrifice you can't justify is just a blunder with confidence. Patience here keeps you fully in the game.",
+        "text": "Good: you declined the unsound sac and developed. A sacrifice you can't justify is just a blunder with confidence. Patience here keeps you fully in the game.",
         "conceptId": "sac-soundness"
        },
        "retryLine": {
-        "text": "With a knight on f6, Bxh7+ simply loses a piece. Don't sacrifice — develop a piece (the c1-bishop) and keep your material.",
+        "text": "With a knight on f6, Bxh7+ simply loses a piece. Don't sacrifice. Develop a piece (the c1-bishop) and keep your material.",
         "conceptId": "sac-soundness"
        }
       }
@@ -736,7 +736,7 @@
      "bossFen": "r1bq1rk1/pppn1ppp/4p3/3pP3/3P4/3B1N2/PPP2PPP/RNBQ1RK1 w - - 0 1",
      "bossEngineElo": 1550,
      "bossIntro": {
-      "text": "You are White, and you know this position cold. No knight on f6, no bishop on e7 — every defender of the gift is missing. The bishop on d3, the knight on f3, the queen with a road to h5. Give the gift, bring the pieces in the right order, and finish the king. Show me you can sacrifice when it is sound.",
+      "text": "You are White, and you know this position cold. No knight on f6, no bishop on e7: every defender of the gift is missing. The bishop on d3, the knight on f3, the queen with a road to h5. Give the gift, bring the pieces in the right order, and finish the king. Show me you can sacrifice when it is sound.",
       "conceptId": "greek-gift"
      }
     },
@@ -744,7 +744,7 @@
      "kind": "puzzle",
      "title": "Cool-down: one last wave",
      "intro": {
-      "text": "Finish with attacks that turn material into mate. Forcing move first — always."
+      "text": "Finish with attacks that turn material into mate. Forcing move first, always."
      },
      "puzzle": {
       "themes": [
@@ -767,7 +767,7 @@
     "prompt": "What is an intermezzo (in-between move)?",
     "options": [
      "Always recapturing immediately to stay level on material",
-     "A more forcing move — usually a check or a big threat — inserted before you make the 'expected' recapture",
+     "A more forcing move (usually a check or a big threat) inserted before you make the 'expected' recapture",
      "A pawn move that opens a file",
      "Castling on the opposite side to your opponent"
     ],
@@ -784,7 +784,7 @@
      "Knight to g5, bishop to h7, king to g2"
     ],
     "answerIndex": 1,
-    "explain": "Bxh7+ drags the king out, Ng5+ pries it loose, and Qh5 threatens mate on h7. Bishop, knight, queen — h7, g5, h5."
+    "explain": "Bxh7+ drags the king out, Ng5+ pries it loose, and Qh5 threatens mate on h7. Bishop, knight, queen, h7, g5, h5."
    },
    {
     "kind": "mc",
@@ -792,7 +792,7 @@
     "options": [
      "A pawn on f6",
      "A bishop on f6",
-     "A knight on f6 — it guards both h7 and h5",
+     "A knight on f6: it guards both h7 and h5",
      "A rook on f6"
     ],
     "answerIndex": 2,
@@ -803,21 +803,21 @@
     "prompt": "Viktor's rule for a sacrifice to be sound is:",
     "options": [
      "It must win the game within three moves",
-     "The defender must have no refutation — you check the cool defences first",
+     "The defender must have no refutation: you check the cool defences first",
      "You must be ahead in material before you start",
      "It must be a piece, never a pawn"
     ],
     "answerIndex": 1,
-    "explain": "Sound means refutation-proof. Before committing, look for the defender's best reply — the recapture-the-attacker, the cool retreat, the decline — not just one losing line."
+    "explain": "Sound means refutation-proof. Before committing, look for the defender's best reply (the recapture-the-attacker, the cool retreat, the decline) not just one losing line."
    },
    {
     "kind": "play",
-    "prompt": "Your rook can recapture the queen on h5 at once — but is there something more forcing first? Find White's best move.",
+    "prompt": "Your rook can recapture the queen on h5 at once, but is there something more forcing first? Find White's best move.",
     "fen": "r4rk1/pp3pp1/2pp4/3N3q/4P3/8/PPP3P1/1K5R w - - 0 21",
     "solutionUci": [
      "d5e7"
     ],
-    "explain": "Ne7+! The in-between check must be answered (...Kh7/...Kh8), and only THEN Rxh5 collects the queen — the intermezzo wins more than the routine recapture."
+    "explain": "Ne7+! The in-between check must be answered (...Kh7/...Kh8), and only THEN Rxh5 collects the queen. The intermezzo wins more than the routine recapture."
    },
    {
     "kind": "play",
@@ -835,7 +835,7 @@
     "solutionUci": [
      "f3g5"
     ],
-    "explain": "Ng5+! The second attacker arrives with check, pries the king loose, and clears the road for the queen to reach h5 — the heart of the Greek-Gift attack."
+    "explain": "Ng5+! The second attacker arrives with check, pries the king loose, and clears the road for the queen to reach h5. The heart of the Greek-Gift attack."
    },
    {
     "kind": "play",
@@ -854,7 +854,7 @@
      "h2h4",
      "d1g4"
     ],
-    "explain": "h4! Threatening h5+, which drives the exposed king into a winning net — the thematic 'a pawn finishes the king' idea. The direct Qg4+ is also crushing; both are completely winning."
+    "explain": "h4! Threatening h5+, which drives the exposed king into a winning net, the thematic 'a pawn finishes the king' idea. The direct Qg4+ is also crushing; both are completely winning."
    },
    {
     "kind": "judge",
@@ -866,7 +866,7 @@
    },
    {
     "kind": "judge",
-    "prompt": "White played Bxh7+ here — but Black has a bishop on e7. Sound sacrifice or blunder?",
+    "prompt": "White played Bxh7+ here, but Black has a bishop on e7. Sound sacrifice or blunder?",
     "fen": "r1bq1rk1/pppnbppB/4p3/3pP3/3P4/5N2/PPPN1PPP/R1BQ1RK1 b - - 0 1",
     "lastMoveUci": "d3h7",
     "verdict": "blunder",
@@ -898,7 +898,7 @@
      "Giving up a pawn to gain a tempo in the opening"
     ],
     "answerIndex": 1,
-    "explain": "The 'exchange' is rook-for-minor. You spend about two points of material to remove a key defender or open the king — justified when the attack you buy is worth more than the material you give."
+    "explain": "The 'exchange' is rook-for-minor. You spend about two points of material to remove a key defender or open the king. Justified when the attack you buy is worth more than the material you give."
    },
    {
     "kind": "play",
@@ -907,7 +907,7 @@
     "solutionUci": [
      "f3f6"
     ],
-    "explain": "Rxf6! The exchange sacrifice — rook for knight. After ...gxf6 Qh6 the king's shield is gone and no defender can return; White has a forced, winning attack. Material spent, king won."
+    "explain": "Rxf6! The exchange sacrifice: rook for knight. After ...gxf6 Qh6 the king's shield is gone and no defender can return; White has a forced, winning attack. Material spent, king won."
    }
   ]
  },

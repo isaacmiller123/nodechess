@@ -1,7 +1,7 @@
 // Validate (and normalise) resources/famous/games.json.
 //
 // The famous-games dataset is hand-authored from public-domain move records.
-// This script does NOT fetch anything — it only replays every game's SAN
+// This script does NOT fetch anything. It only replays every game's SAN
 // movetext with chessops to prove the moves are legal and complete, and that
 // the declared result is consistent with the final position (checkmate / no
 // mate for a decisive / drawn or ongoing record). Run it whenever the dataset

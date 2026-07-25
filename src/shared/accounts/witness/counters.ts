@@ -1,4 +1,4 @@
-// A4 seam 1 — committee failure-counter ANTI-SPREADING (spec §1 "honest
+// A4 seam 1: committee failure-counter ANTI-SPREADING (spec §1 "honest
 // members gossip counts"; A2->A3 residual seam 1, closed in A4 brick 1b).
 //
 // A2's effectiveCount is the t-th-largest of per-member LOCAL counters. An
@@ -16,10 +16,10 @@
 // where trimmedSum drops the (n − t) LARGEST reported values (missing reports
 // count 0). Why this is both spread-resistant and Byzantine-bounded:
 //  - every real guess evaluation increments ≥ t member counters, of which at
-//    most (n − t) can be trimmed away, so trimmedSum ≥ (t − (n−t))·G — i.e.
+//    most (n − t) can be trimmed away, so trimmedSum ≥ (t − (n−t))·G, i.e.
 //    S ≥ G: no quorum-rotation schedule can hold the converged count below
 //    the true guess count G. (Fixed-quorum and hot+rotate schedules give
-//    S = G exactly; even spreading OVERSHOOTS — spreading is self-defeating.)
+//    S = G exactly; even spreading OVERSHOOTS: spreading is self-defeating.)
 //  - ≤ (n − t) malicious members inflating their reports are exactly the
 //    values the trim drops, so unbounded report forgery cannot poison the
 //    recorded count (and with it the next cycle's refill threshold); residual
@@ -27,9 +27,9 @@
 //  - a report is only as good as its SIGNATURE (member's advertised key) +
 //    MONOTONICITY: (gen, fails) may only grow; a member caught signing a
 //    regressing pair has produced self-authenticating misbehavior evidence
-//    (CounterRegression — both signed reports, portable).
+//    (CounterRegression: both signed reports, portable).
 //
-// Pure verifiers/reducers only — the wire choreography lives in protocol.ts.
+// Pure verifiers/reducers only. The wire choreography lives in protocol.ts.
 // Platform-neutral: no `node:` imports, no DOM globals, no ambient clocks.
 
 import { z } from 'zod'
@@ -40,10 +40,10 @@ import type { B64u, EventId } from '../types'
 import type { NodeId } from './types'
 
 // ---------------------------------------------------------------------------
-// Report shape (standalone signed record — NOT a chain event)
+// Report shape (standalone signed record, NOT a chain event)
 // ---------------------------------------------------------------------------
 
-/** Upper bound on a report's fails — keeps sums in safe-integer range and
+/** Upper bound on a report's fails. Keeps sums in safe-integer range and
  * refuses absurd forgeries at the schema boundary. */
 export const COUNTER_FAILS_MAX = 1_000_000_000_000
 
@@ -118,7 +118,7 @@ export function signCounterReport(
 
 /**
  * Verify a report from an UNTRUSTED source: strict shape + signature under the
- * member's ADVERTISED key (`keyOf`, from presence/certs — a self-chosen key
+ * member's ADVERTISED key (`keyOf`, from presence/certs: a self-chosen key
  * proves nothing). Pure, never throws.
  */
 export function verifyCounterReport(report: unknown, keyOf: (w: NodeId) => B64u | undefined): boolean {
@@ -138,7 +138,7 @@ export function verifyCounterReport(report: unknown, keyOf: (w: NodeId) => B64u 
 // ---------------------------------------------------------------------------
 
 /** Self-authenticating misbehavior evidence: one member signed a regressing
- * pair — `later` claims a NEWER clock but a lower (gen, fails). Anyone holding
+ * pair: `later` claims a NEWER clock but a lower (gen, fails). Anyone holding
  * both signed reports can verify the regression with the member's key alone. */
 export interface CounterRegression {
   w: NodeId
@@ -146,13 +146,13 @@ export interface CounterRegression {
   later: SignedCounterReport
 }
 
-/** (gen, fails) lexicographic order — the monotonic axis of a member's counter. */
+/** (gen, fails) lexicographic order. The monotonic axis of a member's counter. */
 function reportRank(a: PinCounterReportBody, b: PinCounterReportBody): number {
   return a.gen - b.gen || a.fails - b.fails
 }
 
 export interface MergeResult {
-  /** One report per member — the (gen, fails)-maximal one seen. */
+  /** One report per member. The (gen, fails)-maximal one seen. */
   merged: Map<NodeId, SignedCounterReport>
   /** Regressions detected during THIS merge (evidence pairs). */
   regressions: CounterRegression[]
@@ -162,7 +162,7 @@ export interface MergeResult {
  * Merge verified reports into a held per-member map: per member the
  * (gen, fails)-maximal report wins; a pair where the (gen, fails)-LOWER report
  * carries the STRICTLY NEWER asOfWts is a regression (the member signed a
- * shrinking counter) and is surfaced as evidence. Mutates nothing — returns a
+ * shrinking counter) and is surfaced as evidence. Mutates nothing: returns a
  * fresh map. Reports must be pre-verified (verifyCounterReport).
  */
 export function mergeCounterReports(
@@ -179,7 +179,7 @@ export function mergeCounterReports(
     }
     const rank = reportRank(r.body, cur.body)
     if (rank > 0) {
-      // r supersedes — but if the SUPERSEDED report claimed a newer clock, the
+      // r supersedes, but if the SUPERSEDED report claimed a newer clock, the
       // member regressed between the two signings.
       if (cur.body.asOfWts > r.body.asOfWts) regressions.push({ w: r.body.w, earlier: r, later: cur })
       merged.set(r.body.w, r)
@@ -187,7 +187,7 @@ export function mergeCounterReports(
       if (r.body.asOfWts > cur.body.asOfWts) regressions.push({ w: r.body.w, earlier: cur, later: r })
       // held report stays (monotonic max).
     }
-    // rank 0 (same gen+fails): identical count — keep held.
+    // rank 0 (same gen+fails): identical count. Keep held.
   }
   return { merged, regressions }
 }

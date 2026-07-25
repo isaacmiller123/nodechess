@@ -15,7 +15,7 @@ import type {
 } from '../../shared/types'
 
 // ============================================================================
-// SLICE C — Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
+// SLICE C: Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
 //
 // Thin IPC layer: validate the payload (handle() already origin-checks +
 // zod-validates) and delegate to src/main/db/daily.repo.ts, which owns all SQL

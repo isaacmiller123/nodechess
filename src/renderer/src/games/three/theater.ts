@@ -1,4 +1,4 @@
-// Replay Theater choreography — PURE math (no three, no React, no DOM).
+// Replay Theater choreography: PURE math (no three, no React, no DOM).
 //
 // The cinematic replay is choreographed here as small deterministic functions
 // so the camera work is unit-testable in bare node (scripts/test-theater.mjs)
@@ -9,7 +9,7 @@
 //
 // Model: playback commits one ply at a time (a "shot"). Every envelope below
 // is a function of REAL milliseconds since the shot committed, so live speed
-// changes and pauses need no re-scheduling — the rig just re-evaluates.
+// changes and pauses need no re-scheduling. The rig just re-evaluates.
 //   - quiet move  → the camera's aim eases toward the action square, then
 //     drifts back to the board center while the slow orbit continues;
 //   - capture     → same framing plus a dolly-in and a brief scene slow-mo
@@ -18,7 +18,7 @@
 //   - finale      → the orbit relaxes to half rate and holds the final
 //     position; the result card appears after FINALE_CARD_DELAY_MS.
 
-/** Board-space aim point (fractional file/rank — centroid of changed squares). */
+/** Board-space aim point (fractional file/rank; centroid of changed squares). */
 export interface TheaterFocus {
   file: number
   rank: number
@@ -34,7 +34,7 @@ export interface TheaterShot {
 }
 
 /** Mutable playback directive, owned by the player, sampled by the rig each
- *  frame (a ref — mutations never re-render the canvas). */
+ *  frame (a ref: mutations never re-render the canvas). */
 export interface TheaterDirective {
   shot: TheaterShot | null
   /** Cadence multiplier (THEATER_SPEEDS). */
@@ -72,7 +72,7 @@ export function smoothK(dtSec: number, halflifeSec: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// Cadence — how long playback dwells on each committed ply.
+// Cadence: how long playback dwells on each committed ply.
 
 export const BASE_PLY_MS = 1350
 /** Captures linger: the slow-mo + dolly need room to land and recover. */
@@ -91,14 +91,14 @@ export function establishMs(speed: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// Capture slow-mo — scene-clock scale envelope (1 → dip → 1).
+// Capture slow-mo, scene-clock scale envelope (1 → dip → 1).
 
 export const SLOWMO_SCALE = 0.35
 /** Let the capture slide leave the square at full speed for a beat. */
 const SLOWMO_LEAD_MS = 70
 const SLOWMO_RAMP_MS = 140
 
-/** Width of the slow-mo dip (real ms) — shrinks at faster cadences. */
+/** Width of the slow-mo dip (real ms). Shrinks at faster cadences. */
 export function slowmoWindowMs(speed: number): number {
   return clamp(950 / clampSpeed(speed), 380, 1400)
 }
@@ -113,7 +113,7 @@ export function timeScaleAt(sinceMs: number, capture: boolean, speed: number): n
 }
 
 // ---------------------------------------------------------------------------
-// Framing — dolly (radius multiplier) and pull (aim weight toward the action
+// Framing: dolly (radius multiplier) and pull (aim weight toward the action
 // square). Quiet moves aim but never dolly; captures push in ~20%.
 
 export const CAPTURE_DOLLY = 0.78
@@ -137,13 +137,13 @@ export function pullAt(sinceMs: number, capture: boolean, speed: number): number
   const dwell = plyDurationMs(capture, speed)
   const rise = smoothstep(0, 180, sinceMs)
   // Hand the frame back to the board center as the shot ages (matters when
-  // playback stops — the next shot replaces this envelope otherwise).
+  // playback stops. The next shot replaces this envelope otherwise).
   const release = smoothstep(dwell * 0.9, dwell * 1.8, sinceMs)
   return peak * rise * (1 - release)
 }
 
 // ---------------------------------------------------------------------------
-// Orbit — a slow admiring arc, driven by an accumulated PHASE (seconds of
+// Orbit: a slow admiring arc, driven by an accumulated PHASE (seconds of
 // scaled scene time; the rig integrates pauses/slow-mo/finale into it).
 
 export const ORBIT_RATE = 0.1 // rad per phase-second, flat boards
@@ -152,13 +152,13 @@ const UPRIGHT_SWING_RATE = 0.3
 export const FINALE_ORBIT_FACTOR = 0.5
 
 /** Camera azimuth for an orbit phase. Upright boards (connect four) never go
- *  behind the frame — they swing across the front instead. */
+ *  behind the frame. They swing across the front instead. */
 export function orbitThetaAt(phaseSec: number, upright: boolean, theta0 = -0.32): number {
   if (upright) return theta0 + Math.sin(phaseSec * UPRIGHT_SWING_RATE) * ORBIT_SWING
   return theta0 + phaseSec * ORBIT_RATE
 }
 
-/** Camera elevation (polar angle from +y) — a gentle breathing bob, clamped
+/** Camera elevation (polar angle from +y): a gentle breathing bob, clamped
  *  well above the table plane. */
 export function orbitPhiAt(phaseSec: number, upright: boolean): number {
   const base = upright ? 1.22 : (55 * Math.PI) / 180
@@ -172,7 +172,7 @@ export function theaterRadius(span: number): number {
 }
 
 /** Spherical → cartesian, y-up, theta measured around +y from +z (the
- *  THREE.Spherical convention — kept here so it is testable without three). */
+ *  THREE.Spherical convention: kept here so it is testable without three). */
 export function sphericalToVec(
   radius: number,
   phi: number,
@@ -183,7 +183,7 @@ export function sphericalToVec(
 }
 
 // ---------------------------------------------------------------------------
-// Action square — where did the committed move happen? Derived from the
+// Action square: where did the committed move happen? Derived from the
 // occupancy DIFF (codec-independent: works for every family, including
 // othello flip fans and go capture clears).
 

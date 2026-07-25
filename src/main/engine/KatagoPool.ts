@@ -12,7 +12,7 @@ import {
 import type { EstimateGoRequest, EstimateGoResult, PlayGoRequest } from '../../shared/types'
 
 // Lazy pool of KataGo GTP processes for the Go bots (docs/GAMES-PLATFORM-SPEC.md
-// §Bots: go → KataGo GTP ipc) — one persistent engine per LEVEL, because a
+// §Bots: go → KataGo GTP ipc). One persistent engine per LEVEL, because a
 // level's whole personality (net + visit budget + move-choice temperature, or a
 // Human-SL rank profile) is fixed at spawn via -override-config. Nets are tiny
 // (b6c96 ~15MB RSS) and a user typically plays one level at a time, so keeping
@@ -20,14 +20,14 @@ import type { EstimateGoRequest, EstimateGoResult, PlayGoRequest } from '../../s
 // next request respawns it (MaiaPool discipline).
 //
 // Two ladders (task spec, backed by KataGo's own strength research):
-//   standard — g170 nets weakened by LOW VISITS + a hot chosenMoveTemperature
+//   standard: g170 nets weakened by LOW VISITS + a hot chosenMoveTemperature
 //     (probability-proportional sampling of the search's move distribution):
 //     L1..L3 on b6c96 at 2/8/24 visits, L4 b10c128@64, L5 b10c128@320.
-//   human (flagship, when the optional Human-SL b18 net is installed) — the
+//   human (flagship, when the optional Human-SL b18 net is installed). The
 //     same 5 levels map to humanSLProfile ranks 15k/9k/4k/1k/3d: genmove then
 //     IS a human-move model of that rank (humanSLChosenMoveProp=1 plays the
-//     profile's predicted-move distribution directly; low visits keep it fast
-//     — the profile, not the search, carries the strength).
+//     profile's predicted-move distribution directly; low visits keep it fast.
+//     The profile, not the search, carries the strength).
 //
 // Both ladders disable resignation (a kernel game ends by passes + scoring,
 // never mid-game) and pondering (no background CPU burn between moves).
@@ -48,8 +48,8 @@ const STANDARD_LEVELS: readonly StandardLevel[] = [
 ]
 
 /** Level 1..5 → Human-SL rank profile (index = level - 1). The renderer's
- *  describe() strings (games/bots.ts KATAGO_HUMAN_HINTS) mirror these ranks —
- *  keep the two lists in sync. */
+ *  describe() strings (games/bots.ts KATAGO_HUMAN_HINTS) mirror these ranks.
+ *  Keep the two lists in sync. */
 const HUMAN_PROFILES = ['rank_15k', 'rank_9k', 'rank_4k', 'rank_1k', 'rank_3d'] as const
 
 function clampLevel(level: number): number {
@@ -58,9 +58,9 @@ function clampLevel(level: number): number {
 
 /**
  * The `whiteOwnership` float grid from a kata-raw-nn payload: size*size values
- * in −1..1, printed row-major from the TOP row (Shudan orientation — exactly
+ * in −1..1, printed row-major from the TOP row (Shudan orientation, exactly
  * the shared EstimateGoResult contract). Empty array when the section is
- * absent or short (older engine builds) — the overlay hides, scalars still work.
+ * absent or short (older engine builds). The overlay hides, scalars still work.
  */
 function parseOwnershipGrid(text: string, size: number): number[] {
   const lines = text.split('\n')
@@ -142,7 +142,7 @@ export class KatagoPool {
     if (existing) return existing
     // cwd = the dataset dir so the config's relative logDir (gtp_logs) resolves
     // into the per-user datasets folder, exactly like scripts/verify-katago.mjs.
-    // (The dir may not exist yet in the dev brew-fallback case — create it.)
+    // (The dir may not exist yet in the dev brew-fallback case; create it.)
     fs.mkdirSync(katagoDir(), { recursive: true })
     const eng = new GtpClient(resolveKatagoPath(), args, katagoDir())
     await eng.start(60000) // first spawn loads the net (Metal warm-up on mac)
@@ -151,7 +151,7 @@ export class KatagoPool {
   }
 
   /**
-   * One bot move: replay the game (boardsize/komi/moves — GTP is stateful, and
+   * One bot move: replay the game (boardsize/komi/moves; GTP is stateful, and
    * replaying from scratch keeps this pool stateless across concurrent games),
    * then genmove for the side to move. Returns a codec vertex or 'pass'.
    * On ANY failure the level's engine is killed and dropped so the next request
@@ -159,7 +159,7 @@ export class KatagoPool {
    */
   async play(req: PlayGoRequest): Promise<string> {
     if (!katagoAvailable()) {
-      throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+      throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
     }
     const { key } = this.spawnConfig(req.level)
     const eng = await this.get(req.level)
@@ -167,8 +167,8 @@ export class KatagoPool {
       await eng.boardsize(req.size)
       await eng.clearBoard()
       await eng.komi(req.komi)
-      // Handicap stones are pre-placed black moves, after which WHITE opens —
-      // the parity flip below mirrors games/go.ts (tenuki owns the rule).
+      // Handicap stones are pre-placed black moves, after which WHITE opens.
+      // The parity flip below mirrors games/go.ts (tenuki owns the rule).
       const handicap = req.handicap ?? []
       for (const v of handicap) await eng.play('black', v)
       const opener = handicap.length > 0 ? 1 : 0
@@ -179,7 +179,7 @@ export class KatagoPool {
       }
       const color = (req.moves.length + opener) % 2 === 0 ? 'black' : 'white'
       const move = await eng.genmove(color, 120000)
-      // Resignation is disabled by config; translate defensively anyway — the
+      // Resignation is disabled by config; translate defensively anyway: the
       // kernel codec is vertices|pass only.
       return move === 'resign' ? 'pass' : move
     } catch (err) {
@@ -190,7 +190,7 @@ export class KatagoPool {
   }
 
   /** The dedicated estimate engine: strongest installed STANDARD net (per the
-   *  shared EstimateGoRequest contract), tiny visit budget — kata-raw-nn does
+   *  shared EstimateGoRequest contract), tiny visit budget: kata-raw-nn does
    *  a single forward pass, so visits never matter; the budget only caps a
    *  stray genmove if one is ever sent here. */
   private estimateConfig(): { key: string; args: string[] } {
@@ -211,19 +211,19 @@ export class KatagoPool {
   }
 
   /**
-   * One-shot position estimate (engine:estimateGo — shared/types.ts
+   * One-shot position estimate (engine:estimateGo, shared/types.ts
    * EstimateGoRequest/EstimateGoResult): replay the game (same stateless
    * discipline as play), then read the raw net heads via the KataGo GTP
-   * extension `kata-raw-nn 0` — a single forward pass, no search, no genmove,
+   * extension `kata-raw-nn 0`. A single forward pass, no search, no genmove,
    * so it returns in tens of milliseconds even on the eigen (CPU) build.
    * Feeds both the replay viewer's winrate/score readout (whiteWin/whiteLead)
    * and the territory overlay (whiteOwnership grid). Returns null when the
-   * engine doesn't speak the extension — callers hide the readout instead of
+   * engine doesn't speak the extension. Callers hide the readout instead of
    * erroring.
    */
   async estimate(req: EstimateGoRequest): Promise<EstimateGoResult | null> {
     if (!katagoAvailable()) {
-      throw new Error('KataGo is not installed — download the Go engine in Settings → Datasets.')
+      throw new Error('KataGo is not installed. Download the Go engine in Settings → Datasets.')
     }
     const { key, args } = this.estimateConfig()
     let eng = this.engines.get(key)
@@ -246,7 +246,7 @@ export class KatagoPool {
         await eng.play((i + opener) % 2 === 0 ? 'black' : 'white', req.moves[i])
       }
       const r = await eng.send('kata-raw-nn 0', 30000)
-      if (!r.ok) return null // engine build without the extension — graceful
+      if (!r.ok) return null // engine build without the extension: graceful
       // Payload is `key value` scalar lines plus `key` + float-grid sections.
       const num = (name: string): number | null => {
         const m = new RegExp(`^${name}\\s+(-?[0-9.eE+]+)$`, 'm').exec(r.text)

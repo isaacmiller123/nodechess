@@ -1,16 +1,16 @@
-// Go — GameSpec over tenuki (docs/GAMES-PLATFORM-SPEC.md §Approved stack, P2).
+// Go. GameSpec over tenuki (docs/GAMES-PLATFORM-SPEC.md §Approved stack, P2).
 //
 // tenuki is the rules authority (captures, suicide, positional superko,
 // dead-stone marking, area/territory scoring). Its Game object is MUTABLE, so
 // to satisfy the kernel's immutable-state contract a GoState is just the
-// replayable description of the game — options + move list + scoring-phase
-// marks — and a tenuki Game is lazily rebuilt per state (WeakMap-cached, so
+// replayable description of the game: options + move list + scoring-phase
+// marks, and a tenuki Game is lazily rebuilt per state (WeakMap-cached, so
 // each state replays at most once; states never mutate after creation).
 //
 // Move codec: 'd4'-style vertices + 'pass'. Columns are a..t SKIPPING i
 // (standard go convention, matches tenuki/Shudan coordinate labels), ranks
 // count from the BOTTOM (rank 1 = bottom row). Resigns stay session-level,
-// exactly like the chess family — the codec is coords|pass only.
+// exactly like the chess family. The codec is coords|pass only.
 //
 // End of game / scoring seam (P2 wave 2 builds the marking UI on top):
 //   - two consecutive passes end move play: legalMoves → [], but result stays
@@ -100,7 +100,7 @@ export function pointToVertex(y: number, x: number, size: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// Handicap placement — the standard hoshi tables, mirroring tenuki's
+// Handicap placement: the standard hoshi tables, mirroring tenuki's
 // BoardState._initialFor exactly (tenuki does the actual placement inside
 // gameFor via `handicapStones`; this export exists so engine requests and
 // tests can name the same vertices without reaching into tenuki internals).
@@ -148,7 +148,7 @@ function gameFor(s: GoState): TenukiGame {
     komi: s.komi,
     scoring: s.scoring,
     koRule: 'positional-superko',
-    // Fixed hoshi placement (tenuki's own tables — handicapPlacement mirrors
+    // Fixed hoshi placement (tenuki's own tables: handicapPlacement mirrors
     // them); with ≥ 2 stones tenuki makes WHITE the side to move.
     handicapStones: s.handicap
   })
@@ -160,11 +160,11 @@ function gameFor(s: GoState): TenukiGame {
             const p = vertexToPoint(move, s.size)
             return p ? game.playAt(p.y, p.x, { render: false }) : false
           })()
-    if (!applied) throw new Error(`go: corrupt state — replay rejected move '${move}'`)
+    if (!applied) throw new Error(`go: corrupt state. Replay rejected move '${move}'`)
   }
   for (const mark of s.deadMarks) {
     const p = vertexToPoint(mark, s.size)
-    if (!p) throw new Error(`go: corrupt state — bad dead mark '${mark}'`)
+    if (!p) throw new Error(`go: corrupt state, bad dead mark '${mark}'`)
     game.toggleDeadAt(p.y, p.x, { render: false })
   }
   gameCache.set(s, game)
@@ -202,7 +202,7 @@ function playOn(s: GoState, move: string): GoState | null {
 
 function resultOf(s: GoState): GameResult | null {
   const g = gameFor(s)
-  // Ongoing — or over but dead-stone marking unresolved (the scoring phase).
+  // Ongoing, or over but dead-stone marking unresolved (the scoring phase).
   if (!g.isOver() || !s.finalized) return null
   const { black, white } = g.score() // komi already added to white
   const winner: PlayerColor | null = black > white ? 'black' : white > black ? 'white' : null
@@ -262,7 +262,7 @@ export function scoreDetail(s: GoState): { black: number; white: number } | null
   return g.score()
 }
 
-/** Side to move — black first in an even game, WHITE first when handicap ≥ 2
+/** Side to move. Black first in an even game, WHITE first when handicap ≥ 2
  *  (tenuki owns the rule). Meaningless once the game is over. */
 export function turnOf(s: GoState): PlayerColor {
   return gameFor(s).currentPlayer()
@@ -293,13 +293,13 @@ export function deadStonesOf(s: GoState): string[] {
 /**
  * The ko point (recapture currently banned) as a codec vertex, or null. Read
  * as: the previous move captured exactly ONE stone and playing back on that
- * point is illegal for the side to move — the classic ko shape. Board UI only.
+ * point is illegal for the side to move, the classic ko shape. Board UI only.
  */
 export function koVertexOf(s: GoState): string | null {
   const g = gameFor(s)
   if (g.isOver()) return null
   const st = g.currentState()
-  // tenuki's INITIAL state carries no capturedPositions array — guard it.
+  // tenuki's INITIAL state carries no capturedPositions array. Guard it.
   if (st.pass || !Array.isArray(st.capturedPositions) || st.capturedPositions.length !== 1) return null
   const p = st.capturedPositions[0]
   if (!g.intersectionAt(p.y, p.x).isEmpty() || !g.isIllegalAt(p.y, p.x)) return null
@@ -322,7 +322,7 @@ export function territoryOf(s: GoState): { black: string[]; white: string[] } | 
 }
 
 /** Notation for the move about to be played (kernel notate contract): color
- *  prefix + uppercase vertex — 'B D4' / 'W Q16' (columns skip I, per the
+ *  prefix + uppercase vertex: 'B D4' / 'W Q16' (columns skip I, per the
  *  codec); 'pass' stays bare. Mover comes from turnOf, so handicap games
  *  (white opens) notate correctly. Shared with gomoku via goLikeNotation. */
 export function goLikeNotation(mover: PlayerColor, move: string): string {
@@ -341,10 +341,10 @@ export const GO_SPEC: GoSpec = {
   kind: 'go',
   family: 'go',
   title: 'Go',
-  tagline: 'Surround territory, capture stones — the deepest game on earth.',
+  tagline: 'Surround territory, capture stones, the deepest game on earth.',
   players: ['black', 'white'],
   // Kernel board shape is the DEFAULT (19×19); per-game size lives in state
-  // (GoState.size) — boards must read the state, not this static shape.
+  // (GoState.size). Boards must read the state, not this static shape.
   board: { layout: 'intersections', files: 19, ranks: 19 },
   flipPolicy: 'none',
   clock: { supported: true, byoyomi: true },

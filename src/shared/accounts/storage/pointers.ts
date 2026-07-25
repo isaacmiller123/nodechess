@@ -1,22 +1,22 @@
-// A3 storage — authenticated pointers (spec §5 "authenticated pointer records
+// A3 storage: authenticated pointers (spec §5 "authenticated pointer records
 // closes index poisoning" + the viewing-flow contact sheet; contracts:
 // ./types.ts PointerRecord/PointerProof/ContactSheet, kickoff item 4).
 //
 // A pointer is a HOLDER-signed claim "I hold a segment of subject X, content
 // hash H", published into the overlay under a deterministic per-subject key so
-// a viewer enumerates one subject's pointers in O(1) lookups — the index is
+// a viewer enumerates one subject's pointers in O(1) lookups. The index is
 // built at WRITE time, viewing never searches. Authority NEVER comes from the
 // pointer's signature alone (§0: possession of bytes confers nothing): a
 // pointer is enumerable ONLY when its EMBEDDED proof independently authorizes
-// the holder —
+// the holder,
 //   'segment': the subject's OWN countersigned segment event (owner-signed +
-//              witness-attested) NAMING the holder as counterparty — only a
+//              witness-attested) NAMING the holder as counterparty: only a
 //              real entanglement partner can carry one;
 //   'chain':   the subject's own countersigned head/checkpoint event; the
 //              claim "I hold the full chain at this head" is bound by hash at
 //              fetch time (sha256 of the served blob), so a liar wastes a
 //              fetch but can never serve wrong bytes;
-//   'shard':   a verifiable shard-assignment proof — the job's SnapshotHeader
+//   'shard':   a verifiable shard-assignment proof. The job's SnapshotHeader
 //              (itself embedding the countersigned head, shards.ts verifier)
 //              PLUS objective duty: the holder is among dutyCarriers(...) for
 //              that shard row's key under a caller-supplied NodeDirectory
@@ -26,16 +26,16 @@
 //
 // Revisable parameters: a shard pointer's proof embeds PARAMS_A3_DIGEST via
 // its SnapshotHeader (verifySnapshotHeader pins it); segment/chain pointers
-// bake in no revisable parameter — their validity is pure signature +
+// bake in no revisable parameter: their validity is pure signature +
 // attestation structure. Store-side caps (pointerCapPerKey) are node-local
 // coordination state (C-3), enforced deterministically, never embedded.
 //
 // Determinism rules (suite-load-bearing): platform-neutral (no `node:`
-// imports, no DOM globals), no Date.now / Math.random / timers — clocks and
+// imports, no DOM globals), no Date.now / Math.random / timers. Clocks and
 // directory snapshots are the caller's. Every verifier is pure, fails closed
 // (typed verdicts, never a throw), and is byte-identical on node and in the
 // browser bundle. Distance math reuses witness/distance.ts; header + duty
-// verification reuse ./shards.ts — nothing is reimplemented.
+// verification reuse ./shards.ts: nothing is reimplemented.
 
 import { z } from 'zod'
 import { certSetFrom } from '../certs'
@@ -73,10 +73,10 @@ import type {
 } from './types'
 
 // ---------------------------------------------------------------------------
-// Pointer keys — where a subject's pointer index lives in the overlay keyspace
+// Pointer keys: where a subject's pointer index lives in the overlay keyspace
 // ---------------------------------------------------------------------------
 
-/** Domain separator for pointer keys — fixed forever (like SHARD_KEY_TAG the
+/** Domain separator for pointer keys: fixed forever (like SHARD_KEY_TAG the
  * derivation is structural; everything revisable rides the records). */
 const POINTER_KEY_TAG = 'cs:a3:pointer-key:v1'
 
@@ -84,7 +84,7 @@ const POINTER_KEY_TAG = 'cs:a3:pointer-key:v1'
  * The deterministic 32-byte overlay key of a subject's pointer index:
  * sha256(utf8(POINTER_KEY_TAG) ‖ subjectNodeIdBytes) as b64u. ONE key per
  * subject (kind 'pointers'), domain-separated from nodeIdOf(subject) (where
- * 'events' rows live) and from every shardKey — so a viewer enumerates a
+ * 'events' rows live) and from every shardKey, so a viewer enumerates a
  * subject's whole contact sheet with a single overlay lookup, and pointer
  * floods never contend with event or shard storage. Throws on programmer
  * misuse (builders throw; verifiers fail closed).
@@ -101,7 +101,7 @@ export function pointerKeyOfRoot(subjectRoot: B64u): B64u {
 }
 
 // ---------------------------------------------------------------------------
-// Bounds (deterministic hygiene caps — validity rules, not revisable params)
+// Bounds (deterministic hygiene caps: validity rules, not revisable params)
 // ---------------------------------------------------------------------------
 
 /** Canonical-byte ceiling for ONE pointer record. Generous for a real segment
@@ -109,7 +109,7 @@ export function pointerKeyOfRoot(subjectRoot: B64u): B64u {
 export const POINTER_MAX_BYTES = 16 * 1024
 
 /** Freshness skew: a pointer's holder-claimed `ts` is CAPPED for ranking at
- * (embedded proof's witnessed time + this skew) — ts is never authority
+ * (embedded proof's witnessed time + this skew): ts is never authority
  * (types.ts PointerBody contract), so lying about it cannot outrank the
  * proof's own witnessed recency by more than this bound. */
 export const POINTER_TS_SKEW_MS = 86_400_000 // 24h
@@ -155,7 +155,7 @@ const zPointerRow = z.strictObject({
 })
 
 // ---------------------------------------------------------------------------
-// Verification (fail CLOSED — typed verdicts, never a throw)
+// Verification (fail CLOSED: typed verdicts, never a throw)
 // ---------------------------------------------------------------------------
 
 export type PointerVerdict =
@@ -174,7 +174,7 @@ export interface VerifyPointerOpts {
   /** Directory snapshot for 'shard' duty verification. ABSENT ⇒ every shard
    * pointer fails closed with 'holder-mismatch' (duty is unverifiable). */
   directory?: NodeDirectory
-  /** Injected clock (ms) for presence staleness — REQUIRED with `directory`. */
+  /** Injected clock (ms) for presence staleness: REQUIRED with `directory`. */
   nowMs?: number
   /** Carriers per shard row; default PARAMS_A3.dutyK. */
   dutyK?: number
@@ -186,21 +186,21 @@ export interface VerifyPointerOpts {
   maxBytes?: number
 }
 
-/** What 'ok' verification yields — everything ranking needs, nothing more. */
+/** What 'ok' verification yields: everything ranking needs, nothing more. */
 export interface VerifiedPointer {
   ptr: PointerRecord
-  /** nodeIdOf(holder root) — the objective duty/ranking identity. */
+  /** nodeIdOf(holder root). The objective duty/ranking identity. */
   holderNodeId: NodeId
   /** AUTHORITY-BOUNDED proof recency: the newest valid witness-attestation wts,
    * CLAMPED at the proof event's OWNER-signed ts. The wit array is covered by
    * neither the event id nor its signature, so a holder can inject a self-signed
-   * attestation with any wts — the clamp bounds it to a time the subject actually
+   * attestation with any wts: the clamp bounds it to a time the subject actually
    * committed to, so an injected attestation can never lift the ranking ceiling
    * (§0: recency is authority, never a holder claim). */
   proofWts: number
   /** Ranking freshness: min(body.ts, proofWts + tsSkewMs). Never authority. */
   effTs: number
-  /** b64u(canonicalHash(record)) — dedupe identity + final tie-break. */
+  /** b64u(canonicalHash(record)). Dedupe identity + final tie-break. */
   recId: B64u
 }
 
@@ -226,11 +226,11 @@ function keyProven(root: B64u, pub: B64u, certs: readonly SignedEvent[] | undefi
   return certSetFrom(root, certs ?? []).some((c) => c.pub === pub)
 }
 
-/** Capped ranking freshness of a record — min(body.ts, proofWts + skew), the
+/** Capped ranking freshness of a record: min(body.ts, proofWts + skew), the
  * SAME bound checkCore computes (proofWts = attestation wts CLAMPED at the proof
  * event's owner-signed ts). Used to rank/dedup already-stored (prev) rows in the
- * cap fold without re-running the full verifier: a lying ts — or a holder-injected
- * attestation — can never outrank the proof's OWNER-authenticated recency, so the
+ * cap fold without re-running the full verifier: a lying ts, or a holder-injected
+ * attestation, can never outrank the proof's OWNER-authenticated recency, so the
  * retention decision honors the same authority ceiling the viewer uses. Falls
  * back to body.ts only if the proof carries no valid attestation (a stored record
  * always does). */
@@ -256,10 +256,10 @@ function effTsOf(rec: PointerRecord, skew: number): number {
 /**
  * The core verifier. `dutyMode` distinguishes the two callers:
  *  - 'require' (checkPointer / store gate / viewers): a 'shard' pointer needs
- *    a directory snapshot and MUST rank among the duty carriers — else
+ *    a directory snapshot and MUST rank among the duty carriers, else
  *    'holder-mismatch' (fail closed);
  *  - 'skip' (the merge fold, which has no directory): every context-free
- *    check still runs (header, subject, hash, idx, signatures, certs) — only
+ *    check still runs (header, subject, hash, idx, signatures, certs). Only
  *    the duty-membership test is skipped, because the fold's cap ordering
  *    ranks shard entries by the same objective XOR distance a duty check
  *    uses, so an off-duty entry can never displace an on-duty one anyway.
@@ -314,7 +314,7 @@ function checkCore(rec: unknown, opts: VerifyPointerOpts, dutyMode: 'require' | 
     } else if (b.kind === 'chain') {
       // The subject's own countersigned witnessed head/checkpoint event. The
       // blob binding (hash === sha256 of chainToBytes at that head) is checked
-      // at FETCH time — the blob is not present here (same deliberate limit as
+      // at FETCH time: the blob is not present here (same deliberate limit as
       // shards.ts blobHash).
       const ev = b.proof.event as SignedEvent
       if (ev.body.lane !== 'w') return { verdict: 'bad-proof' }
@@ -367,7 +367,7 @@ export function verifyPointer(rec: unknown, opts: VerifyPointerOpts = {}): Point
 }
 
 // ---------------------------------------------------------------------------
-// Builders (holder side) — builders THROW on programmer misuse
+// Builders (holder side): builders THROW on programmer misuse
 // ---------------------------------------------------------------------------
 
 export interface MakePointerBase {
@@ -379,7 +379,7 @@ export interface MakePointerBase {
   key: B64u
   /** Private key matching `key`. */
   priv: Uint8Array
-  /** Holder-claimed freshness, unix ms — the CALLER's clock (ranking only). */
+  /** Holder-claimed freshness, unix ms. The CALLER's clock (ranking only). */
   ts: number
   /** Root-signed certs proving `key` belongs to `holder` (omit if key===holder). */
   holderCerts?: SignedEvent[]
@@ -423,7 +423,7 @@ export function makeSegmentPointer(
 /**
  * Mint a 'chain' pointer: `event` is the subject's countersigned witnessed
  * head/checkpoint event; `blobHash` = sha256(chainToBytes(chain)) at exactly
- * that head (the caller holds the chain — that is the claim).
+ * that head (the caller holds the chain; that is the claim).
  */
 export function makeChainPointer(
   o: MakePointerBase & { event: SignedEvent; certs?: SignedEvent[]; blobHash: B64u },
@@ -446,7 +446,7 @@ export function makeChainPointer(
  * Mint a 'shard' pointer for row `idx` of the job `header`. When a directory
  * snapshot is supplied the builder ALSO asserts the holder is on duty (throws
  * otherwise); without one the duty claim is left to store gates + viewers
- * (the publisher's directory may lag theirs — duty is judged by observers).
+ * (the publisher's directory may lag theirs; duty is judged by observers).
  */
 export function makeShardPointer(
   o: MakePointerBase & {
@@ -483,7 +483,7 @@ export function makeShardPointer(
 }
 
 // ---------------------------------------------------------------------------
-// Deterministic per-key cap (merge fold) — honest pointers survive floods
+// Deterministic per-key cap (merge fold): honest pointers survive floods
 // ---------------------------------------------------------------------------
 //
 // The stored row is bounded at capPerKey. Which entries survive is decided by
@@ -492,25 +492,25 @@ export function makeShardPointer(
 //      (same segment event / same head blobHash) collapse to a single entry
 //      (freshest by capped effTs). Without this a single real entanglement
 //      partner could re-sign its ONE segment pointer with cap-many `ts` values
-//      — each a distinct record — and, since segments outrank shard/chain,
+//      (each a distinct record) and, since segments outrank shard/chain,
 //      evict EVERY shard and chain pointer from the subject's index.
 //   1. kind rank: segment(0) < shard(1) < chain(2). Segment pointers cannot be
 //      minted without the subject's own signed event naming the holder, and
-//      shard entries rank by objective key distance — so the one freely
+//      shard entries rank by objective key distance, so the one freely
 //      sybil-mintable kind ('chain', from the subject's public head) is always
 //      truncated FIRST. An attacker flood can never evict a real partner.
 //   2. fair share: within 'segment'/'chain', each holder's DISTINCT proofs are
 //      indexed 0,1,2… (its own freshest first, by capped effTs) and round r of
-//      every holder outranks round r+1 of any holder — one noisy holder cannot
+//      every holder outranks round r+1 of any holder: one noisy holder cannot
 //      crowd others out. Within 'shard', entries rank per idx by XOR distance
-//      of the holder to that row's shardKey (closest first — the duty metric
+//      of the holder to that row's shardKey (closest first; the duty metric
 //      itself), then round-robin across rows, so each row keeps its closest
 //      carriers before any row keeps extras.
 //   3. final tie-break: record id (total order ⇒ byte-deterministic rows).
 //
 // Ranking uses the AUTHORITY-BOUNDED effTs (min(ts, proofWts + skew)), never the
 // raw holder-claimed ts, so a lying ts cannot win a scarce retention slot over
-// an honest record — the same ceiling the viewer applies at display time.
+// an honest record: the same ceiling the viewer applies at display time.
 
 interface CapEntry {
   rec: PointerRecord
@@ -529,7 +529,7 @@ function orderEntries(subjectNodeId: NodeId, list: { rec: PointerRecord; recId: 
     b.effTs - a.effTs || compareKeys(a.recId, b.recId)
   // seg/chain: collapse each holder's variants of ONE proof to its freshest,
   // then fair-share the holder's DISTINCT proofs by capped effTs. The dedup key
-  // is the OWNER-signed proof event id — NOT body.hash. For 'segment' the two are
+  // is the OWNER-signed proof event id, NOT body.hash. For 'segment' the two are
   // equal (checkCore binds hash === event id), but for 'chain' body.hash is the
   // holder-chosen, unverified-at-this-stage blobHash: keying on it would let ONE
   // holder mint many chain pointers with distinct fake hashes and occupy many
@@ -565,7 +565,7 @@ function orderEntries(subjectNodeId: NodeId, list: { rec: PointerRecord; recId: 
     for (const [idx, arr] of byIdx) {
       arr.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : compareKeys(a.recId, b.recId)))
       // One slot per DISTINCT carrier first (closest-first), duplicates of a
-      // carrier behind every unique — a carrier re-publishing (fresh ts, old
+      // carrier behind every unique: a carrier re-publishing (fresh ts, old
       // header) can never crowd the row's other true carriers out of the cap.
       const perHolder = new Map<B64u, number>()
       let uniq = 0
@@ -588,7 +588,7 @@ const asValue = (v: unknown): CanonicalObject => v as CanonicalObject
 const recIdOf = (rec: PointerRecord): B64u => toB64u(canonicalHash({ body: rec.body, sig: rec.sig } as unknown as CanonicalValue))
 
 /** Shape-parse a stored/offered row into records; [] on anything non-conforming
- * (fail closed) — including a row LARGER than the cap, which no honest holder
+ * (fail closed), including a row LARGER than the cap, which no honest holder
  * can ever produce (stored rows are capped), so it contributes nothing. */
 function rowPtrs(value: unknown, capPerKey: number): PointerRecord[] {
   const p = zPointerRow.safeParse(value)
@@ -614,13 +614,13 @@ export interface PointerMergeOpts {
 /**
  * The pointer-set fold (overlay MergeFn): kind 'pointers' unions prev ∪ next
  * (dedup by record id), re-verifies every NEWLY-ARRIVED record with the
- * context-free core (prev entries passed it when they arrived — the fold is
+ * context-free core (prev entries passed it when they arrived; the fold is
  * inductive, and read-side getMerged folds start from null so EVERY record a
  * reader accumulates has passed it), enforces the per-subject key binding,
  * and caps deterministically per orderEntries. Every other kind delegates to
- * shards.storageMerge — install this ONE merge and the whole storage layer
+ * shards.storageMerge: install this ONE merge and the whole storage layer
  * ('events' union, 'shard' replace, 'pointers' capped union) is composed.
- * On an internal error it returns prev (fail closed — never store junk).
+ * On an internal error it returns prev (fail closed; never store junk).
  */
 export function makePointerMerge(o: PointerMergeOpts = {}): MergeFn {
   const cap = o.capPerKey ?? PARAMS_A3.pointerCapPerKey
@@ -640,7 +640,7 @@ export function makePointerMerge(o: PointerMergeOpts = {}): MergeFn {
         const recId = recIdOf(rec)
         if (seen.has(recId)) continue
         seen.add(recId)
-        // prev already passed the verifier when stored — recompute only its
+        // prev already passed the verifier when stored. Recompute only its
         // capped effTs (cheap) so the cap fold ranks it against next by the same
         // authority ceiling.
         union.push({ rec, recId, effTs: effTsOf(rec, skew) })
@@ -665,14 +665,14 @@ export function makePointerMerge(o: PointerMergeOpts = {}): MergeFn {
 }
 
 // ---------------------------------------------------------------------------
-// Store gate (installed on the overlay node) — the write-time index
+// Store gate (installed on the overlay node), the write-time index
 // ---------------------------------------------------------------------------
 
 export interface PointerStoreOpts {
   /** Directory snapshot provider for shard-duty checks at store time (each
-   * store is judged under the CARRIER's own current view — C-3 local state). */
+   * store is judged under the CARRIER's own current view. C-3 local state). */
   directory: () => NodeDirectory
-  /** Injected clock (ms). REQUIRED — no ambient time. */
+  /** Injected clock (ms). REQUIRED. No ambient time. */
   nowMs: () => number
   dutyK?: number
   /** Verification context for accepted records (default PARAMS_A3). */
@@ -695,8 +695,8 @@ export interface PointerStoreGate {
 /**
  * Build the pointer layer's STORE gate for one node. kind 'pointers' is
  * accepted only when the offered row is a well-formed set row within the cap
- * and EVERY record in it (1) fully verifies — embedded proof, holder certs,
- * shard duty under this node's directory snapshot at its injected clock — and
+ * and EVERY record in it (1) fully verifies. Embedded proof, holder certs,
+ * shard duty under this node's directory snapshot at its injected clock, and
  * (2) is bound to the target key: pointerKey(nodeIdOf(subject)) === target.
  * All-or-nothing per row (an honest publisher's row is entirely its own).
  * Growth is bounded by the merge's deterministic cap, so a flood can neither
@@ -753,7 +753,7 @@ export function publishPointer(node: OverlayNode, rec: PointerRecord): Promise<n
   return node.put(pointerKeyOfRoot(rec.body.subject), 'pointers', asValue({ v: 1, ptrs: [rec] }))
 }
 
-/** Publish a batch, grouped one put per subject key (deterministic order —
+/** Publish a batch, grouped one put per subject key (deterministic order,
  * input order of first appearance). Returns Σ true stores. */
 export async function publishPointers(node: OverlayNode, recs: readonly PointerRecord[]): Promise<number> {
   const bySubject = new Map<B64u, PointerRecord[]>()
@@ -780,7 +780,7 @@ export interface PointerReadNode {
 }
 
 /** Fetch + shape-parse a subject's pointer row. Records returned are
- * UNVERIFIED (shape only) — feed them to buildContactSheet / checkPointer. */
+ * UNVERIFIED (shape only): feed them to buildContactSheet / checkPointer. */
 export async function enumeratePointers(
   node: PointerReadNode,
   subjectRoot: B64u,
@@ -797,7 +797,7 @@ export async function enumeratePointers(
  * "viewers rank by embedded proof and ignore the rest"). Only records whose
  * embedded proof verifies AND names this subject survive; segments/chains
  * sort freshest-first by capped effTs (tie: record id); shard entries rank
- * per idx by objective XOR distance to the row's key — closest first, deduped
+ * per idx by objective XOR distance to the row's key. Closest first, deduped
  * per holder, at most dutyK per idx. Pure + deterministic given (row, opts).
  */
 export function buildContactSheet(subjectRoot: B64u, row: unknown, opts: VerifyPointerOpts = {}): ContactSheet {

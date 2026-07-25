@@ -17,6 +17,6 @@ for (const cmd of candidates) {
 
 console.error(
   `run-python: no Python interpreter found (tried: ${candidates.join(', ')}).\n` +
-    'Install Python 3 — macOS: `brew install python`, Windows: https://python.org, Linux: your package manager.'
+    'Install Python 3, macOS: `brew install python`, Windows: https://python.org, Linux: your package manager.'
 )
 process.exit(1)

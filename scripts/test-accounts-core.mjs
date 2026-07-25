@@ -1,4 +1,4 @@
-// Accounts A1 core-crypto suite — derive.ts / identity.ts / mnemonic.ts, plus
+// Accounts A1 core-crypto suite: derive.ts / identity.ts / mnemonic.ts, plus
 // regression guards over the shared codec/params they depend on.
 //
 //   node scripts/test-accounts-core.mjs
@@ -8,13 +8,13 @@
 // temp dir, then dynamic-import (same pattern as scripts/test-mp-store.mjs).
 //
 // Golden vectors frozen here:
-//  - SLIP-0010 official ed25519 test vectors (spec document, both seeds) —
+//  - SLIP-0010 official ed25519 test vectors (spec document, both seeds),
 //    private keys AND chain codes hex-exact. If the implementation disagrees
 //    with these, THE IMPLEMENTATION is wrong.
 //  - argon2id KAT: ('TestUser', 'correct horse battery staple') → seed hex.
 //    Freezes the whole pipeline: normalization → salt rule → argon2 params.
 //  - tag KAT for rootPub = bytes 00..1f, and the KAT identity's rootPub/tag.
-//  - PARAMS_V1_DIGEST — the FROZEN-AT-GENESIS parameter digest.
+//  - PARAMS_V1_DIGEST: the FROZEN-AT-GENESIS parameter digest.
 //
 // Exit 0 = all green; any failure prints per-line and exits 1.
 
@@ -82,7 +82,7 @@ const KAT_TAG = '7U2MY'
 const TAG_GOLDEN_PUB = Uint8Array.from({ length: 32 }, (_, i) => i)
 const TAG_GOLDEN = 'MMG42'
 // b64u(sha256(canonicalBytes(PARAMS_V1))). Changed ONCE pre-ship when
-// PARAMS_V1 gained the pwNorm ('nfkd-v1') row — nothing had shipped, so v1
+// PARAMS_V1 gained the pwNorm ('nfkd-v1') row: nothing had shipped, so v1
 // grew the row instead of minting v2. The argon2 KAT above did NOT change:
 // NFKD of a pure-ASCII password is the identity.
 const PARAMS_DIGEST_GOLDEN = 'ZDoblqaVf5z1zL8IvmWK2sdZK29JTNWZpY38XuDBZdk'
@@ -188,10 +188,10 @@ async function main() {
   try {
     await run(outdir)
   } finally {
-    // cleanup on failure paths too — a crashed run must not leak temp dirs
+    // cleanup on failure paths too. A crashed run must not leak temp dirs
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `${failures} FAILURES — ` : 'ALL GREEN — '}${passed} assertions`)
+  console.log(`\n${failures ? `${failures} FAILURES: ` : 'ALL GREEN: '}${passed} assertions`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -229,7 +229,7 @@ async function run(outdir) {
   check(typeof A.deriveIdentity === 'function', 'bundle imports (deriveIdentity exported)')
 
   // ==========================================================================
-  // 1. SLIP-0010 official ed25519 test vectors — priv + chain code hex-exact.
+  // 1. SLIP-0010 official ed25519 test vectors, priv + chain code hex-exact.
   // ==========================================================================
   console.log('\n· SLIP-0010 official ed25519 vectors …')
   for (const [seedHex, rows, label] of [
@@ -248,7 +248,7 @@ async function run(outdir) {
   throws(() => A.slip10Child(A.slip10Master(unhex(SLIP10_V1_SEED)), -1), 'slip10Child rejects negative index')
 
   // ==========================================================================
-  // 2. argon2 derivation KAT — freezes normalization → salt rule → argon2.
+  // 2. argon2 derivation KAT, freezes normalization → salt rule → argon2.
   // ==========================================================================
   console.log('\n· argon2id derivation KAT …')
   const KAT_NAME = 'TestUser'
@@ -258,13 +258,13 @@ async function run(outdir) {
   eq(hex(seed), ARGON2_KAT_HEX, 'argon2 KAT seed matches the golden constant')
   // pwNorm 'nfkd-v1' explicitly: NFKD of pure ASCII is the identity, so the
   // seed KAT above survives the params change; ONLY the params digest moved.
-  eq(KAT_PW.normalize('NFKD'), KAT_PW, 'KAT password is NFKD-invariant (pure ASCII — seed KAT unaffected by pwNorm)')
+  eq(KAT_PW.normalize('NFKD'), KAT_PW, 'KAT password is NFKD-invariant (pure ASCII, seed KAT unaffected by pwNorm)')
   const seed2 = await A.deriveSeed('testuser', KAT_PW)
   eq(hex(seed2), ARGON2_KAT_HEX, 'case-variant username derives the identical seed')
   const seedOtherPw = await A.deriveSeed(KAT_NAME, KAT_PW + '!')
   check(hex(seedOtherPw) !== ARGON2_KAT_HEX, 'different password derives a different seed')
   // pwNorm regression: the NFC and NFD spellings of one password must derive
-  // the SAME seed ('caf\u00e9' vs 'cafe\u0301' — café both ways).
+  // the SAME seed ('caf\u00e9' vs 'cafe\u0301': café both ways).
   const seedNfcPw = await A.deriveSeed(KAT_NAME, 'caf\u00e9')
   const seedNfdPw = await A.deriveSeed(KAT_NAME, 'cafe\u0301')
   eq(hex(seedNfdPw), hex(seedNfcPw), "NFC 'caf\u00e9' and NFD 'cafe\u0301' passwords derive the identical seed (pwNorm nfkd-v1)")
@@ -287,7 +287,7 @@ async function run(outdir) {
   check(hex(d0.pub) !== hex(id.rootPub), 'child pub ≠ root pub')
 
   // ==========================================================================
-  // 3. normalization — folding, NFKC, zero-width strip, rejects.
+  // 3. normalization. Folding, NFKC, zero-width strip, rejects.
   // ==========================================================================
   console.log('\n· username normalization …')
   eq(A.normalizeUsername('Isaac').folded, 'isaac', "'Isaac' folds to 'isaac'")
@@ -307,23 +307,23 @@ async function run(outdir) {
   throws(() => A.normalizeUsername('\u200b\u200c\ufeff'), 'rejects empty-after-strip', isNameErr('empty'))
   throws(() => A.normalizeUsername('   '), 'rejects whitespace-only (empty after trim)', isNameErr('empty'))
   throws(() => A.normalizeUsername(''), 'rejects empty string', isNameErr('empty'))
-  // NFKC can INTRODUCE a '#' (U+FF03 fullwidth number sign) — still rejected.
+  // NFKC can INTRODUCE a '#' (U+FF03 fullwidth number sign). Still rejected.
   throws(() => A.normalizeUsername('isaac＃X'), "rejects fullwidth '＃' (NFKC → '#')", isNameErr('hash-char'))
   // Lone surrogates: TextEncoder would silently substitute U+FFFD, letting
-  // distinct names collide onto one salt — rejected as not-printable (\p{Cs}).
+  // distinct names collide onto one salt: rejected as not-printable (\p{Cs}).
   throws(() => A.normalizeUsername('ab\ud800'), 'rejects a lone high surrogate (not-printable)', isNameErr('not-printable'))
   throws(() => A.normalizeUsername('a\udfffbc'), 'rejects a lone low surrogate (not-printable)', isNameErr('not-printable'))
   // Case-folding can CHANGE length: U+0130 ('İ') lowercases to i+U+0307 (2
   // chars). Both display AND folded forms must satisfy the 3-24 bound.
   {
-    const turkish = A.normalizeUsername('\u0130\u0130\u0130') // '\u0130\u0130\u0130' — display 3 chars
+    const turkish = A.normalizeUsername('\u0130\u0130\u0130') // '\u0130\u0130\u0130': display 3 chars
     eq(turkish.display, '\u0130\u0130\u0130', "display '\u0130\u0130\u0130' kept as typed (3 chars)")
     eq(turkish.folded, 'i\u0307i\u0307i\u0307', 'folded form is i+combining-dot ×3')
-    eq(turkish.folded.length, 6, 'folded length 6 — accepted (display 3 and folded 6 both within 3-24)')
+    eq(turkish.folded.length, 6, 'folded length 6: accepted (display 3 and folded 6 both within 3-24)')
   }
   throws(() => A.normalizeUsername('\u0130\u0130'), "rejects '\u0130\u0130' (display 2 < 3, too-short)", isNameErr('too-short'))
   throws(() => A.normalizeUsername('\u0130'.repeat(13)),
-    "rejects 13×'İ' (display 13 ≤ 24 but folded 26 > 24 — folded length also bounded)", isNameErr('too-long'))
+    "rejects 13×'İ' (display 13 ≤ 24 but folded 26 > 24: folded length also bounded)", isNameErr('too-long'))
 
   // ==========================================================================
   // 4. tag + handle parse/format.
@@ -348,7 +348,7 @@ async function run(outdir) {
   eq(A.parseHandle('#K7Q2M'), null, 'parseHandle rejects empty name')
 
   // ==========================================================================
-  // 5. mnemonic — 24 words, bit-exact roundtrip, checksum, keyfile + zod.
+  // 5. mnemonic, 24 words, bit-exact roundtrip, checksum, keyfile + zod.
   // ==========================================================================
   console.log('\n· mnemonic …')
   const words = A.seedToMnemonic(seed)
@@ -393,7 +393,7 @@ async function run(outdir) {
   }
 
   // ==========================================================================
-  // 6. codec regression — guard the shared codec this suite depends on.
+  // 6. codec regression. Guard the shared codec this suite depends on.
   // ==========================================================================
   console.log('\n· codec (cjson-v1) regression …')
   const text = (v) => Buffer.from(A.canonicalBytes(v)).toString('utf8')
@@ -425,11 +425,11 @@ async function run(outdir) {
   eq(A.toB64u(A.canonicalHash(A.PARAMS_V1)), PARAMS_DIGEST_GOLDEN, 'digest recomputes from PARAMS_V1 via canonicalHash')
 
   // ==========================================================================
-  // 7. ed25519 — sign/verify roundtrip + tamper rejection (sync hash wiring).
+  // 7. ed25519: sign/verify roundtrip + tamper rejection (sync hash wiring).
   // ==========================================================================
   console.log('\n· ed25519 sign/verify …')
   const msg = A.canonicalBytes({ hello: 'world', n: 42 })
-  const sig = A.ed25519.sign(msg, id.rootPriv) // sync call — proves sha512 wiring
+  const sig = A.ed25519.sign(msg, id.rootPriv) // sync call. Proves sha512 wiring
   eq(sig.length, 64, 'signature is 64 bytes')
   check(A.ed25519.verify(sig, msg, id.rootPub) === true, 'sign/verify roundtrip (sync API works)')
   {

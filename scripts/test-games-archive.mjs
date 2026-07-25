@@ -20,7 +20,7 @@ const check = (name, ok, detail = '') => {
   if (ok) console.log(`  ok   ${name}`)
   else {
     failures++
-    console.error(`  FAIL ${name}${detail ? ` — ${detail}` : ''}`)
+    console.error(`  FAIL ${name}${detail ? `, ${detail}` : ''}`)
   }
 }
 
@@ -51,9 +51,9 @@ check('ALTER accepted; existing rows backfilled to chess', backfilled.c === 2, `
 console.log('game_kind stamping + list filter')
 const insK = (kind, pgn) =>
   db.prepare('INSERT INTO game(created_at,source,pgn,game_kind) VALUES (?,?,?,?)').run(t++, 'online', pgn, kind)
-insK('chess', '1. c4') // an online chess game — must still appear
-insK('go', 'B[pd];W[dd]') // a go game — must be hidden
-insK('othello', 'f5 d6') // othello — hidden
+insK('chess', '1. c4') // an online chess game must still appear
+insK('go', 'B[pd];W[dd]') // a go game: must be hidden
+insK('othello', 'f5 d6') // othello: hidden
 
 // The exact listGames query.
 const listed = db
@@ -333,4 +333,4 @@ if (failures) {
   console.error(`\n${failures} FAILED`)
   process.exit(1)
 }
-console.log('\nALL GREEN — games-archive migration + filter + envelope')
+console.log('\nALL GREEN: games-archive migration + filter + envelope')

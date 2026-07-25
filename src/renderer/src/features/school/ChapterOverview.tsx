@@ -33,7 +33,7 @@ export interface ChapterOverviewProps {
 }
 
 /**
- * Shared circular progress indicator (also used by the School index hero card —
+ * Shared circular progress indicator (also used by the School index hero card;
  * this file is the import leaf, so SchoolView can pull it without a cycle).
  * Pure SVG on design tokens; label defaults to the rounded percentage.
  */
@@ -85,7 +85,7 @@ export function ProgressRing({
 }
 
 /**
- * Chapter overview — a rich hero (progress ring + concept chips) above the
+ * Chapter overview. A rich hero (progress ring + concept chips) above the
  * lesson TIMELINE: each lesson is a node on a connected vertical path (done →
  * check, next → highlighted, later → locked until the one before is finished),
  * capped by the Chapter Test as a distinct capstone card. The test stays
@@ -223,7 +223,7 @@ export function ChapterOverview({
           )
         })}
 
-        {/* Capstone: the chapter test — always takeable; styled gated until lessons done. */}
+        {/* Capstone: the chapter test. Always takeable; styled gated until lessons done. */}
         {chapter.test && (
           <li className={`lesson-node is-capstone${test.passed ? ' is-passed' : ''}`}>
             <span className="lesson-node-marker" aria-hidden>
@@ -248,12 +248,12 @@ export function ChapterOverview({
                 </span>
                 <span className="capstone-sub">
                   {test.passed
-                    ? 'Passed — Viktor is satisfied. Retake it any time to keep the ideas sharp.'
+                    ? 'Passed. Viktor is satisfied. Retake it any time to keep the ideas sharp.'
                     : test.attempts > 0
-                      ? `${test.attempts} of ${MAX_ATTEMPTS} attempts used — fail both and you retake the whole chapter.`
+                      ? `${test.attempts} of ${MAX_ATTEMPTS} attempts used. Fail both and you retake the whole chapter.`
                       : allDone
                         ? 'Every lesson is done. Prove the chapter to Viktor.'
-                        : 'Takeable at any time — but the lessons are the preparation.'}
+                        : 'Takeable at any time, but the lessons are the preparation.'}
                 </span>
                 <span className="capstone-facts">
                   <span className="capstone-fact">
@@ -280,8 +280,8 @@ export function ChapterOverview({
               </button>
               {!allDone && !test.passed && (
                 <p className="test-hint muted small">
-                  Finish the lessons first for the best shot — but you may sit the test whenever you
-                  like.
+                  Finish the lessons first for the best shot, but you may sit the test whenever
+                  you like.
                 </p>
               )}
             </div>

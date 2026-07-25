@@ -2,7 +2,7 @@ import type { JSX } from 'react'
 
 /**
  * Elegant vector art placeholders for coming-soon library cards. Each game
- * gets a hand-drawn motif in its own hue — never a gray box. Colors are
+ * gets a hand-drawn motif in its own hue, never a gray box. Colors are
  * self-contained (dark-glass cards) with the hue as the only variable, so
  * the art reads well on every app theme.
  */

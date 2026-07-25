@@ -1,18 +1,18 @@
-// Bot-legality sweep — hunts EVERY source of "The bot/engine offered an
+// Bot-legality sweep: hunts EVERY source of "The bot/engine offered an
 // illegal move" toasts (KernelBot.tsx applyMove / VariantBot.tsx applyMove:
 // a bot/engine move that spec.play rejects).
 //
 //   node scripts/test-bot-legality.mjs [inprocess|engine]
 //
-// Part A (in-process providers — exactly the KernelBot flow):
+// Part A (in-process providers; exactly the KernelBot flow):
 //   for every kind with an in-process provider (checkers, checkers-intl,
 //   othello, connect4, hex, morris, tictactoe, gomoku) play 6 full bot-vs-bot
 //   games (L1vL5, L5vL1, L3vL3 x2, L2vL4, L4vL2; capped plies), asking the
-//   games/bots.ts provider for each move and applying it through spec.play —
-//   assert spec.play NEVER returns null on a bot offer, and that a live
+//   games/bots.ts provider for each move and applying it through spec.play.
+//   Assert spec.play NEVER returns null on a bot offer, and that a live
 //   position never has zero legal moves (which would hang KernelBot).
 //
-// Part B (engine-backed kinds — the engine:playVariant boundary):
+// Part B (engine-backed kinds; the engine:playVariant boundary):
 //   spawn the LOCAL fairy-stockfish (resources/engine/mac/fairy-stockfish),
 //   mirror src/main/ipc/engine.ipc.ts option mapping (UCI_Variant per kind,
 //   UCI_Chess960 for chess960, UCI_LimitStrength + UCI_Elo per level,
@@ -23,7 +23,7 @@
 //   e1h1/e1g1, promotion suffixes ('m', '+'), janggi pass, crazyhouse drops.
 //
 // ENDURANCE mode (BOT_ENDURANCE=1 node scripts/test-bot-legality.mjs):
-//   the deep, slow sweep — NOT run in CI (the default sweep above is
+//   the deep, slow sweep: NOT run in CI (the default sweep above is
 //   unchanged). Adds on top of the default Part A/B:
 //   - In-process kinds: 10 games each (the 6 CI pairings + L1vL1, L5vL5,
 //     L2vL5, L5vL2), same legality asserts; checkers capture-chain depths are
@@ -32,7 +32,7 @@
 //     chess through the engine:play Stockfish path, including the sub-1320
 //     weak-model pick mirrored from scripts/lib/weak-model.mjs). 6 games per
 //     kind, ply cap 120, mixed levels incl. L5, ALTERNATING which color the
-//     engine plays (engine as BLACK in games 1/3/5 — rank-10-heavy replies in
+//     engine plays (engine as BLACK in games 1/3/5: rank-10-heavy replies in
 //     xiangqi/janggi); the other color is a seeded random-legal mover standing
 //     in for the human. Every engine offer goes through the EXACT ipc option
 //     sequence and is applied via spec.play, VariantBot-style; movetime is
@@ -47,7 +47,7 @@
 //     white and black promotion and engine offers around them).
 //
 // Failures are COLLECTED (not fail-fast) and printed with full repro (kind,
-// game, ply, fen/state, move, history). Final line: 'ALL GREEN — <counts>'.
+// game, ply, fen/state, move, history). Final line: 'ALL GREEN: <counts>'.
 // Exit 0 = green.
 
 import { build } from 'esbuild'
@@ -105,7 +105,7 @@ await build({
   jsx: 'automatic',
   external: ['*?url'],
   loader: { '.css': 'empty' },
-  nodePaths: [resolve(ROOT, 'node_modules')], // entry sits in tmpdir — resolve bare imports from the repo
+  nodePaths: [resolve(ROOT, 'node_modules')], // entry sits in tmpdir. Resolve bare imports from the repo
   alias: { '@shared': resolve(ROOT, 'src/shared'), '@': resolve(ROOT, 'src/renderer/src') },
   logLevel: 'silent'
 })
@@ -124,7 +124,7 @@ function describeState(kind, state) {
 }
 
 // =================================================================================
-// Part A — in-process providers (KernelBot flow: provider.move -> spec.play)
+// Part A, in-process providers (KernelBot flow: provider.move -> spec.play)
 // =================================================================================
 
 const PAIRINGS = [
@@ -135,7 +135,7 @@ const PAIRINGS = [
   [2, 4],
   [4, 2]
 ]
-// Endurance: 4 extra pairings per kind (10 games) — mirrored extremes stress
+// Endurance: 4 extra pairings per kind (10 games). Mirrored extremes stress
 // deep checkers-intl captures and morris mill storms at max search level.
 const PAIRINGS_ENDURANCE = [...PAIRINGS, [1, 1], [5, 5], [2, 5], [5, 2]]
 
@@ -166,7 +166,7 @@ async function playInProcessGame(kind, pairing, seed) {
       if (spec.result(state) !== null) break
       const legal = spec.legalMoves(state)
       if (legal.length === 0) {
-        // KernelBot's bot effect never fires on legal.length === 0 — a live
+        // KernelBot's bot effect never fires on legal.length === 0. A live
         // position with no moves is a hang, so it must be terminal.
         fail(`${kind} [${pairing.join('v')} seed ${seed}] ply ${ply}: live position has ZERO legal moves (KernelBot hang) at ${describeState(kind, state)}`)
         break
@@ -201,7 +201,7 @@ async function playInProcessGame(kind, pairing, seed) {
 
 if (MODE !== 'engine') {
   const pairingsA = ENDURANCE ? PAIRINGS_ENDURANCE : PAIRINGS
-  console.log(`Part A — in-process bot-vs-bot sweep (KernelBot flow${ENDURANCE ? ', ENDURANCE' : ''})`)
+  console.log(`Part A: in-process bot-vs-bot sweep (KernelBot flow${ENDURANCE ? ', ENDURANCE' : ''})`)
   for (const kind of Object.keys(IN_PROCESS)) {
     process.stdout.write(`  ${kind}: `)
     const t0 = Date.now()
@@ -217,7 +217,7 @@ if (MODE !== 'engine') {
 }
 
 // =================================================================================
-// Part B — engine boundary (mirrors src/main/ipc/engine.ipc.ts playVariant)
+// Part B: engine boundary (mirrors src/main/ipc/engine.ipc.ts playVariant)
 // =================================================================================
 
 // engine.ipc.ts FAIRY_UCI_VARIANT (kind -> UCI_Variant; chess960 = chess + 960)
@@ -238,7 +238,7 @@ const FAIRY_UCI_VARIANT = {
 }
 // engine.ipc.ts FAIRY_LEVELS elo column
 const FAIRY_ELO = [600, 1000, 1400, 1850, 2300]
-// engine.ipc.ts playVariantSchema fen guard — a kernel FEN failing this is the
+// engine.ipc.ts playVariantSchema fen guard. A kernel FEN failing this is the
 // "engine failed to move" toast (ipc reject), so assert it per position.
 const VARIANT_FEN_RE = /^[A-Za-z0-9/\[\]+~.\- ]{1,160}$/
 
@@ -335,7 +335,7 @@ if (MODE !== 'inprocess') {
     console.error(`fairy-stockfish binary not found: ${BIN}`)
     process.exit(1)
   }
-  console.log(`Part B — engine boundary sweep (fairy-stockfish, ${ENDURANCE ? 'ENDURANCE' : 'movetime 100'})`)
+  console.log(`Part B: engine boundary sweep (fairy-stockfish, ${ENDURANCE ? 'ENDURANCE' : 'movetime 100'})`)
 
   // ffish kinds need the WASM rules loaded (spec.preload path in VariantBot).
   await preloadFfish({ wasmBinary: readFileSync(resolve(ROOT, 'node_modules/ffish-es6/ffish.wasm')) })
@@ -355,7 +355,7 @@ if (MODE !== 'inprocess') {
   }
 
   // engine.ipc playVariant: strength options, position by bare fen, movetime.
-  // (UciEngine.search also pins MultiPV 1 for bestMove — mirrored here.)
+  // (UciEngine.search also pins MultiPV 1 for bestMove: mirrored here.)
   function fairyOffer(kind, fen, level, movetime) {
     fairy.send('setoption name MultiPV value 1')
     fairy.send('setoption name UCI_LimitStrength value true')
@@ -421,7 +421,7 @@ if (MODE !== 'inprocess') {
     }
   } else {
     // ===========================================================================
-    // ENDURANCE engine sweep — all 14 chess-family kinds, 6 games each, mixed
+    // ENDURANCE engine sweep: all 14 chess-family kinds, 6 games each, mixed
     // levels incl. L5, alternating engine color vs a seeded random-legal mover.
     // ===========================================================================
     const SF_BIN = resolve(ROOT, 'resources/engine/mac/stockfish')
@@ -439,7 +439,7 @@ if (MODE !== 'inprocess') {
     const CHESS_LEVEL_ELO = [600, 1000, 1400, 1850, 2300]
     const CHESS_LEVEL_MOVETIME = [150, 250, 350, 500, 700]
     const ENGINE_ELO_FLOOR = 1320 // shared/types.ts
-    // Engine level per game g (L5 twice — once each color) + engine color:
+    // Engine level per game g (L5 twice; once each color) + engine color:
     // engine plays WHITE in even games, BLACK in odd games.
     const END_LEVELS = [5, 5, 3, 1, 2, 4]
     const END_MOVETIME = 60 // reduced from FAIRY_LEVELS movetimes: 84 games must stay snappy
@@ -507,7 +507,7 @@ if (MODE !== 'inprocess') {
         const whiteToMove = state.fen.split(' ')[1] !== 'b'
         if (whiteToMove !== engineWhite) {
           // The "human": a seeded random pick from the spec's OWN legal list.
-          // A reject here is a spec self-consistency bug — fail loudly too.
+          // A reject here is a spec self-consistency bug. Fail loudly too.
           const mv = legal[Math.floor(rng() * legal.length)]
           const next = spec.play(state, mv)
           if (!next) {
@@ -517,7 +517,7 @@ if (MODE !== 'inprocess') {
           state = next
           continue
         }
-        // ENGINE OFFER — exact ipc request path per kind.
+        // ENGINE OFFER: exact ipc request path per kind.
         let mv
         try {
           if (kind === 'chess') {
@@ -585,16 +585,16 @@ if (MODE !== 'inprocess') {
     for (const kind of ['xiangqi', 'janggi']) {
       const s = statOf(kind)
       if (s.rank10Black === 0) {
-        fail(`${kind}: engine played BLACK in ${s.blackGames} games but offered ZERO rank-10 moves — rank-10 replies not exercised`)
+        fail(`${kind}: engine played BLACK in ${s.blackGames} games but offered ZERO rank-10 moves, rank-10 replies not exercised`)
       }
     }
     if (statOf('crazyhouse').drops === 0) {
-      fail(`crazyhouse: zero engine drop offers across 6 games — drop codec not exercised`)
+      fail(`crazyhouse: zero engine drop offers across 6 games. Drop codec not exercised`)
     }
 
     // ---- targeted probe: chess960 castling BOTH wings ---------------------------
     // Kernel canonical castling is king-takes-rook UCI; a non-960 engine (the
-    // chess kind's Stockfish) emits standard e1g1 — BOTH must apply. After the
+    // chess kind's Stockfish) emits standard e1g1: BOTH must apply. After the
     // kernel applies a castle, the post-castle FEN goes to Fairy-SF (960 mode)
     // and its reply must apply.
     console.log('  probe: chess960 castling (both wings, KxR + standard forms)')
@@ -725,5 +725,5 @@ if (failures.length > 0) {
   console.log(`\ngames: ${counts}`)
   process.exit(1)
 }
-console.log(`\nALL GREEN — games: ${counts}`)
+console.log(`\nALL GREEN, games: ${counts}`)
 process.exit(0)

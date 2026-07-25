@@ -1,6 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 
-// Minimal GTP (Go Text Protocol v2) client — the KataGo seam for the games
+// Minimal GTP (Go Text Protocol v2) client. The KataGo seam for the games
 // platform's Go bots (docs/GAMES-PLATFORM-SPEC.md §Bots: go → KataGo GTP ipc).
 //
 // Protocol shape: commands are single lines, optionally prefixed with a
@@ -9,7 +9,7 @@ import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process'
 // multiple lines (e.g. `showboard`). This client always sends ids so responses
 // pair with requests even if the engine emits diagnostics on stdout.
 //
-// Pure Node (no Electron import) and engine-agnostic — GNU Go / Leela Zero /
+// Pure Node (no Electron import) and engine-agnostic: GNU Go / Leela Zero /
 // KataGo all speak the same core verbs. The KataGo binary + nets arrive with
 // their own dataset group (separate quest); this class is the ready seam:
 //
@@ -43,7 +43,7 @@ export class GtpClient {
   constructor(
     private readonly exePath: string,
     private readonly args: readonly string[] = [],
-    /** Working directory for the engine process — KataGo resolves its config's
+    /** Working directory for the engine process: KataGo resolves its config's
      *  relative logDir against it, so callers pass the dataset dir. */
     private readonly cwd?: string
   ) {}
@@ -92,7 +92,7 @@ export class GtpClient {
     this.current = []
     const head = lines[0]
     const m = /^([=?])(\d*)\s?(.*)$/.exec(head)
-    if (!m) return // stray diagnostics between responses — ignore
+    if (!m) return // stray diagnostics between responses: ignore
     const [, status, idStr, first] = m
     const id = idStr === '' ? null : Number(idStr)
     // Pair with the oldest in-flight command (ids are monotonic; an id-less
@@ -185,7 +185,7 @@ export class GtpClient {
     try {
       await this.send('quit', 2000)
     } catch {
-      /* engine gone or wedged — the kill below settles it */
+      /* engine gone or wedged: the kill below settles it */
     }
     this.kill()
   }

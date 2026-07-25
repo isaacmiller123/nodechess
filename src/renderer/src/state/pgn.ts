@@ -3,7 +3,7 @@ import type { TreeNode } from './gameTree'
 
 // Mainline PGN export (variations omitted for v0). Walks children[0] from root.
 // Move numbering is derived from the ROOT position (so positions loaded from a
-// custom FEN — including black-to-move — number correctly), and a [FEN]/[SetUp]
+// custom FEN (including black-to-move) number correctly), and a [FEN]/[SetUp]
 // tag pair is emitted for non-standard starts so a reader replays from the right
 // position.
 export function treeToPgn(root: TreeNode, headers: Record<string, string> = {}): string {

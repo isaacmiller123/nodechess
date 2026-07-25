@@ -10,7 +10,7 @@ import { getAppDb } from '../db/database'
 // mirroring the resource-load pattern in curriculum.repo.ts: in dev __dirname is
 // <root>/out/main and ../../resources resolves to the repo's resources dir; in a
 // packaged build the JSON ships under process.resourcesPath/curriculum/chapters.
-// A missing/corrupt dir must never crash the UI — it degrades to an empty index.
+// A missing/corrupt dir must never crash the UI. It degrades to an empty index.
 
 let chapters: Map<string, SchoolChapter> | null = null
 
@@ -38,7 +38,7 @@ function load(): Map<string, SchoolChapter> {
       }
     }
   } catch {
-    // Missing dir (lean install) — treat as an empty curriculum.
+    // Missing dir (lean install): treat as an empty curriculum.
   }
   chapters = map
   return chapters
@@ -49,7 +49,7 @@ function load(): Map<string, SchoolChapter> {
  *
  * A chapter is UNLOCKED when the learner is placed AND either (a) its internal
  * eloFloor is within the placement estimate (the placement prefix), OR (b) the
- * PREVIOUS chapter is WITHIN the estimate AND cleared — so completing your
+ * PREVIOUS chapter is WITHIN the estimate AND cleared, so completing your
  * current (top-of-estimate) chapter unlocks the next one, one step above your
  * placement level. "Cleared" = the chapter is completed (boss won / placement
  * pre-completed) OR its test passed OR all its lessons are done.
@@ -61,10 +61,10 @@ function load(): Map<string, SchoolChapter> {
  * spec §4 mis-placement correction) and thereby extends the chain. Without the
  * within-estimate condition, a RE-PLACEMENT that lands LOWER would still walk the
  * chain up through the previous epoch's surviving EARNED completions (earned rows
- * intentionally survive resetPlacement — see placement.repo.resetPlacement) and
+ * intentionally survive resetPlacement. See placement.repo.resetPlacement) and
  * leave chapters far above the fresh estimate unlocked.
  *
- * The Elo numbers are NEVER put on the meta — only the boolean + a name-based
+ * The Elo numbers are NEVER put on the meta. Only the boolean + a name-based
  * reason (spec §2.2a: the band is an internal grouping).
  */
 export function chapterMetas(): SchoolChapterMeta[] {
@@ -72,7 +72,7 @@ export function chapterMetas(): SchoolChapterMeta[] {
   const estElo = placement.estimatedElo ?? 0
   const chapters = allChapters()
 
-  // Completion signals for progression unlock — read directly (a mastery.repo
+  // Completion signals for progression unlock: read directly (a mastery.repo
   // import would be circular, since mastery.repo imports getChapter from here).
   const db = getAppDb()
   const completedSet = new Set(
@@ -124,7 +124,7 @@ export function chapterMetas(): SchoolChapterMeta[] {
   })
 }
 
-/** The internal eloFloor for a chapter (0 if unknown) — used by the test-pass
+/** The internal eloFloor for a chapter (0 if unknown): used by the test-pass
  *  mis-placement correction to know which band to unlock. NEVER sent to the UI. */
 export function chapterEloFloor(id: string): number {
   return load().get(id)?.eloFloor ?? 0
@@ -135,7 +135,7 @@ export function getChapter(id: string): SchoolChapter | null {
   return load().get(id) ?? null
 }
 
-/** Every chapter, ordered by band then order — the canonical curriculum sequence
+/** Every chapter, ordered by band then order: the canonical curriculum sequence
  *  (used by the recommender to walk to the "next" chapter). */
 export function allChapters(): SchoolChapter[] {
   return [...load().values()].sort((a, b) =>
@@ -146,7 +146,7 @@ export function allChapters(): SchoolChapter[] {
 /**
  * After placement, the chapters to auto-complete: every UNLOCKED chapter EXCEPT
  * the single highest one (the learner's current starting chapter). I.e. "every
- * lesson up to the 2nd-highest unlocked chapter is fully complete" — the learner
+ * lesson up to the 2nd-highest unlocked chapter is fully complete". The learner
  * has tested out of that material. Each entry carries its lesson ids so both
  * lesson_progress and chapter_progress can be marked. Returns [] when only one
  * (or zero) chapter is unlocked (nothing below the current one).

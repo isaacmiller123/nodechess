@@ -1,7 +1,7 @@
-// A7 social transport — the §10 EDGE-STRENGTH FOLD. One deterministic integer
+// A7 social transport: the §10 EDGE-STRENGTH FOLD. One deterministic integer
 // in [0, 1_000_000] (micro-units) expressing how established a SENDER is
 // toward a RECIPIENT, derived exclusively from PUBLIC SIGNED DATA (the two
-// parties' verified chains — §0: never asserted, always re-derivable, bit-
+// parties' verified chains, §0: never asserted, always re-derivable, bit-
 // identically). This is the mailbox relay's `meta.edgeMicro` input (spec §10:
 // "prioritizing senders with an existing entanglement/trust/reputation edge,
 // so a sybil flood can't evict requests from established roots before the
@@ -12,14 +12,14 @@
 //   edge = min(1e6,  friend + entangle + trustEarned·120000/1e6
 //                                      + repEarned·80000/100)
 //   friend    = 600_000 iff the §3 MUTUAL READ holds (social/friends.ts
-//               areFriends over BOTH verified chains — each side's latest edge
+//               areFriends over BOTH verified chains. Each side's latest edge
 //               state for the other is a verified countersigned add). One-sided
 //               or unverifiable material contributes 0: a stale replayed
 //               countersignature or a missing counterparty chain must never
 //               mint priority (§0, fail toward no-forgery).
 //   entangle  = 50_000 · min(4, distinct witnessed games vs THIS recipient)
 //               counted from the sender's own VERIFIED chain ('segment' events
-//               naming the recipient as opp — verifyChain already enforced
+//               naming the recipient as opp: verifyChain already enforced
 //               verifySegmentEvent + dup-game, so each counted game is a real
 //               §3 countersigned entanglement).
 //   trustEarned = max(0, T_sender − T_baseline): the §7 trust score
@@ -29,17 +29,17 @@
 //   repEarned = max(0, rep_sender − rep_baseline): §6b conduct score
 //               (ratings/reputation.ts repScore) minus the empty-chain score.
 //
-// WHY THE BASELINE SUBTRACTION (the load-bearing A7 decision — spec-silent on
+// WHY THE BASELINE SUBTRACTION (the load-bearing A7 decision, spec-silent on
 // the exact fold, decided fail-closed per the owner directives): trustT and
-// repScore are presumed-innocent — an EMPTY chain scores well above zero
+// repScore are presumed-innocent. An EMPTY chain scores well above zero
 // (completion/cleanliness neutrals, conduct subscores start at 100). Feeding
 // the raw scores in would hand every fresh sybil a free nonzero edge, and a
 // flood of them could then outrank an established-but-poorly-conducted real
-// account — breaking the §10 invariant the mailbox eviction rule anchors on
+// account: breaking the §10 invariant the mailbox eviction rule anchors on
 // (strictly-greater edge evicts). Subtracting the deterministic empty-chain
 // baseline makes the presumed-innocent portion contribute EXACTLY ZERO, so:
 //   · a fresh root (verified genesis-only chain, no witnessed evidence, no
-//     edge with the recipient) derives edge = 0 exactly — structurally, not
+//     edge with the recipient) derives edge = 0 exactly: structurally, not
 //     empirically;
 //   · every term above 0 is EARNED through witnessed, signed, third-party-
 //     verifiable material (a friend countersignature, countersigned game
@@ -47,11 +47,11 @@
 //   · the mailbox invariant holds by construction: 0 is never strictly
 //     greater than an established sender's ≥ 50_000.
 // Honest boundary, stated plainly: an account whose conduct fell BELOW the
-// fresh baseline clamps to 0 earned — worse-than-fresh history earns no
+// fresh baseline clamps to 0 earned: worse-than-fresh history earns no
 // priority, it is never punished below a sybil (no negative edges).
 //
 // Determinism rules (suite-load-bearing): platform-neutral (no `node:`
-// imports, no DOM globals), no Date.now / Math.random / timers — `atWts` is
+// imports, no DOM globals), no Date.now / Math.random / timers, `atWts` is
 // the caller's witnessed-time input (§4). Integer math only; every product
 // stays far inside 2^53. Fail-closed and total: bad shapes, unverifiable
 // chains, wrong roots, and internal throws all yield 0 (no priority), never
@@ -68,7 +68,7 @@ import type { B64u, Chain, SignedEvent, WitnessEligibility } from '../types'
 // Weights (micro-units; the four caps sum to exactly 1_000_000)
 // ---------------------------------------------------------------------------
 
-/** The §3 mutual witnessed friend edge — the strongest possible standing. */
+/** The §3 mutual witnessed friend edge: the strongest possible standing. */
 export const EDGE_FRIEND_MICRO = 600_000
 /** Per distinct witnessed game vs the recipient (sender's verified chain). */
 export const EDGE_ENTANGLE_PER_GAME_MICRO = 50_000
@@ -104,7 +104,7 @@ export interface EdgeParts {
 }
 
 /**
- * Combine verified parts into the edge integer — pure, total, deterministic.
+ * Combine verified parts into the edge integer. Pure, total, deterministic.
  * Any non-safe-integer / out-of-range part fails CLOSED to that term = 0
  * (never a throw, never a negative, never > 1e6).
  */
@@ -151,21 +151,21 @@ export interface EdgeFromChainsOpts {
   senderChain: Chain | null
   /** The recipient's chain as reconstructed by the RELAY (null = unknown). */
   recipientChain: Chain | null
-  /** Witnessed time (§4) the trust age term is evaluated at — the caller's
+  /** Witnessed time (§4) the trust age term is evaluated at. The caller's
    * clock discipline (the relay passes the same nowWts it stamps admission
    * with, so the frozen edge and arrival time share one instant). */
   atWts: number
   /** The RELAY's own witness-eligibility predicate (A4-03/05): trust age /
    * diversity and the reputation est-tier are EARNED through witnesses this
-   * verifier can vouch for. Absent ⇒ those evidence terms are 0 — strictly
+   * verifier can vouch for. Absent ⇒ those evidence terms are 0. Strictly
    * less priority, never more (fail closed). */
   eligible?: WitnessEligibility
 }
 
 /**
- * Derive the sender→recipient edge from verified chains — the §10 fold the
+ * Derive the sender→recipient edge from verified chains. The §10 fold the
  * relay wires into mailboxAdmit's meta.edgeMicro. Total and fail-closed:
- * returns 0 (no priority) on any of — bad atWts, sender === recipient, a
+ * returns 0 (no priority) on any of. Bad atWts, sender === recipient, a
  * missing/mismatched/unverifiable SENDER chain (every term needs it), or an
  * internal throw. A missing or unverifiable RECIPIENT chain zeroes only the
  * mutual-friend term (the sender's own chain still proves entanglement,
@@ -179,7 +179,7 @@ export function edgeMicroOfChains(o: EdgeFromChainsOpts): number {
     const sc = o.senderChain
     if (sc === null || sc.root !== o.sender || !verifyChain(sc).ok) return 0
 
-    // Witnessed lane, height order — the same walk every A4 fold uses.
+    // Witnessed lane, height order: the same walk every A4 fold uses.
     const w = sc.events
       .filter((e) => e.body.lane === 'w')
       .sort((a, b) => a.body.height - b.body.height)
@@ -202,7 +202,7 @@ export function edgeMicroOfChains(o: EdgeFromChainsOpts): number {
     }
 
     // Trust + reputation folds over the verified chain, plus this verifier's
-    // OWN evidence (never anything self-asserted by the sender — §0).
+    // OWN evidence (never anything self-asserted by the sender: §0).
     let inputs = trustInputsInit()
     let rep = repInit()
     for (const ev of w) {

@@ -31,7 +31,7 @@ function load(): Record<string, OpeningInfo> {
       const raw = fs.readFileSync(openingsPath(), 'utf-8')
       table = JSON.parse(raw) as Record<string, OpeningInfo>
     } catch {
-      // Missing/corrupt data must not crash lookups — treat as "no openings".
+      // Missing/corrupt data must not crash lookups: treat as "no openings".
       table = {}
     }
   }

@@ -1,11 +1,11 @@
 // Renderer half of the --smoke-wasm packaged-app self-test (main/smokeWasm.ts).
 //
 // Runs ALONGSIDE the normal app mount (so the whole renderer boots under the
-// strict PROD_CSP — any module-level eval/WASM violation anywhere surfaces as
+// strict PROD_CSP: any module-level eval/WASM violation anywhere surfaces as
 // a console CSP error, which the main process treats as failure). The probe
 // itself exercises exactly what broke in v1.1.0: compiling the ffish-es6 WASM
 // (needs script-src 'wasm-unsafe-eval') and its embind bindings (need the
-// eval-free glue from scripts/patch-ffish-csp.mjs) — a Board round-trip plus
+// eval-free glue from scripts/patch-ffish-csp.mjs): a Board round-trip plus
 // the Variant Lab's loadVariantConfig path.
 //
 // Protocol (watched by main via console-message): print exactly one of
@@ -35,7 +35,7 @@ export async function runSmokeWasm(): Promise<void> {
     console.log('SMOKE-WASM-OK xiangqi 44 moves, push/fen round-trip, loadVariantConfig')
   } catch (err) {
     const detail = err instanceof Error ? (err.stack ?? err.message) : String(err)
-    // Single line — main matches on the prefix; newlines would split the message.
+    // Single line: main matches on the prefix; newlines would split the message.
     console.log('SMOKE-WASM-FAIL ' + detail.replace(/\s+/g, ' '))
   }
 }

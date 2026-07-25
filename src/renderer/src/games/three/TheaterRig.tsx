@@ -1,4 +1,4 @@
-// Replay Theater rig — cinematic camera + scaled scene clock.
+// Replay Theater rig: cinematic camera + scaled scene clock.
 //
 // Mounted by Tabletop3D INSTEAD of CameraRig when a `theater` directive is
 // supplied: no OrbitControls, the camera belongs to the choreography

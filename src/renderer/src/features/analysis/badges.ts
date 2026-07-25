@@ -24,7 +24,7 @@ export interface BadgeMeta {
    Excellent/Good, beige Book, yellow ?!, orange ?, red ✗ Miss, red ??. The tone
    suffixes map onto tokens in analysis.css (tone-great -> --accent blue,
    tone-excellent -> --success green, tone-miss -> --danger red, the rest ->
-   --class-* tokens). Glyphs stay ASCII/Unicode text — never emoji. */
+   --class-* tokens). Glyphs stay ASCII/Unicode text. Never emoji. */
 const META: Record<ReviewBadge, BadgeMeta> = {
   Brilliant: { glyph: '!!', label: 'Brilliant', tone: 'brilliant' },
   Great: { glyph: '!', label: 'Great', tone: 'great' },

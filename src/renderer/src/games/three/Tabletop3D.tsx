@@ -1,10 +1,10 @@
-// <Tabletop3D> — the ONE shared R3F tabletop renderer (spec §3D).
+// <Tabletop3D>: the ONE shared R3F tabletop renderer (spec §3D).
 //
 // Declarative contract: `pieces` is the source of truth; prop diffs drive the
 // animations (position change → ease-out slide, removal → capture lift-fade,
 // two-tone color change → flip). The imperative handle (animateMove/Capture/
 // Flip) pre-echoes the same motions for owners that want them before state
-// lands. Interaction only PROPOSES (onSquareClick/onPieceDrag) — rules stay
+// lands. Interaction only PROPOSES (onSquareClick/onPieceDrag): rules stay
 // with the owner; an unanswered drop glides back home.
 //
 // No network: environment lighting is three's procedural RoomEnvironment, all
@@ -62,7 +62,7 @@ function flipAngleFor(provider: TabletopProvider, color: 'white' | 'black'): num
   return 0
 }
 
-/** Procedural room reflections — PBR speculars without any HDR download. */
+/** Procedural room reflections, PBR speculars without any HDR download. */
 function SceneEnv(): null {
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
@@ -105,7 +105,7 @@ function Table({ span, artBase }: { span: number; artBase: string | null | undef
     return canvasTexture(canvas)
   }, [])
   const side = span * 7
-  // Fresh material whenever the felt maps land — late map/normalMap adds on a
+  // Fresh material whenever the felt maps land. Late map/normalMap adds on a
   // live material would silently skip the shader recompile (see FrameMaterial).
   const feltMaterial = useMemo(
     () =>
@@ -268,7 +268,7 @@ function TabletopScene({
 
   const prevPieces = useRef<Map<string, { type: string; color: 'white' | 'black' }>>(new Map())
   const firstSync = useRef(true)
-  // Layout identity — when it changes (OTB orientation flip mirrors the world)
+  // Layout identity: when it changes (OTB orientation flip mirrors the world)
   // existing pieces TELEPORT to their re-homed spots instead of sliding.
   const prevLayout = useRef(layout)
 
@@ -418,7 +418,7 @@ function TabletopScene({
         const oldHome = controller.homeOf(info.id)
         onPieceDrag(info.id, info.from, dropped)
         // Owner answers via the pieces prop; if home is unchanged shortly
-        // after, the drop was rejected — glide back.
+        // after, the drop was rejected, glide back.
         window.setTimeout(() => {
           const h = controller.homeOf(info.id)
           if (h && oldHome && h.equals(oldHome)) controller.snapHome(info.id)
@@ -538,9 +538,9 @@ function TabletopScene({
       {/* The camera stays at the user's seat (theta 0): orientation is done by
           the LAYOUT mirroring the world (and seatYaw turning the pieces).
           Feeding seatYaw to the camera too walked it to the far side and
-          cancelled the mirror — the OTB auto-flip became a visual no-op.
+          cancelled the mirror: the OTB auto-flip became a visual no-op.
           Replay Theater hands the camera (and the scene clock) to the
-          cinematic rig instead — no OrbitControls, choreography drives. */}
+          cinematic rig instead: no OrbitControls, choreography drives. */}
       {theater ? (
         <TheaterRig directive={theater} layout={layout} span={span} upright={upright} />
       ) : (

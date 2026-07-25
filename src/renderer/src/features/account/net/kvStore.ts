@@ -1,4 +1,4 @@
-// A6 M1 (ext. M3) — persistent CanonicalObject key/value store for the account
+// A6 M1 (ext. M3): persistent CanonicalObject key/value store for the account
 // net layer (spec §5 overlay & publish-on-write, §11 platform storage budgets).
 //
 // This is PLATFORM-SPECIFIC renderer hosting (the shared tree stays pure): the
@@ -10,7 +10,7 @@
 // ships the durable KV primitive itself.
 //
 // Wire discipline: values cross the persistence boundary as CANONICAL BYTES
-// (canonicalBytes / parseCanonical) — exactly as the fabric frames them — so a
+// (canonicalBytes / parseCanonical): exactly as the fabric frames them, so a
 // non-canonical or unsafe value fails LOUDLY at write (CodecError), reads are
 // byte-faithful, and byte accounting for the §11 budget is exact.
 
@@ -31,7 +31,7 @@ const MB = 1024 * 1024
 /**
  * The §11 persistence budget in BYTES for a platform: desktop 200 MB /
  * desktop-browser 50 MB (paired with `navigator.storage.persist()`) / mobile
- * 15 MB — the PARAMS_A3 advertised envelope, the SAME number the presence caps
+ * 15 MB: the PARAMS_A3 advertised envelope, the SAME number the presence caps
  * announce and the overlay shard gate budgets against. Eviction over this floor
  * is tolerated churn that repair heals (§11).
  */
@@ -46,19 +46,19 @@ export function budgetBytesForPlatform(platform: KvPlatform): number {
 }
 
 // ---------------------------------------------------------------------------
-// LRU byte budget (§11) — the eviction bookkeeping, shared by both backends
+// LRU byte budget (§11): the eviction bookkeeping, shared by both backends
 // ---------------------------------------------------------------------------
 
 /**
  * A least-recently-used byte budget over opaque keys. Maintains the exact live
  * byte total and an LRU order (a Map: first entry = least-recently-used); a
  * write that would breach `budgetBytes` evicts LRU keys until it fits. Backend-
- * agnostic pure bookkeeping — the caller applies the returned evictions to its
+ * agnostic pure bookkeeping: the caller applies the returned evictions to its
  * store. `budgetBytes` undefined ⇒ unbounded (tracks totals, never evicts), so
  * the no-budget store is byte-for-byte the previous behavior.
  *
  * §11 rationale: over-budget is EVICTION (churn = repaired), never a write
- * refusal — refusing a legitimate write loses data the network could keep, so a
+ * refusal: refusing a legitimate write loses data the network could keep, so a
  * lone value larger than the whole budget still stores (it simply evicts the
  * rest); the shard layer re-replicates whatever was dropped.
  */
@@ -146,11 +146,11 @@ export interface KvStore {
   readonly backend: KvBackendKind
   /** Whether `navigator.storage.persist()` granted durable (non-evictable)
    * storage. Always false for the memory backend / when the request was denied
-   * or unavailable. Informational — eviction is tolerated (§11: churn = repair). */
+   * or unavailable. Informational. Eviction is tolerated (§11: churn = repair). */
   readonly persisted: boolean
   get(key: string): Promise<CanonicalObject | null>
   /** Store `value` under `key`, overwriting. Rejects (CodecError) on a
-   * non-canonical / unsafe-integer value — the boundary never persists junk. */
+   * non-canonical / unsafe-integer value. The boundary never persists junk. */
   put(key: string, value: CanonicalObject): Promise<void>
   delete(key: string): Promise<void>
   has(key: string): Promise<boolean>
@@ -173,7 +173,7 @@ export interface KvStore {
 const DB_NAME = 'chess-accounts-kv'
 const STORE_NAME = 'kv'
 
-/** Canonical encode — throws CodecError on any non-canonical / unsafe value. */
+/** Canonical encode. Throws CodecError on any non-canonical / unsafe value. */
 function encode(value: CanonicalObject): Uint8Array {
   return canonicalBytes(value)
 }
@@ -199,7 +199,7 @@ export interface KvBudgetOpts {
   onEvict?: (key: string) => void
 }
 
-/** A non-persistent KvStore over a Map. Pure — no DOM, no node built-ins — so
+/** A non-persistent KvStore over a Map. Pure (no DOM, no node built-ins) so
  * it runs headless under the account net suites exactly as it does in a browser
  * that can't reach IndexedDB. With `budgetBytes` it enforces the §11 budget via
  * LRU eviction (get counts as a use); unbounded by default. */
@@ -331,16 +331,16 @@ async function requestPersist(storage?: StorageLikePersist): Promise<boolean> {
     if (typeof s.persisted === 'function' && (await s.persisted())) return true
     if (typeof s.persist === 'function') return await s.persist()
   } catch {
-    /* denied / unavailable — non-fatal, we simply run non-durable */
+    /* denied / unavailable: non-fatal, we simply run non-durable */
   }
   return false
 }
 
 /**
- * Open the IndexedDB-backed store. Throws when no IndexedDB is reachable — use
+ * Open the IndexedDB-backed store. Throws when no IndexedDB is reachable: use
  * `openKvStore` for the fall-back-to-memory factory. Each operation runs in its
  * own short transaction (no cross-await transaction lifetimes, the classic IDB
- * footgun), so concurrent callers never share — and prematurely commit — a txn.
+ * footgun), so concurrent callers never share (and prematurely commit) a txn.
  */
 export async function openIndexedDbKvStore(opts: OpenKvStoreOpts = {}): Promise<KvStore> {
   const idb = opts.indexedDB ?? (globalThis as GlobalWithIdb).indexedDB
@@ -381,7 +381,7 @@ export async function openIndexedDbKvStore(opts: OpenKvStoreOpts = {}): Promise<
   // §11 LRU byte budget. When set, seed the exact live total + LRU order from
   // disk once at open, then maintain it on every mutation; over-budget writes
   // evict the least-recently-used rows (eviction = churn = repaired). When
-  // unset the store is unbounded — every path below stays byte-identical to the
+  // unset the store is unbounded. Every path below stays byte-identical to the
   // pre-budget behavior (no seed scan, no eviction, bytes() cursor-sums).
   const lru = makeLruBudget(opts.budgetBytes)
   const budgeted = opts.budgetBytes !== undefined
@@ -449,18 +449,18 @@ export async function openIndexedDbKvStore(opts: OpenKvStoreOpts = {}): Promise<
 }
 
 // ---------------------------------------------------------------------------
-// Factory — IndexedDB where available, memory everywhere else
+// Factory: IndexedDB where available, memory everywhere else
 // ---------------------------------------------------------------------------
 
 /**
  * Open the best available KvStore: IndexedDB when reachable (durable storage
  * requested), otherwise an in-memory store. IndexedDB open failures (private
- * mode, quota, blocked) degrade HONESTLY to memory rather than throwing — data
+ * mode, quota, blocked) degrade HONESTLY to memory rather than throwing. Data
  * won't survive a reload, but nothing bricks (§11 tolerates eviction/churn; the
  * shard layer re-replicates). Inspect `.backend` to know which you got.
  */
 export async function openKvStore(opts: OpenKvStoreOpts = {}): Promise<KvStore> {
-  // The §11 budget is honored on WHICHEVER backend we land on — a private-tab /
+  // The §11 budget is honored on WHICHEVER backend we land on. A private-tab /
   // no-IDB user still evicts over the platform floor (churn = repaired).
   const memOpts: KvBudgetOpts = {
     ...(opts.budgetBytes !== undefined ? { budgetBytes: opts.budgetBytes } : {}),

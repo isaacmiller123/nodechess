@@ -1,11 +1,11 @@
-// Game replay viewer — open ANY saved non-chess game (variants, ffish kinds,
+// Game replay viewer: open ANY saved non-chess game (variants, ffish kinds,
 // go, checkers, small games, Variant Lab customs) and step through it on the
 // kind's real 2D board: two-column notation list, click-to-jump, keyboard
 // arrows, autoplay with speed control, sounds, and a local eval bar where an
 // engine exists (Fairy-Stockfish for the chess family, KataGo raw-net for go).
 // From any position exploratory moves fork an in-memory VARIATION (indented
 // under the mainline, chess-Analysis-lite); "Back to game" snaps to the
-// mainline. Chess rows never route here — the Library sends those to the full
+// mainline. Chess rows never route here: the Library sends those to the full
 // Analysis/review view.
 
 import {
@@ -173,7 +173,7 @@ export function GameReplayView({
     evalOn && ready !== null
   )
 
-  // Territory shading overlay (go only, KataGo-gated — the toggle renders only
+  // Territory shading overlay (go only, KataGo-gated; the toggle renders only
   // when the engine is installed; the eval strip above carries the score).
   const [territoryOn, setTerritoryOn] = useState(false)
   const territory = useTerritoryEstimate(
@@ -355,7 +355,7 @@ export function GameReplayView({
 
   // The branch renders indented under the row holding the move it replaces
   // (fork from the final position anchors to the last row; −1 = no rows at
-  // all, rendered standalone after the — empty — list).
+  // all, rendered standalone after the empty list).
   const branchRowIdx =
     branch === null || moveRows.length === 0
       ? -1
@@ -542,8 +542,8 @@ export function GameReplayView({
             </div>
             {replay.truncated && (
               <p className="replay-truncated" role="alert">
-                <AlertTriangle size={13} aria-hidden /> This archive could not be fully replayed —
-                showing the legal prefix.
+                <AlertTriangle size={13} aria-hidden /> This archive could not be fully replayed. Showing the legal
+                prefix.
               </p>
             )}
           </div>
@@ -551,7 +551,7 @@ export function GameReplayView({
           <div className="votb-turn replay-turn">
             <span className={`votb-turn-dot is-${turn}`} aria-hidden />
             {branch
-              ? 'Exploring — your line'
+              ? 'Exploring your line'
               : atEnd && result !== '*'
                 ? 'Final position'
                 : `${sideLabel(turn)} to move`}
@@ -589,8 +589,8 @@ export function GameReplayView({
           </div>
 
           <p className="votb-note replay-hint">
-            Step with ←/→, space autoplays. Play a move on the board to explore a variation —
-            it never touches the saved game.
+            Step with ←/→, space autoplays. Play a move on the board to explore a variation. It never
+            touches the saved game.
           </p>
         </aside>
       </div>

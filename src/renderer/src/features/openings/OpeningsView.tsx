@@ -188,7 +188,7 @@ export default function OpeningsView() {
   // Precompute a lowercased haystack per opening once (the full book is ~3.7k
   // entries, so we avoid rebuilding search strings on every keystroke). Each
   // haystack carries the FULL book name, so a family-level query ("sicilian")
-  // matches every line of that family — search spans both levels for free.
+  // matches every line of that family: search spans both levels for free.
   const haystacks = useMemo(() => {
     const m = new Map<string, string>()
     for (const o of OPENINGS) {
@@ -477,8 +477,8 @@ export default function OpeningsView() {
                       ))}
                       {hiddenCount > 0 && (
                         <li className="explorer-more-inline">
-                          +{hiddenCount} more line{hiddenCount === 1 ? '' : 's'} — refine your
-                          search
+                          +{hiddenCount} more line{hiddenCount === 1 ? '' : 's'}. Refine your
+                          search.
                         </li>
                       )}
                     </ul>
@@ -488,7 +488,7 @@ export default function OpeningsView() {
             })}
             {searching && totalLines > SEARCH_LINE_CAP && (
               <li className="explorer-more">
-                {totalLines} lines match — top families expanded; refine to narrow it down.
+                {totalLines} lines match. Top families are expanded, so refine to narrow it down.
               </li>
             )}
           </ul>

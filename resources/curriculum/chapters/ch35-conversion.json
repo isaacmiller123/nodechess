@@ -2,19 +2,19 @@
  "id": "ch35-conversion",
  "band": "35",
  "order": 35,
- "title": "Conversion — Winning Won Positions",
+ "title": "Conversion: Winning Won Positions",
  "subtitle": "The hardest point to win is the one you have already earned. Technique is how you keep it.",
  "estMinutes": 52,
  "concepts": [
   {
    "id": "trade-into-won",
    "name": "Trade into a won endgame",
-   "short": "When you are ahead in material, swap pieces — not pawns. Fewer pieces means fewer chances for the loser, and an extra pawn decides an endgame."
+   "short": "When you are ahead in material, swap pieces, not pawns. Fewer pieces means fewer chances for the loser, and an extra pawn decides an endgame."
   },
   {
    "id": "two-weaknesses",
    "name": "The principle of two weaknesses",
-   "short": "One weakness is often defensible. Create or attack a SECOND weakness on the other wing — the defender cannot guard both, and his position collapses."
+   "short": "One weakness is often defensible. Create or attack a SECOND weakness on the other wing. The defender cannot guard both, and his position collapses."
   },
   {
    "id": "do-not-hurry",
@@ -24,7 +24,7 @@
   {
    "id": "avoid-swindle",
    "name": "Avoid the swindle",
-   "short": "A won game is only won if the loser has no trick. Before each move, ask what counterplay it allows — kill the counterplay first, then convert."
+   "short": "A won game is only won if the loser has no trick. Before each move, ask what counterplay it allows. Kill the counterplay first, then convert."
   },
   {
    "id": "zugzwang-finish",
@@ -34,7 +34,7 @@
   {
    "id": "safe-win",
    "name": "The safe win",
-   "short": "Given two winning paths, choose the one with no risk — even if it is slower. A clean queen beats a flashy mate that needs precision."
+   "short": "Given two winning paths, choose the one with no risk. Even if it is slower. A clean queen beats a flashy mate that needs precision."
   }
  ],
  "lessons": [
@@ -54,7 +54,7 @@
       {
        "fen": "6k1/5ppp/2p5/3n4/5N2/8/PP3PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "Count the pawns: you have five, Black has four — and look at the wings. On the queenside you own a2 and b2 against nothing; that majority will manufacture a passed pawn. You are a clean pawn up, and a knight apiece is the last barrier to a won king-and-pawn ending. Offer the trade: Nxd5. Black's c6-pawn recaptures, the knights leave the board, and your queenside majority is laid bare.",
+        "text": "Count the pawns: you have five, Black has four, and look at the wings. On the queenside you own a2 and b2 against nothing; that majority will manufacture a passed pawn. You are a clean pawn up, and a knight apiece is the last barrier to a won king-and-pawn ending. Offer the trade: Nxd5. Black's c6-pawn recaptures, the knights leave the board, and your queenside majority is laid bare.",
         "annotations": [
          {
           "kind": "arrow",
@@ -75,7 +75,7 @@
       {
        "fen": "6k1/5ppp/8/3p4/8/8/PP3PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "After Nxd5 cxd5 the knights are gone and only pawns remain — you five, Black four, with a free 2-vs-0 majority on the queenside. No piece is left for Black to make trouble with: your king walks the a- and b-pawns up the empty wing, makes a passed pawn, and queens it. Trading the last pieces turned a 'won on paper' position into a 'won by counting' one. That is the whole idea: reduce until the win is mechanical.",
+        "text": "After Nxd5 cxd5 the knights are gone and only pawns remain. You five, Black four, with a free 2-vs-0 majority on the queenside. No piece is left for Black to make trouble with: your king walks the a- and b-pawns up the empty wing, makes a passed pawn, and queens it. Trading the last pieces turned a 'won on paper' position into a 'won by counting' one. That is the whole idea: reduce until the win is mechanical.",
         "annotations": [
          {
           "kind": "highlight",
@@ -119,7 +119,7 @@
         "f4d5"
        ],
        "successLine": {
-        "text": "Nxd5! Black recaptures with cxd5 and only pawns are left — you five against four, with a 2-vs-0 majority on the queenside that makes a passed pawn by force. When ahead, you WANT the pieces gone. Trade pieces, keep pawns.",
+        "text": "Nxd5! Black recaptures with cxd5 and only pawns are left. You five against four, with a 2-vs-0 majority on the queenside that makes a passed pawn by force. When ahead, you WANT the pieces gone. Trade pieces, keep pawns.",
         "conceptId": "trade-into-won"
        },
        "retryLine": {
@@ -133,7 +133,7 @@
      "kind": "puzzle",
      "title": "Warm-up: simplify into a won ending",
      "intro": {
-      "text": "Each of these is decided by the right exchange or the cleanest endgame technique. Don't look for fireworks — look for the move that reduces the position to a count."
+      "text": "Each of these is decided by the right exchange or the cleanest endgame technique. Don't look for fireworks. Look for the move that reduces the position to a count."
      },
      "puzzle": {
       "themes": [
@@ -157,13 +157,13 @@
      "kind": "teach",
      "title": "Kill the active piece",
      "intro": {
-      "text": "You are two pieces ahead — but Black has a queen and you do not. A lone queen against an exposed king can give perpetual check or snatch a stray pawn. The cure is not to dodge it forever; it is to TRADE it. Offer the queen swap and the game is simply over."
+      "text": "You are two pieces ahead, but Black has a queen and you do not. A lone queen against an exposed king can give perpetual check or snatch a stray pawn. The cure is not to dodge it forever; it is to TRADE it. Offer the queen swap and the game is simply over."
      },
      "steps": [
       {
        "fen": "6k1/5pp1/7p/2p5/3q4/8/1Q3PPP/2N2BK1 w - - 0 1",
        "coach": {
-        "text": "You are a knight and a bishop up, but Black's queen is the one piece that could still cause chaos around your king. Both queens stand on the same diagonal: play Qxd4. You are not greedy here — you are SIMPLIFYING. Take the queen and force the trade.",
+        "text": "You are a knight and a bishop up, but Black's queen is the one piece that could still cause chaos around your king. Both queens stand on the same diagonal: play Qxd4. You are not greedy here. You are SIMPLIFYING. Take the queen and force the trade.",
         "annotations": [
          {
           "kind": "arrow",
@@ -184,7 +184,7 @@
       {
        "fen": "6k1/5pp1/7p/8/3p4/8/5PPP/2N2BK1 w - - 0 1",
        "coach": {
-        "text": "After Qxd4 cxd4, the queens are gone and so is every shred of Black's counterplay. You are two clean pieces up with no enemy heavy piece to fear. There is no perpetual, no trick, no swindle — only the slow march of converting two extra pieces. The moment the queen left the board, the game was decided.",
+        "text": "After Qxd4 cxd4, the queens are gone and so is every shred of Black's counterplay. You are two clean pieces up with no enemy heavy piece to fear. There is no perpetual, no trick, no swindle. Only the slow march of converting two extra pieces. The moment the queen left the board, the game was decided.",
         "annotations": [
          {
           "kind": "highlight",
@@ -214,7 +214,7 @@
       {
        "fen": "6k1/5pp1/7p/2p5/3q4/8/1Q3PPP/2N2BK1 w - - 0 1",
        "coach": {
-        "text": "You are two pieces ahead. Trade off Black's queen — it is the only piece that can still trouble you.",
+        "text": "You are two pieces ahead. Trade off Black's queen. It is the only piece that can still trouble you.",
         "annotations": [
          {
           "kind": "arrow",
@@ -229,7 +229,7 @@
         "b2d4"
        ],
        "successLine": {
-        "text": "Qxd4! Black recaptures and the queens vanish. Two pieces up with no enemy queen is not 'better' — it is finished. The trade is the technique we are drilling: kill the active piece, then convert in your sleep.",
+        "text": "Qxd4! Black recaptures and the queens vanish. Two pieces up with no enemy queen is not 'better': it is finished. The trade is the technique we are drilling: kill the active piece, then convert in your sleep.",
         "conceptId": "trade-into-won"
        },
        "retryLine": {
@@ -245,19 +245,19 @@
    "id": "l3-two-weaknesses",
    "title": "The Principle of Two Weaknesses",
    "kind": "endgame",
-   "summary": "A single weakness can be defended forever. Open a second front on the far wing — the defender cannot stretch across both, and one of them falls.",
+   "summary": "A single weakness can be defended forever. Open a second front on the far wing. The defender cannot stretch across both, and one of them falls.",
    "segments": [
     {
      "kind": "teach",
      "title": "One weakness is not enough",
      "intro": {
-      "text": "Sometimes you are clearly better but cannot break through: the defender plants a piece on his one weak point and holds. The answer is the principle of two weaknesses. You do not win by hammering the same target — you create a SECOND target far away. The defender has one king and one rook; he cannot guard both wings at once."
+      "text": "Sometimes you are clearly better but cannot break through: the defender plants a piece on his one weak point and holds. The answer is the principle of two weaknesses. You do not win by hammering the same target. You create a SECOND target far away. The defender has one king and one rook; he cannot guard both wings at once."
      },
      "steps": [
       {
        "fen": "8/5pkr/pp5p/7R/1PP5/2K5/P4PP1/8 w - - 0 1",
        "coach": {
-        "text": "You are a clean pawn up. Weakness number one is the cramped kingside: Black's pawns on f7 and h6 are fixed targets and his king and rook are tied to passive defence of them — the h6-pawn is held by the king on g7 (so Rxh6 just loses your rook to ...Kxh6), and the rook can only shuffle behind it. One weakness, but Black holds it. You cannot crack the kingside alone. So look to the OTHER wing, where you have a queenside pawn majority and the enemy pieces can never arrive in time.",
+        "text": "You are a clean pawn up. Weakness number one is the cramped kingside: Black's pawns on f7 and h6 are fixed targets and his king and rook are tied to passive defence of them. The h6-pawn is held by the king on g7 (so Rxh6 just loses your rook to ...Kxh6), and the rook can only shuffle behind it. One weakness, but Black holds it. You cannot crack the kingside alone. So look to the OTHER wing, where you have a queenside pawn majority and the enemy pieces can never arrive in time.",
         "annotations": [
          {
           "kind": "highlight",
@@ -278,7 +278,7 @@
       {
        "fen": "8/5pkr/pp5p/7R/1PP5/2K5/P4PP1/8 w - - 0 1",
        "coach": {
-        "text": "Roll the queenside majority: a4 first, then b5, prising open a passed pawn far from Black's cramped pieces. That passer is weakness number two — and to stop it Black must abandon the kingside defence; his king and rook cannot guard h6/f7 AND chase a runner three files away. Now he must defend both wings with one king and one rook, and he cannot. Two weaknesses, one defender — the position cracks and the extra pawn promotes.",
+        "text": "Roll the queenside majority: a4 first, then b5, prising open a passed pawn far from Black's cramped pieces. That passer is weakness number two, and to stop it Black must abandon the kingside defence; his king and rook cannot guard h6/f7 AND chase a runner three files away. Now he must defend both wings with one king and one rook, and he cannot. Two weaknesses, one defender: the position cracks and the extra pawn promotes.",
         "annotations": [
          {
           "kind": "arrow",
@@ -302,13 +302,13 @@
      "kind": "guided",
      "title": "Open the second front",
      "intro": {
-      "text": "Black's pieces are tied to defending the cramped kingside (h6 is held by his king, the rook just shuffles behind it). Don't keep grinding that side — grab maximum space and open a second front: push the a-pawn two squares."
+      "text": "Black's pieces are tied to defending the cramped kingside (h6 is held by his king, the rook just shuffles behind it). Don't keep grinding that side. Grab maximum space and open a second front: push the a-pawn two squares."
      },
      "steps": [
       {
        "fen": "8/5pkr/pp5p/7R/1PP5/2K5/P4PP1/8 w - - 0 1",
        "coach": {
-        "text": "You cannot win by hammering h6 alone — the rook just guards it. Make a SECOND weakness on the queenside: grab maximum space by advancing the a-pawn two squares.",
+        "text": "You cannot win by hammering h6 alone. The rook just guards it. Make a SECOND weakness on the queenside: grab maximum space by advancing the a-pawn two squares.",
         "annotations": [
          {
           "kind": "arrow",
@@ -323,7 +323,7 @@
         "a2a4"
        ],
        "successLine": {
-        "text": "a4! and next b5 cracks open a passed pawn on the queenside. Black's pieces are tied to the cramped kingside and cannot defend both wings at once — the passer runs while his king and rook are stuck on the wrong side. That is the principle of two weaknesses: stretch the defender until he tears.",
+        "text": "a4! and next b5 cracks open a passed pawn on the queenside. Black's pieces are tied to the cramped kingside and cannot defend both wings at once. The passer runs while his king and rook are stuck on the wrong side. That is the principle of two weaknesses: stretch the defender until he tears.",
         "conceptId": "two-weaknesses"
        },
        "retryLine": {
@@ -355,19 +355,19 @@
    "id": "l4-do-not-hurry",
    "title": "Do Not Hurry",
    "kind": "endgame",
-   "summary": "Tartakower's rule: when you are winning, do not hurry. Improve your position and take the opposition before you commit the pawn — the king leads, the pawn follows.",
+   "summary": "Tartakower's rule: when you are winning, do not hurry. Improve your position and take the opposition before you commit the pawn. The king leads, the pawn follows.",
    "segments": [
     {
      "kind": "teach",
      "title": "The king leads, the pawn follows",
      "intro": {
-      "text": "A won position rarely runs away. The classic blunder of conversion is HURRYING — pushing the pawn the instant you can, instead of first improving your king. In king-and-pawn endings the rule is iron: the king goes first, the pawn follows. Push too soon and you hand the defender the opposition, and the full point with it."
+      "text": "A won position rarely runs away. The classic blunder of conversion is HURRYING. Pushing the pawn the instant you can, instead of first improving your king. In king-and-pawn endings the rule is iron: the king goes first, the pawn follows. Push too soon and you hand the defender the opposition, and the full point with it."
      },
      "steps": [
       {
        "fen": "3k4/8/2K5/3P4/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "You are winning — a pawn from promoting, with your king in front of it. The hand itches to play d6. DON'T. After d6 Black answers ...Kc8! — note NOT ...Ke8, which loses to Kc7! and the pawn queens — stepping back in front of the pawn, and the win evaporates into a draw. The pawn pushed too early surrenders the opposition.",
+        "text": "You are winning. A pawn from promoting, with your king in front of it. The hand itches to play d6. DON'T. After d6 Black answers ...Kc8!. Note NOT ...Ke8, which loses to Kc7! and the pawn queens: stepping back in front of the pawn, and the win evaporates into a draw. The pawn pushed too early surrenders the opposition.",
         "annotations": [
          {
           "kind": "arrow",
@@ -383,7 +383,7 @@
       {
        "fen": "3k4/8/2K5/3P4/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Instead, do not hurry: play Kd6, seizing the opposition. Black must give way — ...Ke8 or ...Kc8 — and only THEN does the pawn advance with the king escorting it home. Improve the king first; let the pawn come last. That single habit converts countless 'winning' endings into wins.",
+        "text": "Instead, do not hurry: play Kd6, seizing the opposition. Black must give way (...Ke8 or ...Kc8) and only THEN does the pawn advance with the king escorting it home. Improve the king first; let the pawn come last. That single habit converts countless 'winning' endings into wins.",
         "annotations": [
          {
           "kind": "arrow",
@@ -428,11 +428,11 @@
         "c6d6"
        ],
        "successLine": {
-        "text": "Kd6! The opposition is yours. Black steps aside and the pawn promotes with the king holding its hand. Had you played d6 first, ...Kc8 holds the draw. The king leads, the pawn follows — do not hurry.",
+        "text": "Kd6! The opposition is yours. Black steps aside and the pawn promotes with the king holding its hand. Had you played d6 first, ...Kc8 holds the draw. The king leads, the pawn follows. Do not hurry.",
         "conceptId": "do-not-hurry"
        },
        "retryLine": {
-        "text": "If you pushed d6, Black plays ...Kc8! (the one drawing square — ...Ke8 actually loses to Kc7), stepping back in front of the pawn, and you can never make progress — a draw thrown from a win. Don't hurry the pawn. Move the KING to take the opposition first.",
+        "text": "If you pushed d6, Black plays ...Kc8! (the one drawing square: ...Ke8 actually loses to Kc7), stepping back in front of the pawn, and you can never make progress. A draw thrown from a win. Don't hurry the pawn. Move the KING to take the opposition first.",
         "conceptId": "do-not-hurry"
        }
       }
@@ -444,19 +444,19 @@
    "id": "l5-avoid-swindle",
    "title": "Avoid the Swindle",
    "kind": "endgame",
-   "summary": "A won game is only won if the loser has no trick left. Before every move, ask what the opponent gets — and refuse the stalemate, the perpetual, the cheap counterplay.",
+   "summary": "A won game is only won if the loser has no trick left. Before every move, ask what the opponent gets, and refuse the stalemate, the perpetual, the cheap counterplay.",
    "segments": [
     {
      "kind": "teach",
      "title": "The stalemate trap",
      "intro": {
-      "text": "The defender of a lost position has one job: set a trap and hope you walk in. The most common is stalemate — when the enemy king has no legal move and is not in check, the game is DRAWN. With a queen against a bare king this trap is everywhere. Before you move, always check: does this leave him with a legal move?"
+      "text": "The defender of a lost position has one job: set a trap and hope you walk in. The most common is stalemate. When the enemy king has no legal move and is not in check, the game is DRAWN. With a queen against a bare king this trap is everywhere. Before you move, always check: does this leave him with a legal move?"
      },
      "steps": [
       {
        "fen": "7k/4Q3/5K2/8/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Queen versus lone king — utterly won. But watch the swindle: the natural-looking Qf7 walks straight into STALEMATE. Black's king on h8 would have no move and no check — an instant draw from a position where you are a whole queen ahead. The win can be thrown in one careless move.",
+        "text": "Queen versus lone king: utterly won. But watch the swindle: the natural-looking Qf7 walks straight into STALEMATE. Black's king on h8 would have no move and no check. An instant draw from a position where you are a whole queen ahead. The win can be thrown in one careless move.",
         "annotations": [
          {
           "kind": "arrow",
@@ -477,7 +477,7 @@
       {
        "fen": "7k/4Q3/5K2/8/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Do the safety check, then play Qg7 — checkmate. Your king on f6 guards g7, the queen covers the escape squares, and Black is mated, not stalemated. One square apart from the swindle; a world apart in result. The discipline that separates winning from won is asking, every move, 'what does he get?'",
+        "text": "Do the safety check, then play Qg7, checkmate. Your king on f6 guards g7, the queen covers the escape squares, and Black is mated, not stalemated. One square apart from the swindle; a world apart in result. The discipline that separates winning from won is asking, every move, 'what does he get?'",
         "annotations": [
          {
           "kind": "arrow",
@@ -517,11 +517,11 @@
         "e7g7"
        ],
        "successLine": {
-        "text": "Qg7#. Mate, supported by the f6-king. Qf7 would have been stalemate — a drawn game handed back from a winning one. Always ask whether your move leaves the enemy a move; if not, make sure it is check.",
+        "text": "Qg7#. Mate, supported by the f6-king. Qf7 would have been stalemate. A drawn game handed back from a winning one. Always ask whether your move leaves the enemy a move; if not, make sure it is check.",
         "conceptId": "avoid-swindle"
        },
        "retryLine": {
-        "text": "Careful — several queen moves here STALEMATE the king and throw the win. You want a move that gives check and leaves no escape. The king on f6 guards g7.",
+        "text": "Careful: several queen moves here STALEMATE the king and throw the win. You want a move that gives check and leaves no escape. The king on f6 guards g7.",
         "conceptId": "avoid-swindle"
        }
       }
@@ -531,7 +531,7 @@
      "kind": "puzzle",
      "title": "Cool-down: convert without the trick",
      "intro": {
-      "text": "Win cleanly. In each, the careless move hands the opponent counterplay or a draw — find the safe, accurate finish."
+      "text": "Win cleanly. In each, the careless move hands the opponent counterplay or a draw. Find the safe, accurate finish."
      },
      "puzzle": {
       "themes": [
@@ -549,19 +549,19 @@
    "id": "l6-zugzwang",
    "title": "Zugzwang to Finish",
    "kind": "endgame",
-   "summary": "Sometimes the defender holds — as long as he can sit still. Hand him the move. When every legal reply worsens his position, the obligation to move becomes your winning weapon.",
+   "summary": "Sometimes the defender holds. As long as he can sit still. Hand him the move. When every legal reply worsens his position, the obligation to move becomes your winning weapon.",
    "segments": [
     {
      "kind": "teach",
      "title": "The obligation to move",
      "intro": {
-      "text": "Zugzwang is German for 'compulsion to move' — the situation where a player would love to pass, but the rules force him to move and every move makes his position worse. In the endgame this is the tool that breaks the last fortress. You do not batter the door down; you wait, hand back the move, and let the defender wreck himself."
+      "text": "Zugzwang is German for 'compulsion to move': the situation where a player would love to pass, but the rules force him to move and every move makes his position worse. In the endgame this is the tool that breaks the last fortress. You do not batter the door down; you wait, hand back the move, and let the defender wreck himself."
      },
      "steps": [
       {
        "fen": "8/3k4/3p4/3PK3/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Your d5-pawn jams head-to-head against Black's d6-pawn. That d6-pawn is FROZEN — it can never move, and your king on e5 cannot snatch it either (Kxd6 would stand next to Black's king, which is illegal). So Black has no pawn to shuffle: when it is his turn, ONLY his king can move. He cannot pass, he cannot triangulate, he cannot waste a tempo. That missing waiting move is the crack you will pry open. Your job is to make HIM move at the wrong moment.",
+        "text": "Your d5-pawn jams head-to-head against Black's d6-pawn. That d6-pawn is FROZEN. It can never move, and your king on e5 cannot snatch it either (Kxd6 would stand next to Black's king, which is illegal). So Black has no pawn to shuffle: when it is his turn, ONLY his king can move. He cannot pass, he cannot triangulate, he cannot waste a tempo. That missing waiting move is the crack you will pry open. Your job is to make HIM move at the wrong moment.",
         "annotations": [
          {
           "kind": "circle",
@@ -581,7 +581,7 @@
       {
        "fen": "8/3k4/3p4/3PK3/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Outflank with Kf6! In a normal pawn ending Black would answer by triangulating — wasting a tempo to hand YOU the obligation to move. But his pawn is frozen, so he has no tempo to waste: after Kf6 he must step aside, and then Ke6 squeezes him and he must give way, and your king escorts d5-d6-d7-d8. Beware the lazy Kd4 or Ke4 (stepping toward the pawn or straight back): they release the squeeze and let Black's king reach the pawn's path with the opposition — a draw thrown away. The frozen pawn is Black's prison; outflank past it and force HIM to move.",
+        "text": "Outflank with Kf6! In a normal pawn ending Black would answer by triangulating. Wasting a tempo to hand YOU the obligation to move. But his pawn is frozen, so he has no tempo to waste: after Kf6 he must step aside, and then Ke6 squeezes him and he must give way, and your king escorts d5-d6-d7-d8. Beware the lazy Kd4 or Ke4 (stepping toward the pawn or straight back): they release the squeeze and let Black's king reach the pawn's path with the opposition. A draw thrown away. The frozen pawn is Black's prison; outflank past it and force HIM to move.",
         "annotations": [
          {
           "kind": "arrow",
@@ -600,7 +600,7 @@
      "kind": "guided",
      "title": "Hand back the move",
      "intro": {
-      "text": "Black's d6-pawn is frozen, so he has no waiting move — only his king can budge. Outflank with your king to force him to give way; one careless step backward lets him reach the pawn's path and draw."
+      "text": "Black's d6-pawn is frozen, so he has no waiting move. Only his king can budge. Outflank with your king to force him to give way; one careless step backward lets him reach the pawn's path and draw."
      },
      "steps": [
       {
@@ -621,11 +621,11 @@
         "e5f6"
        ],
        "successLine": {
-        "text": "Kf6! The cleanest, most direct winning move. Normally Black would triangulate to dodge the squeeze, but his frozen d6-pawn leaves him no spare tempo: after he steps aside, Ke6 forces him to give way and you march d5-d6-d7-d8. Beware Kd4 or Ke4 (stepping toward the pawn or straight back): they release the squeeze and let his king reach the pawn's road with the opposition — a draw. The pawn that cannot move is the loser's prison.",
+        "text": "Kf6! The cleanest, most direct winning move. Normally Black would triangulate to dodge the squeeze, but his frozen d6-pawn leaves him no spare tempo: after he steps aside, Ke6 forces him to give way and you march d5-d6-d7-d8. Beware Kd4 or Ke4 (stepping toward the pawn or straight back): they release the squeeze and let his king reach the pawn's road with the opposition. A draw. The pawn that cannot move is the loser's prison.",
         "conceptId": "zugzwang-finish"
        },
        "retryLine": {
-        "text": "Stepping toward the pawn or straight back (Kd4, Ke4) releases the squeeze — Black's king reaches the d-file with the opposition and holds the draw. Remember WHY he is lost: his d6-pawn is frozen, so he cannot triangulate. Outflank FORWARD past the pawn with Kf6 and force him to move.",
+        "text": "Stepping toward the pawn or straight back (Kd4, Ke4) releases the squeeze. Black's king reaches the d-file with the opposition and holds the draw. Remember WHY he is lost: his d6-pawn is frozen, so he cannot triangulate. Outflank FORWARD past the pawn with Kf6 and force him to move.",
         "conceptId": "zugzwang-finish"
        }
       }
@@ -635,7 +635,7 @@
      "kind": "puzzle",
      "title": "Cool-down: let them move",
      "intro": {
-      "text": "Each of these is won by zugzwang — a quiet or waiting move that leaves the opponent no good reply. Don't force; let the obligation to move do the work."
+      "text": "Each of these is won by zugzwang. A quiet or waiting move that leaves the opponent no good reply. Don't force; let the obligation to move do the work."
      },
      "puzzle": {
       "themes": [
@@ -659,13 +659,13 @@
      "kind": "teach",
      "title": "Beauty is optional; the point is not",
      "intro": {
-      "text": "The final discipline of conversion is choosing among winning moves. The flashy mating attack and the dull queen trade may both win — but only one of them can go wrong. The master's instinct is to pick the move that removes all risk, even if it is slower or less pretty. You are not paid for style points. You are paid for the full point."
+      "text": "The final discipline of conversion is choosing among winning moves. The flashy mating attack and the dull queen trade may both win, but only one of them can go wrong. The master's instinct is to pick the move that removes all risk, even if it is slower or less pretty. You are not paid for style points. You are paid for the full point."
      },
      "steps": [
       {
        "fen": "6k1/2p2pp1/3q4/8/3Q4/2N5/5PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "You are a clean knight up and the queens face off on the d-file. You could keep queens on and hunt the king around the board — sometimes it works, sometimes Black's queen finds a perpetual and the win slips. Why gamble? Play Qxd6. Black's c7-pawn recaptures, the queens come off, and you are left with a knight-up ending and zero counterplay.",
+        "text": "You are a clean knight up and the queens face off on the d-file. You could keep queens on and hunt the king around the board. Sometimes it works, sometimes Black's queen finds a perpetual and the win slips. Why gamble? Play Qxd6. Black's c7-pawn recaptures, the queens come off, and you are left with a knight-up ending and zero counterplay.",
         "annotations": [
          {
           "kind": "arrow",
@@ -686,7 +686,7 @@
       {
        "fen": "6k1/5pp1/3p4/8/8/2N5/5PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "After Qxd6 cxd6 the queens are gone and Black has no checks, no tricks, no hope — just a lost ending against your extra knight, pawns level otherwise. Could a kingside attack have mated faster? Maybe. But 'maybe' is exactly the word a winning player refuses to bet on. The safe win is the only win worth choosing when you already hold the point.",
+        "text": "After Qxd6 cxd6 the queens are gone and Black has no checks, no tricks, no hope. Just a lost ending against your extra knight, pawns level otherwise. Could a kingside attack have mated faster? Maybe. But 'maybe' is exactly the word a winning player refuses to bet on. The safe win is the only win worth choosing when you already hold the point.",
         "annotations": [
          {
           "kind": "highlight",
@@ -704,7 +704,7 @@
      "kind": "guided",
      "title": "Take the road with no risk",
      "intro": {
-      "text": "You are a piece up with a winning attack available — but also a clean trade. Pick the move that removes every chance of a swindle."
+      "text": "You are a piece up with a winning attack available, but also a clean trade. Pick the move that removes every chance of a swindle."
      },
      "steps": [
       {
@@ -725,11 +725,11 @@
         "d4d6"
        ],
        "successLine": {
-        "text": "Qxd6! Black recaptures with cxd6, the queens vanish and so does every chance of a swindle. A knight-up ending wins itself. The flashy attack might have been faster, but the trade cannot go wrong — and that is the whole point. Safety over flash.",
+        "text": "Qxd6! Black recaptures with cxd6, the queens vanish and so does every chance of a swindle. A knight-up ending wins itself. The flashy attack might have been faster, but the trade cannot go wrong, and that is the whole point. Safety over flash.",
         "conceptId": "safe-win"
        },
        "retryLine": {
-        "text": "Keeping the queens on hands Black a queen to give checks with — and a perpetual would throw the whole game. You already have a winning material edge; you do not need more, you need SAFETY. Trade the queens on d6.",
+        "text": "Keeping the queens on hands Black a queen to give checks with, and a perpetual would throw the whole game. You already have a winning material edge; you do not need more, you need SAFETY. Trade the queens on d6.",
         "conceptId": "safe-win"
        }
       }
@@ -741,13 +741,13 @@
    "id": "l8-practice",
    "title": "Convert It",
    "kind": "practice",
-   "summary": "Put it together: warm up on clean conversions, then take a winning position against the engine and bring it home. The engine will try to swindle you — do not let it.",
+   "summary": "Put it together: warm up on clean conversions, then take a winning position against the engine and bring it home. The engine will try to swindle you. Do not let it.",
    "segments": [
     {
      "kind": "puzzle",
      "title": "Warm-up: bring it home",
      "intro": {
-      "text": "A mix of everything from this chapter — simplify, exploit the second weakness, finish with zugzwang. Find the cleanest winning move each time."
+      "text": "A mix of everything from this chapter: simplify, exploit the second weakness, finish with zugzwang. Find the cleanest winning move each time."
      },
      "puzzle": {
       "themes": [
@@ -767,14 +767,14 @@
      "bossEngineElo": 1700,
      "bossUserColor": "white",
      "bossIntro": {
-      "text": "You are a clean knight ahead — the game is won on material. Now WIN it. No tactics to find here, only technique: centralise your king, bring the knight to its best square, do not hurry, and create a second weakness on the queenside. The engine will set traps and offer pawn swaps to scrape a draw. Refuse the swaps you don't want, keep your pawns, trade pieces, and convert. Do not rush, and do not let it swindle you."
+      "text": "You are a clean knight ahead. The game is won on material. Now WIN it. No tactics to find here, only technique: centralise your king, bring the knight to its best square, do not hurry, and create a second weakness on the queenside. The engine will set traps and offer pawn swaps to scrape a draw. Refuse the swaps you don't want, keep your pawns, trade pieces, and convert. Do not rush, and do not let it swindle you."
      }
     },
     {
      "kind": "puzzle",
      "title": "Cool-down: the safe finish",
      "intro": {
-      "text": "Last reps. Each is winning — choose the move that wins with no risk at all, not the flashiest one."
+      "text": "Last reps. Each is winning. Choose the move that wins with no risk at all, not the flashiest one."
      },
      "puzzle": {
       "themes": [
@@ -809,7 +809,7 @@
     "options": [
      "Keep attacking that same weak pawn until it falls",
      "Create a SECOND weakness on the other wing so he cannot defend both",
-     "Offer a draw — one weakness is never enough to win",
+     "Offer a draw: one weakness is never enough to win",
      "Sacrifice a piece to smash through immediately"
     ],
     "answerIndex": 1,
@@ -820,7 +820,7 @@
     "prompt": "In a winning king-and-pawn endgame with no enemy counterplay, what is the guiding rule?",
     "options": [
      "Push the passed pawn as fast as possible",
-     "Do not hurry — improve the king and take the opposition before committing the pawn",
+     "Do not hurry: improve the king and take the opposition before committing the pawn",
      "Trade the last pawns to reach a king-versus-king draw",
      "Give checks until something good happens"
     ],
@@ -831,8 +831,8 @@
     "kind": "mc",
     "prompt": "You can win with either a flashy mating attack that needs precise calculation OR a simple queen trade into an easily-won ending. Which do you choose?",
     "options": [
-     "The flashy attack — it is faster and more impressive",
-     "The simple trade — a guaranteed win with no risk of a swindle",
+     "The flashy attack: it is faster and more impressive",
+     "The simple trade: a guaranteed win with no risk of a swindle",
      "Neither; repeat moves to be safe",
      "Whichever wins more material"
     ],
@@ -863,7 +863,7 @@
     "fen": "8/5p1r/pp3k1p/P6R/1PP5/2K5/5PP1/8 b - - 0 1",
     "lastMoveUci": "a4a5",
     "verdict": "correct",
-    "explain": "a5 is exactly the idea. The rook is tied to h6 on the far wing, so White opens a SECOND front the rook can never reach: after ...bxa5 bxa5 (or ...b5 cxb5) a passed pawn is born on the queenside. Black's lone rook cannot guard h6 and stop the passer at once — one weakness on each wing, one defender. The principle of two weaknesses cracks the position."
+    "explain": "a5 is exactly the idea. The rook is tied to h6 on the far wing, so White opens a SECOND front the rook can never reach: after ...bxa5 bxa5 (or ...b5 cxb5) a passed pawn is born on the queenside. Black's lone rook cannot guard h6 and stop the passer at once. One weakness on each wing, one defender. The principle of two weaknesses cracks the position."
    },
    {
     "kind": "play",
@@ -872,7 +872,7 @@
     "solutionUci": [
      "d7b7"
     ],
-    "explain": "Qb7#. Your king on c6 guards b7 and Black is mated. The natural Qc7 would have been STALEMATE — a drawn game thrown away. Always check whether your move leaves the enemy a legal reply before you play it."
+    "explain": "Qb7#. Your king on c6 guards b7 and Black is mated. The natural Qc7 would have been STALEMATE, a drawn game thrown away. Always check whether your move leaves the enemy a legal reply before you play it."
    },
    {
     "kind": "play",
@@ -883,7 +883,7 @@
      "c5d6",
      "c5b6"
     ],
-    "explain": "Kc6! The king leads — it takes the opposition (or outflanks via Kb6/Kd6) and Black must give way. Only then does the pawn follow. Pushing the pawn first would let Black seize the opposition and draw."
+    "explain": "Kc6! The king leads. It takes the opposition (or outflanks via Kb6/Kd6) and Black must give way. Only then does the pawn follow. Pushing the pawn first would let Black seize the opposition and draw."
    },
    {
     "kind": "judge",
@@ -891,7 +891,7 @@
     "fen": "8/8/8/8/8/2K5/2Q5/k7 b - - 0 1",
     "lastMoveUci": "d2c2",
     "verdict": "blunder",
-    "explain": "Qc2?? is stalemate — the king on a1 has no legal move and is not in check, so the game is drawn. The queen took away a1's last escape without giving check. Qb2# (king on c3 guards b2) was mate. Always run the safety check: does my move leave the enemy a legal reply?"
+    "explain": "Qc2?? is stalemate. The king on a1 has no legal move and is not in check, so the game is drawn. The queen took away a1's last escape without giving check. Qb2# (king on c3 guards b2) was mate. Always run the safety check: does my move leave the enemy a legal reply?"
    },
    {
     "kind": "judge",
@@ -903,13 +903,13 @@
    },
    {
     "kind": "play",
-    "prompt": "Black's e6-pawn is frozen head-to-head against your e5-pawn, so Black has no waiting move — only his king can budge. It is your move. Find the way through.",
+    "prompt": "Black's e6-pawn is frozen head-to-head against your e5-pawn, so Black has no waiting move. Only his king can budge. It is your move. Find the way through.",
     "fen": "6k1/8/4pK2/4P3/8/8/8/8 w - - 0 1",
     "solutionUci": [
      "f6e7",
      "f6e6"
     ],
-    "explain": "Ke7! (here even Kxe6 wins, since the e6-pawn is undefended — Black's king on g8 is too far to guard it — but NOT the sideways drift Kg5, which releases the squeeze and only draws). Improve the king while Black's frozen e6-pawn leaves him no waiting move. His king must give way, your king escorts the e-pawn home. Zugzwang built from a pawn that cannot move: keep the squeeze, hand him the move."
+    "explain": "Ke7! (here even Kxe6 wins, since the e6-pawn is undefended; Black's king on g8 is too far to guard it, but NOT the sideways drift Kg5, which releases the squeeze and only draws). Improve the king while Black's frozen e6-pawn leaves him no waiting move. His king must give way, your king escorts the e-pawn home. Zugzwang built from a pawn that cannot move: keep the squeeze, hand him the move."
    },
    {
     "kind": "judge",
@@ -917,7 +917,7 @@
     "fen": "6k1/8/4p3/4P1K1/8/8/8/8 b - - 0 1",
     "lastMoveUci": "f6g5",
     "verdict": "blunder",
-    "explain": "Kg5?? releases the squeeze and throws the win — now it is a dead draw. With Black's e6-pawn frozen he had no waiting move; the win was to advance the king (Ke7 or Kg6) and keep him in zugzwang so his king must give way. Drifting to g5 hands Black's king room to dance back with ...Kg7 and hold. Keep the opponent in the prison his frozen pawn made."
+    "explain": "Kg5?? releases the squeeze and throws the win. Now it is a dead draw. With Black's e6-pawn frozen he had no waiting move; the win was to advance the king (Ke7 or Kg6) and keep him in zugzwang so his king must give way. Drifting to g5 hands Black's king room to dance back with ...Kg7 and hold. Keep the opponent in the prison his frozen pawn made."
    }
   ],
   "passThreshold": 0.7

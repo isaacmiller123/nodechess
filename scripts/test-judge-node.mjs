@@ -1,5 +1,5 @@
 // Headless test for the Node judge-WASM harness (server/judge/nodeEngine.ts +
-// server/judge/contentHash.ts — phase A2 "Node harness for the pinned judge
+// server/judge/contentHash.ts: phase A2 "Node harness for the pinned judge
 // WASM", spec §11). This is the operator-peer / A5 prerequisite: prove the
 // pinned single-thread Stockfish WASM runs UNDER NODE, deterministically, at
 // fixed node counts.
@@ -10,13 +10,13 @@
 // Bundles the server/judge TS on the fly with esbuild (platform node), imports
 // it from a temp dir, and drives:
 //   (1) load the WASM under node, run a fixed-node MultiPV search, parse it;
-//   (2) DETERMINISM GATE — same FEN + same fixed nodes yields BIT-IDENTICAL
+//   (2) DETERMINISM GATE: same FEN + same fixed nodes yields BIT-IDENTICAL
 //       search output across (a) two fresh instances, (b) a warm instance after
 //       analysing OTHER positions first (ucinewgame + Clear Hash between, spec
 //       §8 "replay-after-warmup identical"), (c) recorded golden vectors for
 //       three fixed FENs at a fixed node count (future-run / cross-machine gate);
 //   (3) the content-hash constant matches the shipped wasm AND equals the
-//       digest-attested PARAMS_A5.judgeWasmSha256 (A5-12: single pin — node
+//       digest-attested PARAMS_A5.judgeWasmSha256 (A5-12: single pin; node
 //       gate, web gate and the params echo can never silently diverge).
 //
 // Style: failures counter, section banners, per-assert one-line, exit(failures?1:0).
@@ -67,7 +67,7 @@ async function rejects(p, msg) {
 /** Race a promise against a hang-guard so a regressed (hanging) path FAILS
  *  loudly with a TIMEOUT:<label> rejection instead of stalling the suite. The
  *  guard timer is kept REF'd (and cleared the instant `p` settles) so a real
- *  hang fires the timeout — an unref'd timer would let node exit prematurely. */
+ *  hang fires the timeout. An unref'd timer would let node exit prematurely. */
 function withTimeout(p, ms, label) {
   let t
   const guard = new Promise((_, rej) => {
@@ -77,12 +77,12 @@ function withTimeout(p, ms, label) {
 }
 
 // ---- fixtures ---------------------------------------------------------------
-const N = 100000 // fixed node cap — modest so the suite runs well under a minute
+const N = 100000 // fixed node cap: modest so the suite runs well under a minute
 const MPV = 3
 const HASH = 16
 
 // Deterministic-surface canonicalization of an AnalysisResult: search-determined
-// fields only (NO time/nps — those never enter AnalysisLine). This is the exact
+// fields only (NO time/nps: those never enter AnalysisLine). This is the exact
 // byte surface the determinism gate compares and freezes as goldens.
 function canon(r) {
   const lines = r.lines.map((l) => {
@@ -123,7 +123,7 @@ const GOLDENS = {
 // Frozen INDEPENDENT record of the §8 pin (deliberately this file's own
 // literal, golden-style): contentHash.ts derives its constant from
 // PARAMS_A5.judgeWasmSha256 (A5-12), so these goldens transitively pin the
-// digest-attested params value too — a re-pin must consciously touch BOTH
+// digest-attested params value too: a re-pin must consciously touch BOTH
 // params.ts and this freeze.
 const GOLDEN_WASM_SHA256 = 'a8fbc05ec6920b56d7485826dcb02c5ffd2826bcbf751cf973046f237a9096f1'
 const GOLDEN_WASM_BYTES = 7295411
@@ -133,8 +133,8 @@ const GOLDEN_WASM_BYTES = 7295411
 // forced single reply), exercised as FEN+moves. This exact set at the TRUE
 // PARAMS_A5 Tier-1 config is the NODE cross-run / cross-machine parity anchor:
 // its digest is FROZEN below (GOLDEN_T1_DIGEST) and pins all nine positions on
-// node. NOTE: J6's browser ENGINE gate does NOT reproduce this frozen digest —
-// it re-judges only a 3-position SUBSET (JUDGE_PARITY_POSITIONS in
+// node. NOTE: J6's browser ENGINE gate does NOT reproduce this frozen digest.
+// It re-judges only a 3-position SUBSET (JUDGE_PARITY_POSITIONS in
 // scripts/lib/accounts-fixture.mjs; plies 4/20/60) and asserts LIVE
 // browser==node digest parity for that subset (local-only, skipped under CI).
 // So plies 6/16/40/50 and the Réti mate-in-2 (ply 70) + K<multiPv single-reply
@@ -155,19 +155,19 @@ const JUDGE_POSITIONS = [
   // endgames
   { ply: 40, fen: FENS.endgame },
   { ply: 50, fen: '8/8/4k3/8/8/4K3/4P3/8 w - - 0 1' },
-  // mate-in-1 (Re8#) — exercises the distinct mate encoding at rank 1
+  // mate-in-1 (Re8#). Exercises the distinct mate encoding at rank 1
   { ply: 60, fen: '1k6/ppp5/8/8/8/8/8/K3R3 w - - 0 1' },
-  // Réti's mate-in-2 (Qd8+! Bxd8 Re8#) — a deeper forced mate among cp ranks
+  // Réti's mate-in-2 (Qd8+! Bxd8 Re8#). A deeper forced mate among cp ranks
   { ply: 70, fen: 'r1b2k1r/ppp1bppp/8/1B1Q4/5q2/2P5/PPP2PPP/R3R1K1 w - - 1 0' },
-  // in check with exactly ONE legal reply (Kxe2) — K < multiPv contiguity path
+  // in check with exactly ONE legal reply (Kxe2). K < multiPv contiguity path
   { ply: 80, fen: '4k3/8/8/8/8/8/4q3/4K3 w - - 0 1' },
 ]
 
-// FROZEN GOLDEN — judgeOutputDigest of JUDGE_POSITIONS at the TRUE Tier-1
+// FROZEN GOLDEN: judgeOutputDigest of JUDGE_POSITIONS at the TRUE Tier-1
 // config (judgeConfigForTier(1): 200_000 nodes, MultiPV 4, Hash 16, per-game
 // TT reset). Recorded from a green run of the pinned wasm (content hash
 // above); this is the NODE-only cross-run / cross-machine anchor for all nine
-// positions. The J6 browser gate does NOT assert this value — it proves LIVE
+// positions. The J6 browser gate does NOT assert this value. It proves LIVE
 // browser==node parity over the 3-position JUDGE_PARITY_POSITIONS subset only
 // (see the subset-boundary section below). Re-freeze ONLY on a deliberate
 // PARAMS_A5 / schema change.
@@ -183,7 +183,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${
       failures ? `, ${failures} failures` : ''
     }`,
   )
@@ -220,7 +220,7 @@ async function run(outdir) {
   const M = await import(pathToFileURL(outfile).href)
   const { engine, content, core, adapter, web } = M
 
-  // Explicit paths — the bundle's default (package) resolution can't see
+  // Explicit paths: the bundle's default (package) resolution can't see
   // node_modules from a temp dir, so every call is given the real engine/wasm.
   const mk = () => engine.newInstance({ enginePath: ENGINE_JS, wasmPath: ENGINE_WASM })
 
@@ -232,7 +232,7 @@ async function run(outdir) {
   eq(content.JUDGE_WASM_SHA256, GOLDEN_WASM_SHA256, 'exported JUDGE_WASM_SHA256 constant is correct')
   eq(content.JUDGE_WASM_BYTES, GOLDEN_WASM_BYTES, 'exported JUDGE_WASM_BYTES constant is correct')
   ok(v.ok, 'verifyWasmHash() ok === true for the shipped wasm')
-  // A5-12 regression — the two production pins are ONE: contentHash.ts derives
+  // A5-12 regression. The two production pins are ONE: contentHash.ts derives
   // JUDGE_WASM_SHA256 from PARAMS_A5.judgeWasmSha256 (the copy folded into
   // PARAMS_A5_DIGEST that every verdict attests). A re-pin that edits the
   // shipped wasm + this file's goldens but not params.ts fails the live check
@@ -310,7 +310,7 @@ async function run(outdir) {
     eq(c, GOLDENS[name], `golden vector "${name}" reproduced bit-for-bit`)
   }
 
-  // ═══ A5 J1 — the canonical judged-game protocol ═══════════════════════════
+  // ═══ A5 J1: the canonical judged-game protocol ═══════════════════════════
   // TEST-ONLY node trims for the runtime budget: `nodes` ONLY may differ from
   // PARAMS_A5 (multiPv/hashMb/ttReset stay pinned); the FROZEN GOLDEN below
   // runs at the TRUE judgeConfigForTier(1). PARAMS_A5 itself is never changed.
@@ -349,11 +349,11 @@ async function run(outdir) {
   const outMate = { v: 1, config: echoA, positions: [{ ply: 0, lines: [{ move: 'e2e4', mate: 30 }] }] }
   ok(core.judgeOutputDigest(outKeyOrder1) !== core.judgeOutputDigest(outMate), 'cp 30 and mate 30 encode DISTINCTLY (different digests)')
 
-  // ═══ A5-31 — J6 browser-parity SUBSET boundary (pure, no engine) ═══════════
+  // ═══ A5-31: J6 browser-parity SUBSET boundary (pure, no engine) ═══════════
   // Make executable exactly what the J6 browser ENGINE gate proves, so the
   // fixture comments above can never silently over-claim it again. The browser
-  // (test-web-accounts-browser.mjs) re-judges only JUDGE_PARITY_POSITIONS — a
-  // 3-position SUBSET of the frozen 9-set — and asserts LIVE browser==node
+  // (test-web-accounts-browser.mjs) re-judges only JUDGE_PARITY_POSITIONS. A
+  // 3-position SUBSET of the frozen 9-set, and asserts LIVE browser==node
   // parity for it (skipped under CI); it NEVER reproduces the frozen 9-position
   // GOLDEN_T1_DIGEST, which is a NODE-only anchor. A revert of the comments to
   // "browser asserts the SAME 9-position digest" is contradicted by these
@@ -365,11 +365,11 @@ async function run(outdir) {
     eq(JUDGE_PARITY_POSITIONS.length, 3, 'browser ENGINE gate re-judges only a 3-position subset')
     ok(
       JUDGE_PARITY_POSITIONS.length < JUDGE_POSITIONS.length,
-      'browser parity set is a STRICT subset — the browser never covers the full 9',
+      'browser parity set is a STRICT subset: the browser never covers the full 9',
     )
     // each parity position is byte-identical to its 9-set counterpart (same
     // ply/fen/moves), so the live browser==node comparison judges the SAME
-    // inputs the node golden froze — not a re-parameterised look-alike.
+    // inputs the node golden froze: not a re-parameterised look-alike.
     const byPly = new Map(JUDGE_POSITIONS.map((p) => [p.ply, canonPos(p)]))
     for (const p of JUDGE_PARITY_POSITIONS) {
       ok(byPly.get(p.ply) === canonPos(p), `parity ply ${p.ply} is byte-identical to the frozen 9-set entry`)
@@ -386,10 +386,10 @@ async function run(outdir) {
     )
   }
 
-  // ═══ A5-23 — web adapter fail-closed parity (engine-free, fake Worker) ═════
+  // ═══ A5-23: web adapter fail-closed parity (engine-free, fake Worker) ═════
   // The web adapter (src/web/engines/judge.ts) must fail-closed like the node
   // adapter: close()/worker-death REJECTS an in-flight judgeGame (via onError),
-  // and a send() after close THROWS — never the silent no-op that left the
+  // and a send() after close THROWS. Never the silent no-op that left the
   // barrier/analyseOne awaiting a `readyok`/`bestmove` forever. Driven through
   // the REAL judgeGame() over a spec-faithful fake Worker (terminate() fires NO
   // events, per the HTML spec), so a revert to the pre-fix close()/send() is
@@ -432,7 +432,7 @@ async function run(outdir) {
     }
 
     // (0) positive control: a full judgeGame COMPLETES over the double and a
-    // close() afterwards is clean — proves the harness faithfully drives
+    // close() afterwards is clean. Proves the harness faithfully drives
     // judgeGame and that the fix leaves the happy path untouched.
     const okWorker = makeFakeWorker(true)
     const okEng = web.makeWorkerJudgeEngine(okWorker, 'blob:fake-ok')
@@ -455,7 +455,7 @@ async function run(outdir) {
     let flightErr
     try { await withTimeout(flightP, 3000, 'in-flight-close') } catch (e) { flightErr = e }
     ok(flightErr && flightErr.name === 'JudgeEngineError',
-      `in-flight judgeGame REJECTS on close() — no hang (${flightErr ? `${flightErr.name}: ${flightErr.message}` : 'RESOLVED'})`)
+      `in-flight judgeGame REJECTS on close(), no hang (${flightErr ? `${flightErr.name}: ${flightErr.message}` : 'RESOLVED'})`)
 
     // (2) THE regression: judgeGame on an already-closed engine must reject
     // (send() throws), not hang at the first `isready` barrier.
@@ -465,12 +465,12 @@ async function run(outdir) {
     let closedErr
     try { await withTimeout(core.judgeGame(closedEng, POS, CFG), 3000, 'post-close') } catch (e) { closedErr = e }
     ok(closedErr && !/^TIMEOUT:/.test(closedErr.message),
-      `judgeGame on a closed engine REJECTS — no hang (${closedErr ? closedErr.message : 'RESOLVED'})`)
+      `judgeGame on a closed engine REJECTS, no hang (${closedErr ? closedErr.message : 'RESOLVED'})`)
     ok(closedErr && /closed/i.test(closedErr.message), 'post-close rejection is the fail-closed send() throw')
 
     // (3) worker `error` event also fails-closed (parity with node child-crash
     // → onExit → onError): rejects the in-flight judgeGame AND post-death send()
-    // throws — Worker.terminate()/death both flow through the same teardown.
+    // throws. Worker.terminate()/death both flow through the same teardown.
     const crashWorker = makeFakeWorker(false)
     const crashEng = web.makeWorkerJudgeEngine(crashWorker, 'blob:fake-crash')
     const crashP = core.judgeGame(crashEng, POS, CFG)
@@ -485,11 +485,11 @@ async function run(outdir) {
     ok(sendThrew, 'send() after worker death throws (fail-closed, not a silent no-op)')
   }
 
-  // ═══ A5-04 — node adapter fail-closed parity (engine-free, fake glue) ═══════
+  // ═══ A5-04: node adapter fail-closed parity (engine-free, fake glue) ═══════
   // The SYMMETRIC half of the A5-23 web section above: the NODE adapter must also
-  // make a dead/closed engine REJECT an in-flight judgeGame instead of hanging —
+  // make a dead/closed engine REJECT an in-flight judgeGame instead of hanging:
   // inst.onExit (nodeEngine.ts child-exit) → newNodeJudgeEngine onError → judgeGame
-  // JudgeEngineError — and a send() after exit THROWS. The finding: no test ever
+  // JudgeEngineError, and a send() after exit THROWS. The finding: no test ever
   // killed a child mid-judgeGame, so this onExit→onError→rejection path had ZERO
   // coverage while the web close() hang (A5-23) shipped; together with the web
   // section above this closes the liveness contract on BOTH adapters.
@@ -499,7 +499,7 @@ async function run(outdir) {
   // barriers and, on `go`, emits a marker then EITHER auto-replies a full
   // MultiPV+bestmove (after `__autogo__`) or STAYS SILENT to model a search still
   // in flight; `quit` exits 0 (graceful close), `__die__` exits 1 (abrupt crash).
-  // It never loads its `.wasm` sibling — that sibling is a copy of the pinned wasm
+  // It never loads its `.wasm` sibling: that sibling is a copy of the pinned wasm
   // present ONLY so the §8 content-hash gate passes and the real adapter is
   // exercised end to end. No Stockfish runs; nothing is judged. (Counterfactual:
   // an adapter that omits onError makes the in-flight/crash cases HANG, so the
@@ -513,7 +513,7 @@ async function run(outdir) {
       { ply: 1, fen: 'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1' },
     ]
     // Fake UCI glue, spawned as `node <this.cjs>` by newInstance. The GO marker is
-    // an `info string …` line — ignored by judgeGame's candidate parser, seen only
+    // an `info string …` line: ignored by judgeGame's candidate parser, seen only
     // by the test's own onLine so it can tell judgeGame is parked in analyseOne.
     const fakeGlue = resolve(outdir, 'a5_04-fake.cjs')
     writeFileSync(
@@ -561,7 +561,7 @@ async function run(outdir) {
       })
 
     // (0) positive control: a full judgeGame COMPLETES over the fake glue and a
-    // close() afterwards is clean — proves the harness faithfully drives the REAL
+    // close() afterwards is clean. Proves the harness faithfully drives the REAL
     // node adapter and leaves the happy path untouched.
     const okEng = await mkFake()
     okEng.send('__autogo__')
@@ -582,7 +582,7 @@ async function run(outdir) {
     let flightErr
     try { await withTimeout(flightP, 4000, 'node-in-flight-close') } catch (e) { flightErr = e }
     ok(flightErr && flightErr.name === 'JudgeEngineError',
-      `in-flight judgeGame REJECTS on close() — no hang (${flightErr ? `${flightErr.name}: ${flightErr.message}` : 'RESOLVED'})`)
+      `in-flight judgeGame REJECTS on close(), no hang (${flightErr ? `${flightErr.name}: ${flightErr.message}` : 'RESOLVED'})`)
 
     // (2) THE regression: judgeGame on an already-closed engine must reject (send()
     // throws 'judge engine has exited'), not hang at the first `isready` barrier.
@@ -591,7 +591,7 @@ async function run(outdir) {
     let closedErr
     try { await withTimeout(core.judgeGame(closedEng, POS, CFG), 4000, 'node-post-close') } catch (e) { closedErr = e }
     ok(closedErr && !/^TIMEOUT:/.test(closedErr.message),
-      `judgeGame on a closed engine REJECTS — no hang (${closedErr ? closedErr.message : 'RESOLVED'})`)
+      `judgeGame on a closed engine REJECTS, no hang (${closedErr ? closedErr.message : 'RESOLVED'})`)
     ok(closedErr && /exited/i.test(closedErr.message), 'post-close rejection is the fail-closed send() throw')
 
     // (3) abrupt child crash mid-flight (node analogue of the web worker `error`
@@ -700,7 +700,7 @@ async function run(outdir) {
     )
   }
   // A wasmPath that is NOT the loaded sibling is refused even when it points at a
-  // real (here tampered) temp file — the gate never silently ignores it.
+  // real (here tampered) temp file: the gate never silently ignores it.
   const tampered = resolve(outdir, 'tampered.wasm')
   const wasmBytes = readFileSync(ENGINE_WASM)
   wasmBytes[Math.floor(wasmBytes.length / 2)] ^= 0xff
@@ -717,10 +717,10 @@ async function run(outdir) {
     )
   }
 
-  // ═══ A5-11 — the §8 invariant as its OWN named regression: the VERIFIED bytes
+  // ═══ A5-11. The §8 invariant as its OWN named regression: the VERIFIED bytes
   // ARE the EXECUTED bytes. The A5-13 matrix above proves the gate REFUSES a
   // divergent pair; this pins the COUNTERFACTUAL the pre-fix argument-only gate
-  // (verifyWasmHash(opts.wasmPath)) missed — that the checked/loaded split is
+  // (verifyWasmHash(opts.wasmPath)) missed. That the checked/loaded split is
   // REAL, not a tautology: the pristine wasmPath ARGUMENT (all the old gate ever
   // hashed) verifies CLEAN, while the sibling the spawned `node <glue>` child
   // self-resolves and readFileSync's (loadedWasmPath) is the TAMPERED, un-pinned
@@ -744,16 +744,16 @@ async function run(outdir) {
     // the fix refuses the checked/loaded split before any child exists.
     try {
       await adapter.newNodeJudgeEngine({ enginePath: a11Glue, wasmPath: ENGINE_WASM })
-      ok(false, 'A5-11: clean-argument / tampered-sibling pair refused before spawn (ACCEPTED — would execute un-pinned bytes)')
+      ok(false, 'A5-11: clean-argument / tampered-sibling pair refused before spawn (ACCEPTED; would execute un-pinned bytes)')
     } catch (e) {
       ok(
         e instanceof engine.JudgeWasmPathError && e.name === 'JudgeWasmPathError',
-        `A5-11: clean-argument / tampered-sibling pair REFUSED before spawn — a clean decoy cannot redirect the pin (${e.name})`,
+        `A5-11: clean-argument / tampered-sibling pair REFUSED before spawn. A clean decoy cannot redirect the pin (${e.name})`,
       )
     }
     // With NO argument the gate trusts nothing external: it hashes the EXECUTED
-    // sibling itself, so the tamper surfaces as a hash mismatch on the real bytes
-    // — the direct statement that verified bytes are the executed bytes.
+    // sibling itself, so the tamper surfaces as a hash mismatch on the real bytes.
+    // The direct statement that verified bytes are the executed bytes.
     try {
       await adapter.newNodeJudgeEngine({ enginePath: a11Glue })
       ok(false, 'A5-11: no-argument gate hashes the executed sibling (ACCEPTED a tampered sibling)')

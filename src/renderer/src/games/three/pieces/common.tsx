@@ -1,5 +1,5 @@
 // Shared piece-system plumbing: prepared-piece shape, instance ref typing,
-// deterministic jitter, and the capture ghost (lift + true opacity fade —
+// deterministic jitter, and the capture ghost (lift + true opacity fade;
 // ghosts render non-instanced precisely so they CAN fade).
 
 import { useMemo, useRef, type JSX, type ReactNode } from 'react'
@@ -56,7 +56,7 @@ export interface Jitter {
 }
 
 /**
- * Deterministic per-piece placement noise — hand-placed feel (spec: subtle
+ * Deterministic per-piece placement noise, hand-placed feel (spec: subtle
  * randomized rotation/offset). Magnitudes are per-system via `k`.
  */
 export function jitterOf(seedStr: string, k: { offset: number; tilt: number; scale: number }): Jitter {

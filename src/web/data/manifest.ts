@@ -9,7 +9,7 @@
 //     rows. Over HTTP that is hundreds of MB for 73 numbers, so it is baked in.
 //   - `ratingCumulative`: because the chunked DB is stored clustered by
 //     (Rating, PuzzleId) with rowid == rank in that order, a rating band maps
-//     to a CONTIGUOUS rowid range — and this histogram gives the reader that
+//     to a CONTIGUOUS rowid range, and this histogram gives the reader that
 //     range for free. Every rating-window query then reads one run of adjacent
 //     pages instead of descending an index and chasing scattered rowids, which
 //     is the difference between one round-trip and twenty-four.
@@ -21,7 +21,7 @@ export interface PuzzleChunkManifest {
   builtAt: string
   /** Cache-buster appended to every chunk URL. Mixing pages from two builds
    *  silently yields wrong rows rather than an error, so it must change
-   *  whenever the bytes do — it is the head of the artifact's sha256. */
+   *  whenever the bytes do. It is the head of the artifact's sha256. */
   buildId: string
   sha256: string
   source: { path: string; bytes: number; mtimeMs: number }
@@ -50,8 +50,8 @@ export interface PuzzleChunkManifest {
 const MISSING =
   'Build it with `npm run build:puzzle-chunks` and deploy the output directory (see scripts/build-puzzle-chunks.mjs).'
 
-/** Fetch + validate the manifest. Throws with a pointer to the build step —
- *  there is no partial mode and nothing to substitute: without the manifest the
+/** Fetch + validate the manifest. Throws with a pointer to the build step.
+ *  There is no partial mode and nothing to substitute: without the manifest the
  *  reader cannot address a single page. */
 export async function loadManifest(url: string, fetchImpl: typeof fetch = fetch): Promise<PuzzleChunkManifest> {
   let res: Response
@@ -104,7 +104,7 @@ export function parseManifest(value: unknown, url: string): PuzzleChunkManifest 
   return m as PuzzleChunkManifest
 }
 
-/** Number of puzzles rated strictly below `rating` — and, since rowid is the
+/** Number of puzzles rated strictly below `rating`, and, since rowid is the
  *  rank in (Rating, PuzzleId) order, the rowid of the last puzzle below it. */
 export function rowsBelowRating(m: PuzzleChunkManifest, rating: number): number {
   const i = Math.floor(rating) - m.ratingMin

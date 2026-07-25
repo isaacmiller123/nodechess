@@ -8,11 +8,11 @@
 // CSP for the whole renderer, we rewrite those three functions to the
 // eval-free equivalents emscripten itself emits under -s DYNAMIC_EXECUTION=0:
 //
-//   1. createNamedFunction — used `new Function` purely to give wrappers a
+//   1. createNamedFunction: used `new Function` purely to give wrappers a
 //      nice .name; replaced by Object.defineProperty(fn, 'name', ...).
-//   2. makeDynCaller (inside embind__requireFunction) — crafted a fixed-arity
+//   2. makeDynCaller (inside embind__requireFunction): crafted a fixed-arity
 //      forwarder source string; replaced by a generic apply() forwarder.
-//   3. craftInvokerFunction — crafted each bound method's invoker as a source
+//   3. craftInvokerFunction: crafted each bound method's invoker as a source
 //      string; replaced by a generic closure with identical semantics
 //      (arg-count check, toWireType marshalling with a destructor stack or
 //      per-arg destructorFunction calls, fromWireType on return).
@@ -23,8 +23,8 @@
 //
 // Exact-match contract: each `find` below must appear exactly once in the
 // pristine ffish.js. If ffish-es6 is ever upgraded and the glue changes, the
-// patcher THROWS instead of shipping a packaged app that dies under CSP again
-// — re-derive the patches (or drop them if upstream ships DYNAMIC_EXECUTION=0)
+// patcher THROWS instead of shipping a packaged app that dies under CSP again.
+// Re-derive the patches (or drop them if upstream ships DYNAMIC_EXECUTION=0)
 // and re-verify with scripts/smoke-packed-wasm.mjs.
 
 /** Marker comment prepended to the patched file, used for idempotence. */
@@ -70,12 +70,12 @@ export function patchFfishSource(source) {
     const first = out.indexOf(find)
     if (first === -1) {
       throw new Error(
-        `ffish-csp-patch: site "${name}" not found — ffish-es6 changed (upgrade?). ` +
+        `ffish-csp-patch: site "${name}" not found: ffish-es6 changed (upgrade?). ` +
           'Re-derive scripts/lib/ffish-csp-patch.mjs and re-verify with scripts/smoke-packed-wasm.mjs.'
       )
     }
     if (out.indexOf(find, first + 1) !== -1) {
-      throw new Error(`ffish-csp-patch: site "${name}" matched more than once — refusing to patch`)
+      throw new Error(`ffish-csp-patch: site "${name}" matched more than once: refusing to patch`)
     }
     out = out.slice(0, first) + replace + out.slice(first + find.length)
   }
@@ -83,7 +83,7 @@ export function patchFfishSource(source) {
   // never present in this build; `new Function`/`new_(Function` must be gone.)
   for (const banned of ['new Function', 'new_(Function']) {
     if (out.includes(banned)) {
-      throw new Error(`ffish-csp-patch: "${banned}" still present after patching — patch table is stale`)
+      throw new Error(`ffish-csp-patch: "${banned}" still present after patching: patch table is stale`)
     }
   }
   return PATCH_MARKER + '\n' + out

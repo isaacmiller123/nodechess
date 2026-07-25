@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from 'react'
 // while `active`, expose null (probing) / true / false, and let callers
 // re-probe on demand (e.g. after the Settings → Datasets download finishes).
 //
-// The signal is datasets:status().engine — "is a Stockfish binary on disk"
+// The signal is datasets:status().engine, "is a Stockfish binary on disk"
 // (imported-first, then bundled; see main/datasets/paths.ts). This is NOT
 // engine:status.analysisReady, which only says whether an instance is already
-// RUNNING — false on every cold start even with the engine installed.
+// RUNNING: false on every cold start even with the engine installed.
 export function useEngineReady(active = true): {
   /** null while probing, then whether the Stockfish binary is on disk. */
   ready: boolean | null
@@ -18,7 +18,7 @@ export function useEngineReady(active = true): {
   return useDatasetReady('engine', active)
 }
 
-/** Same guard for the Lichess puzzle DB (datasets:status().puzzles) — School
+/** Same guard for the Lichess puzzle DB (datasets:status().puzzles). School
  *  warm-up/cool-down puzzle segments and the puzzle trainer need it on disk.
  *  Fresh installs must show the "download in Settings" notice, never a fake
  *  puzzle over the start position. */

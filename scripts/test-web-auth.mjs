@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Web auth suite (web port W3 — docs/WEB-PORT-SPEC.md, build contract §3).
+// Web auth suite (web port W3: docs/WEB-PORT-SPEC.md, build contract §3).
 //
 //   node scripts/test-web-auth.mjs
 //
@@ -64,11 +64,11 @@ const serverEnvBase = {
   HOST: '127.0.0.1',
   WEB_ROOT: webRoot,
   DATA_DIR: dataDir,
-  PUZZLES_PATH: path.join(dir, 'no-puzzles.sqlite'), // absent — degrades, irrelevant here
+  PUZZLES_PATH: path.join(dir, 'no-puzzles.sqlite'), // absent. Degrades, irrelevant here
   RESOURCES_ROOT: path.join(repoRoot, 'resources'),
   LOG_LEVEL: 'silent',
   // Pin cookie behavior regardless of the invoking shell (production defaults
-  // the sid cookie to Secure — phase 2 asserts that explicitly).
+  // the sid cookie to Secure: phase 2 asserts that explicitly).
   NODE_ENV: 'development'
 }
 
@@ -253,7 +253,7 @@ try {
 }
 
 // ---- Phase 2: hardened-boot behavior (Secure cookie, rate limits, account cap)
-// A fresh DATA_DIR under production settings — the deploy posture from
+// A fresh DATA_DIR under production settings: the deploy posture from
 // docs/WEB-DEPLOY.md (NODE_ENV=production, TRUST_PROXY=1) with tight knobs so
 // the limits actually trip.
 const dataDir2 = path.join(dir, 'data2')
@@ -312,7 +312,7 @@ try {
 
 // ---- Phase 3: v0 -> v1 session migration (pre-hashing DBs upgrade in place)
 // Simulate a server.sqlite written before token hashing: user_version 0 and a
-// RAW token row. Boot on it — the constructor migration must hash the stored
+// RAW token row. Boot on it: the constructor migration must hash the stored
 // value so the original cookie keeps working and no raw token remains at rest.
 const legacyRaw = 'legacy-raw-token-00000000000000000000000000'
 {

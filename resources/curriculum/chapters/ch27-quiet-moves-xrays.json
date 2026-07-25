@@ -2,19 +2,19 @@
  "id": "ch27-quiet-moves-xrays",
  "band": "27",
  "order": 27,
- "title": "Advanced Tactics — Quiet Moves & X-Rays",
+ "title": "Advanced Tactics: Quiet Moves & X-Rays",
  "subtitle": "Trapped pieces, interference, the x-ray battery, the quiet move, and the in-between defence.",
  "estMinutes": 40,
  "concepts": [
   {
    "id": "trapped-piece",
    "name": "The Trapped Piece",
-   "short": "A piece with no safe square. You do not win it with a check or a fork — you win it by taking away its last escape, then collecting it next move."
+   "short": "A piece with no safe square. You do not win it with a check or a fork. You win it by taking away its last escape, then collecting it next move."
   },
   {
    "id": "interference",
    "name": "Interference",
-   "short": "Plant a piece on the line between a defender and what it guards. The defender's protection is cut — even a defended target falls, even if you must sacrifice to cut the line."
+   "short": "Plant a piece on the line between a defender and what it guards. The defender's protection is cut. Even a defended target falls, even if you must sacrifice to cut the line."
   },
   {
    "id": "xray",
@@ -24,17 +24,17 @@
   {
    "id": "quiet-move",
    "name": "The Quiet Move",
-   "short": "Not every winning move is a check or a capture. The strongest move can be a silent one that makes an unstoppable threat — the move opponents never see coming."
+   "short": "Not every winning move is a check or a capture. The strongest move can be a silent one that makes an unstoppable threat. The move opponents never see coming."
   },
   {
    "id": "intermezzo",
    "name": "The In-Between Move",
-   "short": "Before you recapture, insert a more forcing move — a check or a bigger threat. The intermezzo changes the order, and the order changes the result."
+   "short": "Before you recapture, insert a more forcing move. A check or a bigger threat. The intermezzo changes the order, and the order changes the result."
   },
   {
    "id": "in-between-defence",
    "name": "The In-Between Defence",
-   "short": "When attacked, do not always submit. A check or counter-threat of your own — the zwischenzug on defence — can save the piece or flip the position."
+   "short": "When attacked, do not always submit. A check or counter-threat of your own (the zwischenzug on defence) can save the piece or flip the position."
   }
  ],
  "lessons": [
@@ -46,7 +46,7 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — sharpen the eye",
+     "title": "Warm-up: sharpen the eye",
      "intro": {
       "text": "You can already calculate forcing lines. This chapter trains the harder eye: the wins that are NOT a check, NOT a capture, NOT a fork. First, three tactics to warm the blade. Find the strongest move in each."
      },
@@ -69,7 +69,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "Until now you hunted checks and captures — the forcing moves. Good discipline, and it will always come first. But force is not everything. Look at this rook ending: there is not a single check on the board, and nothing to capture. The black king on g7 is snug behind its pawns, your rook on c1 reaches no useful square with tempo — force is simply exhausted, and the position is dead level. The strongest players, when force runs dry, change the question. Not only 'what can I check or take?' but 'what could I THREATEN that the opponent cannot prevent?' Find a position where that quiet threat exists, and you win where brute force only shuffled. That hunt is the whole chapter.",
+        "text": "Until now you hunted checks and captures. The forcing moves. Good discipline, and it will always come first. But force is not everything. Look at this rook ending: there is not a single check on the board, and nothing to capture. The black king on g7 is snug behind its pawns, your rook on c1 reaches no useful square with tempo. Force is simply exhausted, and the position is dead level. The strongest players, when force runs dry, change the question. Not only 'what can I check or take?' but 'what could I THREATEN that the opponent cannot prevent?' Find a position where that quiet threat exists, and you win where brute force only shuffled. That hunt is the whole chapter.",
         "annotations": [
          {
           "kind": "highlight",
@@ -89,7 +89,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Over the next lessons you will learn five non-forcing weapons, each a way to win when checks and captures fail. The TRAPPED PIECE — take away a piece's squares until it falls. INTERFERENCE — get between a defender and what it guards. The X-RAY and BATTERY — line two pieces up so their force passes through. The QUIET MOVE — a silent, unanswerable threat. And the IN-BETWEEN MOVE, on attack and on defence — change the order of moves to change the result. Brute force finds none of these; the trained eye finds all of them.",
+        "text": "Over the next lessons you will learn five non-forcing weapons, each a way to win when checks and captures fail. The TRAPPED PIECE: take away a piece's squares until it falls. INTERFERENCE: get between a defender and what it guards. The X-RAY and BATTERY: line two pieces up so their force passes through. The QUIET MOVE, a silent, unanswerable threat. And the IN-BETWEEN MOVE, on attack and on defence. Change the order of moves to change the result. Brute force finds none of these; the trained eye finds all of them.",
         "annotations": [
          {
           "kind": "highlight",
@@ -103,9 +103,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the idea",
+     "title": "Cool-down: find the idea",
      "intro": {
-      "text": "Two more. The answer is rarely the loudest move on the board. Look wide — the quiet threat, the trapped piece, the cut defender."
+      "text": "Two more. The answer is rarely the loudest move on the board. Look wide: the quiet threat, the trapped piece, the cut defender."
      },
      "puzzle": {
       "themes": [
@@ -123,11 +123,11 @@
    "id": "l2-trapped-piece",
    "title": "The Trapped Piece",
    "kind": "tactics",
-   "summary": "A piece deep in enemy lines or short of squares can be hunted down — you win it not with a blow but by removing its last flight.",
+   "summary": "A piece deep in enemy lines or short of squares can be hunted down. You win it not with a blow but by removing its last flight.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — a piece with nowhere to go",
+     "title": "Warm-up: a piece with nowhere to go",
      "intro": {
       "text": "A piece is only as strong as its squares. When it has none, it is dead wood waiting to be collected. Find the move that nets a stranded piece in each."
      },
@@ -149,7 +149,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Start with the why. A piece is trapped when every square it can move to is covered or blocked — it has no SAFE escape. You win it with no fork and no pin: you take away the last good square, and next move you collect it. The classic victim is the greedy queen. Black has just snatched the b2-pawn — and walked into a cage.",
+        "text": "Start with the why. A piece is trapped when every square it can move to is covered or blocked. It has no SAFE escape. You win it with no fork and no pin: you take away the last good square, and next move you collect it. The classic victim is the greedy queen. Black has just snatched the b2-pawn, and walked into a cage.",
         "annotations": [
          {
           "kind": "circle",
@@ -169,7 +169,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Na4! A quiet knight move — no check, no capture — that attacks the queen on b2 and, more importantly, fences her in. Count her squares: every retreat runs into a White piece. b3, c2, d2, the whole second rank, the b-file — try them and the queen is simply taken. She grabbed one pawn and lost her freedom. Her only flutter of life is to grab the a1-rook on her way down.",
+        "text": "Na4! A quiet knight move (no check, no capture) that attacks the queen on b2 and, more importantly, fences her in. Count her squares: every retreat runs into a White piece. b3, c2, d2, the whole second rank, the b-file. Try them and the queen is simply taken. She grabbed one pawn and lost her freedom. Her only flutter of life is to grab the a1-rook on her way down.",
         "annotations": [
          {
           "kind": "arrow",
@@ -191,7 +191,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "...Qxa1 — a desperado, taking the rook before she dies — and Qxa1 collects her. White has given a rook and won a queen: a clean profit, and not a single check fired. This is the discipline: before YOU snatch a pawn deep in enemy ground, ask 'can my piece get out?' And when your opponent grabs greedily, ask the same of his — then build the cage.",
+        "text": "...Qxa1 (a desperado, taking the rook before she dies) and Qxa1 collects her. White has given a rook and won a queen: a clean profit, and not a single check fired. This is the discipline: before YOU snatch a pawn deep in enemy ground, ask 'can my piece get out?' And when your opponent grabs greedily, ask the same of his. Then build the cage.",
         "annotations": [
          {
           "kind": "circle",
@@ -217,21 +217,21 @@
        "uci": "c3a4",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Na4! Quiet and deadly. It attacks the queen and seals her escape — every square she can reach is covered."
+        "text": "Na4! Quiet and deadly. It attacks the queen and seals her escape. Every square she can reach is covered."
        }
       },
       {
        "uci": "b2a1",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "...Qxa1, the desperado — grabbing the rook on the way out, since the queen is lost anyway."
+        "text": "...Qxa1, the desperado: grabbing the rook on the way out, since the queen is lost anyway."
        }
       },
       {
        "uci": "d1a1",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Qxa1, and the queen is gone. A rook for a queen — White is winning. The greedy capture cost Black the game."
+        "text": "Qxa1, and the queen is gone. A rook for a queen: White is winning. The greedy capture cost Black the game."
        }
       }
      ]
@@ -245,7 +245,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "Black's queen has grabbed the b2-pawn, deep in your camp. There is no check and no capture that wins her — yet. Play the quiet knight move that attacks her and takes away every escape square.",
+        "text": "Black's queen has grabbed the b2-pawn, deep in your camp. There is no check and no capture that wins her, yet. Play the quiet knight move that attacks her and takes away every escape square.",
         "annotations": [
          {
           "kind": "circle",
@@ -264,7 +264,7 @@
        ],
        "successLine": {
         "conceptId": "trapped-piece",
-        "text": "Na4! The queen is trapped — every square she can move to is covered, so she can only grab the a1-rook on her way down. You win a queen for a rook. No tactic fired; she simply ran out of safe squares. That is a trapped piece.",
+        "text": "Na4! The queen is trapped. Every square she can move to is covered, so she can only grab the a1-rook on her way down. You win a queen for a rook. No tactic fired; she simply ran out of safe squares. That is a trapped piece.",
         "annotations": [
          {
           "kind": "arrow",
@@ -282,16 +282,16 @@
        },
        "retryLine": {
         "conceptId": "trapped-piece",
-        "text": "Not a check, not a capture — a quiet move. The queen on b2 needs her escape squares taken away. Which knight move attacks b2 and fences her in against the edge?"
+        "text": "Not a check, not a capture. A quiet move. The queen on b2 needs her escape squares taken away. Which knight move attacks b2 and fences her in against the edge?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — round up the stray",
+     "title": "Cool-down: round up the stray",
      "intro": {
-      "text": "Each position holds a piece with no good square. Build the cage and win it — the killing move is often quiet."
+      "text": "Each position holds a piece with no good square. Build the cage and win it. The killing move is often quiet."
      },
      "puzzle": {
       "themes": [
@@ -306,15 +306,15 @@
   },
   {
    "id": "l3-interference",
-   "title": "Interference — Cutting the Defender",
+   "title": "Interference: Cutting the Defender",
    "kind": "tactics",
-   "summary": "A defender protects along a line. Plant a piece on that line — even a sacrifice — and the protection is severed.",
+   "summary": "A defender protects along a line. Plant a piece on that line (even a sacrifice) and the protection is severed.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — sever the line",
+     "title": "Warm-up: sever the line",
      "intro": {
-      "text": "A long-range piece defends along a line — a rank, a file, a diagonal. If you can block that line, the defence vanishes. Find the move that cuts a defender in each."
+      "text": "A long-range piece defends along a line. A rank, a file, a diagonal. If you can block that line, the defence vanishes. Find the move that cuts a defender in each."
      },
      "puzzle": {
       "themes": [
@@ -334,7 +334,7 @@
        "conceptId": "interference",
        "coach": {
         "conceptId": "interference",
-        "text": "Look first at the obstacle. The king on g8 is walled by its own pawns — a back-rank weakness. White would love Re8 mate, but the rook on a8 guards the eighth rank: after Re8+ Rxe8 it simply takes. The defender reaches all the way across the rank. Interference asks a single question: can I BLOCK that line? Put something on c8, between the a8-rook and e8, and the rook can no longer reach.",
+        "text": "Look first at the obstacle. The king on g8 is walled by its own pawns, a back-rank weakness. White would love Re8 mate, but the rook on a8 guards the eighth rank: after Re8+ Rxe8 it simply takes. The defender reaches all the way across the rank. Interference asks a single question: can I BLOCK that line? Put something on c8, between the a8-rook and e8, and the rook can no longer reach.",
         "annotations": [
          {
           "kind": "circle",
@@ -361,7 +361,7 @@
        "conceptId": "interference",
        "coach": {
         "conceptId": "interference",
-        "text": "Imagine a White bishop has reached c8 — directly between the rook on a8 and the square e8. The line is cut: the a8-rook now sees only b8 and c8, no further. Its defence of e8 is gone. Now Re8 is checkmate — the rook the bishop blocks can no longer come to the rescue. THAT is interference: you do not remove the defender, you stand in its way.",
+        "text": "Imagine a White bishop has reached c8. Directly between the rook on a8 and the square e8. The line is cut: the a8-rook now sees only b8 and c8, no further. Its defence of e8 is gone. Now Re8 is checkmate. The rook the bishop blocks can no longer come to the rescue. THAT is interference: you do not remove the defender, you stand in its way.",
         "annotations": [
          {
           "kind": "circle",
@@ -390,7 +390,7 @@
        "conceptId": "interference",
        "coach": {
         "conceptId": "interference",
-        "text": "And here is why interference is worth a sacrifice. Even if Black could answer Re8+ with ...Rxc8, the rook has been DEFLECTED off the eighth rank to do it — and in the back-rank version it has no time at all, because Re8 is already mate. The piece you interpose is often given up; what you buy is the broken line. Remember the question forever: 'what guards this square, and can I get between?'",
+        "text": "And here is why interference is worth a sacrifice. Even if Black could answer Re8+ with ...Rxc8, the rook has been DEFLECTED off the eighth rank to do it, and in the back-rank version it has no time at all, because Re8 is already mate. The piece you interpose is often given up; what you buy is the broken line. Remember the question forever: 'what guards this square, and can I get between?'",
         "annotations": [
          {
           "kind": "circle",
@@ -417,7 +417,7 @@
        "conceptId": "interference",
        "coach": {
         "conceptId": "interference",
-        "text": "Now YOU play the interference — and this time it is a sacrifice. The black queen on f5 is your target: she is loose, but if you grab elsewhere she escapes with check. The cleanest win is to trap her on the fifth rank. Drop your rook onto e5, right between the f5-queen and d5, cutting her guard of that square. She must react: if she takes, ...Qxe5 dxe5 wins the queen for a rook; if she runs, the d5-square is no longer hers and Qxd5+ wins the pawn with check while your attack rolls on. Play the move that gets in her way.",
+        "text": "Now YOU play the interference, and this time it is a sacrifice. The black queen on f5 is your target: she is loose, but if you grab elsewhere she escapes with check. The cleanest win is to trap her on the fifth rank. Drop your rook onto e5, right between the f5-queen and d5, cutting her guard of that square. She must react: if she takes, ...Qxe5 dxe5 wins the queen for a rook; if she runs, the d5-square is no longer hers and Qxd5+ wins the pawn with check while your attack rolls on. Play the move that gets in her way.",
         "annotations": [
          {
           "kind": "arrow",
@@ -445,7 +445,7 @@
        ],
        "successLine": {
         "conceptId": "interference",
-        "text": "Re5! The cut, given as a sacrifice. The rook stands between the f5-queen and d5, severing her defence. Take it — ...Qxe5 dxe5 — and you have won her for a rook. Decline, and Qxd5+ smashes through the broken line with check, regaining material with the attack still raging. You did not remove the defender; you stood in her way. That is interference, played by your own hand — and worth a sacrifice.",
+        "text": "Re5! The cut, given as a sacrifice. The rook stands between the f5-queen and d5, severing her defence. Take it (...Qxe5 dxe5) and you have won her for a rook. Decline, and Qxd5+ smashes through the broken line with check, regaining material with the attack still raging. You did not remove the defender; you stood in her way. That is interference, played by your own hand, and worth a sacrifice.",
         "annotations": [
          {
           "kind": "arrow",
@@ -463,7 +463,7 @@
        },
        "retryLine": {
         "conceptId": "interference",
-        "text": "Not a capture, not a check — a block, even a sacrifice. The black queen on f5 defends d5 along the fifth rank. Which rook move lands between them, on e5, cutting that defence so Qxd5+ can follow?"
+        "text": "Not a capture, not a check. A block, even a sacrifice. The black queen on f5 defends d5 along the fifth rank. Which rook move lands between them, on e5, cutting that defence so Qxd5+ can follow?"
        }
       },
       {
@@ -491,7 +491,7 @@
        ],
        "successLine": {
         "conceptId": "interference",
-        "text": "Re8, mate. The rook on a8 would normally capture on e8 — but the bishop on c8 stands in its path, so it can only watch. The line was cut; the mate went through. That is the whole power of interference.",
+        "text": "Re8, mate. The rook on a8 would normally capture on e8, but the bishop on c8 stands in its path, so it can only watch. The line was cut; the mate went through. That is the whole power of interference.",
         "annotations": [
          {
           "kind": "circle",
@@ -509,16 +509,16 @@
        },
        "retryLine": {
         "conceptId": "interference",
-        "text": "The bishop on c8 has already done the hard work — it blocks the a8-rook from the eighth rank. Now simply deliver the back-rank mate the rook can no longer answer."
+        "text": "The bishop on c8 has already done the hard work. It blocks the a8-rook from the eighth rank. Now simply deliver the back-rank mate the rook can no longer answer."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — break the defence",
+     "title": "Cool-down: break the defence",
      "intro": {
-      "text": "Real positions now. In each, a defender guards along a line and you can interpose — often a sacrifice — to cut it. Find the move that gets between."
+      "text": "Real positions now. In each, a defender guards along a line and you can interpose (often a sacrifice) to cut it. Find the move that gets between."
      },
      "puzzle": {
       "themes": [
@@ -539,9 +539,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — pressure down the line",
+     "title": "Warm-up: pressure down the line",
      "intro": {
-      "text": "A queen and rook on one file, two rooks doubled, a bishop behind a queen — when two pieces share a line, their force multiplies. Find the move that uses the doubled pressure in each."
+      "text": "A queen and rook on one file, two rooks doubled, a bishop behind a queen. When two pieces share a line, their force multiplies. Find the move that uses the doubled pressure in each."
      },
      "puzzle": {
       "themes": [
@@ -561,7 +561,7 @@
        "conceptId": "xray",
        "coach": {
         "conceptId": "xray",
-        "text": "Two ideas, one shape. First the BATTERY: my queen on b6 and my rook on d1 — and look at the d-file. The rook backs up any piece that lands on it. Black's rook on d7 sits on that file, defended only by itself. The X-RAY is the queen's eye: it looks THROUGH the d7-rook to the king on g8 behind. When attacker and target line up with a defender between, force passes through. Watch the battery fire.",
+        "text": "Two ideas, one shape. First the BATTERY: my queen on b6 and my rook on d1, and look at the d-file. The rook backs up any piece that lands on it. Black's rook on d7 sits on that file, defended only by itself. The X-RAY is the queen's eye: it looks THROUGH the d7-rook to the king on g8 behind. When attacker and target line up with a defender between, force passes through. Watch the battery fire.",
         "annotations": [
          {
           "kind": "arrow",
@@ -583,7 +583,7 @@
        "conceptId": "xray",
        "coach": {
         "conceptId": "xray",
-        "text": "Qd8+! The queen crashes onto the file in front of my own rook — a sacrifice. It is check, and the only legal answer is ...Rxd8, because nothing else stops it. The rook is forced to take. But the rook was the only thing holding the file...",
+        "text": "Qd8+! The queen crashes onto the file in front of my own rook, a sacrifice. It is check, and the only legal answer is ...Rxd8, because nothing else stops it. The rook is forced to take. But the rook was the only thing holding the file...",
         "annotations": [
          {
           "kind": "arrow",
@@ -605,7 +605,7 @@
        "conceptId": "xray",
        "coach": {
         "conceptId": "xray",
-        "text": "...Rxd8, and now Rxd8 — mate. The back rook simply recaptured down the same file the battery owned, and the king on g8 is mated behind its own pawns. The queen gave herself so the rook behind could mate. That is the battery: the front piece clears the way, the rear piece finishes. The x-ray saw the king through the defender all along.",
+        "text": "...Rxd8, and now Rxd8: mate. The back rook simply recaptured down the same file the battery owned, and the king on g8 is mated behind its own pawns. The queen gave herself so the rook behind could mate. That is the battery: the front piece clears the way, the rear piece finishes. The x-ray saw the king through the defender all along.",
         "annotations": [
          {
           "kind": "circle",
@@ -637,7 +637,7 @@
        "uci": "b6d8",
        "coach": {
         "conceptId": "xray",
-        "text": "Qd8+! The front of the battery sacrifices itself with check. The rook on d7 must take — there is no other legal move."
+        "text": "Qd8+! The front of the battery sacrifices itself with check. The rook on d7 must take. There is no other legal move."
        }
       },
       {
@@ -651,7 +651,7 @@
        "uci": "d1d8",
        "coach": {
         "conceptId": "xray",
-        "text": "Rxd8, mate. The rear rook recaptures and mates on the back rank. The battery did exactly what a battery does — the front piece cleared, the rear piece struck."
+        "text": "Rxd8, mate. The rear rook recaptures and mates on the back rank. The battery did exactly what a battery does. The front piece cleared, the rear piece struck."
        }
       }
      ]
@@ -665,7 +665,7 @@
        "conceptId": "xray",
        "coach": {
         "conceptId": "xray",
-        "text": "Your battery: queen on b6, rook on d1, the whole d-file under fire. The Black rook on d7 is the only defender, and your queen x-rays through it to the king. Play the forcing move that makes the rook take — and opens the file for the rook behind.",
+        "text": "Your battery: queen on b6, rook on d1, the whole d-file under fire. The Black rook on d7 is the only defender, and your queen x-rays through it to the king. Play the forcing move that makes the rook take, and opens the file for the rook behind.",
         "annotations": [
          {
           "kind": "arrow",
@@ -686,7 +686,7 @@
        ],
        "successLine": {
         "conceptId": "xray",
-        "text": "Qd8+! The rook is forced to take — ...Rxd8 — and then Rxd8 is mate down the same file. The front of the battery sacrifices, the rear delivers. When two pieces share a line, look for the move that clears the front one with tempo.",
+        "text": "Qd8+! The rook is forced to take (...Rxd8) and then Rxd8 is mate down the same file. The front of the battery sacrifices, the rear delivers. When two pieces share a line, look for the move that clears the front one with tempo.",
         "annotations": [
          {
           "kind": "arrow",
@@ -706,7 +706,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — through the defender",
+     "title": "Cool-down: through the defender",
      "intro": {
       "text": "More x-rays and batteries. Look for two of your pieces sharing a line, and the move that makes their combined force tell."
      },
@@ -729,9 +729,9 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the silent killer",
+     "title": "Warm-up: the silent killer",
      "intro": {
-      "text": "Forcing moves are easy to find — and easy to defend. The deadliest move is often quiet: no check, no capture, just a threat the opponent cannot answer. Look past the loud moves and find it."
+      "text": "Forcing moves are easy to find, and easy to defend. The deadliest move is often quiet: no check, no capture, just a threat the opponent cannot answer. Look past the loud moves and find it."
      },
      "puzzle": {
       "themes": [
@@ -751,7 +751,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "An endgame, and the black king has wandered to h4 — deep in White's half, hemmed in by its own pawns on f4, g5, h5. Your instinct hunts for a check. There is none that helps. So change the question: not 'what can I check?' but 'what can I THREATEN that he cannot prevent?' The knight on c2 holds the key. Watch.",
+        "text": "An endgame, and the black king has wandered to h4. Deep in White's half, hemmed in by its own pawns on f4, g5, h5. Your instinct hunts for a check. There is none that helps. So change the question: not 'what can I check?' but 'what can I THREATEN that he cannot prevent?' The knight on c2 holds the key. Watch.",
         "annotations": [
          {
           "kind": "circle",
@@ -771,7 +771,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "Ne1 — a whisper. No check, no capture, the knight simply steps to e1. But now it threatens Nf3, mate: the knight would check the king on h4 from f3, and with f4, g5, h5 all blocked by Black's own pawns, the king has no square. The whole board is quiet, and Black is lost. There is no defence to the threat — his pieces cannot cover f3 or give the king air.",
+        "text": "Ne1: a whisper. No check, no capture, the knight simply steps to e1. But now it threatens Nf3, mate: the knight would check the king on h4 from f3, and with f4, g5, h5 all blocked by Black's own pawns, the king has no square. The whole board is quiet, and Black is lost. There is no defence to the threat. His pieces cannot cover f3 or give the king air.",
         "annotations": [
          {
           "kind": "circle",
@@ -799,7 +799,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "This is why strong players fear the quiet move: there is nothing to react to. A check, you answer. A capture, you recapture. But a silent move that threatens mate forces the opponent to FIND the defence himself — and here there is none. Train the habit: when no forcing move wins, ask what unstoppable threat a quiet move could create. The loudest move is rarely the best.",
+        "text": "This is why strong players fear the quiet move: there is nothing to react to. A check, you answer. A capture, you recapture. But a silent move that threatens mate forces the opponent to FIND the defence himself, and here there is none. Train the habit: when no forcing move wins, ask what unstoppable threat a quiet move could create. The loudest move is rarely the best.",
         "annotations": [
          {
           "kind": "circle",
@@ -823,28 +823,28 @@
      "fen": "8/2p5/1pPp4/1P1Pp1bp/4Pp1k/7P/2N3K1/8 w - - 6 46",
      "bossFen": "8/2p5/1pPp4/1P1Pp1bp/4Pp1k/7P/2N3K1/8 w - - 6 46",
      "intro": {
-      "text": "The full point in two moves — and not a single check until the very end. Watch the silent knight do its work."
+      "text": "The full point in two moves, and not a single check until the very end. Watch the silent knight do its work."
      },
      "line": [
       {
        "uci": "c2e1",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "Ne1! The quiet move. No check, no capture — it only threatens Nf3 mate. Black has no way to cover f3 or free his king."
+        "text": "Ne1! The quiet move. No check, no capture. It only threatens Nf3 mate. Black has no way to cover f3 or free his king."
        }
       },
       {
        "uci": "f4f3",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "...f3, a desperate try to block — pushing the pawn into the path. But it walks straight into the knight."
+        "text": "...f3, a desperate try to block, pushing the pawn into the path. But it walks straight into the knight."
        }
       },
       {
        "uci": "e1f3",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "Nxf3, mate. The knight checks from f3 and the king on h4 has no square — its own pawns sealed every flight. The quiet move set the trap; the king could never escape it."
+        "text": "Nxf3, mate. The knight checks from f3 and the king on h4 has no square. Its own pawns sealed every flight. The quiet move set the trap; the king could never escape it."
        }
       }
      ]
@@ -858,7 +858,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "The black king is trapped on h4 by its own pawns. No check helps. Find the quiet knight move — no check, no capture — that threatens an unstoppable mate on f3.",
+        "text": "The black king is trapped on h4 by its own pawns. No check helps. Find the quiet knight move (no check, no capture) that threatens an unstoppable mate on f3.",
         "annotations": [
          {
           "kind": "circle",
@@ -877,7 +877,7 @@
        ],
        "successLine": {
         "conceptId": "quiet-move",
-        "text": "Ne1! Silent and deadly. The threat is Nf3#, and Black cannot meet it — his king is walled in and nothing covers f3. You found the move that makes no noise and wins the game. That is the eye this chapter is training.",
+        "text": "Ne1! Silent and deadly. The threat is Nf3#, and Black cannot meet it. His king is walled in and nothing covers f3. You found the move that makes no noise and wins the game. That is the eye this chapter is training.",
         "annotations": [
          {
           "kind": "circle",
@@ -896,14 +896,14 @@
        },
        "retryLine": {
         "conceptId": "quiet-move",
-        "text": "Not a check, not a capture — a quiet move. The knight wants to reach f3, where it would mate the king on h4. From c2, which quiet square sets up that unstoppable Nf3?"
+        "text": "Not a check, not a capture. A quiet move. The knight wants to reach f3, where it would mate the king on h4. From c2, which quiet square sets up that unstoppable Nf3?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — quiet and crushing",
+     "title": "Cool-down: quiet and crushing",
      "intro": {
       "text": "Find the move the opponent never sees coming. Skip the checks and captures that lead nowhere, and look for the silent threat that cannot be met."
      },
@@ -922,13 +922,13 @@
    "id": "l6-in-between-move",
    "title": "The In-Between Move",
    "kind": "tactics",
-   "summary": "Before you recapture or resolve, insert a more forcing move. The intermezzo changes the order — and the order changes everything.",
+   "summary": "Before you recapture or resolve, insert a more forcing move. The intermezzo changes the order, and the order changes everything.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — do not recapture yet",
+     "title": "Warm-up: do not recapture yet",
      "intro": {
-      "text": "When a piece is taken, the hand reaches to recapture. Stop. Is there a MORE forcing move first — a check, a bigger threat — that you can slip in? That in-between move, the zwischenzug, often wins. Find it in each."
+      "text": "When a piece is taken, the hand reaches to recapture. Stop. Is there a MORE forcing move first (a check, a bigger threat) that you can slip in? That in-between move, the zwischenzug, often wins. Find it in each."
      },
      "puzzle": {
       "themes": [
@@ -948,7 +948,7 @@
        "conceptId": "intermezzo",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "Black has just won your rook — his rook sits on f3, ready to be supported, and his pieces are loaded for ...Re1+ on the back rank. The obvious Rxf3 walks into ...Re1+! and Black has counterplay against your king. The order is wrong. Before you grab on f3, insert the most forcing move on the board.",
+        "text": "Black has just won your rook. His rook sits on f3, ready to be supported, and his pieces are loaded for ...Re1+ on the back rank. The obvious Rxf3 walks into ...Re1+! and Black has counterplay against your king. The order is wrong. Before you grab on f3, insert the most forcing move on the board.",
         "annotations": [
          {
           "kind": "circle",
@@ -969,7 +969,7 @@
        "conceptId": "intermezzo",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "Qxe8+! The in-between move — and it is no mere check. It captures the very rook that dreamed of ...Re1+, and it checks, so Black must answer it: ...Kh7, forced. Only NOW, with the back-rank counterplay gone and a tempo in hand, comes Rxf3 — winning a clean second rook. Same two moves, the opposite order, and the result flips from messy to winning.",
+        "text": "Qxe8+! The in-between move, and it is no mere check. It captures the very rook that dreamed of ...Re1+, and it checks, so Black must answer it: ...Kh7, forced. Only NOW, with the back-rank counterplay gone and a tempo in hand, comes Rxf3, winning a clean second rook. Same two moves, the opposite order, and the result flips from messy to winning.",
         "annotations": [
          {
           "kind": "circle",
@@ -992,7 +992,7 @@
        "conceptId": "intermezzo",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "Two rooks up, the king safe. The lesson is a habit: before any recapture, ask 'do I have a check or a bigger threat to insert FIRST?' The intermezzo is the move that breaks the expected sequence. It is how a player escapes a 'forced' trade — or, as here, turns a single win into a double one.",
+        "text": "Two rooks up, the king safe. The lesson is a habit: before any recapture, ask 'do I have a check or a bigger threat to insert FIRST?' The intermezzo is the move that breaks the expected sequence. It is how a player escapes a 'forced' trade, or, as here, turns a single win into a double one.",
         "annotations": [
          {
           "kind": "circle",
@@ -1022,7 +1022,7 @@
        "uci": "a4e8",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "Qxe8+! Not Rxf3 — first the in-between. It grabs the back-rank rook and checks, so it cannot be ignored."
+        "text": "Qxe8+! Not Rxf3: first the in-between. It grabs the back-rank rook and checks, so it cannot be ignored."
        }
       },
       {
@@ -1036,7 +1036,7 @@
        "uci": "f1f3",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "Rxf3, and now it is safe. Two whole rooks to the good, no counterplay. The recapture was always there — the intermezzo made it free."
+        "text": "Rxf3, and now it is safe. Two whole rooks to the good, no counterplay. The recapture was always there. The intermezzo made it free."
        }
       }
      ]
@@ -1050,7 +1050,7 @@
        "conceptId": "intermezzo",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "You can win the rook on f3 — but Rxf3 at once allows ...Re1+ with counterplay. Find the more forcing in-between move first: a capture that also gives check and kills Black's back-rank idea.",
+        "text": "You can win the rook on f3, but Rxf3 at once allows ...Re1+ with counterplay. Find the more forcing in-between move first: a capture that also gives check and kills Black's back-rank idea.",
         "annotations": [
          {
           "kind": "circle",
@@ -1069,7 +1069,7 @@
        ],
        "successLine": {
         "conceptId": "intermezzo",
-        "text": "Qxe8+! The in-between move. Black must reply ...Kh7, and then Rxf3 wins a second rook with the king safe. You changed the order — and the order changed everything.",
+        "text": "Qxe8+! The in-between move. Black must reply ...Kh7, and then Rxf3 wins a second rook with the king safe. You changed the order, and the order changed everything.",
         "annotations": [
          {
           "kind": "circle",
@@ -1087,14 +1087,14 @@
        },
        "retryLine": {
         "conceptId": "intermezzo",
-        "text": "Not the recapture yet — Rxf3 lets Black play ...Re1+. Look for the forcing move to insert first: which capture also gives check and removes the e8-rook?"
+        "text": "Not the recapture yet: Rxf3 lets Black play ...Re1+. Look for the forcing move to insert first: which capture also gives check and removes the e8-rook?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the order is everything",
+     "title": "Cool-down: the order is everything",
      "intro": {
       "text": "Each position offers an in-between move. Resist the automatic recapture; find the check or threat that must be answered first."
      },
@@ -1113,13 +1113,13 @@
    "id": "l7-in-between-defence",
    "title": "The In-Between Defence",
    "kind": "tactics",
-   "summary": "When you are attacked, do not always submit. A check or counter-threat of your own — the zwischenzug on defence — can save the piece or flip the board.",
+   "summary": "When you are attacked, do not always submit. A check or counter-threat of your own (the zwischenzug on defence) can save the piece or flip the board.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — counter, do not retreat",
+     "title": "Warm-up: counter, do not retreat",
      "intro": {
-      "text": "Your piece is attacked. The reflex is to retreat or defend. But a forcing move of your own — a check, a bigger threat — can change the whole exchange in your favour. Find the in-between defence in each."
+      "text": "Your piece is attacked. The reflex is to retreat or defend. But a forcing move of your own (a check, a bigger threat) can change the whole exchange in your favour. Find the in-between defence in each."
      },
      "puzzle": {
       "themes": [
@@ -1140,7 +1140,7 @@
        "conceptId": "in-between-defence",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "White's queen has just landed on d5, undefended — you would love to play ...cxd5 and win it. But look at the c-file: your queen sits on c7, and White's rook on c1 stares right at it. Snatch with ...cxd5? and Rxc7 wins YOUR queen back. The grab is a trap because of a counter you have not dealt with. The answer is an in-between move on defence.",
+        "text": "White's queen has just landed on d5, undefended. You would love to play ...cxd5 and win it. But look at the c-file: your queen sits on c7, and White's rook on c1 stares right at it. Snatch with ...cxd5? and Rxc7 wins YOUR queen back. The grab is a trap because of a counter you have not dealt with. The answer is an in-between move on defence.",
         "annotations": [
          {
           "kind": "circle",
@@ -1162,7 +1162,7 @@
        "conceptId": "in-between-defence",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "...Re1+! The in-between defence. Before grabbing the queen, you insert a check that forces White's rook to capture: Rxe1 is the only legal reply. And now the c1-rook has been DEFLECTED off the c-file — it no longer guards the road to your queen. The counter you feared is gone.",
+        "text": "...Re1+! The in-between defence. Before grabbing the queen, you insert a check that forces White's rook to capture: Rxe1 is the only legal reply. And now the c1-rook has been DEFLECTED off the c-file. It no longer guards the road to your queen. The counter you feared is gone.",
         "annotations": [
          {
           "kind": "circle",
@@ -1185,7 +1185,7 @@
        "conceptId": "in-between-defence",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "...cxd5, and NOW it is safe — a whole queen for nothing, because the rook that would have answered Rxc7 is gone, sitting on e1. That is the in-between defence: when grabbing is unsafe because of a counter, insert your own forcing move first to remove it. Do not retreat — hit back.",
+        "text": "...cxd5, and NOW it is safe. A whole queen for nothing, because the rook that would have answered Rxc7 is gone, sitting on e1. That is the in-between defence: when grabbing is unsafe because of a counter, insert your own forcing move first to remove it. Do not retreat. Hit back.",
         "annotations": [
          {
           "kind": "circle",
@@ -1204,21 +1204,21 @@
      "fen": "4r1k1/p1q2pp1/2p4p/3Q4/3P4/7P/PP3PP1/2R3K1 b - - 0 23",
      "bossFen": "4r1k1/p1q2pp1/2p4p/3Q4/3P4/7P/PP3PP1/2R3K1 b - - 0 23",
      "intro": {
-      "text": "The grab is a trap — until you insert the check first. Watch the order."
+      "text": "The grab is a trap. Until you insert the check first. Watch the order."
      },
      "line": [
       {
        "uci": "e8e1",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "...Re1+! Not ...cxd5 — first the in-between check. White is forced to take."
+        "text": "...Re1+! Not ...cxd5: first the in-between check. White is forced to take."
        }
       },
       {
        "uci": "c1e1",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "Rxe1, forced. The c1-rook is deflected off the c-file. Now the counter Rxc7 is impossible — that rook is on e1."
+        "text": "Rxe1, forced. The c1-rook is deflected off the c-file. Now the counter Rxc7 is impossible. That rook is on e1."
        }
       },
       {
@@ -1239,7 +1239,7 @@
        "conceptId": "in-between-defence",
        "coach": {
         "conceptId": "in-between-defence",
-        "text": "You want to take the queen on d5 — but ...cxd5 allows Rxc7, winning your queen in return, because the c1-rook guards the c-file. Insert your own forcing move first: a check that deflects that rook.",
+        "text": "You want to take the queen on d5, but ...cxd5 allows Rxc7, winning your queen in return, because the c1-rook guards the c-file. Insert your own forcing move first: a check that deflects that rook.",
         "annotations": [
          {
           "kind": "circle",
@@ -1260,7 +1260,7 @@
        ],
        "successLine": {
         "conceptId": "in-between-defence",
-        "text": "...Re1+! White must play Rxe1, and the c-file is abandoned — now ...cxd5 wins the queen clean. You did not retreat or defend; you struck first with a check, and the counter melted away.",
+        "text": "...Re1+! White must play Rxe1, and the c-file is abandoned. Now ...cxd5 wins the queen clean. You did not retreat or defend; you struck first with a check, and the counter melted away.",
         "annotations": [
          {
           "kind": "circle",
@@ -1278,16 +1278,16 @@
        },
        "retryLine": {
         "conceptId": "in-between-defence",
-        "text": "Not ...cxd5 yet — Rxc7 would win your queen back. Find the in-between check that forces White's c1-rook to leave the c-file."
+        "text": "Not ...cxd5 yet: Rxc7 would win your queen back. Find the in-between check that forces White's c1-rook to leave the c-file."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — strike first",
+     "title": "Cool-down: strike first",
      "intro": {
-      "text": "When grabbing or retreating looks forced, look for the counter-blow. A check or threat of your own, inserted first, can save the piece — or win the game."
+      "text": "When grabbing or retreating looks forced, look for the counter-blow. A check or threat of your own, inserted first, can save the piece, or win the game."
      },
      "puzzle": {
       "themes": [
@@ -1305,13 +1305,13 @@
    "id": "l8-mixed-and-boss",
    "title": "Mixed Drill & the Boss",
    "kind": "practice",
-   "summary": "All five weapons in one place — then prove it over the board: convert an edge with non-forcing play.",
+   "summary": "All five weapons in one place. Then prove it over the board: convert an edge with non-forcing play.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — name the weapon",
+     "title": "Warm-up: name the weapon",
      "intro": {
-      "text": "Five ideas, mixed together: the trapped piece, interference, the x-ray battery, the quiet move, the in-between move. Each position calls for one of them. Find the strongest move — and notice which weapon it is."
+      "text": "Five ideas, mixed together: the trapped piece, interference, the x-ray battery, the quiet move, the in-between move. Each position calls for one of them. Find the strongest move, and notice which weapon it is."
      },
      "puzzle": {
       "themes": [
@@ -1335,7 +1335,7 @@
        "conceptId": "quiet-move",
        "coach": {
         "conceptId": "quiet-move",
-        "text": "Every weapon in this chapter answers the same question: 'what wins here that is NOT a simple check or capture?' The trapped piece — take away its squares. Interference — get between a defender and its charge. The battery — line two pieces up and clear the front one. The quiet move — make an unstoppable threat in silence. The in-between move — change the order with a forcing insert. Loud moves are easy; the wins that last are quiet. Carry that question into every game.",
+        "text": "Every weapon in this chapter answers the same question: 'what wins here that is NOT a simple check or capture?' The trapped piece: take away its squares. Interference: get between a defender and its charge. The battery: line two pieces up and clear the front one. The quiet move. Make an unstoppable threat in silence. The in-between move. Change the order with a forcing insert. Loud moves are easy; the wins that last are quiet. Carry that question into every game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1351,9 +1351,9 @@
     },
     {
      "kind": "guided",
-     "title": "Mixed mastery — name the weapon",
+     "title": "Mixed mastery: name the weapon",
      "intro": {
-      "text": "Four fresh positions, none of them the ones you were taught on, and none labelled — the prompt will NOT tell you which weapon to use. Find the strongest move yourself, then name which idea it was: the trapped piece, the battery, the quiet move, or the in-between move. Interference you have already drilled hands-on in its own lesson; here we sharpen the other four on new ground. This is the transfer that proves you own them."
+      "text": "Four fresh positions, none of them the ones you were taught on, and none labelled. The prompt will NOT tell you which weapon to use. Find the strongest move yourself, then name which idea it was: the trapped piece, the battery, the quiet move, or the in-between move. Interference you have already drilled hands-on in its own lesson; here we sharpen the other four on new ground. This is the transfer that proves you own them."
      },
      "steps": [
       {
@@ -1361,7 +1361,7 @@
        "conceptId": "trapped-piece",
        "coach": {
         "conceptId": "trapped-piece",
-        "text": "You are Black. White's bishop has just grabbed the a7-pawn and strayed to the rim. No check, no capture wins it outright — but look at its squares. Find the quiet pawn move that fences it in, then name the weapon.",
+        "text": "You are Black. White's bishop has just grabbed the a7-pawn and strayed to the rim. No check, no capture wins it outright, but look at its squares. Find the quiet pawn move that fences it in, then name the weapon.",
         "annotations": [
          {
           "kind": "circle",
@@ -1375,7 +1375,7 @@
        ],
        "successLine": {
         "conceptId": "trapped-piece",
-        "text": "...b6! The TRAPPED PIECE. The quiet pawn step walls the bishop in — a7 has no flight that is not covered, so it can only take on b6 and be recaptured. White grabbed one pawn and loses the bishop. A piece with no square is dead wood, even on the seventh rank.",
+        "text": "...b6! The TRAPPED PIECE. The quiet pawn step walls the bishop in: a7 has no flight that is not covered, so it can only take on b6 and be recaptured. White grabbed one pawn and loses the bishop. A piece with no square is dead wood, even on the seventh rank.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1393,7 +1393,7 @@
        },
        "retryLine": {
         "conceptId": "trapped-piece",
-        "text": "Not a check, not a capture. The a7-bishop has wandered to the rim — which quiet pawn move takes away its last squares and nets it next move?"
+        "text": "Not a check, not a capture. The a7-bishop has wandered to the rim, which quiet pawn move takes away its last squares and nets it next move?"
        }
       },
       {
@@ -1401,7 +1401,7 @@
        "conceptId": "xray",
        "coach": {
         "conceptId": "xray",
-        "text": "You are Black. Your bishop on g7 and your queen on c2 both bear down on the long diagonal toward the white king on a1 — but White's bishop on d4 stands in the way. Find the move that clears the front of that diagonal with force, and name the weapon.",
+        "text": "You are Black. Your bishop on g7 and your queen on c2 both bear down on the long diagonal toward the white king on a1, but White's bishop on d4 stands in the way. Find the move that clears the front of that diagonal with force, and name the weapon.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1422,7 +1422,7 @@
        ],
        "successLine": {
         "conceptId": "xray",
-        "text": "...b2+! The X-RAY and BATTERY. The pawn checks and forces Bxb2 — and now ...Bxb2 is mate, the g7-bishop firing down the diagonal it was x-raying through the d4-bishop all along. The front piece is cleared with tempo; the rear piece delivers. That is a battery.",
+        "text": "...b2+! The X-RAY and BATTERY. The pawn checks and forces Bxb2, and now ...Bxb2 is mate, the g7-bishop firing down the diagonal it was x-raying through the d4-bishop all along. The front piece is cleared with tempo; the rear piece delivers. That is a battery.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1469,7 +1469,7 @@
        ],
        "successLine": {
         "conceptId": "quiet-move",
-        "text": "...Be2! The QUIET MOVE. No check, no capture — the bishop simply seals the white king on e1 and threatens ...Rd1 mate, which nothing prevents. Even g7-g8=Q comes a move too late. The deadliest move makes no noise: White is helpless against the silent threat.",
+        "text": "...Be2! The QUIET MOVE. No check, no capture. The bishop simply seals the white king on e1 and threatens ...Rd1 mate, which nothing prevents. Even g7-g8=Q comes a move too late. The deadliest move makes no noise: White is helpless against the silent threat.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1497,7 +1497,7 @@
        "conceptId": "intermezzo",
        "coach": {
         "conceptId": "intermezzo",
-        "text": "You are Black. White's knight has just taken on b6, and the hand reaches to recapture with ...Qxb6 — but then Qxe5 wins your knight straight back. Stop. Insert a more forcing move first: a pawn push that attacks White's queen with tempo. Then name the weapon.",
+        "text": "You are Black. White's knight has just taken on b6, and the hand reaches to recapture with ...Qxb6, but then Qxe5 wins your knight straight back. Stop. Insert a more forcing move first: a pawn push that attacks White's queen with tempo. Then name the weapon.",
         "annotations": [
          {
           "kind": "circle",
@@ -1516,7 +1516,7 @@
        ],
        "successLine": {
         "conceptId": "intermezzo",
-        "text": "...c5! The IN-BETWEEN MOVE. Before recapturing, you hit the d4-queen with tempo. She must move — and only NOW does ...Qxb6 take the knight back, the e5-knight saved and a clean piece won. Recapture last, not first: the intermezzo changed the order, and the order changed the result.",
+        "text": "...c5! The IN-BETWEEN MOVE. Before recapturing, you hit the d4-queen with tempo. She must move, and only NOW does ...Qxb6 take the knight back, the e5-knight saved and a clean piece won. Recapture last, not first: the intermezzo changed the order, and the order changed the result.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1536,14 +1536,14 @@
        },
        "retryLine": {
         "conceptId": "intermezzo",
-        "text": "Not ...Qxb6 yet — Qxe5 would win your knight in return. Which pawn push attacks the d4-queen first, forcing her away before you recapture on b6?"
+        "text": "Not ...Qxb6 yet: Qxe5 would win your knight in return. Which pawn push attacks the d4-queen first, forcing her away before you recapture on b6?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the full toolkit",
+     "title": "Cool-down: the full toolkit",
      "intro": {
       "text": "A final mixed set. Look past the loud moves every time: the trap, the cut, the battery, the silent threat, the in-between blow. Find the strongest move, whatever shape it takes."
      },
@@ -1562,13 +1562,13 @@
     },
     {
      "kind": "boss",
-     "title": "Convert the edge — quiet, not loud",
+     "title": "Convert the edge: quiet, not loud",
      "bossFen": "r1bq1rk1/pp2bppp/2n2n2/3p4/3P4/2NBPN2/PP3PPP/R1BQ1RK1 w - - 0 9",
      "bossEngineElo": 1650,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "quiet-move",
-      "text": "Now play it out. You are White in a balanced, healthy middlegame — no quick knockout, no free piece. This is where the chapter earns its keep. Develop, seize an open line for your rooks, and watch for the non-forcing wins: a stray piece you can trap, a defender you can cut, a battery on the e- or d-file, the quiet move that makes a threat he cannot meet, the in-between check before a recapture. Do not force what is not there. Improve your position, keep his pieces tied down, and when the chance comes, strike. Begin."
+      "text": "Now play it out. You are White in a balanced, healthy middlegame, no quick knockout, no free piece. This is where the chapter earns its keep. Develop, seize an open line for your rooks, and watch for the non-forcing wins: a stray piece you can trap, a defender you can cut, a battery on the e- or d-file, the quiet move that makes a threat he cannot meet, the in-between check before a recapture. Do not force what is not there. Improve your position, keep his pieces tied down, and when the chance comes, strike. Begin."
      }
     }
    ]
@@ -1587,7 +1587,7 @@
      "It is any move that develops a piece toward the centre"
     ],
     "answerIndex": 2,
-    "explain": "A quiet move gives no check and takes nothing — its strength is the unstoppable threat it creates. Because there is nothing to react to, it is the hardest kind of move to defend against."
+    "explain": "A quiet move gives no check and takes nothing. Its strength is the unstoppable threat it creates. Because there is nothing to react to, it is the hardest kind of move to defend against."
    },
    {
     "kind": "mc",
@@ -1599,7 +1599,7 @@
      "Force the defender to give check"
     ],
     "answerIndex": 1,
-    "explain": "Interference does not remove the defender — it stands in its way. By blocking the rank, file, or diagonal along which a piece defends, you sever the protection, often at the cost of a sacrifice on that square."
+    "explain": "Interference does not remove the defender. It stands in its way. By blocking the rank, file, or diagonal along which a piece defends, you sever the protection, often at the cost of a sacrifice on that square."
    },
    {
     "kind": "mc",
@@ -1607,7 +1607,7 @@
     "options": [
      "Recapture immediately to restore material balance",
      "Offer a draw before the position gets worse",
-     "Look for a more forcing move — a check or bigger threat — to insert before recapturing",
+     "Look for a more forcing move (a check or bigger threat) to insert before recapturing",
      "Trade queens to simplify"
     ],
     "answerIndex": 2,
@@ -1623,25 +1623,25 @@
      "A knight and bishop attacking the same square"
     ],
     "answerIndex": 1,
-    "explain": "A battery is two long-range pieces (queen + rook, doubled rooks, queen + bishop) sharing a line. The front piece sacrifices or clears with tempo, and the rear piece delivers the blow down the same line — pressure no single defender can hold."
+    "explain": "A battery is two long-range pieces (queen + rook, doubled rooks, queen + bishop) sharing a line. The front piece sacrifices or clears with tempo, and the rear piece delivers the blow down the same line. Pressure no single defender can hold."
    },
    {
     "kind": "play",
-    "prompt": "Black to move. White just grabbed the a7-pawn with the queen, deep on the queenside. There is no check or capture that wins her at once — find the strongest move.",
+    "prompt": "Black to move. White just grabbed the a7-pawn with the queen, deep on the queenside. There is no check or capture that wins her at once. Find the strongest move.",
     "fen": "4r1k1/Qp2qppp/2pb1n2/P2p1PB1/8/2NP4/1P3PPP/R4K2 b - - 0 19",
     "solutionUci": [
      "d6c5"
     ],
-    "explain": "...Bc5! The bishop attacks the queen on a7 and fences in every escape — a6, b6, b7, a8, b8 are all covered, so wherever she runs she is simply taken. Qxc5 Qxc5 only trades her for the bishop: a winning material gain. A piece with no safe square is as good as lost, even a queen."
+    "explain": "...Bc5! The bishop attacks the queen on a7 and fences in every escape: a6, b6, b7, a8, b8 are all covered, so wherever she runs she is simply taken. Qxc5 Qxc5 only trades her for the bishop: a winning material gain. A piece with no safe square is as good as lost, even a queen."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The black king is stuck on e8 and your queen already bears down on c8. The defence holds the back rank together — find the move that gets between the defenders and forces mate.",
+    "prompt": "White to move. The black king is stuck on e8 and your queen already bears down on c8. The defence holds the back rank together. Find the move that gets between the defenders and forces mate.",
     "fen": "2r1kb1r/ppQ1pppp/5n2/3P1b2/4q3/1P6/P2B1PPP/n2K1BNR w k - 1 13",
     "solutionUci": [
      "f1b5"
     ],
-    "explain": "Bb5+! The bishop interposes on the a4-e8 line with check. Black has only two blocks — ...Nd7 or ...Bd7 — and either one runs into the same Qxc8#: the interposed piece walls the king on e8 in, and the queen mates on c8 along the back rank."
+    "explain": "Bb5+! The bishop interposes on the a4-e8 line with check. Black has only two blocks (...Nd7 or ...Bd7) and either one runs into the same Qxc8#: the interposed piece walls the king on e8 in, and the queen mates on c8 along the back rank."
    },
    {
     "kind": "play",
@@ -1650,34 +1650,34 @@
     "solutionUci": [
      "a4e8"
     ],
-    "explain": "Qe8+! The front of the battery crashes in with check and sacrifices itself. The only legal reply is ...Rxe8, and then Rxe8 is mate down the same file — the rook behind delivers the blow the queen set up. The front clears, the rear strikes."
+    "explain": "Qe8+! The front of the battery crashes in with check and sacrifices itself. The only legal reply is ...Rxe8, and then Rxe8 is mate down the same file. The rook behind delivers the blow the queen set up. The front clears, the rear strikes."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Your queen on g6 already eyes h7, but no check works yet. The winning move is not a check or a capture — find the strongest move.",
+    "prompt": "White to move. Your queen on g6 already eyes h7, but no check works yet. The winning move is not a check or a capture. Find the strongest move.",
     "fen": "r2q1r1k/1b4b1/ppn3Q1/3p4/P2P4/5N2/1P3PPP/RN1R2K1 w - - 1 18",
     "solutionUci": [
      "f3g5"
     ],
-    "explain": "Ng5! A silent move threatening Qh7# — the knight guards the squares the king would need and the queen finishes. Black can only stop it by giving up the queen with ...Qxg5. The deadliest move makes no noise."
+    "explain": "Ng5! A silent move threatening Qh7#. The knight guards the squares the king would need and the queen finishes. Black can only stop it by giving up the queen with ...Qxg5. The deadliest move makes no noise."
    },
    {
     "kind": "play",
-    "prompt": "Black to move. White has just captured your queen on h2, and the natural reflex is to take back. Stop — find the more forcing in-between move that wins more before you recapture.",
+    "prompt": "Black to move. White has just captured your queen on h2, and the natural reflex is to take back. Stop. Find the more forcing in-between move that wins more before you recapture.",
     "fen": "r5k1/ppp2pp1/6p1/6P1/1n5P/3Q3B/PPP2r1R/2KR4 b - - 0 25",
     "solutionUci": [
      "b4d3"
     ],
-    "explain": "...Nxd3+! The in-between move — a check that grabs White's queen first. After Rxd3 (forced) comes ...Rxh2, taking back the rook with a clean extra piece. Recapture last, not first: the intermezzo changed the order and won material."
+    "explain": "...Nxd3+! The in-between move. A check that grabs White's queen first. After Rxd3 (forced) comes ...Rxh2, taking back the rook with a clean extra piece. Recapture last, not first: the intermezzo changed the order and won material."
    },
    {
     "kind": "play",
-    "prompt": "Black to move. White just captured your rook on e8 and expects you to recapture. But recapturing at once throws away the point — find the strongest move first.",
+    "prompt": "Black to move. White just captured your rook on e8 and expects you to recapture. But recapturing at once throws away the point. Find the strongest move first.",
     "fen": "4R2r/pp4k1/2p3p1/8/3P2Q1/8/PPP2PPq/R4K2 b - - 0 22",
     "solutionUci": [
      "h2h1"
     ],
-    "explain": "...Qh1+! The in-between defence. White is forced to play Ke2, and only NOW ...Rxe8+ recaptures with check, after which the loose rook on a1 also falls. Do not submit and recapture — strike first with the counter-check, then collect."
+    "explain": "...Qh1+! The in-between defence. White is forced to play Ke2, and only NOW ...Rxe8+ recaptures with check, after which the loose rook on a1 also falls. Do not submit and recapture, strike first with the counter-check, then collect."
    },
    {
     "kind": "judge",
@@ -1685,7 +1685,7 @@
     "fen": "4R1k1/3B1ppp/8/8/b7/8/6PP/6K1 b - - 1 1",
     "lastMoveUci": "e1e8",
     "verdict": "correct",
-    "explain": "Yes — checkmate. The king on g8 is walled by its own pawns, and the bishop on a4 cannot capture on e8 because White's bishop on d7 stands on the a4–e8 diagonal, cutting the guard. The defender's line was interfered with, so the back-rank mate goes through."
+    "explain": "Yes: checkmate. The king on g8 is walled by its own pawns, and the bishop on a4 cannot capture on e8 because White's bishop on d7 stands on the a4–e8 diagonal, cutting the guard. The defender's line was interfered with, so the back-rank mate goes through."
    },
    {
     "kind": "judge",
@@ -1693,15 +1693,15 @@
     "fen": "4r1k1/p1q2pp1/7p/3p4/3P4/7P/PP3PP1/2R3K1 w - - 0 24",
     "lastMoveUci": "c6d5",
     "verdict": "blunder",
-    "explain": "A blunder — it throws away the win. Now White plays Rxc7, the queens come off, and the resulting rook endgame is only EQUAL — Black has converted a winning position into a dead draw. The in-between ...Re1+ first would have deflected the c1-rook off the c-file, and then ...cxd5 wins the queen for free."
+    "explain": "A blunder: it throws away the win. Now White plays Rxc7, the queens come off, and the resulting rook endgame is only EQUAL. Black has converted a winning position into a dead draw. The in-between ...Re1+ first would have deflected the c1-rook off the c-file, and then ...cxd5 wins the queen for free."
    },
    {
     "kind": "judge",
-    "prompt": "White played the bishop to h6 — no check, no capture. Black's king sits behind f7, g6 and h7. Judge White's quiet move.",
+    "prompt": "White played the bishop to h6. No check, no capture. Black's king sits behind f7, g6 and h7. Judge White's quiet move.",
     "fen": "r1bqr1k1/pp3p1p/3p2pB/3B4/2P5/6P1/P4P1P/Q4RK1 b - - 1 16",
     "lastMoveUci": "e3h6",
     "verdict": "correct",
-    "explain": "Correct — a crushing quiet move. Bh6 says nothing, yet it threatens Qg7#: the queen on a1 runs up the long diagonal to g7, and the bishop on h6 guards that square so the king cannot take. Only two moves stop the mate, both on the a1-g7 diagonal, and both lose — ...Qf6 runs into Qxf6 and mate next; ...Re5 blocks the diagonal but f4 then wins the whole rook with the attack still raging. The loudest threat came from the quietest move."
+    "explain": "Correct: a crushing quiet move. Bh6 says nothing, yet it threatens Qg7#: the queen on a1 runs up the long diagonal to g7, and the bishop on h6 guards that square so the king cannot take. Only two moves stop the mate, both on the a1-g7 diagonal, and both lose. ...Qf6 runs into Qxf6 and mate next; ...Re5 blocks the diagonal but f4 then wins the whole rook with the attack still raging. The loudest threat came from the quietest move."
    },
    {
     "kind": "judge",
@@ -1709,7 +1709,7 @@
     "fen": "4r1k1/pp3pp1/7p/3p4/Q4b1q/2P2R2/PP4P1/3R2K1 b - - 0 29",
     "lastMoveUci": "f1f3",
     "verdict": "blunder",
-    "explain": "A blunder — it throws away the win. The cleanest refutation is ...Bxh2+!: after Kh1 (White's best — Kxh2 ...Qa4 is also lost) comes ...Qa4, and Black keeps the extra bishop, winning by a clear piece. Black is now winning, not White. The in-between Qxe8+ first (capturing the e8-rook with check) would have killed the counterplay and won a second rook instead."
+    "explain": "A blunder: it throws away the win. The cleanest refutation is ...Bxh2+!: after Kh1 (White's best; Kxh2 ...Qa4 is also lost) comes ...Qa4, and Black keeps the extra bishop, winning by a clear piece. Black is now winning, not White. The in-between Qxe8+ first (capturing the e8-rook with check) would have killed the counterplay and won a second rook instead."
    }
   ]
  },

@@ -1,5 +1,5 @@
 // Headless test for the A6 social core (src/shared/accounts/social/
-// friends|profile.ts — spec §3 friend edges, §10 social surface).
+// friends|profile.ts: spec §3 friend edges, §10 social surface).
 //
 //   node scripts/test-accounts-social.mjs
 //
@@ -8,7 +8,7 @@
 // contract: countersigned add verified on both sides, forged/absent/replayed
 // countersigs refused, unilateral remove by either side + the mutual read,
 // bit-identical re-folds, profile latest-wins + attested staleness, and the
-// malformed-input fail-closed matrix. Synthetic fixtures only — no engine,
+// malformed-input fail-closed matrix. Synthetic fixtures only: no engine,
 // no network. Keys are RAW fixed 32-byte seeds → ed25519 keypairs.
 
 import { build } from 'esbuild'
@@ -57,7 +57,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -153,7 +153,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 2. countersigned add — both sides verified (§3: two signatures per edge)
+  // 2. countersigned add. Both sides verified (§3: two signatures per edge)
   // ============================================================================
   console.log('\n· countersigned add, root-signed both sides …')
   let cA = mkChain(A, 'Alice', dA)
@@ -192,7 +192,7 @@ async function run(outdir) {
     const sigDC = friends.makeFriendSig(dC.priv, A.pubB, C.pubB)
     const payload = friends.makeFriendAddPayload({ peer: C.pubB, key: dC.pubB, sig: sigDC, certs: [certEvC] })
     ok(friends.verifyFriendAdd(payload, A.pubB), 'device-signed countersig with inline cert verifies')
-    // A6 review friends-2: certs:[] is NOT "certs supplied" — the builder
+    // A6 review friends-2: certs:[] is NOT "certs supplied". The builder
     // refuses (a device-key add with empty certs would mint a payload the
     // fold permanently ignores), and the schema rejects it too (.min(1)).
     throws(
@@ -279,11 +279,11 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 4. remove — unilateral by either side; the mutual read; re-add
+  // 4. remove. Unilateral by either side; the mutual read; re-add
   // ============================================================================
   console.log('\n· remove by either side + mutual read …')
   {
-    // B removes A — B's OWN chain flips; A's chain is untouched
+    // B removes A: B's OWN chain flips; A's chain is untouched
     const cB2 = chain.appendWitnessed(clone(cB), B.priv, B.pubB, 'friend',
       friends.makeFriendRemovePayload(A.pubB), 3000)
     eq(chain.verifyChain(cB2).ok, true, 'chain with the remove verifies ok')
@@ -299,7 +299,7 @@ async function run(outdir) {
     const vA2 = friends.friendsOf(A.pubB, cA2.events)
     ok(vA2.friends.includes(B.pubB), "the replayed add IS locally valid (consent at assertion time)")
     ok(!friends.areFriends(vA2, vB2),
-      "…but the mutual read stays false — a stale countersig cannot resurrect an edge the peer removed")
+      "…but the mutual read stays false. A stale countersig cannot resurrect an edge the peer removed")
     // remove by the OTHER side symmetric
     const cA3 = chain.appendWitnessed(clone(cA), A.priv, A.pubB, 'friend',
       friends.makeFriendRemovePayload(B.pubB), 3200)
@@ -323,7 +323,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 5. deterministic re-fold — bit-identical across storage order and rebuilds
+  // 5. deterministic re-fold, bit-identical across storage order and rebuilds
   // ============================================================================
   console.log('\n· deterministic re-fold …')
   {

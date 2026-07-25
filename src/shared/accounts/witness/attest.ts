@@ -1,7 +1,7 @@
-// A2 fabric-core — witness admission + attestation (spec §4 write lease /
+// A2 fabric-core: witness admission + attestation (spec §4 write lease /
 // witnessed events, §2 checkpoints). Pure functions the transport calls: they
 // decide whether to countersign, and mint/verify the WitnessAttestation. No
-// network, no clock — the witness's clock is passed as `wts`. Platform-neutral.
+// network, no clock: the witness's clock is passed as `wts`. Platform-neutral.
 
 import { canonicalBytes } from '../codec'
 import { verifyCheckpointDeep, verifyCheckpointIncremental } from '../checkpoint'
@@ -61,7 +61,7 @@ export function verifyAttestation(att: WitnessAttestation, eventId: EventId): bo
 }
 
 // A7 pairing attest (A4-02 fidelity + A4-10 freshness) lives in the leaf
-// module witness/pairattest.ts — kept dependency-free to avoid a
+// module witness/pairattest.ts: kept dependency-free to avoid a
 // fold↔checkpoint import cycle. Re-exported here for the fabric surface.
 export {
   makePairingAttest,
@@ -93,7 +93,7 @@ export interface AdmitInput {
   cachedHead: HeadRef | null
   witnessKey: B64u
   witnessPriv: Uint8Array
-  /** The witness's own clock reading, ms — carried into the attestation. */
+  /** The witness's own clock reading, ms. Carried into the attestation. */
   wts: number
   params: { timeWindowMs: number }
   /**
@@ -116,7 +116,7 @@ export type AdmitResult =
  *  0. the event is a well-formed, self-signed witnessed-lane event;
  *  1. a valid unexpired lease for (root, event.key) at a non-stale epoch;
  *  2. no unexpired fuse record for the root;
- *  3. prev/height extend the cached head — else refuse-with-head, or flag a
+ *  3. prev/height extend the cached head: else refuse-with-head, or flag a
  *     same-height equivocation as a fork;
  *  4. the witness's own clock within timeWindowMs of the event's claimed ts.
  * On success the attestation carries the WITNESS's clock (wts), not the client's.
@@ -145,7 +145,7 @@ export function admitEvent(input: AdmitInput): AdmitResult {
   if (input.leaseOk && !input.leaseOk(lease)) return { ok: false, reason: 'lease-invalid' }
 
   // 2. fuse: an ACTIVE fuse for the root forbids all witnessing (§1). Use the
-  //    full window (trippedWts ≤ wts < expiryWts) — a future-dated fuse must not
+  //    full window (trippedWts ≤ wts < expiryWts): a future-dated fuse must not
   //    ban the lane before its intended start.
   if (fuse && fuse.body.root === b.root && isFuseActive(fuse, wts))
     return { ok: false, reason: 'fuse-tripped' }
@@ -171,7 +171,7 @@ export function admitEvent(input: AdmitInput): AdmitResult {
 }
 
 // ---------------------------------------------------------------------------
-// Checkpoint cosignature (§2c) — recompute-gated, diversity-bound
+// Checkpoint cosignature (§2c): recompute-gated, diversity-bound
 // ---------------------------------------------------------------------------
 
 /**
@@ -190,7 +190,7 @@ export function cosignCheckpoint(
   epoch = 0,
 ): WitnessAttestation | null {
   // A4 review fix (A4-15): a fold-id transition checkpoint (basic-v1 → a4-v1)
-  // is deep-only by design — fall back to the full recompute rather than
+  // is deep-only by design. Fall back to the full recompute rather than
   // refusing, so first a4-v1 checkpoints can gather their M-of-N cosigners.
   if (!verifyCheckpointIncremental(chain, ckptEvent) && !verifyCheckpointDeep(chain, ckptEvent))
     return null

@@ -14,7 +14,7 @@ export interface FamousBrowserProps {
  * Library-list half of the former Famous-games view, embedded in the Analysis
  * sidebar. Lists window.api.famous.list() bucketed by era; clicking a card pulls
  * the full detail, converts it to PGN, parses it into a LoadedGame, and hands it
- * up to AnalysisView.loadGame. There is NO second board here — the Analysis board
+ * up to AnalysisView.loadGame. There is NO second board here. The Analysis board
  * is the viewer.
  */
 export function FamousBrowser({ onLoadGame }: FamousBrowserProps): JSX.Element {

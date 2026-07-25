@@ -1,7 +1,7 @@
-/* Design tokens (single source of visual truth) — from docs/ui-ux.md §6.
+/* Design tokens (single source of visual truth), from docs/ui-ux.md §6.
    Light is :root; every other app theme overrides the SAME custom-property
    names under its [data-theme="X"] block (dark, midnight, forest, ocean,
-   sepia — the union in state/settings.tsx must match the blocks here). No
+   sepia: the union in state/settings.tsx must match the blocks here). No
    hard-coded color/space/radius/shadow/font value should appear outside this
    file (sole exception: theme/board PREVIEW swatches in SettingsView, which
    must show palettes that are not currently active). */
@@ -175,7 +175,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-/* Midnight — near-black OLED chrome with a cool blue accent. Blacker and
+/* Midnight: near-black OLED chrome with a cool blue accent. Blacker and
    cooler than dark; surfaces stay barely-lifted so OLED panels read true. */
 [data-theme='midnight'] {
   --bg-page: #08090c;
@@ -223,7 +223,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
 
-/* Forest — deep green-grey surfaces with a warm club-board green accent. */
+/* Forest: deep green-grey surfaces with a warm club-board green accent. */
 [data-theme='forest'] {
   --bg-page: #151a16;
   --bg-subtle: #1a201b;
@@ -270,7 +270,7 @@
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 
-/* Ocean — dark blue-slate chrome with a cyan accent. on-accent flips to a
+/* Ocean: dark blue-slate chrome with a cyan accent. on-accent flips to a
    deep ink because bright cyan cannot carry white text. */
 [data-theme='ocean'] {
   --bg-page: #0f151d;
@@ -318,7 +318,7 @@
   --shadow-lg: 0 8px 24px rgba(2, 8, 14, 0.65);
 }
 
-/* Sepia — warm light cream chrome with a book-leather brown accent. A light
+/* Sepia: warm light cream chrome with a book-leather brown accent. A light
    theme: darker semantic hues than :root so they hold contrast on cream. */
 [data-theme='sepia'] {
   --bg-page: #f5eedd;

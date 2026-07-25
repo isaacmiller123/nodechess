@@ -1,5 +1,5 @@
 /* ============================================================
-   App-shell overlays — command palette, shortcuts help, and
+   App-shell overlays: command palette, shortcuts help, and
    first-run onboarding. Self-contained styling for the shell-ux
    unit. Tokens come from tokens.css; motion is neutralized by the
    global prefers-reduced-motion guard in global.css.

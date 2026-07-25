@@ -1,5 +1,5 @@
 /**
- * Accounts UI store — WIRED (A6, lane 4). Same house pattern as
+ * Accounts UI store: WIRED (A6, lane 4). Same house pattern as
  * features/play/online/onlineStore.ts: a module-level store outside React,
  * bridged with useSyncExternalStore, so auth state survives view unmounts.
  *
@@ -10,13 +10,13 @@
  * profile, devices, chain rows) is a pure fold over the stored chain via
  * ../store/derive.ts (§0: derived, never asserted). Network-dependent
  * surfaces (PIN committee, presence, friends transport, mailbox, witness set,
- * shard duty, verdicts, other profiles) still render fixtures — each such
+ * shard duty, verdicts, other profiles) still render fixtures. Each such
  * component gates on the DEV_FIXTURE flag (./fixtures) and mounts
  * ./FixturePreviewBadge.tsx so it labels itself as sample data in the UI;
  * grep DEV_FIXTURE across features/account to list every fixture surface.
  *
  * Clock rule: Date.now() is allowed HERE (renderer glue layer, same contract
- * as src/web/accounts.ts) — the shared library and ../store/derive.ts stay
+ * as src/web/accounts.ts): the shared library and ../store/derive.ts stay
  * clock-free and take `atWts` explicitly.
  */
 
@@ -57,7 +57,7 @@ import type {
   UiPinStatus,
 } from './types'
 
-/** The signed-in account's §6 display state, per ladder — the VIEWER side of
+/** The signed-in account's §6 display state, per ladder: the VIEWER side of
  * the provisional-information rule (mm/pairing visibleOpponentInfo). */
 export type ViewerDisplayByLadder = Record<LadderKey, RatingDisplay>
 
@@ -74,7 +74,7 @@ export interface UiKeyringAccount {
 /**
  * Derive the viewer display-states from the account's protocol ladder state
  * via the SHARED displayState() (A4-17): the value every opponent-facing
- * surface must project through — never a fixture-authored state.
+ * surface must project through. Never a fixture-authored state.
  */
 function viewerDisplayOf(account: UiOwnAccount | null): ViewerDisplayByLadder | null {
   if (!account) return null
@@ -88,7 +88,7 @@ export interface AccountsUiState {
   account: UiOwnAccount | null
   /**
    * §6 viewer state per ladder, derived (shared displayState()) from the
-   * signed-in account. null when signed out — such a viewer is a spectator
+   * signed-in account. null when signed out. Such a viewer is a spectator
    * (spectatorOpponentInfo), not a provisional viewer.
    */
   viewerDisplay: ViewerDisplayByLadder | null
@@ -112,7 +112,7 @@ export interface AccountsUiState {
    * transport ships). NEVER a self-claimed timestamp.
    */
   lastWitnessedActivityWts: number | null
-  /** PIN committee status — DEV_FIXTURE (C-2: committee-held state needs the
+  /** PIN committee status, DEV_FIXTURE (C-2: committee-held state needs the
    * witness network; the wizard/dialogs are preview flows until then). */
   pin: UiPinStatus
 }
@@ -137,7 +137,7 @@ const listeners = new Set<() => void>()
 
 function set(patch: Partial<AccountsUiState>): void {
   state = { ...state, ...patch }
-  // viewerDisplay is a pure derivation of the account — never set directly.
+  // viewerDisplay is a pure derivation of the account. Never set directly.
   if ('account' in patch) state = { ...state, viewerDisplay: viewerDisplayOf(state.account) }
   listeners.forEach((fn) => fn())
 }
@@ -190,13 +190,13 @@ async function refreshKeyring(): Promise<void> {
 }
 
 /** Staged by createAccount, committed by finishCreate (the dialog shows the
- * C-5 recovery step in between — flipping signedIn earlier would unmount it). */
+ * C-5 recovery step in between. Flipping signedIn earlier would unmount it). */
 let pendingCreate: DerivedBundle | null = null
 
 /**
  * The sign-out privacy sequence (wiring-3): forget the opt-in remembered seed
- * FIRST — while the session still exists, because forgetRememberedSeed
- * requires one — THEN tear the session down. The ordering is the guarantee:
+ * FIRST, while the session still exists, because forgetRememberedSeed
+ * requires one. THEN tear the session down. The ordering is the guarantee:
  * a remembered seed is never left behind because the session teardown failed,
  * so the next boot cannot silently auto-resume an account the user signed out
  * of. A forget failure with nothing remembered / no session is benign and
@@ -211,7 +211,7 @@ export async function signOutSequence(
   try {
     await forget()
   } catch {
-    /* not signed in or nothing remembered — nothing to forget */
+    /* not signed in or nothing remembered: nothing to forget */
   }
   doSignOut()
 }
@@ -233,14 +233,14 @@ export const accountsUiStore = {
   },
 
   /**
-   * §1: pure local computation — no signup round-trip. Real argon2id + chain
+   * §1: pure local computation. No signup round-trip. Real argon2id + chain
    * genesis via src/web/accounts.ts. Does NOT flip signedIn yet: the create
    * flow shows the recovery-export step first (C-5); the dialog commits with
    * finishCreate() once recovery is acknowledged. Returns success (failure
-   * message lands in state.error — the dialog stays open).
+   * message lands in state.error. The dialog stays open).
    *
    * `remember` defaults FALSE (privacy default, wiring-6): the seed is stored
-   * only on explicit opt-in — mirrors src/web/accounts.ts CreateAccountOpts
+   * only on explicit opt-in: mirrors src/web/accounts.ts CreateAccountOpts
    * ("Default: NOT stored") and the types.ts StoredAccount contract.
    */
   async createAccount(name: string, password: string, remember = false): Promise<boolean> {
@@ -275,7 +275,7 @@ export const accountsUiStore = {
 
   /** §1: signing in anywhere is re-derivation, never lookup. Real argon2id +
    * stored-chain verification. Returns success (failures land in .error).
-   * `remember` defaults FALSE — seed persistence is explicit opt-in only. */
+   * `remember` defaults FALSE. Seed persistence is explicit opt-in only. */
   async signIn(name: string, password: string, remember = false): Promise<boolean> {
     set({ busy: 'deriving', error: null })
     try {
@@ -300,10 +300,10 @@ export const accountsUiStore = {
   },
 
   /**
-   * Clears the in-memory session AND the opt-in remembered seed — chain and
+   * Clears the in-memory session AND the opt-in remembered seed. Chain and
    * keyring record persist (sign-out never destroys the self-carried file).
-   * Privacy contract (wiring-3): sign-out ALWAYS forgets the remembered seed
-   * — sequenced via signOutSequence so the forget runs FIRST and survives a
+   * Privacy contract (wiring-3): sign-out ALWAYS forgets the remembered seed.
+   * Sequenced via signOutSequence so the forget runs FIRST and survives a
    * failing session teardown. Returns the completion promise (callers may
    * fire-and-forget; the wiring suite awaits it).
    */
@@ -390,7 +390,7 @@ export const accountsUiStore = {
     if (state.error !== null) set({ error: null })
   },
 
-  /** PIN committee provisioned (DEV_FIXTURE — flips the preview status flag;
+  /** PIN committee provisioned (DEV_FIXTURE: flips the preview status flag;
    * the real committee is A2 witness machinery awaiting network wiring). */
   pinConfigured(): void {
     set({ pin: { ...state.pin, set: true } })
@@ -398,7 +398,7 @@ export const accountsUiStore = {
 
   /**
    * Record a PIN failure against the committee counter (§1: lifetime, never
-   * resets on success). DEV_FIXTURE — returns the updated preview status.
+   * resets on success). DEV_FIXTURE. Returns the updated preview status.
    */
   recordPinFailure(): UiPinStatus {
     const pin = { ...state.pin, failures: Math.min(state.pin.failures + 1, state.pin.lifetimeCap) }
@@ -427,13 +427,13 @@ void (async () => {
       })
     }
   } catch {
-    /* no storage / no resumable session — boot signed out */
+    /* no storage / no resumable session: boot signed out */
   }
   await refreshKeyring()
   set({ busy: 'idle' })
 })()
 
-/** React bridge — house useSyncExternalStore convention. */
+/** React bridge. House useSyncExternalStore convention. */
 export function useAccountsUi(): AccountsUiState {
   return useSyncExternalStore(
     accountsUiStore.subscribe,

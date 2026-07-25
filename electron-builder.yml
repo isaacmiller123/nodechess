@@ -5,11 +5,11 @@ directories:
 # Update feed (src/main/updates). Declaring the GitHub provider makes
 # electron-builder emit latest.yml / latest-mac.yml (+ *.blockmap) into release/
 # and bake app-update.yml into the packaged app so electron-updater knows where
-# the feed lives. Nothing publishes from here — CI packages with --publish never
+# the feed lives. Nothing publishes from here. CI packages with --publish never
 # and attaches the files to the GitHub Release itself. Windows auto-updates in
-# place off this feed (unsigned NSIS works); macOS can NOT (Squirrel.Mac refuses
-# unsigned bundles) — the mac path is check + notify + browser download of the
-# right dmg (see src/main/updates/updateLogic.ts).
+# place off this feed (unsigned NSIS works). macOS can NOT, because Squirrel.Mac
+# refuses unsigned bundles. The mac path is check + notify + browser download of
+# the right dmg (see src/main/updates/updateLogic.ts).
 publish:
   provider: github
   owner: isaacmiller123
@@ -30,13 +30,13 @@ extraResources:
     to: "curriculum"
   - from: "resources/personas"
     to: "personas"
-  # Games platform art (piece SVGs + CC0 PBR board textures, ~14 MB — see
+  # Games platform art (piece SVGs + CC0 PBR board textures, ~14 MB; see
   # docs/CREDITS.md). The renderer resolves file:// URLs into this copy via
   # src/renderer/src/games/art.ts.
   - from: "resources/games-art"
     to: "games-art"
 win:
-  # x64 only — matches the published stockfish-sf18-win-x64 engine artifact and the
+  # x64 only: matches the published stockfish-sf18-win-x64 engine artifact and the
   # existing releases. Three artifacts: the NSIS installer, a single-file portable
   # .exe, and a portable .zip (all built on windows-latest in CI). Explicit arch so
   # the build never silently emits an ia32/arm64 binary the engine has no match for.
@@ -58,7 +58,7 @@ mac:
   # Same lean model as Windows: the engine + puzzle DB are imported at runtime,
   # not bundled, so the .dmg/.zip stay small. arm64 (Apple Silicon) + x64 (Intel).
   # Exception: Fairy-Stockfish (~750 KB, the games-platform variant-bot engine)
-  # IS bundled — it is tiny, always-on, and has no official mac build upstream
+  # IS bundled. It is tiny, always-on, and has no official mac build upstream
   # (datasets/fairyStockfish.ts still resolves an imported copy first).
   extraResources:
     - from: "resources/engine/mac/fairy-stockfish"
@@ -76,7 +76,7 @@ mac:
   category: public.app-category.board-games
   # Local/unsigned build: spawning the imported Stockfish binary requires the
   # hardened runtime OFF (or an allow-jit entitlement). Distribution to other
-  # Macs needs a Developer ID identity + notarization — set identity then.
+  # Macs needs a Developer ID identity + notarization. Set identity then.
   identity: null
   hardenedRuntime: false
   gatekeeperAssess: false

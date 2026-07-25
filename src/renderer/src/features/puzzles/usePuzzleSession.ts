@@ -58,7 +58,7 @@ export interface PuzzleSession {
   revealSan: string | null
   // Retry-on-wrong
   /** A wrong move was recorded as a fail but the learner is still solving
-   *  (board snapped back, answer not revealed) — drives the keep-trying chip. */
+   *  (board snapped back, answer not revealed). Drives the keep-trying chip. */
   keepTrying: boolean
   /** The line was completed AFTER the fail was recorded: the finish reads as
    *  failed ("solved, but the first try counted"). */
@@ -142,11 +142,11 @@ export function usePuzzleSession(): PuzzleSession {
   const loadTokenRef = useRef(0)
   // One rated attempt per presented puzzle: set on the first finish (solve or
   // fail), cleared only when a NEW puzzle loads. retry() intentionally leaves it
-  // set — a retried run replays the solve/fail UX without recording or moving
+  // set. A retried run replays the solve/fail UX without recording or moving
   // the streak (mirrors daily-session's reportedRef).
   const attemptedRef = useRef(false)
   // True once THIS presentation was recorded as failed (first wrong move, skip
-  // or reveal). A later solve of the same run must still read as failed — the
+  // or reveal). A later solve of the same run must still read as failed. The
   // solved flash/count is gated on it. Reset with attemptedRef on a new puzzle
   // and on retry() (a fresh practice replay shows the normal solve UX).
   const failedRef = useRef(false)
@@ -378,7 +378,7 @@ export function usePuzzleSession(): PuzzleSession {
         }
         // Legal but wrong -> retry-on-wrong: the FIRST wrong move records the
         // fail (rating + streak, exactly as before) but the answer is NOT
-        // revealed and the phase stays 'solving' — the board snaps back and the
+        // revealed and the phase stays 'solving': the board snaps back and the
         // learner keeps trying (a late solve still reads as failed), or bails
         // out via skip()/showSolution(). Further wrong tries just snap back.
         setHintStage(0)
@@ -459,7 +459,7 @@ export function usePuzzleSession(): PuzzleSession {
     [phase, puzzle, fen, recordAttempt, schedule, play, playMove]
   )
 
-  // ---- Retry (same puzzle, practice only — no new attempt) ----
+  // ---- Retry (same puzzle, practice only: no new attempt) ----
   const retry = useCallback(() => {
     if (!puzzle) return
     const token = ++loadTokenRef.current

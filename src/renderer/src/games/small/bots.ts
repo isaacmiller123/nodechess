@@ -1,11 +1,11 @@
 // In-process bots for the small hand-rolled games (docs/GAMES-PLATFORM-SPEC.md
-// §Bots — 'worker:<game>' providers; the worker WRAPPER is P2w2, the sync
+// §Bots, 'worker:<game>' providers; the worker WRAPPER is P2w2, the sync
 // search lives here and is called in-process for now).
 //
 // Each game exposes 5 levels. Depth targets follow the spec (othello 2..10,
 // connect4 ~2/4/7/10/13, ...); every search additionally carries a node
 // budget with iterative deepening so a single move stays interactive even at
-// the top level — when the budget trips, the best move from the last fully
+// the top level: when the budget trips, the best move from the last fully
 // completed depth is used. Low levels add random noise to root scores so
 // weak play is varied, not deterministic.
 
@@ -50,7 +50,7 @@ function tick(b: Budget): void {
   if (++b.n > b.max) throw BUDGET_EXCEEDED
 }
 
-/** Argmax with uniform ±noise on each score — low levels vary, high levels don't. */
+/** Argmax with uniform ±noise on each score. Low levels vary, high levels don't. */
 export function noisyArgmax(moves: string[], scores: number[], noise: number): string {
   let best = 0
   let bestScore = -Infinity
@@ -65,7 +65,7 @@ export function noisyArgmax(moves: string[], scores: number[], noise: number): s
 }
 
 // ---------------------------------------------------------------------------
-// Othello — negamax depth 2..10 by level, mobility + corners (+ late discs) eval
+// Othello: negamax depth 2..10 by level, mobility + corners (+ late discs) eval
 
 const OTH_CORNERS = (1n << 0n) | (1n << 7n) | (1n << 56n) | (1n << 63n)
 
@@ -130,7 +130,7 @@ const othelloBot: SmallBot = {
   levels: 5,
   describe(level: number): string {
     const l = clampLevel(level)
-    return `Level ${l} — negamax depth ${OTH_DEPTHS[l - 1]}, mobility + corners`
+    return `Level ${l}: negamax depth ${OTH_DEPTHS[l - 1]}, mobility + corners`
   },
   move(state: unknown, level: number): string {
     const s = state as OthelloState
@@ -162,7 +162,7 @@ const othelloBot: SmallBot = {
 }
 
 // ---------------------------------------------------------------------------
-// Connect Four — negamax + center-first ordering, depths ~2/4/7/10/13
+// Connect Four: negamax + center-first ordering, depths ~2/4/7/10/13
 
 const C4_ORDER = [3, 2, 4, 1, 5, 0, 6]
 
@@ -229,7 +229,7 @@ const connect4Bot: SmallBot = {
   levels: 5,
   describe(level: number): string {
     const l = clampLevel(level)
-    return `Level ${l} — negamax depth ${C4_DEPTHS[l - 1]}, center-first`
+    return `Level ${l}: negamax depth ${C4_DEPTHS[l - 1]}, center-first`
   },
   move(state: unknown, level: number): string {
     const s = state as Connect4State
@@ -275,7 +275,7 @@ const connect4Bot: SmallBot = {
 }
 
 // ---------------------------------------------------------------------------
-// Hex — shortest-connection eval (0-1 BFS), shallow minimax, levels via depth+noise
+// Hex: shortest-connection eval (0-1 BFS), shallow minimax, levels via depth+noise
 
 const HEX_NEIGHBORS: ReadonlyArray<readonly number[]> = (() => {
   const offs = [
@@ -365,7 +365,7 @@ const hexBot: SmallBot = {
   describe(level: number): string {
     const l = clampLevel(level)
     const cfg = HEX_LEVELS[l - 1]
-    return `Level ${l} — shortest-path eval, depth ${cfg.depth}`
+    return `Level ${l}: shortest-path eval, depth ${cfg.depth}`
   },
   move(state: unknown, level: number): string {
     const s = state as HexState
@@ -415,7 +415,7 @@ const hexBot: SmallBot = {
 }
 
 // ---------------------------------------------------------------------------
-// Morris — minimax over the spec with mill/mobility/material eval
+// Morris: minimax over the spec with mill/mobility/material eval
 
 function morrisEval(s: MorrisState): number {
   const p = s.turn
@@ -473,7 +473,7 @@ const morrisBot: SmallBot = {
   levels: 5,
   describe(level: number): string {
     const l = clampLevel(level)
-    return `Level ${l} — minimax depth ${MORRIS_DEPTHS[l - 1]}, mill + mobility eval`
+    return `Level ${l}: minimax depth ${MORRIS_DEPTHS[l - 1]}, mill + mobility eval`
   },
   move(state: unknown, level: number): string {
     const s = state as MorrisState
@@ -499,7 +499,7 @@ const morrisBot: SmallBot = {
 }
 
 // ---------------------------------------------------------------------------
-// Tic-tac-toe — random → perfect minimax
+// Tic-tac-toe: random → perfect minimax
 
 function tttNegamax(s: TicTacToeState, depth: number): number {
   const w = tttWinner(s.cells)
@@ -519,10 +519,10 @@ const tictactoeBot: SmallBot = {
   describe(level: number): string {
     const l = clampLevel(level)
     return l <= 1
-      ? 'Level 1 — random'
+      ? 'Level 1: random'
       : l <= 3
-        ? `Level ${l} — win/block heuristics`
-        : `Level ${l} — perfect minimax`
+        ? `Level ${l}: win/block heuristics`
+        : `Level ${l}: perfect minimax`
   },
   move(state: unknown, level: number): string {
     const s = state as TicTacToeState

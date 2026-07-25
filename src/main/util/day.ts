@@ -1,7 +1,7 @@
 // Local-day helpers for School streaks + daily lesson.
 //
 // Both the School streak/daily-lesson AND the puzzle daily (src/main/db/daily.repo.ts,
-// which mirrors these helpers) key on the user's LOCAL calendar day — "did I study
+// which mirrors these helpers) key on the user's LOCAL calendar day, "did I study
 // today" / "today's puzzle" flip at the user's own midnight, Wordle-style, not UTC's.
 // This module is the single source of truth for the local 'YYYY-MM-DD' key on the
 // School side; School code must use it rather than re-deriving day boundaries.

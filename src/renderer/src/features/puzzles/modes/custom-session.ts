@@ -17,7 +17,7 @@ import { useSound } from '../../../sound'
 import type { HintStage } from '../usePuzzleSession'
 
 // ============================================================================
-// SLICE A — useCustomSession.  ★ OWNED BY THE CUSTOM-TRAINING BUILDER ★
+// SLICE A: useCustomSession.  ★ OWNED BY THE CUSTOM-TRAINING BUILDER ★
 //
 // Drives a *fixed* training set: fetch the whole set once via
 // window.api.puzzles.batch(), then walk it puzzle-by-puzzle with the same
@@ -121,7 +121,7 @@ export interface CustomSummary {
   /** Longest run of solved puzzles within the set. */
   bestStreak: number
   /** The theme the user did worst on (lowest accuracy, ties broken by attempts),
-   *  humanized-key + counts — or null when the set had no theme tags. */
+   *  humanized-key + counts, or null when the set had no theme tags. */
   weakest: { theme: string; solved: number; attempts: number } | null
   /** The theme the user did best on, for a positive note. */
   strongest: { theme: string; solved: number; attempts: number } | null
@@ -156,12 +156,12 @@ export interface CustomSession {
 
   /** Retry-on-wrong: true after the learner's first wrong move on this puzzle has
    *  been recorded as a fail while they keep trying (board reset, still solving).
-   *  Drives the "Recorded as failed — keep trying" chip. */
+   *  Drives the "Recorded as failed: keep trying" chip. */
   keepTrying: boolean
 
   /** 3-stage hint ladder (same contract as the classic trainer: 1 = show the
    *  piece, 2 = show the destination, 3 = reveal the SAN). Using a hint never
-   *  changes attempt/streak accounting — Train-mode parity. */
+   *  changes attempt/streak accounting. Train-mode parity. */
   hintStage: HintStage
   hintFrom: Key | undefined
   hintTo: Key | undefined
@@ -226,7 +226,7 @@ function computeSummary(records: SolveRecord[]): CustomSummary {
   }
 
   // Per-theme tallies (a puzzle is credited to one theme: the drilled theme
-  // that matched it, else its primary tag — see themeTagFor).
+  // that matched it, else its primary tag. See themeTagFor).
   const byTheme = new Map<string, { solved: number; attempts: number }>()
   for (const r of records) {
     if (!r.theme) continue
@@ -302,7 +302,7 @@ export function useCustomSession(): CustomSession {
   const [summary, setSummary] = useState<CustomSummary | null>(null)
   // Retry-on-wrong: once the learner's first wrong move is recorded as a fail we
   // stay in 'solving' and let them keep trying. This flags the "Recorded as
-  // failed — keep trying" chip; it clears on the next puzzle / a full retry.
+  // failed: keep trying" chip; it clears on the next puzzle / a full retry.
   const [keepTrying, setKeepTrying] = useState(false)
 
   // ---- Refs that async callbacks read without re-subscribing ----
@@ -481,7 +481,7 @@ export function useCustomSession(): CustomSession {
   // `solved` is the raw outcome of the move that ended the puzzle; the flash
   // shows the RECORDED result: if this index was already recorded as failed (a
   // wrong move earlier in the retry-on-wrong flow), a late solve still reads as
-  // failed — it advances, it does not un-fail.
+  // failed. It advances, it does not un-fail.
   const finishPuzzle = useCallback(
     (p: Puzzle, solved: boolean, token: number) => {
       recordOutcomeOnce(p, solved)
@@ -520,8 +520,8 @@ export function useCustomSession(): CustomSession {
           return
         }
         // Retry-on-wrong: the FIRST wrong move records the fail once (stats +
-        // streak, exactly as before) but we DON'T reveal the answer or advance —
-        // the board snaps back to the position to move and the learner keeps
+        // streak, exactly as before) but we DON'T reveal the answer or advance.
+        // The board snaps back to the position to move and the learner keeps
         // trying until they solve it (a late solve stays counted as failed) or
         // uses Skip / Show solution. Further wrong tries just snap back (the
         // per-index guard in recordOutcomeOnce keeps them from re-counting).

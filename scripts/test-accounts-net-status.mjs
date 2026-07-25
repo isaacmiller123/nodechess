@@ -1,4 +1,4 @@
-// A6-M4 (Lane L-ui) SUITE — the LIVE account-network status bridge that the hub
+// A6-M4 (Lane L-ui) SUITE: the LIVE account-network status bridge that the hub
 // UI reads (net/accountNetStatus.summarizeNetStatus), headless over MockFabric.
 //
 //   node scripts/test-accounts-net-status.mjs
@@ -13,8 +13,8 @@
 //                            self excluded, ratedAvailable follows the §4 rule;
 //   4. a committee-only peer (witness:false) is counted for committee, NOT for
 //      witnesses (the caps distinction the PIN panel vs the rated boundary need);
-//   5. stale presence (past the directory horizon) drops back to connecting —
-//      a peer that went dark is offline, never a frozen count.
+//   5. stale presence (past the directory horizon) drops back to connecting.
+//      A peer that went dark is offline, never a frozen count.
 //
 // peerService is fabric-agnostic, so the same summarizer that runs over Lane A's
 // browser fabric in production runs here over an in-process MockFabric bus.
@@ -93,7 +93,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -146,7 +146,7 @@ async function run(M) {
   eq(lone.presence, 'connecting', "lone: presence 'connecting' (self is excluded, no other node yet)")
   eq(lone.peersReachable, 0, 'lone: peersReachable 0 (self never counts)')
   eq(lone.witnessesReachable, 0, 'lone: witnessesReachable 0')
-  eq(lone.ratedAvailable, false, 'lone: ratedAvailable false — rated play honestly waits')
+  eq(lone.ratedAvailable, false, 'lone: ratedAvailable false. Rated play honestly waits')
 
   // ==========================================================================
   console.log('\n· 3. peers announced ⇒ online with exact counts …')
@@ -157,10 +157,10 @@ async function run(M) {
   const peerC = await startPeer(bus, specC)
   const three = NS.summarizeNetStatus(peerA, NOW)
   eq(three.presence, 'online', "online: presence 'online' once ≥1 other node is reachable")
-  eq(three.peersReachable, 2, 'online: peersReachable 2 (B, C — self excluded)')
+  eq(three.peersReachable, 2, 'online: peersReachable 2 (B, C; self excluded)')
   eq(three.witnessesReachable, 2, 'online: witnessesReachable 2 (both advertise the witness cap)')
   eq(three.committeeReachable, 2, 'online: committeeReachable 2 (both advertise the committee cap)')
-  eq(three.ratedAvailable, true, 'online: ratedAvailable true — a third machine can witness (§4)')
+  eq(three.ratedAvailable, true, 'online: ratedAvailable true. A third machine can witness (§4)')
   // Every observer on the bus reaches the same view (self is theirs, not counted).
   eq(NS.summarizeNetStatus(peerB, NOW).peersReachable, 2, 'symmetry: peer B also sees 2 others (A, C)')
 
@@ -172,17 +172,17 @@ async function run(M) {
   eq(peerD.caps.witness, false, 'peer D advertises witness:false (caps override)')
   const four = NS.summarizeNetStatus(peerA, NOW)
   eq(four.peersReachable, 3, 'with D: peersReachable 3 (B, C, D)')
-  eq(four.witnessesReachable, 2, 'with D: witnessesReachable STILL 2 — a committee-only node is not an eligible witness (§4 boundary)')
-  eq(four.committeeReachable, 3, 'with D: committeeReachable 3 — the PIN committee counts D')
+  eq(four.witnessesReachable, 2, 'with D: witnessesReachable STILL 2. A committee-only node is not an eligible witness (§4 boundary)')
+  eq(four.committeeReachable, 3, 'with D: committeeReachable 3. The PIN committee counts D')
   eq(four.ratedAvailable, true, 'with D: ratedAvailable still true (B, C witness-capable)')
 
   // ==========================================================================
   console.log('\n· 5. stale presence ⇒ drops to connecting (a dark peer is offline) …')
   // ==========================================================================
   // The in-process MockFabric double never expires presence (its directory
-  // advertises a MAX_SAFE_INTEGER horizon — deterministic suites don't model
+  // advertises a MAX_SAFE_INTEGER horizon: deterministic suites don't model
   // wall time). The PRODUCTION browser fabric advertises a finite horizon, so
-  // the staleness branch is exercised here against a controlled directory —
+  // the staleness branch is exercised here against a controlled directory:
   // summarizeNetStatus is pure and honors whatever staleAfterMs it is handed.
   ok(peerA.fabric.directory().staleAfterMs > 1e15, 'MockFabric double advertises a never-expire horizon (so §5 uses a controlled directory)')
   const STALE = 60_000
@@ -202,16 +202,16 @@ async function run(M) {
     ['z', presence('Z', NOW, false, true)],
   ])
   const fresh = NS.summarizeNetStatus(peerF, NOW)
-  eq(fresh.peersReachable, 3, 'controlled: peersReachable 3 (X, Y, Z — SELF excluded by root)')
+  eq(fresh.peersReachable, 3, 'controlled: peersReachable 3 (X, Y, Z, SELF excluded by root)')
   eq(fresh.witnessesReachable, 2, 'controlled: witnessesReachable 2 (Z is committee-only)')
   eq(fresh.committeeReachable, 3, 'controlled: committeeReachable 3')
   // At exactly the horizon a node is still fresh (boundary is strict >).
-  eq(NS.summarizeNetStatus(peerF, NOW + STALE).peersReachable, 2, 'at exactly the horizon: Y (age 90s) stale, X & Z (age 60s) still fresh — strict > boundary')
+  eq(NS.summarizeNetStatus(peerF, NOW + STALE).peersReachable, 2, 'at exactly the horizon: Y (age 90s) stale, X & Z (age 60s) still fresh, strict > boundary')
   // One tick past the horizon for the freshest nodes ⇒ everyone dark ⇒ connecting.
   const dark = NS.summarizeNetStatus(peerF, NOW + STALE + 1)
   eq(dark.peersReachable, 0, 'past the horizon: peersReachable 0 (every presence went stale)')
   eq(dark.presence, 'connecting', "past the horizon: presence back to 'connecting' (peer up, nobody fresh)")
-  eq(dark.ratedAvailable, false, 'past the horizon: ratedAvailable false — a dark peer never counts')
+  eq(dark.ratedAvailable, false, 'past the horizon: ratedAvailable false. A dark peer never counts')
 
   await Promise.all([peerA.stop(), peerB.stop(), peerC.stop(), peerD.stop()])
 }

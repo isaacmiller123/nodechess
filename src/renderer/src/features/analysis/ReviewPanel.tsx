@@ -38,7 +38,7 @@ export function ReviewPanel({
         {!review && !running && (
           <>
             <p className="muted small review-intro">
-              Analyze every move with the engine — accuracy, classifications, and an estimated
+              Analyze every move with the engine: accuracy, classifications, and an estimated
               playing strength for the game.
             </p>
             <button className="btn review-run" onClick={onRun} disabled={!canReview}>
@@ -66,7 +66,7 @@ export function ReviewPanel({
             <SummaryTable review={review} />
 
             <p className="review-elo-note muted small">
-              Performance estimate for this game — separate from your Glicko rating.
+              Performance estimate for this game, separate from your Glicko rating.
             </p>
 
             <div className="review-graph-wrap">
@@ -129,7 +129,7 @@ function SummaryTable({ review }: { review: GameReview }) {
 
       <div className="rv-row" role="row">
         <EloCell band={review.whiteElo} />
-        {/* An accuracy-derived ESTIMATE (EloBand), not a rating — the band range
+        {/* An accuracy-derived ESTIMATE (EloBand), not a rating: the band range
             below the point value is mandatory, and the label must say so. */}
         <span className="rv-cell rv-label" role="cell">
           Est. performance

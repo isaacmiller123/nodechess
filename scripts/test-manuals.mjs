@@ -1,11 +1,11 @@
 // Headless test for the authored game manuals (resources/manuals/*.md +
-// index.json) — docs/GAMES-PLATFORM-SPEC.md §Library UI (manuals).
+// index.json), docs/GAMES-PLATFORM-SPEC.md §Library UI (manuals).
 //
 //   node scripts/test-manuals.mjs
 //
 // Checks, per manual: index entry <-> file 1:1, required sections present
 // (## The rules / Reading the board / Three principles / A classic pattern
-// or trap — chess960 predates the template and is exempt), word count in
+// or trap: chess960 predates the template and is exempt), word count in
 // the authored 550–1100 band, and EVERY ```position payload is
 // syntactically valid for its game:
 //   - chess family  -> parsed by the landed GameSpec adapters
@@ -14,7 +14,7 @@
 //                      board field of the FEN)
 //   - grid family   -> `key: value` lines with coordinate/number tokens
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -172,14 +172,14 @@ try {
       if (CHESS_FAMILY.has(kind)) err = validateChessFen(kind, payload)
       else if (FFISH_FAMILY.has(kind)) err = validateFfishFen(kind, payload)
       else err = validateGridPayload(payload)
-      ok(err === null, `${kind}: position ${i + 1} valid${err ? ` — ${err}` : ''}`)
+      ok(err === null, `${kind}: position ${i + 1} valid${err ? `, ${err}` : ''}`)
     }
     if (kind !== 'chess960') {
       ok(positions.length >= 1, `${kind}: at least one position diagram (${positions.length})`)
     }
   }
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

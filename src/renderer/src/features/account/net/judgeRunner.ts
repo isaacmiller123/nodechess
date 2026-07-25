@@ -1,15 +1,15 @@
-// A6 M5 Lane L-t1 — the Tier-1 anticheat runner (spec §8 Tier-1, ACCOUNTS-SPEC
+// A6 M5 Lane L-t1: the Tier-1 anticheat runner (spec §8 Tier-1, ACCOUNTS-SPEC
 // §8).
 //
 // The last mile of a signed, witnessed, RATED game on the ANTICHEAT side: after
 // the game settles, run the PINNED canonical judge (content-hash-gated WASM, a
 // judge-dedicated Worker on every platform) over the game transcript to produce
 // the canonical JudgeOutput, fold that into the per-game Tier1Record (the §8
-// Tier-1 forensic signals — ACPL fit, engine match, clock forensics), and hand
+// Tier-1 forensic signals: ACPL fit, engine match, clock forensics), and hand
 // the signals to the trust/escalation SINK. Both players AND the game's witness
 // run this independently over the SAME signed transcript; the pinned binary +
 // the bare-FEN transcript surface make the judgeOutputDigest / tier1Digest
-// BIT-IDENTICAL on every honest machine (that identity is the whole point — a
+// BIT-IDENTICAL on every honest machine (that identity is the whole point; a
 // verdict input that split between honest verifiers would be the A4-04 false-
 // fraud consensus-split class). It also carries the A5-17 SIGNING-TIME
 // DISCIPLINE of the commit-reveal window salt: when a rated game closes a Regan
@@ -18,21 +18,21 @@
 // aggregation (Lane L-t2) partitions windows with.
 //
 // It COMPOSES the built substrate, re-implementing NO crypto and NO judge math:
-//   newWebJudgeEngine (src/web/engines/judge.ts) — the pinned Worker (INJECTED so
+//   newWebJudgeEngine (src/web/engines/judge.ts): the pinned Worker (INJECTED so
 //                                          this module stays DOM-free + headless-
 //                                          testable; the boot passes it in)
-//   transcriptToJudgePositions (judge.ts) — the NORMATIVE bare-FEN verdict surface
-//   judgeGame (judge.ts)                  — drive the §8 sequence → JudgeOutput
-//   tier1Record / tier1Digest (tier1.ts)  — the canonical per-game Tier-1 record
-//   windowAnchor / consensusSaltOpts (embed.ts) — the A5-17/A5-18 salt wiring
-//   clientRequestSaltGrant (protocol.ts)  — the anchored, signing-time-disciplined
+//   transcriptToJudgePositions (judge.ts): the NORMATIVE bare-FEN verdict surface
+//   judgeGame (judge.ts):                   drive the §8 sequence → JudgeOutput
+//   tier1Record / tier1Digest (tier1.ts):   the canonical per-game Tier-1 record
+//   windowAnchor / consensusSaltOpts (embed.ts): the A5-17/A5-18 salt wiring
+//   clientRequestSaltGrant (protocol.ts):   the anchored, signing-time-disciplined
 //                                          salt grant round-trip to each witness
-//   verifySaltReveal (tier2.ts)           — re-derive windowSalt from the grants
+//   verifySaltReveal (tier2.ts):            re-derive windowSalt from the grants
 //
 // Honest degradation (C-10, no dead judge): a non-chess game (the pinned judge is
 // standard Stockfish), an unreplayable/illegal transcript, a judge Worker that
 // won't start, or too few reachable witnesses for the salt threshold ALL resolve
-// to a typed no-op — never a crash, never a fabricated signal. This is only ever
+// to a typed no-op: never a crash, never a fabricated signal. This is only ever
 // invoked for a RATED game between two signed-in players; casual/unwitnessed play
 // never reaches here, so v5/v6 casual stays byte-identical.
 //
@@ -79,7 +79,7 @@ import type { SegmentPayload } from '@shared/accounts/storage/types'
 // ---------------------------------------------------------------------------
 
 /** One transcript ply Tier-1 judges. `mp.getSignedGame().moves` (SignedMove[])
- *  is assignable — the extra `sig` is ignored; the move is UCI long-algebraic
+ *  is assignable, the extra `sig` is ignored; the move is UCI long-algebraic
  *  (chess codec), the clocks are the mover's post-move snapshot (segment.ts). */
 export type Tier1Move = TranscriptMove
 
@@ -90,7 +90,7 @@ export interface Tier1GameView {
   gameKey: B64u
   /** Both players' account roots by color (segment.players). */
   players: { w: B64u; b: B64u }
-  /** The ladder kind — the pinned judge is standard Stockfish, so ONLY 'chess'
+  /** The ladder kind: the pinned judge is standard Stockfish, so ONLY 'chess'
    *  is judged; any other kind is an honest no-op (no dead judge). */
   kind: string
   /** The A4 ladder time control (§6); its `incMs` is the witness-signed Fischer
@@ -102,26 +102,26 @@ export interface Tier1GameView {
   firstMover?: Side
 }
 
-/** The Tier-1 signals one judged game produced — the SINK payload. Everything a
+/** The Tier-1 signals one judged game produced, the SINK payload. Everything a
  *  trust re-weight or a Tier-2 escalation trigger needs to consume this game. */
 export interface Tier1Signals {
   gameKey: B64u
-  /** ladderId(kind, tc) — the ladder the game rated on (the Tier-1 record ladder). */
+  /** ladderId(kind, tc). The ladder the game rated on (the Tier-1 record ladder). */
   ladder: string
-  /** The canonical per-game Tier1Record — BOTH sides' §8 forensic signals. */
+  /** The canonical per-game Tier1Record: BOTH sides' §8 forensic signals. */
   record: Tier1Record
-  /** tier1Digest(record) — the cross-platform Tier-1 parity unit. */
+  /** tier1Digest(record). The cross-platform Tier-1 parity unit. */
   tier1Digest: B64u
-  /** judgeOutputDigest(out) — the cross-platform JudgeOutput parity unit. */
+  /** judgeOutputDigest(out). The cross-platform JudgeOutput parity unit. */
   judgeDigest: B64u
 }
 
 /**
  * THE HOOK the boot wires to feed Tier-1 signals onward. The signals feed T
- * (the §7/§8 forensic re-weight — its calibrated weight is deferred to the
+ * (the §7/§8 forensic re-weight: its calibrated weight is deferred to the
  * J4/J6 refit, so today's consumer is Lane L-t2's deterministic escalation
  * trigger + any trust-store projection) and the anticheat UI. The runner
- * `await`s it and swallows a throw to a log — a sink error never fails the
+ * `await`s it and swallows a throw to a log. A sink error never fails the
  * judge pass. Both players and the witness fire an IDENTICAL record for the
  * same game (the parity property), so a consumer can cross-check across the
  * three independent passes.
@@ -136,7 +136,7 @@ export interface Tier1SaltDeps {
   fabric: FabricEndpoint
   /** THIS signed-in account's root (the salt subject). */
   subjectRoot: B64u
-  /** THIS account's own chain, read LAZILY at salt time — the window-close
+  /** THIS account's own chain, read LAZILY at salt time. The window-close
    *  detection + windowAnchor read the ladder's rated-game list off it. A getter
    *  (not a snapshot) so it observes the just-played segment AFTER it lands: the
    *  judge pass runs for seconds first, by which point the async append has
@@ -144,15 +144,15 @@ export interface Tier1SaltDeps {
    *  new window ⇒ an honest salt no-op). */
   chain: () => Chain
   /** The canonical witness set the salt grants are gathered from (the same set
-   *  the lease/segment append used — the boot supplies it from the overlay). */
+   *  the lease/segment append used. The boot supplies it from the overlay). */
   witnessSet: readonly NodeId[]
   /** Grant threshold; default PARAMS_A2.tLease (effective threshold floors to
-   *  max(1, min(tLease, |witnessSet|)) — lease.ts's small-population rule). */
+   *  max(1, min(tLease, |witnessSet|)), lease.ts's small-population rule). */
   tLease?: number
 }
 
 export interface RunTier1Deps {
-  /** The pinned judge engine factory — a FRESH judge-dedicated instance per
+  /** The pinned judge engine factory: a FRESH judge-dedicated instance per
    *  call. Production passes `() => newWebJudgeEngine()` (src/web/engines/judge.ts,
    *  the content-hash-gated single-thread Worker); tests pass the Node adapter or
    *  a fake JudgeEngine. Kept INJECTED so this module never imports the DOM. */
@@ -161,9 +161,9 @@ export interface RunTier1Deps {
    *  only. */
   sink?: Tier1Sink
   /** This account's PRIOR-game acpl window per color (oldest→newest, EXCLUDING
-   *  this game) — enables the A5-36 strength-trajectory slope in the record. */
+   *  this game). Enables the A5-36 strength-trajectory slope in the record. */
   priorAcplMicros?: { readonly w?: readonly number[]; readonly b?: readonly number[] }
-  /** The FEN-before-each-ply builder over the transcript — default: replay the
+  /** The FEN-before-each-ply builder over the transcript, default: replay the
    *  UCI moves through the SAME chess adapter the live game used (byte-identical
    *  positions). Returns null on an unreplayable/illegal/variant transcript. */
   fenBefore?: (moves: readonly Tier1Move[]) => readonly string[] | null
@@ -182,7 +182,7 @@ export type RunTier1Result =
       judgeDigest: B64u
       out: JudgeOutput
       /** The A5-17 window-salt outcome, present iff a salt step was supplied AND
-       *  a window closed on this game (else undefined — the common per-game case). */
+       *  a window closed on this game (else undefined; the common per-game case). */
       salt?: WindowSaltResult
     }
   | { ok: false; reason: string }
@@ -194,11 +194,11 @@ export type RunTier1Result =
 /**
  * Replay the transcript's UCI moves through the SAME standard-chess adapter the
  * live game validated them with (chessops under the hood), returning the FEN the
- * mover FACED before each ply — exactly the `fenBeforeOf` that
+ * mover FACED before each ply: exactly the `fenBeforeOf` that
  * transcriptToJudgePositions consumes. Because it is the identical replay the
  * game used, every honest re-deriver (both players + the witness) reconstructs
  * BYTE-IDENTICAL positions from the signed moves alone. Returns null the instant
- * a move is illegal/unreplayable (a non-chess or corrupt transcript) — a
+ * a move is illegal/unreplayable (a non-chess or corrupt transcript). A
  * fail-closed honest skip, never a partial or fabricated position list.
  */
 export function replayFensBefore(moves: readonly Tier1Move[]): string[] | null {
@@ -208,7 +208,7 @@ export function replayFensBefore(moves: readonly Tier1Move[]): string[] | null {
     fens.push(fen) // the FEN faced BEFORE this ply
     if (typeof m.move !== 'string') return null
     const next = chessOnlineAdapter.play(fen, m.move)
-    if (next === null) return null // illegal / variant / corrupt — honest skip
+    if (next === null) return null // illegal / variant / corrupt: honest skip
     fen = next
   }
   return fens
@@ -221,8 +221,8 @@ export function replayFensBefore(moves: readonly Tier1Move[]): string[] | null {
 /**
  * Run the Tier-1 judge pass for one completed rated game and feed the signals to
  * the sink. Judges the WHOLE transcript (both sides) through the pinned Worker,
- * mints the canonical Tier1Record, computes the parity digests, and — when a
- * salt step is supplied and this game closed a Regan window — collects the
+ * mints the canonical Tier1Record, computes the parity digests, and. When a
+ * salt step is supplied and this game closed a Regan window, collects the
  * anchored window salt (A5-17). Returns the signals + record, or a typed no-op
  * reason (never throws): 'not-chess' | 'unrated' | 'empty-transcript' |
  * 'replay-failed' | 'positions:…' | 'judge-start:…' | 'judge:…' | 'record:…'.
@@ -236,7 +236,7 @@ export async function runTier1ForGame(game: Tier1GameView, deps: RunTier1Deps): 
     return { ok: false, reason: 'not-chess' }
   }
   if (timeCategory(game.tc) === 'Unlimited') {
-    log('tier1 skipped: unlimited time control is unrated (§6) — no timing forensics')
+    log('tier1 skipped: unlimited time control is unrated (§6), no timing forensics')
     return { ok: false, reason: 'unrated' }
   }
   if (!Array.isArray(game.moves) || game.moves.length === 0) {
@@ -258,7 +258,7 @@ export async function runTier1ForGame(game: Tier1GameView, deps: RunTier1Deps): 
   }
 
   // --- drive the pinned judge Worker over the positions -----------------------
-  // ALWAYS the fixed Tier-1 config (t1Nodes/t1MultiPv/hashMb) — the only config
+  // ALWAYS the fixed Tier-1 config (t1Nodes/t1MultiPv/hashMb). The only config
   // tier1Record will accept and the exact config the §8 anchors were fit at.
   const config = judgeConfigForTier(1)
   let engine: JudgeEngine
@@ -325,7 +325,7 @@ export type WindowSaltResult =
       anchor: B64u
       /** The assembled, threshold-proving reveal. */
       reveal: SaltReveal
-      /** b64u(windowSalt) — the 32 salt bytes the Tier-2 partition consumes. */
+      /** b64u(windowSalt). The 32 salt bytes the Tier-2 partition consumes. */
       salt: B64u
       /** Valid distinct grantors collected. */
       grantors: number
@@ -333,10 +333,10 @@ export type WindowSaltResult =
   | { ok: false; reason: string }
 
 /**
- * The ladder's chain-ordered RATED-GAME KEY LIST — ordinals 0,1,2,… in
+ * The ladder's chain-ordered RATED-GAME KEY LIST: ordinals 0,1,2,… in
  * witnessed chain order (embed.ts windowAnchor's membership definition). Mirrors
  * fold.ts's rated gate exactly: a witnessed-lane `segment` that verifies
- * (verifySegmentEvent === null — the full §3 gate incl. the atomic rated
+ * (verifySegmentEvent === null: the full §3 gate incl. the atomic rated
  * binding), carries kind+tc, is not Unlimited (§6), and rates on `ladder`. Each
  * game key appears once (a game rates once); order is height (= chain) order.
  * Pure + total (never throws): an unverifiable/foreign segment contributes
@@ -359,19 +359,19 @@ export function ratedGameKeysForLadder(chain: Chain, ladder: string): B64u[] {
       seen.add(p.game)
       out.push(p.game)
     } catch {
-      // Adversarial payload engineered to crash a deeper layer — skip it.
+      // Adversarial payload engineered to crash a deeper layer. Skip it.
     }
   }
   return out
 }
 
 /**
- * The window (if any) that CLOSED at `ratedGameCount` rated games — the window
+ * The window (if any) that CLOSED at `ratedGameCount` rated games. The window
  * whose salt the canonical witnesses will now grant (their A5-17 gate:
  * grant window w iff the subject's rated ordinal ≥ (w+1)·K − 1, protocol.ts).
  * A boundary is crossed exactly when count is a multiple of K, closing window
  * w = count/K − 1. Returns null when no boundary was just crossed OR the closed
- * window is 0 — window 0 has no jittered boundary and no salt (windowAnchor
+ * window is 0. Window 0 has no jittered boundary and no salt (windowAnchor
  * requires windowIndex ≥ 1). Pure.
  */
 export function closedWindowIndex(ratedGameCount: number): number | null {
@@ -398,14 +398,14 @@ export interface CollectWindowSaltDeps {
 
 /**
  * Collect the A5-17 anchored salt grants for `windowIndex` from the canonical
- * witness set and assemble the verified SaltReveal — the client half of the
+ * witness set and assemble the verified SaltReveal, the client half of the
  * signing-time discipline. Derives the post-game anchor (windowAnchor: a
  * domain-separated digest of the rated game at ordinal windowIndex·K−1, fixed
  * only after that game is chained), requests an anchored grant from EVERY
- * witness (each enforces the discipline server-side — anchor required, rated
+ * witness (each enforces the discipline server-side: anchor required, rated
  * ordinal ≥ the window's close, its own wts), assembles the reveal, and
  * re-derives windowSalt under the CONSENSUS opts (consensusSaltOpts pins the
- * canonical threshold subset AND requires the anchor — A5-18/A5-17). Honest
+ * canonical threshold subset AND requires the anchor, A5-18/A5-17). Honest
  * degradation (C-10): too few reachable/eligible witnesses ⇒ a typed
  * 'salt-insufficient-grants' | 'salt-verify:…', never a fabricated salt.
  */
@@ -413,7 +413,7 @@ export async function collectWindowSalt(windowIndex: number, deps: CollectWindow
   const log = deps.log ?? ((): void => {})
   const tLease = deps.tLease ?? PARAMS_A2.tLease
 
-  // The A5-17 post-game anchor — uncomputable before the games preceding the
+  // The A5-17 post-game anchor: uncomputable before the games preceding the
   // window boundary are chained; a swap invalidates every grant.
   let anchor: B64u
   try {
@@ -423,7 +423,7 @@ export async function collectWindowSalt(windowIndex: number, deps: CollectWindow
   }
 
   // Request an ANCHORED grant from every witness (the witness signs only when
-  // its own chain view shows the window closed — the signing-time discipline).
+  // its own chain view shows the window closed. The signing-time discipline).
   const grants: LeaseGrant[] = []
   const seen = new Set<NodeId>()
   for (const w of deps.witnessSet) {
@@ -435,7 +435,7 @@ export async function collectWindowSalt(windowIndex: number, deps: CollectWindow
       seen.add(g.w)
       grants.push(g)
     } catch {
-      // Unreachable witness — honest degradation handles any shortfall below.
+      // Unreachable witness: honest degradation handles any shortfall below.
     }
   }
   if (grants.length === 0) {
@@ -454,7 +454,7 @@ export async function collectWindowSalt(windowIndex: number, deps: CollectWindow
   }
   // Re-derive the salt under the consensus opts (requireAnchor + canonical
   // witnessSet pin). A shortfall or a non-canonical subset fails here with the
-  // exact reason — never a silently-weaker salt. consensusSaltOpts throws on a
+  // exact reason: never a silently-weaker salt. consensusSaltOpts throws on a
   // malformed witnessSet (empty / >64 / non-NodeId), so it is guarded: a broken
   // set degrades to a typed no-op, never an exception into the game-over path.
   try {

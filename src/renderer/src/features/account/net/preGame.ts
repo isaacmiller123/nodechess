@@ -1,24 +1,24 @@
-// A6 M1 Lane E — the pre-game snapshot exchange (spec §3 entanglement).
+// A6 M1 Lane E: the pre-game snapshot exchange (spec §3 entanglement).
 //
 // Before move 1 of a SIGNED, RATED game, each player hands the opponent a
-// SIGNED snapshot of its own account state — its current witnessed head +
+// SIGNED snapshot of its own account state. Its current witnessed head +
 // height, its profile snapshot, and (when it has one) its newest M-of-N
 // cosigned checkpoint. Each side then folds the opponent's snapshot into the
 // `segment` it writes for its OWN chain (segment.ts MakeSegmentOpts): the
 // snapshot supplies `heads` (both chains' start heads, §3), `oppProfile` (the
 // §5 reconstruction snapshot embedded per game), and `oppCkpt` (the §6 pinned
-// fold input — ABSENT for a young opponent, which the fold reads as the §6
+// fold input. ABSENT for a young opponent, which the fold reads as the §6
 // seeds 1200/350). This is the PRECURSOR to the M2 witnessed `'pairing'` record
 // (ratings/conduct.ts makePairingPayload): same game/opp/head binding, but
 // exchanged peer-to-peer over the fabric rather than anchored in both chains.
 //
 // The signed contract is the whole point: a snapshot is authority-free relay
 // data, so it is only trusted for its ed25519 signature by the sender's
-// certified device key. The receiver pins BOTH directions — the snapshot names
-// the game it is for and the opponent it is for — so a snapshot cannot be
+// certified device key. The receiver pins BOTH directions: the snapshot names
+// the game it is for and the opponent it is for, so a snapshot cannot be
 // replayed across games or re-aimed at a third party.
 //
-// Platform-specific hosting layer (renderer) — it holds a live FabricEndpoint —
+// Platform-specific hosting layer (renderer): it holds a live FabricEndpoint,
 // but every byte it signs/verifies is A1's cjson-v1 + ed25519, reused from
 // @shared, never re-implemented. `src/shared/accounts` stays pure; the one
 // shared touch this consumes is the lead's additive `pregame-snapshot`
@@ -51,12 +51,12 @@ import { nodeIdOf } from '@shared/accounts/witness/distance'
 /**
  * The body a player signs before move 1. `key` is the certified DEVICE signing
  * key the signature verifies against (certified under `root` in the sender's
- * chain — a fact the segment's read-time verifiers judge, not this record).
+ * chain: a fact the segment's read-time verifiers judge, not this record).
  * `head`/`height` are the sender's current witnessed head; `profile` is its §5
  * reconstruction snapshot; `ckpt` is its newest cosigned checkpoint or ABSENT
  * (young account → the §6 seeds path). `game`/`opp` bind the snapshot to ONE
  * game against ONE opponent (anti-replay). A CanonicalObject at runtime (cjson
- * -v1), but declared as a plain interface because `ckpt` nests a SignedEvent —
+ * -v1), but declared as a plain interface because `ckpt` nests a SignedEvent:
  * canonicalBytes casts at the seam, exactly like segment.ts makeWitnessedResult.
  */
 export interface PreGameSnapshotBody {
@@ -66,7 +66,7 @@ export interface PreGameSnapshotBody {
   game: B64u
   /** Sender account root. */
   root: B64u
-  /** Sender's certified device signing key — what `sig` verifies against. */
+  /** Sender's certified device signing key: what `sig` verifies against. */
   key: B64u
   /** The opponent root this snapshot is aimed at (binds direction). */
   opp: B64u
@@ -76,7 +76,7 @@ export interface PreGameSnapshotBody {
   height: number
   /** Sender's profile snapshot (→ segment.oppProfile on the receiver's side). */
   profile: ProfileSnapshot
-  /** Sender clock (unix ms) — informational; the receiver bounds it. */
+  /** Sender clock (unix ms): informational; the receiver bounds it. */
   ts: number
   /** Sender's newest M-of-N cosigned checkpoint (→ segment.oppCkpt). ABSENT for
    *  a young account, which the §6 fold correctly reads as the seeds. */
@@ -106,7 +106,7 @@ const zPreGameBody = z.strictObject({
 
 const zSignedPreGame = z.strictObject({ body: zPreGameBody, sig: zB64u64 })
 
-/** The exact bytes a snapshot signs — one place, so sign and verify agree. */
+/** The exact bytes a snapshot signs. One place, so sign and verify agree. */
 function snapshotBytes(body: PreGameSnapshotBody): Uint8Array {
   return canonicalBytes(body as unknown as CanonicalObject)
 }
@@ -148,11 +148,11 @@ export function signPreGameSnapshot(f: SnapshotFields, devicePriv: Uint8Array): 
 
 /**
  * Verify a received snapshot, fail-closed on ANY malformation (never throws):
- * strict shape, ed25519 signature by body.key over the body, and — when a
- * checkpoint rides — that it is a self-signed 'ckpt' event OF the sender's root
+ * strict shape, ed25519 signature by body.key over the body, and. When a
+ * checkpoint rides: that it is a self-signed 'ckpt' event OF the sender's root
  * (so an opponent cannot bolt a stranger's checkpoint onto its snapshot; the
  * FULL §6 cosigner/prefix check is verifySegmentEvent's job downstream). This
- * proves the record's PROVENANCE only — that `key` is certified under `root`,
+ * proves the record's PROVENANCE only: that `key` is certified under `root`,
  * that the head is real, and that the account is not fuse-banned are chain
  * facts the segment's read-time verifiers establish, never this relay record.
  */
@@ -177,7 +177,7 @@ export function verifyPreGameSnapshot(snap: unknown): snap is SignedPreGameSnaps
 }
 
 // ---------------------------------------------------------------------------
-// Fabric transport — serve our snapshot / request the opponent's
+// Fabric transport: serve our snapshot / request the opponent's
 // ---------------------------------------------------------------------------
 
 /** Return-shaped error the request channel surfaces (never throws the handler). */
@@ -190,7 +190,7 @@ function reqError(reason: string): CanonicalObject {
  * request with OUR signed snapshot for the game it names, aimed back at that
  * peer. The requester sends `{ game, from }` where `from` is its own root; we
  * refuse the request unless `nodeIdOf(from)` equals the fabric-level sender
- * nodeId — a peer can only ask AS a root whose nodeId it actually controls, so
+ * nodeId: a peer can only ask AS a root whose nodeId it actually controls, so
  * it cannot make us cut a snapshot aimed at a root it does not own. `provider`
  * builds our snapshot for (game, thatPeerRoot). Returns an unsubscribe-free
  * registration (the fabric owns handler lifetime), mirroring witnessServe.
@@ -218,9 +218,9 @@ export interface RequestSnapshotOpts {
   opp: NodeId
   /** The game key both sides are about to play. */
   game: B64u
-  /** OUR root — sent so the responder can aim its snapshot back at us. */
+  /** OUR root. Sent so the responder can aim its snapshot back at us. */
   selfRoot: B64u
-  /** The opponent root we expect (pin — the mp hello identity). */
+  /** The opponent root we expect (pin; the mp hello identity). */
   expectOppRoot: B64u
 }
 
@@ -232,7 +232,7 @@ export type RequestSnapshotResult =
  * Request the opponent's signed snapshot over the fabric and verify it end to
  * end: signature valid, aimed at THIS game, from the EXPECTED opponent root, and
  * addressed to US. Honest degradation: an unreachable opponent or a bad snapshot
- * returns {ok:false, reason} — the caller can still play CASUAL (unwitnessed)
+ * returns {ok:false, reason}. The caller can still play CASUAL (unwitnessed)
  * while rated writing waits, never a dead button.
  */
 export async function requestPreGameSnapshot(opts: RequestSnapshotOpts): Promise<RequestSnapshotResult> {
@@ -256,11 +256,11 @@ export async function requestPreGameSnapshot(opts: RequestSnapshotOpts): Promise
 }
 
 // ---------------------------------------------------------------------------
-// Provider helper — build our own snapshot from the live chain (lead-facing)
+// Provider helper: build our own snapshot from the live chain (lead-facing)
 // ---------------------------------------------------------------------------
 
 export interface SnapshotProviderDeps {
-  /** Our current own account chain (re-read per game — the head advances). */
+  /** Our current own account chain (re-read per game; the head advances). */
   chain: () => Chain
   /** Our device signing identity. */
   signing: { root: B64u; key: B64u; priv: Uint8Array }
@@ -268,7 +268,7 @@ export interface SnapshotProviderDeps {
   profile: () => ProfileSnapshot
   /** Our newest cosigned checkpoint, or undefined (young account → seeds). */
   ckpt?: () => SignedEvent | undefined
-  /** Wall clock (unix ms) — the glue layer's, never the pure library's. */
+  /** Wall clock (unix ms). The glue layer's, never the pure library's. */
   now: () => number
 }
 
@@ -303,17 +303,17 @@ export function makeSnapshotProvider(
   }
 }
 
-/** The event id a pre-game snapshot's checkpoint names (M2 pairing precursor —
+/** The event id a pre-game snapshot's checkpoint names (M2 pairing precursor;
  *  handy for the lead when promoting this to the witnessed 'pairing' record). */
 export function snapshotCkptId(snap: SignedPreGameSnapshot): B64u | null {
   return snap.body.ckpt ? eventId(snap.body.ckpt.body) : null
 }
 
 // ===========================================================================
-// M2 — the REAL witnessed 'pairing' record (spec §3/§8; the ratings/conduct.ts
+// M2: the REAL witnessed 'pairing' record (spec §3/§8; the ratings/conduct.ts
 // anchoring contract). Promotes the pre-game snapshot precursor above into the
 // on-chain, WITNESSED pairing both players append to their OWN chains BEFORE the
-// first move — the event that turns on the WitnessCore pairing gate
+// first move. The event that turns on the WitnessCore pairing gate
 // (witnessCore.ts:489: a rated session is refused unless both players' pairing
 // anchors are present and consistent). Same game/opp/kind/tc binding as the
 // snapshot, but countersigned by the game's non-player witness under each
@@ -329,7 +329,7 @@ export interface AnchorPairingInput {
   signing: { root: B64u; key: B64u; priv: Uint8Array }
   /** The live write lease from `leaseRunner.acquire()` (spec §4). */
   lease: Lease
-  /** The witness set the lease was gathered from — the attest fan-out target. */
+  /** The witness set the lease was gathered from. The attest fan-out target. */
   witnessSet: readonly NodeId[]
   /** The host-minted global game key (both sides verified it identical, §3). */
   game: B64u
@@ -338,12 +338,12 @@ export interface AnchorPairingInput {
   /** Ladder binding, mirroring the segment's (§6). */
   kind: string
   tc: { baseMs: number; incMs: number }
-  /** The pairing-legality witnessed timestamp (§7/A4-16) — the one instant BOTH
+  /** The pairing-legality witnessed timestamp (§7/A4-16): the one instant BOTH
    *  sides evaluate pairingLegal at, supplied by the matchmaker (L-mm). */
   atWts: number
-  /** Both players' nodeIds — the attesting witness must be NEITHER (§4). */
+  /** Both players' nodeIds. The attesting witness must be NEITHER (§4). */
   players: ReadonlySet<NodeId>
-  /** The lease epoch (fencing token) — the SAME epoch the post-game segment
+  /** The lease epoch (fencing token): the SAME epoch the post-game segment
    *  lands under, so the pairing → segment pair is one monotonic run. */
   epoch: number
   /** Event ts (wall clock, ms). Default `atWts`. */
@@ -364,14 +364,14 @@ export type AnchorPairingResult =
  * cross-wise pair the witness's pairing gate requires. Honest degradation: no
  * reachable witness ⇒ the append returns 'insufficient-witnesses' /
  * 'no-non-player-witness' verbatim (the rated button waits, C-10). Never
- * partially mutates — clientAppendWitnessed builds a new Chain.
+ * partially mutates: clientAppendWitnessed builds a new Chain.
  */
 export async function anchorPairing(input: AnchorPairingInput): Promise<AnchorPairingResult> {
   if (input.chain.root !== input.signing.root) return { ok: false, reason: 'chain-root-mismatch' }
   if (input.opp === input.signing.root) return { ok: false, reason: 'self-pairing' }
   let payload: PairingPayload
   try {
-    // The trusted build path (throws on structural misuse — the fold's
+    // The trusted build path (throws on structural misuse; the fold's
     // silent-ignore rule handles untrusted material at read time).
     payload = makePairingPayload({ game: input.game, opp: input.opp, kind: input.kind, tc: input.tc, atWts: input.atWts })
   } catch {
@@ -412,10 +412,10 @@ export interface PairingTerms {
 /**
  * The two per-color PairingPayloads the WitnessCore pairing gate cross-checks
  * (witnessCore.ts pairingGateError): each names THIS game key + ladder binding
- * and — cross-wise — the OTHER player's root as `opp` (white pairs against black
+ * and (cross-wise) the OTHER player's root as `opp` (white pairs against black
  * and vice versa, which also pins each payload to a distinct chain). Deterministic
  * from the match terms the witness already holds, so the witness reconstructs the
- * anchors it will enforce rather than trusting a blind flag — the M2 form of
+ * anchors it will enforce rather than trusting a blind flag, the M2 form of
  * `WitnessGameInit.pairing`, replacing M1's 'embedder-verified'.
  */
 export function pairingAnchorsFor(t: PairingTerms): { w: PairingPayload; b: PairingPayload } {
@@ -439,7 +439,7 @@ export interface VerifyPairingExpect {
 /**
  * Cross-check a REAL anchored pairing event against the game terms, fail-closed on
  * any malformation (never throws): a self-signed witnessed 'pairing' event OF
- * `self`, carrying ≥1 valid non-attestation-bound... — precisely: a valid event
+ * `self`, carrying ≥1 valid non-attestation-bound... Precisely: a valid event
  * signature, ≥1 WitnessAttestation binding to it (it was actually witnessed), and
  * a payload naming exactly this game / ladder binding / opponent. This is what the
  * embedder (witnessController) runs to assert 'embedder-verified' against the real

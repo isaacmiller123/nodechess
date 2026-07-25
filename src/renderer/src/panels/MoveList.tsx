@@ -13,7 +13,7 @@ export interface MoveListProps {
   badges?: BadgeMap
   /** Optional persistent opening trace (chess/openingTrace.ts). When provided,
    *  the current opening renders as a slim OpeningTag header inside the move
-   *  box — sticky by design: it names the line even after it leaves theory. */
+   *  box. Sticky by design: it names the line even after it leaves theory. */
   trace?: OpeningTrace
 }
 
@@ -38,7 +38,7 @@ type ListItem =
 
 /** Flatten the mainline into table rows, splicing each move's alternative
  *  branches in as an indented variation block directly under the row where
- *  they branch (lichess-style) — the mainline itself stays a clean table.
+ *  they branch (lichess-style). The mainline itself stays a clean table.
  *  Rebuilt every render on purpose: the game tree mutates in place, so
  *  memoizing on `root` identity would go stale. */
 function buildItems(root: TreeNode): ListItem[] {
@@ -95,12 +95,12 @@ function buildItems(root: TreeNode): ListItem[] {
 export function MoveList({ root, currentId, figurineMode, onSelect, badges, trace }: MoveListProps) {
   const listRef = useRef<HTMLDivElement>(null)
 
-  // Keep the active move visible as the user navigates — WITHOUT scrollIntoView.
+  // Keep the active move visible as the user navigates. WITHOUT scrollIntoView.
   // scrollIntoView walks up and scrolls EVERY ancestor scroll container, so in
   // Analysis it also yanked the sidebar/page down on each move (the user had to
   // scroll back up after every move). Instead we scroll ONLY this list's own
   // overflow:auto box (.move-list, ref below), and only when the current token
-  // is actually outside its visible range — and never when the list isn't
+  // is actually outside its visible range, and never when the list isn't
   // overflowing (nothing to scroll).
   useEffect(() => {
     const scroller = listRef.current
@@ -135,7 +135,7 @@ export function MoveList({ root, currentId, figurineMode, onSelect, badges, trac
       <>
         {header}
         <div className="move-list empty muted small" role="status">
-          No moves yet — play on the board to start a line.
+          No moves yet. Play on the board to start a line.
         </div>
       </>
     )
@@ -228,7 +228,7 @@ function MoveCell({
   const rawSan = node.move?.san ?? ''
   const san = displaySan(rawSan, figurineMode)
   // Once a review exists, EVERY reviewed move carries its classification chip
-  // (chess.com-style) — no notable-only filtering.
+  // (chess.com-style): no notable-only filtering.
   const badge = badges?.get(node.ply)
   const meta = badge ? badgeMeta(badge) : undefined
   const emphasis = badge && meta && isEmphasisBadge(badge) ? ` tone-${meta.tone}` : ''
@@ -310,7 +310,7 @@ function VarTail({
 
 /** One clickable move token inside a variation block. Variation plies reuse
  *  mainline ply numbers, so review badges (keyed by mainline ply) are never
- *  shown here — they would be the wrong move's classification. */
+ *  shown here. They would be the wrong move's classification. */
 function VarToken({
   node,
   forceNum,

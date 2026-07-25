@@ -1,5 +1,5 @@
 /* ============================================================
-   Games library — feature-scoped styles. Tokens only (tokens.css).
+   Games library: feature-scoped styles. Tokens only (tokens.css).
    The library grid is the storefront: polish here is gating.
    ============================================================ */
 
@@ -93,7 +93,7 @@
   display: block;
   border-radius: var(--radius-md);
   overflow: hidden;
-  /* Thumbnails are decorative — never interactive. */
+  /* Thumbnails are decorative. Never interactive. */
   pointer-events: none;
 }
 .game-card-board .cg-wrap {
@@ -436,7 +436,7 @@
   height: 100%;
 }
 /* ChessFamilyBoard stage: the component owns its aspect ratio (9x10 boards,
-   pockets stacked above/below) — this wrapper only carries the board-theme +
+   pockets stacked above/below): this wrapper only carries the board-theme +
    piece-set classes; the wrap's width is capped so board height fits the
    --votb-h budget exactly (aspect-safe: width cap == height cap x ratio). */
 .votb-cfb {
@@ -449,7 +449,7 @@
 .votb-cfb .cfb-loading {
   width: min(100%, calc(var(--votb-h) * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
 }
-/* Pocket kinds (crazyhouse, shogi) stack trays above/below the board — give
+/* Pocket kinds (crazyhouse, shogi) stack trays above/below the board. Give
    their height back to the budget so the whole column still fits. */
 .votb-cfb:has(.cfb-pocket) .cfb-wrap {
   width: min(100%, calc((var(--votb-h) - 104px) * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
@@ -526,7 +526,7 @@
 }
 .votb-turn-dot.is-black {
   background: #26282c;
-  /* stays visible on dark app themes — the dark disc needs a light ring */
+  /* stays visible on dark app themes. The dark disc needs a light ring */
   border-color: rgba(255, 255, 255, 0.4);
 }
 .votb-movecount {
@@ -684,7 +684,7 @@
   padding: var(--space-4);
   font-size: var(--fs-md);
 }
-/* Inline engine-install prompt (go: KataGo not downloaded yet) — replaces the
+/* Inline engine-install prompt (go: KataGo not downloaded yet). Replaces the
    Start button with an actionable card instead of a dead toast. */
 .vbot-install {
   display: flex;
@@ -936,7 +936,7 @@
   border-color: var(--accent);
   color: var(--accent);
 }
-/* Labeled chip rows (go handicap / main time / byo-yomi) — denser than the
+/* Labeled chip rows (go handicap / main time / byo-yomi). Denser than the
    size row: a fixed-width name column + compact mini chips. */
 .kotb-opt-row {
   display: flex;
@@ -1028,7 +1028,7 @@
   height: 8px;
   border-radius: 999px;
   overflow: hidden;
-  background: #f2f2f0; /* white's share — literal stone tones, both themes */
+  background: #f2f2f0; /* white's share. Literal stone tones, both themes */
   border: 1px solid var(--border);
 }
 .territory-bar-black {

@@ -1,14 +1,14 @@
-// A2 fabric — the write lease (spec §4): threshold-granted, epoch-fenced write
+// A2 fabric. The write lease (spec §4): threshold-granted, epoch-fenced write
 // authority for one device of an account. A lease is valid iff ≥ T_lease
 // distinct grantors from the account's canonical witness set each signed it,
 // its granted time sits within the clock window of the grantors' median, its
-// epoch advances monotonically, no unexpired fuse bans the root, and — for a
-// takeover by a DIFFERENT device — it carries a session authorizing exactly
+// epoch advances monotonically, no unexpired fuse bans the root, and. For a
+// takeover by a DIFFERENT device. It carries a session authorizing exactly
 // that device at exactly that epoch: PIN-signed when the account has an active
 // PIN record, root-signed when it does not (see verifyTakeover's two lanes).
 //
 // GENERATION (buildLeaseBody/signGrant/grantLease) mints records; VERIFICATION
-// (verifyLease/verifyGrantSig) is a pure function of its inputs — same bytes →
+// (verifyLease/verifyGrantSig) is a pure function of its inputs. Same bytes →
 // same verdict on node and in the browser bundle. Platform-neutral: no `node:`
 // imports, no DOM globals. All signing/hashing/serialization is A1's + pin.ts's;
 // nothing is re-implemented here.
@@ -64,7 +64,7 @@ export function buildLeaseBody(opts: BuildLeaseOpts): LeaseBody {
   return body
 }
 
-/** sha256(canonicalBytes(leaseBody)) b64u — what each grant signature covers. */
+/** sha256(canonicalBytes(leaseBody)) b64u. What each grant signature covers. */
 export function leaseBodyHash(body: LeaseBody): B64u {
   return toB64u(canonicalHash(body))
 }
@@ -77,7 +77,7 @@ export function grantBytes(bodyHash: B64u, w: NodeId, wts: number): Uint8Array {
 /**
  * One grantor signs a lease body. `w` is the grantor's nodeId, `key` its
  * signing device key (certified in its own chain, advertised in presence),
- * `wts` its independent clock reading — all three bound by one signature.
+ * `wts` its independent clock reading. All three bound by one signature.
  */
 export function signGrant(
   body: LeaseBody,
@@ -105,7 +105,7 @@ export function pinSessionId(session: PinSession): B64u {
   return toB64u(canonicalHash(session.body))
 }
 
-/** The takeover reference id of a root session — same body, same hash rule, so
+/** The takeover reference id of a root session: same body, same hash rule, so
  * LeaseBody.takeover is lane-agnostic and buildLeaseBody needs no change. */
 export function rootSessionId(session: RootSession): B64u {
   return toB64u(canonicalHash(session.body))
@@ -139,9 +139,9 @@ export interface VerifyLeaseCtx {
   params: LeaseParams
   nowMs: number
   /** Any fuse record the verifier holds for the root (null ⇒ none). Granting
-   * into an unexpired fuse is witness misbehavior — the lease is invalid. */
+   * into an unexpired fuse is witness misbehavior. The lease is invalid. */
   fuse?: FuseRecord | null
-  /** The previously observed lease for this root, if any — fences epoch and
+  /** The previously observed lease for this root, if any. Fences epoch and
    * decides whether a takeover gate is required. */
   prior?: { epoch: number; device: B64u } | null
   /**
@@ -168,8 +168,8 @@ export interface LeaseVerify {
 
 /**
  * Verify a lease against the account's canonical witness set (spec §4). The
- * effective threshold is min(tLease, |witnessSet|) with a floor of 1 — so the
- * 2-user rated-play boundary (C-10) has a live grantor, never a dead button —
+ * effective threshold is min(tLease, |witnessSet|) with a floor of 1, so the
+ * 2-user rated-play boundary (C-10) has a live grantor, never a dead button,
  * while at full population the strict-majority tLease makes two overlapping-epoch
  * leases impossible. Pure. Error strings are a stable, sorted API.
  */
@@ -261,20 +261,20 @@ export function verifyLease(lease: Lease, ctx: VerifyLeaseCtx): LeaseVerify {
  * Takeover-gate checks (§4): a valid session authorizing exactly this device at
  * exactly this epoch.
  *
- * TWO LANES, chosen by the SUBJECT'S signed state — never by the claimant:
+ * TWO LANES, chosen by the SUBJECT'S signed state. Never by the claimant:
  *  - `ctx.pinPub` known (the account carries an active PIN record) ⇒ the PIN
  *    lane, unchanged and mandatory. A password thief cannot downgrade a
  *    PIN-protected account by withholding a session; the root lane is refused
  *    outright whenever a pinPub exists.
  *  - `ctx.pinPub` absent (no PIN record on the account) ⇒ the ROOT lane: the
  *    account root key signs the same body. Without this an account with no PIN
- *    can NEVER move to a second device — and a PIN cannot be provisioned
+ *    can NEVER move to a second device, and a PIN cannot be provisioned
  *    without a live committee, so the two conditions deadlocked each other and
  *    cross-device play was impossible.
  *
  * The root lane is one factor, not two: whoever holds the password holds the
  * account, which is exactly what §1 Recovery and the sign-in copy already
- * state. Enabling PINs later strictly upgrades this — an account that appends a
+ * state. Enabling PINs later strictly upgrades this: an account that appends a
  * PIN record moves to the PIN lane automatically, with no migration.
  */
 function verifyTakeover(body: LeaseBody, ctx: VerifyLeaseCtx): string[] {

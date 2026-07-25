@@ -1,19 +1,19 @@
-// Bot providers — docs/GAMES-PLATFORM-SPEC.md §Bots.
+// Bot providers, docs/GAMES-PLATFORM-SPEC.md §Bots.
 //
 // One BotProvider per game kind, resolved from the registry's botProviderId.
 // Providers are the ONLY seam between game UIs and bot backends:
 //
-//   'stockfish'            chess — the existing engine:play ipc (weak-model /
+//   'stockfish'            chess. The existing engine:play ipc (weak-model /
 //                          UCI_Elo routing lives in main; PlayView's richer
 //                          bot experience remains the primary chess path).
-//   'fairy-stockfish'      every other chess-family kind — engine:playVariant
+//   'fairy-stockfish'      every other chess-family kind, engine:playVariant
 //                          ipc (Fairy-Stockfish with UCI_Variant per kind).
-//   'katago'               go — STUB until the KataGo dataset group ships; the
+//   'katago'               go: STUB until the KataGo dataset group ships; the
 //                          GTP client (src/main/engine/gtp.ts) is already in
 //                          place for the binary. move() rejects with
 //                          BotUnavailableError; UIs surface it as a toast.
-//   'rapid-draughts'       American checkers — the library's own alphaBeta.
-//   'worker:checkers-intl' International draughts — negamax over the spec.
+//   'rapid-draughts'       American checkers. The library's own alphaBeta.
+//   'worker:checkers-intl' International draughts. Negamax over the spec.
 //   'worker:gomoku'        games/gomokuBot.ts threat evaluation.
 //   'worker:<small>'       games/small/bots.ts in-process search bots.
 //
@@ -76,7 +76,7 @@ export const BOT_LEVEL_NAMES: readonly string[] = [
 ]
 
 // ---------------------------------------------------------------------------
-// Chess family — engine ipc
+// Chess family: engine ipc
 
 /** Level → target Elo, shared by the chess and fairy providers so a "Club" bot
  *  feels comparable across the whole chess family. */
@@ -116,7 +116,7 @@ const stockfishProvider: BotProvider = {
 }
 
 /** Chess-family variants (chessops + ffish kinds) via engine:playVariant.
- *  Both state shapes carry a current-position `fen` — that's the whole seam. */
+ *  Both state shapes carry a current-position `fen`. That's the whole seam. */
 function fairyProvider(kind: FairyVariantKind): BotProvider {
   return {
     levels: 5,
@@ -135,18 +135,18 @@ function fairyProvider(kind: FairyVariantKind): BotProvider {
 }
 
 // ---------------------------------------------------------------------------
-// Go — KataGo over GTP via engine:playGo (main-process KatagoPool). Two level
+// Go. KataGo over GTP via engine:playGo (main-process KatagoPool). Two level
 // ladders, chosen in MAIN by what's installed: standard nets (visits +
 // move-choice temperature) or, when the optional Human-SL net is present, the
-// flagship human rank profiles. describe() mirrors that choice — the human
+// flagship human rank profiles. describe() mirrors that choice. The human
 // hints below match KatagoPool's HUMAN_PROFILES ranks 1:1 (keep in sync).
 
 const KATAGO_HINTS = [
-  'relaxed — powered by KataGo',
-  'steady — powered by KataGo',
-  'solid — powered by KataGo',
-  'strong — powered by KataGo',
-  'relentless — powered by KataGo'
+  'relaxed: powered by KataGo',
+  'steady: powered by KataGo',
+  'solid: powered by KataGo',
+  'strong: powered by KataGo',
+  'relentless: powered by KataGo'
 ] as const
 
 const KATAGO_HUMAN_HINTS = [
@@ -158,7 +158,7 @@ const KATAGO_HUMAN_HINTS = [
 ] as const
 
 const KATAGO_UNAVAILABLE_MSG =
-  'KataGo is not installed — download the Go engine in Settings → Datasets.'
+  'KataGo is not installed. Download the Go engine in Settings → Datasets.'
 
 // Whether go levels currently play the Human-SL ladder. Refreshed via
 // engine:status fire-and-forget (describe() must stay sync); until the first
@@ -227,7 +227,7 @@ const katagoProvider: BotProvider = {
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
       // Main rejects with a clear not-installed line until the katago dataset
-      // group imports — surface it as the actionable BotUnavailableError.
+      // group imports: surface it as the actionable BotUnavailableError.
       if (/not installed/i.test(msg)) throw new BotUnavailableError(KATAGO_UNAVAILABLE_MSG)
       throw err instanceof Error ? err : new Error(msg)
     }
@@ -235,7 +235,7 @@ const katagoProvider: BotProvider = {
 }
 
 // ---------------------------------------------------------------------------
-// American checkers — rapid-draughts' own alphaBeta search
+// American checkers: rapid-draughts' own alphaBeta search
 
 const AMERICAN_DEPTHS = [1, 3, 5, 7, 9] as const
 const AMERICAN_HINTS = [
@@ -277,7 +277,7 @@ const americanProvider: BotProvider = {
 }
 
 // ---------------------------------------------------------------------------
-// International draughts — negamax over the spec, material + king eval
+// International draughts. Negamax over the spec, material + king eval
 // (task spec: depths 1..7 by level; node budgets keep the top level snappy)
 
 const INTL_DEPTHS = [1, 2, 3, 5, 7] as const

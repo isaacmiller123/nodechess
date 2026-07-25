@@ -2,7 +2,7 @@
 //
 //   node scripts/verify-classification.mjs
 //
-// Bundles src/main/analysis/accuracy.ts with esbuild (pure module — chessops only)
+// Bundles src/main/analysis/accuracy.ts with esbuild (pure module; chessops only)
 // and runs curated scenarios through classifyBadge, asserting the chess.com-model
 // labels: Best vs Brilliant vs Great, Miss, Book/Forced priority, band thresholds,
 // mate-transition table, and the blunder caps. Exit 1 on any mismatch.
@@ -24,7 +24,7 @@ const A = await import(pathToFileURL(out).href)
 const QUIET = 'rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2'
 // White to move, quiet: initial position.
 const START = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-// Forced: Black king a8, White Kc6 + Rb1 — the ONLY legal move is Ka8-a7.
+// Forced: Black king a8, White Kc6 + Rb1. The ONLY legal move is Ka8-a7.
 const FORCED = 'k7/8/2K5/8/8/8/8/1R6 b - - 0 1'
 // Brilliant stage: Re1-e8 offers the rook to Rf8 (attacked, undefended), pretend
 // the engine says it is best and still winning (back-rank ideas).
@@ -33,7 +33,7 @@ const SAC_AFTER = '4Rrk1/5ppp/8/8/8/8/5PPP/6K1 b - - 1 1'
 // Hung-queen grab: Rd1xd5 wins a queen; the rook is NOT attacked afterwards.
 const GRAB_BEFORE = '6k1/8/8/3q4/8/8/8/3R2K1 w - - 0 1'
 const GRAB_AFTER = '6k1/8/8/3R4/8/8/8/6K1 b - - 0 1'
-// After 2...Nc6 in the Ruy order — a real openings-book position for inBook=true.
+// After 2...Nc6 in the Ruy order. A real openings-book position for inBook=true.
 const cp = (v) => ({ cp: v, mate: null })
 const mate = (n) => ({ cp: null, mate: n })
 const fenAfterOf = (fen, uci) => {

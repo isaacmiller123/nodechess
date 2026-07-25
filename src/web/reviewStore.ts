@@ -1,9 +1,9 @@
-// The ReviewStore (web port W3 — build contract AGENT-CLIENT).
+// The ReviewStore (web port W3: build contract AGENT-CLIENT).
 //
 // The W2 engine layer computes reviews CLIENT-side (src/web/engines) and
 // persists through the ReviewStore seam its contract file defines. There is
 // exactly one implementation now that the web build is static: localStorage,
-// LRU-capped at 40 reviews (reviews are the biggest client payload — tens of KB
+// LRU-capped at 40 reviews (reviews are the biggest client payload; tens of KB
 // of move evals per game; 40 keeps well under quota, and on a quota error the
 // tail is evicted until the write fits).
 
@@ -64,7 +64,7 @@ function writeReviews(store: StoredReviews): void {
       window.localStorage.setItem(REVIEWS_KEY, JSON.stringify(store))
       return
     } catch {
-      if (store.order.length === 0) return // nothing left to shed — drop the write
+      if (store.order.length === 0) return // nothing left to shed: drop the write
       evictTail(store)
     }
   }

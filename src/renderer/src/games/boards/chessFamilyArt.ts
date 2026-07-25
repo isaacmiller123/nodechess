@@ -1,24 +1,24 @@
-// Piece art for the East-Asian chess family boards (xiangqi / janggi / shogi)
-// — resources/games-art SVGs (Kadagaden xiangqi/janggi + Ka-hu shogi, CC-BY;
+// Piece art for the East-Asian chess family boards (xiangqi / janggi / shogi).
+// resources/games-art SVGs (Kadagaden xiangqi/janggi + Ka-hu shogi, CC-BY;
 // see the LICENSE.txt next to each set) mapped onto chessgroundx piece classes.
 //
 // The SVGs are pulled in with a Vite glob (`?url` → hashed asset URLs, loaded
-// on demand — the shogi kanji set alone is ~8MB, so NO data-URI inlining) and
+// on demand: the shogi kanji set alone is ~8MB, so NO data-URI inlining) and
 // turned into one injected stylesheet, scoped under `.cfb-wrap.cfb-<kind>`.
 // If builder-assets ever moves/renames the art, only the globs below change.
 //
 // Shogi orientation: chessgroundx tags every piece `ally` (color ===
 // orientation, points away from the viewer) or `enemy`; the art ships both
-// ways — `0*.svg` upright, `1*.svg` pre-rotated 180° — so OTB rotation just
+// ways: `0*.svg` upright, `1*.svg` pre-rotated 180°, so OTB rotation just
 // works. Kings follow convention: sente (internal white) gets 玉 (GY), gote
 // gets 王 (OU).
 //
 // When a set is missing (glob came back empty) hasBoardArt() reports false and
 // ChessFamilyBoard adds `cfb-noart`, switching pieces to the CSS disc+glyph
-// fallback in chess-family-board.css — the board ALWAYS renders.
+// fallback in chess-family-board.css: the board ALWAYS renders.
 //
 // This module is registry-reachable from headless node test bundles (esbuild
-// keeps `import.meta.glob` untransformed) — everything here is lazy and
+// keeps `import.meta.glob` untransformed): everything here is lazy and
 // window-guarded; nothing runs at import time in node.
 
 type UrlMap = Record<string, string>

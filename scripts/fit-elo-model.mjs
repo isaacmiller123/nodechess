@@ -10,12 +10,12 @@
 //                 per-band calibration of the two inverse curves is preserved
 //                 (plain OLS instead regresses to the mean: a first attempt
 //                 measured +200..+460 bias at low bands and -100..-230 at the
-//                 top — exactly the "completely inaccurate" failure mode).
+//                 top: exactly the "completely inaccurate" failure mode).
 //                 Without acpl (raw perf:estimate / placement): est0 = c0 + eloAcc.
 //   est1 = est0 + bShrink*(est0 - 1500)*s(n)    short-game shrink toward center,
 //                 s(n) = sqrt(30/clamp(n,6,30)) - 1 (0 for n >= 30), bShrink
 //                 bounded to [-0.32, 0] (shrink-only; the OLS magnitude beyond
-//                 that is confounded — short corpus games are decisive
+//                 that is confounded. Short corpus games are decisive
 //                 high-band games).
 //   with oppElo:  est = (est1 - g*oppElo)/(1 - g)
 //                 g is fit STRUCTURALLY: pooled within-band regression slope of
@@ -156,7 +156,7 @@ let a1 = 0.5
   const denom = sxx - (sx * sx) / n
   a1 = denom > 0 ? (sxy - (sx * sy) / n) / denom : 0.5
   // Floor at 0.1: unconstrained OLS clamps to a1=0 (eloAcc/eloAcpl are ~0.9
-  // correlated and ACPL is the stronger single signal — a1 grid: 0 -> holdout
+  // correlated and ACPL is the stronger single signal: a1 grid: 0 -> holdout
   // MAE 320.0, 0.1 -> 324.6, 0.3 -> 344.6). Keeping a small accuracy weight
   // costs ~4.6 MAE but keeps the estimate robust to ACPL quirks and genuinely
   // responsive to its headline accuracy input.
@@ -315,7 +315,7 @@ const residStd = {
   withOpp: stdBuckets(true),
   accOnly: stdBuckets(false, true)
 }
-console.log('\nresidual std by nMoves bucket (all rows) — the band half-width:')
+console.log('\nresidual std by nMoves bucket (all rows). The band half-width:')
 console.log('bucket  n      std(noOpp)  std(withOpp)  std(accOnly)')
 for (let i = 0; i < buckets.length; i++) {
   console.log(

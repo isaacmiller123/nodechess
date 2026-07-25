@@ -7,8 +7,8 @@
 //                              response  = the handler's result JSON)
 //
 // Channel gating: PUBLIC_CHANNELS run without a session against the shared
-// DATA_DIR/anon DB (content reads — puzzles/school/famous/personas/coach/
-// openings — so logged-out visitors get real content but never touch a real
+// DATA_DIR/anon DB (content reads: puzzles/school/famous/personas/coach/
+// openings, so logged-out visitors get real content but never touch a real
 // user's rows); everything else answers 401 auth-required without a valid sid.
 // Logged-in calls (public or not) run against DATA_DIR/users/<id>.
 
@@ -23,7 +23,7 @@ import { requireUser, type AuthStore } from './auth'
 export type BridgeModule = typeof BridgeEntry
 
 /** Channels served WITHOUT a session, against the anon DB (contract list plus
- *  puzzles:daily, whose logged-out answer is the anon user's — null — result;
+ *  puzzles:daily, whose logged-out answer is the anon user's (null) result;
  *  puzzles:recordDaily stays auth-only). */
 export const PUBLIC_CHANNELS: ReadonlySet<string> = new Set([
   'app:ping',
@@ -66,8 +66,8 @@ export interface ApiOptions {
 }
 
 export function createApi(opts: ApiOptions): Api {
-  // Content repos resolve through the packaged branch (see electron-shim.ts) —
-  // point resourcesPath at the real resources tree BEFORE the bundle loads.
+  // Content repos resolve through the packaged branch (see electron-shim.ts).
+  // Point resourcesPath at the real resources tree BEFORE the bundle loads.
   ;(process as NodeJS.Process & { resourcesPath?: string }).resourcesPath = opts.resourcesRoot
 
   // Loaded at runtime, not bundled: the bridge is its own esbuild artifact.
@@ -76,7 +76,7 @@ export function createApi(opts: ApiOptions): Api {
 
   fs.mkdirSync(opts.dataDir, { recursive: true })
   bridge.configureDb({
-    // Fallback singleton dir only — every bridge call runs under setDbOverride,
+    // Fallback singleton dir only: every bridge call runs under setDbOverride,
     // so a stray un-overridden getAppDb() lands on the anon DB, never a user's.
     appDbDir: path.join(opts.dataDir, 'anon'),
     puzzles: {
@@ -100,7 +100,7 @@ export function registerIpcRoutes(app: FastifyInstance, api: Api, auth: AuthStor
     const handler = api.channels.get(channel)
     // Not a bridge channel (typo, or a desktop-only excluded domain like
     // engine/review/datasets/updates/dialog): an honest 404, not the 503
-    // coming-online catch-all — this namespace IS online.
+    // coming-online catch-all. This namespace IS online.
     if (!handler) return reply.code(404).send({ error: 'unknown-channel', channel })
 
     const user = requireUser(auth, req, reply)

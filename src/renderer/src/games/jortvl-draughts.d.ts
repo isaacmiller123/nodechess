@@ -17,7 +17,7 @@ declare module '@jortvl/draughts' {
     ascii(): string
     turn(): 'w' | 'b'
     moves(): JortvlMove[]
-    /** WARNING: string form matches from/to only — ambiguous capture paths pick the first match. */
+    /** WARNING: string form matches from/to only. Ambiguous capture paths pick the first match. */
     move(move: string | { from: number; to: number }): JortvlMove | false
     gameOver(): boolean
     load(fen: string): boolean

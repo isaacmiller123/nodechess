@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// Judge-config Elo-corpus generator — A5 brick J3 (spec §8 Tier-1: "the estElo
+// Judge-config Elo-corpus generator, A5 brick J3 (spec §8 Tier-1: "the estElo
 // anchor fit must be re-run against a corpus analyzed at the judge's fixed-node
 // config"; the shipped depth-12 MultiPV-2 fit does not transfer).
 //
 // GAME GENERATION is identical to scripts/gen-elo-corpus.mjs (shared machinery
 // in scripts/lib/game-gen.mjs): engine-vs-engine at KNOWN strengths with the
-// bundled native Stockfish — native UCI_Elo movetime play >= 1320, the
+// bundled native Stockfish: native UCI_Elo movetime play >= 1320, the
 // production sub-floor pick model below, random 6-ply book, self/cross1/cross2
 // schedule.
 //
 // The ANALYSIS side is the REAL JUDGE CORE, not the review pipeline: each
 // finished game is judged through src/shared/accounts/judge judgeGame() over
-// the Node adapter (server/judge/nodeAdapter.ts — pinned WASM behind the
+// the Node adapter (server/judge/nodeAdapter.ts; pinned WASM behind the
 // content-hash gate) at judgeConfigForTier(1): per-position `go nodes 200000`,
 // MultiPV 4, Hash 16, single thread, ucinewgame + TT clear per judged game.
 // Positions are every fenBefore of the game in transcript order, plus the
@@ -28,7 +28,7 @@
 // shipped math.
 //
 // Emits JSONL rows (2 per game, one per side) APPENDED to
-// scripts/data/judge-elo-corpus.jsonl — the gen-elo-corpus row schema with the
+// scripts/data/judge-elo-corpus.jsonl: the gen-elo-corpus row schema with the
 // judge config stamp instead of analysisDepth:
 //   { trueElo, oppElo, accuracy, acpl, nMoves, result, color, kind, plies,
 //     ending, judgeNodes, judgeMultiPv, judgeParams: PARAMS_A5_DIGEST,
@@ -188,7 +188,7 @@ function summarizeJudged(plies, out) {
     perMove.push({ color, accuracy, cpLoss, winAfter })
   }
 
-  // Summaries — review.ts summarize()/sideSummary() parity (as gen-elo-corpus).
+  // Summaries: review.ts summarize()/sideSummary() parity (as gen-elo-corpus).
   const whitePovWin = []
   const blackPovWin = []
   const acc = { white: [], black: [] }

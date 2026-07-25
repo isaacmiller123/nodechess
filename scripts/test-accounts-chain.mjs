@@ -1,5 +1,5 @@
 // Headless test for the accounts chain modules (src/shared/accounts/
-// events|certs|chain|checkpoint|fraud.ts — phase A1 "chain" scope).
+// events|certs|chain|checkpoint|fraud.ts: phase A1 "chain" scope).
 //
 //   node scripts/test-accounts-chain.mjs
 //
@@ -55,12 +55,12 @@ function hasCode(vr, code, msg) {
 // All three changed ONCE pre-ship when PARAMS_V1 gained the pwNorm row
 // (genesis payloads embed the params digest, so the chain goldens follow it).
 // Digest of verifyChain(happy-path chain) built from the fixed seeds/timestamps
-// below — any change to canonical serialization, hashing, fold, or projection
+// below: any change to canonical serialization, hashing, fold, or projection
 // shape breaks this on every platform at once.
 const GOLDEN_VERIFY_DIGEST = '9X73ZssMl6BygmtesggEAp91sSDKfWM1ngaMG4-fCWM'
-// sha256 (b64u) of chainToBytes(happy-path chain) — the file-format anchor.
+// sha256 (b64u) of chainToBytes(happy-path chain): the file-format anchor.
 const GOLDEN_FILE_SHA256 = 'ZJm5bqJwj7RrgksYMvwxH20nzLvUATaFPmOwr6koQSc'
-// b64u(sha256(canonicalBytes(PARAMS_V1))) — frozen-at-genesis parameter digest.
+// b64u(sha256(canonicalBytes(PARAMS_V1))): frozen-at-genesis parameter digest.
 const GOLDEN_PARAMS_DIGEST = 'ZDoblqaVf5z1zL8IvmWK2sdZK29JTNWZpY38XuDBZdk'
 
 async function main() {
@@ -70,10 +70,10 @@ async function main() {
   try {
     await run(outdir)
   } finally {
-    // cleanup on failure paths too — a crashed run must not leak temp dirs
+    // cleanup on failure paths too. A crashed run must not leak temp dirs
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -267,7 +267,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 4. tamper matrix — every case must fail with the RIGHT code
+  // 4. tamper matrix. Every case must fail with the RIGHT code
   // ============================================================================
   console.log('\n· tamper: flipped signature bit …')
   {
@@ -350,7 +350,7 @@ async function run(outdir) {
     })
     c = chain.appendEvent(c, certs.makeCertEvent(root.priv, rootB, c, { childPub: devB.pubB, purpose: 0, index: 1, ts: 1100 }))
     c = chain.appendEvent(c, certs.makeRevokeEvent(root.priv, rootB, c, { pub: devB.pubB, ts: 1200 }))
-    // root re-certifies devB AFTER the revocation — revocation is permanent
+    // root re-certifies devB AFTER the revocation: revocation is permanent
     c = chain.appendEvent(c, certs.makeCertEvent(root.priv, rootB, c, { childPub: devB.pubB, purpose: 0, index: 2, ts: 1300 }))
     const v = chain.verifyChain(c)
     eq(v.ok, true, 'recert-after-revoke chain still verifies (the recert is inert, not fraud)')
@@ -433,7 +433,7 @@ async function run(outdir) {
   }
   console.log('\n· tamper: __proto__ smuggled as a payload key …')
   {
-    // JSON.parse creates an OWN '__proto__' property (no setter) — the codec
+    // JSON.parse creates an OWN '__proto__' property (no setter): the codec
     // must refuse it in both directions, and the signing/append paths must
     // fail cleanly instead of signing bytes zod would silently disagree with.
     const evilPayload = JSON.parse('{"fields":{"__proto__":{"bio":"evil"}}}')
@@ -604,7 +604,7 @@ async function run(outdir) {
       hasCode(v, 'bad-checkpoint', msg)
       ok(v.errors.some((e) => e.code === 'bad-checkpoint' && e.detail === detail), `detail: '${detail}'`)
     }
-    // (a) through >= own height — a checkpoint may only cover heights below itself
+    // (a) through >= own height. A checkpoint may only cover heights below itself
     expectBad(mkBadCkpt({ through: 3 }),
       'checkpoint must cover heights strictly below itself',
       'through == own height → bad-checkpoint')
@@ -621,7 +621,7 @@ async function run(outdir) {
       'through does not advance past the prior checkpoint',
       'through == prior through → bad-checkpoint')
     // the first branch ('stateDigest does not match the embedded state') is
-    // covered by the forged-stateDigest test above — assert its detail too
+    // covered by the forged-stateDigest test above, assert its detail too
     {
       const forged2 = clone(ckptEv1)
       forged2.body.payload.stateDigest = fakeId('forged')
@@ -721,7 +721,7 @@ async function run(outdir) {
     // rated ⇒ a4: an explicit basic-v1 checkpoint over rated play is fraud
     const cBasic = chain.appendEvent(c, ckpt.makeCheckpointEvent(c, root.priv, rootB, 2100, ckpt.basicFold))
     const vBasic = chain.verifyChain(cBasic)
-    ok(vBasic.errors.some((e) => e.code === 'bad-checkpoint' && e.detail === 'chain has rated segments — checkpoint must embed the a4-v1 fold'),
+    ok(vBasic.errors.some((e) => e.code === 'bad-checkpoint' && e.detail === 'chain has rated segments: checkpoint must embed the a4-v1 fold'),
       'basic-v1 checkpoint covering rated segments → bad-checkpoint (A4-10)')
     ok(!ckpt.verifyCheckpointDeep(cBasic, cBasic.events[cBasic.events.length - 1]),
       'standalone deep verify also refuses the basic-v1-over-rated checkpoint')

@@ -27,8 +27,8 @@ type TestState = { attempts: number; passed: boolean; bestPct: number }
 
 /**
  * Chapter player. Loads a chapter and routes by model:
- *   • new model (chapter.lessons present): a view machine — overview → a lesson
- *     player (walks that lesson's segments) → the chapter test — all sharing the
+ *   • new model (chapter.lessons present): a view machine. Overview → a lesson
+ *     player (walks that lesson's segments) → the chapter test. All sharing the
  *     chess.com look and the top progress bar.
  *   • legacy model (single chapter.segments, e.g. the Knight Forks demo): walk the
  *     segments in order, exactly as before.
@@ -88,7 +88,7 @@ export function ChapterPlayer({ chapterId, onExit, onOpenSettings }: ChapterPlay
       })
     // Seed completed-lesson state from persisted progress so done-badges survive a
     // remount/restart (lesson_progress is now read back by school:mastery). Seed
-    // unconditionally — a forced retake wipes lesson_progress server-side, so the
+    // unconditionally: a forced retake wipes lesson_progress server-side, so the
     // set must be able to come back EMPTY, not only grow.
     void api
       .mastery()
@@ -195,7 +195,7 @@ export function ChapterPlayer({ chapterId, onExit, onOpenSettings }: ChapterPlay
   }
 
   // ===========================================================================
-  // NEW MODEL — chapter.lessons present.
+  // NEW MODEL, chapter.lessons present.
   // ===========================================================================
   if (chapter.lessons && chapter.lessons.length > 0) {
     const openLesson: SchoolLesson | undefined = openLessonId
@@ -247,7 +247,7 @@ export function ChapterPlayer({ chapterId, onExit, onOpenSettings }: ChapterPlay
   }
 
   // ===========================================================================
-  // LEGACY MODEL — single chapter.segments (Knight Forks demo).
+  // LEGACY MODEL: single chapter.segments (Knight Forks demo).
   // ===========================================================================
   return (
     <LegacySegmentsFlow chapter={chapter} chapterId={chapterId} env={env} onExit={onExit} />

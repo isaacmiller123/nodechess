@@ -73,7 +73,7 @@ export function resultChipLabel(kind: GameResultKind): string {
     case 'draw':
       return 'Draw'
     default:
-      return '—'
+      return '·'
   }
 }
 
@@ -116,7 +116,7 @@ export function nextSchoolStep(
   if (!chapters || chapters.length === 0) return null
   const prog = new Map((mastery?.chapters ?? []).map((c) => [c.chapterId, c]))
   // New-model chapters record per-lesson completion (mastery.lessons) and may
-  // never bump segmentsDone — a chapter with any lesson done is also in progress.
+  // never bump segmentsDone: a chapter with any lesson done is also in progress.
   const lessonStarted = new Set((mastery?.lessons ?? []).map((l) => l.chapterId))
   const ordered = [...chapters].sort((a, b) => a.order - b.order)
 

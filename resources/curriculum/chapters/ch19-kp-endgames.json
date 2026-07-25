@@ -3,13 +3,13 @@
  "band": "19",
  "order": 19,
  "title": "King & Pawn Endgames",
- "subtitle": "Opposition, triangulation, key squares, the square of the pawn, the outside passer, and the breakthrough — the bedrock of every endgame.",
+ "subtitle": "Opposition, triangulation, key squares, the square of the pawn, the outside passer, and the breakthrough, the bedrock of every endgame.",
  "estMinutes": 62,
  "concepts": [
   {
    "id": "opposition",
    "name": "The Opposition",
-   "short": "Kings facing on the same file/rank with one square between them — the side NOT to move holds the opposition and forces the other king to give way."
+   "short": "Kings facing on the same file/rank with one square between them. The side NOT to move holds the opposition and forces the other king to give way."
   },
   {
    "id": "key-squares",
@@ -19,12 +19,12 @@
   {
    "id": "square-of-pawn",
    "name": "The Square of the Pawn",
-   "short": "Draw the box from the pawn to its queening square; if the lone enemy king is inside it (or moves in on its turn) it catches the pawn — outside, the pawn runs and queens."
+   "short": "Draw the box from the pawn to its queening square; if the lone enemy king is inside it (or moves in on its turn) it catches the pawn. Outside, the pawn runs and queens."
   },
   {
    "id": "triangulation",
    "name": "Triangulation",
-   "short": "Lose a single tempo on purpose — walk your king around a triangle and return to the same square — so that the SAME position lands with the enemy to move. It hands him the zugzwang."
+   "short": "Lose a single tempo on purpose (walk your king around a triangle and return to the same square) so that the SAME position lands with the enemy to move. It hands him the zugzwang."
   },
   {
    "id": "outside-passer",
@@ -39,7 +39,7 @@
   {
    "id": "kp-conversion",
    "name": "Converting K+P",
-   "short": "King first, pawn second: shoulder the enemy king aside, win the key squares, and only then push the pawn — never the other way around."
+   "short": "King first, pawn second: shoulder the enemy king aside, win the key squares, and only then push the pawn, never the other way around."
   }
  ],
  "lessons": [
@@ -74,7 +74,7 @@
       {
        "fen": "8/4k3/8/4K3/4P3/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Kings face each other on the e-file with one square between them. That is the opposition. The cruel truth: the side that must MOVE here is worse — the moving king has to step aside and let the enemy through.",
+        "text": "Kings face each other on the e-file with one square between them. That is the opposition. The cruel truth: the side that must MOVE here is worse. The moving king has to step aside and let the enemy through.",
         "annotations": [
          {
           "kind": "highlight",
@@ -99,7 +99,7 @@
       {
        "fen": "8/4k3/8/4K3/4P3/8/8/8 w - - 0 1",
        "coach": {
-        "text": "It is White to move — so Black holds the opposition. White's king cannot advance: e6 is covered by the black king. Whatever White tries, Kd5 or Kf5, Black answers by facing him again. This is a DRAW, with a whole extra pawn.",
+        "text": "It is White to move, so Black holds the opposition. White's king cannot advance: e6 is covered by the black king. Whatever White tries, Kd5 or Kf5, Black answers by facing him again. This is a DRAW, with a whole extra pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -120,7 +120,7 @@
       {
        "fen": "8/4k3/8/4K3/4P3/8/8/8 b - - 0 1",
        "coach": {
-        "text": "Now the SAME position but Black to move — White holds the opposition. Black must abandon the file: ...Kd7 or ...Kf7. Then White outflanks to the other side — Kf6 or Kd6 — wins a key square, and the pawn promotes. Same board, opposite result. The move matters more than the material.",
+        "text": "Now the SAME position but Black to move. White holds the opposition. Black must abandon the file: ...Kd7 or ...Kf7. Then White outflanks to the other side (Kf6 or Kd6) wins a key square, and the pawn promotes. Same board, opposite result. The move matters more than the material.",
         "annotations": [
          {
           "kind": "arrow",
@@ -149,7 +149,7 @@
      "kind": "guided",
      "title": "Seize the opposition",
      "intro": {
-      "text": "Your turn. White to move, Black king floating back on e8. Don't lunge with the pawn — step the KING forward and grab a winning square."
+      "text": "Your turn. White to move, Black king floating back on e8. Don't lunge with the pawn. Step the KING forward and grab a winning square."
      },
      "steps": [
       {
@@ -181,7 +181,7 @@
         "e5f6"
        ],
        "successLine": {
-        "text": "Yes. The king reaches the sixth rank ahead of its pawn — and once the king stands on a key square, the pawn queens by force. King first, pawn second. Always.",
+        "text": "Yes. The king reaches the sixth rank ahead of its pawn, and once the king stands on a key square, the pawn queens by force. King first, pawn second. Always.",
         "annotations": [
          {
           "kind": "highlight",
@@ -191,7 +191,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not that. Kd4, Kd5, Kf4, Kf5 all drift sideways or backward — Black answers ...Ke7 and takes the opposition, and you have thrown the win. March straight up the board: Ke6, Kd6, or Kf6."
+        "text": "Not that. Kd4, Kd5, Kf4, Kf5 all drift sideways or backward. Black answers ...Ke7 and takes the opposition, and you have thrown the win. March straight up the board: Ke6, Kd6, or Kf6."
        }
       }
      ]
@@ -217,7 +217,7 @@
    "id": "ch17-l1b-triangulation",
    "title": "Triangulation",
    "kind": "concept",
-   "summary": "When the position is a mutual zugzwang and it is YOUR move, lose a tempo on purpose — walk the king around a triangle — and hand the bad move to your opponent.",
+   "summary": "When the position is a mutual zugzwang and it is YOUR move, lose a tempo on purpose (walk the king around a triangle) and hand the bad move to your opponent.",
    "segments": [
     {
      "kind": "teach",
@@ -229,7 +229,7 @@
       {
        "fen": "3k4/8/8/3K4/3P4/8/8/8 b - - 0 1",
        "coach": {
-        "text": "White king on d5, pawn on d4, kings facing on the d-file. This exact picture is a MUTUAL zugzwang: whoever is to move is worse. It is Black to move here — so Black is lost. He must step off the file, and then White's king outflanks to a key square and the pawn queens.",
+        "text": "White king on d5, pawn on d4, kings facing on the d-file. This exact picture is a MUTUAL zugzwang: whoever is to move is worse. It is Black to move here, so Black is lost. He must step off the file, and then White's king outflanks to a key square and the pawn queens.",
         "annotations": [
          {
           "kind": "highlight",
@@ -258,7 +258,7 @@
       {
        "fen": "3k4/8/8/3K4/3P4/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Now the SAME position with WHITE to move — and now WHITE is the one in trouble. Step to c5 or e5 and Black answers ...Kc7 / ...Ke7, holding the opposition; the pawn is stuck. White cannot make progress directly. The win is to give this very position back to Black — to lose exactly one tempo.",
+        "text": "Now the SAME position with WHITE to move, and now WHITE is the one in trouble. Step to c5 or e5 and Black answers ...Kc7 / ...Ke7, holding the opposition; the pawn is stuck. White cannot make progress directly. The win is to give this very position back to Black. To lose exactly one tempo.",
         "annotations": [
          {
           "kind": "arrow",
@@ -283,13 +283,13 @@
      "title": "Walk the triangle",
      "fen": "3k4/8/8/3K4/3P4/8/8/8 b - - 0 1",
      "intro": {
-      "text": "Let me start from the position with BLACK to move — the losing side — and show how the zugzwang collapses. (To engineer this when it is YOUR move, you walk the king out and back along a three-square path so it returns to d5 having spent one extra tempo — and the identical position lands on Black instead. Here that work is done; watch the break.)"
+      "text": "Let me start from the position with BLACK to move (the losing side) and show how the zugzwang collapses. (To engineer this when it is YOUR move, you walk the king out and back along a three-square path so it returns to d5 having spent one extra tempo, and the identical position lands on Black instead. Here that work is done; watch the break.)"
      },
      "line": [
       {
        "uci": "d8c7",
        "coach": {
-        "text": "Black is in zugzwang and must give way. ...Kc7 keeps the king as close as it can — but it has abandoned the d-file.",
+        "text": "Black is in zugzwang and must give way. ...Kc7 keeps the king as close as it can, but it has abandoned the d-file.",
         "annotations": [
          {
           "kind": "circle",
@@ -302,7 +302,7 @@
       {
        "uci": "d5c4",
        "coach": {
-        "text": "White does NOT rush the pawn. He sidesteps to outflank — the king is still the leader.",
+        "text": "White does NOT rush the pawn. He sidesteps to outflank: the king is still the leader.",
         "annotations": [
          {
           "kind": "arrow",
@@ -316,7 +316,7 @@
       {
        "uci": "c7b6",
        "coach": {
-        "text": "Black trails along, but he can never recover the opposition now — White has the move-advantage that triangulation manufactured."
+        "text": "Black trails along, but he can never recover the opposition now. White has the move-advantage that triangulation manufactured."
        }
       },
       {
@@ -341,7 +341,7 @@
    "id": "ch17-l2-key-squares",
    "title": "Key Squares",
    "kind": "endgame",
-   "summary": "The squares that win the game outright — reach one with your king and the pawn promotes regardless of whose move it is.",
+   "summary": "The squares that win the game outright. Reach one with your king and the pawn promotes regardless of whose move it is.",
    "segments": [
     {
      "kind": "teach",
@@ -353,7 +353,7 @@
       {
        "fen": "4k3/8/4K3/8/4P3/8/8/8 w - - 0 1",
        "coach": {
-        "text": "For a pawn that has not yet crossed the middle, the three key squares are the squares two ranks ahead of it — here d6, e6, f6. My king already stands on one of them, e6. From a key square the win is automatic: it no longer matters whose move it is.",
+        "text": "For a pawn that has not yet crossed the middle, the three key squares are the squares two ranks ahead of it. Here d6, e6, f6. My king already stands on one of them, e6. From a key square the win is automatic: it no longer matters whose move it is.",
         "annotations": [
          {
           "kind": "highlight",
@@ -377,7 +377,7 @@
       {
        "fen": "4k3/8/4K3/8/4P3/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Proof: White to move plays e5, then escorts the pawn home with the king shouldering Black away. But it would win with BLACK to move too — that is what 'key square' means. The king does the work; the pawn just walks behind it.",
+        "text": "Proof: White to move plays e5, then escorts the pawn home with the king shouldering Black away. But it would win with BLACK to move too: that is what 'key square' means. The king does the work; the pawn just walks behind it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -395,13 +395,13 @@
      "kind": "guided",
      "title": "Outflank to the free key square",
      "intro": {
-      "text": "White to move. This time the black king is awake — it stands on d7, guarding two of your three key squares. Only ONE key square is still open to you. Find it."
+      "text": "White to move. This time the black king is awake. It stands on d7, guarding two of your three key squares. Only ONE key square is still open to you. Find it."
      },
      "steps": [
       {
        "fen": "3k4/8/8/4K3/4P3/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Your key squares are d6, e6, f6. But the black king on d7 covers d6 and e6 — step onto either and you would be standing next to his king, which is illegal anyway. So outflank AWAY from him. Which key square is free?",
+        "text": "Your key squares are d6, e6, f6. But the black king on d7 covers d6 and e6. Step onto either and you would be standing next to his king, which is illegal anyway. So outflank AWAY from him. Which key square is free?",
         "annotations": [
          {
           "kind": "circle",
@@ -425,7 +425,7 @@
         "e5f6"
        ],
        "successLine": {
-        "text": "Kf6! You sidestepped the defender and planted your king on the one key square he could not stop. From f6 the e-pawn marches home and promotes by force — that is the whole power of a key square. Always outflank toward the side the enemy king cannot cover.",
+        "text": "Kf6! You sidestepped the defender and planted your king on the one key square he could not stop. From f6 the e-pawn marches home and promotes by force. That is the whole power of a key square. Always outflank toward the side the enemy king cannot cover.",
         "annotations": [
          {
           "kind": "highlight",
@@ -468,13 +468,13 @@
      "kind": "teach",
      "title": "Drawing the box",
      "intro": {
-      "text": "No kings to help the pawn, no kings to help the runner — just one king chasing one pawn. There is a shortcut so you never have to count squares move by move."
+      "text": "No kings to help the pawn, no kings to help the runner, just one king chasing one pawn. There is a shortcut so you never have to count squares move by move."
      },
      "steps": [
       {
        "fen": "8/8/8/8/P7/8/8/4k2K b - - 0 1",
        "coach": {
-        "text": "Pawn on a4, queening on a8. Draw a square whose side runs from the pawn to its promotion square — a4 to a8 is four ranks, so the box is a4-a8-e8-e4. If the enemy king is inside that box (or can step in on its move), it catches the pawn. If not, the pawn runs and queens.",
+        "text": "Pawn on a4, queening on a8. Draw a square whose side runs from the pawn to its promotion square: a4 to a8 is four ranks, so the box is a4-a8-e8-e4. If the enemy king is inside that box (or can step in on its move), it catches the pawn. If not, the pawn runs and queens.",
         "annotations": [
          {
           "kind": "highlight",
@@ -503,7 +503,7 @@
       {
        "fen": "8/8/8/8/P7/8/8/4k2K b - - 0 1",
        "coach": {
-        "text": "Black to move, king on e1 — just outside the box. It cannot get in: ...Kd2 leaves it on the e-to-d border one tempo short, and White simply pushes a5, a6, a7, a8=Q. Outside the square, the king is a spectator.",
+        "text": "Black to move, king on e1, just outside the box. It cannot get in: ...Kd2 leaves it on the e-to-d border one tempo short, and White simply pushes a5, a6, a7, a8=Q. Outside the square, the king is a spectator.",
         "annotations": [
          {
           "kind": "arrow",
@@ -518,7 +518,7 @@
       {
        "fen": "8/8/8/3k4/P7/8/8/7K b - - 0 1",
        "coach": {
-        "text": "Compare: here the king starts on d5 — INSIDE the box. Now ...Kc6, ...Kb7, and the pawn is rounded up. Same pawn, the king one file closer, and the result flips from win to draw. The box tells you instantly which it is.",
+        "text": "Compare: here the king starts on d5, INSIDE the box. Now ...Kc6, ...Kb7, and the pawn is rounded up. Same pawn, the king one file closer, and the result flips from win to draw. The box tells you instantly which it is.",
         "annotations": [
          {
           "kind": "highlight",
@@ -535,13 +535,13 @@
      "kind": "guided",
      "title": "Run before he catches you",
      "intro": {
-      "text": "White to move. The black king sits right on the edge of the square. One tempo decides everything — and a king move would waste it."
+      "text": "White to move. The black king sits right on the edge of the square. One tempo decides everything, and a king move would waste it."
      },
      "steps": [
       {
        "fen": "8/1k6/8/5P2/8/8/8/7K w - - 0 1",
        "coach": {
-        "text": "Black's king is exactly on the border of the pawn's box. If you dawdle with a king move, ...Kc6 steps inside and the pawn falls — a draw. So don't dawdle. What wins?",
+        "text": "Black's king is exactly on the border of the pawn's box. If you dawdle with a king move, ...Kc6 steps inside and the pawn falls. A draw. So don't dawdle. What wins?",
         "annotations": [
          {
           "kind": "arrow",
@@ -571,7 +571,7 @@
         ]
        },
        "retryLine": {
-        "text": "Any king move loses the only thing that matters here — a tempo. Black replies ...Kc6, climbs into the square, and draws. The pawn must run NOW: f6."
+        "text": "Any king move loses the only thing that matters here, a tempo. Black replies ...Kc6, climbs into the square, and draws. The pawn must run NOW: f6."
        }
       }
      ]
@@ -598,7 +598,7 @@
    "id": "ch17-l4-outside-passer",
    "title": "The Outside Passed Pawn",
    "kind": "endgame",
-   "summary": "A passer far from the action is worth more than an extra pawn in the centre — it drags the enemy king away so yours can feast.",
+   "summary": "A passer far from the action is worth more than an extra pawn in the centre. It drags the enemy king away so yours can feast.",
    "segments": [
     {
      "kind": "teach",
@@ -610,7 +610,7 @@
       {
        "fen": "8/8/4k1pp/8/P5P1/4K2P/8/8 w - - 0 1",
        "coach": {
-        "text": "The kingside is balanced — White g4/h3 versus Black g6/h6. But White has a free a-pawn on the far wing with no black pawn near it. That is the outside passed pawn. It is far from both kings, and that distance is the whole point.",
+        "text": "The kingside is balanced. White g4/h3 versus Black g6/h6. But White has a free a-pawn on the far wing with no black pawn near it. That is the outside passed pawn. It is far from both kings, and that distance is the whole point.",
         "annotations": [
          {
           "kind": "highlight",
@@ -644,7 +644,7 @@
       {
        "uci": "a4a5",
        "coach": {
-        "text": "a5! The pawn marches. Black's king MUST chase it — if it ignores the runner, the pawn simply queens.",
+        "text": "a5! The pawn marches. Black's king MUST chase it. If it ignores the runner, the pawn simply queens.",
         "annotations": [
          {
           "kind": "arrow",
@@ -683,7 +683,7 @@
       {
        "uci": "e3f4",
        "coach": {
-        "text": "White's king turns the OTHER way and walks into the kingside. The black king is stranded far on the queenside, so White's king and his g- and h-pawns now rule that wing unopposed — one of them queens long before Black can race back. The outside passer wins by being a decoy the enemy cannot ignore: it never even has to promote itself.",
+        "text": "White's king turns the OTHER way and walks into the kingside. The black king is stranded far on the queenside, so White's king and his g- and h-pawns now rule that wing unopposed. One of them queens long before Black can race back. The outside passer wins by being a decoy the enemy cannot ignore: it never even has to promote itself.",
         "annotations": [
          {
           "kind": "arrow",
@@ -735,13 +735,13 @@
      "kind": "teach",
      "title": "Three against three",
      "intro": {
-      "text": "Sometimes a wall of pawns looks blocked — but it is hiding a forced queen. The kings are out of the picture here; this is pure pawn arithmetic."
+      "text": "Sometimes a wall of pawns looks blocked, but it is hiding a forced queen. The kings are out of the picture here; this is pure pawn arithmetic."
      },
      "steps": [
       {
        "fen": "8/ppp5/8/PPP5/8/8/8/k6K w - - 0 1",
        "coach": {
-        "text": "Three white pawns face three black ones, kings marooned in the corners. It looks dead level. But White to move has a forced breakthrough — a sacrifice that clears a lane to a8.",
+        "text": "Three white pawns face three black ones, kings marooned in the corners. It looks dead level. But White to move has a forced breakthrough. A sacrifice that clears a lane to a8.",
         "annotations": [
          {
           "kind": "highlight",
@@ -789,7 +789,7 @@
       {
        "fen": "8/ppp5/8/PPP5/8/8/8/k6K w - - 0 1",
        "coach": {
-        "text": "Three on three, level material. Only ONE move wins — a sacrifice in the centre that opens a file no matter how Black recaptures. Find it.",
+        "text": "Three on three, level material. Only ONE move wins. A sacrifice in the centre that opens a file no matter how Black recaptures. Find it.",
         "annotations": [
          {
           "kind": "circle",
@@ -813,7 +813,7 @@
         "b5b6"
        ],
        "successLine": {
-        "text": "b6!! The only winning move. Both recaptures open a lane for a flank pawn to queen, and declining drops a pawn with a winning pass anyway. Pushing a6 or c6 instead lets Black hold — the breakthrough must come through the middle.",
+        "text": "b6!! The only winning move. Both recaptures open a lane for a flank pawn to queen, and declining drops a pawn with a winning pass anyway. Pushing a6 or c6 instead lets Black hold. The breakthrough must come through the middle.",
         "annotations": [
          {
           "kind": "highlight",
@@ -823,7 +823,7 @@
         ]
        },
        "retryLine": {
-        "text": "Pushing a flank pawn (a6 or c6) lets Black capture and seal the position — only a draw. The sacrifice must be the CENTRE pawn, b6, so that whichever way Black takes, a file opens for a runner."
+        "text": "Pushing a flank pawn (a6 or c6) lets Black capture and seal the position. Only a draw. The sacrifice must be the CENTRE pawn, b6, so that whichever way Black takes, a file opens for a runner."
        }
       }
      ]
@@ -855,7 +855,7 @@
      "kind": "puzzle",
      "title": "Warm-up: everything at once",
      "intro": {
-      "text": "Opposition, key squares, the square, the passer, the breakthrough — they all live in these. One last round before the test of skill."
+      "text": "Opposition, key squares, the square, the passer, the breakthrough. They all live in these. One last round before the test of skill."
      },
      "puzzle": {
       "themes": [
@@ -873,7 +873,7 @@
      "bossUserColor": "white",
      "bossEngineElo": 1500,
      "bossIntro": {
-      "text": "You are White. The f-pawns are locked, but you have the outside a-pawn — a winning advantage if you handle it correctly. Push it to drag the black king to the queenside, then turn your own king around and win the f5-pawn. King first when you can, pawn first in the race. Show me you have learned it.",
+      "text": "You are White. The f-pawns are locked, but you have the outside a-pawn. A winning advantage if you handle it correctly. Push it to drag the black king to the queenside, then turn your own king around and win the f5-pawn. King first when you can, pawn first in the race. Show me you have learned it.",
       "annotations": [
        {
         "kind": "highlight",
@@ -899,7 +899,7 @@
     "prompt": "Two kings face each other on the same file with exactly one square between them. Who is better off?",
     "options": [
      "The side to move, because it can choose the plan",
-     "The side NOT to move — the other king must step aside",
+     "The side NOT to move: the other king must step aside",
      "Whoever has more space behind the king",
      "It is always equal regardless of the move"
     ],
@@ -908,7 +908,7 @@
    },
    {
     "kind": "mc",
-    "prompt": "For a White pawn on e4 that has not yet crossed the middle, which squares are its key squares — the ones that win if your king reaches them whoever is to move?",
+    "prompt": "For a White pawn on e4 that has not yet crossed the middle, which squares are its key squares. The ones that win if your king reaches them whoever is to move?",
     "options": [
      "e5, d5, f5",
      "d6, e6, f6",
@@ -944,7 +944,7 @@
    },
    {
     "kind": "mc",
-    "prompt": "You reach a mutual-zugzwang king-and-pawn position, but it is YOUR move — so you would be the one forced to give way. What does triangulation achieve?",
+    "prompt": "You reach a mutual-zugzwang king-and-pawn position, but it is YOUR move, so you would be the one forced to give way. What does triangulation achieve?",
     "options": [
      "It promotes the pawn two squares at once",
      "You lose a single tempo with your king so the same position returns with your OPPONENT to move",
@@ -952,11 +952,11 @@
      "It puts your king on the eighth rank"
     ],
     "answerIndex": 1,
-    "explain": "Triangulation means walking your king around a triangle to return to the same square, having spent one extra move. The identical position then lands with the opponent to move — and now HE is in the zugzwang."
+    "explain": "Triangulation means walking your king around a triangle to return to the same square, having spent one extra move. The identical position then lands with the opponent to move, and now HE is in the zugzwang."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The pawn is on f4, the black king hangs back on f8 — too far to oppose you. Make the move that grabs a winning key square.",
+    "prompt": "White to move. The pawn is on f4, the black king hangs back on f8, too far to oppose you. Make the move that grabs a winning key square.",
     "fen": "5k2/8/8/4K3/5P2/8/8/8 w - - 0 1",
     "solutionUci": [
      "e5e6",
@@ -971,7 +971,7 @@
     "solutionUci": [
      "c5c6"
     ],
-    "explain": "c6! shrinks the square so the king can never get in — the pawn queens by a single tempo. Any king move wastes that tempo and lets ...Kf6 step into the box and catch the pawn for a draw."
+    "explain": "c6! shrinks the square so the king can never get in, the pawn queens by a single tempo. Any king move wastes that tempo and lets ...Kf6 step into the box and catch the pawn for a draw."
    },
    {
     "kind": "play",
@@ -980,7 +980,7 @@
     "solutionUci": [
      "g5g6"
     ],
-    "explain": "g6!! — the CENTRE pawn — is the only winner. ...fxg6 opens the f-file for f6; ...hxg6 opens the h-file for h6; declining drops to gxf7/gxh7. Whichever way Black takes, a file opens and a flank pawn queens. Pushing f6 or h6 instead lets Black recapture and hold."
+    "explain": "g6!! (the CENTRE pawn) is the only winner. ...fxg6 opens the f-file for f6; ...hxg6 opens the h-file for h6; declining drops to gxf7/gxh7. Whichever way Black takes, a file opens and a flank pawn queens. Pushing f6 or h6 instead lets Black recapture and hold."
    },
    {
     "kind": "play",
@@ -997,7 +997,7 @@
     "fen": "8/4k3/8/4K3/4P3/8/8/8 w - - 0 1",
     "lastMoveUci": "e8e7",
     "verdict": "correct",
-    "explain": "...Ke7 takes the frontal opposition and holds the draw. The defending king must step straight back to face the enemy king — that is the only saving move."
+    "explain": "...Ke7 takes the frontal opposition and holds the draw. The defending king must step straight back to face the enemy king. That is the only saving move."
    },
    {
     "kind": "judge",
@@ -1013,7 +1013,7 @@
     "fen": "4k3/8/5K2/8/4P3/8/8/8 b - - 0 1",
     "lastMoveUci": "e5f6",
     "verdict": "correct",
-    "explain": "Kf6 reaches a key square in front of the e-pawn. From there White shoulders the black king away and the pawn promotes — the textbook king-first conversion."
+    "explain": "Kf6 reaches a key square in front of the e-pawn. From there White shoulders the black king away and the pawn promotes, the textbook king-first conversion."
    },
    {
     "kind": "judge",
@@ -1021,7 +1021,7 @@
     "fen": "8/8/8/1k6/5P2/8/8/7K w - - 0 1",
     "lastMoveUci": "c5b5",
     "verdict": "blunder",
-    "explain": "...Kb5? steps out of the pawn's square. White plays f5, f6, f7, f8=Q and the king can never catch up. To hold, Black had to head TOWARD the pawn — ...Kd5 or ...Kd6 — staying inside the box."
+    "explain": "...Kb5? steps out of the pawn's square. White plays f5, f6, f7, f8=Q and the king can never catch up. To hold, Black had to head TOWARD the pawn (...Kd5 or ...Kd6) staying inside the box."
    },
    {
     "kind": "play",

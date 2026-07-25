@@ -1,19 +1,19 @@
-// botTime — the bot's clock brain for Play. Bots genuinely live on their clock:
+// botTime: the bot's clock brain for Play. Bots genuinely live on their clock:
 // the time a bot "thinks" is real wall time (its clock ticks through it), and
 // the allocation below decides how much of that time each move deserves.
 //
 // LAYOUT (load-bearing for the headless sim):
-//   1. PURE CORE — budgeting, complexity multipliers, clock personalities,
+//   1. PURE CORE: budgeting, complexity multipliers, clock personalities,
 //      noise, panic. No DOM, no window, no engine. scripts/sim-bot-time.mjs
 //      esbuild-bundles this file and stress-tests exactly these functions.
-//   2. INTEGRATION HELPERS — chess-derived signals (forced-move classes via
+//   2. INTEGRATION HELPERS: chess-derived signals (forced-move classes via
 //      chessops) and the one-shot complexity probe over the ANALYSIS engine
 //      channel. Only PlayView calls these; they touch window.api inside
 //      function bodies only, so importing this module under Node stays safe.
 //
 // CORE PRINCIPLE: the bot's move latency and its clock deduction are the same
 // real thing. PlayView allocates T via planThink, gives the engine a movetime
-// slice of T, then waits out any remainder — it never replies early and never
+// slice of T, then waits out any remainder. It never replies early and never
 // bills fake time. Unlimited time control bypasses all of this (fixed
 // settings.playThinkMs behavior, unchanged).
 
@@ -23,7 +23,7 @@ import { checkColor, destsFor } from '../../chess/chess'
 // 1. PURE CORE
 // ---------------------------------------------------------------------------
 
-/** Clock personality id — mirrors Persona.timeStyle in shared/types.ts. */
+/** Clock personality id: mirrors Persona.timeStyle in shared/types.ts. */
 export type TimeStyle = 'blitzer' | 'steady' | 'tanker'
 
 export interface TimePersonality {
@@ -56,13 +56,13 @@ export const TIME_STYLE_COPY: Record<TimeStyle, { name: string; line: string }> 
   steady: { name: 'Steady', line: 'spends time evenly and is rarely rushed.' },
   tanker: {
     name: 'Tanker',
-    line: 'sinks long thinks into the critical moments — and can drift into real time trouble.'
+    line: 'sinks long thinks into the critical moments, and can drift into real time trouble.'
   }
 }
 
 /**
  * Plain-engine clock personalities by target Elo: weak bots are erratic (huge
- * sigma — snap moves and random stares), strong bots efficient (fast, tight).
+ * sigma: snap moves and random stares), strong bots efficient (fast, tight).
  */
 export function personalityForElo(elo: number): TimePersonality {
   if (elo < 900) return { targetMul: 0.9, sigma: 0.65, tankChance: 0.1, tankMul: 2.6, bias: 1.0 }
@@ -77,14 +77,14 @@ export function personalityForElo(elo: number): TimePersonality {
  * SOURCE OF TRUTH is resources/personas/personas.json (Persona.timeStyle); this
  * map is the renderer-side fallback because the main-process catalog loader
  * (src/main/personas/personas.ts, not owned here) does not yet pass the field
- * through — see the integrator note. Keep the two in sync.
+ * through: see the integrator note. Keep the two in sync.
  */
 export const PERSONA_TIME_STYLE: Record<string, TimeStyle> = {
   morphy: 'blitzer', // famously played at lightning speed while opponents burned hours
   anderssen: 'steady',
   steinitz: 'tanker', // deliberate, stubborn defender of cramped positions
   lasker: 'steady',
-  capablanca: 'steady', // effortless speed — the "chess machine" was never rushed
+  capablanca: 'steady', // effortless speed: the "chess machine" was never rushed
   alekhine: 'tanker', // deep combinational digs
   rubinstein: 'steady',
   botvinnik: 'steady',
@@ -103,7 +103,7 @@ export const PERSONA_TIME_STYLE: Record<string, TimeStyle> = {
   caruana: 'steady',
   ding: 'tanker', // deep thinker, chronic clock pressure
   gukesh: 'tanker', // marathon calculation stretches
-  gotham: 'tanker' // tanks, then blunders anyway — relatable
+  gotham: 'tanker' // tanks, then blunders anyway: relatable
 }
 
 /** Resolve a persona's clock style: catalog field first, then the fallback map. */
@@ -221,7 +221,7 @@ export function complexityMultiplier(sig: ComplexitySignals): number {
  * Calibration: the multiplier distribution is hot-mean by design (up-factors
  * stack multiplicatively so genuinely sharp positions reach 3-4x), which over a
  * typical game averages ~1.35, not 1.0. The budget divides by this so an
- * average game still spends ~T_base per move — complex moves get their
+ * average game still spends ~T_base per move. Complex moves get their
  * multiples of routine time without the whole game systematically overspending.
  */
 export const COMPLEXITY_NEUTRAL = 1.35
@@ -272,7 +272,7 @@ function bandSample(rng: () => number, bias: number, lo: number, span: number): 
 }
 
 /**
- * Allocate the think time for one bot move. Pure — everything it needs comes
+ * Allocate the think time for one bot move. Pure: everything it needs comes
  * in through the input (see ThinkPlanInput).
  *
  * Order of precedence: panic > instant > book > normal budget. Panic wins even
@@ -286,7 +286,7 @@ export function planThink(input: ThinkPlanInput): ThinkPlan {
   const panic = isPanic(remaining, input.incrementMs)
 
   // TIME TROUBLE: 0.4-1.2s bashes, shading toward the 0.4s floor as the clock
-  // truly empties. (Strength collapses too — the caller passes the shrunken
+  // truly empties. (Strength collapses too: the caller passes the shrunken
   // movetime to the engine and the panic flag to the weak path.)
   if (panic) {
     const depthOfTrouble = Math.max(0.25, Math.min(1, remaining / 15_000))
@@ -301,7 +301,7 @@ export function planThink(input: ThinkPlanInput): ThinkPlan {
     return { totalMs: Math.round(total), cls: 'instant', panic: false, complexity: 1 }
   }
 
-  // THEORY: still "in book" — 0.5-3s with variance, skewed fast.
+  // THEORY: still "in book": 0.5-3s with variance, skewed fast.
   if (input.cls === 'book') {
     const total = bandSample(rng, 1.2 + p.bias, 500, 2500)
     return { totalMs: Math.round(total), cls: 'book', panic: false, complexity: 1 }
@@ -309,7 +309,7 @@ export function planThink(input: ThinkPlanInput): ThinkPlan {
 
   // NORMAL BUDGET: T_base = remaining/H + 0.8*increment, then personality x
   // (mean-calibrated) complexity x mean-corrected log-normal noise, then the
-  // fat tank tail (only ever on genuinely complex moves — so tanks correlate
+  // fat tank tail (only ever on genuinely complex moves, so tanks correlate
   // with complexity instead of being pure noise).
   const h = expectedMovesLeft(input.moveNumber, input.materialPhase)
   const tBase = remaining / h + 0.8 * input.incrementMs
@@ -329,7 +329,7 @@ export function planThink(input: ThinkPlanInput): ThinkPlan {
 }
 
 // ---------------------------------------------------------------------------
-// 2. INTEGRATION HELPERS (renderer only — PlayView)
+// 2. INTEGRATION HELPERS (renderer only: PlayView)
 // ---------------------------------------------------------------------------
 
 /** Forced-move classes that skip the probe and think 0.4-1.5s. */
@@ -361,7 +361,7 @@ export function instantClassOf(
   try {
     if (checkColor(fen) !== undefined && count <= 2) return 'check-forced'
   } catch {
-    /* unparseable fen — treat as normal */
+    /* unparseable fen: treat as normal */
   }
   if (prevMove?.capture && prevMove.uci.length >= 4) {
     const sq = prevMove.uci.slice(2, 4)
@@ -410,7 +410,7 @@ export interface ProbeMemo {
   /** Expected opponent replies: pv[1] of every probe line whose pv[0] was the
    *  move the bot actually chose. Empty = no expectation (bot left the top 3). */
   expectedReplies: string[]
-  /** Best-line eval at probe time (bot POV — comparable with the next probe). */
+  /** Best-line eval at probe time (bot POV; comparable with the next probe). */
   cp: number | null
 }
 
@@ -436,10 +436,10 @@ function lineCpOf(l: ProbeInfoLine): number {
 
 /**
  * One quick engine.analyze read of `fen` (depth 8, MultiPV 3) on the ANALYSIS
- * channel — never engine:play, so the bot's own search is untouched. Mirrors
+ * channel. Never engine:play, so the bot's own search is untouched. Mirrors
  * useAnalysis' safe-stream discipline: results are tagged by handleId (never
  * attributed across positions), the handle is always stopped, and listeners
- * are always detached — timeout, steal (another analyze evicting ours), or
+ * are always detached. Timeout, steal (another analyze evicting ours), or
  * completion all clean up the same way. Returns null when the engine is
  * unavailable or nothing streamed in time (caller treats it as multiplier 1).
  */

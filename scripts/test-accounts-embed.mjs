@@ -1,5 +1,5 @@
 // Headless test for the A6 L3 embedder seams (src/shared/accounts/judge/
-// embed.ts): banDeadline (the §8 conviction-anchored deadline min — A5-20/
+// embed.ts): banDeadline (the §8 conviction-anchored deadline min. A5-20/
 // A5-21 residual), consensusSaltOpts + windowAnchor (the A5-17/A5-18
 // consensus wiring, composed with tier2's verifySaltReveal on synthetic
 // grants), suppressionScan (the read-time auditor's chain-side absence
@@ -90,9 +90,9 @@ const GOLDEN = {
   convAtIndex: 34,
   convZ: 5_109_979,
   zLife4x26: 5_200_000,
-  // windowAnchor('g-29') under ANCHOR_TAG — bit-frozen.
+  // windowAnchor('g-29') under ANCHOR_TAG, bit-frozen.
   anchorW1: 'VzJI9RCqDeT8EhviYwcgb0KsJaKij1aTk5cBAy_j8fs',
-  // tier2VerdictKey(ROOTB fixture) — bit-frozen.
+  // tier2VerdictKey(ROOTB fixture), bit-frozen.
   verdictKey: 'YlXIcyZJVr5NGcOQqwv2bkZPaPEyp43W_4GazVbWBDU',
 }
 
@@ -127,7 +127,7 @@ async function run(outdir) {
     w: side(scored, acplMicro, matchMicro),
     b: side(scored, 55_000_000, 400_000),
   })
-  // SUITE-LOCAL synthetic anchor bundle — the tier2 suite's frozen fixture
+  // SUITE-LOCAL synthetic anchor bundle: the tier2 suite's frozen fixture
   // (anchor-INJECTED estimator; the MEASURED judge bundle is exercised via
   // TIER2_ANCHORS_JUDGE in §4's adopt-wrapper block). Do not "update".
   const A = {
@@ -143,7 +143,7 @@ async function run(outdir) {
       { elo: 2700, matchMicro: 660_000 },
     ],
     sigmaMatchMicro: 120_000,
-    fit: '[J3-REFIT-PENDING] hand-set match-rate placeholder at (t1Nodes, t1MultiPv) — must not feed T',
+    fit: '[J3-REFIT-PENDING] hand-set match-rate placeholder at (t1Nodes, t1MultiPv). Must not feed T',
   }
   const inno = (i) => ({ rec: mkRec(`inno-${i}`, 52_000_000, 470_000), side: 'w', elo: 1500 })
   const blat = (i) => ({ rec: mkRec(`blat-${i}`, 8_000_000, 900_000), side: 'w', elo: 1500 })
@@ -155,7 +155,7 @@ async function run(outdir) {
     return { games, records }
   }
 
-  // ==== 1. banDeadline — the §8 conviction-anchored deadline ================
+  // ==== 1. banDeadline. The §8 conviction-anchored deadline ================
   console.log('\n· banDeadline (A5-20/A5-21 residual: min by chain ordinal, conviction-only) …')
   // Real trailing-K conviction: the tier2 suite's frozen 25-inno→blat chain.
   const ents35 = [...Array.from({ length: 25 }, (_, i) => inno(i)), ...Array.from({ length: 10 }, (_, i) => blat(i))]
@@ -173,7 +173,7 @@ async function run(outdir) {
   })
   ok(dl35 !== null, 'trailing-K conviction ⇒ a deadline exists')
   eq(dl35.ordinal, GOLDEN.convAtIndex, 'deadline ordinal = the CONVICTION-completing game (34)')
-  ok(dl35.ordinal !== esc35.atIndex, 'deadline anchors at the conviction (34), NEVER the 3σ escalation crossing (31) — A5-21')
+  ok(dl35.ordinal !== esc35.atIndex, 'deadline anchors at the conviction (34), NEVER the 3σ escalation crossing (31), A5-21')
   eq(dl35.source, 'trailingK', 'source names the trailing-K arm')
   eq(dl35.game, 'blat-9', 'deadline carries the completing game key')
   eq(resolverCalled, false, 'resolver is never invoked without a lifetime conviction arm')
@@ -226,7 +226,7 @@ async function run(outdir) {
   throwsE(() => E.banDeadline(mkEsc({ atIndex: -1, game: 'g', zMicro: 5_000_000 }), () => 0), 'negative atIndex refused')
   throwsE(
     () => E.banDeadline(mkEsc({ atIndex: 34, game: 'g', zMicro: 4_999_999 }), () => 0),
-    'SUB-CONVICTION zMicro refused — no ban may anchor below the 5σ line, whatever the caller asserts (§0)',
+    'SUB-CONVICTION zMicro refused: no ban may anchor below the 5σ line, whatever the caller asserts (§0)',
   )
   throwsE(() => E.banDeadline(mkEsc({ atIndex: 34, game: '', zMicro: 5_000_000 }), () => 0), 'empty game key refused')
   throwsE(
@@ -275,8 +275,8 @@ async function run(outdir) {
   eq(E.windowAnchor(keys60, 1), aW1, 'recomputable-after: independent re-derivation is bit-identical')
   const aW2 = E.windowAnchor(keys60, 2)
   ok(aW2 !== aW1, 'each window binds a different anchor game (ordinal wK−1)')
-  eq(E.windowAnchor(keys60.slice(0, 30), 1), aW1, 'only ordinals ≤ wK−1 are consulted — the anchor never reaches into window w (non-circular)')
-  throwsE(() => E.windowAnchor(keys60, 0), 'window 0 refused (b(0)=0 — no jittered boundary, ordinal −1 does not exist)')
+  eq(E.windowAnchor(keys60.slice(0, 30), 1), aW1, 'only ordinals ≤ wK−1 are consulted: the anchor never reaches into window w (non-circular)')
+  throwsE(() => E.windowAnchor(keys60, 0), 'window 0 refused (b(0)=0: no jittered boundary, ordinal −1 does not exist)')
   throwsE(() => E.windowAnchor(keys60, -1), 'negative window refused')
   throwsE(() => E.windowAnchor(keys60, 1.5), 'non-integer window refused')
   throwsE(() => E.windowAnchor(keys60.slice(0, 29), 1), 'anchor game not chained yet ⇒ refused (the §7b unpredictable-before hole this closes)')
@@ -321,7 +321,7 @@ async function run(outdir) {
     'the anchor is load-bearing: anchored and legacy salts differ',
   )
 
-  // ==== 3. suppressionScan — the chain-side absence check ===================
+  // ==== 3. suppressionScan. The chain-side absence check ===================
   console.log('\n· suppressionScan (§8: the NEXT witnessed-lane event must be the selfban) …')
   const VD = b64({ d: 'verdict' })
   let h = 0
@@ -359,7 +359,7 @@ async function run(outdir) {
   {
     const mine = sb(LAD)
     const r = E.suppressionScan([seg(CONV), sb(OTHER_LAD), mine], CONV, LAD)
-    eq(r.kind, 'compliant', "another ladder's schema-valid selfban is SKIPPED — near-simultaneous convictions must not ban-trap a compliant client (§0)")
+    eq(r.kind, 'compliant', "another ladder's schema-valid selfban is SKIPPED. Near-simultaneous convictions must not ban-trap a compliant client (§0)")
     eq(r.selfBanEvent, eid(mine), '… and THIS ladder’s selfban then discharges the obligation')
   }
   {
@@ -368,18 +368,18 @@ async function run(outdir) {
     eq(r.kind, 'suppressed', 'the skip yields nothing to a cheater: the deadline still fires on the first consequential event')
     eq(r.deadlineEvent, eid(g4), '… and the deadline is that event, not the other-ladder selfban')
   }
-  // A6 review embed-1 (§0 — the round's critical): window/expiryWts are NEVER
+  // A6 review embed-1 (§0; the round's critical): window/expiryWts are NEVER
   // compliance criteria. `window` has no protocol-pinned value across the two
   // conviction arms, and payload `expiryWts` is INERT (the A5-22 fold derives
-  // the real §9 term from the event's witnessed ts) — so a compliant client
+  // the real §9 term from the event's witnessed ts), so a compliant client
   // can carry ANY values there and must never be condemned for them. The
   // pre-fix strict opts turned exactly such selfbans into 'suppressed'.
   eq(E.suppressionScan([seg(CONV), sb(LAD, 3)], CONV, LAD).kind, 'compliant', 'embed-1: any same-ladder schema-valid selfban discharges (window 3)')
-  eq(E.suppressionScan([seg(CONV), sb(LAD, 4)], CONV, LAD).kind, 'compliant', 'embed-1: a DIFFERENT window value is STILL compliant — window is protocol-unpinned, never a condemnation basis')
+  eq(E.suppressionScan([seg(CONV), sb(LAD, 4)], CONV, LAD).kind, 'compliant', 'embed-1: a DIFFERENT window value is STILL compliant. Window is protocol-unpinned, never a condemnation basis')
   eq(E.suppressionScan([seg(CONV), sb(LAD, 0, 9_000_000)], CONV, LAD).kind, 'compliant', 'embed-1: expiry at the §9 term compliant')
-  eq(E.suppressionScan([seg(CONV), sb(LAD, 0, 1)], CONV, LAD).kind, 'compliant', 'embed-1: a SHORT payload expiry is STILL compliant — the field is inert (the fold imposes the derived 90d term regardless)')
+  eq(E.suppressionScan([seg(CONV), sb(LAD, 0, 1)], CONV, LAD).kind, 'compliant', 'embed-1: a SHORT payload expiry is STILL compliant. The field is inert (the fold imposes the derived 90d term regardless)')
   eq(E.suppressionScan([seg(CONV), ev('w', 'selfban', { kind: 'anticheat', ladder: LAD, window: 0 })], CONV, LAD).kind, 'suppressed', 'malformed selfban payload is never compliant (fail-closed) ⇒ deadline')
-  eq(E.suppressionScan([pair(CONV), seg(CONV), sb(LAD)], CONV, LAD).kind, 'compliant', 'only a SEGMENT completes the conviction game — a pairing event naming it is not the anchor')
+  eq(E.suppressionScan([pair(CONV), seg(CONV), sb(LAD)], CONV, LAD).kind, 'compliant', 'only a SEGMENT completes the conviction game: a pairing event naming it is not the anchor')
 
   console.log('\n· suppressionScan fail-closed matrix …')
   throwsE(() => E.suppressionScan([seg('g1')], CONV, LAD), 'conviction game absent from the chain ⇒ scan undefined, refused')
@@ -472,9 +472,9 @@ async function run(outdir) {
   }
   {
     const r = E.adoptVerdictRow({ subjectRoot: ROOTB, key: pub.key, row: pub.row, anchors: A, entriesFor: () => null })
-    eq(r.ok, false, 'missing window inputs ⇒ rejected — NEVER adopt unverified (§0)')
+    eq(r.ok, false, 'missing window inputs ⇒ rejected, NEVER adopt unverified (§0)')
     eq(r.adopted.length, 0, '… nothing adopted without inputs')
-    ok(r.errors.every((e) => e.includes('never adopt unverified')), '… with the fail-closed reason')
+    ok(r.errors.every((e) => e.includes('Never adopt unverified')), '… with the fail-closed reason')
   }
   eq(
     E.adoptVerdictRow({
@@ -495,7 +495,7 @@ async function run(outdir) {
   {
     // A6 review embed-2: an over-cap row is BOUNDED (only the first
     // ADOPT_ROW_MAX records are examined) but must never wholesale-suppress
-    // the valid evidence inside that prefix — pre-fix, one junk record past
+    // the valid evidence inside that prefix, pre-fix, one junk record past
     // the cap erased genuine convictions (adopted: []).
     const over = E.adoptVerdictRow({
       subjectRoot: ROOTB, key: pub.key,
@@ -503,14 +503,14 @@ async function run(outdir) {
       anchors: A, entriesFor,
     })
     eq(over.ok, false, 'embed-2: oversize row still reports not-ok (overflow + junk noted)')
-    eq(over.adopted.length, 1, 'embed-2: …but the VALID record in the examined prefix is STILL adopted — junk padding cannot suppress evidence')
-    ok(over.errors.some((e) => e.includes('only the first')), 'embed-2: overflow reported explicitly (deterministic prefix)')
+    eq(over.adopted.length, 1, 'embed-2: …but the VALID record in the examined prefix is STILL adopted. Junk padding cannot suppress evidence')
+    ok(over.errors.some((e) => e.includes('Only the first')), 'embed-2: overflow reported explicitly (deterministic prefix)')
     const overCapWork = E.adoptVerdictRow({
       subjectRoot: ROOTB, key: pub.key,
       row: { v: 1, verdicts: Array.from({ length: 5000 }, () => ({ junk: true })) },
       anchors: A, entriesFor,
     })
-    eq(overCapWork.ok, false, 'embed-2: bounded untrusted work preserved — a 5000-record junk row is examined only to the cap')
+    eq(overCapWork.ok, false, 'embed-2: bounded untrusted work preserved. A 5000-record junk row is examined only to the cap')
     eq(overCapWork.adopted.length, 0, 'embed-2: …and adopts nothing')
   }
   eq(E.adoptVerdictRow({}).ok, false, 'malformed options object fails closed')
@@ -582,7 +582,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }

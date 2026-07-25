@@ -1,6 +1,6 @@
 // The account chain (spec §0/§2): a self-carried, append-only, hash-linked
-// log of signed events in two lanes. This module owns the container —
-// creation, structural append, full verification, and the canonical file
+// log of signed events in two lanes. This module owns the container.
+// Creation, structural append, full verification, and the canonical file
 // format. Verification implements EXACTLY the linkage rules documented in
 // types.ts and NEVER throws on bad input: bad chains come back as
 // VerifyResult errors; only programmer misuse throws (appendEvent & co).
@@ -74,7 +74,7 @@ export interface CreateAccountOpts {
 /**
  * Create a fresh account chain: the genesis event (witnessed lane, height 0,
  * prev absent, root-signed, payload binding the frozen parameter digest and
- * the display name), plus an optional device certificate — the root key's
+ * the display name), plus an optional device certificate: the root key's
  * FIRST personal-lane event, so height 0 with prev absent.
  */
 export function createAccountChain(opts: CreateAccountOpts): Chain {
@@ -119,7 +119,7 @@ export function createAccountChain(opts: CreateAccountOpts): Chain {
  * Admit one signed event structurally: shape + payload schema, signature,
  * root binding, and linkage/height contiguity against the CURRENT heads.
  * Returns a new Chain (never mutates); throws Error on inadmissible input.
- * Certification/revocation admissibility is verifyChain's business — the
+ * Certification/revocation admissibility is verifyChain's business. The
  * append gate is purely structural.
  */
 export function appendEvent(chain: Chain, ev: SignedEvent): Chain {
@@ -230,7 +230,7 @@ function mergeCompare(a: { ev: SignedEvent; id: string }, b: { ev: SignedEvent; 
 }
 
 /**
- * Full deterministic verification. Same chain (as a SET of events — storage
+ * Full deterministic verification. Same chain (as a SET of events; storage
  * order is immaterial) → bit-identical VerifyResult, on node and in the
  * browser bundle. Never throws on bad input.
  */
@@ -259,7 +259,7 @@ export function verifyChain(chain: Chain): VerifyResult {
     }
     const shape = zSignedEvent.safeParse(ev)
     if (!shape.success) {
-      // stableIssueDetail: code+path only — zod's free text must never reach
+      // stableIssueDetail: code+path only. Zod's free text must never reach
       // VerifyError.detail (it feeds the parity digest and drifts across minors).
       err('bad-payload', stableIssueDetail(shape.error.issues[0]), id)
       continue
@@ -268,7 +268,7 @@ export function verifyChain(chain: Chain): VerifyResult {
       err('bad-signature', 'ed25519 signature does not verify', id)
       continue
     }
-    if (seenIds.has(id)) continue // exact duplicate storage — harmless
+    if (seenIds.has(id)) continue // exact duplicate storage: harmless
     seenIds.add(id)
     recs.push({ ev, id })
   }
@@ -306,7 +306,7 @@ export function verifyChain(chain: Chain): VerifyResult {
   let head: { id: EventId; height: number } | null = null
   let fold: BasicFoldState = basicFold.init(chain.root)
   const foldAt = new Map<number, BasicFoldState>()
-  /** The exact witnessed sequence the basic fold walked — alt-fold audits
+  /** The exact witnessed sequence the basic fold walked. Alt-fold audits
    * (a4-v1 in-chain checkpoints) must fold the identical sequence. */
   const walked: SignedEvent[] = []
   const ckpts: { rec: Rec; payload: CheckpointPayload }[] = []
@@ -367,7 +367,7 @@ export function verifyChain(chain: Chain): VerifyResult {
         else if (!revokedAt.has(pub)) revokedAt.set(pub, { height: h, ts: b.ts })
       }
       if (b.type === 'segment') {
-        // A4 review fixes. (A4-09) one game, one chain entry — a repeated game
+        // A4 review fixes. (A4-09) one game, one chain entry: a repeated game
         // key is replay fraud regardless of window; (A4-01/02/08) a verified
         // chain implies verified segments: the witness-stream binding and any
         // embedded oppCkpt must verify or the chain does not.
@@ -395,7 +395,7 @@ export function verifyChain(chain: Chain): VerifyResult {
   // foldAt; any other registered fold (a4-v1) is recomputed lazily in a single
   // pass over the SAME walked event sequence, memoizing states only at the
   // audited `through` heights (memory O(#ckpts), not O(chain)). Unknown or
-  // malformed fold ids fail closed as fraud — never skipped.
+  // malformed fold ids fail closed as fraud. Never skipped.
   const altAt = new Map<string, Map<number, CanonicalObject> | null>()
   const altFoldStates = (fid: string): Map<number, CanonicalObject> | null => {
     const hit = altAt.get(fid)
@@ -430,9 +430,9 @@ export function verifyChain(chain: Chain): VerifyResult {
       if (fid === null) bad = 'malformed fold id in checkpoint state'
       else if (fid === basicFold.id && firstRatedHeight !== -1 && payload.through >= firstRatedHeight)
         // A4 review fix (A4-10): a chain with rated segments cannot hide its
-        // ladders/reputation behind a structural checkpoint — fold-downgrade
+        // ladders/reputation behind a structural checkpoint: fold-downgrade
         // sandbagging is fraud, not a choice.
-        bad = 'chain has rated segments — checkpoint must embed the a4-v1 fold'
+        bad = 'chain has rated segments: checkpoint must embed the a4-v1 fold'
       else if (fid === basicFold.id) {
         const truth = foldAt.get(payload.through)
         if (!truth || toB64u(canonicalHash(truth)) !== payload.stateDigest) bad = 'state recomputation mismatch'
@@ -553,9 +553,9 @@ const zChainFile = z.strictObject({
 /**
  * Serialize a chain to its ONE canonical byte stream: {v:1, root, events}
  * with witnessed events first (by height), then personal events in merge
- * order — bit-identical for equal chains regardless of in-memory order.
+ * order: bit-identical for equal chains regardless of in-memory order.
  * Canonical over the event SET: exact duplicate storage (same event id) is
- * dropped first — the same rule verifyChain applies — so a chain carrying
+ * dropped first (the same rule verifyChain applies) so a chain carrying
  * duplicates serializes byte-identical to its deduped form.
  * Throws on chains whose bodies are not canonical (programmer misuse).
  */
@@ -582,7 +582,7 @@ export function chainToBytes(chain: Chain): Uint8Array {
 
 /**
  * Parse canonical chain bytes. Throws (CodecError / Error) on truncated,
- * non-canonical, or wrongly-shaped input — loading is strict; SEMANTIC
+ * non-canonical, or wrongly-shaped input: loading is strict; SEMANTIC
  * verdicts stay with verifyChain, which never throws.
  */
 export function chainFromBytes(bytes: Uint8Array): Chain {

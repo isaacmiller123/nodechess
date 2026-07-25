@@ -48,7 +48,7 @@
      "kind": "puzzle",
      "title": "Warm-up: spot the forcing shot",
      "intro": {
-      "text": "Three quick ones to wake up the calculating muscle. In each, one forcing move decides. Do not drift through quiet plans here — look for the check or capture that ends the discussion."
+      "text": "Three quick ones to wake up the calculating muscle. In each, one forcing move decides. Do not drift through quiet plans here. Look for the check or capture that ends the discussion."
      },
      "puzzle": {
       "themes": [
@@ -64,13 +64,13 @@
      "kind": "teach",
      "title": "The move you don't consider, you can't play",
      "intro": {
-      "text": "At this level you already calculate. The skill we sharpen now is calculating the RIGHT moves. Every strong player starts the same way: before deciding, name two to four candidates worth examining. Breadth before depth — miss the best move on this first pass and no amount of depth will save you."
+      "text": "At this level you already calculate. The skill we sharpen now is calculating the RIGHT moves. Every strong player starts the same way: before deciding, name two to four candidates worth examining. Breadth before depth: miss the best move on this first pass and no amount of depth will save you."
      },
      "steps": [
       {
        "fen": "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
        "coach": {
-        "text": "White is a rook up, so anything wins eventually. But practise the habit on an easy one so it holds on a hard one. Name the candidates: Rd8+ gives check, a pawn push waits, Kf1 does nothing. The forcing one leads — examine Rd8+ first.",
+        "text": "White is a rook up, so anything wins eventually. But practise the habit on an easy one so it holds on a hard one. Name the candidates: Rd8+ gives check, a pawn push waits, Kf1 does nothing. The forcing one leads, examine Rd8+ first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -90,7 +90,7 @@
       {
        "fen": "6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1",
        "coach": {
-        "text": "Calculate it: Rd8+ — where does the king go? f7, g7 and h7 are all blocked by its own pawns, and the rook covers the whole back rank. No flight: Rd8 is mate. The forcing candidate did the work, and you saw it because you put it on the list first.",
+        "text": "Calculate it: Rd8+. Where does the king go? f7, g7 and h7 are all blocked by its own pawns, and the rook covers the whole back rank. No flight: Rd8 is mate. The forcing candidate did the work, and you saw it because you put it on the list first.",
         "annotations": [
          {
           "kind": "highlight",
@@ -117,13 +117,13 @@
      "kind": "guided",
      "title": "Shortlist, then strike",
      "intro": {
-      "text": "Your turn. The Black king sits on g8 and the queen sits on d5 — two targets a knight can hit from one square. List your candidates, lead with the forcing one, and win material outright."
+      "text": "Your turn. The Black king sits on g8 and the queen sits on d5. Two targets a knight can hit from one square. List your candidates, lead with the forcing one, and win material outright."
      },
      "steps": [
       {
        "fen": "5rk1/pp3p1p/8/3q4/4N3/8/PP3PPP/5RK1 w - - 0 1",
        "coach": {
-        "text": "Candidates for the e4-knight: Nc3 or Ng3 retreat, Nc5 and Nd6 poke the queen but she just steps aside. Look instead for the move that gives CHECK and hits the queen at once. Nf6+ — is f6 safe to land on, and what does it attack?",
+        "text": "Candidates for the e4-knight: Nc3 or Ng3 retreat, Nc5 and Nd6 poke the queen but she just steps aside. Look instead for the move that gives CHECK and hits the queen at once. Nf6+: is f6 safe to land on, and what does it attack?",
         "annotations": [
          {
           "kind": "circle",
@@ -141,7 +141,7 @@
         "e4f6"
        ],
        "successLine": {
-        "text": "Nf6+ is a royal fork: check to the king on g8 and attack on the d5-queen at the same time. No Black pawn covers f6, so the king must run — Kg7 or Kh8 — and then Nxd5 wins the queen outright. The check forced the reply, so the line was easy to calculate to the end.",
+        "text": "Nf6+ is a royal fork: check to the king on g8 and attack on the d5-queen at the same time. No Black pawn covers f6, so the king must run (Kg7 or Kh8) and then Nxd5 wins the queen outright. The check forced the reply, so the line was easy to calculate to the end.",
         "annotations": [
          {
           "kind": "arrow",
@@ -158,7 +158,7 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. Which knight move gives check AND attacks the d5-queen in the same breath? Lead with the forcing one — check the king before you chase the queen."
+        "text": "Not yet. Which knight move gives check AND attacks the d5-queen in the same breath? Lead with the forcing one. Check the king before you chase the queen."
        },
        "conceptId": "forcing-first"
       }
@@ -170,19 +170,19 @@
    "id": "l2-forcing-first",
    "title": "Checks, Captures, Threats",
    "kind": "tactics",
-   "summary": "Always examine the most forcing moves first. A check or capture limits the opponent's replies, so you can calculate it clean to the end — and you often find the win hiding inside it.",
+   "summary": "Always examine the most forcing moves first. A check or capture limits the opponent's replies, so you can calculate it clean to the end, and you often find the win hiding inside it.",
    "segments": [
     {
      "kind": "teach",
      "title": "Why forcing first",
      "intro": {
-      "text": "There is an order to looking: checks, then captures, then threats, then quiet moves. Not because quiet moves are bad — because forcing moves give the opponent the fewest replies, so they are the easiest to calculate to the end. Search them first and you rarely miss the knockout."
+      "text": "There is an order to looking: checks, then captures, then threats, then quiet moves. Not because quiet moves are bad. Because forcing moves give the opponent the fewest replies, so they are the easiest to calculate to the end. Search them first and you rarely miss the knockout."
      },
      "steps": [
       {
        "fen": "8/pp4kp/6p1/8/3q1N2/8/PP3PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "The f4-knight has several moves. A lazy eye sees Nd3 or Ne2 hitting the queen — but she just steps aside. Run the FORCING move first: is there a knight move that gives check? Ne6+ does. A check forces the king, and the opponent cannot ignore it to save the queen.",
+        "text": "The f4-knight has several moves. A lazy eye sees Nd3 or Ne2 hitting the queen, but she just steps aside. Run the FORCING move first: is there a knight move that gives check? Ne6+ does. A check forces the king, and the opponent cannot ignore it to save the queen.",
         "annotations": [
          {
           "kind": "arrow",
@@ -207,7 +207,7 @@
       {
        "fen": "8/pp4kp/6p1/8/3q1N2/8/PP3PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "Ne6+ forks the king on g7 and the queen on d4 at once. No pawn covers e6 and the king cannot reach it, so Black must move the king — and then Nxd4 wins the queen. The non-forcing tries (Nd3, Ne2) let the queen flee for free. Same knight, but the forcing candidate was the winning one. That is why you look at checks first.",
+        "text": "Ne6+ forks the king on g7 and the queen on d4 at once. No pawn covers e6 and the king cannot reach it, so Black must move the king, and then Nxd4 wins the queen. The non-forcing tries (Nd3, Ne2) let the queen flee for free. Same knight, but the forcing candidate was the winning one. That is why you look at checks first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -225,7 +225,7 @@
      "kind": "guided",
      "title": "Find the forcing knockout",
      "intro": {
-      "text": "Black to move. White's king is boxed on g1 by its own pawns, and his rook on d1 is the lone guard of the back rank. Hunt the most forcing move — a check the opponent must answer — and calculate it all the way to mate."
+      "text": "Black to move. White's king is boxed on g1 by its own pawns, and his rook on d1 is the lone guard of the back rank. Hunt the most forcing move (a check the opponent must answer) and calculate it all the way to mate."
      },
      "steps": [
       {
@@ -250,7 +250,7 @@
         "e8e1"
        ],
        "successLine": {
-        "text": "Re1+!! A check the rook MUST take — Rxe1 is the only legal reply — and now Qxe1 is mate, because the king is walled in by its own f2, g2 and h2 pawns with no escape. You sacrificed the rook, but the forcing line calculated all the way to mate. Checks first wins games.",
+        "text": "Re1+!! A check the rook MUST take (Rxe1 is the only legal reply) and now Qxe1 is mate, because the king is walled in by its own f2, g2 and h2 pawns with no escape. You sacrificed the rook, but the forcing line calculated all the way to mate. Checks first wins games.",
         "annotations": [
          {
           "kind": "arrow",
@@ -289,7 +289,7 @@
    "id": "l3-compare",
    "title": "Calculate, Then Compare",
    "kind": "tactics",
-   "summary": "Finding one winning idea is not enough. Calculate each candidate to a clear end position, line them up, and play the one that wins the most — or the only one that actually works.",
+   "summary": "Finding one winning idea is not enough. Calculate each candidate to a clear end position, line them up, and play the one that wins the most, or the only one that actually works.",
    "segments": [
     {
      "kind": "teach",
@@ -301,7 +301,7 @@
       {
        "fen": "7k/6pp/8/4Q3/8/8/8/R5K1 w - - 0 1",
        "coach": {
-        "text": "Two candidates jump out. Qxg7+ looks devastating — a check, right into the king. And Ra8+ down the open file. The eye loves Qxg7+. But calculate it: after Qxg7+ Black has exactly one reply, Kxg7 — and the queen is gone for nothing. It was unsupported.",
+        "text": "Two candidates jump out. Qxg7+ looks devastating: a check, right into the king. And Ra8+ down the open file. The eye loves Qxg7+. But calculate it: after Qxg7+ Black has exactly one reply, Kxg7, and the queen is gone for nothing. It was unsupported.",
         "annotations": [
          {
           "kind": "arrow",
@@ -322,7 +322,7 @@
       {
        "fen": "7k/6pp/8/4Q3/8/8/8/R5K1 w - - 0 1",
        "coach": {
-        "text": "Now the quiet-looking one: Ra8+ is checkmate. The king on h8 has no flight — g8 and the back rank are covered by the rook, and its own pawns wall it in. Same position, two candidates: one loses your queen, the other mates. You only saw it because you calculated BOTH to the end and compared.",
+        "text": "Now the quiet-looking one: Ra8+ is checkmate. The king on h8 has no flight: g8 and the back rank are covered by the rook, and its own pawns wall it in. Same position, two candidates: one loses your queen, the other mates. You only saw it because you calculated BOTH to the end and compared.",
         "annotations": [
          {
           "kind": "arrow",
@@ -350,13 +350,13 @@
      "kind": "guided",
      "title": "Win the most",
      "intro": {
-      "text": "White to move. Snapping the b7-pawn with the knight is tempting and safe. But before you settle, scan for something bigger — and compare what each move actually nets."
+      "text": "White to move. Snapping the b7-pawn with the knight is tempting and safe. But before you settle, scan for something bigger, and compare what each move actually nets."
      },
      "steps": [
       {
        "fen": "1k6/pp6/5q2/2N5/8/8/PP3PPP/3Q2K1 w - - 0 1",
        "coach": {
-        "text": "Candidate one: Nxb7 wins a pawn. Fine. Candidate two: look at the c5-knight against the Black king on b8 and the queen on f6. Is there a square that strikes both at once? Nd7+ gives check and attacks the queen in the same breath. Compare a pawn against a whole queen — play the bigger one.",
+        "text": "Candidate one: Nxb7 wins a pawn. Fine. Candidate two: look at the c5-knight against the Black king on b8 and the queen on f6. Is there a square that strikes both at once? Nd7+ gives check and attacks the queen in the same breath. Compare a pawn against a whole queen: play the bigger one.",
         "annotations": [
          {
           "kind": "arrow",
@@ -380,7 +380,7 @@
         "c5d7"
        ],
        "successLine": {
-        "text": "Nd7+! The fork is check, so the king must step aside, and then Nxf6 collects the queen. Winning a queen beats winning a pawn every time — but you only get there if you refuse to play the first decent move and compare the candidates first.",
+        "text": "Nd7+! The fork is check, so the king must step aside, and then Nxf6 collects the queen. Winning a queen beats winning a pawn every time, but you only get there if you refuse to play the first decent move and compare the candidates first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -419,19 +419,19 @@
    "id": "l4-only-move",
    "title": "The Only-Move Defence",
    "kind": "tactics",
-   "summary": "When you are under fire, attack is not the question — survival is. Often a single move holds and everything else loses. Find it by asking what each threat demands.",
+   "summary": "When you are under fire, attack is not the question. Survival is. Often a single move holds and everything else loses. Find it by asking what each threat demands.",
    "segments": [
     {
      "kind": "teach",
      "title": "One move holds; the rest lose",
      "intro": {
-      "text": "Calculation is not only for attack. The hardest moves to find are defensive ones, because there is no reward dangling in front of you — just a position to save. The method flips: instead of 'what is my best threat,' ask 'what is the opponent threatening, and which single move answers it.'"
+      "text": "Calculation is not only for attack. The hardest moves to find are defensive ones, because there is no reward dangling in front of you, just a position to save. The method flips: instead of 'what is my best threat,' ask 'what is the opponent threatening, and which single move answers it.'"
      },
      "steps": [
       {
        "fen": "4r1k1/pb3ppp/8/2q5/8/8/P3Q1PP/2BR2K1 w - - 0 1",
        "coach": {
-        "text": "Black has just checked with ...Qc5+, raking the c5-g1 diagonal, and his bishop on b7 glares down the long light diagonal at your king. Panic loses. Start with the king moves: Kh1 (or Kf1) runs — but then ...Bxg2+! Kxg2 ...Rxe2+ and the rook skewers king and queen; you lose the queen and the game. So a king move fails. You must answer the check by blocking.",
+        "text": "Black has just checked with ...Qc5+, raking the c5-g1 diagonal, and his bishop on b7 glares down the long light diagonal at your king. Panic loses. Start with the king moves: Kh1 (or Kf1) runs, but then ...Bxg2+! Kxg2 ...Rxe2+ and the rook skewers king and queen; you lose the queen and the game. So a king move fails. You must answer the check by blocking.",
         "annotations": [
          {
           "kind": "arrow",
@@ -452,7 +452,7 @@
       {
        "fen": "4r1k1/pb3ppp/8/2q5/8/8/P3Q1PP/2BR2K1 w - - 0 1",
        "coach": {
-        "text": "Now the blocks. Be3 and Rd4 each plug the diagonal, but both are undefended — ...Qxe3+ or ...Qxd4 just wins the blocker with check. Only one interposition is protected: Qf2! The king guards f2, so if ...Qxf2+ then Kxf2 and the queens come off. You are not winning — Black keeps a level, even pawn-up endgame — but you have survived. Qf2 is the only move: it answers the check and loses nothing. The rest hang material or get mated. That is the only-move defence.",
+        "text": "Now the blocks. Be3 and Rd4 each plug the diagonal, but both are undefended. ...Qxe3+ or ...Qxd4 just wins the blocker with check. Only one interposition is protected: Qf2! The king guards f2, so if ...Qxf2+ then Kxf2 and the queens come off. You are not winning (Black keeps a level, even pawn-up endgame) but you have survived. Qf2 is the only move: it answers the check and loses nothing. The rest hang material or get mated. That is the only-move defence.",
         "annotations": [
          {
           "kind": "arrow",
@@ -486,7 +486,7 @@
       {
        "fen": "1r3k2/pppR1pp1/nq5n/4PN1Q/3R1P2/P5P1/7P/2r3K1 w - - 7 33",
        "coach": {
-        "text": "The rook checks on c1. Count the pieces: Black has an extra knight, so you cannot afford to lose anything more — you must survive the storm cleanly and keep the game level. Candidates: Kf2 steps toward the enemy and walks into the attack; Qd1 blocks but hangs the queen. Find the one king square that is genuinely safe.",
+        "text": "The rook checks on c1. Count the pieces: Black has an extra knight, so you cannot afford to lose anything more. You must survive the storm cleanly and keep the game level. Candidates: Kf2 steps toward the enemy and walks into the attack; Qd1 blocks but hangs the queen. Find the one king square that is genuinely safe.",
         "annotations": [
          {
           "kind": "arrow",
@@ -505,7 +505,7 @@
         "g1g2"
        ],
        "successLine": {
-        "text": "Kg2! The only move. It sidesteps the checks and keeps the king out of the mating net — Kf2 walks into it and the queen block simply loses the queen. You are down a knight, so this is not a win yet; it is the move that holds the balance. Survive first, then fight on level terms.",
+        "text": "Kg2! The only move. It sidesteps the checks and keeps the king out of the mating net. Kf2 walks into it and the queen block simply loses the queen. You are down a knight, so this is not a win yet; it is the move that holds the balance. Survive first, then fight on level terms.",
         "annotations": [
          {
           "kind": "arrow",
@@ -526,7 +526,7 @@
      "kind": "puzzle",
      "title": "Cool-down: hold the position",
      "intro": {
-      "text": "Three defensive tests. You are under pressure each time — find the single move that holds and play it."
+      "text": "Three defensive tests. You are under pressure each time. Find the single move that holds and play it."
      },
      "puzzle": {
       "themes": [
@@ -549,13 +549,13 @@
      "kind": "teach",
      "title": "Ask what he wants first",
      "intro": {
-      "text": "Most blunders are not bad moves — they are good moves played at the wrong moment, while the opponent had a threat you never checked. Prophylactic calculation reverses the order: first calculate HIS most forcing idea, then choose a move that prevents it. Look at his side of the board before you grab anything."
+      "text": "Most blunders are not bad moves. They are good moves played at the wrong moment, while the opponent had a threat you never checked. Prophylactic calculation reverses the order: first calculate HIS most forcing idea, then choose a move that prevents it. Look at his side of the board before you grab anything."
      },
      "steps": [
       {
        "fen": "r1b2rk1/ppp2ppp/8/8/6nq/8/PPPP1PPP/RNBQ1RK1 w - - 0 1",
        "coach": {
-        "text": "It is White to move, and the eye wants to win the knight with Qxg4. But STOP and calculate Black's threat first: the knight on g4 and queen on h4 are aimed at h2 — Black threatens ...Qxh2 mate. Worse, Qxg4 fails: the bishop on c8 guards g4, so after Qxg4 Bxg4 you lose the queen for a knight.",
+        "text": "It is White to move, and the eye wants to win the knight with Qxg4. But STOP and calculate Black's threat first: the knight on g4 and queen on h4 are aimed at h2, Black threatens ...Qxh2 mate. Worse, Qxg4 fails: the bishop on c8 guards g4, so after Qxg4 Bxg4 you lose the queen for a knight.",
         "annotations": [
          {
           "kind": "arrow",
@@ -599,13 +599,13 @@
      "kind": "guided",
      "title": "Stop his idea",
      "intro": {
-      "text": "Black to move. The material is dead level, but White's rook owns the open d-file and your king is boxed in by its own pawns. Do not grab or trade — calculate what White is threatening, then play the single quiet move that snuffs it out."
+      "text": "Black to move. The material is dead level, but White's rook owns the open d-file and your king is boxed in by its own pawns. Do not grab or trade. Calculate what White is threatening, then play the single quiet move that snuffs it out."
      },
      "steps": [
       {
        "fen": "6k1/pp3ppp/1r6/8/8/8/PP3PPP/3R2K1 b - - 0 1",
        "coach": {
-        "text": "What does White want? Rd8#, mate on the back rank — your king is sealed in by f7, g7 and h7 and your rook on b6 cannot defend the eighth rank in time. The cure is prophylactic, not loud: give the king air. A single pawn step — h6 (or g6) — opens the escape square and the mate threat is gone.",
+        "text": "What does White want? Rd8#, mate on the back rank. Your king is sealed in by f7, g7 and h7 and your rook on b6 cannot defend the eighth rank in time. The cure is prophylactic, not loud: give the king air. A single pawn step: h6 (or g6): opens the escape square and the mate threat is gone.",
         "annotations": [
          {
           "kind": "arrow",
@@ -626,7 +626,7 @@
         "g7g6"
        ],
        "successLine": {
-        "text": "h6! (g6 does the same job). Quiet but exact — it makes luft so the king can breathe. Now Rd8+ is met by Kh7 and there is no mate; the position stays dead level. Defence by prevention: you saw his plan and shut the door before he could walk through it. One pawn move, threat extinguished.",
+        "text": "h6! (g6 does the same job). Quiet but exact: it makes luft so the king can breathe. Now Rd8+ is met by Kh7 and there is no mate; the position stays dead level. Defence by prevention: you saw his plan and shut the door before he could walk through it. One pawn move, threat extinguished.",
         "annotations": [
          {
           "kind": "highlight",
@@ -663,19 +663,19 @@
    "id": "l6-blunder-check",
    "title": "The Blunder-Check",
    "kind": "tactics",
-   "summary": "The last look before you move: does it hang a piece, walk into a check, or allow a forcing reply? One disciplined glance separates the strong from the careless — and catches the move you almost played on autopilot.",
+   "summary": "The last look before you move: does it hang a piece, walk into a check, or allow a forcing reply? One disciplined glance separates the strong from the careless, and catches the move you almost played on autopilot.",
    "segments": [
     {
      "kind": "teach",
      "title": "The last look",
      "intro": {
-      "text": "You have done the hard work — candidates, forcing moves, comparison. One step remains, and it is the cheapest insurance in chess: before your hand touches the piece, look once more. Does my move hang something? Does it allow a check? Is there a forcing reply I missed? Most games at every level are decided by a move that skipped this look."
+      "text": "You have done the hard work. Candidates, forcing moves, comparison. One step remains, and it is the cheapest insurance in chess: before your hand touches the piece, look once more. Does my move hang something? Does it allow a check? Is there a forcing reply I missed? Most games at every level are decided by a move that skipped this look."
      },
      "steps": [
       {
        "fen": "4r1k1/5ppp/8/3p4/8/8/5PPP/3R2K1 w - - 0 1",
        "coach": {
-        "text": "White is winning and wants the d5-pawn: Rxd5 looks free. But run the blunder-check before you play it. Your back rank — is it safe? The king on g1 has no luft, the f2, g2 and h2 pawns box it in, and the rook on d1 is the only thing guarding the first rank.",
+        "text": "White is winning and wants the d5-pawn: Rxd5 looks free. But run the blunder-check before you play it. Your back rank. Is it safe? The king on g1 has no luft, the f2, g2 and h2 pawns box it in, and the rook on d1 is the only thing guarding the first rank.",
         "annotations": [
          {
           "kind": "circle",
@@ -728,13 +728,13 @@
      "kind": "guided",
      "title": "Don't recapture on autopilot",
      "intro": {
-      "text": "White has just played Nxd7, snatching your knight. The hand reaches for ...Qxd7 to win it back. Stop — run the blunder-check on the automatic recapture, and look for a more forcing move first."
+      "text": "White has just played Nxd7, snatching your knight. The hand reaches for ...Qxd7 to win it back. Stop. Run the blunder-check on the automatic recapture, and look for a more forcing move first."
      },
      "steps": [
       {
        "fen": "r3qrk1/pppNnppp/3p4/6B1/3nP3/P1P2N2/5PPP/R2QR1K1 b - - 0 13",
        "coach": {
-        "text": "The lazy ...Qxd7 actually loses: after it, Nxd4 wins your loose d4-knight and White comes out a piece ahead. The blunder-check asks 'is there a forcing move first?' Yes — your d4-knight can land on f3 with check. Insert it before you recapture.",
+        "text": "The lazy ...Qxd7 actually loses: after it, Nxd4 wins your loose d4-knight and White comes out a piece ahead. The blunder-check asks 'is there a forcing move first?' Yes: your d4-knight can land on f3 with check. Insert it before you recapture.",
         "annotations": [
          {
           "kind": "arrow",
@@ -753,7 +753,7 @@
         "d4f3"
        ],
        "successLine": {
-        "text": "...Nf3+! The zwischenzug — an in-between check. White must answer it (gxf3 or Qxf3), and only THEN do you play ...Qxd7, emerging a clean piece up. Had you recaptured first, Nxd4 would have flipped the result. The forcing move before the automatic one: that is the blunder-check earning its keep.",
+        "text": "...Nf3+! The zwischenzug: an in-between check. White must answer it (gxf3 or Qxf3), and only THEN do you play ...Qxd7, emerging a clean piece up. Had you recaptured first, Nxd4 would have flipped the result. The forcing move before the automatic one: that is the blunder-check earning its keep.",
         "annotations": [
          {
           "kind": "arrow",
@@ -798,7 +798,7 @@
      "kind": "puzzle",
      "title": "Warm-up: see it through",
      "intro": {
-      "text": "Three longer combinations. Each is a chain of forcing moves — calculate the WHOLE line before you start, or you will run out of road halfway."
+      "text": "Three longer combinations. Each is a chain of forcing moves. Calculate the WHOLE line before you start, or you will run out of road halfway."
      },
      "puzzle": {
       "themes": [
@@ -814,13 +814,13 @@
      "kind": "guided",
      "title": "Light the fuse",
      "intro": {
-      "text": "White to move. Your queen on b3 rakes the long diagonal at the king and your knight already sits on h6, glued to the king's last square. The Black king on h8 is buried behind its own rook on f8 and pawns g7, h7 — a textbook smothering net. There is a forced mate here, and it starts with a sacrifice. Do not play it on faith: calculate the whole chain to the end first, then strike."
+      "text": "White to move. Your queen on b3 rakes the long diagonal at the king and your knight already sits on h6, glued to the king's last square. The Black king on h8 is buried behind its own rook on f8 and pawns g7, h7, a textbook smothering net. There is a forced mate here, and it starts with a sacrifice. Do not play it on faith: calculate the whole chain to the end first, then strike."
      },
      "steps": [
       {
        "fen": "5r1k/pp4pp/7N/8/8/1Q6/5PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "Count the king's prison: g8 is the only flight, and your queen guards it down the b3-g8 diagonal; the rook on f8 and the pawns g7, h7 wall in the rest. The quiet check Nf7+ does nothing — Black just answers ...Rxf7 and survives. The spark is the boldest move on the board: Qg8+!! — the queen sacrifices herself on the one escape square. Calculate Black's reply before you commit.",
+        "text": "Count the king's prison: g8 is the only flight, and your queen guards it down the b3-g8 diagonal; the rook on f8 and the pawns g7, h7 wall in the rest. The quiet check Nf7+ does nothing. Black just answers ...Rxf7 and survives. The spark is the boldest move on the board: Qg8+!!. The queen sacrifices herself on the one escape square. Calculate Black's reply before you commit.",
         "annotations": [
          {
           "kind": "arrow",
@@ -839,7 +839,7 @@
         "b3g8"
        ],
        "successLine": {
-        "text": "Qg8+!! The queen sacrifice that forces the smother. The knight on h6 defends g8, so the king cannot take — Rxg8 is Black's ONLY legal move, dragging his own rook onto the king's last escape. Then Nf7# — the knight returns with check and the king, sealed by its own rook on g8 and pawns g7, h7, has nowhere to go. A two-move forced mate you trusted only because you calculated the sacrifice to the end first.",
+        "text": "Qg8+!! The queen sacrifice that forces the smother. The knight on h6 defends g8, so the king cannot take. Rxg8 is Black's ONLY legal move, dragging his own rook onto the king's last escape. Then Nf7#: the knight returns with check and the king, sealed by its own rook on g8 and pawns g7, h7, has nowhere to go. A two-move forced mate you trusted only because you calculated the sacrifice to the end first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -850,7 +850,7 @@
         ]
        },
        "retryLine": {
-        "text": "Half-measures fizzle out — Nf7+ just runs into ...Rxf7. The win is a sacrifice: which queen move lands on the king's only flight square, defended by the h6-knight, and forces ...Rxg8 into a smothered mate?"
+        "text": "Half-measures fizzle out, Nf7+ just runs into ...Rxf7. The win is a sacrifice: which queen move lands on the king's only flight square, defended by the h6-knight, and forces ...Rxg8 into a smothered mate?"
        },
        "conceptId": "forcing-first"
       }
@@ -878,7 +878,7 @@
    "id": "l8-defence-practice",
    "title": "Hold the Line",
    "kind": "practice",
-   "summary": "Defence is calculation too. Under attack, find the only move that holds — and when you are the one attacking, calculate what your opponent's best defence is before you sacrifice.",
+   "summary": "Defence is calculation too. Under attack, find the only move that holds, and when you are the one attacking, calculate what your opponent's best defence is before you sacrifice.",
    "segments": [
     {
      "kind": "puzzle",
@@ -905,7 +905,7 @@
       {
        "fen": "r3k1nr/ppq1bppp/8/2p1N3/Q1Pn4/3P2P1/PP3PKP/RNB2R2 b kq - 2 13",
        "coach": {
-        "text": "White checks with Qa4+. Blocking on c6 is limp and leaves you tangled. The resourceful move is ...b5! — it blocks the check by interposing the pawn AND attacks the a4-queen. The point: if White grabs with cxb5, your queen snaps off the strong e5-knight with ...Qxe5, winning the material back with a fine game.",
+        "text": "White checks with Qa4+. Blocking on c6 is limp and leaves you tangled. The resourceful move is ...b5!. It blocks the check by interposing the pawn AND attacks the a4-queen. The point: if White grabs with cxb5, your queen snaps off the strong e5-knight with ...Qxe5, winning the material back with a fine game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -925,7 +925,7 @@
         "b7b5"
        ],
        "successLine": {
-        "text": "...b5! The move that holds and counters. It interposes against the check while attacking the queen — and now White is awkward: if cxb5 then ...Qxe5 takes the e5-knight, regaining the piece with the better game, and if the queen instead retreats off the a4-e8 line, Black has met the check, gained a tempo on the queen, and stands comfortably level. Defence that bites back: exactly what calculation under fire should find.",
+        "text": "...b5! The move that holds and counters. It interposes against the check while attacking the queen, and now White is awkward: if cxb5 then ...Qxe5 takes the e5-knight, regaining the piece with the better game, and if the queen instead retreats off the a4-e8 line, Black has met the check, gained a tempo on the queen, and stands comfortably level. Defence that bites back: exactly what calculation under fire should find.",
         "annotations": [
          {
           "kind": "arrow",
@@ -970,13 +970,13 @@
      "kind": "guided",
      "title": "One last check before the boss",
      "intro": {
-      "text": "A final rehearsal of the habit that wins games: don't move on autopilot. White to move — the natural capture throws the win away. Run the blunder-check, calculate the forcing line, and finish."
+      "text": "A final rehearsal of the habit that wins games: don't move on autopilot. White to move. The natural capture throws the win away. Run the blunder-check, calculate the forcing line, and finish."
      },
      "steps": [
       {
        "fen": "5rk1/6pp/8/4QN2/8/8/5PPP/6K1 w - - 0 1",
        "coach": {
-        "text": "The lazy hand reaches for Nxg7 — grab a pawn, hit the rook. But that knight is the one piece holding the net together; trade it and Black wriggles free. Run the blunder-check the other way: is there a FORCING move that ends it? The knight on f5 already guards g7. So Qxg7 is mate — the queen lands protected, and the king on g8 is sealed in. Calculate it before you grab.",
+        "text": "The lazy hand reaches for Nxg7. Grab a pawn, hit the rook. But that knight is the one piece holding the net together; trade it and Black wriggles free. Run the blunder-check the other way: is there a FORCING move that ends it? The knight on f5 already guards g7. So Qxg7 is mate. The queen lands protected, and the king on g8 is sealed in. Calculate it before you grab.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1006,7 +1006,7 @@
         ]
        },
        "retryLine": {
-        "text": "Grabbing with the knight (Nxg7) lets Black escape — it removes the very piece that guards the mating square. Before you settle, look for the forcing move: which capture is supported by the f5-knight and ends the game?"
+        "text": "Grabbing with the knight (Nxg7) lets Black escape. It removes the very piece that guards the mating square. Before you settle, look for the forcing move: which capture is supported by the f5-knight and ends the game?"
        },
        "conceptId": "blunder-check"
       }
@@ -1020,7 +1020,7 @@
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "candidates",
-      "text": "Now play it for real. A balanced Queen's Gambit middlegame — no gift, no trap, just a game you must outcalculate. Use everything: on every move, name your candidates and examine the FORCING ones first, checks and captures before quiet plans. Before you grab a pawn or trade, ask what HE wants — calculate his reply, and if he has a threat, meet it with the move that holds. When you find a tempting combination, calculate it to the end and compare it against the simple move; do not play the first thing that looks good. And before every single move, the blunder-check: does this hang a piece, allow a check, or walk into a forcing reply? Play patiently, defend precisely, and convert. Begin."
+      "text": "Now play it for real. A balanced Queen's Gambit middlegame: no gift, no trap, just a game you must outcalculate. Use everything: on every move, name your candidates and examine the FORCING ones first, checks and captures before quiet plans. Before you grab a pawn or trade, ask what HE wants. Calculate his reply, and if he has a threat, meet it with the move that holds. When you find a tempting combination, calculate it to the end and compare it against the simple move; do not play the first thing that looks good. And before every single move, the blunder-check: does this hang a piece, allow a check, or walk into a forcing reply? Play patiently, defend precisely, and convert. Begin."
      }
     }
    ]
@@ -1035,7 +1035,7 @@
     "options": [
      "Quiet improving moves first, then checks and captures",
      "Checks, then captures, then threats, then quiet moves",
-     "Whatever move you saw first — trust your instinct",
+     "Whatever move you saw first, trust your instinct",
      "Defensive moves first, always, even when attacking"
     ],
     "answerIndex": 1,
@@ -1051,7 +1051,7 @@
      "Assume it wins because it looks aggressive"
     ],
     "answerIndex": 1,
-    "explain": "The first move that looks winning is often a trap. Calculate each candidate to a clear end position and compare — the quiet move sometimes wins more, or the flashy one simply loses."
+    "explain": "The first move that looks winning is often a trap. Calculate each candidate to a clear end position and compare. The quiet move sometimes wins more, or the flashy one simply loses."
    },
    {
     "kind": "mc",
@@ -1072,7 +1072,7 @@
     "solutionUci": [
      "c4d6"
     ],
-    "explain": "Nd6+ is a royal fork — check to the king on c8 and attack on the e4-queen at once. The king must move, then Nxe4 wins the queen. The forcing candidate did the work."
+    "explain": "Nd6+ is a royal fork. Check to the king on c8 and attack on the e4-queen at once. The king must move, then Nxe4 wins the queen. The forcing candidate did the work."
    },
    {
     "kind": "play",
@@ -1081,7 +1081,7 @@
     "solutionUci": [
      "d1d4"
     ],
-    "explain": "Qd4+ is a double attack — check to the king on g7 and a hit on the loose b4-bishop on the same move. The check forces the king to step aside, and then Qxb4 collects the bishop for free. A quiet queen move would let the bishop scuttle to safety."
+    "explain": "Qd4+ is a double attack. Check to the king on g7 and a hit on the loose b4-bishop on the same move. The check forces the king to step aside, and then Qxb4 collects the bishop for free. A quiet queen move would let the bishop scuttle to safety."
    },
    {
     "kind": "play",
@@ -1090,25 +1090,25 @@
     "solutionUci": [
      "e5e8"
     ],
-    "explain": "The tempting Ra8+ down the open file is only a check — Black blocks with ...Rc8 and White has nothing. Qe8+ is checkmate: the king is sealed in by its own pawns. Comparison reveals which one actually wins."
+    "explain": "The tempting Ra8+ down the open file is only a check. Black blocks with ...Rc8 and White has nothing. Qe8+ is checkmate: the king is sealed in by its own pawns. Comparison reveals which one actually wins."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The king is caught in the centre under heavy fire — find the one move that holds it all together.",
+    "prompt": "White to move. The king is caught in the centre under heavy fire. Find the one move that holds it all together.",
     "fen": "r3k2r/ppp2p1p/2npb2n/1B1P2b1/4P2q/2PN1Q2/PP1K3P/RNB4R w kq - 1 14",
     "solutionUci": [
      "d2c2"
     ],
-    "explain": "Kc2 is the only move. It tucks the king to the one safe square, slipping out of the swarm of Black pieces. Kd1 walks into ...Bg4 pinning and winning the queen; every other try drops material to the attack. Defence first — Kc2 untangles White and keeps the edge."
+    "explain": "Kc2 is the only move. It tucks the king to the one safe square, slipping out of the swarm of Black pieces. Kd1 walks into ...Bg4 pinning and winning the queen; every other try drops material to the attack. Defence first: Kc2 untangles White and keeps the edge."
    },
    {
     "kind": "play",
-    "prompt": "Black to move. White just grabbed material and offers a trade. Don't recapture on autopilot — run the blunder-check and find the forcing move first.",
+    "prompt": "Black to move. White just grabbed material and offers a trade. Don't recapture on autopilot. Run the blunder-check and find the forcing move first.",
     "fen": "3qr1k1/5ppp/8/8/3Q4/8/5PPP/4R1K1 b - - 0 1",
     "solutionUci": [
      "e8e1"
     ],
-    "explain": "...Rxe1#! The autopilot ...Qxd4 walks into Rxe8# — Black's own back rank is just as bare. Spotting the forcing move first turns a loss into mate."
+    "explain": "...Rxe1#! The autopilot ...Qxd4 walks into Rxe8#. Black's own back rank is just as bare. Spotting the forcing move first turns a loss into mate."
    },
    {
     "kind": "play",
@@ -1125,7 +1125,7 @@
     "fen": "5rk1/pp3ppp/5n2/3Q4/8/8/PP3PPP/5RK1 b - - 0 1",
     "lastMoveUci": "d1d5",
     "verdict": "blunder",
-    "explain": "Qxd5?? simply hangs the queen — the knight on f6 attacks d5 and nothing defends it, so ...Nxd5 wins it outright. The blunder-check (is my move attacked?) was skipped."
+    "explain": "Qxd5?? simply hangs the queen: the knight on f6 attacks d5 and nothing defends it, so ...Nxd5 wins it outright. The blunder-check (is my move attacked?) was skipped."
    },
    {
     "kind": "judge",
@@ -1133,7 +1133,7 @@
     "fen": "r4r2/ppp4k/5p2/2b2Npq/2N1P3/3P2P1/PPPQ1PK1/R7 b - - 1 1",
     "lastMoveUci": "f1g2",
     "verdict": "correct",
-    "explain": "Kg2 is exactly right. Black was threatening ...Qh1+ to infiltrate and win the loose a1-rook; Kg2 covers h1, kills the threat, and tucks the king safely behind its pawns. With a winning position already in hand, White only had to defend cleanly — and this quiet king step does it."
+    "explain": "Kg2 is exactly right. Black was threatening ...Qh1+ to infiltrate and win the loose a1-rook; Kg2 covers h1, kills the threat, and tucks the king safely behind its pawns. With a winning position already in hand, White only had to defend cleanly, and this quiet king step does it."
    },
    {
     "kind": "judge",
@@ -1141,7 +1141,7 @@
     "fen": "6k1/1b3ppp/8/8/6q1/8/5PPP/5R1K b - - 1 1",
     "lastMoveUci": "g1h1",
     "verdict": "blunder",
-    "explain": "Kh1?? walks into mate. The bishop on b7 already aims down the long diagonal at g2, so ...Qxg2# is mate — the king on h1 cannot take a defended queen. The only-move defence had to address that diagonal, not run into it."
+    "explain": "Kh1?? walks into mate. The bishop on b7 already aims down the long diagonal at g2, so ...Qxg2# is mate. The king on h1 cannot take a defended queen. The only-move defence had to address that diagonal, not run into it."
    },
    {
     "kind": "judge",
@@ -1149,7 +1149,7 @@
     "fen": "4r1k1/Q4ppp/8/8/8/8/5PPP/6K1 b - - 0 1",
     "lastMoveUci": "a1a7",
     "verdict": "blunder",
-    "explain": "Qxa7?? abandons the back rank — the queen was the only guard of the first rank, so ...Re1# is mate. Prophylaxis lost to greed: White grabbed without asking what Black threatened."
+    "explain": "Qxa7?? abandons the back rank. The queen was the only guard of the first rank, so ...Re1# is mate. Prophylaxis lost to greed: White grabbed without asking what Black threatened."
    }
   ]
  },

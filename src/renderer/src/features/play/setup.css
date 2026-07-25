@@ -1,5 +1,5 @@
 /* ============================================================
-   Play setup rebuild — Quick Match + Grandmaster gallery/detail.
+   Play setup rebuild, Quick Match + Grandmaster gallery/detail.
    Owned by the Play-UI builder; imported from PlayView AFTER
    play.css. Tokens (tokens.css) only; classes namespaced under
    .psetup- / .qm- / .pgal- / .pdet- so nothing collides with
@@ -1076,7 +1076,7 @@
 }
 
 /* ============================================================
-   Local tab — sub-mode toggle (vs Computer / Over the board)
+   Local tab: sub-mode toggle (vs Computer / Over the board)
    ============================================================ */
 .psetup-local {
   display: flex;

@@ -2,20 +2,20 @@ import fs from 'node:fs'
 import { importedFairyEnginePath, resolveFairyEnginePath, fairyEngineInstalled } from './paths'
 import { downloadVerified, type DownloadSpec } from './datasets.service'
 
-// Dataset group 'fairy-stockfish' — the variant engine behind every non-chess
+// Dataset group 'fairy-stockfish': the variant engine behind every non-chess
 // chess-family bot (games platform, docs/GAMES-PLATFORM-SPEC.md §Bots):
 // xiangqi/shogi/janggi/makruk/placement + the chessops variant wave.
 //
 // Per-platform story (mirrors ENGINE_ARTIFACTS in datasets.service.ts; asset
 // names + checksums must stay in sync with docs/DATASETS.md §Games-platform
-// engines — both binaries were uploaded to the project's datasets-v1 release
+// engines: both binaries were uploaded to the project's datasets-v1 release
 // and verified 2026-07-06):
 //   - win32-x64: the official fairy_sf_14 'largeboard' build (upstream's
 //     compatibility recommendation; also covers 10x10+ boards for the P3
 //     custom-variant editor). Mirror-first from datasets-v1, official release
-//     URL as fallback — both serve the byte-identical file.
+//     URL as fallback. Both serve the byte-identical file.
 //   - darwin-arm64: BUNDLED in resources/engine/mac/fairy-stockfish (Homebrew
-//     fairy-stockfish 14.0.1 bottle, ~750 KB — small enough to ship; no
+//     fairy-stockfish 14.0.1 bottle, ~750 KB: small enough to ship; no
 //     official mac build exists upstream). The datasets-v1 mirror row below is
 //     the fallback for installs without the bundled copy. Proven against all
 //     13 routed variants by scripts/probe-fairy-sf.mjs.

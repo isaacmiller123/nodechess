@@ -1,4 +1,4 @@
-// A7 ROUND B SUITE — witness salt-grant SIGNING-TIME DISCIPLINE (A5-17 close,
+// A7 ROUND B SUITE: witness salt-grant SIGNING-TIME DISCIPLINE (A5-17 close,
 // witness side) + the A5-18 CANONICAL-REVEAL publication slot.
 //
 //   node scripts/test-accounts-a7-roundb.mjs
@@ -113,7 +113,7 @@ async function run(outdir) {
     const r2 = await proto.clientRequestSaltGrant(blind.fabric, blind.nodeId, ROOT_S, LAD, 0, ANCHOR)
     eq(r2.error, 'no-chain-view', 'no ratedOrdinalOf wired ⇒ the witness refuses ALL salt grants (fail closed)')
     const r3 = await proto.clientRequestSaltGrant(closed.fabric, closed.nodeId, ROOT_S, LAD, 0, undefined)
-    eq(r3.error, 'anchor-required', 'an anchorless request is refused — nothing valid exists to pre-sign')
+    eq(r3.error, 'anchor-required', 'an anchorless request is refused: nothing valid exists to pre-sign')
     const r4 = await proto.clientRequestSaltGrant(closed.fabric, closed.nodeId, ROOT_S, LAD, 0, ANCHOR)
     ok(r4.grant !== undefined, 'at ordinal w·K−1 the witness signs the anchored grant')
     eq(r4.grant.wts, 777_000, "the grant's wts is the WITNESS's own clock at signing (never the requester's claim)")
@@ -121,7 +121,7 @@ async function run(outdir) {
     ok(lease.verifyGrantSig(r4.grant, bodyHash), 'the served grant verifies over the ANCHORED salt body (grantBytes convention)')
     ok(!lease.verifyGrantSig(r4.grant, tier2.saltBodyHash(ROOT_S, LAD, 0)), 'the same grant does NOT verify over the anchorless body (anchor is folded in)')
     const r5 = await proto.clientRequestSaltGrant(closed.fabric, closed.nodeId, ROOT_S, LAD, 1, ANCHOR)
-    eq(r5.error, 'window-open', 'window 1 needs ordinal 2K−1 — the same view refuses the NEXT window (per-window discipline)')
+    eq(r5.error, 'window-open', 'window 1 needs ordinal 2K−1: the same view refuses the NEXT window (per-window discipline)')
   }
 
   // ==========================================================================
@@ -145,7 +145,7 @@ async function run(outdir) {
       'a tampered grant signature sinks the reveal (threshold re-verified at the gate)')
 
     // canonical pick: a second VALID reveal (different grantor wts ⇒ different
-    // bytes) — merge keeps the lex-least canonical hash in EVERY order.
+    // bytes): merge keeps the lex-least canonical hash in EVERY order.
     const reveal2 = { ...reveal, grants: witnesses.map((w) => tier2.signSaltGrant(ROOT_S, LAD, 0, dist.nodeIdOf(w.pubB), w.pubB, w.priv, 900_777, ANCHOR)) }
     ok(gate.validator('n1', key, 'record', reveal2), 'fixture: the competing reveal is also valid')
     const h = (r) => hash.toB64u(codec.canonicalHash(r))
@@ -191,7 +191,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 

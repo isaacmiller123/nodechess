@@ -3,14 +3,14 @@ import { app, type BrowserWindow } from 'electron'
 // --smoke-wasm: packaged-app self-test for the strict PROD_CSP (security.ts).
 //
 // The v1.1.0 xiangqi/Variant Lab breakage was invisible in dev because DEV_CSP
-// carries 'unsafe-eval' — only the packaged app runs the strict policy. This
+// carries 'unsafe-eval': only the packaged app runs the strict policy. This
 // hook makes that testable headlessly: scripts/smoke-packed-wasm.mjs launches
 // the packed binary with --smoke-wasm, the renderer boots the real app plus a
 // ffish WASM probe (src/renderer/src/smokeWasm.ts, via the ?smoke-wasm query),
 // and we forward every renderer console line to stdout and turn the outcome
 // into an exit code:
-//   0  — renderer printed SMOKE-WASM-OK (ffish WASM compiled + embind worked)
-//   1  — SMOKE-WASM-FAIL, ANY Content-Security-Policy violation from any
+//   0:   renderer printed SMOKE-WASM-OK (ffish WASM compiled + embind worked)
+//   1:   SMOKE-WASM-FAIL, ANY Content-Security-Policy violation from any
 //        module (catches non-ffish eval regressions too), renderer crash, or
 //        timeout.
 export function installSmokeWasm(win: BrowserWindow, timeoutMs = 60000): void {

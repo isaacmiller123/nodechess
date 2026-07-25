@@ -1,4 +1,4 @@
-// Game registry — docs/GAMES-PLATFORM-SPEC.md §Architecture.
+// Game registry, docs/GAMES-PLATFORM-SPEC.md §Architecture.
 //
 // kind → GameSpec + lazy 2D renderer + bot provider id + manual id. Everything
 // (library UI, online wire v4, OTB, bots) consumes games through THIS module
@@ -19,7 +19,7 @@ import { TICTACTOE_SPEC } from './small/tictactoe'
 
 /**
  * Props every game's 2D board component accepts. The renderer is presentation
- * only: it never validates rules — it proposes `onMove(uci)` and the owner
+ * only: it never validates rules. It proposes `onMove(uci)` and the owner
  * (store/session) answers by advancing state through the spec. Last-move
  * markers need no extra prop: every spec state carries its `moves` history.
  * TODO(P2): extend with premove/interactivity flags as the chess board
@@ -27,7 +27,7 @@ import { TICTACTOE_SPEC } from './small/tictactoe'
  */
 export interface GameBoardProps {
   kind: GameKind
-  /** Opaque spec state (GameSpec<S>'s S) — the component narrows it. */
+  /** Opaque spec state (GameSpec<S>'s S). The component narrows it. */
   state: unknown
   orientation: 'white' | 'black'
   interactive: boolean
@@ -43,7 +43,7 @@ export interface GameBoardProps {
    * Owner-supplied territory-ownership overlay (go only; other boards ignore
    * it): size×size floats in −1..1, row-major from the TOP-LEFT, positive =
    * white territory (the shared EstimateGoResult convention). GoBoard shades
-   * intersections proportionally while the game is LIVE — the scoring phase's
+   * intersections proportionally while the game is LIVE. The scoring phase's
    * own exact territory paint always outranks it.
    */
   territory?: readonly number[] | null
@@ -66,8 +66,8 @@ export interface GameEntry<S = unknown> {
   manualId: string
   /**
    * True when the spec's rules engine loads asynchronously (ffish WASM):
-   * await `spec.preload()` before init/legalMoves/play/result/moveMeta —
-   * they throw a clear error until it resolves.
+   * await `spec.preload()` before init/legalMoves/play/result/moveMeta.
+   * They throw a clear error until it resolves.
    */
   requiresPreload?: boolean
 }
@@ -112,13 +112,13 @@ REGISTRY.go = {
 }
 REGISTRY.gomoku = {
   spec: GOMOKU_SPEC as GameSpec<unknown>,
-  // Same Shudan mount as go — GoBoard branches on kind (gomokuSignMapOf +
+  // Same Shudan mount as go. GoBoard branches on kind (gomokuSignMapOf +
   // win-line highlight instead of scoring UI).
   loadRenderer: () => import('./boards/GoBoard'),
   botProviderId: 'worker:gomoku',
   manualId: 'gomoku'
 }
-// ffish family (P2): rules via Fairy-Stockfish WASM — async init, so consumers
+// ffish family (P2): rules via Fairy-Stockfish WASM, async init, so consumers
 // must await entry.spec.preload() before first use (requiresPreload).
 const FFISH_FAMILY_KINDS = ['xiangqi', 'shogi', 'janggi', 'makruk', 'placement'] as const
 for (const kind of FFISH_FAMILY_KINDS) {
@@ -135,7 +135,7 @@ for (const kind of FFISH_FAMILY_KINDS) {
 // Small hand-rolled games (games/small/): one parameterized GridBoard covers
 // all five idioms (disc flips / gravity drops / hexes / line-graph / strokes).
 // Bots resolve in-process via games/small/bots.ts SMALL_BOTS ('worker:<kind>'
-// ids — the actual worker wrapper is P2w2 if any level needs it).
+// ids: the actual worker wrapper is P2w2 if any level needs it).
 const SMALL_GAME_SPECS = [OTHELLO_SPEC, CONNECT4_SPEC, HEX_SPEC, MORRIS_SPEC, TICTACTOE_SPEC]
 for (const spec of SMALL_GAME_SPECS) {
   REGISTRY[spec.kind] = {
@@ -146,8 +146,8 @@ for (const spec of SMALL_GAME_SPECS) {
   }
 }
 // Checkers (P2): American over rapid-draughts (its alphaBeta is the bot
-// backend, per spec §Bots), international over @jortvl/draughts (audited —
-// see games/checkers.ts header). One board component covers both sizes.
+// backend, per spec §Bots), international over @jortvl/draughts (audited.
+// See games/checkers.ts header). One board component covers both sizes.
 REGISTRY.checkers = {
   spec: AMERICAN_CHECKERS_SPEC as GameSpec<unknown>,
   loadRenderer: () => import('./boards/CheckersBoard'),
@@ -162,14 +162,14 @@ REGISTRY['checkers-intl'] = {
 }
 
 // ---------------------------------------------------------------------------
-// Dynamic entries — the custom-variant seam (games/customVariants.ts).
+// Dynamic entries: the custom-variant seam (games/customVariants.ts).
 //
 // Runtime-registered GameSpecs (user-built variants.ini games) live in a
 // SEPARATE map so the static registry above stays untouched. Dynamic kinds are
 // strings outside the GameKind union ('custom-<id>'); getGame/isRegisteredGame
 // fall back to this map so registry consumers resolve them transparently, but
 // listGames() stays static-only (the library grid never shows half-registered
-// customs — the Variant Lab gallery owns their presentation).
+// customs: the Variant Lab gallery owns their presentation).
 
 const DYNAMIC = new Map<string, GameEntry>()
 

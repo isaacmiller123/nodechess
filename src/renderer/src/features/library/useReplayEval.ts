@@ -1,8 +1,8 @@
 // Debounced local eval for the replay viewer (never blocks the UI):
 //   chess family (variants, ffish kinds, Variant Lab customs) →
-//     engine:evalVariant — one ~300ms single-line Fairy-Stockfish search,
+//     engine:evalVariant. One ~300ms single-line Fairy-Stockfish search,
 //     normalized here from side-to-move to WHITE (the EvalBar convention);
-//   go → engine:estimateGo — one KataGo raw-net forward pass (winrate + score
+//   go → engine:estimateGo. One KataGo raw-net forward pass (winrate + score
 //     lead), only when the katago dataset is installed;
 //   everything else → 'none' (the viewer hides the bar entirely).
 //
@@ -19,7 +19,7 @@ import { handicapPlacement, type GoState } from '../../games/go'
 import { turnAt } from './replayData'
 
 export type ReplayEval =
-  /** This kind has no local engine — render no bar. */
+  /** This kind has no local engine. Render no bar. */
   | { family: 'none' }
   /** Chess family: white-POV score (null while pending/terminal). */
   | { family: 'chess'; score: Score | null; pending: boolean }
@@ -29,7 +29,7 @@ export type ReplayEval =
 const NONE: ReplayEval = { family: 'none' }
 
 /** Chess-family kinds the eval bar can serve: everything the fairy engine
- *  speaks — the registry statics plus Variant Lab customs. */
+ *  speaks. The registry statics plus Variant Lab customs. */
 function evalFamilyOf(spec: GameSpec<unknown>): 'chess' | 'go' | 'none' {
   if (spec.family === 'chess') return 'chess'
   if (spec.kind === 'go') return 'go'
@@ -48,7 +48,7 @@ export function useReplayEval(
   const [status, setStatus] = useState<EngineStatus | null>(null)
   const [result, setResult] = useState<ReplayEval>(NONE)
   // One failure disables the family for this mount (missing binary, wedged
-  // engine) — the bar hides instead of hammering a broken backend.
+  // engine): the bar hides instead of hammering a broken backend.
   const failedRef = useRef(false)
   const seqRef = useRef(0)
 
@@ -103,11 +103,11 @@ export function useReplayEval(
               size: s.size,
               komi: s.komi,
               handicap: s.handicap >= 2 ? handicapPlacement(s.size, s.handicap) : undefined,
-              moves: [...s.moves] // 'pass' plies included — GTP replays them verbatim
+              moves: [...s.moves] // 'pass' plies included, GTP replays them verbatim
             })
             if (seqRef.current !== seq) return
             if (r === null) {
-              failedRef.current = true // engine lacks kata-raw-nn — hide for good
+              failedRef.current = true // engine lacks kata-raw-nn: hide for good
               setResult(NONE)
               return
             }

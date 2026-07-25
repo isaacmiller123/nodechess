@@ -8,7 +8,7 @@ import { useSettings } from '../../state/settings'
 import type { HomeNavTarget } from './HomeView'
 import { humanizeTheme } from './format'
 // PuzzlesView persists its active mode tab under MODE_KEY and reads it on
-// mount — writing 'daily' before navigating deep-links this card into the
+// mount: writing 'daily' before navigating deep-links this card into the
 // Daily tab without a new nav target.
 import { MODE_KEY as PUZZLES_MODE_KEY } from '../puzzles/modeKey'
 
@@ -53,7 +53,7 @@ export default function DailyPuzzleCard({ onNavigate }: DailyPuzzleCardProps): J
           }
           return
         }
-        // Lean install — no daily available; fall back to any puzzle as a teaser.
+        // Lean install: no daily available; fall back to any puzzle as a teaser.
         const fallback = await api.puzzles.next({})
         if (!cancelled) {
           setState({ puzzle: fallback.puzzle ?? null, result: null, isDaily: false, loading: false })
@@ -86,7 +86,7 @@ export default function DailyPuzzleCard({ onNavigate }: DailyPuzzleCardProps): J
         if (applied) return { fen: applied.fen, orientation: turnColor(applied.fen) }
       }
       // No (or corrupt) lead-in: show the raw position, oriented to the
-      // solver — the side NOT to move (the mover plays the auto lead-in).
+      // solver: the side NOT to move (the mover plays the auto lead-in).
       return {
         fen: puzzle.fen,
         orientation: turnColor(puzzle.fen) === 'white' ? 'black' : 'white'
@@ -142,7 +142,7 @@ export default function DailyPuzzleCard({ onNavigate }: DailyPuzzleCardProps): J
           </button>
         </div>
       ) : result ? (
-        // Today's daily already attempted — don't advertise it as unsolved.
+        // Today's daily already attempted: don't advertise it as unsolved.
         <div className="daily-body">
           {boardPreview}
           <div className="daily-meta">
@@ -164,7 +164,7 @@ export default function DailyPuzzleCard({ onNavigate }: DailyPuzzleCardProps): J
               <span className="daily-rating-num">{Math.round(puzzle.rating)}</span>
               <span className="muted small">rating</span>
             </div>
-            {/* The daily is one-shot — its theme would spoil the solution, so the
+            {/* The daily is one-shot. Its theme would spoil the solution, so the
                 theme chip only shows on the generic fallback teaser. */}
             {!isDaily && theme && <span className="daily-theme small muted">{theme}</span>}
             <button className="btn daily-solve" onClick={() => openPuzzles(isDaily)}>

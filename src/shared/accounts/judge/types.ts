@@ -1,7 +1,7 @@
-// A5 J1 — canonical judge core types (spec §8, §11). Platform-neutral: no
+// A5 J1: canonical judge core types (spec §8, §11). Platform-neutral: no
 // node: imports, no DOM globals. The canonical shapes below are cjson-v1
 // values (integers only, no null/undefined members serialized) so JudgeOutput
-// hashes identically on every platform — that hash IS the unit of
+// hashes identically on every platform: that hash IS the unit of
 // cross-platform verdict parity.
 //
 // Shapes are declared as type aliases (not interfaces) on purpose: aliases
@@ -24,7 +24,7 @@ export type JudgeConfig = {
   multiPv: number
   /** pinned Hash in MB, ≤ 16 (allocatable on the weakest supported device). */
   hashMb: number
-  /** TT reset granularity — 'per-game' is the only spec §8 mode. */
+  /** TT reset granularity: 'per-game' is the only spec §8 mode. */
   ttReset: 'per-game'
 }
 
@@ -33,7 +33,7 @@ export type JudgeConfig = {
  * long-algebraic) are applied on top via `position fen <fen> moves ...`.
  * `ply` identifies the transcript ply this position sits at; plies must be
  * strictly increasing across a judged game (the analysis ORDER is part of the
- * deterministic surface — the TT evolves across positions within a game).
+ * deterministic surface: the TT evolves across positions within a game).
  */
 export type JudgePosition = {
   ply: number
@@ -43,7 +43,7 @@ export type JudgePosition = {
 
 /**
  * One MultiPV candidate in canonical form: the line's first move plus its
- * final reported score. EXACTLY ONE of `cp` | `mate` is present — the two
+ * final reported score. EXACTLY ONE of `cp` | `mate` is present. The two
  * encode distinctly in cjson (different key), so a mate can never collide
  * with a centipawn value. `cp` is centipawns, `mate` is signed mate-in-N,
  * both from the side-to-move POV as UCI reports them. Integers only.
@@ -71,12 +71,12 @@ export type JudgeConfigEcho = {
   nodes: number
   multiPv: number
   hashMb: number
-  /** PARAMS_A5_DIGEST — names the full parameter set, not just the knobs above. */
+  /** PARAMS_A5_DIGEST. Names the full parameter set, not just the knobs above. */
   params: string
 }
 
 /**
- * The canonical judged-game output — a cjson-v1 value. Same transcript +
+ * The canonical judged-game output: a cjson-v1 value. Same transcript +
  * same config + the pinned engine binary ⇒ the same bytes ⇒ the same
  * judgeOutputDigest, on node, desktop, and in the browser.
  */
@@ -90,7 +90,7 @@ export type JudgeOutput = {
  * The minimal engine adapter surface the judge protocol drives. Implemented
  * by the Node adapter (server/judge/nodeAdapter.ts, over the child-process
  * harness) and the web adapter (src/web/engines/judge.ts, over a dedicated
- * Worker). Both are judge-dedicated instances — never shared with the
+ * Worker). Both are judge-dedicated instances. Never shared with the
  * play/analysis pools (spec §8).
  */
 export interface JudgeEngine {
@@ -109,7 +109,7 @@ export interface JudgeEngine {
 
 /**
  * The §8 content-hash gate tripped: the engine binary's sha256 does not match
- * the pinned PARAMS_A5.judgeWasmSha256. The judge REFUSES to run — an
+ * the pinned PARAMS_A5.judgeWasmSha256. The judge REFUSES to run. An
  * un-pinned binary can never produce verdicts.
  */
 export class JudgeWasmHashError extends Error {
@@ -124,7 +124,7 @@ export class JudgeWasmHashError extends Error {
   ) {
     super(
       `judge WASM content-hash mismatch at ${source}: got sha256=${actualSha256}, ` +
-        `expected sha256=${expectedSha256} — refusing to run the judge on an un-pinned binary`
+        `expected sha256=${expectedSha256}: refusing to run the judge on an un-pinned binary`
     )
   }
 }

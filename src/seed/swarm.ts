@@ -1,15 +1,15 @@
-// nodechess seed — the node swarm.
+// nodechess seed: the node swarm.
 //
 // Runs N independent nodechess nodes in ONE process (a browser tab or the
 // desktop shell) so a volunteer can contribute real capacity without owning N
 // machines. Each node is a full peer: its own identity, its own fabric room
 // membership, its own Kademlia routing table and its own slice of shard space.
 //
-// WHAT A SEED NODE IS FOR — and what it deliberately is NOT.
+// WHAT A SEED NODE IS FOR, and what it deliberately is NOT.
 //
 // Default mode is INFRASTRUCTURE: `caps.witness = false`, `caps.committee =
 // false`, `shardMb > 0`. Such a node does routing, shard hosting, mailbox relay
-// and presence — all of which are *verifiable* services. It cannot attest to a
+// and presence: all of which are *verifiable* services. It cannot attest to a
 // game, cosign a checkpoint, grant a write lease or hold a PIN share, because
 // eligibility for every one of those reads the advertised caps
 // (eligibility.ts 'no-witness-cap'; pinClient.drawPinCommittee filters
@@ -17,15 +17,15 @@
 // them are 25× the capacity and 0× the trust, so it does not matter who runs
 // them or how many they run.
 //
-// WITNESS mode flips caps.witness on. That IS authority — one witness is enough
-// to certify a rated result — so it is opt-in, off by default, and deliberately
+// WITNESS mode flips caps.witness on. That IS authority. One witness is enough
+// to certify a rated result, so it is opt-in, off by default, and deliberately
 // not something the UI encourages running at scale. It exists so an operator
 // can bring up the third machine a 2-player rated table needs while the network
 // is small, and so real volunteers can carry witness duty once there are enough
 // independent ones for that to mean anything.
 //
 // Identities are derived from ONE locally-stored seed (index 0..n-1), so a node
-// keeps its identity across restarts — uptime and reputation accrue to a stable
+// keeps its identity across restarts. Uptime and reputation accrue to a stable
 // nodeId instead of resetting every launch.
 
 import { KEY_PURPOSE, deriveChild, toB64u } from '@shared/accounts'
@@ -56,7 +56,7 @@ export interface SeedStats {
   nodesRunning: number
   /** Nodes that can currently see at least one other node. */
   nodesConnected: number
-  /** Distinct remote nodes visible across the swarm (deduped — 25 nodes seeing
+  /** Distinct remote nodes visible across the swarm (deduped, 25 nodes seeing
    *  the same peer is one peer, not 25). */
   peersReachable: number
   /** Total advertised shard capacity, MB. */
@@ -99,8 +99,8 @@ const SEED_STORAGE_KEY = 'nodechess.seed.identity.v1'
 /**
  * The swarm's long-lived identity seed. Generated once and persisted, so this
  * installation's nodes keep their nodeIds (and therefore their accrued uptime)
- * across restarts. Falls back to an ephemeral seed when storage is unavailable —
- * a private-mode tab still contributes, it just starts fresh each time.
+ * across restarts. Falls back to an ephemeral seed when storage is unavailable.
+ * A private-mode tab still contributes, it just starts fresh each time.
  */
 function loadOrCreateSeed(): Uint8Array {
   const store = (globalThis as { localStorage?: Storage }).localStorage
@@ -110,14 +110,14 @@ function loadOrCreateSeed(): Uint8Array {
       const bytes = Uint8Array.from(atob(existing), (c) => c.charCodeAt(0))
       if (bytes.length === 32) return bytes
     } catch {
-      /* corrupt entry — fall through and mint a new one */
+      /* corrupt entry: fall through and mint a new one */
     }
   }
   const fresh = crypto.getRandomValues(new Uint8Array(32))
   try {
     store?.setItem(SEED_STORAGE_KEY, btoa(String.fromCharCode(...fresh)))
   } catch {
-    /* storage denied — run ephemerally */
+    /* storage denied: run ephemerally */
   }
   return fresh
 }
@@ -178,7 +178,7 @@ export class SeedSwarm {
         this.nodes.push(await this.startOne(i, config))
         this.emit()
       } catch {
-        // One node failing to come up is not fatal — the rest still contribute.
+        // One node failing to come up is not fatal, the rest still contribute.
       }
     }
     this.starting = false
@@ -203,7 +203,7 @@ export class SeedSwarm {
   private async startOne(index: number, config: SeedConfig): Promise<RunningNode> {
     // Each node gets its own derived identity. root === the device key here:
     // a seed node has no account chain and never appends one, so there is no
-    // root/child split to maintain — it only ever signs its own presence.
+    // root/child split to maintain: it only ever signs its own presence.
     const kpNode = deriveChild(this.seed, KEY_PURPOSE.device, index)
     const root = toB64u(kpNode.pub)
     const kv = await openKvStore({
@@ -261,7 +261,7 @@ export class SeedSwarm {
       capacityMb += n.peer.caps.shardMb
       storedBytes += this.heldBytes.get(n.root) ?? 0
       for (const sp of liveNodesOf(n.peer.fabric.directory(), now)) {
-        // Our own nodes are not "peers reached" — only strangers count.
+        // Our own nodes are not "peers reached". Only strangers count.
         if (!this.nodes.some((own) => own.root === sp.body.root)) distinctPeers.add(sp.body.root)
       }
     }

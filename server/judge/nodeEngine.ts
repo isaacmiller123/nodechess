@@ -1,18 +1,18 @@
 // Node harness for the pinned canonical judge WASM (spec §11: "a Node harness
 // for the pinned judge WASM (worker/loader shim)"; §8: single-thread build,
 // fixed node counts, fixed MultiPV, pinned Hash ≤16MB, ucinewgame+TT-clear per
-// judged game). A2 operator-peer prerequisite — this is the loader INFRA, not
+// judged game). A2 operator-peer prerequisite: this is the loader INFRA, not
 // the judge logic (A5 owns Tier1/Tier2 signals & verdicts).
 //
 // Why a child process rather than worker_threads or global-shimming:
 //   The shipped `stockfish-18-lite-single.js` is Emscripten UMD glue that
-//   ALREADY carries a first-class Node branch — when run as `node <that>.js`
+//   ALREADY carries a first-class Node branch: when run as `node <that>.js`
 //   (require.main === module) it starts a readline UCI REPL, reads commands on
 //   stdin, writes engine lines to stdout, and locates its `.wasm` sibling via
 //   __dirname. It needs NO browser globals in that mode. Its `worker_threads`
 //   branch, by contrast, is a pthread guard: `... && !worker_threads.isMainThread`
 //   short-circuits the whole setup to a no-op, because this is the SINGLE-thread
-//   build that never spawns pthread workers — so loading it inside a Node Worker
+//   build that never spawns pthread workers, so loading it inside a Node Worker
 //   would install no command handler at all. Spawning it as a subprocess is
 //   therefore both the faithful "worker" model (isolated address space, message
 //   passing) and the path the build actually supports under Node. The subprocess
@@ -76,7 +76,7 @@ export interface AnalysisResult {
 }
 
 export interface AnalyseOptions {
-  /** fixed node cap for `go nodes N` (never depth/time — spec §8). */
+  /** fixed node cap for `go nodes N` (never depth/time; spec §8). */
   nodes: number
   /** MultiPV count. */
   multipv: number
@@ -110,14 +110,14 @@ export interface NewInstanceOptions {
   enginePath?: string
   /**
    * verify the EXACT `.wasm` the child loads (its enginePath sibling) against
-   * the pinned content hash immediately before spawning. Defaults to true —
+   * the pinned content hash immediately before spawning. Defaults to true:
    * there is no production reason to disable it (verified bytes == executed
    * bytes, spec §8 / A5-13).
    */
   verifyContentHash?: boolean
   /**
    * OPTIONAL cross-check only. If given it MUST name the enginePath sibling the
-   * spawned child actually loads (loadedWasmPath) — a divergent path is refused
+   * spawned child actually loads (loadedWasmPath): a divergent path is refused
    * fail-closed with JudgeWasmPathError. It CANNOT redirect the engine: the glue
    * self-resolves its own `__dirname` sibling and never receives this value
    * (A5-13). Omit it and the gate uses the loaded sibling directly.
@@ -136,7 +136,7 @@ export function resolveEnginePath(): string {
  * glue's Node branch (`require.main === module`, the mode this harness spawns it
  * in via `node <enginePath>`) resolves its binary as
  * `path.join(__dirname, basename(__filename, extname) + '.wasm')` and
- * readFileSync's THAT — the parent never hands it a wasmPath. The §8 content-
+ * readFileSync's THAT: the parent never hands it a wasmPath. The §8 content-
  * hash gate must therefore hash THIS exact file so the verified bytes are the
  * executed bytes (A5-13), the node analogue of the web adapter instantiating the
  * worker over its verified-bytes blob: URL (src/web/engines/judge.ts).
@@ -149,7 +149,7 @@ export function loadedWasmPath(enginePath: string): string {
  * The §8 gate was pointed at a `.wasm` the spawned judge child will never load.
  * Because the child self-resolves its enginePath sibling (loadedWasmPath) and
  * ignores any external wasmPath, verifying a divergent file would attest bytes
- * that never execute — a checked-vs-loaded split — so the judge REFUSES fail-
+ * that never execute (a checked-vs-loaded split) so the judge REFUSES fail-
  * closed rather than gate a file decoupled from the one it runs (A5-13).
  */
 export class JudgeWasmPathError extends Error {
@@ -165,7 +165,7 @@ export class JudgeWasmPathError extends Error {
     super(
       `judge content-hash gate pointed at ${requestedWasmPath}, but the spawned ` +
         `judge child (node ${enginePath}) loads its sibling ${loadedPath} and never ` +
-        `the given path — refusing to verify a .wasm the engine never executes`,
+        `the given path. Refusing to verify a .wasm the engine never executes`,
     )
   }
 }
@@ -173,7 +173,7 @@ export class JudgeWasmPathError extends Error {
 /**
  * Resolve the exact `.wasm` the §8 gate must hash: always the loaded sibling
  * (loadedWasmPath). If the caller supplied an explicit wasmPath it is treated as
- * a cross-check and MUST name that same file, else JudgeWasmPathError — closing
+ * a cross-check and MUST name that same file, else JudgeWasmPathError. Closing
  * the checked-vs-loaded split (A5-13).
  */
 export function gatedWasmPath(enginePath: string, wasmPath?: string): string {
@@ -224,7 +224,7 @@ export async function newInstance(opts: NewInstanceOptions = {}): Promise<JudgeI
   const enginePath = opts.enginePath ?? resolveEnginePath()
   if (opts.verifyContentHash !== false) {
     // §8 gate: hash the EXACT file the child will load (its enginePath sibling),
-    // and refuse a wasmPath that names any other file — the verified bytes are
+    // and refuse a wasmPath that names any other file. The verified bytes are
     // the executed bytes (A5-13). Runs immediately before spawn to keep the
     // check->load window minimal; assertWasmHash throws on a hash mismatch and
     // gatedWasmPath throws JudgeWasmPathError on a decoupled path, both before

@@ -1,8 +1,8 @@
-// A6 M3 — Lane L-view: the LIVE reconstruction viewing client (spec §5 viewing
+// A6 M3, Lane L-view: the LIVE reconstruction viewing client (spec §5 viewing
 // flow, §2 checkpoint verification, §11 platform budgets).
 //
 // Given a target account ROOT, this resolves the account over the live
-// AccountPeer overlay — ONE authenticated-pointer lookup, then the shard layer —
+// AccountPeer overlay (ONE authenticated-pointer lookup, then the shard layer)
 // entirely through the FROZEN §5 substrate (storage/viewer.ts `resolveProfile` +
 // `historyFromView`; storage/pointers.ts + shards.ts underneath). It reimplements
 // NO crypto and NO reconstruction: every acceptance decision stays inside the
@@ -13,13 +13,13 @@
 //   1. builds the §2 checkpoint-cosigner eligibility join from the LIVE presence
 //      directory (so the newest M-of-N checkpoint is verified, not merely shown),
 //   2. injects the wall clock + the §2 spot-check draw (the substrate has no
-//      ambient Date.now / Math.random — determinism preserved),
+//      ambient Date.now / Math.random: determinism preserved),
 //   3. calls `resolveProfile` and `historyFromView`, NEVER throwing on hostile or
-//      absent data — a target with fewer than K_rec reachable shard rows surfaces
+//      absent data: a target with fewer than K_rec reachable shard rows surfaces
 //      TYPED temporary unavailability that heals via runRepair (spec C-8), never a
 //      crash and never a fabricated profile, and
 //   4. maps the verified `ResolvedProfile` onto the UI shapes the profile page
-//      already renders — ladders / reputation / standing come from the SHARED
+//      already renders: ladders / reputation / standing come from the SHARED
 //      folds (store/derive.ts) over the reconstructed chain, or, on the floor
 //      path, from the M-of-N-cosigned checkpoint state (the §6 pinned surface),
 //      or an honest "unavailable" when neither survived.
@@ -79,7 +79,7 @@ import type { AccountPeer } from './peerService'
 /** §2 spot-check probability the live viewer draws against per resolve. The
  * substrate ALSO forces a spot-check whenever cosigner diversity is lacking or
  * unknown, so this only governs the extra random deep re-derivation on an
- * otherwise-diverse checkpoint — cheap in JS, and it fails toward auditing. */
+ * otherwise-diverse checkpoint: cheap in JS, and it fails toward auditing. */
 export const VIEWER_SPOT_CHECK_P = 0.2
 
 /** §2 checkpoint /16-prefix diversity floor (witness/types.ts contract: "≥ 3
@@ -124,7 +124,7 @@ export function checkpointCosigRule(overrides: Partial<CheckpointCosigRule> = {}
  * checkpoint's M-of-N cosigner set (§2c): witness signing key → nodeId, over
  * every LIVE, witness-capable presence in the fabric directory. WITHOUT this
  * join the viewer cannot confirm diversity and fails toward auditing (mOfN
- * unknown, spot-check forced) — honest, but it never renders "M-of-N cosigned".
+ * unknown, spot-check forced): honest, but it never renders "M-of-N cosigned".
  * The eligibility is a live-directory snapshot (C-3), never authority: it only
  * decides which cosignatures COUNT toward the threshold the owner already signed
  * the checkpoint under.
@@ -141,11 +141,11 @@ export function buildEligibleWitnesses(directory: NodeDirectory, nowMs: number):
 }
 
 // ---------------------------------------------------------------------------
-// resolveAccountView — the live §5 resolve, honest and crash-proof
+// resolveAccountView: the live §5 resolve, honest and crash-proof
 // ---------------------------------------------------------------------------
 
 export interface ResolveAccountOpts {
-  /** Live presence directory (peer.fabric.directory()) — feeds shard-duty
+  /** Live presence directory (peer.fabric.directory()). Feeds shard-duty
    * pointer verification AND the checkpoint eligibility join. */
   directory?: NodeDirectory
   /** Wall clock (ms). Default Date.now (renderer glue may use it). */
@@ -158,8 +158,8 @@ export interface ResolveAccountOpts {
   cosigRule?: Partial<CheckpointCosigRule>
   /** Explicit eligibility join (suite / override). Default: from `directory`. */
   eligible?: ReadonlyMap<B64u, NodeId>
-  /** Verified holder summaries pre-fetched by the embedder (A6 fast-path seam) —
-   * re-verified inside resolveProfile; junk contributes nothing. */
+  /** Verified holder summaries pre-fetched by the embedder (A6 fast-path seam).
+   * Re-verified inside resolveProfile; junk contributes nothing. */
   summaries?: readonly unknown[]
   /** Freshest-holder page size (§5). Default PARAMS_A3.viewerHoldersMax. */
   holdersMax?: number
@@ -189,7 +189,7 @@ export async function resolveAccountView(
 
   try {
     return await resolveProfile(node, subjectRoot, {
-      // `nowMs` is REQUIRED alongside `directory` (presence staleness) — pass both or neither.
+      // `nowMs` is REQUIRED alongside `directory` (presence staleness): pass both or neither.
       ...(directory ? { directory, nowMs } : {}),
       ...(eligible && eligible.size > 0 ? { cosig: { eligible, rule } } : {}),
       spot,
@@ -224,7 +224,7 @@ export function emptyFloorView(subjectRoot: B64u): ResolvedProfile {
 /** The lazy game-history pager anchored at the view's pinned countersigned head:
  * chain events when reconstruction succeeded, else the verified segment floor
  * (missing heights page honestly as 'unavailable'). Null when no head pinned at
- * all (nothing verified) — the caller renders that as honest unavailability. */
+ * all (nothing verified). The caller renders that as honest unavailability. */
 export function openAccountHistory(view: ResolvedProfile, pageSize?: number): HistoryPager | null {
   return historyFromView(view, pageSize !== undefined ? { pageSize } : {})
 }
@@ -237,17 +237,17 @@ export interface ViewerAvailability {
   /** viewer.ts `status`: 'expected' = full verified chain; 'floor' = survivors' union. */
   status: 'expected' | 'floor'
   /** Something VERIFIED is renderable (a pinned head, a checkpoint, or ≥1 game).
-   * false ⇒ honest temporary unavailability (heals via repair) — never a crash,
+   * false ⇒ honest temporary unavailability (heals via repair). Never a crash,
    * never a fabricated profile. */
   available: boolean
-  /** Present when NOTHING reconstructed — why the shard read came back empty. */
+  /** Present when NOTHING reconstructed. Why the shard read came back empty. */
   reason?: ShardReadReason | 'no-pointers'
   /** Verified live shard rows observed for the freshest snapshot. */
   liveRows: number
   needK: number
   totalRows: number
-  /** C-12: a device-signed revocation honored on device-attested evidence only —
-   * the view may hide one device's recent content, degraded + self-healing. */
+  /** C-12: a device-signed revocation honored on device-attested evidence only.
+   * The view may hide one device's recent content, degraded + self-healing. */
   revocationContested: boolean
   /** The surfaced checkpoint reached its M-of-N cosigner threshold (§2). */
   mOfN: boolean
@@ -258,7 +258,7 @@ export interface ViewerAvailability {
   holders: number
 }
 
-/** The honest availability read of a resolved view — what the reconstruction
+/** The honest availability read of a resolved view. What the reconstruction
  * card + degradation chips render, and what the suite asserts against. */
 export function summarizeAvailability(view: ResolvedProfile): ViewerAvailability {
   const available = view.status === 'expected' || view.head !== undefined || view.segments.length > 0
@@ -296,7 +296,7 @@ export function shortKey(s: string): string {
 /** True when a checkpoint state carries the A4 ladder/rep/ban surface (an
  * `a4-v1` fold), so ladders/reputation/standing can be derived from the
  * checkpoint alone on the floor path (the §6 pinned surface). A young account's
- * first `basic-v1` checkpoint lacks it — honest seeds then. */
+ * first `basic-v1` checkpoint lacks it. Honest seeds then. */
 function isA4FoldState(state: CanonicalValue | undefined): state is A4FoldState {
   return (
     typeof state === 'object' &&
@@ -309,7 +309,7 @@ function isA4FoldState(state: CanonicalValue | undefined): state is A4FoldState 
 
 /** The best available A4 fold surface for ladders/reputation/standing:
  *  1. the reconstructed chain's own fold (authoritative + sparkline histories),
- *  2. else the M-of-N-cosigned checkpoint state (the §6 pinned surface — works
+ *  2. else the M-of-N-cosigned checkpoint state (the §6 pinned surface; works
  *     on the floor path when the chain did not reconstruct),
  *  3. else null (honest: no rating surface is derivable). */
 function foldSurfaceOf(view: ResolvedProfile): ChainDerived | null {
@@ -320,7 +320,7 @@ function foldSurfaceOf(view: ResolvedProfile): ChainDerived | null {
 }
 
 /** Genesis display name + creation time from a reconstructed chain (root-signed
- * genesis only — a device "genesis" cannot set the name; the substrate already
+ * genesis only: a device "genesis" cannot set the name; the substrate already
  * enforced this in view.name). */
 function genesisOf(chain: Chain | undefined): { name?: string; createdWts: number } {
   const g = chain?.events.find(
@@ -331,7 +331,7 @@ function genesisOf(chain: Chain | undefined): { name?: string; createdWts: numbe
 }
 
 /** Newest verified witnessed timestamp across the view (head, checkpoint, or the
- * freshest recovered segment) — the §10 "last witnessed activity" instant, only
+ * freshest recovered segment): the §10 "last witnessed activity" instant, only
  * ever a countersigned time, never a self-claim. */
 function newestWitnessedTs(view: ResolvedProfile): number {
   let ts = view.headEvent?.body.ts ?? 0
@@ -388,7 +388,7 @@ export function reconstructionFromView(view: ResolvedProfile, hops = 0): UiRecon
     hops,
     pointerCount: view.sources.pointers,
     // resolveProfile drops poisoned/unproven pointers inside buildContactSheet
-    // and does not return the discarded count — honest 0 rather than a guess.
+    // and does not return the discarded count. Honest 0 rather than a guess.
     pointersIgnored: 0,
     holdersOnline: view.sources.holders,
     shardsHave: view.shardReport.liveRows,
@@ -417,7 +417,7 @@ export function checkpointFromView(view: ResolvedProfile): UiProfile['checkpoint
 }
 
 /** A minimal honest reputation card when no fold surface survived (floor path,
- * no chain and no A4 checkpoint) — states the unavailability, invents nothing. */
+ * no chain and no A4 checkpoint). States the unavailability, invents nothing. */
 function unavailableReputation(): UiReputation {
   return {
     score: 0,
@@ -427,7 +427,7 @@ function unavailableReputation(): UiReputation {
   }
 }
 
-/** Seed ladders (§6: 1200 / RD 350) shown when no fold surface survived — the
+/** Seed ladders (§6: 1200 / RD 350) shown when no fold surface survived, the
  * honest "nothing rated recovered yet" state, matching a fresh account. The
  * display state comes from the SHARED displayState() so it can never drift. */
 function seedLadders(): UiLadder[] {
@@ -487,7 +487,7 @@ export function viewToUiProfile(view: ResolvedProfile, opts: ViewToUiOpts = {}):
     reputation,
     standing,
     // Friend edges are the social lane (M4); this reconstruction does not count
-    // them — honest 0 rather than a fabricated total.
+    // them. Honest 0 rather than a fabricated total.
     friendsCount: 0,
     games: gamesFromView(view, opts.gamesLimit ?? VIEWER_GAMES_PREVIEW),
     reconstruction: reconstructionFromView(view, opts.hops ?? 0),
@@ -504,7 +504,7 @@ export interface ViewerResult {
   view: ResolvedProfile
   /** The UiProfile the page renders (null only if you asked for raw-only). */
   profile: UiProfile
-  /** The lazy history pager (null when no head pinned — honest unavailability). */
+  /** The lazy history pager (null when no head pinned; honest unavailability). */
   pager: HistoryPager | null
   /** The honest C-8 degradation summary. */
   availability: ViewerAvailability
@@ -515,7 +515,7 @@ export interface ViewerResult {
  * the PointerReadNode, its fabric directory feeds pointer/checkpoint
  * verification. This is the single call the profile page makes; it returns the
  * verified view, the UI projection, the history pager, and the honest
- * availability read — never throwing, degrading to a floor/unavailable surface
+ * availability read. Never throwing, degrading to a floor/unavailable surface
  * when fewer than K_rec rows are reachable (heals via runRepair).
  */
 export async function viewAccountForPeer(
@@ -544,14 +544,14 @@ export async function viewAccountForPeer(
 }
 
 // ---------------------------------------------------------------------------
-// Live storage / overlay stats (DataTab — real §5/§11 figures from the peer)
+// Live storage / overlay stats (DataTab, real §5/§11 figures from the peer)
 // ---------------------------------------------------------------------------
 
 export interface LiveStorageStats {
   /** §11 advertised shard budget (peer.caps.shardMb). */
   budgetMb: number
   /** MB actually carried in the persistent store (kv), 0 until duty publishing
-   * populates it — the honest live figure, never a fixture. */
+   * populates it. The honest live figure, never a fixture. */
   carriedMb: number
   /** Persisted shard rows carried (kv `shard|` keys). */
   shards: number
@@ -570,7 +570,7 @@ export interface LiveStorageStats {
 
 const MB = 1024 * 1024
 
-/** Read the REAL §5/§11 storage + overlay figures off a live AccountPeer — the
+/** Read the REAL §5/§11 storage + overlay figures off a live AccountPeer. The
  * advertised budget, what the persistent store carries, overlay reachability,
  * and the honest reachable-witness count. Best-effort + total: a store that
  * cannot report (or is not yet wired to carry shards) yields zeros, never a
@@ -627,7 +627,7 @@ export async function readStorageStats(peer: AccountPeer): Promise<LiveStorageSt
 
 /** A signed set of ladder previews for the DataTab witness list (live directory
  * witness-capable presences), each carrying only what a presence honestly
- * advertises — no fabricated distance/uptime. */
+ * advertises: no fabricated distance/uptime. */
 export interface LiveWitnessRow {
   nodeId: NodeId
   handle: string
@@ -636,7 +636,7 @@ export interface LiveWitnessRow {
   shardMb: number
 }
 
-/** The live, witness-capable presences (excluding self) as display rows — the
+/** The live, witness-capable presences (excluding self) as display rows, the
  * REAL "who could witness / carry for me" set, straight off the directory. */
 export function liveWitnessRows(peer: AccountPeer, limit = 8): LiveWitnessRow[] {
   const rows: LiveWitnessRow[] = []

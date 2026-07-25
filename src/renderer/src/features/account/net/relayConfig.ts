@@ -1,10 +1,10 @@
-// RELAY-SEAM — the Nostr SIGNALING relays every trystero user rides (spec §4
+// RELAY-SEAM: the Nostr SIGNALING relays every trystero user rides (spec §4
 // C-11, the signaling half of the same requirement iceConfig.ts covers for
 // STUN/TURN). One module owns the relay list for ALL THREE trystero call sites:
 // the browser accounts fabric (browserFabric.ts), the matchmaking pool
 // (matchmaking.ts), and the mp game transport (play/online/rtcTransport.ts).
 //
-// WHY A PINNED LIST INSTEAD OF THE FORK DEFAULTS. Signaling is not broken — the
+// WHY A PINNED LIST INSTEAD OF THE FORK DEFAULTS. Signaling is not broken. The
 // fork ships ~44 public relays and picks 5 (@trystero-p2p/nostr:144), so peer
 // discovery works with no config at all. The problem is that we neither chose
 // nor vet those 5: the fork picks them with `shuffle(defaults, strToNum(appId))`
@@ -14,7 +14,7 @@
 // each re-rolled by any dependency bump that reorders the list. Pinning makes
 // the signaling surface one known, tested set that moves only when we move it.
 //
-// The pinned relays are PUBLIC ones we verified, not ones we run — the honest
+// The pinned relays are PUBLIC ones we verified, not ones we run: the honest
 // upgrade is `VITE_NOSTR_RELAYS` pointed at relays we operate. Both are one env
 // var apart, which is the whole point of the seam.
 //
@@ -22,12 +22,12 @@
 // loads in the bare-node smoke bundles that import browserFabric/matchmaking. The
 // env read is guarded EXACTLY like iceConfig.ts / accountsFlag.ts so the module
 // still loads where there is no import.meta.env; a malformed value is IGNORED
-// (keep the pinned list) — garbage never silently breaks signaling.
+// (keep the pinned list). Garbage never silently breaks signaling.
 //
 // FORMAT of `VITE_NOSTR_RELAYS` (any of):
 //   • comma-separated:  wss://relay.a.example,wss://relay.b.example
 //   • JSON string array: ["wss://relay.a.example","wss://relay.b.example"]
-//   • the literal `default` — hand trystero NO relayConfig and take whatever the
+//   • the literal `default`. Hand trystero NO relayConfig and take whatever the
 //     fork ships. The escape hatch for the day our pinned set is the thing that
 //     is down; it is the ONLY way to get the old behavior back.
 // Every entry must be a ws:// or wss:// URL; if any entry is malformed the whole
@@ -35,9 +35,9 @@
 // `every(isIceServer)` guard).
 
 /**
- * The pinned signaling relays. Every one was verified by full round-trip —
+ * The pinned signaling relays. Every one was verified by full round-trip,
  * subscribe to an ephemeral kind with trystero's `#x` tag filter, publish a
- * signed event on it, read it back — because that, not a WebSocket that merely
+ * signed event on it, read it back. Because that, not a WebSocket that merely
  * opens, is what trystero signaling actually needs: a relay can accept `REQ`,
  * look healthy to a naive probe, and silently drop the ephemeral kinds
  * (20000-29999) trystero publishes because it is paid, NIP-42 gated, or blocks
@@ -47,22 +47,22 @@
  * regions (US / EU / APAC), because a relay list is a correlated-failure surface:
  * signaling needs only one or two of these alive, so the cost of extras is a
  * socket and the benefit is that no single operator or region outage is fatal.
- * All eight are used verbatim — see `redundancy` below.
+ * All eight are used verbatim: see `redundancy` below.
  */
 export const DEFAULT_NOSTR_RELAYS: readonly string[] = [
-  'wss://relay.damus.io', // US — largest public relay
+  'wss://relay.damus.io', // US. Largest public relay
   'wss://nos.lol', // US
   'wss://relay.primal.net', // US, independent operator
   'wss://offchain.pub', // US
   'wss://nostr-pub.wellorder.net', // US, long-running
   'wss://nostr.oxtr.dev', // EU
   'wss://strfry.openhoofd.nl', // EU (NL)
-  'wss://yabu.me', // APAC (JP) — the only entry Asia-Pacific peers reach quickly
+  'wss://yabu.me', // APAC (JP): the only entry Asia-Pacific peers reach quickly
 ]
 
 /**
  * The relay config handed to trystero's `joinRoom` (a structural subset of the
- * fork's `RelayConfig`, declared inline so this module imports nothing — the same
+ * fork's `RelayConfig`, declared inline so this module imports nothing, the same
  * zero-import discipline as iceConfig.ts).
  *
  * `redundancy` is set to the full list length to state the intent, but note it
@@ -98,8 +98,8 @@ const FORK_DEFAULTS = Symbol('trystero-fork-default-relays')
  * Build-time env override (C-11): a comma-separated or JSON-array list of relay
  * URLs in `VITE_NOSTR_RELAYS`, or `default` for the fork's own list. Guarded like
  * iceConfig.ts / accountsFlag.ts so the module loads in bare-node bundles with no
- * import.meta.env. A malformed value is IGNORED (falls back to the pinned list) —
- * garbage never silently breaks signaling.
+ * import.meta.env. A malformed value is IGNORED (falls back to the pinned list).
+ * Garbage never silently breaks signaling.
  */
 function envNostrRelays(): string[] | typeof FORK_DEFAULTS | null {
   const env = (import.meta as { env?: Record<string, unknown> }).env
@@ -128,7 +128,7 @@ function parseRelayList(raw: string): string[] | null {
       if (Array.isArray(parsed) && parsed.every((u) => typeof u === 'string'))
         return parsed.map((u) => (u as string).trim()).filter((s) => s !== '')
     } catch {
-      /* malformed JSON VITE_NOSTR_RELAYS — ignore, keep the pinned list */
+      /* malformed JSON VITE_NOSTR_RELAYS: ignore, keep the pinned list */
     }
     return null
   }

@@ -51,7 +51,7 @@ function RatingRow({
           <span className="rating-label">{label}</span>
         </div>
         <div className="rating-figures">
-          <span className="rating-num muted">—</span>
+          <span className="rating-num muted">·</span>
           <span className="rating-band muted small">Not rated yet</span>
         </div>
         <div className="rd-bar" role="presentation">

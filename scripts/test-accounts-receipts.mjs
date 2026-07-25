@@ -68,7 +68,7 @@ async function main() {
     console.log('\n· the point: a server cannot sign its own receipts …')
     {
       // The server holds its OWN key, so it can produce a well-formed, correctly
-      // signed object — but only ever with itself as client, which is refused.
+      // signed object, but only ever with itself as client, which is refused.
       const selfDealt = A.signServiceReceipt(
         bodyOf({ client: server.pubB }),
         server.pubB,
@@ -124,7 +124,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }

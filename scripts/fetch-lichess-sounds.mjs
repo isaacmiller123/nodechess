@@ -1,4 +1,4 @@
-// fetch-lichess-sounds.mjs — download the Lichess "standard" sound set for the
+// fetch-lichess-sounds.mjs: download the Lichess "standard" sound set for the
 // 'standard' (Lichess-style) sound theme.
 //
 //   node scripts/fetch-lichess-sounds.mjs
@@ -17,12 +17,12 @@
 //   move        <- Move.mp3
 //   capture     <- Capture.mp3
 //   gameStart   <- GenericNotify.mp3   (round start "dong")
-//   gameEnd     <- (alias of gameStart in SoundManager — Victory/Defeat/Draw
+//   gameEnd     <- (alias of gameStart in SoundManager: Victory/Defeat/Draw
 //                   are all symlinks to GenericNotify.mp3 upstream)
 //   lowTime     <- LowTime.mp3
 //   puzzleSolved  <- Confirmation.mp3
 //   puzzleFailed  <- Error.mp3
-//   castle/check/promote — no dedicated Lichess sound (Check.mp3 is literally a
+//   castle/check/promote. No dedicated Lichess sound (Check.mp3 is literally a
 //   symlink to Silence); SoundManager aliases them to 'move' for this theme.
 //
 // No dependencies; Node 18+ (global fetch).
@@ -50,7 +50,7 @@ const FILES = [
   ['puzzleFailed.mp3', 'Error.mp3']
 ]
 
-/** A real MP3 starts with an ID3 tag or an MPEG frame sync — never ASCII text
+/** A real MP3 starts with an ID3 tag or an MPEG frame sync, never ASCII text
  *  (the repo stores some "files" as symlink path text; reject those). */
 function looksLikeMp3(buf) {
   if (buf.length < 512) return false
@@ -73,7 +73,7 @@ async function fetchOne(ourName, theirName) {
 
 const ATTRIBUTION = `# Sound asset attribution
 
-## \`standard/\` — Lichess standard sound set
+## \`standard/\`: Lichess standard sound set
 
 The files in \`standard/\` are the "standard" sound set from
 [Lichess](https://lichess.org), copied from the
@@ -105,7 +105,7 @@ is available at <https://www.gnu.org/licenses/agpl-3.0.txt>. Copyright
 These sound files are unmodified apart from renaming. They are distributed as
 data assets alongside (not linked into) this GPL-3.0-or-later application.
 
-## \`classic/\` and \`real/\` — generated in-repo
+## \`classic/\` and \`real/\`, generated in-repo
 
 The WAV files in \`classic/\` and \`real/\` are original works synthesized
 offline by \`scripts/gen-sounds.mjs\` in this repository (pure-Node procedural

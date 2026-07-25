@@ -1,7 +1,7 @@
-// Subtle "a new version is out" toast — appears bottom-right after the quiet
+// Subtle "a new version is out" toast: appears bottom-right after the quiet
 // startup update check (src/main/updates) finds one. Non-blocking by design:
 // "Update now" acts (installs on Windows / opens the right .dmg download on
-// macOS — the unsigned-build split lives in main), "Later" dismisses for THIS
+// macOS: the unsigned-build split lives in main), "Later" dismisses for THIS
 // version (localStorage), and the Settings → Updates card remains the full
 // surface either way.
 
@@ -34,7 +34,7 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
   }, [phase, status?.latestVersion])
 
   // 'available' (manual: mac + dev) and 'ready' (auto: win, downloaded) both
-  // warrant the nudge; 'downloading' stays silent — the ready toast follows.
+  // warrant the nudge; 'downloading' stays silent. The ready toast follows.
   const show =
     !!status &&
     (status.state === 'available' || status.state === 'ready') &&
@@ -53,7 +53,7 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
   const updateNow = (): void => {
     void applyUpdate().then((r) => {
       if (!r.ok) {
-        // Nothing actionable here (e.g. state changed underneath) — the
+        // Nothing actionable here (e.g. state changed underneath). The
         // Settings card has the full story.
         onOpenSettings()
         later()
@@ -76,9 +76,9 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
         </strong>
         <span>
           {phase === 'opened'
-            ? 'Download started — quit nodechess and install it over the old app.'
+            ? 'Download started. Quit nodechess and install it over the old app.'
             : status.state === 'ready'
-              ? 'Restart to finish — or it installs on your next quit.'
+              ? 'Restart to finish, or it installs on your next quit.'
               : status.mode === 'auto'
                 ? 'Downloads and installs itself.'
                 : 'One-click download; install it over the old app.'}

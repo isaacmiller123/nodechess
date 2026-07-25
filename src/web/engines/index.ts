@@ -1,4 +1,4 @@
-// Web engine layer — the W2 implementation of the `Api` engine/review/perf
+// Web engine layer: the W2 implementation of the `Api` engine/review/perf
 // surfaces over browser WASM (docs/WEB-PORT-SPEC.md §Engines).
 //
 // CONTRACT FILE: src/web/webApi.ts consumes exactly these exports; the engine
@@ -8,11 +8,11 @@
 // both the dev server and server/index.ts).
 //
 // Implementation map (see each module's header for the desktop file it ports):
-//   engineApi.ts   engine.* — analyze/stop/play (incl. the calibrated sub-1320
+//   engineApi.ts   engine.*: analyze/stop/play (incl. the calibrated sub-1320
 //                  weak model in weakPlay.ts), playVariant/evalVariant on
 //                  Fairy-Stockfish, honest desktop-only go/maia rejections.
 //   review.ts      client-side game review + perf.estimate (accuracy.ts and
-//                  estElo.ts imported directly from src/main — electron-free).
+//                  estElo.ts imported directly from src/main: electron-free).
 //   personaMove.ts style-weighted persona selection on the play instance.
 //   pools.ts       the two logical Stockfish instances + fairy pool + the
 //                  FIFO chains every consumer shares.
@@ -52,17 +52,17 @@ export function createReviewApi(store: ReviewStore): Api['review'] {
   return buildReviewApi(store)
 }
 
-/** perf.estimate — pure estElo over review accuracy (no engine needed). */
+/** perf.estimate: pure estElo over review accuracy (no engine needed). */
 export function createPerfApi(store: ReviewStore): Api['perf'] {
   return buildPerfApi(store)
 }
 
-/** personas.move — style-weighted MultiPV selection client-side. */
+/** personas.move. Style-weighted MultiPV selection client-side. */
 export function createPersonaMove(): Api['personas']['move'] {
   return buildPersonaMove()
 }
 
-/** School debrief eval enrichment — viktor.ts's engine pass run client-side
+/** School debrief eval enrichment: viktor.ts's engine pass run client-side
  *  on the WASM analysis instance before the request crosses the bridge
  *  (the web server has no engine; audit fix W-01). */
 export function createDebriefEnricher(): (req: SchoolDebriefReq) => Promise<SchoolDebriefReq> {
@@ -70,6 +70,6 @@ export function createDebriefEnricher(): (req: SchoolDebriefReq) => Promise<Scho
 }
 
 /** A5 canonical judge (spec §8): a judge-DEDICATED, hash-verified,
- *  single-thread engine instance — never the pools above, never the assets.ts
+ *  single-thread engine instance: never the pools above, never the assets.ts
  *  context-sensitive selection. Additive to the webApi contract. */
 export { newWebJudgeEngine } from './judge'

@@ -1,16 +1,16 @@
-// Replay Theater — cinematic full-screen replay of a finished game.
+// Replay Theater: cinematic full-screen replay of a finished game.
 //
 // 3D-capable kinds (spec WILL tier: chess-family standard boards, checkers,
 // go, gomoku, othello, connect four) play on the shared Tabletop3D via the
 // GameBoard3D bridge in theater mode: slow orbiting camera, per-move framing,
 // capture emphasis (dolly-in + brief scene slow-mo through the existing slide
 // and lift-fade animations), final-position hold with a result card. Every
-// other kind — and any machine without WebGL — falls back to a polished 2D
+// other kind (and any machine without WebGL) falls back to a polished 2D
 // autoplay of the same data on the kind's real board.
 //
 // Choreography lives in games/three/theater.ts (pure, node-tested); this
-// component owns PLAYBACK — the ply cursor, cadence timing, transport
-// controls (play/pause, scrub over the move strip, 0.5×–3× speed) — and the
+// component owns PLAYBACK. The ply cursor, cadence timing, transport
+// controls (play/pause, scrub over the move strip, 0.5×–3× speed), and the
 // .webm export (MediaRecorder over the 3D canvas; see startExport below).
 // Launchers: the Library replay viewer and the local post-game banners.
 
@@ -46,7 +46,7 @@ import { kernelColorLabel } from '../games/KernelOtb'
 import { tabletop3dOffered } from '../games/boardMode'
 import { buildReplay, type ReplayLine } from './replayData'
 // The theater borrows .b3d-* (3D host sizing), .votb-* (buttons/dots) and
-// .replay-speed* rules — import their sheets here so every launch surface
+// .replay-speed* rules: import their sheets here so every launch surface
 // (and the ?theater harness) is self-sufficient; Vite dedupes repeats.
 import '../games/games.css'
 import './library.css'
@@ -66,7 +66,7 @@ export interface TheaterInput {
 }
 
 /** Build a TheaterInput from a LIVE finished game (post-game banners): replay
- *  the move history through the spec. Never throws — an unreplayable tail is
+ *  the move history through the spec. Never throws. An unreplayable tail is
  *  truncated (buildReplay contract). */
 export function buildTheaterInput(args: {
   entry: GameEntry
@@ -97,7 +97,7 @@ export function buildTheaterInput(args: {
   }
 }
 
-// The three.js chunk — same lazy chunk boardMode.tsx mounts for live play.
+// The three.js chunk: same lazy chunk boardMode.tsx mounts for live play.
 const GameBoard3DTheater = lazy(() => import('../../games/three/GameBoard3D'))
 
 // Lazy 2D boards cached per kind (KernelOtb discipline).
@@ -123,9 +123,9 @@ function resultLine(input: TheaterInput): string {
   const reason = input.reason ? input.reason.replace(/-/g, ' ') : null
   if (input.result === '1-0' || input.result === '0-1') {
     const side = kernelColorLabel(input.kind, input.result === '1-0' ? 'white' : 'black')
-    return reason ? `${side} wins — ${reason}` : `${side} wins`
+    return reason ? `${side} wins: ${reason}` : `${side} wins`
   }
-  if (input.result === '1/2-1/2') return reason ? `Draw — ${reason}` : 'Draw'
+  if (input.result === '1/2-1/2') return reason ? `Draw: ${reason}` : 'Draw'
   return 'Game over'
 }
 
@@ -173,7 +173,7 @@ export function ReplayTheater({
     [spec, replay]
   )
 
-  // ---- Choreography directive (a ref — the 3D rig samples it per frame) -----
+  // ---- Choreography directive (a ref: the 3D rig samples it per frame) -----
   const directiveRef = useRef(defaultDirective())
   useEffect(() => {
     directiveRef.current.speed = speed
@@ -201,7 +201,7 @@ export function ReplayTheater({
   }, [playing, ply, total, captures, speed])
 
   // Board sounds: 3D bridge + non-chess 2D boards self-sound; the chess family
-  // is the view's job (mirrors GameBoard3D's contract — no double-play).
+  // is the view's job (mirrors GameBoard3D's contract, no double-play).
   useBoardSound(kind as GameKind, isChessFamily ? state : null)
 
   // Curtain-up + final-whistle sounds (each latched once).
@@ -272,7 +272,7 @@ export function ReplayTheater({
 
   // ---- Export (.webm via MediaRecorder over the 3D canvas) --------------------
   // The recording is the canvas alone (the result card is DOM chrome and stays
-  // out of frame — the take ends on the final-position hold). Board sounds ARE
+  // out of frame: the take ends on the final-position hold). Board sounds ARE
   // included via the SoundManager's master-gain recording tap.
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const recRef = useRef<{ rec: MediaRecorder; chunks: Blob[] } | null>(null)
@@ -299,7 +299,7 @@ export function ReplayTheater({
     if (!canvas || !mime || exportPhase !== 'idle') return
     const stream = canvas.captureStream(60)
     // Mix the board sounds in (video-only when audio is unavailable). Never
-    // stop these tracks — the tap is shared and lives with the SoundManager.
+    // stop these tracks. The tap is shared and lives with the SoundManager.
     const audio = manager.recordingStream()
     if (audio) for (const t of audio.getAudioTracks()) stream.addTrack(t)
     let rec: MediaRecorder
@@ -345,7 +345,7 @@ export function ReplayTheater({
         })
       }
     } catch {
-      /* save dialog failed/declined — the user can export again */
+      /* save dialog failed/declined: the user can export again */
     }
     setExportPhase('idle')
   }, [kind])
@@ -437,7 +437,7 @@ export function ReplayTheater({
         {showCard && (
           <div className="theater-card" role="status">
             <span className={`theater-card-score num score-${data.result.replace(/\//g, '')}`}>
-              {data.result === '*' ? '—' : data.result}
+              {data.result === '*' ? '·' : data.result}
             </span>
             <strong className="theater-card-line">{resultLine(data)}</strong>
             <span className="theater-card-players">

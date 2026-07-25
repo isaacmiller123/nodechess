@@ -1,4 +1,4 @@
-// Shared 3D tabletop renderer — public contract types.
+// Shared 3D tabletop renderer. Public contract types.
 // docs/GAMES-PLATFORM-SPEC.md §3D: ONE react-three-fiber tabletop renderer for
 // every game; procedural instanced pieces (stones/discs/wedges/tokens); PBR
 // textures from resources/games-art when present, procedural fallback always.
@@ -82,7 +82,7 @@ export interface StoneParams {
 export interface WedgeParams {
   /** Wedge base width fraction of a square. */
   width?: number
-  /** Decal art directory under games-art (e.g. 'shogi') — glyph fallback when absent. */
+  /** Decal art directory under games-art (e.g. 'shogi'). Glyph fallback when absent. */
   decalDir?: string
 }
 
@@ -120,13 +120,13 @@ export interface Tabletop3DProps {
   onSquareClick?(pos: TabletopPos): void
   /** Proposed drag drop. Owner answers by updating `pieces`; otherwise the piece snaps home. */
   onPieceDrag?(pieceId: string, from: TabletopPos, to: TabletopPos): void
-  /** WebGL missing or context lost — mount the 2D board instead. */
+  /** WebGL missing or context lost. Mount the 2D board instead. */
   onUnavailable?(reason: string): void
   /** Base URL for resources/games-art (see three/artLoader.ts). null = procedural only. */
   artBaseUrl?: string | null
   /** Camera preset toggle: default 35° player-side tilt vs top-down. */
   topDown?: boolean
-  /** Replay Theater directive (a ref — mutations never re-render). Present =
+  /** Replay Theater directive (a ref: mutations never re-render). Present =
    *  the cinematic TheaterRig owns the camera + scene clock; OrbitControls
    *  and camera presets are not mounted. See games/three/theater.ts. */
   theater?: { current: TheaterDirective }

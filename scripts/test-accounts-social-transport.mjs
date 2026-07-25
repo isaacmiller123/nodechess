@@ -1,4 +1,4 @@
-// THE A7 SOCIAL-TRANSPORT SUITE — kickoff brick 1 (spec §10/§3/§5, C-3).
+// THE A7 SOCIAL-TRANSPORT SUITE: kickoff brick 1 (spec §10/§3/§5, C-3).
 //
 //   node scripts/test-accounts-social-transport.mjs
 //
@@ -16,7 +16,7 @@
 //      request → drain → consent → drain → adopt → BOTH chains append →
 //      mutually-readable edge (areFriends); forged + cross-pair-replayed
 //      countersignatures refused at every seam;
-//   4. mailbox relaying — THE KICKOFF SENTENCE AS AN EXECUTABLE ASSERT,
+//   4. mailbox relaying, THE KICKOFF SENTENCE AS AN EXECUTABLE ASSERT,
 //      through the relay: "a sybil flood can't evict an established root's
 //      request before the offline recipient next syncs"; plus the converse
 //      (established displaces sybil mail), authenticated drain (forged sig /
@@ -64,7 +64,7 @@ const GOLDEN_PRESENCE_KEY = 'oP638-xZJHRL7NZEUoIbqdE6btqXa6-ZhJJIbLdfr48'
 const GOLDEN_MAILBOX_KEY = '938tgqd_sp09kbrwQUedUj_14jspXvXjBYAJS0T5pKI'
 
 // The pure decision core bundled twice (platform node vs browser), driven
-// through one scripted sequence — transcripts must match byte-for-byte, and
+// through one scripted sequence: transcripts must match byte-for-byte, and
 // the browser bundle must carry zero node built-ins.
 const PARITY_ENTRY = `
 import { canonicalBytes, ed25519, sha256, toB64u, utf8 } from '@shared/accounts'
@@ -129,7 +129,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -228,7 +228,7 @@ async function run(M) {
 
     const fresh = kpOf('stp-fresh')
     const chainFresh = genesisChain('cf', fresh, 'Fresh')
-    eq(edge(fresh.pubB, R.pubB, chainFresh, chainR), 0, 'a FRESH root (verified genesis-only chain) derives edge EXACTLY 0 — structurally, not empirically')
+    eq(edge(fresh.pubB, R.pubB, chainFresh, chainR), 0, 'a FRESH root (verified genesis-only chain) derives edge EXACTLY 0, structurally, not empirically')
     eq(edge(fresh.pubB, R.pubB, null, chainR), 0, 'an absent sender chain derives 0 (fail closed)')
     eq(edge(fresh.pubB, R.pubB, chainE, chainR), 0, 'a sender chain with the WRONG root derives 0 (fail closed)')
     const tampered = { root: chainE.root, events: chainE.events.map((e, i) => (i === 1 ? { ...e, sig: flip(e.sig) } : e)) }
@@ -248,7 +248,7 @@ async function run(M) {
     const withElig = edge(E.pubB, fA.pubB, chainE, null, { eligible: () => true })
     ok(withElig > 0, `an eligibility predicate unlocks the earned global-trust term for a stranger (got ${withElig} > 0)`)
 
-    // Mutual §3 friend edge — built locally exactly like the A6 social suite.
+    // Mutual §3 friend edge: built locally exactly like the A6 social suite.
     let cA = genesisChain('cfa', fA, 'FriendA')
     let cB = genesisChain('cfb', fB, 'FriendB')
     const sigB = SOC.makeFriendSig(fB.priv, fA.pubB, fB.pubB)
@@ -257,15 +257,15 @@ async function run(M) {
     const cAonly = cA
     cB = A.appendWitnessed(cB, fB.priv, fB.pubB, 'friend', SOC.makeFriendAddPayload({ peer: fA.pubB, key: fA.pubB, sig: sigA }), T0 + 2001)
     eq(edge(fA.pubB, fB.pubB, cA, cB), 600_000, 'a MUTUAL witnessed friend edge ⇒ 600_000')
-    eq(edge(fA.pubB, fB.pubB, cAonly, genesisChain('cfb2', fB, 'FriendB')), 0, 'a ONE-SIDED add is NOT an edge (mutual-read rule — a stale countersig mints no priority)')
-    eq(edge(fA.pubB, fB.pubB, cA, null), 0, 'friend term needs BOTH chains — missing recipient chain ⇒ 0 (fail closed)')
+    eq(edge(fA.pubB, fB.pubB, cAonly, genesisChain('cfb2', fB, 'FriendB')), 0, 'a ONE-SIDED add is NOT an edge (mutual-read rule, a stale countersig mints no priority)')
+    eq(edge(fA.pubB, fB.pubB, cA, null), 0, 'friend term needs BOTH chains: missing recipient chain ⇒ 0 (fail closed)')
 
     // The pure combiner: exact weights, clamps, fail-closed parts.
     const parts = (over) => ({ friendMutual: false, entangledGames: 0, trustMicro: 0, trustBaselineMicro: 0, repScore: 0, repBaselineScore: 0, ...over })
     eq(SOC.edgeStrengthMicro(parts({ friendMutual: true, entangledGames: 4, trustMicro: 1_000_000, repScore: 100 })), 1_000_000, 'all four terms at cap sum to exactly 1_000_000')
     eq(SOC.edgeStrengthMicro(parts({ trustMicro: 1_000_000 })), 120_000, 'trust term scale: full earned trust ⇒ 120_000')
     eq(SOC.edgeStrengthMicro(parts({ trustMicro: 500_000, trustBaselineMicro: 400_000 })), 12_000, 'trust term is the EARNED delta above the empty-chain baseline (100_000 ⇒ 12_000)')
-    eq(SOC.edgeStrengthMicro(parts({ trustMicro: 300_000, trustBaselineMicro: 400_000 })), 0, 'worse-than-baseline trust clamps to 0 — never negative, never below a sybil')
+    eq(SOC.edgeStrengthMicro(parts({ trustMicro: 300_000, trustBaselineMicro: 400_000 })), 0, 'worse-than-baseline trust clamps to 0: never negative, never below a sybil')
     eq(SOC.edgeStrengthMicro(parts({ repScore: 100 })), 80_000, 'reputation term scale: full earned score ⇒ 80_000')
     eq(SOC.edgeStrengthMicro(parts({ repScore: 60, repBaselineScore: 80 })), 0, 'worse-than-baseline reputation clamps to 0')
     eq(SOC.edgeStrengthMicro(parts({ trustMicro: 1_000_001 })), 0, 'out-of-range trust part fails closed to 0')
@@ -411,14 +411,14 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 4. mailbox relaying — THE §10 SENTENCE THROUGH THE RELAY …')
+  console.log('\n· 4. mailbox relaying, THE §10 SENTENCE THROUGH THE RELAY …')
   // ==========================================================================
   {
     const mailTo = (senderKp, recipient, tag, kind = 'friend-request') =>
       SOC.signMail({ v: 1, sender: senderKp.pubB, recipient, kind, payload: 'p-' + tag, sentTs: clock.now }, senderKp.priv)
 
-    // Established E's REQUEST lands first (recipient R is OFFLINE — no node,
-    // no drain — exactly the kickoff scenario).
+    // Established E's REQUEST lands first (recipient R is OFFLINE; no node,
+    // no drain: exactly the kickoff scenario).
     const eMail = SOC.makeFriendRequestMail({ selfRoot: E.pubB, peerRoot: R.pubB, key: E.pubB, priv: E.priv, rootPriv: E.priv, sentTs: clock.now })
     const eId = SOC.mailId(eMail.body)
     const eSent = await SOC.sendSocialMail(n0.ep, n0.node, eMail)
@@ -427,16 +427,16 @@ async function run(M) {
     const frozenEdges = eRelays.map((id) => (relayByNodeId.get(id).state().boxes[R.pubB] ?? []).find((m) => m.id === eId)?.edgeMicro)
     ok(frozenEdges.every((e) => e === 100_000), 'every relay froze E’s admission edge at the fold value 100_000 (relay-computed, never sender-asserted)')
 
-    // THE SYBIL FLOOD: 12 fresh roots, one request each — 12+1 > boxCap 8.
+    // THE SYBIL FLOOD: 12 fresh roots, one request each, 12+1 > boxCap 8.
     const sybils = Array.from({ length: 12 }, (_, i) => kpOf('stp-sybil-' + i))
     chains.set(sybils[0].pubB, genesisChain('syb0', sybils[0], 'Syb0')) // half with real (empty) chains,
-    chains.set(sybils[1].pubB, genesisChain('syb1', sybils[1], 'Syb1')) // half unknown — both fold to 0
+    chains.set(sybils[1].pubB, genesisChain('syb1', sybils[1], 'Syb1')) // half unknown: both fold to 0
     const sybilOutcomes = []
     for (let i = 0; i < sybils.length; i++)
       sybilOutcomes.push(await SOC.sendSocialMail(n0.ep, n0.node, mailTo(sybils[i], R.pubB, 'flood-' + i)))
     ok(sybilOutcomes.some((r) => r.outcomes.includes('box-full')), 'the flood overflows: late sybils are refused box-full (0 is never STRICTLY greater than 0)')
     const boxesWithE = eRelays.map((id) => (relayByNodeId.get(id).state().boxes[R.pubB] ?? []).some((m) => m.id === eId))
-    ok(boxesWithE.every(Boolean), 'THE §10 SENTENCE, THROUGH THE RELAY: a sybil flood can’t evict an established root’s request before the offline recipient next syncs — E’s request survives at EVERY relay')
+    ok(boxesWithE.every(Boolean), 'THE §10 SENTENCE, THROUGH THE RELAY: a sybil flood can’t evict an established root’s request before the offline recipient next syncs. E’s request survives at EVERY relay')
     ok(eRelays.every((id) => (relayByNodeId.get(id).state().boxes[R.pubB] ?? []).length <= P_MBX.boxCap), 'every relay box respects boxCap under the flood (bounded state)')
 
     // R comes online and SYNCS: the request is there, and FIRST.
@@ -456,7 +456,7 @@ async function run(M) {
     const e2Relays = (await n0.node.lookup(SOC.mailboxKeyOfRoot(R2.pubB))).filter((c) => c.nodeId !== n0.nodeId).slice(0, 8).map((c) => c.nodeId)
     ok(e2Relays.every((id) => (relayByNodeId.get(id).state().boxes[R2.pubB] ?? []).some((m) => m.sender === E.pubB)), 'E’s mail present in every (still-capped) R2 box')
 
-    // Relay-boundary refusal matrix — raw RPC against one relay.
+    // Relay-boundary refusal matrix: raw RPC against one relay.
     const r0 = eRelays[0]
     const sendRaw = (mail) => n0.ep.request(r0, 'social-mail-send', { v: 1, mail })
     const s1 = kpOf('stp-matrix-sender')
@@ -491,7 +491,7 @@ async function run(M) {
     eq(boxLen(), 0, '…and clears it')
     ok((await sendRaw(mailTo(kpOf('stp-late-sender'), R3.pubB, 'post-drain'))).admitted === true, 'new mail arrives after the drain…')
     eq((await n0.ep.request(r0, 'social-mail-drain', legit)).error, 'drain-refused', '…and a REPLAYED capture of the old drain is refused (strictly-monotonic ts per recipient)')
-    eq(boxLen(), 1, 'the replay cleared nothing — the new mail still waits')
+    eq(boxLen(), 1, 'the replay cleared nothing: the new mail still waits')
     ok((await n0.ep.request(r0, 'social-mail-drain', signDrain(drainBody(clock.now + 1), R3.priv))).msgs.length === 1, 'a FRESH signed drain (newer ts) delivers it')
 
     ok(await SOC.drainSocialMailbox(n0.ep, n0.node, { recipient: R3.pubB, rootPriv: atk.priv, ts: clock.now }).then(() => false, () => true),

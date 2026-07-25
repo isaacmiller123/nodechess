@@ -3,12 +3,12 @@
  "band": "14",
  "order": 14,
  "title": "The Vienna Game & Gambit",
- "subtitle": "1.e4 e5 2.Nc3 — a sound, aggressive system: build the f4 break, punish the careless, hunt the king.",
+ "subtitle": "1.e4 e5 2.Nc3. A sound, aggressive system: build the f4 break, punish the careless, hunt the king.",
  "estMinutes": 40,
  "concepts": [
   {
    "id": "vienna-knight",
-   "name": "2.Nc3 — the Vienna knight",
+   "name": "2.Nc3: the Vienna knight",
    "short": "Develop, guard e4, and keep the f-pawn free so you can play f4 later."
   },
   {
@@ -18,12 +18,12 @@
   },
   {
    "id": "harry-the-knight",
-   "name": "e5! — harry the knight",
+   "name": "e5!, harry the knight",
    "short": "If Black grabs on f4 with the e-pawn, e5 kicks the f6-knight and seizes space with tempo."
   },
   {
    "id": "decline-with-d5",
-   "name": "...d5 — the equalizer",
+   "name": "...d5: the equalizer",
    "short": "Black's correct reply to the gambit: strike the centre back with ...d5, not grab on f4."
   },
   {
@@ -34,7 +34,7 @@
   {
    "id": "f-file-attack",
    "name": "The f-file attack",
-   "short": "After fxe5 the f-file opens; rook to f1, queen toward g3/h4 — the whole army points at the king."
+   "short": "After fxe5 the f-file opens; rook to f1, queen toward g3/h4: the whole army points at the king."
   }
  ],
  "lessons": [
@@ -48,7 +48,7 @@
      "kind": "puzzle",
      "title": "Warm-up: tactics from the Vienna",
      "intro": {
-      "text": "Before theory, a feel for the positions this opening creates. Solve these — they all come from real Vienna games."
+      "text": "Before theory, a feel for the positions this opening creates. Solve these: they all come from real Vienna games."
      },
      "puzzle": {
       "themes": [
@@ -104,7 +104,7 @@
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "1.e4 e5. Most players reach for 2.Nf3, hitting e5 at once. The Vienna chooses 2.Nc3 instead — develop a piece, guard e4 from the side, and crucially leave the f-pawn unblocked.",
+        "text": "1.e4 e5. Most players reach for 2.Nf3, hitting e5 at once. The Vienna chooses 2.Nc3 instead. Develop a piece, guard e4 from the side, and crucially leave the f-pawn unblocked.",
         "annotations": [
          {
           "kind": "arrow",
@@ -124,7 +124,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR w KQkq - 4 3",
        "coach": {
-        "text": "Here is the whole point. With the knight on c3 (not f3), the f-pawn is free. White can now prepare f4 — a pawn-storm against e5 that 2.Nf3 can never play. That is the Vienna's hidden weapon.",
+        "text": "Here is the whole point. With the knight on c3 (not f3), the f-pawn is free. White can now prepare f4. A pawn-storm against e5 that 2.Nf3 can never play. That is the Vienna's hidden weapon.",
         "annotations": [
          {
           "kind": "arrow",
@@ -144,7 +144,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2NP4/PPP2PPP/R1BQK1NR b KQkq - 0 4",
        "coach": {
-        "text": "You don't have to gambit. The quiet Vienna — Bc4 and d3 — is a calm, solid Italian-style setup: bishop eyeing f7, ready to castle. Sound and easy to play. But the f4 break is what makes the Vienna sting.",
+        "text": "You don't have to gambit. The quiet Vienna (Bc4 and d3) is a calm, solid Italian-style setup: bishop eyeing f7, ready to castle. Sound and easy to play. But the f4 break is what makes the Vienna sting.",
         "annotations": [
          {
           "kind": "arrow",
@@ -171,7 +171,7 @@
         "b1c3"
        ],
        "successLine": {
-        "text": "Exactly — 2.Nc3. e4 is covered and f4 is on the menu.",
+        "text": "Exactly: 2.Nc3. e4 is covered and f4 is on the menu.",
         "annotations": [
          {
           "kind": "highlight",
@@ -233,7 +233,7 @@
    "id": "l2-the-gambit",
    "title": "The Vienna Gambit",
    "kind": "variation",
-   "summary": "3.f4 — what it threatens and the model line.",
+   "summary": "3.f4: what it threatens and the model line.",
    "segments": [
     {
      "kind": "teach",
@@ -245,7 +245,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/4PP2/2N5/PPPP2PP/R1BQKBNR b KQkq - 0 3",
        "coach": {
-        "text": "3.f4. Three threats at once: it attacks e5; if you ever play fxe5 the f-file rips open toward f7; and White grabs the centre. This is a real gambit — White will often give the f-pawn to get a raging attack.",
+        "text": "3.f4. Three threats at once: it attacks e5; if you ever play fxe5 the f-file rips open toward f7; and White grabs the centre. This is a real gambit. White will often give the f-pawn to get a raging attack.",
         "annotations": [
          {
           "kind": "arrow",
@@ -265,7 +265,7 @@
       {
        "fen": "rnbqkb1r/ppp2ppp/5n2/3pp3/4PP2/2N5/PPPP2PP/R1BQKBNR w KQkq - 0 4",
        "coach": {
-        "text": "Black's best answer is NOT to take, but to hit back in the centre: 3...d5. Counter a wing strike with a centre strike — a rule worth carving in stone. Grabbing on f4 hands White exactly the attack he wants.",
+        "text": "Black's best answer is NOT to take, but to hit back in the centre: 3...d5. Counter a wing strike with a centre strike, a rule worth carving in stone. Grabbing on f4 hands White exactly the attack he wants.",
         "annotations": [
          {
           "kind": "arrow",
@@ -280,7 +280,7 @@
       {
        "fen": "rnbqkb1r/ppp2ppp/8/3pP3/4n3/2N5/PPPP2PP/R1BQKBNR w KQkq - 0 5",
        "coach": {
-        "text": "Main line: 4.fxe5 Nxe4. Both sides have grabbed a centre pawn; the position is roughly level and very sharp. White will develop Nf3, d4, and use the half-open f-file. Know this picture cold — it's the heart of the gambit.",
+        "text": "Main line: 4.fxe5 Nxe4. Both sides have grabbed a centre pawn; the position is roughly level and very sharp. White will develop Nf3, d4, and use the half-open f-file. Know this picture cold, it's the heart of the gambit.",
         "annotations": [
          {
           "kind": "highlight",
@@ -314,7 +314,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "2.Nc3 — the Vienna knight."
+        "text": "2.Nc3: the Vienna knight."
        }
       },
       {
@@ -323,7 +323,7 @@
       {
        "uci": "f2f4",
        "coach": {
-        "text": "3.f4 — the gambit. Pressure on e5 and the f-file looms.",
+        "text": "3.f4: the gambit. Pressure on e5 and the f-file looms.",
         "annotations": [
          {
           "kind": "arrow",
@@ -351,13 +351,13 @@
       {
        "uci": "f4e5",
        "coach": {
-        "text": "4.fxe5 — capture, opening the f-file."
+        "text": "4.fxe5: capture, opening the f-file."
        }
       },
       {
        "uci": "f6e4",
        "coach": {
-        "text": "4...Nxe4 — Black recaptures the centre pawn. We've reached the main tabiya.",
+        "text": "4...Nxe4: Black recaptures the centre pawn. We've reached the main tabiya.",
         "annotations": [
          {
           "kind": "highlight",
@@ -370,7 +370,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "5.Nf3 — calm development. Next d4, Bd3/Be2, 0-0, and the rook lands on f1 staring at f7. A balanced, fighting game where White knows the plan and Black often does not.",
+        "text": "5.Nf3: calm development. Next d4, Bd3/Be2, 0-0, and the rook lands on f1 staring at f7. A balanced, fighting game where White knows the plan and Black often does not.",
         "annotations": [
          {
           "kind": "arrow",
@@ -396,7 +396,7 @@
         "f2f4"
        ],
        "successLine": {
-        "text": "3.f4 — e5 is hit, the f-file is loaded, and f7 is in the crosshairs.",
+        "text": "3.f4: e5 is hit, the f-file is loaded, and f7 is in the crosshairs.",
         "annotations": [
          {
           "kind": "highlight",
@@ -422,7 +422,7 @@
    "segments": [
     {
      "kind": "teach",
-     "title": "e5! — the refutation of 3...exf4",
+     "title": "e5!, the refutation of 3...exf4",
      "intro": {
       "text": "Many opponents greedily play 3...exf4. Viktor shows why that's a mistake."
      },
@@ -444,7 +444,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4P3/5p2/2N5/PPPP2PP/R1BQKBNR b KQkq - 0 4",
        "coach": {
-        "text": "4.e5! With tempo. The pawn kicks the f6-knight and grabs a big space chunk in the centre. Black must move the knight to an awkward square — every retreat is a small disaster. White is comfortably better.",
+        "text": "4.e5! With tempo. The pawn kicks the f6-knight and grabs a big space chunk in the centre. Black must move the knight to an awkward square. Every retreat is a small disaster. White is comfortably better.",
         "annotations": [
          {
           "kind": "arrow",
@@ -464,7 +464,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/8/4P3/5pn1/2N5/PPPP2PP/R1BQKBNR w KQkq - 1 5",
        "coach": {
-        "text": "The worst try is 4...Ng4?, hoping to bother f2. But the knight is now undefended on g4 — and White has a queen.",
+        "text": "The worst try is 4...Ng4?, hoping to bother f2. But the knight is now undefended on g4, and White has a queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -490,7 +490,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/8/4Pp2/2N5/PPPP2PP/R1BQKBNR w KQkq - 0 4",
        "coach": {
-        "text": "Black grabbed with 3...exf4. Don't rush to recapture — punish the loose knight first."
+        "text": "Black grabbed with 3...exf4. Don't rush to recapture, punish the loose knight first."
        },
        "solutionUci": [
         "e4e5"
@@ -555,7 +555,7 @@
      "kind": "puzzle",
      "title": "Cool-down: win loose pieces",
      "intro": {
-      "text": "The same instinct — pounce on undefended pieces — in fresh Vienna positions."
+      "text": "The same instinct (pounce on undefended pieces) in fresh Vienna positions."
      },
      "puzzle": {
       "themes": [
@@ -609,7 +609,7 @@
    "id": "l4-the-main-line",
    "title": "The Main-Line Tabiya",
    "kind": "variation",
-   "summary": "3...d5 4.fxe5 Nxe4 5.Nf3 — handle Black's best defence.",
+   "summary": "3...d5 4.fxe5 Nxe4 5.Nf3: handle Black's best defence.",
    "segments": [
     {
      "kind": "teach",
@@ -687,7 +687,7 @@
       {
        "fen": "rnbqkb1r/ppp2ppp/8/3pP3/4n3/2N2N2/PPPP2PP/R1BQKB1R b KQkq - 1 5",
        "coach": {
-        "text": "You are Black for a moment, to feel both sides. Black's natural developing move here strikes from the side — bring the dark-squared bishop out actively."
+        "text": "You are Black for a moment, to feel both sides. Black's natural developing move here strikes from the side. Bring the dark-squared bishop out actively."
        },
        "solutionUci": [
         "f8c5",
@@ -695,7 +695,7 @@
         "f8e7"
        ],
        "successLine": {
-        "text": "Good — a sensible bishop move (Bc5 is the engine's pick; Bb4 and Be7 are also fine). Black develops and prepares to castle. The position is balanced and rich.",
+        "text": "Good: a sensible bishop move (Bc5 is the engine's pick; Bb4 and Be7 are also fine). Black develops and prepares to castle. The position is balanced and rich.",
         "annotations": [
          {
           "kind": "highlight",
@@ -718,7 +718,7 @@
         "f1d3"
        ],
        "successLine": {
-        "text": "7.Bd3! It hits the e4-knight and points at h7 — exactly the multi-purpose move the position wants.",
+        "text": "7.Bd3! It hits the e4-knight and points at h7. Exactly the multi-purpose move the position wants.",
         "annotations": [
          {
           "kind": "highlight",
@@ -746,7 +746,7 @@
      "kind": "puzzle",
      "title": "Cool-down: convert the edge",
      "intro": {
-      "text": "Tactics that arise from these structures — kingside pressure pays off."
+      "text": "Tactics that arise from these structures: kingside pressure pays off."
      },
      "puzzle": {
       "themes": [
@@ -806,13 +806,13 @@
      "kind": "teach",
      "title": "Bc4 first, and a famous trap",
      "intro": {
-      "text": "Nc3 and Bc4 are interchangeable. Knowing both orders lets you reach the Vienna against many move-orders — and set a deadly trap."
+      "text": "Nc3 and Bc4 are interchangeable. Knowing both orders lets you reach the Vienna against many move-orders, and set a deadly trap."
      },
      "steps": [
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p3/2B1P3/2N5/PPPP1PPP/R1BQK1NR b KQkq - 5 4",
        "coach": {
-        "text": "Bishop's-Opening order: 2.Bc4 (or 2.Nc3 then 3.Bc4). Same pieces, same plan — bishop drilling at f7, knight guarding e4. If you like the quiet Vienna you can almost always steer into this.",
+        "text": "Bishop's-Opening order: 2.Bc4 (or 2.Nc3 then 3.Bc4). Same pieces, same plan: bishop drilling at f7, knight guarding e4. If you like the quiet Vienna you can almost always steer into this.",
         "annotations": [
          {
           "kind": "arrow",
@@ -827,7 +827,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/8/4p2Q/2B1n3/2N5/PPPP1PPP/R1B1K1NR b KQkq - 1 4",
        "coach": {
-        "text": "The trap — known as the Frankenstein-Dracula: after 2.Nc3 Nf6 3.Bc4, if Black snatches 3...Nxe4??, White plays 4.Qh5!! — double attack. The queen hits the loose e4-knight AND threatens Qxf7# (the bishop covers f7). Black is already in deep trouble.",
+        "text": "The trap. Known as the Frankenstein-Dracula: after 2.Nc3 Nf6 3.Bc4, if Black snatches 3...Nxe4??, White plays 4.Qh5!!. Double attack. The queen hits the loose e4-knight AND threatens Qxf7# (the bishop covers f7). Black is already in deep trouble.",
         "annotations": [
          {
           "kind": "arrow",
@@ -853,7 +853,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4p2Q/2B5/2N5/PPPP1PPP/R1B1K1NR w KQkq - 2 5",
        "coach": {
-        "text": "If Black panics with 4...Nf6?? to defend f7, it's mate in one: f7 is still only defended by the king. The queen crashes in. Black's best is 4...Nd6 — it blocks the bishop and gives the piece back, after which the game is roughly equal but Black was the one forced to grovel. (4...g6 also defends, but stays passive; other tries leave White clearly on top.)",
+        "text": "If Black panics with 4...Nf6?? to defend f7, it's mate in one: f7 is still only defended by the king. The queen crashes in. Black's best is 4...Nd6. It blocks the bishop and gives the piece back, after which the game is roughly equal but Black was the one forced to grovel. (4...g6 also defends, but stays passive; other tries leave White clearly on top.)",
         "annotations": [
          {
           "kind": "arrow",
@@ -885,7 +885,7 @@
         "d1h5"
        ],
        "successLine": {
-        "text": "4.Qh5! Two threats at once: Qxe5+ forking off the e4-knight, and the lethal Qxf7#. Black's best is 4...Nd6, handing the piece back — after which the game is roughly equal but Black had to grovel. (4...g6 also holds, but passively; greedier tries leave White clearly better.)",
+        "text": "4.Qh5! Two threats at once: Qxe5+ forking off the e4-knight, and the lethal Qxf7#. Black's best is 4...Nd6, handing the piece back. After which the game is roughly equal but Black had to grovel. (4...g6 also holds, but passively; greedier tries leave White clearly better.)",
         "annotations": [
          {
           "kind": "highlight",
@@ -910,7 +910,7 @@
       {
        "fen": "rnbqkb1r/pppp1ppp/5n2/4p2Q/2B5/2N5/PPPP1PPP/R1B1K1NR w KQkq - 2 5",
        "coach": {
-        "text": "Black tried 4...Nf6 to cover h5 — but forgot f7. Deliver mate."
+        "text": "Black tried 4...Nf6 to cover h5, but forgot f7. Deliver mate."
        },
        "solutionUci": [
         "h5f7"
@@ -944,7 +944,7 @@
      "kind": "puzzle",
      "title": "Cool-down: mate on f7 and friends",
      "intro": {
-      "text": "Attacks against the f7/king zone — the Vienna's favourite target."
+      "text": "Attacks against the f7/king zone, the Vienna's favourite target."
      },
      "puzzle": {
       "themes": [
@@ -1010,7 +1010,7 @@
       {
        "fen": "r1bq1rk1/ppp1bppp/2n5/3pP3/3Pn3/2NB1N2/PPP3PP/R1BQ1RK1 w - - 4 9",
        "coach": {
-        "text": "A typical Vienna middlegame. Your checklist as White: 1) keep e5 supported, 2) trade or kick the e4-knight, 3) pile on the half-open f-file, 4) swing the queen to g3/h4 and the dark bishop to g5 — every piece points at the Black king.",
+        "text": "A typical Vienna middlegame. Your checklist as White: 1) keep e5 supported, 2) trade or kick the e4-knight, 3) pile on the half-open f-file, 4) swing the queen to g3/h4 and the dark bishop to g5. Every piece points at the Black king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1053,7 +1053,7 @@
      "kind": "boss",
      "title": "Boss: play the Vienna as White",
      "bossIntro": {
-      "text": "You have e4 and e5 on the board and it is your move two. Play 2.Nc3, choose your weapon — quiet or gambit — and use everything you've learned: the f4 break, the e5 kick, the f-file, f7. Beat me."
+      "text": "You have e4 and e5 on the board and it is your move two. Play 2.Nc3, choose your weapon (quiet or gambit) and use everything you've learned: the f4 break, the e5 kick, the f-file, f7. Beat me."
      },
      "bossFen": "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2",
      "bossUserColor": "white",
@@ -1076,7 +1076,7 @@
      "It prepares to castle queenside at once"
     ],
     "answerIndex": 1,
-    "explain": "The c3-knight defends e4 from the side, so White keeps the f-pawn unblocked and can launch f4 — the Vienna's signature break that 2.Nf3 can never play."
+    "explain": "The c3-knight defends e4 from the side, so White keeps the f-pawn unblocked and can launch f4. The Vienna's signature break that 2.Nf3 can never play."
    },
    {
     "kind": "mc",
@@ -1115,16 +1115,16 @@
      "It defends e4 and prepares to castle"
     ],
     "answerIndex": 1,
-    "explain": "Qh5 hits two things at once — the e5-pawn (and through it the e4-knight, by Qxe5+) and f7, where Qxf7# is mate because the bishop on c4 backs the queen. Black's best is 4...Nd6, giving the piece back for a roughly equal game; greedier tries leave White clearly better."
+    "explain": "Qh5 hits two things at once. The e5-pawn (and through it the e4-knight, by Qxe5+) and f7, where Qxf7# is mate because the bishop on c4 backs the queen. Black's best is 4...Nd6, giving the piece back for a roughly equal game; greedier tries leave White clearly better."
    },
    {
     "kind": "play",
-    "prompt": "Bishop's-Opening move-order: you opened 2.Bc4 and Black replied 2...Nf6. Steer the game into the Vienna — make the move that does the Vienna's job.",
+    "prompt": "Bishop's-Opening move-order: you opened 2.Bc4 and Black replied 2...Nf6. Steer the game into the Vienna. Make the move that does the Vienna's job.",
     "fen": "rnbqkb1r/pppp1ppp/5n2/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 2 3",
     "solutionUci": [
      "b1c3"
     ],
-    "explain": "3.Nc3 transposes to the Vienna: the knight guards e4 from the side (vital now that Black eyes ...Nxe4) and the f-pawn stays free for a later f4. Nc3 and Bc4 are interchangeable — either order reaches the same setup."
+    "explain": "3.Nc3 transposes to the Vienna: the knight guards e4 from the side (vital now that Black eyes ...Nxe4) and the f-pawn stays free for a later f4. Nc3 and Bc4 are interchangeable. Either order reaches the same setup."
    },
    {
     "kind": "play",
@@ -1133,7 +1133,7 @@
     "solutionUci": [
      "c3e4"
     ],
-    "explain": "5.Nxe4! simply wins the piece — the knight fled to a square covered by White's own knight. Same lesson as Ng4: a knight that lands where it is attacked and undefended is just lost."
+    "explain": "5.Nxe4! simply wins the piece. The knight fled to a square covered by White's own knight. Same lesson as Ng4: a knight that lands where it is attacked and undefended is just lost."
    },
    {
     "kind": "play",
@@ -1142,7 +1142,7 @@
     "solutionUci": [
      "h5f7"
     ],
-    "explain": "5.Qxf7# — the c4-bishop guards the queen and the king has no flight square. Defending e5 does nothing about the mate on f7."
+    "explain": "5.Qxf7#: the c4-bishop guards the queen and the king has no flight square. Defending e5 does nothing about the mate on f7."
    },
    {
     "kind": "judge",
@@ -1150,16 +1150,16 @@
     "fen": "rnbqkb1r/pppp1ppp/8/4p2Q/2B1n3/2N5/PPPP1PPP/R1B1K1NR b KQkq - 1 4",
     "lastMoveUci": "d1h5",
     "verdict": "correct",
-    "explain": "Correct — the Frankenstein-Dracula double-attack, and it works whatever the move order. Qh5 hits the e5-pawn (so Qxe5+ rounds up the e4-knight) and threatens Qxf7#, since the c4-bishop backs the queen. Black must grovel with 4...Nd6 to give the piece back."
+    "explain": "Correct: the Frankenstein-Dracula double-attack, and it works whatever the move order. Qh5 hits the e5-pawn (so Qxe5+ rounds up the e4-knight) and threatens Qxf7#, since the c4-bishop backs the queen. Black must grovel with 4...Nd6 to give the piece back."
    },
    {
     "kind": "play",
-    "prompt": "A Vienna Gambit middlegame: White has the big e4+d4 centre and Black has just retreated a knight to c6. The f6-knight has nothing behind it. White to move — use the same idea from this chapter.",
+    "prompt": "A Vienna Gambit middlegame: White has the big e4+d4 centre and Black has just retreated a knight to c6. The f6-knight has nothing behind it. White to move. Use the same idea from this chapter.",
     "fen": "r1bqkb1r/pppp1ppp/2n2n2/8/3PP3/2N5/PPP3PP/R1BQKBNR w KQkq - 3 6",
     "solutionUci": [
      "e4e5"
     ],
-    "explain": "e5! kicks the f6-knight with tempo and rolls the pawn centre forward — the exact 'harry the knight' idea, now in a different position. The knight has no good square and White seizes the initiative."
+    "explain": "e5! kicks the f6-knight with tempo and rolls the pawn centre forward, the exact 'harry the knight' idea, now in a different position. The knight has no good square and White seizes the initiative."
    },
    {
     "kind": "judge",
@@ -1167,7 +1167,7 @@
     "fen": "rnbqkb1r/ppp2ppp/5n2/3pp3/4PP2/2N5/PPPP2PP/R1BQKBNR w KQkq - 0 4",
     "lastMoveUci": "d7d5",
     "verdict": "correct",
-    "explain": "Correct. 3...d5 is the principled equalizer — meeting a wing thrust with a central counter. The game is balanced and sharp."
+    "explain": "Correct. 3...d5 is the principled equalizer. Meeting a wing thrust with a central counter. The game is balanced and sharp."
    },
    {
     "kind": "judge",
@@ -1179,12 +1179,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Bishop's-Opening Vienna: 2.Nc3 Nf6 3.Bc4, and Black has lashed out with 3...Ng4?, jumping at f2. White to move — make Black pay for the loose knight.",
+    "prompt": "Bishop's-Opening Vienna: 2.Nc3 Nf6 3.Bc4, and Black has lashed out with 3...Ng4?, jumping at f2. White to move. Make Black pay for the loose knight.",
     "fen": "rnbqkb1r/pppp1ppp/8/4p3/2B1P1n1/2N5/PPPP1PPP/R1BQK1NR w KQkq - 3 4",
     "solutionUci": [
      "d1g4"
     ],
-    "explain": "Qxg4! The knight sat undefended on g4, square-staring straight at the queen on d1. The same lesson as the gambit's 4...Ng4? — a knight that lands where it is attacked and undefended is simply lost."
+    "explain": "Qxg4! The knight sat undefended on g4, square-staring straight at the queen on d1. The same lesson as the gambit's 4...Ng4?. A knight that lands where it is attacked and undefended is simply lost."
    },
    {
     "kind": "judge",
@@ -1192,7 +1192,7 @@
     "fen": "rnbqkb1r/pppp1ppp/3n4/4p2Q/2B5/2N5/PPPP1PPP/R1B1K1NR w KQkq - 2 5",
     "lastMoveUci": "e4d6",
     "verdict": "correct",
-    "explain": "Correct — and best. 4...Nd6 blocks the bishop and returns the piece to stop Qxf7#; Black equalizes, though he was the one forced to grovel. (4...g6 also holds; the greedy alternatives all leave White clearly better.)"
+    "explain": "Correct, and best. 4...Nd6 blocks the bishop and returns the piece to stop Qxf7#; Black equalizes, though he was the one forced to grovel. (4...g6 also holds; the greedy alternatives all leave White clearly better.)"
    },
    {
     "kind": "judge",
@@ -1200,7 +1200,7 @@
     "fen": "r1bqk2r/ppp1bppp/2n5/3pP3/3Pn3/2NB1N2/PPP3PP/R1BQK2R b KQkq - 3 8",
     "lastMoveUci": "f1d3",
     "verdict": "correct",
-    "explain": "Correct. Bd3 attacks the e4-knight and aims at h7 — a textbook multi-purpose developing move in this structure."
+    "explain": "Correct. Bd3 attacks the e4-knight and aims at h7. A textbook multi-purpose developing move in this structure."
    }
   ]
  },

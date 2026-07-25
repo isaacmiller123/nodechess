@@ -3,13 +3,13 @@
  "band": "29",
  "order": 29,
  "title": "Prophylaxis & Positional Mastery",
- "subtitle": "Stop their plan first — then the bishop pair, two weaknesses, manoeuvring, and releasing the tension.",
+ "subtitle": "Stop their plan first. Then the bishop pair, two weaknesses, manoeuvring, and releasing the tension.",
  "estMinutes": 46,
  "concepts": [
   {
    "id": "prophylaxis",
    "name": "Prophylaxis",
-   "short": "Before you make your own plan, ask what your opponent wants — then make the move that quietly takes it away from them."
+   "short": "Before you make your own plan, ask what your opponent wants. Then make the move that quietly takes it away from them."
   },
   {
    "id": "my-system",
@@ -19,7 +19,7 @@
   {
    "id": "bishop-pair",
    "name": "The Bishop Pair",
-   "short": "Two bishops together cover both colours and rake long open lines. They are worth about half a pawn — and far more once the position opens."
+   "short": "Two bishops together cover both colours and rake long open lines. They are worth about half a pawn, and far more once the position opens."
   },
   {
    "id": "open-for-bishops",
@@ -29,7 +29,7 @@
   {
    "id": "two-weaknesses",
    "name": "The Principle of Two Weaknesses",
-   "short": "One weakness is often defensible. Create or attack a SECOND on the far side of the board — the defender cannot guard both at once."
+   "short": "One weakness is often defensible. Create or attack a SECOND on the far side of the board. The defender cannot guard both at once."
   },
   {
    "id": "manoeuvring",
@@ -39,19 +39,19 @@
   {
    "id": "release-tension",
    "name": "Releasing the Tension",
-   "short": "A pawn capture is a commitment you cannot take back. Hold the tension until releasing it concretely improves your position — usually let the opponent capture first."
+   "short": "A pawn capture is a commitment you cannot take back. Hold the tension until releasing it concretely improves your position. Usually let the opponent capture first."
   }
  ],
  "lessons": [
   {
    "id": "l1-the-prophylactic-question",
-   "title": "Prophylaxis — Ask What He Wants First",
+   "title": "Prophylaxis: Ask What He Wants First",
    "kind": "positional",
    "summary": "The single most important positional habit: before your own plan, find the opponent's and quietly prevent it.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the quiet, accurate move",
+     "title": "Warm-up: the quiet, accurate move",
      "intro": {
       "text": "Positional chess is not all storms and sacrifices. Often the strongest move is a quiet one that improves you or denies the opponent something. Warm the eye: in each of these the best move is not a loud capture but a precise, quiet blow. Find it."
      },
@@ -73,7 +73,7 @@
        "conceptId": "prophylaxis",
        "coach": {
         "conceptId": "prophylaxis",
-        "text": "Most players, on every move, ask only one question: what do I want? The master asks a second, harder one first — what does HE want? White to move in this quiet symmetrical middlegame. Forget your own plan for a second and sit in Black's chair: his one good idea here is ...Bg4, pinning my knight on f3 against my queen and gluing my best developed piece in place. If I let that pin land, my whole kingside seizes up. So before I get on with my own play, I deal with his at its source. That is prophylaxis: I answer his plan before I pursue mine.",
+        "text": "Most players, on every move, ask only one question: what do I want? The master asks a second, harder one first. What does HE want? White to move in this quiet symmetrical middlegame. Forget your own plan for a second and sit in Black's chair: his one good idea here is ...Bg4, pinning my knight on f3 against my queen and gluing my best developed piece in place. If I let that pin land, my whole kingside seizes up. So before I get on with my own play, I deal with his at its source. That is prophylaxis: I answer his plan before I pursue mine.",
         "annotations": [
          {
           "kind": "arrow",
@@ -100,7 +100,7 @@
        "conceptId": "my-system",
        "coach": {
         "conceptId": "my-system",
-        "text": "How do I stop ...Bg4? I take the g4-square away. The move is h3 — a single quiet pawn step, and the pin is dead before it is born: the bishop can never settle on g4, my knight stays free, and the engine agrees this is White's strongest move, a clear notch ahead of the rest. I have not attacked anything, not lashed out — I have simply removed his one good idea from the board. Now my knight on f3 is mine to use, and I am free to build my own plan in peace.",
+        "text": "How do I stop ...Bg4? I take the g4-square away. The move is h3. A single quiet pawn step, and the pin is dead before it is born: the bishop can never settle on g4, my knight stays free, and the engine agrees this is White's strongest move, a clear notch ahead of the rest. I have not attacked anything, not lashed out. I have simply removed his one good idea from the board. Now my knight on f3 is mine to use, and I am free to build my own plan in peace.",
         "annotations": [
          {
           "kind": "arrow",
@@ -127,7 +127,7 @@
        "conceptId": "my-system",
        "coach": {
         "conceptId": "my-system",
-        "text": "Another board, the same discipline — a closed Ruy Lopez. White to move. Do not rush a plan; first ask what Black wants. His one freeing idea on this wing is the pawn break ...b5: it gains queenside space and chases my good bishop off b3. So I prevent it at the root with a4 — one of the engine's top choices here, co-best and exactly in the prophylactic spirit. Now ...b5 is met by axb5, and the break is dead; Black has no easy expansion. I have not attacked anything — I quietly removed his plan, exactly as I did against the ...Bg4 pin. Same question, different board: what is his move, and can I stop it?",
+        "text": "Another board, the same discipline: a closed Ruy Lopez. White to move. Do not rush a plan; first ask what Black wants. His one freeing idea on this wing is the pawn break ...b5: it gains queenside space and chases my good bishop off b3. So I prevent it at the root with a4. One of the engine's top choices here, co-best and exactly in the prophylactic spirit. Now ...b5 is met by axb5, and the break is dead; Black has no easy expansion. I have not attacked anything. I quietly removed his plan, exactly as I did against the ...Bg4 pin. Same question, different board: what is his move, and can I stop it?",
         "annotations": [
          {
           "kind": "arrow",
@@ -162,7 +162,7 @@
        "conceptId": "prophylaxis",
        "coach": {
         "conceptId": "prophylaxis",
-        "text": "Your turn, White to move. Don't start your own play yet — first sit in Black's chair. His one good idea is ...Bg4, pinning your knight on f3 against your queen and freezing your best piece. Take that plan away at its root. Find the quiet pawn move that denies the g4-square so the pin can never come.",
+        "text": "Your turn, White to move. Don't start your own play yet. First sit in Black's chair. His one good idea is ...Bg4, pinning your knight on f3 against your queen and freezing your best piece. Take that plan away at its root. Find the quiet pawn move that denies the g4-square so the pin can never come.",
         "annotations": [
          {
           "kind": "arrow",
@@ -182,7 +182,7 @@
        ],
        "successLine": {
         "conceptId": "prophylaxis",
-        "text": "h3, exactly — the engine's own first choice, a clear notch ahead. The g4-square is yours now, so ...Bg4 is impossible forever, and your knight on f3 stays free. You spent one quiet tempo and removed Black's only good idea before it appeared. You stopped his plan before starting your own. That is the whole idea: his wish, denied.",
+        "text": "h3, exactly: the engine's own first choice, a clear notch ahead. The g4-square is yours now, so ...Bg4 is impossible forever, and your knight on f3 stays free. You spent one quiet tempo and removed Black's only good idea before it appeared. You stopped his plan before starting your own. That is the whole idea: his wish, denied.",
         "annotations": [
          {
           "kind": "highlight",
@@ -207,7 +207,7 @@
        "conceptId": "my-system",
        "coach": {
         "conceptId": "my-system",
-        "text": "Now the other board, White to move. A closed Ruy Lopez. Black's only freeing break on this wing is ...b5 — it grabs queenside space and harries your bishop on b3. Before you build your own plan, take his away at the root. Play the quiet edge-pawn move that makes ...b5 impossible.",
+        "text": "Now the other board, White to move. A closed Ruy Lopez. Black's only freeing break on this wing is ...b5. It grabs queenside space and harries your bishop on b3. Before you build your own plan, take his away at the root. Play the quiet edge-pawn move that makes ...b5 impossible.",
         "annotations": [
          {
           "kind": "arrow",
@@ -227,7 +227,7 @@
        ],
        "successLine": {
         "conceptId": "my-system",
-        "text": "a4! Exactly. Now ...b5 runs into axb5, so Black's queenside break is dead and his bishop on b3 keeps its post. You made no threat — you simply asked what he wanted and removed it. That is the whole habit: his plan, denied, before you start your own.",
+        "text": "a4! Exactly. Now ...b5 runs into axb5, so Black's queenside break is dead and his bishop on b3 keeps its post. You made no threat. You simply asked what he wanted and removed it. That is the whole habit: his plan, denied, before you start your own.",
         "annotations": [
          {
           "kind": "highlight",
@@ -251,9 +251,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the precise quiet move",
+     "title": "Cool-down: find the precise quiet move",
      "intro": {
-      "text": "More positions where the win is a quiet, exact move rather than a capture — often the one that denies the opponent his only counterplay. Find it in each."
+      "text": "More positions where the win is a quiet, exact move rather than a capture. Often the one that denies the opponent his only counterplay. Find it in each."
      },
      "puzzle": {
       "themes": [
@@ -268,13 +268,13 @@
   },
   {
    "id": "l2-prophylaxis-in-action",
-   "title": "Prophylaxis in Action — Defend Before You Attack",
+   "title": "Prophylaxis in Action: Defend Before You Attack",
    "kind": "positional",
-   "summary": "Spotting the opponent's idea one move early and quietly removing it — the move that is invisible until it isn't there.",
+   "summary": "Spotting the opponent's idea one move early and quietly removing it. The move that is invisible until it isn't there.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the only defence",
+     "title": "Warm-up: the only defence",
      "intro": {
       "text": "Prophylaxis is the offence's twin: seeing the threat before it lands. Each of these needs the single accurate defensive move that snuffs the opponent's idea. Find the move that holds."
      },
@@ -296,7 +296,7 @@
        "conceptId": "prophylaxis",
        "coach": {
         "conceptId": "prophylaxis",
-        "text": "White is the exchange up and clearly better — a rook for Black's knight, with the bishop on c4 and queen on f3 trained on f7. Plenty to press. But a master pauses first: what does Black want? His rook is on d8, opposing my own and eyeing the back rank behind my king. There is no immediate mate — but the moment my rooks leave the first rank to attack, a back-rank check could become fatal. So I play the cheapest insurance in chess: h3, already played here, a flight square made before the storm, so that no back-rank trick can ever cost me a winning game.",
+        "text": "White is the exchange up and clearly better. A rook for Black's knight, with the bishop on c4 and queen on f3 trained on f7. Plenty to press. But a master pauses first: what does Black want? His rook is on d8, opposing my own and eyeing the back rank behind my king. There is no immediate mate, but the moment my rooks leave the first rank to attack, a back-rank check could become fatal. So I play the cheapest insurance in chess: h3, already played here, a flight square made before the storm, so that no back-rank trick can ever cost me a winning game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -323,7 +323,7 @@
        "conceptId": "my-system",
        "coach": {
         "conceptId": "my-system",
-        "text": "Now, with my king given air on h3, I press without fear. I am up the exchange; the bishop on c4 and queen on f3 both glare at f7, defended only by the king. With my own back rank fixed I can pile on that point — Bxf7+ ideas, doubling on the d-file, the queen swinging to the kingside — knowing no ...Rxd1 back-rank trick lurks behind me. The lesson is the order: I made the position safe FIRST, then went hunting. Prophylaxis is not passivity — it is the insurance that lets you convert a winning game with both hands.",
+        "text": "Now, with my king given air on h3, I press without fear. I am up the exchange; the bishop on c4 and queen on f3 both glare at f7, defended only by the king. With my own back rank fixed I can pile on that point (Bxf7+ ideas, doubling on the d-file, the queen swinging to the kingside) knowing no ...Rxd1 back-rank trick lurks behind me. The lesson is the order: I made the position safe FIRST, then went hunting. Prophylaxis is not passivity. It is the insurance that lets you convert a winning game with both hands.",
         "annotations": [
          {
           "kind": "arrow",
@@ -349,7 +349,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "A richer middlegame — a Hedgehog. White to move with the big c4+e4 centre and more space; Black crouches behind a6, b6, d6, e6, coiled to spring. His pride and joy is the bishop on b7, glaring down the long diagonal at my king; his freeing breaks are ...d5 and ...b5, each of which would open lines for that bishop. There is no tactic here — so I think prophylactically. Prophylaxis here is a setup, not one move: I shore up e4 with f3, keep the centre solid so ...d5 never quite works, and angle to trade off or blunt that b7-bishop (Bf3, or Nd2-f3) — neutralise his BEST piece and his BEST break, and his coiled position has nothing to uncoil into.",
+        "text": "A richer middlegame: a Hedgehog. White to move with the big c4+e4 centre and more space; Black crouches behind a6, b6, d6, e6, coiled to spring. His pride and joy is the bishop on b7, glaring down the long diagonal at my king; his freeing breaks are ...d5 and ...b5, each of which would open lines for that bishop. There is no tactic here, so I think prophylactically. Prophylaxis here is a setup, not one move: I shore up e4 with f3, keep the centre solid so ...d5 never quite works, and angle to trade off or blunt that b7-bishop (Bf3, or Nd2-f3). Neutralise his BEST piece and his BEST break, and his coiled position has nothing to uncoil into.",
         "annotations": [
          {
           "kind": "circle",
@@ -377,7 +377,7 @@
        "conceptId": "prophylaxis",
        "coach": {
         "conceptId": "prophylaxis",
-        "text": "White to move, the exchange up and ready to press at f7 — but slow down. Black's rook on d8 opposes yours and aims straight at your first rank. Before you launch anything, make the one quiet move that means a back-rank check can never mate you once your rooks leave home. Give your king air.",
+        "text": "White to move, the exchange up and ready to press at f7, but slow down. Black's rook on d8 opposes yours and aims straight at your first rank. Before you launch anything, make the one quiet move that means a back-rank check can never mate you once your rooks leave home. Give your king air.",
         "annotations": [
          {
           "kind": "arrow",
@@ -398,7 +398,7 @@
        ],
        "successLine": {
         "conceptId": "prophylaxis",
-        "text": "Right — a luft move (g3 or h3) gives the king a flight square, and now no back-rank trick exists. You spent one tempo to remove every threat behind you. From here you convert the extra exchange and press f7 with total freedom. Safety first, then the assault.",
+        "text": "Right: a luft move (g3 or h3) gives the king a flight square, and now no back-rank trick exists. You spent one tempo to remove every threat behind you. From here you convert the extra exchange and press f7 with total freedom. Safety first, then the assault.",
         "annotations": [
          {
           "kind": "highlight",
@@ -415,14 +415,14 @@
        },
        "retryLine": {
         "conceptId": "my-system",
-        "text": "Not yet. The danger is your OWN back rank — the d8-rook opposing your first-rank rooks. The cheapest insurance in chess is a flight square. Push a pawn in front of your king."
+        "text": "Not yet. The danger is your OWN back rank, the d8-rook opposing your first-rank rooks. The cheapest insurance in chess is a flight square. Push a pawn in front of your king."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — hold the position",
+     "title": "Cool-down: hold the position",
      "intro": {
       "text": "Defence is prophylaxis under fire. Each position needs the precise move that meets the opponent's threat and keeps you in control. Find the move that holds everything together."
      },
@@ -439,13 +439,13 @@
   },
   {
    "id": "l3-the-bishop-pair",
-   "title": "The Bishop Pair — Two Bishops, Both Colours",
+   "title": "The Bishop Pair: Two Bishops, Both Colours",
    "kind": "positional",
    "summary": "Why two bishops are worth about half a pawn, and the iron rule: open the position when you own them.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — let a bishop do the work",
+     "title": "Warm-up: let a bishop do the work",
      "intro": {
       "text": "A long, open diagonal is a bishop's highway. Each of these is decided by a bishop striking from a distance. Find the move that lets the bishop bite."
      },
@@ -468,7 +468,7 @@
        "conceptId": "bishop-pair",
        "coach": {
         "conceptId": "bishop-pair",
-        "text": "A single bishop has a permanent blind spot — it lives on one colour forever. But TWO bishops cover both colours together, and nothing can ever flee to a square they both fail to reach. Look: the light bishop on c4 rules the light squares, the dark bishop on e3 rules the dark. Side by side they sweep the entire board, no hiding place left. That seamless coverage is why the pair is worth about half a pawn more than a mixed pair of minor pieces.",
+        "text": "A single bishop has a permanent blind spot. It lives on one colour forever. But TWO bishops cover both colours together, and nothing can ever flee to a square they both fail to reach. Look: the light bishop on c4 rules the light squares, the dark bishop on e3 rules the dark. Side by side they sweep the entire board, no hiding place left. That seamless coverage is why the pair is worth about half a pawn more than a mixed pair of minor pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -495,7 +495,7 @@
        "conceptId": "bishop-pair",
        "coach": {
         "conceptId": "bishop-pair",
-        "text": "Against a knight the pair is especially strong. A knight is a short-range piece; on an open board the bishops outrun it and dominate from afar. But the half-pawn is a guideline, not a law: the bishop pair is worth MORE in an open position with pawns on both wings, and LESS when the centre is locked and the bishops bite on granite. Remember both halves — the pair is an asset you must cash by steering toward the right kind of position for it.",
+        "text": "Against a knight the pair is especially strong. A knight is a short-range piece; on an open board the bishops outrun it and dominate from afar. But the half-pawn is a guideline, not a law: the bishop pair is worth MORE in an open position with pawns on both wings, and LESS when the centre is locked and the bishops bite on granite. Remember both halves. The pair is an asset you must cash by steering toward the right kind of position for it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -517,7 +517,7 @@
        "conceptId": "open-for-bishops",
        "coach": {
         "conceptId": "open-for-bishops",
-        "text": "Now the practical rule. Imagine White here has just won the bishop pair in a coming trade. The instruction writes itself: OPEN the position. Trade off Black's defenders, push to break the pawn chains, create open files and diagonals — the more lines, the more the two bishops earn. The mirror rule matters just as much: if you do NOT have the pair, keep the position CLOSED, fix the pawns, and give the bishops nothing to bite on. He who owns the bishops opens the board; he who doesn't, shuts it.",
+        "text": "Now the practical rule. Imagine White here has just won the bishop pair in a coming trade. The instruction writes itself: OPEN the position. Trade off Black's defenders, push to break the pawn chains, create open files and diagonals. The more lines, the more the two bishops earn. The mirror rule matters just as much: if you do NOT have the pair, keep the position CLOSED, fix the pawns, and give the bishops nothing to bite on. He who owns the bishops opens the board; he who doesn't, shuts it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -545,7 +545,7 @@
        "conceptId": "open-for-bishops",
        "coach": {
         "conceptId": "open-for-bishops",
-        "text": "White owns the bishop pair — Bd3 on the light squares, Bb2 on the long dark diagonal — against a lone knight. But the centre is half-closed by Black's d5 and e6 pawns, and a closed board mutes your bishops. The whole plan is one word: open. Play the central pawn break that strikes Black's d5-pawn and tears the position wide for both bishops.",
+        "text": "White owns the bishop pair (Bd3 on the light squares, Bb2 on the long dark diagonal) against a lone knight. But the centre is half-closed by Black's d5 and e6 pawns, and a closed board mutes your bishops. The whole plan is one word: open. Play the central pawn break that strikes Black's d5-pawn and tears the position wide for both bishops.",
         "annotations": [
          {
           "kind": "arrow",
@@ -572,7 +572,7 @@
        ],
        "successLine": {
         "conceptId": "open-for-bishops",
-        "text": "e4! Exactly. After ...dxe4 Bxe4 the whole board cracks open: the b2-bishop rakes the long diagonal toward g7, the d3-bishop is reborn on e4 hitting b7 and h7, and the lone knight cannot outrun two bishops. You did not invent an attack — you opened lines, and your two bishops did the rest. The pair's owner opens the position; that is the rule.",
+        "text": "e4! Exactly. After ...dxe4 Bxe4 the whole board cracks open: the b2-bishop rakes the long diagonal toward g7, the d3-bishop is reborn on e4 hitting b7 and h7, and the lone knight cannot outrun two bishops. You did not invent an attack. You opened lines, and your two bishops did the rest. The pair's owner opens the position; that is the rule.",
         "annotations": [
          {
           "kind": "circle",
@@ -595,14 +595,14 @@
        },
        "retryLine": {
         "conceptId": "open-for-bishops",
-        "text": "Not that. You own the two bishops — you want OPEN lines, not a locked centre. Which pawn break strikes Black's d5-pawn and pries the position open for both bishops?"
+        "text": "Not that. You own the two bishops. You want OPEN lines, not a locked centre. Which pawn break strikes Black's d5-pawn and pries the position open for both bishops?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the long diagonal",
+     "title": "Cool-down: the long diagonal",
      "intro": {
       "text": "Positions decided by a bishop raking an open line. Find the move that unleashes it across the board."
      },
@@ -620,13 +620,13 @@
   },
   {
    "id": "l4-making-the-pair-tell",
-   "title": "Making the Pair Tell — Restrict, Then Strike",
+   "title": "Making the Pair Tell, Restrict, Then Strike",
    "kind": "positional",
    "summary": "Two bishops are only an edge; you convert it by restricting the enemy's pieces and creating targets on both wings.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the dominating bishop",
+     "title": "Warm-up: the dominating bishop",
      "intro": {
       "text": "A well-placed bishop can paralyse an enemy piece or pin it to ruin. Each of these turns on a bishop's reach. Find the move that makes it count."
      },
@@ -649,7 +649,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "Count first: pawns are dead level, five each. The ONLY difference is that I have two bishops — Bd3 on the light squares, Bg3 on the dark — against his bishop and knight. That is the pair, worth about half a pawn, and more here because the board is open with pawns on both wings. The pair is an edge, not a win; you must convert it. Job one is to humble his best piece. That proud knight on c4 is his only active man, and it is pawing at my b2-pawn — so I hit it at once with b3, which defends b2 AND kicks the knight in one move. A knight kicked back is half the battle; restrict the enemy's pieces before you launch anything.",
+        "text": "Count first: pawns are dead level, five each. The ONLY difference is that I have two bishops (Bd3 on the light squares, Bg3 on the dark) against his bishop and knight. That is the pair, worth about half a pawn, and more here because the board is open with pawns on both wings. The pair is an edge, not a win; you must convert it. Job one is to humble his best piece. That proud knight on c4 is his only active man, and it is pawing at my b2-pawn, so I hit it at once with b3, which defends b2 AND kicks the knight in one move. A knight kicked back is half the battle; restrict the enemy's pieces before you launch anything.",
         "annotations": [
          {
           "kind": "arrow",
@@ -671,7 +671,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "After b3 the knight slunk back to b6, off its perch and biting on nothing — my two bishops now own the open board. But how do I actually break through, still only the pair ahead? One weakness is not enough; a single target his king or pieces can defend. This is the principle of two weaknesses: stretch the defence across the WHOLE board. The bishops are perfect for it — the light one on d3 rakes the queenside toward a6, and the dark one swings via e5 to the long diagonal and the kingside dark squares. One enemy king cannot guard both wings at once.",
+        "text": "After b3 the knight slunk back to b6, off its perch and biting on nothing. My two bishops now own the open board. But how do I actually break through, still only the pair ahead? One weakness is not enough; a single target his king or pieces can defend. This is the principle of two weaknesses: stretch the defence across the WHOLE board. The bishops are perfect for it. The light one on d3 rakes the queenside toward a6, and the dark one swings via e5 to the long diagonal and the kingside dark squares. One enemy king cannot guard both wings at once.",
         "annotations": [
          {
           "kind": "arrow",
@@ -695,7 +695,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "Watch the method in slow motion. I push my queenside pawns (a4, hitting his a6 and b5) and aim the light bishop there, making a weakness on the queenside. His king and pieces rush to hold it. The instant they commit, I switch fronts — king and dark bishop march to the kingside, the bishop re-routing Bg3-e5 onto the long diagonal to bite the pawns his king has left behind. Two weaknesses, far apart; the defence shuttles back and forth and cracks. That is how the pair is cashed: not one blow, but two targets the enemy cannot both guard.",
+        "text": "Watch the method in slow motion. I push my queenside pawns (a4, hitting his a6 and b5) and aim the light bishop there, making a weakness on the queenside. His king and pieces rush to hold it. The instant they commit, I switch fronts: king and dark bishop march to the kingside, the bishop re-routing Bg3-e5 onto the long diagonal to bite the pawns his king has left behind. Two weaknesses, far apart; the defence shuttles back and forth and cracks. That is how the pair is cashed: not one blow, but two targets the enemy cannot both guard.",
         "annotations": [
          {
           "kind": "highlight",
@@ -728,7 +728,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "Pawns are level, five each — your edge is the bishop pair (Bd3 and Bg3) against bishop and knight. To convert it, first humble Black's one active piece: the knight on c4, which is pawing at your b2-pawn. Don't trade a bishop for it (that hands back the pair). Play the quiet pawn move that defends b2, kicks the knight off c4, and keeps both your bishops.",
+        "text": "Pawns are level, five each. Your edge is the bishop pair (Bd3 and Bg3) against bishop and knight. To convert it, first humble Black's one active piece: the knight on c4, which is pawing at your b2-pawn. Don't trade a bishop for it (that hands back the pair). Play the quiet pawn move that defends b2, kicks the knight off c4, and keeps both your bishops.",
         "annotations": [
          {
           "kind": "arrow",
@@ -748,7 +748,7 @@
        ],
        "successLine": {
         "conceptId": "manoeuvring",
-        "text": "b3! It guards your b2-pawn and the knight has nothing to capture, so it must retreat — to b6 or a5, off its perch and biting on nothing — while you KEEP both bishops. Now the pair owns the open board, and you convert by pressing on both wings: a second weakness the lone king can never cover. Restrict the enemy's best piece first; never cash a bishop to do it.",
+        "text": "b3! It guards your b2-pawn and the knight has nothing to capture, so it must retreat (to b6 or a5, off its perch and biting on nothing) while you KEEP both bishops. Now the pair owns the open board, and you convert by pressing on both wings: a second weakness the lone king can never cover. Restrict the enemy's best piece first; never cash a bishop to do it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -765,14 +765,14 @@
        },
        "retryLine": {
         "conceptId": "manoeuvring",
-        "text": "Not that — and don't trade your bishop for the knight, that gives up the pair. You want to KICK the c4-knight with a pawn while keeping both bishops. The knight is eyeing your b2-pawn — which pawn push both defends b2 and attacks c4?"
+        "text": "Not that, and don't trade your bishop for the knight, that gives up the pair. You want to KICK the c4-knight with a pawn while keeping both bishops. The knight is eyeing your b2-pawn, which pawn push both defends b2 and attacks c4?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — exploit the better pieces",
+     "title": "Cool-down: exploit the better pieces",
      "intro": {
       "text": "Positions where superior piece activity decides. Find the move that presses the advantage home."
      },
@@ -796,7 +796,7 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — hit the weak point",
+     "title": "Warm-up: hit the weak point",
      "intro": {
       "text": "Every plan begins with a target. Each of these positions has a weakness crying out to be struck. Find the move that attacks it decisively."
      },
@@ -819,7 +819,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "A winning rook endgame — White is a pawn up and the rook on d6 is a monster. But watch HOW you win it, because brute force stalls. Black's first weakness is the backward a6-pawn; my rook eyes it and his rook on a8 is chained to its defence. Yet here is the hard truth — if a6 were the ONLY weakness, his rook sits behind it and holds. A single target can be defended. To break through, you need a second.",
+        "text": "A winning rook endgame: White is a pawn up and the rook on d6 is a monster. But watch HOW you win it, because brute force stalls. Black's first weakness is the backward a6-pawn; my rook eyes it and his rook on a8 is chained to its defence. Yet here is the hard truth. If a6 were the ONLY weakness, his rook sits behind it and holds. A single target can be defended. To break through, you need a second.",
         "annotations": [
          {
           "kind": "circle",
@@ -846,7 +846,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "Look to the OTHER wing: Black's h6-pawn is a second sore point, and his king guards it. The lever is h4-h5: it fixes and attacks the kingside, threatening to create a passed h-pawn and to drag his king and pawns into knots. Now Black faces weaknesses on a6 AND on the kingside — two fires, far apart. His one king and one rook cannot put out both.",
+        "text": "Look to the OTHER wing: Black's h6-pawn is a second sore point, and his king guards it. The lever is h4-h5: it fixes and attacks the kingside, threatening to create a passed h-pawn and to drag his king and pawns into knots. Now Black faces weaknesses on a6 AND on the kingside. Two fires, far apart. His one king and one rook cannot put out both.",
         "annotations": [
          {
           "kind": "arrow",
@@ -873,7 +873,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "This is the engine of nearly every winning conversion. Fix one weakness, tie the defender to it, then create or attack a SECOND far away. The defender shuttles between the two and, somewhere in the journey, drops something — or his king is dragged so far that your rook feasts behind him. Do not hunt for a single knockout in a position like this. Build two targets and let the defender's lack of legs do the work.",
+        "text": "This is the engine of nearly every winning conversion. Fix one weakness, tie the defender to it, then create or attack a SECOND far away. The defender shuttles between the two and, somewhere in the journey, drops something, or his king is dragged so far that your rook feasts behind him. Do not hunt for a single knockout in a position like this. Build two targets and let the defender's lack of legs do the work.",
         "annotations": [
          {
           "kind": "highlight",
@@ -906,7 +906,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "Your rook on d6 already ties Black's rook to the weak a6-pawn — weakness number one, and he is holding it. Just grabbing it lets him simplify. Instead, attack the SECOND weakness on the far wing. Play the kingside pawn lever that strikes h6 and stretches his defence to breaking point.",
+        "text": "Your rook on d6 already ties Black's rook to the weak a6-pawn. Weakness number one, and he is holding it. Just grabbing it lets him simplify. Instead, attack the SECOND weakness on the far wing. Play the kingside pawn lever that strikes h6 and stretches his defence to breaking point.",
         "annotations": [
          {
           "kind": "arrow",
@@ -931,7 +931,7 @@
        ],
        "successLine": {
         "conceptId": "two-weaknesses",
-        "text": "h5! The second front is open. Black's h6-pawn is now fixed and weak, and a passed h-pawn looms — yet his rook is still glued to a6. His king and rook cannot defend both wings at once; you switch targets and win the race. That is the principle of two weaknesses, the secret to converting almost any positional edge.",
+        "text": "h5! The second front is open. Black's h6-pawn is now fixed and weak, and a passed h-pawn looms, yet his rook is still glued to a6. His king and rook cannot defend both wings at once; you switch targets and win the race. That is the principle of two weaknesses, the secret to converting almost any positional edge.",
         "annotations": [
          {
           "kind": "circle",
@@ -952,14 +952,14 @@
        },
        "retryLine": {
         "conceptId": "two-weaknesses",
-        "text": "Not that — a6 alone he can hold. You must attack a SECOND weakness on the other wing. Which pawn lever strikes his h6-pawn and pries open the kingside?"
+        "text": "Not that: a6 alone he can hold. You must attack a SECOND weakness on the other wing. Which pawn lever strikes his h6-pawn and pries open the kingside?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — convert the advantage",
+     "title": "Cool-down: convert the advantage",
      "intro": {
       "text": "Positions where the win comes from pressing a weakness or stretching the defence. Find the strongest continuation."
      },
@@ -977,13 +977,13 @@
   },
   {
    "id": "l6-piece-manoeuvring",
-   "title": "Piece Manoeuvring — Improve Your Worst Piece",
+   "title": "Piece Manoeuvring: Improve Your Worst Piece",
    "kind": "positional",
-   "summary": "When there is no forcing move, find your worst-placed piece and give it a better home — one quiet step at a time.",
+   "summary": "When there is no forcing move, find your worst-placed piece and give it a better home. One quiet step at a time.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the knight finds a home",
+     "title": "Warm-up: the knight finds a home",
      "intro": {
       "text": "A knight on a strong central outpost is worth a rook's worry. Each of these turns on a knight reaching a dominating square. Find the leap."
      },
@@ -1006,7 +1006,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "When the position offers no tactic and no obvious break, the master does not drift — he asks a different question: which of MY pieces is the worst, and how do I improve it? Look at the knight on a3. It is on the rim, doing nothing, biting on nothing. 'A knight on the rim is dim.' That sorry horse is the whole problem with White's position — and therefore the whole solution.",
+        "text": "When the position offers no tactic and no obvious break, the master does not drift. He asks a different question: which of MY pieces is the worst, and how do I improve it? Look at the knight on a3. It is on the rim, doing nothing, biting on nothing. 'A knight on the rim is dim.' That sorry horse is the whole problem with White's position, and therefore the whole solution.",
         "annotations": [
          {
           "kind": "circle",
@@ -1028,7 +1028,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "Where is its dream home? The square c4. Right now neither of Black's pawns attacks it, and from c4 the knight glares at d6, b6, and e5 — a commanding central post instead of a dead rim. If Black ever tries to evict it with ...b5, the knight simply jumps into d6, winning the weak pawn there. The route is a single leap: Na3-c4, the rim-knight transformed into the best piece on the board. One quiet move turns White's worst piece into his pride.",
+        "text": "Where is its dream home? The square c4. Right now neither of Black's pawns attacks it, and from c4 the knight glares at d6, b6, and e5. A commanding central post instead of a dead rim. If Black ever tries to evict it with ...b5, the knight simply jumps into d6, winning the weak pawn there. The route is a single leap: Na3-c4, the rim-knight transformed into the best piece on the board. One quiet move turns White's worst piece into his pride.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1060,7 +1060,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "This is the quiet craft that wins level-looking positions. Often the manoeuvre takes not one move but three or four — a knight may trek b1-d2-f1-g3-f5 across half the game. It feels slow. It is not: while your worst piece climbs toward its best square, your whole position rises with it. When you are stuck, improve a piece. Repeat until the opponent cracks.",
+        "text": "This is the quiet craft that wins level-looking positions. Often the manoeuvre takes not one move but three or four. A knight may trek b1-d2-f1-g3-f5 across half the game. It feels slow. It is not: while your worst piece climbs toward its best square, your whole position rises with it. When you are stuck, improve a piece. Repeat until the opponent cracks.",
         "annotations": [
          {
           "kind": "circle",
@@ -1093,7 +1093,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "No tactics here — so improve your worst piece. The knight on a3 is miserable on the rim. The square c4 is a commanding central post — and if Black ever pushes ...b5 to chase it, the knight leaps into d6. Send the knight to its dream square in one move.",
+        "text": "No tactics here, so improve your worst piece. The knight on a3 is miserable on the rim. The square c4 is a commanding central post, and if Black ever pushes ...b5 to chase it, the knight leaps into d6. Send the knight to its dream square in one move.",
         "annotations": [
          {
           "kind": "circle",
@@ -1112,7 +1112,7 @@
        ],
        "successLine": {
         "conceptId": "manoeuvring",
-        "text": "Nc4! The rim-knight is now a powerful central piece, hitting d6, b6 and e5. If Black tries ...b5, Nxd6 grabs the weak pawn. You made no threat — you simply turned your worst piece into your best, and the whole position improved with it. That is positional mastery: when stuck, re-home a piece.",
+        "text": "Nc4! The rim-knight is now a powerful central piece, hitting d6, b6 and e5. If Black tries ...b5, Nxd6 grabs the weak pawn. You made no threat. You simply turned your worst piece into your best, and the whole position improved with it. That is positional mastery: when stuck, re-home a piece.",
         "annotations": [
          {
           "kind": "circle",
@@ -1130,14 +1130,14 @@
        },
        "retryLine": {
         "conceptId": "manoeuvring",
-        "text": "Not that. The idea is to fix your WORST piece — the a3-knight. It wants the strong central square c4. Which knight move lands there?"
+        "text": "Not that. The idea is to fix your WORST piece, the a3-knight. It wants the strong central square c4. Which knight move lands there?"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the piece on its best square",
+     "title": "Cool-down: the piece on its best square",
      "intro": {
       "text": "Positions decided by a piece reaching a dominating post. Find the move that puts your piece where it belongs."
      },
@@ -1155,15 +1155,15 @@
   },
   {
    "id": "l7-releasing-the-tension",
-   "title": "Releasing the Tension — When to Capture",
+   "title": "Releasing the Tension: When to Capture",
    "kind": "positional",
-   "summary": "A pawn capture is forever. Hold the tension until releasing it concretely helps — and when you do release, capture toward the centre.",
+   "summary": "A pawn capture is forever. Hold the tension until releasing it concretely helps, and when you do release, capture toward the centre.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the right capture",
+     "title": "Warm-up: the right capture",
      "intro": {
-      "text": "Not every capture is equal — direction and timing decide everything. Each of these turns on choosing the correct recapture or break. Find it."
+      "text": "Not every capture is equal. Direction and timing decide everything. Each of these turns on choosing the correct recapture or break. Find it."
      },
      "puzzle": {
       "themes": [
@@ -1184,7 +1184,7 @@
        "conceptId": "release-tension",
        "coach": {
         "conceptId": "release-tension",
-        "text": "Look at the centre: my pawn on d4 and his on e5 stand chest to chest. That is pawn tension, and it poses a real question every move. The beginner's instinct is to resolve it at once with dxe5. Resist that reflex. A pawn capture is the one move in chess you can never take back — release the tension and the structure is fixed forever, for better or worse. So before you capture, ask: does releasing it help ME, or does it help HIM?",
+        "text": "Look at the centre: my pawn on d4 and his on e5 stand chest to chest. That is pawn tension, and it poses a real question every move. The beginner's instinct is to resolve it at once with dxe5. Resist that reflex. A pawn capture is the one move in chess you can never take back. Release the tension and the structure is fixed forever, for better or worse. So before you capture, ask: does releasing it help ME, or does it help HIM?",
         "annotations": [
          {
           "kind": "circle",
@@ -1211,7 +1211,7 @@
        "conceptId": "release-tension",
        "coach": {
         "conceptId": "release-tension",
-        "text": "Here dxe5 only eases Black's game: after ...dxe5 his pieces breathe and the position simplifies toward equality — I would be doing his work for him. The guideline is: when capturing would help the opponent, MAINTAIN the tension, keep your options, and as a rule let HIM be the one to commit first. So instead of releasing, I improve a piece and wait — develop with Nbd2, support the centre, and make him solve the harder problem.",
+        "text": "Here dxe5 only eases Black's game: after ...dxe5 his pieces breathe and the position simplifies toward equality. I would be doing his work for him. The guideline is: when capturing would help the opponent, MAINTAIN the tension, keep your options, and as a rule let HIM be the one to commit first. So instead of releasing, I improve a piece and wait. Develop with Nbd2, support the centre, and make him solve the harder problem.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1238,7 +1238,7 @@
        "conceptId": "release-tension",
        "coach": {
         "conceptId": "release-tension",
-        "text": "Now suppose Black resolves it himself with ...exd4 — he blinked first. The tension is gone on HIS terms, but I choose HOW to recapture, and direction matters. cxd4 recaptures TOWARD the centre, rebuilding a broad d4+e4 pawn duo and opening the half-open c-file for my rook. Recapturing with the knight would be playable, but it gives back the big centre for nothing. The classical guideline: when the tension breaks, capture toward the middle — the centre is the prize.",
+        "text": "Now suppose Black resolves it himself with ...exd4: he blinked first. The tension is gone on HIS terms, but I choose HOW to recapture, and direction matters. cxd4 recaptures TOWARD the centre, rebuilding a broad d4+e4 pawn duo and opening the half-open c-file for my rook. Recapturing with the knight would be playable, but it gives back the big centre for nothing. The classical guideline: when the tension breaks, capture toward the middle. The centre is the prize.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1291,7 +1291,7 @@
        ],
        "successLine": {
         "conceptId": "release-tension",
-        "text": "cxd4! Now you own a broad d4-and-e4 pawn centre and the half-open c-file for your rook. Recapturing with the knight is playable but hands the big centre back for nothing. When the tension finally breaks, recapture toward the middle — the centre is the prize.",
+        "text": "cxd4! Now you own a broad d4-and-e4 pawn centre and the half-open c-file for your rook. Recapturing with the knight is playable but hands the big centre back for nothing. When the tension finally breaks, recapture toward the middle. The centre is the prize.",
         "annotations": [
          {
           "kind": "circle",
@@ -1315,7 +1315,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — timing the break",
+     "title": "Cool-down: timing the break",
      "intro": {
       "text": "Positions where the strongest move is the right capture or the well-timed pawn break. Choose precisely."
      },
@@ -1333,15 +1333,15 @@
   },
   {
    "id": "l8-positional-mastery-practice",
-   "title": "Positional Mastery — Put It All Together",
+   "title": "Positional Mastery: Put It All Together",
    "kind": "practice",
    "summary": "One mixed drill across every idea of the chapter, then a slow positional grind against the engine.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the positional move",
+     "title": "Warm-up: the positional move",
      "intro": {
-      "text": "Everything from this chapter — quiet prophylaxis, the dominating bishop, the well-placed piece. In each, find the strong positional move, not a cheap trick."
+      "text": "Everything from this chapter: quiet prophylaxis, the dominating bishop, the well-placed piece. In each, find the strong positional move, not a cheap trick."
      },
      "puzzle": {
       "themes": [
@@ -1362,7 +1362,7 @@
        "conceptId": "prophylaxis",
        "coach": {
         "conceptId": "prophylaxis",
-        "text": "First, prophylaxis. You are White. Black's one good idea is ...Bg4, pinning your f3-knight against your queen. Ask what he wants and take it away — with the quiet pawn move that denies the g4-square and kills the pin before it lands.",
+        "text": "First, prophylaxis. You are White. Black's one good idea is ...Bg4, pinning your f3-knight against your queen. Ask what he wants and take it away. With the quiet pawn move that denies the g4-square and kills the pin before it lands.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1382,7 +1382,7 @@
        ],
        "successLine": {
         "conceptId": "prophylaxis",
-        "text": "h3 — the engine's top move. The g4-square is yours, ...Bg4 can never come, and your knight stays free. Stop his plan before you start your own.",
+        "text": "h3: the engine's top move. The g4-square is yours, ...Bg4 can never come, and your knight stays free. Stop his plan before you start your own.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1401,7 +1401,7 @@
        "conceptId": "manoeuvring",
        "coach": {
         "conceptId": "manoeuvring",
-        "text": "Now manoeuvring. No tactics — so improve your worst piece. The a3-knight is dim on the rim, and c4 is a strong central post. Re-home the knight in one leap.",
+        "text": "Now manoeuvring. No tactics, so improve your worst piece. The a3-knight is dim on the rim, and c4 is a strong central post. Re-home the knight in one leap.",
         "annotations": [
          {
           "kind": "circle",
@@ -1420,7 +1420,7 @@
        ],
        "successLine": {
         "conceptId": "manoeuvring",
-        "text": "Nc4 — rim to outpost, your worst piece becomes your best. When stuck, re-home a piece.",
+        "text": "Nc4: rim to outpost, your worst piece becomes your best. When stuck, re-home a piece.",
         "annotations": [
          {
           "kind": "circle",
@@ -1432,7 +1432,7 @@
        },
        "retryLine": {
         "conceptId": "manoeuvring",
-        "text": "Improve the WORST piece — the a3-knight — onto the strong central square c4. Which move lands there?"
+        "text": "Improve the WORST piece (the a3-knight) onto the strong central square c4. Which move lands there?"
        }
       },
       {
@@ -1440,7 +1440,7 @@
        "conceptId": "two-weaknesses",
        "coach": {
         "conceptId": "two-weaknesses",
-        "text": "Finally, two weaknesses. Your rook on d6 ties Black to the weak a6-pawn — but one target he can hold. Attack a SECOND: play the kingside pawn lever that strikes h6.",
+        "text": "Finally, two weaknesses. Your rook on d6 ties Black to the weak a6-pawn, but one target he can hold. Attack a SECOND: play the kingside pawn lever that strikes h6.",
         "annotations": [
          {
           "kind": "circle",
@@ -1459,7 +1459,7 @@
        ],
        "successLine": {
         "conceptId": "two-weaknesses",
-        "text": "h5 — a second weakness on the far wing. His king and rook cannot guard both; switch targets and win. That is how positional edges are cashed.",
+        "text": "h5: a second weakness on the far wing. His king and rook cannot guard both; switch targets and win. That is how positional edges are cashed.",
         "annotations": [
          {
           "kind": "circle",
@@ -1470,20 +1470,20 @@
        },
        "retryLine": {
         "conceptId": "two-weaknesses",
-        "text": "One weakness he holds. Attack a SECOND on the kingside — which pawn lever hits h6?"
+        "text": "One weakness he holds. Attack a SECOND on the kingside, which pawn lever hits h6?"
        }
       }
      ]
     },
     {
      "kind": "boss",
-     "title": "Grind it down — convert the bishop pair",
+     "title": "Grind it down: convert the bishop pair",
      "bossFen": "r4rk1/pbq2ppp/1pn1pn2/3p4/3P4/2PBPN2/PBQ2PPP/R4RK1 w - - 0 1",
      "bossEngineElo": 1700,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "bishop-pair",
-      "text": "Now play it for real. Material is dead level — but you hold the bishop pair (Bd3 and Bb2) against his bishop and two knights, and that is your edge: small, real, and yours to grow. Convert it like a master, not a gambler. First ask what HE wants and prevent his counterplay before you grab anything. Then make the pair tell: OPEN lines for your two bishops with the e3-e4 break, improve your worst-placed piece to its best square, and when you press, press on BOTH wings so he faces two weaknesses he cannot both defend. Hold the tension until releasing it helps YOU; trade knights, not bishops, and steer toward an endgame where two bishops dominate. Do not hurry. Begin."
+      "text": "Now play it for real. Material is dead level, but you hold the bishop pair (Bd3 and Bb2) against his bishop and two knights, and that is your edge: small, real, and yours to grow. Convert it like a master, not a gambler. First ask what HE wants and prevent his counterplay before you grab anything. Then make the pair tell: OPEN lines for your two bishops with the e3-e4 break, improve your worst-placed piece to its best square, and when you press, press on BOTH wings so he faces two weaknesses he cannot both defend. Hold the tension until releasing it helps YOU; trade knights, not bishops, and steer toward an endgame where two bishops dominate. Do not hurry. Begin."
      }
     }
    ]
@@ -1538,7 +1538,7 @@
      "Trade your queen to remove the tension"
     ],
     "answerIndex": 0,
-    "explain": "A pawn capture is permanent — you can never take it back. If releasing the tension frees the opponent's game, hold it, keep your options, and make him be the one to commit. When the tension does break, recapture toward the centre."
+    "explain": "A pawn capture is permanent. You can never take it back. If releasing the tension frees the opponent's game, hold it, keep your options, and make him be the one to commit. When the tension does break, recapture toward the centre."
    },
    {
     "kind": "play",
@@ -1547,7 +1547,7 @@
     "solutionUci": [
      "a2a4"
     ],
-    "explain": "a4 stops ...b5 at the root: now ...b5 is simply met by axb5, so the break is dead and your bishop keeps b3. (a3 would not do it — after a3, ...b5 still comes.) You took his plan away before starting your own — pure prophylaxis."
+    "explain": "a4 stops ...b5 at the root: now ...b5 is simply met by axb5, so the break is dead and your bishop keeps b3. (a3 would not do it; after a3, ...b5 still comes.) You took his plan away before starting your own, pure prophylaxis."
    },
    {
     "kind": "play",
@@ -1556,34 +1556,34 @@
     "solutionUci": [
      "e3e4"
     ],
-    "explain": "e4! opens the position for both bishops — after ...dxe4 Bxe4 the b2-bishop rakes the long diagonal toward g7 and the d3-bishop is reborn on e4 hitting b7 and h7, while the lone knight cannot cover both wings. The pair's owner opens the board."
+    "explain": "e4! opens the position for both bishops. After ...dxe4 Bxe4 the b2-bishop rakes the long diagonal toward g7 and the d3-bishop is reborn on e4 hitting b7 and h7, while the lone knight cannot cover both wings. The pair's owner opens the board."
    },
    {
     "kind": "play",
-    "prompt": "You hold the bishop pair against a lone knight — you are clearly better and must convert. Black's knight is planted on the d4 outpost, propped up by his e5-pawn. Restrict it: play the pawn move that kicks the knight off d4 while keeping BOTH your bishops.",
+    "prompt": "You hold the bishop pair against a lone knight. You are clearly better and must convert. Black's knight is planted on the d4 outpost, propped up by his e5-pawn. Restrict it: play the pawn move that kicks the knight off d4 while keeping BOTH your bishops.",
     "fen": "6k1/5ppp/p3p3/1p2p3/3n4/3BB3/PPP2PPP/6K1 w - - 0 1",
     "solutionUci": [
      "c2c3"
     ],
-    "explain": "c3 kicks the d4-knight off its outpost and — unlike Bxd4, which trades a bishop for the knight and surrenders the pair — keeps BOTH bishops. The knight is defended by the e5-pawn, so capturing it only wins an exchange of minors and hands back your pair; c3 instead forces the knight to retreat (…Nc6) while you stay two bishops strong on an open board, then press on both wings. To make the pair tell, restrict the enemy's best piece without cashing a bishop to do it."
+    "explain": "c3 kicks the d4-knight off its outpost and (unlike Bxd4, which trades a bishop for the knight and surrenders the pair) keeps BOTH bishops. The knight is defended by the e5-pawn, so capturing it only wins an exchange of minors and hands back your pair; c3 instead forces the knight to retreat (…Nc6) while you stay two bishops strong on an open board, then press on both wings. To make the pair tell, restrict the enemy's best piece without cashing a bishop to do it."
    },
    {
     "kind": "play",
-    "prompt": "No tactics here — improve your worst piece. The a3-knight is dim on the rim, and c4 is a strong central square that no Black pawn attacks. Re-home the knight in one move.",
+    "prompt": "No tactics here: improve your worst piece. The a3-knight is dim on the rim, and c4 is a strong central square that no Black pawn attacks. Re-home the knight in one move.",
     "fen": "r1bq1rk1/ppp2ppp/3p1n2/4p3/4P3/N2P4/PPP2PPP/R1BQ1RK1 w - - 0 1",
     "solutionUci": [
      "a3c4"
     ],
-    "explain": "Nc4! turns the worst piece into the best — a dominating central post glaring at d6, b6 and e5 (and if ...b5 to chase it, then Nxd6 wins the weak pawn). When there is no forcing move, re-home your worst piece."
+    "explain": "Nc4! turns the worst piece into the best. A dominating central post glaring at d6, b6 and e5 (and if ...b5 to chase it, then Nxd6 wins the weak pawn). When there is no forcing move, re-home your worst piece."
    },
    {
     "kind": "play",
-    "prompt": "Giuoco Piano — Black has just released the central tension with ...exd4, his pawn now on d4. Recapture toward the centre to rebuild a big pawn duo.",
+    "prompt": "Giuoco Piano: Black has just released the central tension with ...exd4, his pawn now on d4. Recapture toward the centre to rebuild a big pawn duo.",
     "fen": "r1bq1rk1/pppp1ppp/2n2n2/2b5/2BpP3/2P2N2/PP3PPP/RNBQ1RK1 w - - 0 1",
     "solutionUci": [
      "c3d4"
     ],
-    "explain": "cxd4 rebuilds a broad d4+e4 centre and opens the half-open c-file for your rook. Recapturing with the knight (Nxd4) is playable but hands the big centre back — when the tension breaks, capture toward the middle."
+    "explain": "cxd4 rebuilds a broad d4+e4 centre and opens the half-open c-file for your rook. Recapturing with the knight (Nxd4) is playable but hands the big centre back. When the tension breaks, capture toward the middle."
    },
    {
     "kind": "judge",
@@ -1591,7 +1591,7 @@
     "fen": "r7/5pk1/p2R3p/7P/P7/6P1/5PK1/8 b - - 0 1",
     "lastMoveUci": "h4h5",
     "verdict": "correct",
-    "explain": "Correct — the principle of two weaknesses in action. The a6-pawn is weakness one; h5 attacks the h6-pawn to fix a SECOND weakness on the far wing and create a passed h-pawn. Black's king and rook cannot defend both, and White switches targets to win."
+    "explain": "Correct: the principle of two weaknesses in action. The a6-pawn is weakness one; h5 attacks the h6-pawn to fix a SECOND weakness on the far wing and create a passed h-pawn. Black's king and rook cannot defend both, and White switches targets to win."
    },
    {
     "kind": "judge",
@@ -1599,7 +1599,7 @@
     "fen": "r1bq1rk1/pp1n1ppp/2pppn2/8/2N1P3/2PP1N2/PP3PPP/R1BQ1RK1 b - - 1 1",
     "lastMoveUci": "a3c4",
     "verdict": "correct",
-    "explain": "Correct — Nc4 re-homes the worst piece (the rim knight) onto a dominating central square that no Black pawn attacks, where it eyes d6, b6 and e5; if Black ever plays ...b5 to chase it, Nxd6 wins the weak pawn. Improving your worst piece is the engine of positional play."
+    "explain": "Correct: Nc4 re-homes the worst piece (the rim knight) onto a dominating central square that no Black pawn attacks, where it eyes d6, b6 and e5; if Black ever plays ...b5 to chase it, Nxd6 wins the weak pawn. Improving your worst piece is the engine of positional play."
    },
    {
     "kind": "judge",
@@ -1607,7 +1607,7 @@
     "fen": "r1bq1rk1/1pp2ppp/p1np1n2/1B2p3/4P3/3P1N2/PPP2PPP/RN1Q1RK1 b - - 1 1",
     "lastMoveUci": "c4b5",
     "verdict": "blunder",
-    "explain": "A blunder — material was dead level, but the bishop simply walks onto a square attacked by Black's a6-pawn, and nothing recaptures. After ...axb5 the bishop is gone for nothing and White is a clean piece down. Always check what the opponent's pawns attack before moving a bishop."
+    "explain": "A blunder: material was dead level, but the bishop simply walks onto a square attacked by Black's a6-pawn, and nothing recaptures. After ...axb5 the bishop is gone for nothing and White is a clean piece down. Always check what the opponent's pawns attack before moving a bishop."
    },
    {
     "kind": "judge",
@@ -1615,7 +1615,7 @@
     "fen": "r1bq1rk1/ppp2ppp/1bnp1n2/4N3/2BPP3/2P5/PP3PPP/RNBQ1RK1 b - - 0 1",
     "lastMoveUci": "f3e5",
     "verdict": "blunder",
-    "explain": "A blunder — the e5-pawn was defended twice, by the c6-knight and the d6-pawn. After ...Nxe5 (or ...dxe5) White is simply a piece down for a pawn. Resolving the tension by a greedy capture lost material outright; count the defenders before you take."
+    "explain": "A blunder: the e5-pawn was defended twice, by the c6-knight and the d6-pawn. After ...Nxe5 (or ...dxe5) White is simply a piece down for a pawn. Resolving the tension by a greedy capture lost material outright; count the defenders before you take."
    },
    {
     "kind": "judge",
@@ -1623,7 +1623,7 @@
     "fen": "3r2k1/p4ppp/1qp2n2/8/2B5/2P2Q1P/P4PP1/3RR1K1 b - - 0 1",
     "lastMoveUci": "h2h3",
     "verdict": "correct",
-    "explain": "Correct — prophylaxis. White is winning on material (a rook for a knight), but his first rank is bare; the quiet luft move gives the king a flight square so that when his rooks leave to press f7 no back-rank check can ever mate. Safety first, then convert."
+    "explain": "Correct: prophylaxis. White is winning on material (a rook for a knight), but his first rank is bare; the quiet luft move gives the king a flight square so that when his rooks leave to press f7 no back-rank check can ever mate. Safety first, then convert."
    }
   ]
  },

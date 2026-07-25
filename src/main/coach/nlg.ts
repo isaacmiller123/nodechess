@@ -5,7 +5,7 @@
  * per cell, chosen by a DETERMINISTIC hash of (ply, fen) so wording varies
  * without an LLM yet stays reproducible. A guaranteed fallback always exists.
  *
- * All strings are authored FRESH for this project — no AGPL puzzleTheme.xml /
+ * All strings are authored FRESH for this project. No AGPL puzzleTheme.xml /
  * learn.xml text is copied. Verdict words and praise vocabulary are generic.
  */
 
@@ -71,7 +71,7 @@ export function tidy(text: string): string {
 const CELLS: Record<string, string[]> = {
   // --- bad move walked into / allowed a motif against the mover ---
   'blunder:hangingPiece': [
-    'Blunder. After {playedSan}, your {pieceName} on {square} is left hanging — {bestSan} keeps the position {evalBand}.',
+    'Blunder. After {playedSan}, your {pieceName} on {square} is left hanging: {bestSan} keeps the position {evalBand}.',
     'Blunder. {playedSan} drops the {pieceName} on {square} for nothing. {bestSan} stays {evalBand}.',
     'Blunder. {playedSan} leaves the {pieceName} on {square} undefended. {bestSan} was best, staying {evalBand}.'
   ],
@@ -93,16 +93,16 @@ const CELLS: Record<string, string[]> = {
   ],
   // --- best/good move: explain the idea ---
   'best:fork': [
-    '{bestSan}! The {pieceName} forks the {targetName} — you win material and end up {evalBand}.',
+    '{bestSan}! The {pieceName} forks the {targetName}: you win material and end up {evalBand}.',
     '{bestSan}! A fork hitting the {targetName}; material falls and you are {evalBand}.',
-    '{bestSan} is best — the fork on the {targetName} wins material, leaving you {evalBand}.'
+    '{bestSan} is best. The fork on the {targetName} wins material, leaving you {evalBand}.'
   ],
   'best:pin': [
-    '{bestSan}! {motifDetail}, and you can pile up on it — staying {evalBand}.',
+    '{bestSan}! {motifDetail}, and you can pile up on it, staying {evalBand}.',
     '{bestSan} is best: {motifDetail}. That leaves you {evalBand}.'
   ],
   'best:skewer': [
-    '{bestSan}! A skewer — {motifDetail} — winning material and leaving you {evalBand}.',
+    '{bestSan}! A skewer ({motifDetail}) winning material and leaving you {evalBand}.',
     '{bestSan} is best: {motifDetail}, so the piece behind falls and you are {evalBand}.'
   ],
   'best:hangingPiece': [
@@ -110,44 +110,44 @@ const CELLS: Record<string, string[]> = {
     '{bestSan} is best, grabbing {motifDetail} for free and staying {evalBand}.'
   ],
   'best:deflection': [
-    '{bestSan}! A deflection that {motifDetail}, and the rest follows — you end up {evalBand}.',
+    '{bestSan}! A deflection that {motifDetail}, and the rest follows. You end up {evalBand}.',
     '{bestSan} is best: it {motifDetail}, leaving you {evalBand}.'
   ],
   'best:interference': [
-    '{bestSan}! An interference — {motifDetail} — and material falls, leaving you {evalBand}.',
+    '{bestSan}! An interference ({motifDetail}) and material falls, leaving you {evalBand}.',
     '{bestSan} is best: {motifDetail}, cutting the defence and staying {evalBand}.'
   ],
   'best:overloaded': [
-    '{bestSan}! It punishes an overloaded defender: {motifDetail} — leaving you {evalBand}.',
-    '{bestSan} is best — {motifDetail}, so something must give and you are {evalBand}.'
+    '{bestSan}! It punishes an overloaded defender: {motifDetail}. Leaving you {evalBand}.',
+    '{bestSan} is best: {motifDetail}, so something must give and you are {evalBand}.'
   ],
   'best:capturingDefender': [
-    '{bestSan}! By {motifDetail}, the piece behind it falls — leaving you {evalBand}.',
+    '{bestSan}! By {motifDetail}, the piece behind it falls, leaving you {evalBand}.',
     '{bestSan} is best: {motifDetail}, then you collect material and stay {evalBand}.'
   ],
   'best:discoveredAttack': [
-    '{bestSan}! A discovered attack springs the piece behind — you end up {evalBand}.',
+    '{bestSan}! A discovered attack springs the piece behind. You end up {evalBand}.',
     '{bestSan} is best: the discovery wins material, leaving you {evalBand}.'
   ],
   'best:discoveredCheck': [
-    '{bestSan}! A discovered check — and you collect material, ending up {evalBand}.',
+    '{bestSan}! A discovered check, and you collect material, ending up {evalBand}.',
     '{bestSan} is best: the discovered check lands and you are {evalBand}.'
   ],
   'best:doubleCheck': [
-    '{bestSan}! Double check — only the king can move, and you are {evalBand}.',
+    '{bestSan}! Double check. Only the king can move, and you are {evalBand}.',
     '{bestSan} is best: a double check the king cannot answer, leaving you {evalBand}.'
   ],
   'best:backRankMate': [
-    '{bestSan}! The back rank is fatal — {evalBand}.',
+    '{bestSan}! The back rank is fatal, {evalBand}.',
     '{bestSan} is best: a back-rank mate, {evalBand}.'
   ],
   'best:xRay': [
-    '{bestSan}! An x-ray — {motifDetail} — leaving you {evalBand}.',
+    '{bestSan}! An x-ray ({motifDetail}) leaving you {evalBand}.',
     '{bestSan} is best: {motifDetail}, and you stay {evalBand}.'
   ],
   // --- mate-specific verdicts ---
   'mateLost:mate': [
-    'Blunder. {playedSan} throws away a forced mate — {bestSan} was mating.',
+    'Blunder. {playedSan} throws away a forced mate: {bestSan} was mating.',
     'Blunder. {playedSan} lets the win slip; {bestSan} forced mate.'
   ],
   'mateCreated:mate': [
@@ -163,7 +163,7 @@ const GENERIC: Record<Verdict, string[]> = {
     '{bestSan} was best, leaving you {evalBand}.{pvNarration}'
   ],
   good: [
-    '{playedSan} is fine — {bestSan} was the engine pick, keeping you {evalBand}.',
+    '{playedSan} is fine: {bestSan} was the engine pick, keeping you {evalBand}.',
     'A solid move. {bestSan} was best, staying {evalBand}.'
   ],
   inaccuracy: [
@@ -172,11 +172,11 @@ const GENERIC: Record<Verdict, string[]> = {
   ],
   mistake: [
     'Mistake. {playedSan} slips to {evalBand}; {bestSan} was clearly better.{pvNarration}',
-    'Mistake. {bestSan} was best here — {playedSan} leaves you {evalBand}.'
+    'Mistake. {bestSan} was best here: {playedSan} leaves you {evalBand}.'
   ],
   blunder: [
     'Blunder. {playedSan} leaves you {evalBand}. {bestSan} was best.{pvNarration}',
-    'Blunder. {bestSan} was the move — after {playedSan} you are {evalBand}.{pvNarration}'
+    'Blunder. {bestSan} was the move. After {playedSan} you are {evalBand}.{pvNarration}'
   ],
   mateLost: ['Blunder. {playedSan} throws away a forced mate. {bestSan} was mating.'],
   mateCreated: ['Blunder. {playedSan} allows a forced mate. {bestSan} was best, staying {evalBand}.']

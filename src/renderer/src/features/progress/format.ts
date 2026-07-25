@@ -78,7 +78,7 @@ export function resultChipLabel(kind: GameResultKind): string {
     case 'draw':
       return 'Draw'
     default:
-      return '—'
+      return '·'
   }
 }
 
@@ -107,7 +107,7 @@ export function opponentEloOf(game: GameRow): string {
 
 export type UserColor = 'white' | 'black' | null
 
-/** Normalize the user's color for display ('White' | 'Black' | '—'). */
+/** Normalize the user's color for display ('White' | 'Black' | '·'). */
 export function userColorOf(game: GameRow): UserColor {
   return game.user_color === 'white' || game.user_color === 'black' ? game.user_color : null
 }
@@ -115,7 +115,7 @@ export function userColorOf(game: GameRow): UserColor {
 export function userColorLabel(color: UserColor): string {
   if (color === 'white') return 'White'
   if (color === 'black') return 'Black'
-  return '—'
+  return '·'
 }
 
 /**

@@ -1,4 +1,4 @@
-// token piece system — turned wooden discs with a recessed face carrying a
+// token piece system: turned wooden discs with a recessed face carrying a
 // glyph or art decal (xiangqi/janggi/makruk/custom pieces). Per-piece groups
 // (small counts) sharing one lathe geometry + material; the decal plane sits
 // in the recess.

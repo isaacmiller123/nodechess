@@ -1,21 +1,21 @@
-// A3 overlay — the Kademlia node over a FabricEndpoint (overlay/types.ts
-// contract, spec §5, C-11: the fabric is transport + bootstrap ONLY — all
+// A3 overlay: the Kademlia node over a FabricEndpoint (overlay/types.ts
+// contract, spec §5, C-11: the fabric is transport + bootstrap ONLY. All
 // routing lives here).
 //
 // Determinism rules (suite-load-bearing):
-//  - no Date.now / Math.random / timers — the clock is opts.nowMs, and refresh
+//  - no Date.now / Math.random / timers: the clock is opts.nowMs, and refresh
 //    is caller-driven; nothing here schedules anything;
 //  - every candidate ordering is XOR distance with the compareNodeIdBytes
-//    tie-break (witness/distance.ts — reused, never reimplemented);
+//    tie-break (witness/distance.ts: reused, never reimplemented);
 //  - iterative lookups probe SEQUENTIALLY in that deterministic order
 //    (parallelism is a later optimization the suites must not depend on).
 //
 // Admission (anti-eclipse, overlay/types.ts KBucket rule):
-//  - contacts learned from FIND_NODE responses are ROUTING HINTS only — they
+//  - contacts learned from FIND_NODE responses are ROUTING HINTS only. They
 //    ride the lookup shortlist + hint book, never the table;
 //  - a contact enters the table only after a DIRECT exchange: it answered our
-//    RPC (outbound path — full eviction-candidate ping flow) or it sent us a
-//    valid RPC (inbound path — admitted only into a non-full bucket: no ping
+//    RPC (outbound path: full eviction-candidate ping flow) or it sent us a
+//    valid RPC (inbound path; admitted only into a non-full bucket: no ping
 //    from inside a handler, so admission chains cannot recurse across nodes);
 //  - a full bucket NEVER evicts a live long-standing contact: the newcomer is
 //    dropped unless the least-recently-seen contact fails a ping.
@@ -56,7 +56,7 @@ import type { Contact, OverlayNode, OverlayOpts, StoreValidator, ValueKind } fro
 
 /** Local-store fold: prev is the held value (null when none). Default is
  * replace (return next). Pointer-set union semantics live in the STORAGE
- * layer's merge — the overlay stays value-agnostic. */
+ * layer's merge. The overlay stays value-agnostic. */
 export type MergeFn = (
   prev: CanonicalObject | null,
   next: CanonicalObject,
@@ -83,7 +83,7 @@ export interface OverlayNodeOpts extends OverlayOpts {
 export interface OverlayNodeExt extends OverlayNode {
   /** Query ALL of the final k-closest set and fold hits through the merge. */
   getMerged(target: B64u, kind: ValueKind): Promise<CanonicalObject | null>
-  /** Storage-layer local write — same validator+merge path as overlay-store. */
+  /** Storage-layer local write. Same validator+merge path as overlay-store. */
   localPut(target: B64u, kind: ValueKind, value: CanonicalObject): boolean
   /** Stats of the most recent iterative walk (lookup or get). */
   readonly lastLookupStats: LookupStats | null
@@ -121,7 +121,7 @@ export function createOverlayNode(
   /** Local value store, keyed kind+'|'+target. */
   const store = new Map<string, CanonicalObject>()
   /** Hint book: routing info (root/key per nodeId) learned from responses,
-   * seeds, and the directory — feeds shortlists and inbound admission. Bounded
+   * seeds, and the directory: feeds shortlists and inbound admission. Bounded
    * (see rememberHint): a malicious responder cannot inflate it without limit. */
   const known = new Map<NodeId, { root: B64u; key: B64u }>()
   const knownCap = opts.knownCap ?? PARAMS_A3.knownCap
@@ -131,15 +131,15 @@ export function createOverlayNode(
   const storeKey = (kind: ValueKind, target: B64u): string => kind + '|' + target
   const alive = (): boolean => !closed
   // Contact.lastSeenMs rides the wire (zContact = z.int()) and through the
-  // canonical codec (integers only), so the injected clock — which an embedder
-  // may wire to a fractional source like performance.now() — MUST be floored at
+  // canonical codec (integers only), so the injected clock, which an embedder
+  // may wire to a fractional source like performance.now(), MUST be floored at
   // every stamp site, or a single FIND_NODE response carrying a fractional
   // lastSeenMs fails the responder's zFindNodeRes/codec check and collapses
   // routing. lastSeenMs is only ever an LRU tiebreak, so flooring is lossless.
   const nowInt = (): number => Math.floor(opts.nowMs())
 
   /** Record a hint, FIFO-bounded at knownCap. JS Map preserves insertion order,
-   * so evicting the first key drops the oldest hint deterministically — the cap
+   * so evicting the first key drops the oldest hint deterministically. The cap
    * turns drain-mode cost + memory into a constant (never attacker-scalable),
    * while the routing table (anti-eclipse-bounded, seeds every lookup) still
    * carries correctness. A re-observed nodeId refreshes to newest by delete+set. */
@@ -161,7 +161,7 @@ export function createOverlayNode(
   }
 
   /** Direct-exchange admission, OUTBOUND path (they answered our RPC or came
-   * from a verified presence seed): full anti-eclipse flow — a full bucket
+   * from a verified presence seed): full anti-eclipse flow. A full bucket
    * pings its least-recently-seen contact; only a dead one is replaced. */
   async function admitOutbound(info: { nodeId: NodeId; root: B64u; key: B64u }): Promise<void> {
     if (info.nodeId === nodeId) return
@@ -179,7 +179,7 @@ export function createOverlayNode(
 
   /** Direct-exchange admission, INBOUND path (they sent us a valid RPC):
    * admitted only into a non-full bucket. No ping is issued from inside a
-   * handler — pinging here would let admission chains recurse fabric-wide —
+   * handler (pinging here would let admission chains recurse fabric-wide)
    * so on a full bucket the newcomer is simply dropped (still anti-eclipse:
    * the long-standing contact is never displaced). */
   function admitInbound(from: NodeId): void {
@@ -191,7 +191,7 @@ export function createOverlayNode(
     if (!info) return
     // Identity binding is MANDATORY: nodeId = sha256(rootPub) (§4). A hint
     // carrying a forged root paired with a reachable nodeId must never enter
-    // the table — the pointer/duty layer ranks by nodeIdOf(holder root), so an
+    // the table: the pointer/duty layer ranks by nodeIdOf(holder root), so an
     // unbound (nodeId, root) pair is an index-poisoning primitive. `known` is
     // already binding-filtered at ingest, but this is the belt to that
     // suspenders (directory records are self-consistent by construction).
@@ -254,7 +254,7 @@ export function createOverlayNode(
 
   function seedSlots(target: B64u): Map<NodeId, Slot> {
     const slots = new Map<NodeId, Slot>()
-    // Self participates as a live, already-"queried" slot — we never RPC
+    // Self participates as a live, already-"queried" slot: we never RPC
     // ourselves; our own table IS the seed. Keeps "the k closest live nodes"
     // exact when this node is among them (put/duty correctness).
     slots.set(nodeId, { nodeId, root: contact.root, key: contact.key, state: 'ok' })
@@ -271,7 +271,7 @@ export function createOverlayNode(
       // nodeId = sha256(rootPub)). A direct exchange with the endpoint only
       // re-confirms the transport nodeId; the root/key ride entirely from the
       // (possibly malicious) responder that supplied this hint, so the binding
-      // must be checked HERE — the single gate feeding both the hint book and
+      // must be checked HERE. The single gate feeding both the hint book and
       // the shortlist that lookup() returns and admitOutbound tables.
       if (nodeIdOf(c.root) !== c.nodeId) continue
       // Unconditional: re-observing a hint refreshes it to the FIFO tail
@@ -301,7 +301,7 @@ export function createOverlayNode(
    * window rule never reaches (responders' k-capped replies stay crowded
    * with dead contacts they haven't observed failing). Drain widens the
    * shortlist to every contact we know (table + hint book) and terminates
-   * only when NO unqueried slot remains anywhere — exactness at the price
+   * only when NO unqueried slot remains anywhere. Exactness at the price
    * of probing the reachable population once. Bounded by the contacts we
    * have ever heard of; the common no-failure path never enters it.
    *
@@ -421,7 +421,7 @@ export function createOverlayNode(
         removeContact(table, c.nodeId)
         known.delete(c.nodeId)
       }
-      // stored:false is honest degradation — the contact stays tabled.
+      // stored:false is honest degradation. The contact stays tabled.
     }
     return stored
   }

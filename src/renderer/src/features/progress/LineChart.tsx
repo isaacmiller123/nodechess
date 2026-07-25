@@ -17,7 +17,7 @@ export interface LineChartProps {
  * A compact, dependency-free line chart for a dated numeric series (rating or
  * accuracy over games). Distinct from Sparkline: it scales to the data's own
  * min/max (not a zero baseline), draws min/max gridlines with captions, and a
- * soft area fill. Points are spaced evenly by index — the series is already
+ * soft area fill. Points are spaced evenly by index. The series is already
  * chronological, so this reads left (oldest) to right (newest).
  *
  * Renders nothing for an empty series; callers show their own empty state.

@@ -113,13 +113,13 @@ function isMacPlatform(): boolean {
 }
 
 /**
- * Inner shell — lives inside SettingsProvider so it can read settings and drive
+ * Inner shell: lives inside SettingsProvider so it can read settings and drive
  * onboarding. Owns routing plus the three app-shell overlays (command palette,
  * shortcuts help, first-run onboarding).
  */
 function AppShell(): JSX.Element {
   const { settings } = useSettings()
-  // Live online session (survives across all views — the store is app-lifetime).
+  // Live online session (survives across all views; the store is app-lifetime).
   // Drives the Play-rail pulsing dot and a floating "return to game" chip when
   // the Play view isn't the one showing.
   const online = useOnlineGame()
@@ -135,7 +135,7 @@ function AppShell(): JSX.Element {
   // Plain navigation clears any pending game so opening Analysis from the rail
   // gives a fresh board; openGame carries a saved game's id into Analysis and
   // openFamousGame a famous-game id (persona "see their famous games"). The two
-  // pending ids are mutually exclusive — setting one clears the other.
+  // pending ids are mutually exclusive. Setting one clears the other.
   const navigate = useCallback((v: ViewKey) => {
     setPendingGameId(null)
     setPendingFamousId(null)
@@ -153,14 +153,14 @@ function AppShell(): JSX.Element {
   }, [])
 
   // First-run onboarding: brand-new profile (default username) with no saved
-  // games and no prior 'seen' flag. Never blocks — purely additive, and the flag
+  // games and no prior 'seen' flag. Never blocks. Purely additive, and the flag
   // is written immediately so it shows at most once.
   useEffect(() => {
     let seen = true
     try {
       seen = localStorage.getItem(ONBOARDING_SEEN_KEY) === '1'
     } catch {
-      /* storage may be unavailable — treat as already seen */
+      /* storage may be unavailable: treat as already seen */
     }
     if (seen || settings.username !== 'User') return
 

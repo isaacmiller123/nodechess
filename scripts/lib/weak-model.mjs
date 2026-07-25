@@ -1,4 +1,4 @@
-// Sub-1320 weak-bot pick model — MIRROR of src/main/ipc/engine.ipc.ts
+// Sub-1320 weak-bot pick model: MIRROR of src/main/ipc/engine.ipc.ts
 // (weakDepth / weakMultiPv / weakTemperature / gapKnee / weakBlunderChance /
 // blunderGapWindow / openingFullmoves / softmaxPick / pickWeakMove).
 //
@@ -82,7 +82,7 @@ export function softmaxPick(cands, temperature, knee) {
 }
 
 /**
- * The full sub-floor pick model over sorted-best-first candidates — production
+ * The full sub-floor pick model over sorted-best-first candidates. Production
  * parity with engine.ipc.ts pickWeakMove (including the panic knob).
  */
 export function pickWeakMove(cands, elo, fullmove, panic = false) {

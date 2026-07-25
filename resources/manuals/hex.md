@@ -1,7 +1,7 @@
 # Hex
 
 Hex is the connection game mathematicians fell in love with: two players,
-one goal each, and a beautiful theorem underneath — **the game cannot end
+one goal each, and a beautiful theorem underneath: **the game cannot end
 in a draw**. Someone's chain always gets through. Stones never move and
 are never captured; every placement is forever, and every game is a single
 argument about one question: whose wall crosses whose?
@@ -15,15 +15,15 @@ belong to both adjacent edges.
 
 - **Black moves first.** Players alternate placing one stone of their
   color on any empty cell. Stones never move and are never captured.
-- **Winning.** You win the moment an unbroken chain of your stones —
-  neighbors are the six cells touching a hexagon — links your two edges.
+- **Winning.** You win the moment an unbroken chain of your stones.
+  Neighbors are the six cells touching a hexagon. Links your two edges.
 - **No draws.** A completely filled board always contains exactly one
   winning chain; one player *must* win. There is no stalemate, no
   repetition, nothing to adjudicate.
 - **The swap rule.** Going first is a large advantage (with perfect play,
   a proven win). To balance it, hex is traditionally played with the *pie
   rule*: after Black's first stone, White may either reply normally or
-  **swap** — take over that first stone as their own. Under swap, a wise
+  **swap**: take over that first stone as their own. Under swap, a wise
   first move is deliberately modest.
 
 Moves are recorded as cell coordinates, files **a–k** and ranks **1–11**
@@ -40,8 +40,8 @@ next: black
 
 The rhombus leans: each cell's six neighbors are left, right, above-left,
 above-right, below-left and below-right. Your target edges are tinted in
-your color along the border. There is no capture and no material count —
-read the board purely as **connections**: chains of stones, and pairs of
+your color along the border. There is no capture and no material count.
+Read the board purely as **connections**: chains of stones, and pairs of
 stones that are not yet touching but cannot be cut (see the bridge,
 below). The app marks the last move; trace both players' shortest paths
 edge-to-edge every turn.
@@ -54,7 +54,7 @@ edge-to-edge every turn.
    takes the center first.
 2. **Defense is offense.** Every stone that blocks the enemy's crossing is
    one of yours pointing along your own. Don't build your chain and their
-   blockade separately — the best moves do both at once, which is why hex
+   blockade separately: the best moves do both at once, which is why hex
    games are won *across* the opponent's main line, not around it.
 3. **Connect loosely, then solidify.** Beginners lay stones adjacent like
    bricklayers; strong players leap two or three cells using safe
@@ -63,7 +63,7 @@ edge-to-edge every turn.
 
 ## A classic pattern or trap
 
-The fundamental pattern of hex is the **bridge** — two stones a knight's
+The fundamental pattern of hex is the **bridge**. Two stones a knight's
 whisper apart that are *already connected*, though they don't touch.
 
 ```position
@@ -75,13 +75,13 @@ next: white
 
 Black's stones on e6 and f7 share **two common empty neighbors**: f6 and
 e7. If White intrudes on one, Black simply takes the other, and the chain
-is whole. No single white move can sever a bridge — it is a connection
+is whole. No single white move can sever a bridge. It is a connection
 paid for now and delivered later, covering two rows for the price of one
 stone.
 
 Whole games are built from bridge chains: a ladder of bridges crosses the
 board twice as fast as adjacent stones, and each one holds as long as you
-**answer every intrusion immediately** — the classic trap is a bridge
+**answer every intrusion immediately**: the classic trap is a bridge
 owner who ignores an intrusion for one move (there is now only one
 connecting cell, and the opponent takes it, cutting the chain in two).
 The deeper habit the bridge teaches is hex's grand theme: *connection is

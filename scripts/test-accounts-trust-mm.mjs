@@ -1,17 +1,17 @@
 // Headless test for the A4 trust + matchmaking modules
-// (src/shared/accounts/mm/{trust,pairing,index}.ts — phase A4 brick 2b,
+// (src/shared/accounts/mm/{trust,pairing,index}.ts: phase A4 brick 2b,
 // rebuilt for the A4 review fixes A4-03/04/05/06/16/20/23/24).
 //
 //   node scripts/test-accounts-trust-mm.mjs
 //
 // Bundles the TS modules on the fly with esbuild (alias @shared → src/shared,
 // same pattern as scripts/test-accounts-reputation.mjs) and drives the §7
-// rules over REAL CRYPTOGRAPHY — every fixture the positive assertions rely
+// rules over REAL CRYPTOGRAPHY: every fixture the positive assertions rely
 // on carries real ed25519 signatures (event sigs, witness terminal sigs with
 // the full F1 RatedBinding, attestations, oppCkpt cosignatures), and the
 // negative assertions prove forged material moves NOTHING:
 //  · body-only fold (A4-04): TrustInputs has no wit-derived members and the
-//    fold is wit-INVARIANT — attach/strip arbitrary wit arrays, identical
+//    fold is wit-INVARIANT: attach/strip arbitrary wit arrays, identical
 //    state canonicalHash (asserted for the trust fold AND the whole a4-v1
 //    fold);
 //  · verified evidence (A4-03): trustEvidenceOf verifies every attestation
@@ -62,7 +62,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -176,7 +176,7 @@ async function run(outdir) {
    * witnesses; everything else (sybil-minted keys included) is not. */
   const ELIG_KEYS = new Set([wkp.pubB, ...cosigners.map((k) => k.pubB), ...aw.map((k) => k.pubB)])
   const elig = (w) => ELIG_KEYS.has(w)
-  /** trustEvidenceOf under the standard roster — the honest-verifier view. */
+  /** trustEvidenceOf under the standard roster: the honest-verifier view. */
   const evidenceOf = (c) => trust.trustEvidenceOf(c, elig)
   /** Full-strength verified oppCkpt: through 200, 4 real diverse cosigners. */
   const fullCkpt = (oppKp) => mkVerifiedOppCkpt(oppKp, 200)
@@ -215,7 +215,7 @@ async function run(outdir) {
   const foldRep = (c) => wEvents(c).reduce((s, e) => rep.repStep(s, e), rep.repInit())
   const TofChain = (c, now, evd) => trust.trustT(foldT(c), foldRep(c), now, evd)
   /** Standalone crafted-but-VALID segment event (real event + wstream sigs;
-   * unrated shape, shared game key — trust has no game dedup; window tests
+   * unrated shape, shared game key: trust has no game dedup; window tests
    * exercise heights, not chain linkage). */
   const WGAME = fakeId('wgame')
   const WSTREAM = seg.signWitnessEnd(wkp.priv, wkp.pubB, WGAME, '1-0', 24, fakeId(`t:${WGAME}`))
@@ -234,7 +234,7 @@ async function run(outdir) {
       me.priv,
     )
   /** Standalone VALID rated segment event carrying `oppCkpt` (for the forged/
-   * borrowed oppCkpt negatives — everything real except the checkpoint). */
+   * borrowed oppCkpt negatives: everything real except the checkpoint). */
   const segEvWithCkpt = (game, oppB, oppCkpt) =>
     events.signBody(
       { v: 1, lane: 'w', type: 'segment', root: meB, key: meB, height: 1, prev: fakeId('prev'), ts: 5, payload: segPayloadV(game, oppB, { oppCkpt }) },
@@ -273,7 +273,7 @@ async function run(outdir) {
     const genesis = c.events[0]
     ok(trust.trustInputsStep(s, genesis) === s, 'genesis passes through (age lives in evidence now)')
     ok(trust.trustInputsStep(s, { ...genesis, wit: [mkAtt(aw[0], events.eventId(genesis.body), 1000)] }) === s,
-      'ATTESTED genesis also passes through — the fold never reads wit')
+      'ATTESTED genesis also passes through: the fold never reads wit')
     const personal = events.signBody(
       { v: 1, lane: 'p', type: 'profile', root: meB, key: meB, height: 0, ts: 1, payload: { fields: { bio: 'x' } } },
       me.priv,
@@ -316,7 +316,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 3. verified age evidence (A4-03 — §4 diversity-bound witnessed time)
+  // 3. verified age evidence (A4-03, §4 diversity-bound witnessed time)
   // ============================================================================
   console.log('\n· verified age evidence …')
   {
@@ -326,7 +326,7 @@ async function run(outdir) {
     const e3 = evidenceOf(c3)
     eq(e3.ageBasisWts, 1000, '3 VALID ELIGIBLE genesis attestations set ageBasisWts to the attestation wts')
     eq(e3.ageAttesters, 3, '≥3 distinct valid eligible attesters counted (diversity bound met)')
-    // A4-03 PIN — the review's exact attack: signature-VALID attestations by
+    // A4-03 PIN. The review's exact attack: signature-VALID attestations by
     // keys the verifier does NOT recognize as eligible witnesses anchor
     // NOTHING. No witness roster in the verify path was the hole.
     eq(trust.trustEvidenceOf(c3).ageBasisWts, undefined,
@@ -358,7 +358,7 @@ async function run(outdir) {
     const dup = withGenesisWit(mkChain(), [mkAtt(aw[0], gid, 1000), mkAtt(aw[0], gid, 1001), mkAtt(aw[0], gid, 1002)])
     eq(evidenceOf(dup).ageAttesters, 1, '3 attestations by ONE key are 1 attester (thin)')
     eq(evidenceOf(dup).ageBasisWts, 1000, '…basis is still the min valid wts')
-    // A4-20: FORGED attestations move NOTHING (roster or not — sigs first)
+    // A4-20: FORGED attestations move NOTHING (roster or not; sigs first)
     const forged = withGenesisWit(mkChain(), forgedWitArr(3, 0))
     const ef = trust.trustEvidenceOf(forged, () => true)
     eq(ef.ageBasisWts, undefined, '3 forged (garbage-sig) attestations at wts=0 → NO age basis even under an accept-all roster')
@@ -370,7 +370,7 @@ async function run(outdir) {
     const mixed = withGenesisWit(mkChain(), [mkAtt(aw[0], gid, 1000), ...forgedWitArr(2, 0)])
     const em = evidenceOf(mixed)
     eq(em.ageBasisWts, 1000, '1 valid + 2 forged: only the VALID one anchors (wts 1000, not the forged 0)')
-    eq(em.ageAttesters, 1, '…and attester count is 1 (thin) — forged sigs cannot pad diversity')
+    eq(em.ageAttesters, 1, '…and attester count is 1 (thin): forged sigs cannot pad diversity')
     // anchor from the first attested event when the genesis is unattested
     let cSeg = addSeg(mkChain(), fakeId('ga1'), opp(1))
     cSeg = attestAt(cSeg, 1, [aw[0], aw[1], aw[2]], 3000)
@@ -394,7 +394,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 4. opponent diversity — verified proxies, floor, forged-zero (A4-05/06)
+  // 4. opponent diversity. Verified proxies, floor, forged-zero (A4-05/06)
   // ============================================================================
   console.log('\n· opponent diversity …')
   {
@@ -413,12 +413,12 @@ async function run(outdir) {
       'through 100 → proxy 250k+400k+175k = 825_000')
     eq(divOf(one(o0.pubB, mkVerifiedOppCkpt(o0, 100))), 93_484, '…→ div 93_484')
     eq(foldT(one(o0.pubB, mkVerifiedOppCkpt(o0, 400))).div[o0.pubB].w, 1_000_000, 'through 400 caps at 200 → proxy 1e6')
-    // A4-05 ELIGIBILITY PINS — the review's exact residue: everything above
+    // A4-05 ELIGIBILITY PINS. The review's exact residue: everything above
     // is signature-REAL, so what separates it from a sybil mint is ONLY the
     // verifier's roster. Full weight must be roster-EARNED:
     const cFull = one(o0.pubB, fullCkpt(o0))
     eq(trust.trustDiversityMicro(foldT(cFull)), 0,
-      'A4-05: NO evidence → div 0 — full-proxy diversity is never presumed')
+      'A4-05: NO evidence → div 0, full-proxy diversity is never presumed')
     eq(evidenceOf(cFull).oppEligProxy[o0.pubB], 1_000_000, 'roster-eligible cosigners+witness → evidence grants the full proxy')
     eq(trust.trustEvidenceOf(cFull).oppEligProxy[o0.pubB], 0,
       'A4-05: no roster → the evidence proxy is 0 (nothing vouched, nothing earned)')
@@ -440,7 +440,7 @@ async function run(outdir) {
     eq(foldT(one(opp(1))).div[opp(1)].w, 50_000, 'no oppCkpt on a VERIFIED segment → the floor proxy')
     eq(divOf(one(opp(1))), 6_211, '…→ div floor(5e10/8.05e6) = 6_211 (small but non-zero)')
     eq(divOf(one(opp(1)), trust.trustEvidenceOf(one(opp(1)))), 0,
-      'A4-05: even the floor is witness-earned — no roster ⇒ a self-witnessable game grants 0')
+      'A4-05: even the floor is witness-earned, no roster ⇒ a self-witnessable game grants 0')
     // A4-05/06/23: FABRICATED oppCkpts contribute exactly ZERO (segment fails the gate)
     const zero = (ev, msg) => {
       eq(seg.verifySegmentEvent(ev), 'bad-opp-ckpt', `${msg}: verifySegmentEvent → 'bad-opp-ckpt'`)
@@ -448,7 +448,7 @@ async function run(outdir) {
       ok(st === trust.trustInputsInit() || (st.wn === 0 && Object.keys(st.div).length === 0),
         `${msg}: contributes ZERO diversity (pass-through)`)
       // even under a maximally permissive fabricated evidence object the FOLD
-      // state carries no entry — the gate, not the eligibility layer, zeroes it
+      // state carries no entry. The gate, not the eligibility layer, zeroes it
       const permissive = { ageAttesters: 0, ckptCosigMicro: 1_000_000, oppEligProxy: { [ev.body.payload.opp]: 1_000_000 } }
       eq(trust.trustDiversityMicro(st, permissive), 0, `${msg}: div term is exactly 0`)
     }
@@ -463,7 +463,7 @@ async function run(outdir) {
       'duplicate cosigner key (4 entries, 3 distinct)')
     zero(segEvWithCkpt(fakeId('z5'), o0.pubB, { ...good, wit: [...good.wit.slice(0, 3), mkAtt(me, events.eventId(good.body), 901)] }),
       'the segment OWNER as cosigner (players may not cosign their own fold inputs)')
-    // A4-06: the borrowed checkpoint — a GENUINE verified ckpt of oppK(0),
+    // A4-06: the borrowed checkpoint. A GENUINE verified ckpt of oppK(0),
     // embedded under a different named opp → dies on root-binding.
     zero(segEvWithCkpt(fakeId('z6'), oppK(1).pubB, fullCkpt(o0)),
       'BORROWED genuine checkpoint (root ≠ named opp)')
@@ -488,7 +488,7 @@ async function run(outdir) {
     }
     eq(foldT(repeat(5)).div[o0.pubB].n, 5, 'repeat entry counts games (n = 5)')
     eq(divOf(repeat(5)), 24_390, 'ONE full opponent played 5× → div 24_390 (entSat = 1e6/5)')
-    eq(divOf(repeat(10)), 12_345, '…played 10× → div 12_345 — repeat play divides itself away')
+    eq(divOf(repeat(10)), 12_345, '…played 10× → div 12_345: repeat play divides itself away')
     // max-proxy retention within the window (order-independent)
     let mixA = addSeg(mkChain(), fakeId('x1'), o0.pubB, { oppCkpt: fullCkpt(o0) })
     mixA = addSeg(mixA, fakeId('x2'), o0.pubB)
@@ -500,7 +500,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 5. fork/checkpoint cleanliness — body-only cadence + verified cosig evidence
+  // 5. fork/checkpoint cleanliness. Body-only cadence + verified cosig evidence
   // ============================================================================
   console.log('\n· checkpoint cleanliness …')
   {
@@ -524,11 +524,11 @@ async function run(outdir) {
     const sOn = foldT(cOn)
     eq(sOn.ckLateEv, 0, 'on-time ckpt resets the cadence counter (no late events)')
     eq(sOn.ckN, 1, 'one ckpt folded (body-only counter)')
-    ok(!('ckCosSum' in sOn), 'the fold state carries NO cosig counter (A4-04 — wit left the fold)')
+    ok(!('ckCosSum' in sOn), 'the fold state carries NO cosig counter (A4-04: wit left the fold)')
     const eOn = trust.trustEvidenceOf(cOn)
     eq(eOn.ckptCosigMicro, 1_000_000, '4 VALID distinct cosigners on the ckpt → evidence cosig 1e6')
     eq(clean(cOn, eOn), 1_000_000, 'on-time, fully-cosigned checkpointing → clean 1e6')
-    // thin / forged / self cosig sets — all through VERIFIED evidence
+    // thin / forged / self cosig sets: all through VERIFIED evidence
     const ck2 = (() => {
       let c = segsN(mkChain(), 20, 'f')
       const ev = checkpoint.makeCheckpointEvent(c, me.priv, meB, ts++)
@@ -546,13 +546,13 @@ async function run(outdir) {
     eq(trust.trustEvidenceOf(ckForged).ckptCosigMicro, 0,
       '4 FORGED cosigner attestations → evidence 0 (A4-20: forged sigs pad nothing)')
     // cosig-cleanliness is bounded ABOVE by its neutral (1e6), so sig-only
-    // counting without a roster is safe — self-minted cosigners can never buy
+    // counting without a roster is safe. Self-minted cosigners can never buy
     // anything a ckpt-less chain does not already have; a roster only sharpens.
     const ckSybil = addCkpt(segsN(mkChain(), 20, 'hs'), 'real4')
     eq(trust.trustEvidenceOf(ckSybil).ckptCosigMicro, 1_000_000,
       'no roster: 4 valid cosigners count sig-only (bounded by the presumed-innocent neutral)')
     eq(trust.trustEvidenceOf(ckSybil, () => false).ckptCosigMicro, 0,
-      'A4-03: a roster rejecting those keys counts them 0 — eligibility can only LOWER cosig-clean, never inflate')
+      'A4-03: a roster rejecting those keys counts them 0. Eligibility can only LOWER cosig-clean, never inflate')
     const ckSelf = (() => {
       let c = segsN(mkChain(), 20, 'i')
       const ev = checkpoint.makeCheckpointEvent(c, me.priv, meB, ts++)
@@ -576,7 +576,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 6. completion hygiene (from 1c RepState — never counted twice)
+  // 6. completion hygiene (from 1c RepState; never counted twice)
   // ============================================================================
   console.log('\n· completion hygiene …')
   {
@@ -617,18 +617,18 @@ async function run(outdir) {
     eq(TofChain(cA, 1000 + 15_552_000_000, eA), 815_384, 'golden A at 180 days → T = 815_384 exactly')
     eq(TofChain(cA, 1000 + 15_552_000_000), 550_000,
       'same chain WITHOUT evidence → age 0 AND div 0 (both roster-earned, A4-03/05) → the fresh 550_000')
-    // A4-03 PIN — the review's headline number: the self-attested goldenA
+    // A4-03 PIN. The review's headline number: the self-attested goldenA
     // shape must NOT clear the island gate for a verifier that does not
     // recognize its keys. (Pre-fix it scored 700_000+ on self-minted keys.)
     const eSybil = trust.trustEvidenceOf(cA, () => false)
     ok(TofChain(cA, 1000 + 15_552_000_000, eSybil) < P.islandGateMicro,
       'A4-03: goldenA under a roster rejecting its (self-mintable) keys stays BELOW the 600_000 island gate')
     eq(TofChain(cA, 1000 + 15_552_000_000, eSybil), 550_000,
-      '…at exactly the fresh baseline — free keypairs buy nothing from any honest verifier')
+      '…at exactly the fresh baseline: free keypairs buy nothing from any honest verifier')
     const vA = chain.verifyChain(cA)
     ok(vA.ok, `golden A chain verifies ok end-to-end (real sigs, real binding${vA.ok ? '' : ': ' + JSON.stringify(vA.errors)})`)
     ok(TofChain(cA, 1000 + 15_552_000_000, eA) >= P.islandGateMicro,
-      'aged, diverse, clean chain clears the island gate — for verifiers whose roster vouches its witnesses')
+      'aged, diverse, clean chain clears the island gate, for verifiers whose roster vouches its witnesses')
   }
 
   // ============================================================================
@@ -650,7 +650,7 @@ async function run(outdir) {
     eq(trust.trustCompletionMicro(foldRep(cDiv)), trust.trustCompletionMicro(foldRep(cMono)), 'isolation (b): hygiene equal')
     eq(TofChain(cDiv, 500, evidenceOf(cDiv)), 665_384, 'diverse chain (roster evidence, no age) → 665_384')
     eq(TofChain(cMono, 500, evidenceOf(cMono)), 550_374,
-      'sock-shaped chain → 550_374 (floor proxy ÷ repeat discount) — only diversity moved T')
+      'sock-shaped chain → 550_374 (floor proxy ÷ repeat discount): only diversity moved T')
     // (c) CLEANLINESS only: 25 games without vs with an on-time ckpt (same games)
     const seg25 = (c) => {
       for (let i = 0; i < 25; i++) c = addSeg(c, fakeId(`iC${i}`), opp(i))
@@ -665,7 +665,7 @@ async function run(outdir) {
       trust.trustDiversityMicro(foldT(cTidy), evidenceOf(cTidy)), 'isolation (c): div equal')
     eq(trust.trustCompletionMicro(foldRep(cLate)), trust.trustCompletionMicro(foldRep(cTidy)), 'isolation (c): hygiene equal')
     eq(TofChain(cLate, 500, evidenceOf(cLate)), 565_540, 'late-checkpoint chain → 565_540')
-    eq(TofChain(cTidy, 500, evidenceOf(cTidy)), 590_540, 'tidy chain → 590_540 — only cleanliness moved T (Δ 25_000)')
+    eq(TofChain(cTidy, 500, evidenceOf(cTidy)), 590_540, 'tidy chain → 590_540: only cleanliness moved T (Δ 25_000)')
     // (d) HYGIENE only: same inputs, different RepState
     const s0 = trust.trustInputsInit()
     eq(trust.trustT(s0, { ...rep.repInit(), seg: 8, drop: 2, abort: 1, noshow: 1 }, 500), 430_000,
@@ -679,21 +679,21 @@ async function run(outdir) {
   {
     // Floor puppets: genuinely witnessed games (valid event + wstream sigs by
     // an ELIGIBLE witness) against fresh throwaway roots with NO verifiable
-    // checkpoint. They earn the floor proxy ONLY — and only from verifiers
+    // checkpoint. They earn the floor proxy ONLY, and only from verifiers
     // whose roster vouches the witness.
     let farm = mkChain()
     for (let i = 0; i < 10; i++) farm = addSeg(farm, fakeId(`f${i}`), opp(100 + i))
     ok(chain.verifyChain(farm).ok, 'the no-ckpt puppet-farm chain is chain-VALID (the attack is real)')
     eq(trust.trustDiversityMicro(foldT(farm), evidenceOf(farm)), 58_823,
       '10 witnessed games vs fresh no-ckpt puppets → floor-only div 58_823 (eligible witness)')
-    eq(TofChain(farm, 500, evidenceOf(farm)), 567_646, '…→ T = 567_646: BELOW the 600_000 island gate — no width benefit')
+    eq(TofChain(farm, 500, evidenceOf(farm)), 567_646, '…→ T = 567_646: BELOW the 600_000 island gate. No width benefit')
     ok(TofChain(farm, 500, evidenceOf(farm)) < P.islandGateMicro, 'a puppet farm cannot cross the island gate on floor proxies')
     eq(TofChain(farm, 500), 550_000, 'the same farm with NO evidence → the fresh 550_000 (diversity is roster-earned)')
-    // ═══ A4-05 PIN — the review's EXACT unpinned variant: the FULL-PROXY
+    // ═══ A4-05 PIN. The review's EXACT unpinned variant: the FULL-PROXY
     // sybil. N real opponent keypairs, each with a REAL self-cosigned
     // (4 prefix-diverse self-minted keys) checkpoint, games witnessed by a
     // self-run wstream key: passes verifySegmentEvent AND verifyChain, and
-    // the FOLD dutifully records full 1e6 proxies — but no verifier who does
+    // the FOLD dutifully records full 1e6 proxies, but no verifier who does
     // not vouch for those keys ever grants them.
     const sybilW = kp(45) // the farm's self-run "witness"
     const sybilCos = [] // 4 prefix-diverse self-minted "cosigners"
@@ -755,7 +755,7 @@ async function run(outdir) {
     eq(trust.trustDiversityMicro(foldT(borrow), evidenceOf(borrow)), 0,
       'one BORROWED genuine checkpoint under 10 puppet names → div EXACTLY 0 (root-binding)')
     ok(!chain.verifyChain(borrow).ok, '…and the borrowed-checkpoint chain fails verifyChain')
-    // honest contrast — full weight for verifiers who vouch the witnesses
+    // honest contrast: full weight for verifiers who vouch the witnesses
     let honest = mkChain()
     for (let i = 0; i < 10; i++) honest = addSeg(honest, fakeId(`h${i}`), oppK(i).pubB, { oppCkpt: fullCkpt(oppK(i)) })
     ok(chain.verifyChain(honest).ok, 'the 10-established-opponent chain verifies')
@@ -772,7 +772,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 10. wit-invariance of the fold (A4-04/A4-24 — the architectural guarantee)
+  // 10. wit-invariance of the fold (A4-04/A4-24, the architectural guarantee)
   // ============================================================================
   console.log('\n· wit-invariance of the fold …')
   {
@@ -794,7 +794,7 @@ async function run(outdir) {
     eq(stateHash(foldA4(stripped)), a0, 'a4-v1 fold state is wit-invariant too (stripped)')
     eq(stateHash(foldA4(garbled)), a0, 'a4-v1 fold state is wit-invariant too (garbled)')
     // …while the EVIDENCE (read-side, never embedded) legitimately differs:
-    eq(evidenceOf(stripped).ageBasisWts, undefined, 'evidence DOES see the strip (no basis) — by design')
+    eq(evidenceOf(stripped).ageBasisWts, undefined, 'evidence DOES see the strip (no basis), by design')
     eq(evidenceOf(cA).ageBasisWts, 1000, '…vs the attested chain (basis 1000): wit lives in evidence, not state')
     // …and the eligibility ROSTER is likewise evidence-side only: two
     // verifiers with different rosters fold IDENTICAL state bytes (A4-04)
@@ -817,7 +817,7 @@ async function run(outdir) {
       if (ev.body.height === 1001) s1001 = s
       if (ev.body.height === 1002) s1002 = s
     }
-    ok(opp(0) in s1001.div, 'entry aged exactly W events (h=1 at evHeight 1001) SURVIVES — diff = W is in-window')
+    ok(opp(0) in s1001.div, 'entry aged exactly W events (h=1 at evHeight 1001) SURVIVES: diff = W is in-window')
     eq(Object.keys(s1001.div).length, 1001, 'div map holds exactly W+1 = 1001 entries at the boundary')
     ok(!(opp(0) in s1002.div), 'one event past the window (diff = W+1) → entry pruned')
     eq(Object.keys(s1002.div).length, 1001, 'map stays at the W+1 bound after the prune')
@@ -872,7 +872,7 @@ async function run(outdir) {
     eq(pairing.islandCostElo(0, 1_000_000), 175, 'T 0 vs 1e6 → floor(0.35·1e6·500/1e12·1e6) = 175 Elo')
     eq(pairing.islandCostElo(200_000, 500_000), 52, 'T 0.2 vs 0.5 → 52 Elo')
     eq(pairing.islandCostElo(500_000, 200_000), 52, 'island cost is symmetric in its arguments')
-    eq(pairing.islandCostElo(0, 0), 0, 'comparable suspicion (both at the floor) → zero cost — they attract')
+    eq(pairing.islandCostElo(0, 0), 0, 'comparable suspicion (both at the floor) → zero cost: they attract')
     eq(pairing.islandCostElo(-100, 2_000_000), 175, 'inputs clamp into [0, 1e6] before the gate/cost')
   }
 
@@ -886,9 +886,9 @@ async function run(outdir) {
     eq(JSON.stringify(b(799)), '{"lo":0,"hi":800}', 'bracketOf(799) = [0, 800)')
     eq(JSON.stringify(b(800)), '{"lo":800,"hi":1600}', 'bracketOf(800) opens the next rail')
     eq(JSON.stringify(b(1200)), '{"lo":800,"hi":1600}', 'bracketOf(1200) = [800, 1600)')
-    eq(JSON.stringify(b(1600)), '{"lo":1600,"hi":2400}', "bracketOf(1600) = [1600, 2400) — the spec's own example rail")
+    eq(JSON.stringify(b(1600)), '{"lo":1600,"hi":2400}', "bracketOf(1600) = [1600, 2400): the spec's own example rail")
     eq(JSON.stringify(b(2399)), '{"lo":1600,"hi":2400}', 'bracketOf(2399) = [1600, 2400)')
-    eq(JSON.stringify(b(-1)), '{"lo":-800,"hi":0}', 'bracketOf(−1) = [−800, 0) — floor toward −∞')
+    eq(JSON.stringify(b(-1)), '{"lo":-800,"hi":0}', 'bracketOf(−1) = [−800, 0), floor toward −∞')
     eq(JSON.stringify(b(-800)), '{"lo":-800,"hi":0}', 'bracketOf(−800) = [−800, 0)')
     eq(JSON.stringify(b(-801)), '{"lo":-1600,"hi":-800}', 'bracketOf(−801) = [−1600, −800)')
     eq(pairing.eloOf(1_650_400_123), 1650, 'eloOf floors micro-units to integer Elo')
@@ -896,7 +896,7 @@ async function run(outdir) {
   }
 
   // ============================================================================
-  // 15. pairing legality matrix (pinned atWts — A4-16)
+  // 15. pairing legality matrix (pinned atWts, A4-16)
   // ============================================================================
   console.log('\n· pairing legality …')
   const AT = 1_000_000 // the pairing record's witnessed timestamp (both sides' T evaluated here)
@@ -910,7 +910,7 @@ async function run(outdir) {
   })
   {
     const L = (a, b) => pairing.pairingLegal(a, b, AT)
-    // A4-16: atWts is REQUIRED — the un-pinned form fails closed
+    // A4-16: atWts is REQUIRED. The un-pinned form fails closed
     eq(pairing.pairingLegal(pv({ root: 'X' }), pv({ root: 'Y' })).reason, 'bad-at-wts',
       'pairingLegal WITHOUT atWts → illegal (bad-at-wts): no un-pinned evaluation exists')
     eq(pairing.pairingLegal(pv({ root: 'X' }), pv({ root: 'Y' }), 1.5).reason, 'bad-at-wts',
@@ -918,7 +918,7 @@ async function run(outdir) {
     eq(pairing.pairingLegal(pv({ root: 'X' }), pv({ root: 'Y' }), -1).reason, 'bad-at-wts',
       'negative atWts → illegal (bad-at-wts)')
     eq(pairing.pairingLegal(pv({ root: 'X' }), pv({ root: 'X' })).reason, 'bad-at-wts',
-      'bad-at-wts is rule 0 — checked before even same-root')
+      'bad-at-wts is rule 0: checked before even same-root')
     ok(pairing.pairingLegal(pv({ root: 'X' }), pv({ root: 'Y', elo: 1500 }), 0).legal,
       'atWts = 0 is a well-formed witnessed timestamp (only malformed fails)')
     // structure rules
@@ -945,14 +945,14 @@ async function run(outdir) {
     ok(L(pv({ root: 'X', state: 'provisional', elo: 1601 }), pv({ root: 'Y', elo: 2399 })).legal,
       'provisional 1601 × ranked 2399: 798 Elo apart but SAME rail → legal (never precise distance)')
     eq(L(pv({ root: 'X', state: 'provisional', elo: 1599 }), pv({ root: 'Y', elo: 1601 })).reason, 'bracket-mismatch',
-      'provisional 1599 × ranked 1601 → illegal — precise closeness buys nothing')
+      'provisional 1599 × ranked 1601 → illegal: precise closeness buys nothing')
     // ranked × ranked: width of BOTH sides
     ok(L(pv({ root: 'X', elo: 1500 }), pv({ root: 'Y', elo: 1550 })).legal, 'high trust both: Δ50 ≤ width 50 → legal')
     eq(L(pv({ root: 'X', elo: 1500 }), pv({ root: 'Y', elo: 1551 })).reason, 'width-exceeded',
       'high trust both: Δ51 > 50 → illegal')
     eq(L(pv({ root: 'X', elo: 1500, t: 1_000_000 }), pv({ root: 'Y', elo: 1560, t: 250_000 })).reason, 'width-exceeded',
       'Δ60 + island 131 = 191 > the HIGH-trust side’s 50 → illegal (both curves bind)')
-    ok(191 <= pairing.width(250_000), '…even though 191 fits the low-trust side’s width (303) — proves both-sides rule')
+    ok(191 <= pairing.width(250_000), '…even though 191 fits the low-trust side’s width (303), proves both-sides rule')
     // island attraction: comparable suspicion pairs; asymmetric suspicion repels
     ok(L(pv({ root: 'X', elo: 1500, t: 200_000 }), pv({ root: 'Y', elo: 1800, t: 200_000 })).legal,
       'both T=0.2: Δ300 + island 0 ≤ width 338 → legal (suspicious accounts attract)')
@@ -963,7 +963,7 @@ async function run(outdir) {
     eq(L(pv({ root: 'X', elo: 1500, t: 200_000 }), pv({ root: 'Y', elo: 1590, t: 550_000 })).reason, 'width-exceeded',
       'T 0.2 vs 0.55: Δ90 + island 61 = 151 > 141 → illegal (island term repels unequal suspicion)')
     ok(L(pv({ root: 'X', elo: 1500, t: 200_000 }), pv({ root: 'Y', elo: 1590, t: 200_000 })).legal,
-      'same Δ90 with EQUAL suspicion → island 0 → legal — the island pulls likes together')
+      'same Δ90 with EQUAL suspicion → island 0 → legal: the island pulls likes together')
   }
 
   // ============================================================================
@@ -975,7 +975,7 @@ async function run(outdir) {
       pv({ root: 'A', elo: 1500, t: 1_000_000 }),
       pv({ root: 'B', elo: 1540, t: 1_000_000 }),
       pv({ root: 'C', elo: 1800, t: 250_000 }),
-      pv({ root: 'C', elo: 1800, t: 1_000_000 }), // same root as previous — must be illegal vs it
+      pv({ root: 'C', elo: 1800, t: 1_000_000 }), // same root as previous must be illegal vs it
       pv({ root: 'D', elo: 1590, state: 'provisional' }),
       pv({ root: 'E', elo: 1650, state: 'placement', n: 3, of: 10 }),
       pv({ root: 'F', elo: 1650, state: 'provisional' }),
@@ -993,7 +993,7 @@ async function run(outdir) {
         if (ab.legal !== ba.legal || ab.reason !== ba.reason) mismatches++
       }
     eq(checked, 100, 'symmetry grid covers 100 ordered PairView pairs')
-    eq(mismatches, 0, 'pairingLegal(a,b,atWts) ≡ pairingLegal(b,a,atWts) — verdict AND reason — over the whole grid')
+    eq(mismatches, 0, 'pairingLegal(a,b,atWts) ≡ pairingLegal(b,a,atWts), verdict AND reason, over the whole grid')
     ok(!pairing.pairingLegal(grid[2], grid[3], AT).legal, 'the same-root pair in the grid is illegal')
     ok(grid.every((v) => !pairing.pairingLegal(v, v, AT).legal), 'every self-pair is illegal (same-root)')
   }

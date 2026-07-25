@@ -9,27 +9,27 @@
   {
    "id": "pin",
    "name": "The Pin",
-   "short": "A line piece — rook, bishop, or queen — attacks an enemy piece that shields a more valuable one behind it. The front piece is stuck: moving it exposes the treasure."
+   "short": "A line piece (rook, bishop, or queen) attacks an enemy piece that shields a more valuable one behind it. The front piece is stuck: moving it exposes the treasure."
   },
   {
    "id": "absolute-pin",
    "name": "The Absolute Pin",
-   "short": "The piece behind is the KING. The pinned piece is frozen by law — it cannot move at all, because exposing the king is illegal."
+   "short": "The piece behind is the KING. The pinned piece is frozen by law. It cannot move at all, because exposing the king is illegal."
   },
   {
    "id": "relative-pin",
    "name": "The Relative Pin",
-   "short": "The piece behind is the queen (or a rook). The pinned piece CAN legally move — but doing so throws away the bigger piece behind, so it stays glued in place."
+   "short": "The piece behind is the queen (or a rook). The pinned piece CAN legally move, but doing so throws away the bigger piece behind, so it stays glued in place."
   },
   {
    "id": "pile-on",
    "name": "Pile On the Pinned Piece",
-   "short": "A pinned piece cannot run, so attack it again — with a pawn or another piece. Add one more attacker than it has defenders and it simply falls."
+   "short": "A pinned piece cannot run, so attack it again, with a pawn or another piece. Add one more attacker than it has defenders and it simply falls."
   },
   {
    "id": "pinned-cant-guard",
    "name": "A Pinned Piece Cannot Defend",
-   "short": "A pinned piece is a dead guard — it still 'attacks' a square, but it can't actually capture there. So you may walk onto squares a pinned piece appears to cover."
+   "short": "A pinned piece is a dead guard: it still 'attacks' a square, but it can't actually capture there. So you may walk onto squares a pinned piece appears to cover."
   },
   {
    "id": "skewer",
@@ -39,7 +39,7 @@
   {
    "id": "skewer-check",
    "name": "The Skewer With Check",
-   "short": "Skewer the king and a piece behind it. The check is forcing — the king MUST move off the line — and the piece behind has no defender left."
+   "short": "Skewer the king and a piece behind it. The check is forcing (the king MUST move off the line) and the piece behind has no defender left."
   },
   {
    "id": "endgame-skewer",
@@ -49,21 +49,21 @@
   {
    "id": "make-the-line",
    "name": "Create the Line",
-   "short": "Often the pin or skewer is one move away. A check, a capture, or a pawn push first herds two enemy pieces onto the same rank, file, or diagonal — then you fire."
+   "short": "Often the pin or skewer is one move away. A check, a capture, or a pawn push first herds two enemy pieces onto the same rank, file, or diagonal. Then you fire."
   }
  ],
  "lessons": [
   {
    "id": "l1-what-is-a-pin",
-   "title": "What Is a Pin? — The Frozen Piece",
+   "title": "What Is a Pin?, The Frozen Piece",
    "kind": "concept",
    "summary": "A line piece skewers two enemy men at once: the front one is paralysed because moving it would surrender the bigger piece behind.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — feel the frozen line",
+     "title": "Warm-up: feel the frozen line",
      "intro": {
-      "text": "You know the fork: one attacker, two targets, side by side. Today, two enemy pieces stand on the SAME line — and the one in front is helpless. First, warm the eye. In each of these the winning idea is a pin or a skewer along a rank, file, or diagonal. Find the move that lines them up and wins. One move each."
+      "text": "You know the fork: one attacker, two targets, side by side. Today, two enemy pieces stand on the SAME line, and the one in front is helpless. First, warm the eye. In each of these the winning idea is a pin or a skewer along a rank, file, or diagonal. Find the move that lines them up and wins. One move each."
      },
      "puzzle": {
       "themes": [
@@ -84,7 +84,7 @@
        "conceptId": "pin",
        "coach": {
         "conceptId": "pin",
-        "text": "Look down the e-file. My rook on e1, the black knight on e3, and behind it the black king on e8 — three men on one straight line. This is a PIN. The rook attacks the knight, but the real prize is the king behind it. Now feel the trap the knight is in: if it leaps away, the rook's line runs straight to the king. That is not allowed — you may never expose your own king to attack. So the knight is frozen. It sits there, unable to move a muscle, while I decide what to do with it.",
+        "text": "Look down the e-file. My rook on e1, the black knight on e3, and behind it the black king on e8, three men on one straight line. This is a PIN. The rook attacks the knight, but the real prize is the king behind it. Now feel the trap the knight is in: if it leaps away, the rook's line runs straight to the king. That is not allowed. You may never expose your own king to attack. So the knight is frozen. It sits there, unable to move a muscle, while I decide what to do with it.",
         "annotations": [
          {
           "kind": "circle",
@@ -117,7 +117,7 @@
        "conceptId": "absolute-pin",
        "coach": {
         "conceptId": "absolute-pin",
-        "text": "When the piece shielded behind is the KING, we call it an ABSOLUTE pin — absolute because the law itself nails the piece down. The knight on e3 has eight leaps, and every single one is illegal: each would bare the king to my rook. So the knight is not merely ill-advised to move; it CANNOT. Remember this — an absolutely pinned piece is, for the moment, a dead man standing. We will learn to harvest it.",
+        "text": "When the piece shielded behind is the KING, we call it an ABSOLUTE pin. Absolute because the law itself nails the piece down. The knight on e3 has eight leaps, and every single one is illegal: each would bare the king to my rook. So the knight is not merely ill-advised to move; it CANNOT. Remember this. An absolutely pinned piece is, for the moment, a dead man standing. We will learn to harvest it.",
         "annotations": [
          {
           "kind": "circle",
@@ -139,7 +139,7 @@
        "conceptId": "pin",
        "coach": {
         "conceptId": "pin",
-        "text": "Any line piece can pin — rook, bishop, or queen. Here my queen on e2 holds the black rook on e5 pinned to the king on e8. The rook would love to leave the file and grab something, but it cannot: stepping off the e-file exposes its king. Notice who wins this stand-off. My queen is worth nine, the rook only five — but it does not matter, because the rook can never strike back while pinned. A pin turns a strong enemy piece into furniture.",
+        "text": "Any line piece can pin: rook, bishop, or queen. Here my queen on e2 holds the black rook on e5 pinned to the king on e8. The rook would love to leave the file and grab something, but it cannot: stepping off the e-file exposes its king. Notice who wins this stand-off. My queen is worth nine, the rook only five, but it does not matter, because the rook can never strike back while pinned. A pin turns a strong enemy piece into furniture.",
         "annotations": [
          {
           "kind": "circle",
@@ -172,7 +172,7 @@
        "conceptId": "relative-pin",
        "coach": {
         "conceptId": "relative-pin",
-        "text": "Now a softer kind. My bishop on g2 looks down the long light diagonal — g2, e4, d5, c6 — and on it sits the black knight on d5, with the black queen on b7 right behind it. That is a RELATIVE pin: the shielded piece is not the king but the queen. The knight is allowed to move — no law forbids it — but if it does, my bishop sweeps to b7 and the queen is gone. So the knight stays, not because it must, but because the price of leaving is ruinous. Absolute pin: cannot move. Relative pin: dare not move. Both leave the front piece stuck.",
+        "text": "Now a softer kind. My bishop on g2 looks down the long light diagonal (g2, e4, d5, c6) and on it sits the black knight on d5, with the black queen on b7 right behind it. That is a RELATIVE pin: the shielded piece is not the king but the queen. The knight is allowed to move (no law forbids it) but if it does, my bishop sweeps to b7 and the queen is gone. So the knight stays, not because it must, but because the price of leaving is ruinous. Absolute pin: cannot move. Relative pin: dare not move. Both leave the front piece stuck.",
         "annotations": [
          {
           "kind": "circle",
@@ -212,7 +212,7 @@
        "conceptId": "pin",
        "coach": {
         "conceptId": "make-the-line",
-        "text": "White to move. The black queen sits on a6, the knight on c4 in front of it — and the squares e2, d3, c4, b5, a6 lie on one diagonal. Your bishop on f1 can step onto that diagonal and pin the knight to the queen. Find the bishop move that creates the pin.",
+        "text": "White to move. The black queen sits on a6, the knight on c4 in front of it, and the squares e2, d3, c4, b5, a6 lie on one diagonal. Your bishop on f1 can step onto that diagonal and pin the knight to the queen. Find the bishop move that creates the pin.",
         "annotations": [
          {
           "kind": "circle",
@@ -236,7 +236,7 @@
        ],
        "successLine": {
         "conceptId": "relative-pin",
-        "text": "Be2 — the knight on c4 is pinned to the queen on a6. It may legally move, but the instant it does, Bxa6 takes the queen — so it is glued there. You have not won material yet, but you have paralysed a piece and set the table. Earlier you learned the harvest: pile on the pinned piece and take it. A pin is the setup; the collection comes after.",
+        "text": "Be2: the knight on c4 is pinned to the queen on a6. It may legally move, but the instant it does, Bxa6 takes the queen, so it is glued there. You have not won material yet, but you have paralysed a piece and set the table. Earlier you learned the harvest: pile on the pinned piece and take it. A pin is the setup; the collection comes after.",
         "annotations": [
          {
           "kind": "circle",
@@ -267,7 +267,7 @@
        "conceptId": "absolute-pin",
        "coach": {
         "conceptId": "make-the-line",
-        "text": "White to move. The black bishop on a4 and the black king on a8 share the a-file. Your rook on h1 can slide onto that file behind the bishop and pin it to the king — an ABSOLUTE pin. Make the pin.",
+        "text": "White to move. The black bishop on a4 and the black king on a8 share the a-file. Your rook on h1 can slide onto that file behind the bishop and pin it to the king, an ABSOLUTE pin. Make the pin.",
         "annotations": [
          {
           "kind": "circle",
@@ -291,7 +291,7 @@
        ],
        "successLine": {
         "conceptId": "absolute-pin",
-        "text": "Ra1 — the bishop on a4 is pinned to its king and cannot legally move. And the prize is right in front of you: the bishop has no defender. Because it is frozen, you simply take it — Rxa4 next move wins a whole bishop for nothing. An absolute pin against an undefended piece is the cleanest win in the book: pin it, then take it.",
+        "text": "Ra1: the bishop on a4 is pinned to its king and cannot legally move. And the prize is right in front of you: the bishop has no defender. Because it is frozen, you simply take it. Rxa4 next move wins a whole bishop for nothing. An absolute pin against an undefended piece is the cleanest win in the book: pin it, then take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -321,9 +321,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the pin",
+     "title": "Cool-down: find the pin",
      "intro": {
-      "text": "Now from real games. In each, two enemy pieces are lined up — or one move away from it. Find the pin (or the skewer; you will meet that shortly) that wins material. Look along every rank, file, and diagonal."
+      "text": "Now from real games. In each, two enemy pieces are lined up, or one move away from it. Find the pin (or the skewer; you will meet that shortly) that wins material. Look along every rank, file, and diagonal."
      },
      "puzzle": {
       "themes": [
@@ -340,13 +340,13 @@
    "id": "l2-pile-on",
    "title": "Pile On the Pinned Piece",
    "kind": "tactics",
-   "summary": "A pinned piece cannot run. So attack it a second time — one more attacker than defender — and win it where it stands.",
+   "summary": "A pinned piece cannot run. So attack it a second time (one more attacker than defender) and win it where it stands.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the pinned piece is stuck",
+     "title": "Warm-up: the pinned piece is stuck",
      "intro": {
-      "text": "A pin freezes a piece; now learn to cash it in. The rule is the one you already know from counting: bring one more attacker to the pinned piece than it has defenders, and it falls — because it can never run away. Warm up by winning a pinned or lined-up piece."
+      "text": "A pin freezes a piece; now learn to cash it in. The rule is the one you already know from counting: bring one more attacker to the pinned piece than it has defenders, and it falls. Because it can never run away. Warm up by winning a pinned or lined-up piece."
      },
      "puzzle": {
       "themes": [
@@ -359,14 +359,14 @@
     },
     {
      "kind": "teach",
-     "title": "Add an attacker — the humble pawn",
+     "title": "Add an attacker, the humble pawn",
      "steps": [
       {
        "fen": "4k3/8/2n5/1B6/3P4/8/8/4K3 w - - 0 1",
        "conceptId": "pile-on",
        "coach": {
         "conceptId": "pile-on",
-        "text": "My bishop on b5 pins the knight on c6 to the king on e8 — an absolute pin, so the knight cannot move. The knight is defended by nothing, but even a guarded pinned piece would fall here, because I can attack it AGAIN. Watch the cheapest attacker of all: the pawn. d5 jabs the knight. It cannot flee — it is pinned. Next move d5xc6 wins it clean. A pinned piece is a sitting target; the pawn-push is the simplest way to collect.",
+        "text": "My bishop on b5 pins the knight on c6 to the king on e8. An absolute pin, so the knight cannot move. The knight is defended by nothing, but even a guarded pinned piece would fall here, because I can attack it AGAIN. Watch the cheapest attacker of all: the pawn. d5 jabs the knight. It cannot flee. It is pinned. Next move d5xc6 wins it clean. A pinned piece is a sitting target; the pawn-push is the simplest way to collect.",
         "annotations": [
          {
           "kind": "circle",
@@ -401,7 +401,7 @@
        "conceptId": "relative-pin",
        "coach": {
         "conceptId": "pile-on",
-        "text": "Same idea against a RELATIVE pin. My rook on e1 holds the knight on e4 against the queen on e8. Now this knight CAN legally move — but if it does, Rxe8 wins the queen, so in practice it is just as stuck. I attack it again: d3 hits the knight. The knight's choices are both losing — flee and lose the queen, or stay and let dxe4 take it for a pawn. Either way I win material. Pile on the pinned piece and let your opponent choose his poison.",
+        "text": "Same idea against a RELATIVE pin. My rook on e1 holds the knight on e4 against the queen on e8. Now this knight CAN legally move, but if it does, Rxe8 wins the queen, so in practice it is just as stuck. I attack it again: d3 hits the knight. The knight's choices are both losing. Flee and lose the queen, or stay and let dxe4 take it for a pawn. Either way I win material. Pile on the pinned piece and let your opponent choose his poison.",
         "annotations": [
          {
           "kind": "circle",
@@ -435,7 +435,7 @@
        "conceptId": "pinned-cant-guard",
        "coach": {
         "conceptId": "pile-on",
-        "text": "And the heavy way. The knight on c6 is pinned to the king by my bishop. My rook already eyes it down the c-file. That is two attackers — bishop and rook — on a piece that has zero defenders and cannot run. Rxc6 simply wins it. Count it like any capture: more attackers than defenders, and the target frozen, equals a free piece. The pin did the hard work; the pile-on collects.",
+        "text": "And the heavy way. The knight on c6 is pinned to the king by my bishop. My rook already eyes it down the c-file. That is two attackers (bishop and rook) on a piece that has zero defenders and cannot run. Rxc6 simply wins it. Count it like any capture: more attackers than defenders, and the target frozen, equals a free piece. The pin did the hard work; the pile-on collects.",
         "annotations": [
          {
           "kind": "circle",
@@ -475,7 +475,7 @@
        "conceptId": "pile-on",
        "coach": {
         "conceptId": "pile-on",
-        "text": "White to move. Your rook on d1 pins the knight on d6 to the king on d8 — it cannot move. Bring a second attacker to win it. Push the pawn that jabs the knight.",
+        "text": "White to move. Your rook on d1 pins the knight on d6 to the king on d8. It cannot move. Bring a second attacker to win it. Push the pawn that jabs the knight.",
         "annotations": [
          {
           "kind": "circle",
@@ -530,7 +530,7 @@
        "conceptId": "absolute-pin",
        "coach": {
         "conceptId": "pile-on",
-        "text": "White to move. Your rook on e1 pins the black bishop on e4 to the king on e8 — the bishop is frozen and undefended. You do not even need a second attacker here. Just take it.",
+        "text": "White to move. Your rook on e1 pins the black bishop on e4 to the king on e8. The bishop is frozen and undefended. You do not even need a second attacker here. Just take it.",
         "annotations": [
          {
           "kind": "circle",
@@ -554,7 +554,7 @@
        ],
        "successLine": {
         "conceptId": "absolute-pin",
-        "text": "Rxe4 wins the bishop outright. The bishop was pinned to its king, so it could neither flee nor be defended in time — a free piece. Whenever you pin an undefended enemy piece against its king, the very next thing to check is: can I simply capture it? Often you can.",
+        "text": "Rxe4 wins the bishop outright. The bishop was pinned to its king, so it could neither flee nor be defended in time, a free piece. Whenever you pin an undefended enemy piece against its king, the very next thing to check is: can I simply capture it? Often you can.",
         "annotations": [
          {
           "kind": "circle",
@@ -573,7 +573,7 @@
        "conceptId": "pile-on",
        "coach": {
         "conceptId": "pile-on",
-        "text": "White to move. Your rook on e1 pins the bishop on e5 to the queen on e8 — a relative pin, so the bishop dare not move. Add a pawn attacker to win it: push the f-pawn to hit e5.",
+        "text": "White to move. Your rook on e1 pins the bishop on e5 to the queen on e8. A relative pin, so the bishop dare not move. Add a pawn attacker to win it: push the f-pawn to hit e5.",
         "annotations": [
          {
           "kind": "circle",
@@ -598,7 +598,7 @@
        ],
        "successLine": {
         "conceptId": "pile-on",
-        "text": "f4! The pawn attacks the pinned bishop. If the bishop runs, Rxe8 wins the queen; if it stays, f4xe5 wins material — a bishop for a pawn (the queen can recapture on e5, but you are a clear piece up). Your opponent is given only losing replies — that is what piling on a pinned piece does. Win the material and convert.",
+        "text": "f4! The pawn attacks the pinned bishop. If the bishop runs, Rxe8 wins the queen; if it stays, f4xe5 wins material. A bishop for a pawn (the queen can recapture on e5, but you are a clear piece up). Your opponent is given only losing replies. That is what piling on a pinned piece does. Win the material and convert.",
         "annotations": [
          {
           "kind": "circle",
@@ -627,9 +627,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — win the pinned piece",
+     "title": "Cool-down: win the pinned piece",
      "intro": {
-      "text": "Sharper now. A piece is pinned, or you can pin it first — then collect it by adding an attacker. Some need the pin, some need the pile-on, some need both in order. Win the material."
+      "text": "Sharper now. A piece is pinned, or you can pin it first. Then collect it by adding an attacker. Some need the pin, some need the pile-on, some need both in order. Win the material."
      },
      "puzzle": {
       "themes": [
@@ -644,15 +644,15 @@
   },
   {
    "id": "l3-the-skewer",
-   "title": "The Skewer — The Pin in Reverse",
+   "title": "The Skewer: The Pin in Reverse",
    "kind": "tactics",
-   "summary": "Turn the pin around: put the attack on the BIG piece in front. It must step aside — and you take the smaller piece behind it.",
+   "summary": "Turn the pin around: put the attack on the BIG piece in front. It must step aside, and you take the smaller piece behind it.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — drive the big piece off",
+     "title": "Warm-up: drive the big piece off",
      "intro": {
-      "text": "A pin attacks the front piece to win what is behind. A SKEWER does the opposite — it attacks the valuable piece in FRONT, forces it to move, and takes the piece revealed behind. Warm up by finding the move that lines up two enemy pieces and skewers them."
+      "text": "A pin attacks the front piece to win what is behind. A SKEWER does the opposite. It attacks the valuable piece in FRONT, forces it to move, and takes the piece revealed behind. Warm up by finding the move that lines up two enemy pieces and skewers them."
      },
      "puzzle": {
       "themes": [
@@ -672,7 +672,7 @@
        "conceptId": "skewer",
        "coach": {
         "conceptId": "skewer",
-        "text": "Look at the e-file: the black king on e4, and far behind it the queen on e8. In a pin the small piece stands in front; in a SKEWER the big one does. The king is the most valuable thing on the board, so when I attack it, it MUST move — that is the law. Re1+ puts my rook on the file and checks the king. The king has no choice but to step off the e-file, and the moment it does, the queen behind it stands naked.",
+        "text": "Look at the e-file: the black king on e4, and far behind it the queen on e8. In a pin the small piece stands in front; in a SKEWER the big one does. The king is the most valuable thing on the board, so when I attack it, it MUST move. That is the law. Re1+ puts my rook on the file and checks the king. The king has no choice but to step off the e-file, and the moment it does, the queen behind it stands naked.",
         "annotations": [
          {
           "kind": "circle",
@@ -705,7 +705,7 @@
        "conceptId": "skewer-check",
        "coach": {
         "conceptId": "skewer-check",
-        "text": "Here is the position after Re1+ and the king's reply. The king fled to d4 — it had to, the check was forcing — and now nothing defends the queen on e8. Rxe8 collects it. THIS is why a skewer with check is so deadly: the front piece is the king, and a king can never refuse to move. It steps aside on command and hands you the piece behind. King in front, queen behind, a checking line between them — win the queen every time.",
+        "text": "Here is the position after Re1+ and the king's reply. The king fled to d4 (it had to, the check was forcing) and now nothing defends the queen on e8. Rxe8 collects it. THIS is why a skewer with check is so deadly: the front piece is the king, and a king can never refuse to move. It steps aside on command and hands you the piece behind. King in front, queen behind, a checking line between them. Win the queen every time.",
         "annotations": [
          {
           "kind": "circle",
@@ -727,7 +727,7 @@
        "conceptId": "skewer",
        "coach": {
         "conceptId": "skewer-check",
-        "text": "The bishop skewers too, along a diagonal. The black king on e6 and the queen on g8 share the a2–g8 diagonal, with f7 empty between them. My bishop slides to b3 — Bb3+, a check from safe distance the king cannot reach to capture. The king must abandon the diagonal, and then Bxg8 wins the queen. Notice I kept the bishop FAR from the king: a skewering checker must not sit where the king can simply eat it.",
+        "text": "The bishop skewers too, along a diagonal. The black king on e6 and the queen on g8 share the a2–g8 diagonal, with f7 empty between them. My bishop slides to b3: Bb3+, a check from safe distance the king cannot reach to capture. The king must abandon the diagonal, and then Bxg8 wins the queen. Notice I kept the bishop FAR from the king: a skewering checker must not sit where the king can simply eat it.",
         "annotations": [
          {
           "kind": "circle",
@@ -765,7 +765,7 @@
        "conceptId": "skewer-check",
        "coach": {
         "conceptId": "skewer-check",
-        "text": "White to move. The black king on c4 and the queen on c8 stand on the same file. Give the rook check along that file — the king must move off it, and the queen behind falls. Play the skewering check.",
+        "text": "White to move. The black king on c4 and the queen on c8 stand on the same file. Give the rook check along that file. The king must move off it, and the queen behind falls. Play the skewering check.",
         "annotations": [
          {
           "kind": "circle",
@@ -789,7 +789,7 @@
        ],
        "successLine": {
         "conceptId": "skewer-check",
-        "text": "Rc1+! The king is checked and must leave the c-file — none of its escape squares defend c8. Next move Rxc8 wins the queen. A rook for a queen: that is a skewer doing its work. Attack the king in front, collect the piece behind.",
+        "text": "Rc1+! The king is checked and must leave the c-file. None of its escape squares defend c8. Next move Rxc8 wins the queen. A rook for a queen: that is a skewer doing its work. Attack the king in front, collect the piece behind.",
         "annotations": [
          {
           "kind": "circle",
@@ -812,7 +812,7 @@
         ]
        },
        "retryLine": {
-        "text": "King and queen are both on the c-file. Bring your rook to c1 with check — Rc1+ — so the king must step off the file and abandon the queen."
+        "text": "King and queen are both on the c-file. Bring your rook to c1 with check (Rc1+) so the king must step off the file and abandon the queen."
        }
       },
       {
@@ -820,7 +820,7 @@
        "conceptId": "skewer-check",
        "coach": {
         "conceptId": "skewer-check",
-        "text": "White to move. The king on f5 and the queen on b1 lie on one diagonal. Your bishop on g8 can check the king from a safe square on that diagonal, driving it off so you can take the queen. Find the skewering check — and keep the bishop out of the king's reach.",
+        "text": "White to move. The king on f5 and the queen on b1 lie on one diagonal. Your bishop on g8 can check the king from a safe square on that diagonal, driving it off so you can take the queen. Find the skewering check, and keep the bishop out of the king's reach.",
         "annotations": [
          {
           "kind": "circle",
@@ -844,7 +844,7 @@
        ],
        "successLine": {
         "conceptId": "skewer-check",
-        "text": "Bh7+! The check comes from h7 — too far for the king to capture. The king must leave the diagonal, and then Bxb1 wins the queen. Check from a square the king can reach and it would simply eat your bishop. With skewers, mind the distance: deliver the check where the king cannot answer it with a capture.",
+        "text": "Bh7+! The check comes from h7. Too far for the king to capture. The king must leave the diagonal, and then Bxb1 wins the queen. Check from a square the king can reach and it would simply eat your bishop. With skewers, mind the distance: deliver the check where the king cannot answer it with a capture.",
         "annotations": [
          {
           "kind": "circle",
@@ -867,16 +867,16 @@
         ]
        },
        "retryLine": {
-        "text": "King f5 and queen b1 are on the b1–h7 diagonal. Check the king from h7 — far enough that it cannot capture your bishop — and after it moves, Bxb1."
+        "text": "King f5 and queen b1 are on the b1–h7 diagonal. Check the king from h7 (far enough that it cannot capture your bishop) and after it moves, Bxb1."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — fire the skewer",
+     "title": "Cool-down: fire the skewer",
      "intro": {
-      "text": "From real games now. Find the skewer: attack the valuable piece in front — often with check — and win the one lined up behind it. Watch the whole rank, file, and diagonal."
+      "text": "From real games now. Find the skewer: attack the valuable piece in front (often with check) and win the one lined up behind it. Watch the whole rank, file, and diagonal."
      },
      "puzzle": {
       "themes": [
@@ -891,15 +891,15 @@
   },
   {
    "id": "l4-endgame-skewers",
-   "title": "Endgame Skewers — The Rook's Long Reach",
+   "title": "Endgame Skewers: The Rook's Long Reach",
    "kind": "endgame",
    "summary": "With few pieces left, a single rook skewers the bare king and the piece behind it. The most common way an endgame is won outright.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the long open line",
+     "title": "Warm-up: the long open line",
      "intro": {
-      "text": "Skewers come into their own in the endgame. With the board nearly empty, a king and a heavy piece are often the only men on a long open line — and a rook checking across it wins the piece behind. Warm up on these clean, sparse skewers."
+      "text": "Skewers come into their own in the endgame. With the board nearly empty, a king and a heavy piece are often the only men on a long open line, and a rook checking across it wins the piece behind. Warm up on these clean, sparse skewers."
      },
      "puzzle": {
       "themes": [
@@ -919,7 +919,7 @@
        "conceptId": "endgame-skewer",
        "coach": {
         "conceptId": "endgame-skewer",
-        "text": "This is the position every endgame player must know cold. Black has just queened — a new queen on h8, the king tucked beneath it on h3. They sit on the open h-file. My rook swings over: Rh1+. The check rockets up the empty file, the king must abandon it, and Rxh8 wins the brand-new queen. A rook caught a queen — because the king was forced to step aside. Two pieces of yours, both the only men on a long open line: look for the skewer.",
+        "text": "This is the position every endgame player must know cold. Black has just queened. A new queen on h8, the king tucked beneath it on h3. They sit on the open h-file. My rook swings over: Rh1+. The check rockets up the empty file, the king must abandon it, and Rxh8 wins the brand-new queen. A rook caught a queen. Because the king was forced to step aside. Two pieces of yours, both the only men on a long open line: look for the skewer.",
         "annotations": [
          {
           "kind": "circle",
@@ -951,7 +951,7 @@
        "conceptId": "endgame-skewer",
        "coach": {
         "conceptId": "endgame-skewer",
-        "text": "Rook against rook, and one move decides it. The black king on d4 and the black rook on d8 share the d-file. Rd1+ checks the king across the open file; it must move off, and Rxd8 wins the rook. You go from equal material to a winning extra rook in a single skewer. In bare-board endgames this is bread and butter — always glance down the open files and diagonals for the enemy king with a piece stranded behind it.",
+        "text": "Rook against rook, and one move decides it. The black king on d4 and the black rook on d8 share the d-file. Rd1+ checks the king across the open file; it must move off, and Rxd8 wins the rook. You go from equal material to a winning extra rook in a single skewer. In bare-board endgames this is bread and butter. Always glance down the open files and diagonals for the enemy king with a piece stranded behind it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1013,7 +1013,7 @@
        ],
        "successLine": {
         "conceptId": "endgame-skewer",
-        "text": "Ra1+! The king must leave the a-file, and Rxa8 wins the queen. This single pattern decides countless endgames — when the enemy king and a heavy piece share an open line, the rook checks across it and snatches the piece. Engrave it.",
+        "text": "Ra1+! The king must leave the a-file, and Rxa8 wins the queen. This single pattern decides countless endgames. When the enemy king and a heavy piece share an open line, the rook checks across it and snatches the piece. Engrave it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1036,7 +1036,7 @@
         ]
        },
        "retryLine": {
-        "text": "King a4 and queen a8 are on the open a-file. Bring your rook to a1 with check — Ra1+ — and after the king moves, Rxa8."
+        "text": "King a4 and queen a8 are on the open a-file. Bring your rook to a1 with check (Ra1+) and after the king moves, Rxa8."
        }
       },
       {
@@ -1044,7 +1044,7 @@
        "conceptId": "endgame-skewer",
        "coach": {
         "conceptId": "endgame-skewer",
-        "text": "White to move — and here you must look before you leap. The black king on h6 and queen on h8 share the h-file, only two squares apart. Before you fire, check the king's escape: when it is driven off the h-file, can it reach a square that DEFENDS h8? Notice your own king on f7 already guards g7 and g8. Find the rook check, and confirm the queen really falls.",
+        "text": "White to move, and here you must look before you leap. The black king on h6 and queen on h8 share the h-file, only two squares apart. Before you fire, check the king's escape: when it is driven off the h-file, can it reach a square that DEFENDS h8? Notice your own king on f7 already guards g7 and g8. Find the rook check, and confirm the queen really falls.",
         "annotations": [
          {
           "kind": "circle",
@@ -1074,7 +1074,7 @@
        ],
        "successLine": {
         "conceptId": "endgame-skewer",
-        "text": "Rh1+! Now read the king's only move: g7 is illegal (your king covers it), g6 is illegal (also covered), so the king is forced to g5 — far from h8. From g5 it cannot defend the queen, and Rxh8 wins it. THIS is the verification a skewer always needs: the king must not be able to flee to a square that guards the prize. Your king on f7 was the quiet hero, sealing the one defending square.",
+        "text": "Rh1+! Now read the king's only move: g7 is illegal (your king covers it), g6 is illegal (also covered), so the king is forced to g5. Far from h8. From g5 it cannot defend the queen, and Rxh8 wins it. THIS is the verification a skewer always needs: the king must not be able to flee to a square that guards the prize. Your king on f7 was the quiet hero, sealing the one defending square.",
         "annotations": [
          {
           "kind": "circle",
@@ -1097,16 +1097,16 @@
         ]
        },
        "retryLine": {
-        "text": "King h6 and queen h8 are on the h-file. Play Rh1+. The king cannot reach g7 (your king on f7 guards it), so it must go to g5 — and then Rxh8 wins the queen."
+        "text": "King h6 and queen h8 are on the h-file. Play Rh1+. The king cannot reach g7 (your king on f7 guards it), so it must go to g5, and then Rxh8 wins the queen."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the deciding skewer",
+     "title": "Cool-down: the deciding skewer",
      "intro": {
-      "text": "Endgame skewers from real games — the move that turns a level position into a won one. Spot the king and the piece behind it on an open line, and fire."
+      "text": "Endgame skewers from real games: the move that turns a level position into a won one. Spot the king and the piece behind it on an open line, and fire."
      },
      "puzzle": {
       "themes": [
@@ -1121,15 +1121,15 @@
   },
   {
    "id": "l5-find-and-make",
-   "title": "Find It, Make It — Pins & Skewers Together",
+   "title": "Find It, Make It, Pins & Skewers Together",
    "kind": "tactics",
    "summary": "Tell pin from skewer at a glance, exploit a pinned piece that cannot defend, and create the winning line with a forcing move.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — pin or skewer?",
+     "title": "Warm-up: pin or skewer?",
      "intro": {
-      "text": "The payoff lesson. First, sharpen the recognition: in each warm-up, two enemy pieces are on a line and one move wins. Is it a pin or a skewer? Small piece in front — pin it and pile on. Big piece in front — skewer it and take what is behind. Find the winning move."
+      "text": "The payoff lesson. First, sharpen the recognition: in each warm-up, two enemy pieces are on a line and one move wins. Is it a pin or a skewer? Small piece in front: pin it and pile on. Big piece in front: skewer it and take what is behind. Find the winning move."
      },
      "puzzle": {
       "themes": [
@@ -1150,7 +1150,7 @@
        "conceptId": "pinned-cant-guard",
        "coach": {
         "conceptId": "pinned-cant-guard",
-        "text": "A subtle, powerful truth: a pinned piece cannot truly defend. The knight on e3 is pinned to its king by my rook. Suppose that knight were the only guard of some square — say it 'covers' f5 or d5. It does NOT. If anything of mine landed there, the knight could not recapture, because capturing would expose the king. So when you scan a position, treat a pinned defender as if it were not there. Many combinations begin exactly here: pin the guard, then strike the square it can no longer protect.",
+        "text": "A subtle, powerful truth: a pinned piece cannot truly defend. The knight on e3 is pinned to its king by my rook. Suppose that knight were the only guard of some square: say it 'covers' f5 or d5. It does NOT. If anything of mine landed there, the knight could not recapture, because capturing would expose the king. So when you scan a position, treat a pinned defender as if it were not there. Many combinations begin exactly here: pin the guard, then strike the square it can no longer protect.",
         "annotations": [
          {
           "kind": "circle",
@@ -1184,7 +1184,7 @@
        "conceptId": "make-the-line",
        "coach": {
         "conceptId": "make-the-line",
-        "text": "And the master's habit: when the line is not there yet, CREATE it. Here the black king on d4 and the queen on f6 already share the a1–h8 diagonal — d4, e5, f6 — and behind the king the diagonal runs back through c3, b2, a1. My bishop on c1 is one step away: Bb2+ swings onto that diagonal with check from b2, safely out of the king's reach. The king must leave the diagonal, and then Bxf6 wins the queen. Do not wait for a pin or skewer to appear by accident — force two enemy pieces onto one line with a check, a capture, or a push, and then fire. And note where the checker lands: b2 is far enough that the king can never simply eat it.",
+        "text": "And the master's habit: when the line is not there yet, CREATE it. Here the black king on d4 and the queen on f6 already share the a1–h8 diagonal (d4, e5, f6) and behind the king the diagonal runs back through c3, b2, a1. My bishop on c1 is one step away: Bb2+ swings onto that diagonal with check from b2, safely out of the king's reach. The king must leave the diagonal, and then Bxf6 wins the queen. Do not wait for a pin or skewer to appear by accident. Force two enemy pieces onto one line with a check, a capture, or a push, and then fire. And note where the checker lands: b2 is far enough that the king can never simply eat it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1246,7 +1246,7 @@
        ],
        "successLine": {
         "conceptId": "make-the-line",
-        "text": "Bb2+! The check comes from b2 — far from the king, which cannot capture it — and forces the king off the long diagonal. Then Bxf6 wins the queen. You did not wait for the skewer; you built it with one forcing move. See the line you want, then find the check or push that creates it.",
+        "text": "Bb2+! The check comes from b2 (far from the king, which cannot capture it) and forces the king off the long diagonal. Then Bxf6 wins the queen. You did not wait for the skewer; you built it with one forcing move. See the line you want, then find the check or push that creates it.",
         "annotations": [
          {
           "kind": "circle",
@@ -1269,7 +1269,7 @@
         ]
        },
        "retryLine": {
-        "text": "King d4 and queen f6 are on the a1–h8 diagonal. Step your bishop from c1 to b2 with check — Bb2+, out of the king's reach — then take the queen on f6."
+        "text": "King d4 and queen f6 are on the a1–h8 diagonal. Step your bishop from c1 to b2 with check (Bb2+, out of the king's reach) then take the queen on f6."
        }
       },
       {
@@ -1301,7 +1301,7 @@
        ],
        "successLine": {
         "conceptId": "skewer-check",
-        "text": "Rh1+! The king must abandon the h-file, and Rxh8 wins the rook. King in front, rook behind, a checking line between — the skewer never fails. Recognise the shape instantly and the win is automatic.",
+        "text": "Rh1+! The king must abandon the h-file, and Rxh8 wins the rook. King in front, rook behind, a checking line between. The skewer never fails. Recognise the shape instantly and the win is automatic.",
         "annotations": [
          {
           "kind": "circle",
@@ -1332,7 +1332,7 @@
        "conceptId": "pile-on",
        "coach": {
         "conceptId": "pile-on",
-        "text": "One last rep — the pin-and-pile. The knight on d6 is pinned to its king on d8 by your rook on d1 — an absolute pin, so it cannot move. Win it by adding a pawn attacker it cannot escape. Push the pawn that jabs d6.",
+        "text": "One last rep: the pin-and-pile. The knight on d6 is pinned to its king on d8 by your rook on d1. An absolute pin, so it cannot move. Win it by adding a pawn attacker it cannot escape. Push the pawn that jabs d6.",
         "annotations": [
          {
           "kind": "circle",
@@ -1357,7 +1357,7 @@
        ],
        "successLine": {
         "conceptId": "pile-on",
-        "text": "e5! The pinned knight is hit again and cannot run; e5xd6 wins it next move. Pin to freeze, pile on to collect — and when the line is not there, make it. You now hold the whole family of pins and skewers. Take it to the test.",
+        "text": "e5! The pinned knight is hit again and cannot run; e5xd6 wins it next move. Pin to freeze, pile on to collect, and when the line is not there, make it. You now hold the whole family of pins and skewers. Take it to the test.",
         "annotations": [
          {
           "kind": "circle",
@@ -1386,9 +1386,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the full hunt",
+     "title": "Cool-down: the full hunt",
      "intro": {
-      "text": "Everything together, from real games and a notch harder. Pin or skewer, set it or fire it — find the move that wins material along a line. This is the chapter's reward; take your time and see the whole board."
+      "text": "Everything together, from real games and a notch harder. Pin or skewer, set it or fire it. Find the move that wins material along a line. This is the chapter's reward; take your time and see the whole board."
      },
      "puzzle": {
       "themes": [
@@ -1402,13 +1402,13 @@
     },
     {
      "kind": "boss",
-     "title": "Win material — pin and skewer the apprentice",
+     "title": "Win material, pin and skewer the apprentice",
      "bossFen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
      "bossEngineElo": 1000,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "pin",
-      "text": "Now play it for real, as White against my apprentice. Develop with purpose — a bishop to b5 or g5 to pin a knight, your rooks onto open files. Watch always for two of his pieces on one line: if the small one is in front, pin it and pile on; if a big one or his king is in front, skewer it and take what hides behind. And when the line is not there, force it with a check. Win me material along a line, then convert it. Begin."
+      "text": "Now play it for real, as White against my apprentice. Develop with purpose. A bishop to b5 or g5 to pin a knight, your rooks onto open files. Watch always for two of his pieces on one line: if the small one is in front, pin it and pile on; if a big one or his king is in front, skewer it and take what hides behind. And when the line is not there, force it with a check. Win me material along a line, then convert it. Begin."
      }
     }
    ]
@@ -1439,13 +1439,13 @@
      "An absolute pin wins a piece; a relative pin only gives check"
     ],
     "answerIndex": 0,
-    "explain": "Absolute = pinned against the king, so moving the pinned piece is illegal — it cannot move. Relative = pinned against a lesser-but-valuable piece (usually the queen), so it may move but dare not, because the piece behind would fall."
+    "explain": "Absolute = pinned against the king, so moving the pinned piece is illegal. It cannot move. Relative = pinned against a lesser-but-valuable piece (usually the queen), so it may move but dare not, because the piece behind would fall."
    },
    {
     "kind": "mc",
     "prompt": "A SKEWER differs from a pin in that:",
     "options": [
-     "The more valuable piece is in FRONT — you attack it, it must move, and you capture the piece revealed behind it",
+     "The more valuable piece is in FRONT. You attack it, it must move, and you capture the piece revealed behind it",
      "It can only be made by a knight",
      "It always delivers checkmate",
      "The pinned piece is defended by a pawn"
@@ -1457,22 +1457,22 @@
     "kind": "mc",
     "prompt": "Your bishop pins an enemy knight to its king, but the knight is defended once. How do you win the knight?",
     "options": [
-     "Attack it again with a second piece or a pawn — it is pinned, so it cannot run, and one more attacker than defender wins it",
-     "Give up — a defended pinned piece can never be won",
+     "Attack it again with a second piece or a pawn. It is pinned, so it cannot run, and one more attacker than defender wins it",
+     "Give up: a defended pinned piece can never be won",
      "Capture it immediately; the defender does not matter",
      "Offer a draw"
     ],
     "answerIndex": 0,
-    "explain": "Pile on the pinned piece. Because it cannot move, you simply add attackers until you have more than its defenders — a pawn jab is the cheapest — and it falls where it stands."
+    "explain": "Pile on the pinned piece. Because it cannot move, you simply add attackers until you have more than its defenders (a pawn jab is the cheapest) and it falls where it stands."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Win material along a line — find the bishop move.",
+    "prompt": "White to move. Win material along a line. Find the bishop move.",
     "fen": "3q2k1/8/5n2/8/8/8/5B2/6K1 w - - 0 1",
     "solutionUci": [
      "f2h4"
     ],
-    "explain": "Bh4 pins the knight on f6 to the queen on d8 along the d8–h4 diagonal. The knight is glued in place — moving it would lose the queen — and you have paralysed a defender."
+    "explain": "Bh4 pins the knight on f6 to the queen on d8 along the d8–h4 diagonal. The knight is glued in place (moving it would lose the queen) and you have paralysed a defender."
    },
    {
     "kind": "play",
@@ -1499,7 +1499,7 @@
     "solutionUci": [
      "h8e8"
     ],
-    "explain": "Re8+ checks the king down the e-file. The king must step off, and Rxe2 wins the queen behind it — a skewer."
+    "explain": "Re8+ checks the king down the e-file. The king must step off, and Rxe2 wins the queen behind it, a skewer."
    },
    {
     "kind": "play",
@@ -1512,7 +1512,7 @@
    },
    {
     "kind": "play",
-    "prompt": "White to move. Win material along a line — mind where the checker lands.",
+    "prompt": "White to move. Win material along a line. Mind where the checker lands.",
     "fen": "8/8/B7/3k4/8/6K1/8/7q w - - 0 1",
     "solutionUci": [
      "a6b7"
@@ -1521,7 +1521,7 @@
    },
    {
     "kind": "play",
-    "prompt": "White to move. The line isn't there yet — make it and win material.",
+    "prompt": "White to move. The line isn't there yet. Make it and win material.",
     "fen": "8/8/8/8/2k2q2/8/8/R5K1 w - - 0 1",
     "solutionUci": [
      "a1a4"
@@ -1534,7 +1534,7 @@
     "fen": "r1bqkbnr/ppp2ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 1 1",
     "lastMoveUci": "f1b5",
     "verdict": "correct",
-    "explain": "Correct. With the d-file open, nothing blocks the b5–c6–e8 diagonal, so Bb5 truly pins the knight to its king — an absolute pin. The knight cannot move a muscle, and White can now pile on it (d4–d5 next) to win it. A developing move that paralyses a defender."
+    "explain": "Correct. With the d-file open, nothing blocks the b5–c6–e8 diagonal, so Bb5 truly pins the knight to its king, an absolute pin. The knight cannot move a muscle, and White can now pile on it (d4–d5 next) to win it. A developing move that paralyses a defender."
    },
    {
     "kind": "judge",

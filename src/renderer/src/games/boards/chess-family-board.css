@@ -1,5 +1,5 @@
 /* ============================================================
-   ChessFamilyBoard (games/boards/ChessFamilyBoard.tsx) — one
+   ChessFamilyBoard (games/boards/ChessFamilyBoard.tsx): one
    chessgroundx board for all 14 chess-family kinds. Look bar:
    chess.com / lichess grade (CLAUDE.md).
 
@@ -47,7 +47,7 @@
 }
 
 /* 8x8 cells boards: the app's flat 2-color themes (same recipe as
-   styles/app.css .board-wrap rule — wrap the board in a .board-<theme> +
+   styles/app.css .board-wrap rule: wrap the board in a .board-<theme> +
    .pieces-<set> ancestor and both apply; brown fallback otherwise). */
 .cfb-cells8 cg-board {
   background-color: var(--sq-light, #f0d9b5);
@@ -63,7 +63,7 @@
 /* ---------------- boards that are not a checkerboard ---------------- */
 
 /* The global chessground.brown.css / app board themes paint cg-board with a
-   checker — blank it for the wood boards; the grid is an SVG overlay UNDER
+   checker: blank it for the wood boards; the grid is an SVG overlay UNDER
    the (transparent) cg-board. */
 .cfb-int cg-board,
 .cfb-shogi cg-board {
@@ -94,7 +94,7 @@
   pointer-events: none;
 }
 
-/* River labels (xiangqi) — an overlay so real fonts render the hanzi.
+/* River labels (xiangqi): an overlay so real fonts render the hanzi.
    Both labels stay upright (pychess-style): a rotated 漢界 reads as a
    rendering bug on screen. Size tracks the board via container units. */
 .cfb-river {
@@ -115,7 +115,7 @@
   user-select: none;
 }
 
-/* Intersection boards: full-cell paint looks wrong on a line grid — use soft
+/* Intersection boards: full-cell paint looks wrong on a line grid. Use soft
    round highlights instead. */
 .cfb-int cg-board square.last-move,
 .cfb-shogi cg-board square.last-move {
@@ -136,7 +136,7 @@
 
 /* ---------------- coordinates (8x8 cells boards) ----------------
    chessgroundx marks coords `coords.bottom|side.forward.white|black`
-   (unlike chessground's .files/.ranks) — the app's global board CSS never
+   (unlike chessground's .files/.ranks). The app's global board CSS never
    matches them, so they are styled here, lichess-style: labels inside the
    board edge, text color = the OPPOSITE square color under the label. */
 
@@ -231,7 +231,7 @@
   opacity: 0.22;
   cursor: default;
 }
-/* count badge, chess.com style — shown for 2+; white ring keeps it legible
+/* count badge, chess.com style: shown for 2+; white ring keeps it legible
    over any piece art / board theme */
 .cfb-pocket piece::after {
   content: attr(data-nb);
@@ -402,7 +402,7 @@
   color: #b3231f;
 }
 
-/* glyphs — xiangqi */
+/* glyphs. Xiangqi */
 .cfb-noart.cfb-xiangqi piece.r-piece.white::after { content: '俥'; }
 .cfb-noart.cfb-xiangqi piece.n-piece.white::after { content: '傌'; }
 .cfb-noart.cfb-xiangqi piece.b-piece.white::after { content: '相'; }
@@ -417,7 +417,7 @@
 .cfb-noart.cfb-xiangqi piece.k-piece.black::after { content: '將'; }
 .cfb-noart.cfb-xiangqi piece.c-piece.black::after { content: '砲'; }
 .cfb-noart.cfb-xiangqi piece.p-piece.black::after { content: '卒'; }
-/* glyphs — janggi (blue = Cho, red = Han) */
+/* glyphs. Janggi (blue = Cho, red = Han) */
 .cfb-noart.cfb-janggi piece.white::after { color: #1d4f9c; }
 .cfb-noart.cfb-janggi piece.r-piece::after { content: '車'; }
 .cfb-noart.cfb-janggi piece.n-piece::after { content: '馬'; }
@@ -428,7 +428,7 @@
 .cfb-noart.cfb-janggi piece.k-piece.black::after { content: '漢'; }
 .cfb-noart.cfb-janggi piece.p-piece.white::after { content: '卒'; }
 .cfb-noart.cfb-janggi piece.p-piece.black::after { content: '兵'; }
-/* glyphs — shogi */
+/* glyphs. Shogi */
 .cfb-noart.cfb-shogi piece.p-piece::after { content: '歩'; }
 .cfb-noart.cfb-shogi piece.l-piece::after { content: '香'; }
 .cfb-noart.cfb-shogi piece.n-piece::after { content: '桂'; }

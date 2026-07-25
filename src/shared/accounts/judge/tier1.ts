@@ -1,10 +1,10 @@
-// A5 J2 — Tier-1 forensic signals (spec §8 Tier-1): pure functions over
+// A5 J2, Tier-1 forensic signals (spec §8 Tier-1): pure functions over
 // (transcript, signed clocks, JudgeOutput). Platform-neutral: no node:
 // imports, no DOM, no ambient time/randomness. INTEGER OUTPUTS ONLY
 // (micro-units for fractional quantities); the only division is floor
 // division of safe integers, and the module uses NO transcendentals at all
-// (Math.exp/log/pow banned per detmath; nothing here needed even dexp/dln —
-// the one logarithmic curve, the ACPL↔Elo anchor set, is precomputed into
+// (Math.exp/log/pow banned per detmath; nothing here needed even dexp/dln.
+// The one logarithmic curve, the ACPL↔Elo anchor set, is precomputed into
 // integer knots). Fail-closed: every public entry throws Tier1InputError on
 // malformed input; nothing is ever silently coerced.
 //
@@ -21,7 +21,7 @@
 //
 // PLAYED-MOVE EVAL (the ground-truth rule, used by ACPL and engine-match):
 //  (a) IN-LIST: if the played move string-equals a judged line's move at
-//      ply i, the played eval is THAT LINE's score — the same-snapshot
+//      ply i, the played eval is THAT LINE's score. The same-snapshot
 //      convention the shipped classifier uses for co-best moves
 //      (accuracy.ts computeIsBest / REVIEW-SPEC S2 uses PV2's eval at
 //      fenBefore). String equality here only SELECTS the score source; it is
@@ -29,35 +29,35 @@
 //  (b) NOT-IN-LIST: the NEXT judged position (exactly ply i+1) is the ground
 //      truth: its rank-1 line's score, negated to the mover's POV
 //      (cp → −cp; mate m → mate −m, then the mate map below).
-//  (c) NEITHER (move outside the MultiPV list and ply i+1 not judged — e.g.
-//      the game's final move): the move is UNSCORED — excluded from both the
+//  (c) NEITHER (move outside the MultiPV list and ply i+1 not judged, e.g.
+//      the game's final move): the move is UNSCORED. Excluded from both the
 //      ACPL and the engine-match denominators and counted in `unscored`.
 //
-// MATE MAP (ACPL/engine-match) — ported VERBATIM from the shipped
+// MATE MAP (ACPL/engine-match). Ported VERBATIM from the shipped
 // src/main/analysis/accuracy.ts mateToCp:
 //   mate 0 → −2100 (the POV side is already checkmated; unreachable from J1
-//   output — a judged line can never carry mate 0 because judgeGame rejects
-//   terminal positions — but the branch is kept for port fidelity and for
+//   output: a judged line can never carry mate 0 because judgeGame rejects
+//   terminal positions, but the branch is kept for port fidelity and for
 //   the negated ground-truth path's totality);
 //   else sign(m)·(21 − min(10, |m|))·100  (mate-in-1 → ±2000 … ≥10 → ±1100).
 //   Consequence (documented, conservative): mate bands are 100cp apart, so a
 //   ground-truth-scored mate move matches a listed mate line only at the same
-//   band; near-misses fall OUT of the ±15cp window — fewer matches, i.e. the
+//   band; near-misses fall OUT of the ±15cp window. Fewer matches, i.e. the
 //   fail-safe (less suspicious) direction.
 //
-// ACPL — port of accuracy.ts acpl():
+// ACPL. Port of accuracy.ts acpl():
 //   per-move loss  = min(1000, max(0, bestCp − playedCp))      [MAX_CPL_PER_MOVE]
 //   acplMicro(L)   = |L| = 0 ? 0
 //                  : min(2_000_000_000, floor(1e6·Σloss / |L|)) [MAX_CPL cap]
 //   bestCp = the rank-1 line's score at ply i (mover POV, mate-mapped).
 //   Deviation from the shipped float mean: floor division in micro-units
-//   (≤ 1 micro-unit difference — required by the integers-only contract).
+//   (≤ 1 micro-unit difference; required by the integers-only contract).
 //   NOTE for consumers: acplMicro([]) = 0 mirrors the shipped acpl([]) = 0;
 //   J4 MUST weight by `scored`, never read a 0-sample ACPL as strength.
 //
-// ENGINE MATCH — two criteria, one window width (±PARAMS_A5.scoreEquivCp,
+// ENGINE MATCH: two criteria, one window width (±PARAMS_A5.scoreEquivCp,
 // both sides mate-mapped as above; no new parameter):
-//   CALIBRATED any-line criterion (feeds matched/matchMicro — the Tier-2 z
+//   CALIBRATED any-line criterion (feeds matched/matchMicro: the Tier-2 z
 //   input the MEASURED anchors were fit under, anchors.ts matchByElo /
 //   sigmaMatchMicro): a scored move is engine-matched iff
 //   |playedCp − lineCp| ≤ scoreEquivCp for ANY judged line at that position.
@@ -65,36 +65,36 @@
 //   matches through its ground-truth eval (rule (b)).
 //   engineMatchMicro(matched, scored) = scored = 0 ? 0
 //                                     : floor(1e6·matched / scored).
-//   [A5-14 DEFERRED — CONFIRMED DEFECT in the any-line criterion]: the
+//   [A5-14 DEFERRED, CONFIRMED DEFECT in the any-line criterion]: the
 //   distance-0 self-match makes the window INERT for listed moves (the
 //   criterion extensionally degenerates to MultiPV-list membership; with
 //   ≤ t1MultiPv legal moves the judge lists every legal move, so every move
 //   in a low-branching position auto-matches regardless of quality), and a
-//   not-in-list move is certified by ANY line's score — including a rank-4
+//   not-in-list move is certified by ANY line's score, including a rank-4
 //   line hundreds of cp below best. The §8-intended criterion is the
 //   BEST-relative window (isEngineMatchedBest / SideMoveScores.matchedBest):
-//   matched iff |playedCp − rank1Cp| ≤ scoreEquivCp — live in BOTH
+//   matched iff |playedCp − rank1Cp| ≤ scoreEquivCp. Live in BOTH
 //   directions for EVERY move and still never exact-move matching (a
 //   rank-≥2 or unlisted move within the window of best matches; best line ∈
 //   lines ⇒ matchedBest ≤ matched always). matchedBest is DIAGNOSTICS-LEVEL
-//   ONLY — deliberately NOT in Tier1Side/Tier1Record and NEVER a Tier-2
+//   ONLY. Deliberately NOT in Tier1Side/Tier1Record and NEVER a Tier-2
 //   input yet: promoting it requires (1) the J6 anchor refit re-measuring
 //   matchByElo/sigmaMatchMicro on the honest corpus under the best-relative
-//   statistic (engine work — scoring it against the any-line-measured
+//   statistic (engine work; scoring it against the any-line-measured
 //   anchors would break the calibrated null), and (2) the coordinated
 //   Tier1Record shape re-freeze (the stored J6 corpus engine receipt,
 //   test-judge-calibration.mjs, pins tier1Record digests bit-for-bit).
 //   Until that single coordinated event, matchMicro's bits and the
 //   measured-anchor null are byte-identical to the calibrated behavior.
 //
-// COMPLEXITY — port of the SHIPPED complexityMultiplier fold
+// COMPLEXITY: port of the SHIPPED complexityMultiplier fold
 // (src/renderer/src/features/play/botTime.ts), re-derived from the judge's
-// OWN fixed-node MultiPV output — never play-time probe values (spec §8:
+// OWN fixed-node MultiPV output. Never play-time probe values (spec §8:
 // probes are nondeterministic and bot-pacing only). Line scores use the
 // probe's cp map (botTime lineCpOf, ported): mate>0 → +1000, mate<0 → −1000,
 // cp clamped to ±1000. With best = mapped rank-1 score and
 // gap = (≥2 lines) ? max(0, best − mapped rank-2 score) : null
-// (signalsFromProbe port), the fold — same factors, same order, floor after
+// (signalsFromProbe port), the fold. Same factors, same order, floor after
 // every step, in micro-units (m starts at 1_000_000):
 //   gap < 15 → ×18/10 | gap < 40 → ×145/100 | gap < 90 → ×115/100
 //                                           | gap ≥ 250 → ×80/100
@@ -103,19 +103,19 @@
 //   clamp to [300_000, 4_000_000]           (shipped 0.3×..4×)
 // DOCUMENTED DEVIATIONS from the shipped fold: the `unstable` (shallow vs
 // final best-move flip) and `surprise` (opponent-left-script) signals are
-// probe-time-only and nondeterministic — they are dropped, which is exactly
+// probe-time-only and nondeterministic: they are dropped, which is exactly
 // the shipped fold with both signals false (their neutral value). Floats are
 // replaced by exact integer ratio steps (deviation < 1 micro per step).
 //
-// CLOCK FORENSICS — think-time vs judge-derived complexity fit. Think time
+// CLOCK FORENSICS: think-time vs judge-derived complexity fit. Think time
 // for the mover s of ply i (i ≥ 1), given the game's Fischer increment incMs
-// (the witness-signed RatedBinding.tc.incMs — supplied by the caller; 0 when
+// (the witness-signed RatedBinding.tc.incMs: supplied by the caller; 0 when
 // unrated / increment-free / not yet threaded):
 //   t_i = min(1e9, max(0, clockMs[i−2][s] − clockMs[i][s] + incMs))
 // [A5-16] `before` = clockMs[i−2][s] is s's OWN previous self-signed remaining
 // clock (its move at ply i−2, same mover parity), NOT the opponent-signed echo
 // at ply i−1. A mover controls BOTH clock fields it signs, so reading the
-// opponent's ply-(i−1) echo let the OPPONENT drive t_i — hence clockFitMicro —
+// opponent's ply-(i−1) echo let the OPPONENT drive t_i (hence clockFitMicro)
 // to an extreme against an honest accused (zero every `before` ⇒ T=0 ⇒ the
 // maximal-suspicion 0), a §0 adversary-asserted-input violation. This is the
 // witness's own ownClock discipline (witnessCore.ts finding A: "time the
@@ -124,10 +124,10 @@
 // frozen during the opponent's ply i−1, so clockMs[i−2][s] = clockMs[i−1][s] for
 // every HONEST transcript ⇒ byte-identical records; only adversarial (framing)
 // transcripts change. The second mover's opening reply (ply 1) has no own prior
-// snapshot and alone falls back to clockMs[0][s] — a single sample that cannot
+// snapshot and alone falls back to clockMs[0][s]. A single sample that cannot
 // drive the T-sum to an extreme. RESIDUAL (whitewash/evasion): a mover shaping
 // its OWN consecutive snapshots to fake complexity-proportional thinks is NOT
-// defeated here — that needs the witness's independent wclk/wts elapsed
+// defeated here: that needs the witness's independent wclk/wts elapsed
 // timestamps (witnessCore emits them), which Tier-1 does not yet consume;
 // bounding t_i against wclk is the witness/transcript-verification layer's duty.
 // [A5-15] The signed snapshot is taken AFTER the increment is credited
@@ -135,36 +135,36 @@
 // clockMs[i−2][s] − clockMs[i][s] = elapsed − incMs; crediting incMs BACK
 // recovers the true think time BEFORE the ≥0 clamp. Without the credit, honest
 // sub-increment play (every elapsed ≤ incMs) drove every t_i to 0 → T=0 → the
-// hardcoded maximal-suspicion 0, bit-aliased to an actual instant bot — a
+// hardcoded maximal-suspicion 0, bit-aliased to an actual instant bot. A
 // distinction no later calibration can recover. EVERY sampled ply (i ≥ 1) was
-// credited the increment — only the opening move (ply 0, never sampled) is
-// credited none (mpSession isOpeningMove) — so the credit-back is exact for
+// credited the increment: only the opening move (ply 0, never sampled) is
+// credited none (mpSession isOpeningMove), so the credit-back is exact for
 // pure-Fischer play. (s's own snapshot after ply i−2 is the instant s's think
-// began — the opponent's ply i−1 leaves s's clock untouched; ply 0 has no prior
+// began: the opponent's ply i−1 leaves s's clock untouched; ply 0 has no prior
 // snapshot and is never sampled.) A ply is sampled
 // iff it is judged (its c_i = complexityMicro of its judged lines exists) and
 // i ≥ 1.
 // THE EXACT STATISTIC (total-variation misfit of time shares vs complexity
-// shares — the shipped budget model planThink spends time ∝ complexity, so a
+// shares: the shipped budget model planThink spends time ∝ complexity, so a
 // human's share of thinking on a position tracks the position's share of
 // total complexity; a bot moving uniformly fast on hard positions does not):
-//   n < CLOCK_MIN_SAMPLE (8)  → 500_000 (CLOCK_NEUTRAL_MICRO — too little
+//   n < CLOCK_MIN_SAMPLE (8)  → 500_000 (CLOCK_NEUTRAL_MICRO: too little
 //                               evidence to speak either way)
 //   T = Σt_i = 0 (n ≥ 8)      → 0 (with incMs credited back, an entire sampled
-//                               game whose TRUE think was 0ms is machine pacing
-//                               — maximal misfit; an honest human's
+//                               game whose TRUE think was 0ms is machine pacing.
+//                               Maximal misfit; an honest human's
 //                               increment-credited thinks are > 0 and never
 //                               reach this branch)
 //   else  a_i = floor(1e6·t_i / T),  e_i = floor(1e6·c_i / C),  C = Σc_i
 //         clockForensicMicro = max(0, 1_000_000 − floor(Σ|a_i − e_i| / 2))
 // Range [0, 1e6]; LOW = suspicious (uniform-fast on hard positions and
 // hard/easy inversions push Σ|a−e| up), proportional human spending scores
-// near 1e6. Absolute speed is NOT judged here — only the fit. Byo-yomi is NOT
+// near 1e6. Absolute speed is NOT judged here, only the fit. Byo-yomi is NOT
 // correctable here: the period reset (afterMoveCredit) zeroes the delta and
-// periodMs rides no signed RatedBinding.tc field — a separate schema/design
+// periodMs rides no signed RatedBinding.tc field. A separate schema/design
 // item (out of this lane; see clockSamplesForSide).
 //
-// STRENGTH TRAJECTORY — OLS slope of per-game acplMicro over a chronological
+// STRENGTH TRAJECTORY: OLS slope of per-game acplMicro over a chronological
 // window (oldest → newest) of Tier1Records, in micro-cp per game:
 //   n < 2 → 0;  x_i = i ∈ [0, n), y_i = acplMicro_i
 //   trajectoryMicro = floor((n·Σx_i·y_i − Σx·Σy) / (n·Σx_i² − (Σx)²))
@@ -172,7 +172,7 @@
 // Window bounded to TRAJ_MAX_WINDOW (64 ≥ 2·reganK) so every intermediate
 // product stays a safe integer.
 // [A5-36] PERSISTENCE + DEFERRED CONSUMPTION. Pre-A5-36 this slope was computed
-// and unit-tested but stored nowhere and read by no consumer — the §8 smurf /
+// and unit-tested but stored nowhere and read by no consumer. The §8 smurf /
 // rapid-improvement channel was absent from every verdict. tier1Record now
 // OPTIONALLY persists it as Tier1Side.trajectoryMicro when the minting caller
 // supplies that account's prior acpl window (priorAcplMicros[side]); this game's
@@ -183,22 +183,22 @@
 // persisted field just co-locates it with the game. Absent ⇒ the field is
 // OMITTED (codec skips undefined) ⇒ byte-identical legacy record, so NO frozen
 // tier1Digest re-froze. What is DEFERRED is only the VERDICT weight: neither
-// gameDevMicro/aggregateZMicro (Tier-2 z) nor mm/trust.ts (T) reads the slope —
-// folding a σ-per-slope term into z/T is a calibration dial with an FPR tradeoff
+// gameDevMicro/aggregateZMicro (Tier-2 z) nor mm/trust.ts (T) reads the slope.
+// Folding a σ-per-slope term into z/T is a calibration dial with an FPR tradeoff
 // and awaits the J4/J6 refit. Wiring it into a verdict here, uncalibrated, is
 // exactly the §0 no-false-fraud hazard this brick must not ship.
 //
-// Tier1Record — the canonical per-game unit J4's escalation trigger and
+// Tier1Record: the canonical per-game unit J4's escalation trigger and
 // window aggregation consume: cjson-v1 value (integers + strings only),
 // digest = toB64u(canonicalHash(record)). Embeds PARAMS_A5_DIGEST and the
 // judgeOutputDigest of the consumed JudgeOutput; tier1Record REFUSES a
 // JudgeOutput whose config echo names a different params digest OR whose
 // (nodes, multiPv, hashMb) is not the Tier-1 fixed-node config ([A5-37]: the
 // digest pins BOTH tiers, so a Tier-2/degenerate output carries the same
-// params echo — a verdict input must name the exact rule set AND config that
+// params echo: a verdict input must name the exact rule set AND config that
 // produced it, the config the anchors were fit at).
 //
-// Tier1Anchors — the ACPL-vs-estimated-strength anchor set (spec §8: the
+// Tier1Anchors. The ACPL-vs-estimated-strength anchor set (spec §8: the
 // estElo anchor fit MUST be re-run at the judge's fixed-node config before it
 // feeds T; the shipped fit is depth-12 MultiPV-2 and does not transfer).
 // Brick J3 produces the real values; the shape is defined here and a
@@ -232,7 +232,7 @@ export const CLOCK_NEUTRAL_MICRO = 500_000
 /** Cap on a single derived think time (keeps micro products safe-integer). */
 export const CLOCK_THINK_CAP_MS = 1_000_000_000
 /** [A5-15] Upper bound on the Fischer increment credited back in the think-time
- * derivation — mirrors the witness-signed RatedBinding.tc.incMs schema bound
+ * derivation: mirrors the witness-signed RatedBinding.tc.incMs schema bound
  * (segment.ts / events.ts: incMs ≤ 3_600_000). Not a calibration dial: a
  * validation guard that keeps the credited value inside the signed envelope. */
 export const CLOCK_INC_MAX_MS = 3_600_000
@@ -257,7 +257,7 @@ function idiv(num: number, den: number): number {
 }
 
 // ---------------------------------------------------------------------------
-// Score maps (both ported — see header)
+// Score maps (both ported: see header)
 // ---------------------------------------------------------------------------
 
 /**
@@ -291,7 +291,7 @@ export function acplLineCp(l: JudgeLine): number {
 }
 
 /**
- * Complexity cp of a judged line — the shipped probe map (botTime lineCpOf,
+ * Complexity cp of a judged line. The shipped probe map (botTime lineCpOf,
  * ported): mate → ±1000, cp clamped to ±1000.
  */
 export function probeLineCp(l: JudgeLine): number {
@@ -323,7 +323,7 @@ export function acplMicro(losses: readonly number[]): number {
 
 /**
  * Engine-match fraction in micro-units: floor(1e6·matched/scored); 0 when
- * nothing was scored (fail-safe low — J4 weights by `scored`).
+ * nothing was scored (fail-safe low, J4 weights by `scored`).
  */
 export function engineMatchMicro(matched: number, scored: number): number {
   if (!isNonNegInt(matched) || !isNonNegInt(scored) || matched > scored)
@@ -333,7 +333,7 @@ export function engineMatchMicro(matched: number, scored: number): number {
 }
 
 /** Is `playedCp` within the §8 score-equivalence window of ANY judged line?
- * The CALIBRATED criterion behind matched/matchMicro (header — including its
+ * The CALIBRATED criterion behind matched/matchMicro (header, including its
  * confirmed A5-14 degeneration for listed moves). */
 export function isEngineMatched(playedCp: number, lines: readonly JudgeLine[]): boolean {
   if (!Number.isSafeInteger(playedCp)) bad('isEngineMatched: playedCp is not a safe integer')
@@ -348,7 +348,7 @@ export function isEngineMatched(playedCp: number, lines: readonly JudgeLine[]): 
 
 /** Is `playedCp` within the score-equivalence window of the BEST (rank-1)
  * line? The §8-intended criterion (header [A5-14 DEFERRED]): the window is
- * live for every move — in-list or not — and never exact-move matching.
+ * live for every move (in-list or not) and never exact-move matching.
  * Same ±PARAMS_A5.scoreEquivCp width; lines beyond rank 1 are validated but
  * never widen the criterion. Feeds SideMoveScores.matchedBest (diagnostics
  * only) until the J6 refit promotes it. */
@@ -481,7 +481,7 @@ export type SideMoveScores = {
   losses: readonly number[]
   /** Engine-matched count among scored moves (calibrated any-line window). */
   matched: number
-  /** BEST-relative-window matched count (isEngineMatchedBest — the §8
+  /** BEST-relative-window matched count (isEngineMatchedBest: the §8
    * corrected A5-14 criterion). Diagnostics only: NOT in Tier1Side/
    * Tier1Record and never a Tier-2 input until the J6 anchor refit
    * (header [A5-14 DEFERRED]). Invariant: matchedBest ≤ matched. */
@@ -521,10 +521,10 @@ function checkJudgeOutput(out: JudgeOutput): Map<number, JudgedPosition> {
     prev = p.ply
     // A5-01 bare-FEN pin: a verdict-path JudgedPosition is exactly {ply,
     // lines}. A moves/path field means the producer judged via the
-    // `position fen <start> moves …` encoding — a different bit surface
+    // `position fen <start> moves …` encoding: a different bit surface
     // than the normative bare-fenBefore one (transcriptToJudgePositions).
     if ((p as { moves?: unknown }).moves !== undefined)
-      bad(`judged position at ply ${p.ply} carries a moves/path field — the verdict surface is bare-FEN only (transcriptToJudgePositions)`)
+      bad(`judged position at ply ${p.ply} carries a moves/path field. The verdict surface is bare-FEN only (transcriptToJudgePositions)`)
     if (!Array.isArray(p.lines) || p.lines.length === 0) bad(`empty lines at ply ${p.ply}`)
     if (p.lines.length > c.multiPv) bad(`${p.lines.length} lines > multiPv ${c.multiPv} at ply ${p.ply}`)
     for (const l of p.lines) checkLine(l, `ply ${p.ply}`)
@@ -603,10 +603,10 @@ export function sideMoveScores(
 
 /**
  * The clock samples for `side` (header: t_i from the mover's own clock between
- * s's OWN ply i−2 and ply i snapshots, i ≥ 1; judged plies only — [A5-16]:
+ * s's OWN ply i−2 and ply i snapshots, i ≥ 1; judged plies only, [A5-16]:
  * `before` is s's own prior snapshot, never the opponent's ply i−1 echo).
  *
- * [A5-15] `incMs` is the game's Fischer increment — the witness-signed
+ * [A5-15] `incMs` is the game's Fischer increment. The witness-signed
  * RatedBinding.tc.incMs (segment.ts), the ONLY verified time-control datum the
  * derivation needs. Because the signed snapshots are post-increment
  * (afterMoveCredit), the raw delta before−after already NETS OUT the increment
@@ -634,8 +634,8 @@ export function clockSamplesForSide(
   for (const [ply, pos] of byPly) {
     if (ply < 1 || ply >= moves.length) continue
     if (moverOf(ply, firstMover) !== side) continue
-    // [A5-16] `before` is the accused's OWN last self-signed remaining clock —
-    // the snapshot from ITS previous move (ply−2, same mover parity) — NOT the
+    // [A5-16] `before` is the accused's OWN last self-signed remaining clock.
+    // The snapshot from ITS previous move (ply−2, same mover parity). NOT the
     // opponent's echo at ply−1. A mover controls both fields of the clock it
     // signs, so consuming the opponent-signed ply−1 echo let the OPPONENT drive
     // t_i (hence clockFitMicro) to an extreme against an honest accused; this
@@ -643,7 +643,7 @@ export function clockSamplesForSide(
     // honest play the two are equal (a side's clock is frozen during the
     // opponent's move) ⇒ byte-identical records; only adversarial transcripts
     // change. The second mover's opening reply (ply 1) has no own prior snapshot
-    // and alone falls back to the ply−0 value — a single bounded sample.
+    // and alone falls back to the ply−0 value. A single bounded sample.
     const prevOwn = ply - 2
     const before = prevOwn >= 0 ? moves[prevOwn].clockMs[side] : moves[ply - 1].clockMs[side]
     const after = moves[ply].clockMs[side]
@@ -657,14 +657,14 @@ export function clockSamplesForSide(
 }
 
 // ---------------------------------------------------------------------------
-// Tier1Record — the canonical per-game unit (cjson-v1, integers only)
+// Tier1Record: the canonical per-game unit (cjson-v1, integers only)
 // ---------------------------------------------------------------------------
 
 /** One side's Tier-1 signals (all non-negative safe integers, except the
  * signed trajectory slope). The seven CORE fields are digest-frozen:
  * SideMoveScores.matchedBest (A5-14) deliberately stays OUT of the record until
  * the J6-refit coordinated re-freeze (header). [A5-36] `trajectoryMicro` is the
- * lone OPTIONAL field — present iff the caller supplied this account's prior
+ * lone OPTIONAL field: present iff the caller supplied this account's prior
  * acpl window; ABSENT ⇒ omitted by the codec ⇒ byte-identical legacy record
  * (the rdMicro/incMs discipline), so adding it re-froze no existing digest. */
 export type Tier1Side = {
@@ -672,7 +672,7 @@ export type Tier1Side = {
   scored: number
   /** Judged mover moves excluded under ground-truth rule (c). */
   unscored: number
-  /** Average centipawn loss, micro-cp (0 when scored = 0 — weight by scored). */
+  /** Average centipawn loss, micro-cp (0 when scored = 0; weight by scored). */
   acplMicro: number
   /** Engine-matched count among scored moves. */
   matched: number
@@ -686,7 +686,7 @@ export type Tier1Side = {
    * THIS account's chronological acpl window ENDING at this game (negative =
    * strengthening). Present ONLY when tier1Record was given priorAcplMicros for
    * this side; consumption into the Tier-2 z / trust T is DEFERRED to the J4
-   * calibrated weight (no consumer reads it yet — see header). */
+   * calibrated weight (no consumer reads it yet; see header). */
   trajectoryMicro?: number
 }
 
@@ -702,7 +702,7 @@ export type Tier1Record = {
   ladder: string
   /** judgeOutputDigest of the consumed JudgeOutput. */
   judge: string
-  /** PARAMS_A5_DIGEST — names the exact rule set (must match the config echo). */
+  /** PARAMS_A5_DIGEST. Names the exact rule set (must match the config echo). */
   params: string
   w: Tier1Side
   b: Tier1Side
@@ -743,30 +743,30 @@ function tier1Side(
  * Build the canonical Tier1Record for one judged game. Fail-closed on any
  * malformed input, on a JudgeOutput whose config echo names a params
  * digest other than PARAMS_A5_DIGEST or whose (nodes, multiPv, hashMb) is not
- * the Tier-1 fixed-node config judgeConfigForTier(1) — [A5-37] the digest pins
+ * the Tier-1 fixed-node config judgeConfigForTier(1), [A5-37] the digest pins
  * both tiers' rule set at once, so a Tier-1 signal may only be derived under the
- * exact rule set AND the exact fixed-node config it will be judged/anchored by —
- * and — the A5-01 coverage rule — on a JudgeOutput whose judged ply set is not EXACTLY
+ * exact rule set AND the exact fixed-node config it will be judged/anchored by,
+ * and (the A5-01 coverage rule) on a JudgeOutput whose judged ply set is not EXACTLY
  * {0, 1, …, moves.length−1}: the normative verdict surface
  * (transcriptToJudgePositions) judges every transcript ply, bare-FEN, no
  * tail. A cherry-picked subset/gap would zero the micro signals and
  * nullify the deterministic escalation trigger, so it is rejected at this
  * trust boundary regardless of how the producer built its positions.
  * (Partial-view scoring stays available at the sideMoveScores level for
- * diagnostics only — it can never form a record.)
+ * diagnostics only: it can never form a record.)
  *
- * [A5-15] `incMs` — the game's witness-signed Fischer increment
- * (RatedBinding.tc.incMs, segment.ts) — is threaded into the clock-forensic
+ * [A5-15] `incMs`, the game's witness-signed Fischer increment
+ * (RatedBinding.tc.incMs, segment.ts), is threaded into the clock-forensic
  * think-time derivation so honest sub-increment play is not aliased to the
  * maximal-suspicion clockFitMicro=0 (see clockSamplesForSide). It is a
  * derivation INPUT only, never stored in the record (the record shape and
  * every frozen tier1Digest stay untouched); a verifier recomputes with the
  * same signed tc. Default 0 ⇒ byte-identical to the pre-A5-15 record.
  *
- * [A5-36] `priorAcplMicros` — the account-on-each-side's PRIOR-game acpl window
+ * [A5-36] `priorAcplMicros`. The account-on-each-side's PRIOR-game acpl window
  * (oldest→newest, EXCLUDING this game), keyed by color. When a side's window is
- * given, that Tier1Side persists trajectoryMicro([...window, thisGameAcpl]) —
- * the §8 strength-trajectory slope of the window ending at this game (negative =
+ * given, that Tier1Side persists trajectoryMicro([...window, thisGameAcpl]).
+ * The §8 strength-trajectory slope of the window ending at this game (negative =
  * strengthening); a side with no window (or the whole arg omitted) carries no
  * trajectory field and is byte-identical to the pre-A5-36 record. It is a
  * DERIVATION INPUT the minting caller supplies from the account's already-minted
@@ -795,11 +795,11 @@ export function tier1Record(
   checkTranscript(moves)
   // A5-01 full-coverage rule (normative): with judged plies already strictly
   // increasing, positions[i].ply === i for every i plus equal lengths pins
-  // the judged set to exactly {0..moves.length−1} — contiguous, complete,
+  // the judged set to exactly {0..moves.length−1}. Contiguous, complete,
   // none missing, none ≥ moves.length.
   if (out.positions.length !== moves.length)
     bad(
-      `JudgeOutput judges ${out.positions.length} of ${moves.length} transcript plies — the verdict surface is every ply 0..${moves.length - 1} (full contiguous coverage required)`
+      `JudgeOutput judges ${out.positions.length} of ${moves.length} transcript plies. The verdict surface is every ply 0..${moves.length - 1} (full contiguous coverage required)`
     )
   for (let i = 0; i < out.positions.length; i++) {
     if (out.positions[i].ply !== i)
@@ -807,12 +807,12 @@ export function tier1Record(
   }
   if (out.config.params !== PARAMS_A5_DIGEST)
     bad(
-      `JudgeOutput params echo ${JSON.stringify(out.config.params)} does not name PARAMS_A5_DIGEST — refusing to derive Tier-1 signals under a foreign rule set`
+      `JudgeOutput params echo ${JSON.stringify(out.config.params)} does not name PARAMS_A5_DIGEST. Refusing to derive Tier-1 signals under a foreign rule set`
     )
   // [A5-37] Canonical-config gate. PARAMS_A5_DIGEST pins BOTH tiers' rule set at
   // once (params.ts folds t1*/t2* into one digest), so the params echo alone does
   // NOT separate a Tier-1 output from a Tier-2 (t2Nodes/t2MultiPv) or a degenerate
-  // (nodes=1) one — same digest, different search width ⇒ different bits. Those
+  // (nodes=1) one: same digest, different search width ⇒ different bits. Those
   // signals are meaningful, and this record bit-reproducible, ONLY under the exact
   // fixed-node config the §8 anchors were fit at (judgeConfigForTier(1) =
   // t1Nodes/t1MultiPv/hashMb; TIER2_ANCHORS_JUDGE at 200k/MPV4). The record already
@@ -823,7 +823,7 @@ export function tier1Record(
   const cfg = out.config
   if (cfg.nodes !== PARAMS_A5.t1Nodes || cfg.multiPv !== PARAMS_A5.t1MultiPv || cfg.hashMb !== PARAMS_A5.hashMb)
     bad(
-      `JudgeOutput config (nodes ${cfg.nodes}, multiPv ${cfg.multiPv}, hashMb ${cfg.hashMb}) is not the Tier-1 config (${PARAMS_A5.t1Nodes}/${PARAMS_A5.t1MultiPv}/${PARAMS_A5.hashMb}) — refusing to derive Tier-1 signals from a non-canonical judge config`
+      `JudgeOutput config (nodes ${cfg.nodes}, multiPv ${cfg.multiPv}, hashMb ${cfg.hashMb}) is not the Tier-1 config (${PARAMS_A5.t1Nodes}/${PARAMS_A5.t1MultiPv}/${PARAMS_A5.hashMb}). Refusing to derive Tier-1 signals from a non-canonical judge config`
     )
   return {
     v: 1,
@@ -836,13 +836,13 @@ export function tier1Record(
   }
 }
 
-/** canonicalHash of a Tier1Record, base64url — the cross-platform parity unit. */
+/** canonicalHash of a Tier1Record, base64url. The cross-platform parity unit. */
 export function tier1Digest(rec: Tier1Record): string {
   return toB64u(canonicalHash(rec as CanonicalObject))
 }
 
 // ---------------------------------------------------------------------------
-// Tier1Anchors — ACPL vs estimated strength (values INJECTED by brick J3)
+// Tier1Anchors: ACPL vs estimated strength (values INJECTED by brick J3)
 // ---------------------------------------------------------------------------
 
 /**
@@ -865,14 +865,14 @@ export type Tier1Anchors = {
 }
 
 /**
- * [J3-REFIT-PENDING] — PROVISIONAL anchors, NOT calibrated at the judge
+ * [J3-REFIT-PENDING]: PROVISIONAL anchors, NOT calibrated at the judge
  * config. Derivation: the shipped depth-12 MultiPV-2 fit's log(1+acpl)→Elo
  * knots (src/main/analysis/estElo.ts ACPL_KNOTS, fit 2026-07-06) inverted to
  * elo→acpl via acpl = e^la − 1, precomputed offline to integer micro-cp.
  * sigmaAcplMicro ≈ the shipped no-opp residual std (~455 Elo at 30 moves)
  * mapped through the local curve slope (~0.035 cp/Elo near 1500) ⇒ ~16 cp.
  * Spec §8 is explicit that this fit DOES NOT TRANSFER to the judge's
- * fixed-node config: these values must never feed T — they exist so J2/J4
+ * fixed-node config: these values must never feed T. They exist so J2/J4
  * code and suites can run against the real SHAPE until J3 injects the refit.
  */
 export const TIER1_ANCHORS_PROVISIONAL: Tier1Anchors = {
@@ -894,7 +894,7 @@ export const TIER1_ANCHORS_PROVISIONAL: Tier1Anchors = {
     { elo: 2700, acplMicro: 19_968_053 },
   ],
   sigmaAcplMicro: 16_000_000,
-  fit: '[J3-REFIT-PENDING] inverted shipped depth-12 MultiPV-2 fit (elo-fit.json 2026-07-06) — must not feed T',
+  fit: '[J3-REFIT-PENDING] inverted shipped depth-12 MultiPV-2 fit (elo-fit.json 2026-07-06). Must not feed T',
 }
 
 function checkAnchors(a: Tier1Anchors): void {

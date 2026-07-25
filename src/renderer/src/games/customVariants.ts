@@ -1,4 +1,4 @@
-// Custom variants — runtime GameSpec adapters over user-authored variants.ini
+// Custom variants: runtime GameSpec adapters over user-authored variants.ini
 // text (docs/GAMES-PLATFORM-SPEC.md §Phases P3: variants.ini builder UI +
 // ffish.loadVariantConfig). The Variant Lab editor (features/games/editor/)
 // authors CustomVariantDefs; this module turns one into a live, playable
@@ -10,17 +10,17 @@
 // codec is widened to the fairy-sf largeboard limits (files a–l, ranks 1–10).
 //
 // ffish runtime facts this module is built around (probed against ffish-es6
-// 0.7.9 — keep in sync with scripts/test-custom-variants.mjs):
+// 0.7.9. Keep in sync with scripts/test-custom-variants.mjs):
 //   - loadVariantConfig REGISTERS but never re-registers: a duplicate name is
 //     rejected to stderr and the OLD definition stays live. Every registration
 //     here therefore loads under a FRESH runtime name (cv<counter>) so edits
 //     always take effect within a session.
-//   - ffish.variants() lists runtime-loaded variants — the authoritative
+//   - ffish.variants() lists runtime-loaded variants: the authoritative
 //     "did it register?" check (a bad parent drops the section silently).
 //   - A section with ZERO keys crashes Board construction (WASM OOB), so
 //     empty bodies are rejected up front with a friendly error.
 //   - Unknown keys / malformed betza values are silently ignored by the
-//     parser — validation is necessarily behavioral (construct + probe moves).
+//     parser: validation is necessarily behavioral (construct + probe moves).
 
 import { getFfish, preloadFfish } from './ffish'
 import type { GameKind, GameResult, GameSpec, MoveMeta } from './kernel'
@@ -32,10 +32,10 @@ import {
 } from './registry'
 
 // ---------------------------------------------------------------------------
-// Definition (persisted shape — mirrors the custom_variant table)
+// Definition (persisted shape: mirrors the custom_variant table)
 
 export interface CustomVariantDef {
-  /** Stable id (slug) — the dynamic registry kind is `custom-<id>`. */
+  /** Stable id (slug): the dynamic registry kind is `custom-<id>`. */
   id: string
   name: string
   description: string
@@ -109,7 +109,7 @@ function rewriteHead(iniText: string, head: IniHead, newName: string): string {
 let runtimeCounter = 0
 
 // ---------------------------------------------------------------------------
-// Validation — friendly errors, behavioral checks
+// Validation: friendly errors, behavioral checks
 
 export interface IniValidation {
   ok: boolean
@@ -123,7 +123,7 @@ export interface IniValidation {
 /**
  * Validate a variants.ini text end to end: syntax pre-checks, a real
  * loadVariantConfig under a scratch name, board construction and a legal-move
- * probe. Requires ffish (await preloadFfish() first — the editor does).
+ * probe. Requires ffish (await preloadFfish() first; the editor does).
  */
 export function validateCustomVariantIni(iniText: string): IniValidation {
   const pre = precheckIni(iniText)
@@ -135,9 +135,9 @@ export function validateCustomVariantIni(iniText: string): IniValidation {
       return {
         ok: false,
         error: head.parent
-          ? `The engine did not register “${head.name}” — its parent variant “${head.parent}” is unknown. ` +
+          ? `The engine did not register “${head.name}”. Its parent variant “${head.parent}” is unknown. ` +
             'Use a built-in parent like chess, atomic, placement, grand or crazyhouse.'
-          : `The engine did not register “${head.name}” — check the [${head.name}] section for typos.`
+          : `The engine did not register “${head.name}”. Check the [${head.name}] section for typos.`
       }
     }
     const ffish = getFfish()
@@ -149,7 +149,7 @@ export function validateCustomVariantIni(iniText: string): IniValidation {
       if (moveCount === 0) {
         return {
           ok: false,
-          error: 'The variant loads, but the side to move has NO legal moves in the start position — ' +
+          error: 'The variant loads, but the side to move has NO legal moves in the start position, ' +
             'check the startFen (kings present? side to move not already mated?).'
         }
       }
@@ -171,22 +171,22 @@ export function validateCustomVariantIni(iniText: string): IniValidation {
 
 /** Cheap syntax pre-checks with actionable messages (null = fine). */
 function precheckIni(iniText: string): string | null {
-  if (iniText.trim().length === 0) return 'The variant definition is empty — start from a template.'
+  if (iniText.trim().length === 0) return 'The variant definition is empty. Start from a template.'
   const head = parseIniHead(iniText)
   if (!head) {
     return 'No [variant] section found. The first line of a variant is its header, e.g. [myvariant:chess].'
   }
   if (!head.hasKeys) {
-    return `The [${head.name}] section has no rule lines. Add at least one, e.g. “startFen = …” — ` +
+    return `The [${head.name}] section has no rule lines. Add at least one, e.g. “startFen = …”, ` +
       'an empty section crashes the rules engine.'
   }
   const files = readIntKey(iniText, 'maxFile')
   const ranks = readIntKey(iniText, 'maxRank')
   if (files !== null && (files < MIN_BOARD_SIZE || files > MAX_BOARD_FILES)) {
-    return `maxFile = ${files} is out of range — the engine supports ${MIN_BOARD_SIZE} to ${MAX_BOARD_FILES} files.`
+    return `maxFile = ${files} is out of range. The engine supports ${MIN_BOARD_SIZE} to ${MAX_BOARD_FILES} files.`
   }
   if (ranks !== null && (ranks < MIN_BOARD_SIZE || ranks > MAX_BOARD_RANKS)) {
-    return `maxRank = ${ranks} is out of range — the engine supports ${MIN_BOARD_SIZE} to ${MAX_BOARD_RANKS} ranks.`
+    return `maxRank = ${ranks} is out of range. The engine supports ${MIN_BOARD_SIZE} to ${MAX_BOARD_RANKS} ranks.`
   }
   return null
 }
@@ -206,11 +206,11 @@ function loadUnderRuntimeName(
 }
 
 // ---------------------------------------------------------------------------
-// GameSpec over a runtime-loaded custom variant (mirrors games/ffishVariants.ts
-// — see that file for the transient-board rationale)
+// GameSpec over a runtime-loaded custom variant (mirrors games/ffishVariants.ts.
+// See that file for the transient-board rationale)
 
 export interface CustomVariantState {
-  /** ffish runtime variant name (cv<N>… — unique per registration). */
+  /** ffish runtime variant name (cv<N>…; unique per registration). */
   readonly variant: string
   readonly startFen: string
   readonly moves: readonly string[]
@@ -281,7 +281,7 @@ function makeCustomSpec(def: CustomVariantDef, runtimeName: string): GameSpec<Cu
   }
 
   return {
-    // Dynamic kinds live outside the closed GameKind union by design — the
+    // Dynamic kinds live outside the closed GameKind union by design. The
     // registry's dynamic seam keys entries by this string.
     kind: customKindOf(def.id) as GameKind,
     family: 'chess',
@@ -334,7 +334,7 @@ function makeCustomSpec(def: CustomVariantDef, runtimeName: string): GameSpec<Cu
         return { capture, sound }
       })
     },
-    // SAN via ffish (kernel notate contract) — legality-checked first, since
+    // SAN via ffish (kernel notate contract): legality-checked first, since
     // sanMove on an illegal move is undefined behavior in the WASM.
     notate: (s: CustomVariantState, move: string): string => {
       if (!MOVE_RE.test(move)) return move
@@ -349,7 +349,7 @@ function makeCustomSpec(def: CustomVariantDef, runtimeName: string): GameSpec<Cu
 }
 
 // ---------------------------------------------------------------------------
-// Registration — def → live dynamic registry entry
+// Registration: def → live dynamic registry entry
 
 const placeholderRenderer: GameRendererLoader = () => import('./PlaceholderBoard')
 
@@ -358,7 +358,7 @@ const LIVE = new Map<string, GameEntry>()
 
 /**
  * Load a custom variant into ffish and (re)register its dynamic registry
- * entry. Await-safe to call repeatedly for the same id — every call loads a
+ * entry. Await-safe to call repeatedly for the same id. Every call loads a
  * fresh runtime variant name so edits take effect immediately.
  *
  * `loadRenderer` lets the caller supply a real board component (the Variant
@@ -376,8 +376,8 @@ export async function registerCustomVariant(
   if (!registered) {
     throw new Error(
       head.parent
-        ? `Variant “${def.name}” did not register — unknown parent “${head.parent}”.`
-        : `Variant “${def.name}” did not register — check its [section] header.`
+        ? `Variant “${def.name}” did not register, unknown parent “${head.parent}”.`
+        : `Variant “${def.name}” did not register. Check its [section] header.`
     )
   }
   const entry: GameEntry = {
@@ -392,7 +392,7 @@ export async function registerCustomVariant(
   return entry
 }
 
-/** Drop a custom variant's dynamic registry entry (ffish keeps the loaded config — harmless). */
+/** Drop a custom variant's dynamic registry entry (ffish keeps the loaded config; harmless). */
 export function unregisterCustomVariant(id: string): void {
   LIVE.delete(id)
   unregisterDynamic(customKindOf(id))

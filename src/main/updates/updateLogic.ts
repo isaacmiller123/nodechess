@@ -1,8 +1,8 @@
-// Update decision logic — the PURE half of src/main/updates. No electron (or
+// Update decision logic: the PURE half of src/main/updates. No electron (or
 // node) imports so scripts/test-updater.mjs can bundle it headless and golden-
 // test every branch in bare node.
 //
-// Platform policy (HARD CONSTRAINT — design around it, never "fix" it): this
+// Platform policy (HARD CONSTRAINT: design around it, never "fix" it): this
 // app ships UNSIGNED.
 //   - Windows: electron-updater over the NSIS installer works unsigned →
 //     true in-place auto-update (the 'electron-updater' path).
@@ -11,7 +11,7 @@
 //     right .dmg to install over the old app (the 'notify-download' path).
 //     NEVER attempt an in-place mac install.
 
-/** GitHub repo that hosts the releases (public API — no token needed). */
+/** GitHub repo that hosts the releases (public API: no token needed). */
 export const UPDATE_OWNER = 'isaacmiller123'
 export const UPDATE_REPO = 'nodechess'
 
@@ -20,7 +20,7 @@ export type UpdatePath = 'electron-updater' | 'notify-download'
 
 /**
  * The decision table. electron-updater is used ONLY on packaged Windows
- * builds; everything else (mac always — unsigned, dev builds, linux) gets the
+ * builds; everything else (mac always: unsigned, dev builds, linux) gets the
  * check-and-notify path with a browser download.
  */
 export function decideUpdatePath(platform: string, packaged: boolean): UpdatePath {
@@ -101,7 +101,7 @@ export interface LatestRelease {
   /** Clean version (tag with any leading 'v' stripped). */
   version: string
   assets: ReleaseAsset[]
-  /** Human release page — the universal fallback download link. */
+  /** Human release page. The universal fallback download link. */
   releaseUrl: string
 }
 

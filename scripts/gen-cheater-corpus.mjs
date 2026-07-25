@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// A5 J6 — calibration corpus generator: honest known-strength games AND the
+// A5 J6. Calibration corpus generator: honest known-strength games AND the
 // seeded cheater-bot families, all judged through the REAL judge core at the
 // Tier-1 config, emitting full canonical Tier1Records (spec §14-A5 proof:
 // "seeded cheater bots convicted within the K-window; honest holdout never
@@ -14,8 +14,8 @@
 //                     per-band engine-match anchors + σ_match / σ_acpl and
 //                     the honest-holdout z distribution come from these rows)
 //   --family full     subject plays the judge's rank-1 move EVERY own ply
-//                     (fresh judgeGame() per position at judgeConfigForTier(1)
-//                     — the assistance IS the pinned judge engine)
+//                     (fresh judgeGame() per position at judgeConfigForTier(1).
+//                     The assistance IS the pinned judge engine)
 //   --family half     subject consults the judge on every 2nd own ply
 //                     (deterministic alternation ≈ 50% assistance)
 //   --family thresh   THRESHOLD-ε: assistance METERED against the measured
@@ -30,9 +30,9 @@
 // subject color alternates per game so color advantage nulls out.
 //
 // ANALYSIS: every finished game is judged with judgeGame() over the pinned-
-// WASM Node adapter at judgeConfigForTier(1) — positions are every fenBefore
+// WASM Node adapter at judgeConfigForTier(1). Positions are every fenBefore
 // (plies 0..n−1, NO terminal tail: exactly the production Tier-1 surface,
-// tier1.ts rejects judged plies beyond the transcript) — and folded into a
+// tier1.ts rejects judged plies beyond the transcript), and folded into a
 // canonical Tier1Record (ladder 'calib', firstMover 'w', flat 0ms clocks:
 // clock forensics is not a z input; acpl/match are what this corpus
 // calibrates). Rows are one JSON object PER GAME (both sides' signals live in
@@ -52,7 +52,7 @@
 //   common: [--concurrency 4] [--movetime 120] [--max-plies 160]
 //        [--out scripts/data/judge-calib-corpus.jsonl] [--engine path]
 //        [--tag runTag]  (gameKey run tag: jc-<family>-<tag>-<i>; defaults to
-//        a fresh base36 timestamp — pin it to make an APPEND run's keys
+//        a fresh base36 timestamp: pin it to make an APPEND run's keys
 //        reproducible/identifiable; appends never touch existing rows)
 //
 // Runtime: a judged position ≈ 200k nodes of single-thread WASM; a game costs
@@ -164,7 +164,7 @@ function meterThresh(rows) {
   const full = subjectSides(rows, 'full')
   if (honest.length < 30 || full.length < 5) {
     throw new Error(
-      `thresh metering needs honest (${honest.length} ≥ 30) and full (${full.length} ≥ 5) rows in ${OUT} — run those families first`
+      `thresh metering needs honest (${honest.length} ≥ 30) and full (${full.length} ≥ 5) rows in ${OUT}. Run those families first`
     )
   }
   // Honest per-band expectations at the subject band (measured baseline).
@@ -237,7 +237,7 @@ function readRows() {
 /**
  * One cheater game: `subject` ('w'|'b') plays natively at subjectElo except on
  * assisted own plies, where the move is the judge engine's rank-1 line at the
- * TRUE Tier-1 config (fresh judgeGame per position: ucinewgame + TT clear —
+ * TRUE Tier-1 config (fresh judgeGame per position: ucinewgame + TT clear,
  * the canonical assistance oracle). Book plies (opening engine) are never
  * assisted. Returns { plies, resultWhite, ending, assistPlan }.
  */
@@ -290,7 +290,7 @@ async function playCheaterGame(subjectEng, oppEng, openingEng, judgeEng, opts) {
     }
     if (!uci || uci === '(none)') break
 
-    // Adjudication bookkeeping — VERBATIM playGame() semantics.
+    // Adjudication bookkeeping: VERBATIM playGame() semantics.
     const whiteCp = whiteToMove ? cp : -cp
     lastWhiteCp = whiteCp
     const sign = whiteCp > 0 ? 1 : -1
@@ -326,7 +326,7 @@ async function playCheaterGame(subjectEng, oppEng, openingEng, judgeEng, opts) {
 async function recordGame(judgeEng, gameKey, plies) {
   // THE normative Tier-1 surface via the canonical builder (judge.ts
   // transcriptToJudgePositions): every fenBefore, plies 0..n−1, bare FEN, no
-  // tail — bit-identical to the inline mapping this corpus was measured on.
+  // tail: bit-identical to the inline mapping this corpus was measured on.
   const moves = plies.map((p, i) => ({ ply: i, move: p.uci, clockMs: { w: 0, b: 0 } }))
   const positions = core.transcriptToJudgePositions(moves, (i) => plies[i].fenBefore)
   const out = await core.judgeGame(judgeEng, positions, T1)
@@ -479,7 +479,7 @@ function printSummary() {
     const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : NaN)
     const score =
       fam === 'honest'
-        ? '—'
+        ? 'n/a'
         : (
             rs.reduce((a, r) => a + (r.subject === 'w' ? r.resultWhite2 : 2 - r.resultWhite2), 0) /
             (2 * rs.length)

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// DB-seam suite (web port W1 — docs/WEB-PORT-SPEC.md).
+// DB-seam suite (web port W1, docs/WEB-PORT-SPEC.md).
 //
 //   node scripts/test-db-seam.mjs
 //
 // Proves src/main/db/database.ts is electron-free and path-injected:
-//   1. It bundles + imports in PLAIN NODE (no electron resolution at all —
+//   1. It bundles + imports in PLAIN NODE (no electron resolution at all,
 //      a stray `import { app } from 'electron'` fails the bundle step).
 //   2. getAppDb() before configureDb() throws (no silent default path).
 //   3. configureDb({appDbDir}) → getAppDb() creates app.sqlite at the injected
@@ -41,7 +41,7 @@ function check(name, cond) {
 
 const db = await import(pathToFileURL(out).href)
 
-// 2. Unconfigured access throws — never a silent default location.
+// 2. Unconfigured access throws. Never a silent default location.
 let threwUnconfigured = false
 try {
   db.getAppDb()

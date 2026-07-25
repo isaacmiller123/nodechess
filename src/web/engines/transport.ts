@@ -1,7 +1,7 @@
 // UCI transports: how raw command/line strings reach a WASM engine.
 //
 // Two shapes exist in this app:
-//  - workerTransport: the `stockfish` npm package's builds ARE worker scripts —
+//  - workerTransport: the `stockfish` npm package's builds ARE worker scripts,
 //    `new Worker(url)`, postMessage(command string), onmessage → line strings.
 //  - moduleTransport: fairy-stockfish-nnue.wasm's emscripten module runs on the
 //    calling thread (its own pthread pool does the searching) and speaks
@@ -9,7 +9,7 @@
 //    which custom variants need for their variants.ini.
 //
 // Everything browser-global lives inside functions (never at module eval) so
-// the headless suite can bundle these modules under Node — where it drives the
+// the headless suite can bundle these modules under Node. Where it drives the
 // REAL fairy WASM through moduleTransport via a Node-built module instance.
 
 export interface UciTransport {
@@ -67,7 +67,7 @@ type FairyFactory = (opts: {
 let fairyScriptLoad: Promise<FairyFactory> | null = null
 
 /** Load fairy stockfish.js via a same-origin <script> tag (it is a classic UMD
- *  script, not an ES module — bundling it would break its own worker/wasm
+ *  script, not an ES module: bundling it would break its own worker/wasm
  *  resolution) and return the global `Stockfish` factory. Memoized; a failed
  *  load clears the memo so a later call can retry. */
 function loadFairyFactory(scriptUrl: string): Promise<FairyFactory> {
@@ -98,7 +98,7 @@ function loadFairyFactory(scriptUrl: string): Promise<FairyFactory> {
 
 /** Browser loader for the fairy module: script tag + emscripten factory.
  *  locateFile pins the .wasm and stockfish.worker.js to the fairy asset dir;
- *  mainScriptUrlOrBlob is REQUIRED — the pthread workers importScripts it and
+ *  mainScriptUrlOrBlob is REQUIRED. The pthread workers importScripts it and
  *  without it the module would try to re-resolve itself relative to nothing. */
 export async function loadFairyModuleBrowser(fairyBase: string): Promise<FairyModule> {
   const abs = (p: string): string => new URL(p, document.baseURI).href

@@ -1,4 +1,4 @@
-// ffish-es6 WASM loader — async singleton over the emscripten module factory
+// ffish-es6 WASM loader: async singleton over the emscripten module factory
 // (docs/GAMES-PLATFORM-SPEC.md §Approved stack).
 //
 // ffish-es6 exports an emscripten factory: `Module(opts) → Promise<ffish>`.
@@ -8,12 +8,12 @@
 // `requiresPreload: true` on the entries and await `spec.preload()` first.
 //
 // WASM resolution, in priority order:
-//   1. options.wasmBinary — headless tests pass the bytes directly (this
-//      emscripten build has no node filesystem read path — REQUIRED in node).
-//   2. options.wasmUrl — explicit override.
-//   3. browser/worker — `import('ffish-es6/ffish.wasm?url')`: Vite turns the
+//   1. options.wasmBinary: headless tests pass the bytes directly (this
+//      emscripten build has no node filesystem read path. REQUIRED in node).
+//   2. options.wasmUrl: explicit override.
+//   3. browser/worker: `import('ffish-es6/ffish.wasm?url')`: Vite turns the
 //      asset into a URL for emscripten's locateFile. Headless esbuild bundles
-//      must mark it external (external: ['*?url']) — the branch never runs in
+//      must mark it external (external: ['*?url']): the branch never runs in
 //      node, where load() without wasmBinary throws instead.
 
 import type { FairyStockfish, ModuleOptions } from 'ffish-es6'
@@ -40,7 +40,7 @@ export function isFfishReady(): boolean {
 export function getFfish(): FairyStockfish {
   if (!instance) {
     throw new Error(
-      'ffish WASM not loaded yet — await preloadFfish() (or the game spec\'s preload()) ' +
+      'ffish WASM not loaded yet: await preloadFfish() (or the game spec\'s preload()) ' +
         'before using xiangqi/shogi/janggi/makruk/placement rules'
     )
   }
@@ -86,7 +86,7 @@ async function load(options?: FfishPreloadOptions): Promise<FairyStockfish> {
     moduleOptions.locateFile = (): string => asset.default
   } else {
     // bare node: this emscripten build has no filesystem read path, and the
-    // renderer tsconfig has no node types — callers must supply the bytes.
+    // renderer tsconfig has no node types. Callers must supply the bytes.
     throw new Error('preloadFfish in node requires options.wasmBinary (read ffish.wasm yourself)')
   }
   return factory(moduleOptions as ModuleOptions)

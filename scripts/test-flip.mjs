@@ -12,11 +12,11 @@
 //   - morris point rotation is a point reflection and a bijection over the
 //     24 points;
 //   - the 3D layout mirrors worldOf/posAt consistently (round-trip under
-//     both orientations) and flips the world for 'black' — the camera stays
+//     both orientations) and flips the world for 'black': the camera stays
 //     seated, so the mirror IS the flip (CameraRig must not re-apply it);
 //   - flipPolicy audit: rotate-kinds rotate, none-kinds NEVER flip.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -103,9 +103,9 @@ for (const n of [8, 10]) {
   passed += 3
   console.log(`  ✓ ${n}x${n}: identity / rotation / involution over all cells`)
   // Render/interaction consistency: a piece drawn at view cell (r,c) must be
-  // the piece the click handler resolves at (r,c) — for EVERY square, both
+  // the piece the click handler resolves at (r,c), for EVERY square, both
   // orientations. (cells: sq = rcToSquare(viewRC(r,c)); pieces: (r,c) =
-  // viewRC(squareToRC(sq)) — same viewRC, so the composition must be id.)
+  // viewRC(squareToRC(sq)): same viewRC, so the composition must be id.)
   for (const flipped of [false, true]) {
     for (let sq = 1; sq <= (n * n) / 2; sq++) {
       const rc = squareToRC(sq, n)
@@ -183,4 +183,4 @@ for (const [name, spec] of [
 }
 
 rmSync(tmp, { recursive: true, force: true })
-console.log(`\nALL GREEN — ${passed} assertions`)
+console.log(`\nALL GREEN: ${passed} assertions`)

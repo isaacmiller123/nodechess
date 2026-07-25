@@ -1,4 +1,4 @@
-// Service receipts — a counterparty-signed record of work actually delivered.
+// Service receipts: a counterparty-signed record of work actually delivered.
 //
 // A node that serves a shard read, accepts a shard store, relays mail or answers
 // a pointer lookup can ask the node it served to sign for it. The receipt is
@@ -7,7 +7,7 @@
 // from the peers it genuinely helped.
 //
 // This is a seam, not a system. Nothing consumes receipts yet. It exists because
-// the alternative measure of contribution — counting nodes — is worthless the
+// the alternative measure of contribution (counting nodes) is worthless the
 // moment identities are cheap to create, and identities here are free by design.
 // Work delivered is Sybil-resistant for the same reason node count is not: a
 // thousand fake nodes that serve nothing accumulate nothing.
@@ -22,7 +22,7 @@ import { zB64u32 } from './events'
 import type { B64u } from './types'
 
 /** What a receipt can attest to. Every kind is a measurable transfer, never a
- *  judgment — there is deliberately no 'was helpful' or 'behaved well'. */
+ *  judgment: there is deliberately no 'was helpful' or 'behaved well'. */
 export const SERVICE_KINDS = ['shard-read', 'shard-store', 'mail-relay', 'pointer-read'] as const
 export type ServiceKind = (typeof SERVICE_KINDS)[number]
 
@@ -30,7 +30,7 @@ export interface ServiceReceiptBody extends CanonicalObject {
   v: 1
   /** nodeId of the node that PERFORMED the service. */
   server: B64u
-  /** Root of the account that RECEIVED it — and therefore signs. */
+  /** Root of the account that RECEIVED it, and therefore signs. */
   client: B64u
   kind: ServiceKind
   /** Bytes transferred. Non-negative, integral, and bounded so a single receipt
@@ -64,7 +64,7 @@ export const zServiceReceiptBody = z.strictObject({
 })
 
 /**
- * Sign a receipt as the CLIENT — the node that received the service. `priv` must
+ * Sign a receipt as the CLIENT. The node that received the service. `priv` must
  * be the private half of `key`; the caller's own chain is what proves `key`
  * belongs to `body.client`, exactly as it does for every other signed record.
  */
@@ -83,7 +83,7 @@ export function signServiceReceipt(
 
 /**
  * Structural + signature check. Deliberately does NOT check that `key` is
- * certified under `body.client` — that needs a chain view, and every consumer
+ * certified under `body.client`. That needs a chain view, and every consumer
  * that cares already holds one (certsProving). Verifying here would either
  * duplicate that logic or invite a caller to think this alone is sufficient.
  */
@@ -97,8 +97,8 @@ export function verifyServiceReceipt(receipt: ServiceReceipt): boolean {
 
 /**
  * Total bytes a set of receipts credits to `server`, counting each receipt at
- * most once. Invalid receipts and receipts for other servers contribute zero —
- * a hostile bundle can only ever reduce its own total, never inflate it.
+ * most once. Invalid receipts and receipts for other servers contribute zero.
+ * A hostile bundle can only ever reduce its own total, never inflate it.
  *
  * Dedupe is by (client, kind, ts, bytes): replaying one receipt a thousand times
  * is the obvious cheap attack, and it is the only one this function can defend

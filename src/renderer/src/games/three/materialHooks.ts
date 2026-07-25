@@ -7,7 +7,7 @@ import type { ArtTextureName } from './types'
 
 /**
  * PBR set for a games-art texture name, or null (not resolvable / loading /
- * missing) — callers keep procedural fallbacks until it arrives. Textures are
+ * missing): callers keep procedural fallbacks until it arrives. Textures are
  * cloned so per-use repeat doesn't fight the shared cache.
  */
 export function useArtPbr(

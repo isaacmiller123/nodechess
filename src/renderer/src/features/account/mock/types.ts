@@ -5,7 +5,7 @@
  * src/shared/accounts where one exists (StoredAccount, SignedEvent, FuseRecord,
  * Lease, …) but are flattened for rendering: the UI ships unwired, so surfaces
  * consume mock fixtures instead of live chains. When wiring lands, every Ui*
- * value maps onto a pure fold over public signed data (§0) — nothing rendered
+ * value maps onto a pure fold over public signed data (§0). Nothing rendered
  * is ever asserted state.
  */
 
@@ -18,7 +18,7 @@ export type B64u = string
 export type LadderKey = 'Bullet' | 'Blitz' | 'Rapid' | 'Classical'
 
 /**
- * §6 rating display states — THE SHARED UNION, re-exported verbatim from
+ * §6 rating display states: THE SHARED UNION, re-exported verbatim from
  * ratings/display.ts (twin of mm/pairing.ts DisplayState) so no UI shape can
  * drift from the authority. Fixtures never hand-author these: every `display`
  * value is the output of the shared displayState() over the ladder's protocol
@@ -42,7 +42,7 @@ export interface UiLadder {
   key: LadderKey
   /** The protocol numbers every derived surface value folds from. */
   state: UiLadderState
-  /** ALWAYS displayState(state, key) — derived, never authored. */
+  /** ALWAYS displayState(state, key). Derived, never authored. */
   display: RatingDisplay
   /** Convenience mirror of state.n. */
   games: number
@@ -50,7 +50,7 @@ export interface UiLadder {
   history?: number[]
 }
 
-/** §6b — public conduct standing, distinct from rating and from trust. */
+/** §6b: public conduct standing, distinct from rating and from trust. */
 export interface UiReputation {
   /** 0–100 conduct score from the reputation fold. */
   score: number
@@ -93,7 +93,7 @@ export interface UiChainEvent {
   ckpt?: { verified: 'incremental' | 'deep'; cosigners: number; of: number }
 }
 
-/** §1 PIN status (fuse counter is committee-held, threshold-replicated — C-2). */
+/** §1 PIN status (fuse counter is committee-held, threshold-replicated, C-2). */
 export interface UiPinStatus {
   set: boolean
   /** Lifetime failures recorded by the committee. Never resets (§1). */
@@ -105,7 +105,7 @@ export interface UiPinStatus {
   fuse: UiFuse | null
 }
 
-/** §1 threshold-signed fuse-tripped record — a public signed fact. */
+/** §1 threshold-signed fuse-tripped record: a public signed fact. */
 export interface UiFuse {
   trippedWts: number
   expiryWts: number
@@ -122,7 +122,7 @@ export interface UiFriend {
   countersigned: boolean
 }
 
-/** §10 mailbox — relayers prioritize senders with an existing edge. */
+/** §10 mailbox: relayers prioritize senders with an existing edge. */
 export interface UiMailItem {
   id: string
   from: string
@@ -157,7 +157,7 @@ export interface UiReconstruction {
   spotChecked: boolean
   /**
    * viewer.ts resolveProfile `status` carrier: 'expected' (a verified chain is
-   * present) or 'floor' (fewer than K_rec shard rows, no chain linkage — the
+   * present) or 'floor' (fewer than K_rec shard rows, no chain linkage: the
    * degraded C-12 view; §12: degraded, self-healing, never silent).
    */
   path: 'expected' | 'floor'
@@ -165,7 +165,7 @@ export interface UiReconstruction {
    * viewer.ts resolveProfile `revocationContested` carrier (C-12): a
    * device-signed revocation was honored on device-attested evidence only, so
    * the view may be hiding one device's honest recent content. Must render as
-   * a visible degradation — never a silently complete view.
+   * a visible degradation. Never a silently complete view.
    */
   revocationContested: boolean
 }
@@ -203,7 +203,7 @@ export interface UiProfile {
   }
 }
 
-/** §8 Tier-2 verdict record — signed, reproducible by anyone. */
+/** §8 Tier-2 verdict record: signed, reproducible by anyone. */
 export interface UiVerdict {
   id: string
   accused: string

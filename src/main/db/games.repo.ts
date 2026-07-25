@@ -18,7 +18,7 @@ export interface GameRow {
   est_elo_high: number | null
   reviewed: number
   /** Registry game kind ('chess' | 'go' | 'gomoku' | … | 'custom-<id>'). Column
-   *  added in migration v10 with DEFAULT 'chess' — SELECT * has returned it since
+   *  added in migration v10 with DEFAULT 'chess': SELECT * has returned it since
    *  v10, so this type must carry it (mirrors shared/types.ts GameRow). */
   game_kind: string
 }
@@ -70,10 +70,10 @@ export function listGames(limit = 25, offset = 0): GameRow[] {
   //
   // Deliberate: chess VARIANTS (chess960/crazyhouse/…) are hidden too, not just
   // foreign games. Online variant games archive the generic wire codec
-  // (onlineStore.genericArchive — UCI moves joined by spaces, not SAN PGN), so
+  // (onlineStore.genericArchive: UCI moves joined by spaces, not SAN PGN), so
   // the chess PGN parser cannot load them either; and even a SAN transcript
   // would mis-review (drops, variant win conditions). Only plain online chess
-  // (adapter.kind === 'chess') archives real PGN — and it saves gameKind
+  // (adapter.kind === 'chess') archives real PGN, and it saves gameKind
   // 'chess', so it appears here as intended.
   return getAppDb()
     .prepare(
@@ -96,7 +96,7 @@ export interface ListAllGamesFilter {
 /**
  * The full cross-mode archive (Library view): every kind, newest first, with
  * optional exact-match filters. Unlike listGames above this deliberately does
- * NOT hide non-chess rows — the Library routes chess rows to Analysis and
+ * NOT hide non-chess rows: the Library routes chess rows to Analysis and
  * everything else to the game replay viewer, so nothing here can mis-render.
  */
 export function listAllGames(f: ListAllGamesFilter = {}): GameRow[] {

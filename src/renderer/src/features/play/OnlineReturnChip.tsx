@@ -38,7 +38,7 @@ export function OnlineReturnChip({ state, onReturn }: OnlineReturnChipProps): JS
   const ms = runningMs(state)
   const label =
     state.phase === 'hosting'
-      ? 'Hosting — waiting'
+      ? 'Waiting for an opponent'
       : ms !== null
         ? formatClock(ms)
         : 'Online game'

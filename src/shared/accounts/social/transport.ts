@@ -1,25 +1,25 @@
-// A7 social transport (kickoff brick 1; spec §10, §3, §5, C-3) — the layer
-// that makes the PURE social modules (presence.ts, mailbox.ts, friends.ts —
+// A7 social transport (kickoff brick 1; spec §10, §3, §5, C-3): the layer
+// that makes the PURE social modules (presence.ts, mailbox.ts, friends.ts,
 // which stay pure) actually move between peers over the A3 overlay:
 //
-//   1. PRESENCE — the fuse-record publish pattern (storage/pointers.ts house
+//   1. PRESENCE. The fuse-record publish pattern (storage/pointers.ts house
 //      template): a deterministic per-root overlay key, a store GATE (verify
 //      root signature, ttl cap, clock-bounded freshness, key binding, refuse
 //      malformed), a freshest-wins MERGE (presence.ts rule 4 semantics), and
-//      publish/fetch helpers. Rides ValueKind 'record' — the value is
+//      publish/fetch helpers. Rides ValueKind 'record'. The value is
 //      self-describing ({t:'social-presence'}), and the gate composes over a
 //      `base` validator/merge exactly like makePointerStoreValidator.
-//   2. MAILBOX RELAYING — store-and-forward under a RECIPIENT-derived overlay
+//   2. MAILBOX RELAYING: store-and-forward under a RECIPIENT-derived overlay
 //      key. The key selects the relays (the k overlay-closest nodes, the same
 //      duty-by-distance rule shards use); the relay boundary is a dedicated
 //      request pair (send/drain) because admission is STATEFUL (rate windows)
-//      and drain must be AUTHENTICATED and clearing — semantics FIND_VALUE
+//      and drain must be AUTHENTICATED and clearing. Semantics FIND_VALUE
 //      cannot honor. At that boundary the relay calls the pure mailboxAdmit /
-//      mailboxDrain VERBATIM — per-sender-root rate limits, fair share, and
-//      edge-priority eviction stay exactly as mailbox.ts defines them — with
+//      mailboxDrain VERBATIM: per-sender-root rate limits, fair share, and
+//      edge-priority eviction stay exactly as mailbox.ts defines them. With
 //      meta.edgeMicro computed by the §10 edge-strength fold (edgeStrength.ts)
 //      from PUBLIC SIGNED DATA the relay itself verifies.
-//   3. FRIEND-EDGE COUNTERSIGNATURE EXCHANGE — the §3 add flow needs the
+//   3. FRIEND-EDGE COUNTERSIGNATURE EXCHANGE: the §3 add flow needs the
 //      counterparty's signature over the sorted-pair canonical bytes
 //      (friends.ts friendBytes). The round-trip rides the mailbox: a
 //      friend-request mail carries the requester's HALF (its signature +
@@ -27,30 +27,30 @@
 //      back; each side then appends its own witnessed-lane 'friend' add built
 //      from the peer's half. Because BOTH parties sign the identical
 //      two-root-bound bytes, one half serves both chains and can never be
-//      replayed into another pair — verification is friends.ts
+//      replayed into another pair: verification is friends.ts
 //      verifyFriendAdd, reused verbatim (no parallel crypto rules).
 //
 // WIRE KINDS: 'social-mail-send' / 'social-mail-drain' are members of the
 // FabricRequestKind union in witness/types.ts (folded in at A7 lane
-// integration — the lane originally rode a documented cast because that file
+// integration: the lane originally rode a documented cast because that file
 // was out of its set). Every FabricEndpoint implementation routes kinds
 // generically by string (MockFabric keeps a Map; the fabric is
-// transport-only, C-11 — nothing pattern-matches the union at runtime).
+// transport-only, C-11: nothing pattern-matches the union at runtime).
 //
-// §0 stance: the mailbox and presence are C-3 ephemeral coordination state —
+// §0 stance: the mailbox and presence are C-3 ephemeral coordination state,
 // expiring, reconstructible, NO authority. Nothing here mints truth: presence
 // feeds no consequence-bearing input; a dropped or evicted mail harms
 // liveness, never correctness (friendship itself is the §3 witnessed edge).
 // What IS load-bearing: no relay stores spoofed mail (envelope signature
 // verified by mailboxAdmit), no store gate accepts an unsigned/oversized/
 // malformed record, drains are recipient-root-signed and replay-refused, and
-// the §10 invariant — a sybil flood can't evict an established root's request
-// before the offline recipient next syncs — holds THROUGH the relay because
+// the §10 invariant, a sybil flood can't evict an established root's request
+// before the offline recipient next syncs, holds THROUGH the relay because
 // edgeMicro comes only from verified public data (edgeStrength.ts: fresh
 // root ⇒ exactly 0) and eviction needs a STRICTLY greater edge.
 //
 // Determinism rules (suite-load-bearing): platform-neutral (no `node:`
-// imports, no DOM globals), no Date.now / Math.random / timers — clocks are
+// imports, no DOM globals), no Date.now / Math.random / timers. Clocks are
 // injected (nowMs / caller wts). Relay state after any call sequence is a
 // pure function of that sequence (mailbox.ts discipline). Fail-closed typed
 // refusals everywhere; verifiers never throw, builders throw on misuse.
@@ -95,10 +95,10 @@ import {
 } from './presence'
 
 // ---------------------------------------------------------------------------
-// Overlay keys — domain-separated, one per root (pointers.ts key discipline)
+// Overlay keys: domain-separated, one per root (pointers.ts key discipline)
 // ---------------------------------------------------------------------------
 
-/** Domain separators — fixed forever (derivation is structural; everything
+/** Domain separators: fixed forever (derivation is structural; everything
  * revisable rides the records, never the key). */
 const PRESENCE_KEY_TAG = 'cs:a7:social-presence-key:v1'
 const MAILBOX_KEY_TAG = 'cs:a7:social-mailbox-key:v1'
@@ -111,7 +111,7 @@ function taggedRootKey(tag: string, root: B64u): B64u {
 
 /** The overlay key a root's social presence row lives under (kind 'record').
  * Domain-separated from nodeIdOf(root), pointer keys, shard keys, and the
- * mailbox key — presence floods never contend with anything else. Throws on
+ * mailbox key: presence floods never contend with anything else. Throws on
  * programmer misuse (builders throw; verifiers fail closed). */
 export function presenceKeyOfRoot(root: B64u): B64u {
   return taggedRootKey(PRESENCE_KEY_TAG, root)
@@ -119,21 +119,21 @@ export function presenceKeyOfRoot(root: B64u): B64u {
 
 /** The overlay key a recipient's mailbox RELAYS cluster at: the k closest
  * nodes to this key serve as the recipient's relays (duty-by-distance, the
- * shard rule). No replicated value lives at this key — mail rides the
+ * shard rule). No replicated value lives at this key. Mail rides the
  * authenticated send/drain pair, not FIND_VALUE. Throws on misuse. */
 export function mailboxKeyOfRoot(recipient: B64u): B64u {
   return taggedRootKey(MAILBOX_KEY_TAG, recipient)
 }
 
 // ---------------------------------------------------------------------------
-// 1. PRESENCE — row, store gate, merge, publish/fetch
+// 1. PRESENCE: row, store gate, merge, publish/fetch
 // ---------------------------------------------------------------------------
 
 /** Self-describing discriminant of a presence row under kind 'record'. */
 export const SOCIAL_PRESENCE_ROW_T = 'social-presence'
 
 /** The stored/offered value at presenceKeyOfRoot(root): ONE root's freshest
- * verified claim (freshest-wins keeps exactly one — presence is a point
+ * verified claim (freshest-wins keeps exactly one; presence is a point
  * value, not a set). */
 export interface SocialPresenceRow {
   v: 1
@@ -141,7 +141,7 @@ export interface SocialPresenceRow {
   claim: SignedSocialPresence
 }
 
-// Shallow row shape only — the DEEP verification (strict claim schema, ttl
+// Shallow row shape only: the DEEP verification (strict claim schema, ttl
 // cap, root signature) is presence.ts verifySocialPresence, reused verbatim.
 const zPresenceRowShallow = z.strictObject({
   v: z.literal(1),
@@ -149,8 +149,8 @@ const zPresenceRowShallow = z.strictObject({
   claim: z.record(z.string(), z.unknown()),
 })
 
-/** Wrap a claim for publishing. Throws unless the claim fully verifies —
- * the trusted build path never mints a row the gates would refuse. */
+/** Wrap a claim for publishing. Throws unless the claim fully verifies.
+ * The trusted build path never mints a row the gates would refuse. */
 export function makeSocialPresenceRow(
   sp: SignedSocialPresence,
   params: SocialPresenceParams = PARAMS_SOCIAL_PRESENCE,
@@ -174,7 +174,7 @@ export function looksLikeSocialPresenceRow(value: unknown): boolean {
 /** Extract the verified claim of a row bound to `target`, or null (fail
  * closed). Signature/shape/ttl-cap via verifySocialPresence; binding =
  * presenceKeyOfRoot(claim.root) === target (the pointer-layer rule: a row
- * can never squat a foreign key). Clock-free — freshness bounds live in the
+ * can never squat a foreign key). Clock-free: freshness bounds live in the
  * store gate (write time) and presenceOf (read time). */
 export function presenceRowClaim(
   value: unknown,
@@ -193,19 +193,19 @@ export function presenceRowClaim(
 }
 
 /** presence.ts rule-4 ordering: freshest body.ts wins; exact tie broken by
- * the lexicographically GREATER sig — a pure function of the claim pair. */
+ * the lexicographically GREATER sig. A pure function of the claim pair. */
 function fresherClaim(a: SignedSocialPresence, b: SignedSocialPresence): SignedSocialPresence {
   if (a.body.ts !== b.body.ts) return a.body.ts > b.body.ts ? a : b
   return compareKeys(a.sig, b.sig) > 0 ? a : b
 }
 
 export interface SocialStoreGateOpts {
-  /** Injected clock (ms). REQUIRED — no ambient time (write-side freshness). */
+  /** Injected clock (ms). REQUIRED. No ambient time (write-side freshness). */
   nowMs: () => number
   /** Presence rule set; default PARAMS_SOCIAL_PRESENCE. */
   presence?: SocialPresenceParams
   /** Fallback gate for values this layer does not own. Default mirrors the
-   * overlay's own default (accept 'record', refuse the rest) — compose with
+   * overlay's own default (accept 'record', refuse the rest): compose with
    * makePointerStoreValidator/makeShardStoreValidator via THEIR `base`. */
   base?: StoreValidator
   /** Fallback merge for values this layer does not own. Default: replace. */
@@ -224,9 +224,9 @@ export interface SocialStoreGate {
  * VALIDATOR (write time, clock-bounded): a value claiming the presence
  * discriminant is accepted only if the full claim verifies (strict shape,
  * ttl ≤ params cap, ed25519 by the ROOT), is bound to the target key, and is
- * LIVE at this node's injected clock — not expired (now − ts ≤ ttl) and not
+ * LIVE at this node's injected clock. Not expired (now − ts ≤ ttl) and not
  * implausibly future (ts − now ≤ skewMax). Everything else about it refuses:
- * unsigned, forged, oversized-ttl, malformed, foreign-key — all stored:false
+ * unsigned, forged, oversized-ttl, malformed, foreign-key. All stored:false
  * (honest degradation, never an error).
  *
  * MERGE (store fold AND read-side getMerged fold): freshest-wins between the
@@ -270,7 +270,7 @@ export function makeSocialStoreGate(opts: SocialStoreGateOpts): SocialStoreGate 
       if (cP !== null) return { v: 1, t: SOCIAL_PRESENCE_ROW_T, claim: cP } as unknown as CanonicalObject
       // Neither side is a VERIFIED presence claim bound to THIS key (a
       // shape-only lookalike, an unverifiable claim, or a foreign-key row).
-      // DELEGATE to baseMerge — do NOT manufacture an empty presence row.
+      // DELEGATE to baseMerge: do NOT manufacture an empty presence row.
       // KEY-DOMAIN DISCIPLINE (Round-A composition finding): a manufactured
       // {t:'social-presence'} row is self-recognized as social and would shadow
       // a co-installed layer's genuine row (e.g. the composed verdict gate) for
@@ -307,8 +307,8 @@ export function publishSocialPresence(
 
 /**
  * Fetch + verify a root's presence at witnessed time `nowWts` (caller's, §4).
- * The fetched row is UNTRUSTED: the claim goes through presenceOf — full
- * signature/shape/ttl verification plus expiry and future-skew at nowWts —
+ * The fetched row is UNTRUSTED: the claim goes through presenceOf. Full
+ * signature/shape/ttl verification plus expiry and future-skew at nowWts,
  * and must name the requested root. null = offline/unknown (fail closed).
  */
 export async function fetchSocialPresence(
@@ -331,10 +331,10 @@ export async function fetchSocialPresence(
 }
 
 // ---------------------------------------------------------------------------
-// 2. MAILBOX RELAYING — wire kinds, relay, send, authenticated drain
+// 2. MAILBOX RELAYING: wire kinds, relay, send, authenticated drain
 // ---------------------------------------------------------------------------
 
-/** The two social request kinds — members of witness/types.ts
+/** The two social request kinds: members of witness/types.ts
  * FabricRequestKind (folded into the union at A7 lane integration). */
 export const SOCIAL_MAIL_SEND_KIND = 'social-mail-send'
 export const SOCIAL_MAIL_DRAIN_KIND = 'social-mail-drain'
@@ -344,7 +344,7 @@ export const DRAIN_WIRE_MSGS_MAX = 256
 /** Drain freshness window: |req.ts − relay now| must sit inside this. */
 export const DRAIN_SKEW_MS = 120_000
 
-// Shallow send shape — the DEEP gate (strict envelope schema, payload bound,
+// Shallow send shape. The DEEP gate (strict envelope schema, payload bound,
 // envelope signature by the sender root, self-mail, dedup, rate, fair-share,
 // edge-priority eviction) is mailboxAdmit, reused verbatim.
 const zMailSendReq = z.strictObject({
@@ -365,7 +365,7 @@ const zDrainReqBody = z.strictObject({
   v: z.literal(1),
   t: z.literal('social-mail-drain'),
   recipient: zB64u32,
-  /** Requester-claimed ms — bounded by the relay's clock AND strictly
+  /** Requester-claimed ms: bounded by the relay's clock AND strictly
    * monotonic per recipient at each relay (replay refusal). */
   ts: z.int().min(0),
 })
@@ -390,7 +390,7 @@ const zStoredMailWire = z.strictObject({
 })
 
 /** The §10 fold seam the relay computes meta.edgeMicro through: MUST derive
- * from public signed data only (edgeStrength.ts is the canonical fold —
+ * from public signed data only (edgeStrength.ts is the canonical fold,
  * makeChainEdgeProvider wires it). Never sender-asserted. */
 export type EdgeMicroProvider = (sender: B64u, recipient: B64u, nowWts: number) => number
 
@@ -422,10 +422,10 @@ export function makeChainEdgeProvider(o: {
 }
 
 export interface SocialRelayOpts {
-  /** Injected clock (ms). REQUIRED — stamps arrivals and drain windows. */
+  /** Injected clock (ms). REQUIRED. Stamps arrivals and drain windows. */
   nowMs: () => number
   /** The §10 edge fold (makeChainEdgeProvider). A throwing or out-of-range
-   * provider degrades to edge 0 — an honest sender loses priority, never
+   * provider degrades to edge 0: an honest sender loses priority, never
    * admission; a forged HIGH edge is impossible from here (fail closed). */
   edgeMicroOf: EdgeMicroProvider
   /** Mailbox rule set; default PARAMS_SOCIAL_MAILBOX (state pins the digest). */
@@ -436,19 +436,19 @@ export interface SocialRelayOpts {
 
 export interface SocialRelay {
   /** Current relay state (test seam + C-1 cache handoff). Never mutated in
-   * place — every admission/drain replaces it wholesale (mailbox.ts). */
+   * place. Every admission/drain replaces it wholesale (mailbox.ts). */
   state(): MailboxState
   close(): void
 }
 
 /**
- * Install the relay boundary on a fabric endpoint. Every admission decision —
- * including the §10 eviction order — is mailboxAdmit's verbatim; this layer
+ * Install the relay boundary on a fabric endpoint. Every admission decision,
+ * including the §10 eviction order, is mailboxAdmit's verbatim; this layer
  * only supplies meta = { nowWts: floor(nowMs()), edgeMicro: fold(...) } and
  * commits the returned state. Drains are authenticated: the request body is
  * ed25519-signed by the RECIPIENT ROOT, must sit inside the relay's freshness
  * window, and must carry a ts STRICTLY greater than the last drained ts for
- * that recipient at this relay — a captured drain replayed later clears
+ * that recipient at this relay: a captured drain replayed later clears
  * nothing (typed 'drain-refused', the rpc.ts error convention).
  */
 export function createSocialRelay(fabric: FabricEndpoint, opts: SocialRelayOpts): SocialRelay {
@@ -462,7 +462,7 @@ export function createSocialRelay(fabric: FabricEndpoint, opts: SocialRelayOpts)
   onOverlay(fabric, SOCIAL_MAIL_SEND_KIND, zMailSendReq, async (_from, req) => {
     const mail = req.mail as unknown as SignedMail
     const nowWts = Math.floor(opts.nowMs())
-    // Loose peek at the routing fields for the edge fold — mailboxAdmit is
+    // Loose peek at the routing fields for the edge fold: mailboxAdmit is
     // the authority on the envelope (a lying shape rejects there).
     const b = mail.body as unknown as { sender?: unknown; recipient?: unknown }
     let edge = 0
@@ -512,7 +512,7 @@ export function createSocialRelay(fabric: FabricEndpoint, opts: SocialRelayOpts)
 }
 
 /** Relay selection: the replicateK overlay-closest nodes to the recipient's
- * mailbox key, self excluded (a node never fabric-requests itself — its own
+ * mailbox key, self excluded (a node never fabric-requests itself; its own
  * relay copy would be redundant with the k−1 others). */
 async function relayTargets(
   node: OverlayNode,
@@ -537,7 +537,7 @@ export interface SendMailResult {
 
 /**
  * Offer signed mail to the recipient's relays. The mail must already be
- * signMail-signed by the SENDER ROOT (mailbox.ts rule — relays refuse
+ * signMail-signed by the SENDER ROOT (mailbox.ts rule, relays refuse
  * anything else). Refusals are honest degradation, never errors.
  */
 export async function sendSocialMail(
@@ -582,7 +582,7 @@ export interface DrainedMail {
  * Re-verify one relay-returned StoredMail against the RECIPIENT's own root:
  * strict shape, envelope reconstruction, id binding (mailId), and the sender
  * root's ed25519 over the canonical envelope. A malicious relay can drop or
- * reorder mail (liveness, C-3) — it can NEVER inject mail a sender didn't
+ * reorder mail (liveness, C-3): it can NEVER inject mail a sender didn't
  * sign, or rebind mail to a different recipient (§0). null = discard.
  */
 export function verifyDrainedMail(m: unknown, recipient: B64u): DrainedMail | null {
@@ -614,8 +614,8 @@ export function verifyDrainedMail(m: unknown, recipient: B64u): DrainedMail | nu
 /**
  * The recipient syncs: sign one drain request (ROOT key), present it to every
  * relay, union the verified results (dedup by mail id; edge folds to max and
- * arrival to min — order-independent), and hand back the §10 priority order:
- * edgeMicro DESC, arrivedWts ASC, id ASC — established and earliest first,
+ * arrival to min, order-independent), and hand back the §10 priority order:
+ * edgeMicro DESC, arrivedWts ASC, id ASC: established and earliest first,
  * exactly mailboxDrain's comparator applied to the union. Throws only on
  * programmer misuse (priv not matching recipient); relay refusals and forged
  * messages are silently dropped (fail closed).
@@ -675,9 +675,9 @@ export const MAIL_KIND_FRIEND_REQUEST = 'friend-request'
 export const MAIL_KIND_FRIEND_CONSENT = 'friend-consent'
 
 /**
- * One party's HALF of a §3 friend edge: `sig` is makeFriendSig output — the
+ * One party's HALF of a §3 friend edge: `sig` is makeFriendSig output. The
  * party's ed25519 over friendBytes(from, to), the SORTED-PAIR canonical
- * bytes binding BOTH roots — so a half minted for (from, to) verifies for no
+ * bytes binding BOTH roots, so a half minted for (from, to) verifies for no
  * other pair (unreplayable by construction; friends.ts owns the rule). `key`
  * is the signer (the `from` root or a certified child; `certs` prove the
  * child, required iff key !== from). The COUNTERPARTY (`to`) turns a half
@@ -686,7 +686,7 @@ export const MAIL_KIND_FRIEND_CONSENT = 'friend-consent'
 export interface FriendHalf {
   v: 1
   t: 'friend-half'
-  /** The half's minter — the root whose consent this half proves. */
+  /** The half's minter. The root whose consent this half proves. */
   from: B64u
   /** The counterparty root the edge binds to (the half's only valid user). */
   to: B64u
@@ -707,7 +707,7 @@ const zFriendHalf = z.strictObject({
 
 /**
  * Convert a half into the FriendPayload the `to` side appends to ITS OWN
- * chain — then prove it with friends.ts verifyFriendAdd (the ONE verifier:
+ * chain. Then prove it with friends.ts verifyFriendAdd (the ONE verifier:
  * schema, no self-edge, key provenance via inline root-signed certs, and the
  * signature over the two-root-bound bytes). null = refuse (fail closed):
  * forged, tampered, or cross-pair-replayed halves all die here.
@@ -738,7 +738,7 @@ export function verifyFriendHalf(half: unknown): FriendHalf | null {
 /**
  * Mint this party's half toward `peerRoot`, signing friendBytes(selfRoot,
  * peerRoot) with `priv` (the selfRoot key itself, or a certified child whose
- * root-signed cert events ride along). Trusted build path — throws unless
+ * root-signed cert events ride along). Trusted build path. Throws unless
  * the result fully verifies.
  */
 export function makeFriendHalf(o: {
@@ -765,7 +765,7 @@ export function makeFriendHalf(o: {
 }
 
 /** Deterministic mail-payload codec for a half: b64u of the canonical bytes
- * (codec-exact both ways — no JSON.parse of untrusted text). */
+ * (codec-exact both ways; no JSON.parse of untrusted text). */
 export function encodeFriendHalf(half: FriendHalf): string {
   return toB64u(canonicalBytes(half as unknown as CanonicalValue))
 }
@@ -787,7 +787,7 @@ function makeFriendMail(
     key: B64u
     priv: Uint8Array
     certs?: SignedEvent[]
-    /** SENDER ROOT private key — the envelope signer (mailbox.ts rule; the
+    /** SENDER ROOT private key: the envelope signer (mailbox.ts rule; the
      * half's `priv` may be a device key, the envelope's may not). */
     rootPriv: Uint8Array
     sentTs: number
@@ -800,7 +800,7 @@ function makeFriendMail(
   const payload = encodeFriendHalf(half)
   const max = (o.params ?? PARAMS_SOCIAL_MAILBOX).payloadMaxChars
   if (payload.length > max)
-    throw new Error(`makeFriendMail: encoded half exceeds payloadMaxChars (${payload.length} > ${max}) — too many certs`)
+    throw new Error(`makeFriendMail: encoded half exceeds payloadMaxChars (${payload.length} > ${max}), too many certs`)
   const env: MailEnvelope = {
     v: 1,
     sender: o.selfRoot,
@@ -848,7 +848,7 @@ export function readFriendMail(
 /**
  * CONSENT step (the recipient of a request): validate the requester's half
  * against SELF, and return the FriendPayload to append to the OWN chain (the
- * witnessed-lane 'friend' add — chain.ts appendWitnessed is the caller's, as
+ * witnessed-lane 'friend' add: chain.ts appendWitnessed is the caller's, as
  * everywhere in the pure social layer). The consent mail back to the
  * requester is makeFriendConsentMail. null = the request does not verify or
  * does not bind to self (fail closed).
@@ -861,10 +861,10 @@ export function consentToFriendRequest(request: FriendHalf, selfRoot: B64u): Fri
 
 /** ADOPT step (the original requester, on draining the consent): same rule,
  * from the consent half, PLUS the requester binds the consent to the peer it
- * actually asked (`expectedPeer`) — an unsolicited "consent" from a stranger
+ * actually asked (`expectedPeer`): an unsolicited "consent" from a stranger
  * must not auto-append an edge the requester never requested (it is a signed
  * half, i.e. a REQUEST, and goes through the consent flow instead). Appending
- * the returned payload completes the §3 mutual edge — both chains then read
+ * the returned payload completes the §3 mutual edge. Both chains then read
  * friends (friends.ts areFriends). */
 export function adoptFriendConsent(
   consent: FriendHalf,

@@ -1,4 +1,4 @@
-// THE A2 PROOF SUITE — headless multi-client over MockFabric (spec §14-A2).
+// THE A2 PROOF SUITE: headless multi-client over MockFabric (spec §14-A2).
 //
 //   node scripts/test-accounts-fabric.mjs
 //
@@ -44,7 +44,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -76,7 +76,7 @@ async function run(M) {
   }
 
   // A fabric node: an endpoint running witnessServe + memberServe. The operator
-  // peer is exactly this shape (server/operator/peer.ts) — just always awake.
+  // peer is exactly this shape (server/operator/peer.ts). Just always awake.
   function makeNode(fabric, seedRoot, seedDev, fuses) {
     const root = kp(seedRoot)
     const device = kp(seedDev)
@@ -275,13 +275,13 @@ async function run(M) {
     const client = makePlayer(f, 40, 41, 'PinClient')
     const com = provisionCommittee(cnodes, client.root.priv, client.root.pubB, '4271', seededRng('committee-2b'))
 
-    // Happy path — verifiability is ON by default (members emit deterministic
+    // Happy path: verifiability is ON by default (members emit deterministic
     // DLEQ proofs); the honest committee derives the pinKey.
     const good = await W.pinVerifyFlow({ fabric: client.ep, root: client.root.pubB, pin: '4271', committee: com, wts: NOW, rng: seededRng('2b-good') })
     ok(good.ok && good.pinPub === com.pinPub, 'DLEQ-enforced committee eval derives the correct pinKey (checkDleq defaults on)')
 
     // A MALICIOUS member (committee position 0) returns a wrong-share partial
-    // with NO proof — the shape that used to slip through unchecked.
+    // with NO proof: the shape that used to slip through unchecked.
     const evil = W.randScalar(seededRng('2b-evil'))
     const evilNonce = A.toB64u(A.sha256(A.utf8('2b-evil-nonce')))
     cnodes[0].ep.onRequest('pin-eval', async (_from, payload) => ({
@@ -294,11 +294,11 @@ async function run(M) {
     ok(routed.ok && routed.pinPub === com.pinPub, 't-of-n routes around a malicious member (wrong partial, no proof) and still derives')
 
     // With verifiability OFF (the pre-fix behavior) the SAME single member
-    // silently corrupts the evaluation — proving the enforcement is load-bearing.
+    // silently corrupts the evaluation: proving the enforcement is load-bearing.
     const unguarded = await W.pinVerifyFlow({ fabric: client.ep, root: client.root.pubB, pin: '4271', committee: com, wts: NOW, rng: seededRng('2b-unguarded'), checkDleq: false })
     ok(!unguarded.ok, 'without DLEQ a single malicious member corrupts a correct-PIN eval (fix is load-bearing)')
 
-    // Liveness: take an honest member offline too — the flow tolerates BOTH a
+    // Liveness: take an honest member offline too. The flow tolerates BOTH a
     // malicious and an unreachable member at once (7 honest ≥ pinT).
     await cnodes[1].ep.close()
     const degraded = await W.pinVerifyFlow({ fabric: client.ep, root: client.root.pubB, pin: '4271', committee: com, wts: NOW, rng: seededRng('2b-degraded') })
@@ -313,7 +313,7 @@ async function run(M) {
     const fcom = provisionCommittee(fnodes, fclient.root.priv, fclient.root.pubB, '4271', seededRng('committee-2b-fuse'))
 
     // A single member FALSELY claiming the fuse is active cannot deny a healthy
-    // account — pinVerifyFlow no longer trusts one member's word; it routes on.
+    // account: pinVerifyFlow no longer trusts one member's word; it routes on.
     fnodes[0].ep.onRequest('pin-eval', async () => ({ error: 'fuse-active' }))
     const liar = await W.pinVerifyFlow({ fabric: fclient.ep, root: fclient.root.pubB, pin: '4271', committee: fcom, wts: NOW, rng: seededRng('2b-liar') })
     ok(liar.ok && liar.pinPub === fcom.pinPub, 'a single member falsely claiming fuse-active cannot deny a healthy committee (routes around it)')
@@ -323,7 +323,7 @@ async function run(M) {
     const bannedFuse = W.makeFuseRecord(fclient.root.pubB, 100, NOW - 1000, W.pinRecordId(fcom.record.payload), [])
     ffuses.set(fclient.root.pubB, bannedFuse)
     const banned = await W.pinVerifyFlow({ fabric: fclient.ep, root: fclient.root.pubB, pin: '4271', committee: fcom, wts: NOW, rng: seededRng('2b-banned') })
-    ok(!banned.ok && banned.reason === 'fuse-active', 'a fuse-banned root cannot derive the pinKey — honest members refuse to serve (§1)')
+    ok(!banned.ok && banned.reason === 'fuse-active', 'a fuse-banned root cannot derive the pinKey: honest members refuse to serve (§1)')
   }
 
   // ==========================================================================
@@ -358,13 +358,13 @@ async function run(M) {
   const sameEp = W.adjudicate({ root: alice.root.pubB, a: dgA, b: dgB, events: [] }, { tLease: PARAMS_A2.tLease, keyOf: dgKeyOf })
   eq(sameEp.guilty, 'witnesses', 'same-epoch different-device double-grant → the double-signing witnesses are slashed')
   // FORGED attribution: an attacker signs grants claiming honest witnesses' w's
-  // but with its OWN key — keyOf binding refuses to attribute them, so no honest
+  // but with its OWN key: keyOf binding refuses to attribute them, so no honest
   // witness is framed (the pair falls below tLease valid grantors → none).
   const evilKp = kp(321)
   const forge = (body) => W.grantLease(body, witnesses.slice(0, 9).map((w) => ({ w: w.nodeId, key: evilKp.pubB, wts: NOW, sig: W.signGrant(body, w.nodeId, evilKp.pubB, evilKp.priv, NOW).sig })))
   const forgedVerdict = W.adjudicate({ root: alice.root.pubB, a: forge(dgBodyA), b: forge(dgBodyB), events: [] }, { tLease: PARAMS_A2.tLease, keyOf: dgKeyOf })
   eq(forgedVerdict.guilty, 'none', 'a fabricated grant set (attacker key, honest w’s) cannot frame honest witnesses (keyOf binding)')
-  // Different-epoch leases are a legitimate supersession — never a double-grant;
+  // Different-epoch leases are a legitimate supersession: never a double-grant;
   // a real user fork is adjudicated by the FORK path (§3), not the lease pair.
   const leaseE1 = takeoverlessLease(1, alice.device.pubB)
   const leaseE2 = takeoverlessLease(2, deviceB.pubB)
@@ -438,7 +438,7 @@ async function run(M) {
     ok(fuse && W.verifyFuseRecord(fuse, com.members, kOf).ok, 'the auto-assembled fuse verifies (≥ pinT co-signatures, each on its OWN counter)')
     ok(fuse && fuse.body.fails >= PARAMS_A2.pinLifetimeFails, `the fuse records the effective count (${fuse && fuse.body.fails})`)
 
-    // NON-FORGEABLE: a victim who never failed cannot be tripped — each member
+    // NON-FORGEABLE: a victim who never failed cannot be tripped. Each member
     // co-signs only on the strength of its OWN counter for the victim root, so
     // no attacker-supplied reports/committee can manufacture a ban.
     const vf = new W.MockFabric()
@@ -453,7 +453,7 @@ async function run(M) {
     // so a fails=0 body on a never-failed victim is refused regardless of trips.
     const negBody = W.fuseRecordBody(vc.root.pubB, 0, NOW, W.pinRecordId(vcom.record.payload))
     const neg = await vc.ep.request(vn[0].nodeId, 'pin-fuse-sign', { body: negBody, trips: -5 })
-    ok(!neg.sig && neg.error === 'not-due', 'a requester trips cannot forge a ban — the never-failed member is not-due (floors threshold from its own state)')
+    ok(!neg.sig && neg.error === 'not-due', 'a requester trips cannot forge a ban. The never-failed member is not-due (floors threshold from its own state)')
 
     // pin-fuse-sign binds to the provisioned PIN record: a fuse for a DIFFERENT
     // record id is refused even by a member whose own count is at the threshold.
@@ -464,14 +464,14 @@ async function run(M) {
     const farBody = W.fuseRecordBody(fc.root.pubB, PARAMS_A2.pinLifetimeFails, NOW + 5 * 365 * 86_400_000, recId)
     const far = await fc.ep.request(quorum[0].nodeId, 'pin-fuse-sign', { body: farBody, trips: 0 })
     ok(far.error === 'trippedWts-out-of-window', 'pin-fuse-sign refuses a far-future trip time')
-    // an INFLATED body.fails (above the member's own count) is refused — else it
+    // an INFLATED body.fails (above the member's own count) is refused. Else it
     // would push the next refill threshold (held.fails + R) permanently out of reach.
     const inflatedBody = W.fuseRecordBody(fc.root.pubB, 1_000_000_000, NOW, recId)
     const inflated = await fc.ep.request(quorum[0].nodeId, 'pin-fuse-sign', { body: inflatedBody, trips: 0 })
     ok(inflated.error === 'body-above-own-count', 'pin-fuse-sign refuses a fuse whose fails exceed the member’s own count (no threshold-poisoning)')
 
     // REFILL DOWNGRADE: a member that already tripped once (holds an EXPIRED fuse
-    // with fails=100) must NOT re-sign at threshold 100 — its floor is 100+R,
+    // with fails=100) must NOT re-sign at threshold 100. Its floor is 100+R,
     // derived from its OWN held fuse, so a requester trips=0 cannot re-ban it.
     const rfFuses = new Map()
     const rf = new W.MockFabric()
@@ -568,7 +568,7 @@ async function run(M) {
     ok(thief2.error === 'bad-handoff', 'a handoff below the old-committee threshold is rejected')
 
     // NO-PREV RESET (the real bypass): a fresh INITIAL record for an ALREADY
-    // provisioned root is refused — a root-key holder cannot zero the counter by
+    // provisioned root is refused. A root-key holder cannot zero the counter by
     // re-dealing a new committee without a handoff.
     const freshK = W.randScalar(rng)
     const freshDeal = W.dealScalar(freshK, PARAMS_A2.pinT, PARAMS_A2.pinN, rng)

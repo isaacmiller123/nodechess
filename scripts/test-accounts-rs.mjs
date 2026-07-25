@@ -1,8 +1,8 @@
-// A3 BRICK-1 SUITE — Reed-Solomon codec (src/shared/accounts/storage/rs.ts).
+// A3 BRICK-1 SUITE: Reed-Solomon codec (src/shared/accounts/storage/rs.ts).
 //
 //   node scripts/test-accounts-rs.mjs
 //
-// Locks the FIXED field recipe (GF(2^8)/0x11d, generator 0x02 — 0x03 does NOT
+// Locks the FIXED field recipe (GF(2^8)/0x11d, generator 0x02: 0x03 does NOT
 // generate the field and is forbidden), proves true-MDS at a tractable size
 // (ALL C(6,3) subsets), hammers the default k=12/n=40 geometry with 100
 // deterministically-seeded subsets over a REAL chain blob, drives the tamper
@@ -36,7 +36,7 @@ function throwsCode(fn, code, msg) {
 
 const hex = (u) => Buffer.from(u).toString('hex')
 
-/** Deterministic 32-bit LCG (Numerical Recipes constants) — NO Math.random. */
+/** Deterministic 32-bit LCG (Numerical Recipes constants): NO Math.random. */
 function lcg(seed) {
   let s = seed >>> 0
   return () => {
@@ -55,7 +55,7 @@ function pickSubset(rand, n, k) {
 }
 
 // ---- determinism goldens (recorded from a green run; cross-build anchors) ----
-// encode(bytes 0..63, k=4, n=8) — the b64u body of EVERY shard, plus dataHash.
+// encode(bytes 0..63, k=4, n=8): the b64u body of EVERY shard, plus dataHash.
 const GOLD_HASH = '_eq5rPNxA2K9JljNyaKej5x1f8-YEWA6jER80dkVEQg'
 const GOLD_BODIES = [
   'AAECAwQFBgcICQoLDA0ODw', // idx 0 (systematic)
@@ -89,7 +89,7 @@ async function main() {
     rmSync(outdirNode, { recursive: true, force: true })
     rmSync(outdirBrowser, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -97,20 +97,20 @@ async function run(M, RSB) {
   const { RS, P, A } = M
 
   // ============================================================================
-  // 1. field sanity — the FIXED recipe is locked
+  // 1. field sanity. The FIXED recipe is locked
   // ============================================================================
   console.log('\n· GF(2^8)/0x11d field sanity …')
   eq(RS.GF_POLY, 0x11d, 'GF_POLY is 0x11d')
   eq(RS.GF_GENERATOR, 0x02, 'GF_GENERATOR is 0x02')
-  eq(RS.generatorOrder(0x02), 255, '0x02 has order 255 — generates the whole field')
+  eq(RS.generatorOrder(0x02), 255, '0x02 has order 255, generates the whole field')
   // Preserved prework finding, value corrected: 0x03 is NOT a generator of
   // GF(2^8)/0x11d. Its true order is 51 (3 = 2^25, 255/gcd(255,25) = 51), not
-  // the 85 the prework note recorded — either way ord(3) != 255, so 0x03 stays
+  // the 85 the prework note recorded, either way ord(3) != 255, so 0x03 stays
   // FORBIDDEN as the table generator.
-  eq(RS.generatorOrder(0x03), 51, '0x03 has order 51 — does NOT generate (forbidden as generator)')
+  eq(RS.generatorOrder(0x03), 51, '0x03 has order 51, does NOT generate (forbidden as generator)')
   ok(RS.generatorOrder(0x03) !== 255, 'order(0x03) != 255 (the load-bearing half of the finding)')
   eq(RS.generatorOrder(1), 1, 'order(1) = 1')
-  eq(RS.gfMul(2, 128), 0x1d, '2 * 128 = x^8 ≡ 0x1d — the 0x11d reduction anchor')
+  eq(RS.gfMul(2, 128), 0x1d, '2 * 128 = x^8 ≡ 0x1d: the 0x11d reduction anchor')
   eq(RS.gfInv(1), 1, 'inv(1) = 1')
   {
     let inverses = 0
@@ -144,7 +144,7 @@ async function run(M, RSB) {
   throwsCode(() => RS.generatorOrder(0), 'bad-field-element', 'generatorOrder(0) → bad-field-element')
 
   // ============================================================================
-  // 2. coding matrix — [I_k; C] Cauchy block, geometry gates
+  // 2. coding matrix: [I_k; C] Cauchy block, geometry gates
   // ============================================================================
   console.log('\n· coding matrix …')
   {
@@ -173,7 +173,7 @@ async function run(M, RSB) {
   throwsCode(() => RS.encode(new Uint8Array(8), 0, 5), 'bad-geometry', 'encode with k=0 → bad-geometry')
 
   // ============================================================================
-  // 3. true MDS at tractable size — ALL C(6,3) = 20 subsets reconstruct
+  // 3. true MDS at tractable size, ALL C(6,3) = 20 subsets reconstruct
   // ============================================================================
   console.log('\n· MDS proof: k=3 n=6, all 20 subsets …')
   {
@@ -255,7 +255,7 @@ async function run(M, RSB) {
   }
 
   // ============================================================================
-  // 5. tamper matrix — typed rejects on the golden k=4 n=8 job
+  // 5. tamper matrix. Typed rejects on the golden k=4 n=8 job
   // ============================================================================
   console.log('\n· tamper matrix (typed RsError codes) …')
   {
@@ -301,7 +301,7 @@ async function run(M, RSB) {
   }
 
   // ============================================================================
-  // 6. determinism goldens — the cross-build byte anchor
+  // 6. determinism goldens, the cross-build byte anchor
   // ============================================================================
   console.log('\n· determinism goldens (bytes 0..63, k=4, n=8) …')
   {
@@ -310,7 +310,7 @@ async function run(M, RSB) {
     eq(shards[0].dataHash, GOLD_HASH, 'dataHash matches the recorded GOLDEN value')
     for (let i = 0; i < 8; i++)
       eq(shards[i].body, GOLD_BODIES[i], `shard ${i} body matches the recorded GOLDEN b64u`)
-    // rebuild purely from the PINNED literals (parity rows only) — proves the
+    // rebuild purely from the PINNED literals (parity rows only). Proves the
     // committed anchors alone still decode to the original bytes
     const pinned = [4, 5, 6, 7].map((idx) => ({
       v: 1, idx, k: 4, n: 8, dataLen: 64, dataHash: GOLD_HASH, body: GOLD_BODIES[idx],
@@ -319,7 +319,7 @@ async function run(M, RSB) {
   }
 
   // ============================================================================
-  // 7. browser parity — identical bytes from the platform:'browser' bundle
+  // 7. browser parity. Identical bytes from the platform:'browser' bundle
   // ============================================================================
   console.log('\n· node/browser bundle parity …')
   {
@@ -342,7 +342,7 @@ async function run(M, RSB) {
   }
 
   // ============================================================================
-  // 8. edges — empty blob, blob smaller than k
+  // 8. edges, empty blob, blob smaller than k
   // ============================================================================
   console.log('\n· edges …')
   {
@@ -356,7 +356,7 @@ async function run(M, RSB) {
   }
 
   // ============================================================================
-  // 9. size/perf sanity — ~200KB under 2s
+  // 9. size/perf sanity, ~200KB under 2s
   // ============================================================================
   console.log('\n· perf: ~200KB encode + parity-only reconstruct …')
   {

@@ -19,14 +19,14 @@ export interface BoardProps {
   animation?: boolean
   coordinates?: boolean
   /** Programmatic shapes (e.g. engine top-line arrows). Rendered as chessground
-   *  auto-shapes — they never interfere with, and are not erased by, the user's
+   *  auto-shapes: they never interfere with, and are not erased by, the user's
    *  own right-click drawings. */
   shapes?: DrawShape[]
   /** Extra draw brushes, deep-merged OVER chessground's defaults (configure()
    *  merges plain objects key-by-key, so stock green/red/pale* survive). Any
    *  shape referencing a non-default brush key MUST have it registered here or
    *  chessground's SVG defs sync crashes. Pass a module-level constant (e.g.
-   *  SCHOOL_BRUSHES) — identity is not diffed. */
+   *  SCHOOL_BRUSHES). Identity is not diffed. */
   brushes?: Record<string, DrawBrush>
   /** Bump to force the board to re-sync to `fen` even when fen is unchanged (e.g. cancelled promotion / illegal move). */
   syncNonce?: number
@@ -41,7 +41,7 @@ function shapesKey(shapes?: DrawShape[]): string {
 
 // Preview-harness only: the browser test harness (opened with `?mock`) drives the
 // board with synthetic events, which chessground rejects by default (isTrusted).
-// This NEVER activates in the packaged app — its URL has no `?mock`.
+// This NEVER activates in the packaged app: its URL has no `?mock`.
 const TRUST_ALL_EVENTS =
   typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('mock')
 
@@ -85,7 +85,7 @@ export function Board(props: BoardProps) {
       selectable: { enabled: interactive },
       // eraseOnClick: a plain left-click clears the user's own drawings (lichess
       // behaviour). autoShapes carry engine arrows and are managed separately.
-      // NOTE: `brushes` is only included when provided — an undefined value in
+      // NOTE: `brushes` is only included when provided. An undefined value in
       // the config would REPLACE (wipe) chessground's default brush map.
       drawable: {
         enabled: true,
@@ -129,7 +129,7 @@ export function Board(props: BoardProps) {
   ])
 
   // Announce the board as an interactive region. The label reflects orientation
-  // and, when playable, whose turn it is — so color is never the only signal.
+  // and, when playable, whose turn it is, so color is never the only signal.
   const label = props.viewOnly
     ? `Chess board, ${props.orientation} to play, view only`
     : `Chess board, ${props.orientation} side, ${props.turnColor} to move`

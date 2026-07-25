@@ -3,18 +3,18 @@
  "band": "06",
  "order": 6,
  "title": "The Elementary Mates (heavy pieces)",
- "subtitle": "King and queen, king and rook, two rooks: walk the enemy king to the edge and finish — without ever stalemating.",
+ "subtitle": "King and queen, king and rook, two rooks: walk the enemy king to the edge and finish, without ever stalemating.",
  "estMinutes": 40,
  "concepts": [
   {
    "id": "drive-to-the-edge",
    "name": "Drive the King to the Edge",
-   "short": "A lone king cannot be mated in the open. You must herd it to the rim or a corner first — that is where every elementary mate happens."
+   "short": "A lone king cannot be mated in the open. You must herd it to the rim or a corner first. That is where every elementary mate happens."
   },
   {
    "id": "queen-knights-move",
    "name": "The Queen a Knight's Move Away",
-   "short": "Hold the queen a knight's-move from the enemy king. It shrinks his box every turn and — crucially — never strips his last square, so you never stalemate."
+   "short": "Hold the queen a knight's-move from the enemy king. It shrinks his box every turn and (crucially) never strips his last square, so you never stalemate."
   },
   {
    "id": "king-must-help",
@@ -24,7 +24,7 @@
   {
    "id": "never-stalemate",
    "name": "Never Stalemate",
-   "short": "Before every move that takes squares from a cornered king, count: does he still have one legal move? If your move leaves him none and he is not in check, it is stalemate — a drawn win."
+   "short": "Before every move that takes squares from a cornered king, count: does he still have one legal move? If your move leaves him none and he is not in check, it is stalemate. A drawn win."
   },
   {
    "id": "rook-cuts-off",
@@ -39,12 +39,12 @@
   {
    "id": "rook-waiting-move",
    "name": "The Waiting Move",
-   "short": "When your king cannot improve, pass the move to the enemy with a safe rook tempo far from the action — forcing his king to step into the opposition."
+   "short": "When your king cannot improve, pass the move to the enemy with a safe rook tempo far from the action. Forcing his king to step into the opposition."
   },
   {
    "id": "two-rook-ladder",
    "name": "The Two-Rook Ladder",
-   "short": "Two rooks need no king. One rook checks the king's rank, he steps back, the other rook checks the next — a ladder rolling him to the edge."
+   "short": "Two rooks need no king. One rook checks the king's rank, he steps back, the other rook checks the next, a ladder rolling him to the edge."
   },
   {
    "id": "ladder-swing",
@@ -55,15 +55,15 @@
  "lessons": [
   {
    "id": "l1-queen-box",
-   "title": "King & Queen — Build the Box, Walk Him In",
+   "title": "King & Queen: Build the Box, Walk Him In",
    "kind": "endgame",
    "summary": "The queen herds the lone king to the edge by staying a knight's move away; your own king marches up to help. The first and most important technique of the endgame.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — finish with the queen",
+     "title": "Warm-up: finish with the queen",
      "intro": {
-      "text": "You learned to deliver a one-move mate; now you learn to FORCE one from nothing but a king and a queen. First, warm the eye on the bare-king finish. In each, Black moves first; then it is your turn to mate in one — the check the king cannot answer, your own king guarding the queen."
+      "text": "You learned to deliver a one-move mate; now you learn to FORCE one from nothing but a king and a queen. First, warm the eye on the bare-king finish. In each, Black moves first; then it is your turn to mate in one. The check the king cannot answer, your own king guarding the queen."
      },
      "puzzle": {
       "themes": [
@@ -112,7 +112,7 @@
        "conceptId": "drive-to-the-edge",
        "coach": {
         "conceptId": "drive-to-the-edge",
-        "text": "A queen against a bare king is a crushing material edge — and yet, in the middle of the board, you cannot mate him. Look: the king on e5 has eight squares around it, open country in every direction. A queen alone can never cover a flight AND check at the same time out here. The first law of the endgame, then: a lone king is mated only at the EDGE, never in the open. Your whole job is to herd him there.",
+        "text": "A queen against a bare king is a crushing material edge, and yet, in the middle of the board, you cannot mate him. Look: the king on e5 has eight squares around it, open country in every direction. A queen alone can never cover a flight AND check at the same time out here. The first law of the endgame, then: a lone king is mated only at the EDGE, never in the open. Your whole job is to herd him there.",
         "annotations": [
          {
           "kind": "circle",
@@ -152,7 +152,7 @@
        "conceptId": "queen-knights-move",
        "coach": {
         "conceptId": "queen-knights-move",
-        "text": "Here is the tool — and it is a strange one. Place your queen a KNIGHT'S move from his king. From e5 a knight's distance is d3, and Qd3 is exactly such a square. Watch what it does: the queen now fences the king into the upper-right of the board, yet she stands far enough that he can never come and bite her. A knight's move is the magic distance — close enough to cage, far enough to be safe.",
+        "text": "Here is the tool, and it is a strange one. Place your queen a KNIGHT'S move from his king. From e5 a knight's distance is d3, and Qd3 is exactly such a square. Watch what it does: the queen now fences the king into the upper-right of the board, yet she stands far enough that he can never come and bite her. A knight's move is the magic distance. Close enough to cage, far enough to be safe.",
         "annotations": [
          {
           "kind": "circle",
@@ -174,7 +174,7 @@
        "conceptId": "queen-knights-move",
        "coach": {
         "conceptId": "queen-knights-move",
-        "text": "The cage in the flesh. With the queen on d3, the king on e5 has just three squares left — e6, f6, f4 — all of them retreating, away from the centre and toward the rim. He is trapped in a shrinking box and does not even know it. And note what the knight's-move distance guarantees: he ALWAYS keeps at least one square. That is your insurance against the great blunder of this chapter — stalemate. A knight's-move queen never stalemates.",
+        "text": "The cage in the flesh. With the queen on d3, the king on e5 has just three squares left (e6, f6, f4) all of them retreating, away from the centre and toward the rim. He is trapped in a shrinking box and does not even know it. And note what the knight's-move distance guarantees: he ALWAYS keeps at least one square. That is your insurance against the great blunder of this chapter, stalemate. A knight's-move queen never stalemates.",
         "annotations": [
          {
           "kind": "circle",
@@ -209,7 +209,7 @@
        "conceptId": "king-must-help",
        "coach": {
         "conceptId": "king-must-help",
-        "text": "But the queen cannot finish the job by herself — she can pen the king to the edge, yet a mate there needs one more guard. So while she holds the cage, you march your OWN king up the board. Step by step the king walks toward the action: Ke2, Ke3, and onward. Remember this for every elementary mate to come — the king is not a spectator. The heavy piece builds the wall; the king delivers the blow.",
+        "text": "But the queen cannot finish the job by herself. She can pen the king to the edge, yet a mate there needs one more guard. So while she holds the cage, you march your OWN king up the board. Step by step the king walks toward the action: Ke2, Ke3, and onward. Remember this for every elementary mate to come. The king is not a spectator. The heavy piece builds the wall; the king delivers the blow.",
         "annotations": [
          {
           "kind": "circle",
@@ -242,7 +242,7 @@
        "conceptId": "queen-knights-move",
        "coach": {
         "conceptId": "queen-knights-move",
-        "text": "Your hands now. King on e5 in the open, your queen on d2. Do NOT chase him with checks — that only shoos him around the board. Instead, build the cage: put the queen a knight's move from his king, on d3, and watch his world shrink. One quiet, patient move.",
+        "text": "Your hands now. King on e5 in the open, your queen on d2. Do NOT chase him with checks. That only shoos him around the board. Instead, build the cage: put the queen a knight's move from his king, on d3, and watch his world shrink. One quiet, patient move.",
         "annotations": [
          {
           "kind": "circle",
@@ -262,7 +262,7 @@
        ],
        "successLine": {
         "conceptId": "queen-knights-move",
-        "text": "Qd3. No check, no fuss — and yet the king is suddenly down to three squares, all of them backward. That is the difference between the beginner who chases and the technician who cages. The knight's-move queen does the herding for you.",
+        "text": "Qd3. No check, no fuss, and yet the king is suddenly down to three squares, all of them backward. That is the difference between the beginner who chases and the technician who cages. The knight's-move queen does the herding for you.",
         "annotations": [
          {
           "kind": "circle",
@@ -288,7 +288,7 @@
        },
        "retryLine": {
         "conceptId": "queen-knights-move",
-        "text": "Not a check — a cage. Checking the king in the open just lets him wander free. Set the queen a knight's move from him, on d3, and he is boxed into the corner of the board."
+        "text": "Not a check, a cage. Checking the king in the open just lets him wander free. Set the queen a knight's move from him, on d3, and he is boxed into the corner of the board."
        }
       },
       {
@@ -296,7 +296,7 @@
        "conceptId": "king-must-help",
        "coach": {
         "conceptId": "king-must-help",
-        "text": "The cage holds — the king on e5 has only e6, f6, f4. Now the queen has done all she can alone; she must NOT grab another square yet or you risk stalemate. Bring up your reserve. March the king one step toward the fight.",
+        "text": "The cage holds. The king on e5 has only e6, f6, f4. Now the queen has done all she can alone; she must NOT grab another square yet or you risk stalemate. Bring up your reserve. March the king one step toward the fight.",
         "annotations": [
          {
           "kind": "circle",
@@ -322,7 +322,7 @@
        ],
        "successLine": {
         "conceptId": "king-must-help",
-        "text": "The king steps up — exactly right. The queen keeps the wall, the king closes the distance, and in a few more moves they will combine to mate him on the rim. Patience: wall, walk, wall, walk. That rhythm wins every king-and-queen ending.",
+        "text": "The king steps up: exactly right. The queen keeps the wall, the king closes the distance, and in a few more moves they will combine to mate him on the rim. Patience: wall, walk, wall, walk. That rhythm wins every king-and-queen ending.",
         "annotations": [
          {
           "kind": "highlight",
@@ -338,21 +338,21 @@
        },
        "retryLine": {
         "conceptId": "king-must-help",
-        "text": "The queen's work is done for now — touch her again and you may stalemate, or let the king slip the cage. This is the moment to walk your OWN king up. Step it forward, toward his."
+        "text": "The queen's work is done for now. Touch her again and you may stalemate, or let the king slip the cage. This is the moment to walk your OWN king up. Step it forward, toward his."
        }
       }
      ]
     },
     {
      "kind": "guided",
-     "title": "The whole loop — wall, walk, finish",
+     "title": "The whole loop: wall, walk, finish",
      "steps": [
       {
        "fen": "7k/8/5K2/8/8/8/4Q3/8 w - - 0 1",
        "conceptId": "drive-to-the-edge",
        "coach": {
         "conceptId": "drive-to-the-edge",
-        "text": "Now do not stop at one move — run the whole technique, three moves to mate. The king is already pinned to the corner on h8; your king is up on f6; the queen sits on e2. Move one: build the WALL. Cut the king off with the queen along the seventh rank — Qe7 — and he has just one square left, g8. No check, just a wall.",
+        "text": "Now do not stop at one move. Run the whole technique, three moves to mate. The king is already pinned to the corner on h8; your king is up on f6; the queen sits on e2. Move one: build the WALL. Cut the king off with the queen along the seventh rank (Qe7) and he has just one square left, g8. No check, just a wall.",
         "annotations": [
          {
           "kind": "circle",
@@ -378,7 +378,7 @@
        ],
        "successLine": {
         "conceptId": "drive-to-the-edge",
-        "text": "Qe7 — the wall is up. The king is sealed on the eighth rank with only g8 to step to. Notice you did NOT check him; you penned him. Now he is forced to move, and there is only one square he can take.",
+        "text": "Qe7: the wall is up. The king is sealed on the eighth rank with only g8 to step to. Notice you did NOT check him; you penned him. Now he is forced to move, and there is only one square he can take.",
         "annotations": [
          {
           "kind": "highlight",
@@ -394,7 +394,7 @@
        },
        "retryLine": {
         "conceptId": "drive-to-the-edge",
-        "text": "Not a check — a wall. Slide the queen to the seventh rank, e7, sealing the king onto the back rank with a single square (g8) left. Patience builds the cage."
+        "text": "Not a check, a wall. Slide the queen to the seventh rank, e7, sealing the king onto the back rank with a single square (g8) left. Patience builds the cage."
        }
       },
       {
@@ -402,7 +402,7 @@
        "conceptId": "king-must-help",
        "coach": {
         "conceptId": "king-must-help",
-        "text": "He was forced to g8 — exactly as the wall dictated. The queen cannot mate alone, so move two is the WALK: bring your king up the last step, Kg6, planting it in front of his. Now your king guards g7 and h7, the squares the mate will need.",
+        "text": "He was forced to g8, exactly as the wall dictated. The queen cannot mate alone, so move two is the WALK: bring your king up the last step, Kg6, planting it in front of his. Now your king guards g7 and h7, the squares the mate will need.",
         "annotations": [
          {
           "kind": "circle",
@@ -428,7 +428,7 @@
        ],
        "successLine": {
         "conceptId": "king-must-help",
-        "text": "Kg6 — the king takes its post, opposed to his. The queen holds the wall; the king holds g7 and h7. He is in a box he cannot leave, and the finish is one move away. Wall, then walk — every time.",
+        "text": "Kg6: the king takes its post, opposed to his. The queen holds the wall; the king holds g7 and h7. He is in a box he cannot leave, and the finish is one move away. Wall, then walk, every time.",
         "annotations": [
          {
           "kind": "highlight",
@@ -452,7 +452,7 @@
        "conceptId": "never-stalemate",
        "coach": {
         "conceptId": "never-stalemate",
-        "text": "He had to shuffle back to h8 — and now the box snaps shut. Move three is the FINISH. Count first: h8's only neighbours are g8, g7, h7, and your king already covers g7 and h7. So a check that also takes g8 is mate. Swing the queen beside him on the seventh rank — Qh7 — guarded by your king. Deliver it.",
+        "text": "He had to shuffle back to h8, and now the box snaps shut. Move three is the FINISH. Count first: h8's only neighbours are g8, g7, h7, and your king already covers g7 and h7. So a check that also takes g8 is mate. Swing the queen beside him on the seventh rank (Qh7) guarded by your king. Deliver it.",
         "annotations": [
          {
           "kind": "circle",
@@ -473,7 +473,7 @@
        ],
        "successLine": {
         "conceptId": "never-stalemate",
-        "text": "Qh7, mate — the kiss of death, your king guarding the queen. There it is, the whole king-and-queen ending in three clean moves: wall, walk, finish. No checks chasing him around, no stalemate — just the box closing tighter until it is mate. This is the rhythm you will use to win every K+Q endgame.",
+        "text": "Qh7, mate: the kiss of death, your king guarding the queen. There it is, the whole king-and-queen ending in three clean moves: wall, walk, finish. No checks chasing him around, no stalemate. Just the box closing tighter until it is mate. This is the rhythm you will use to win every K+Q endgame.",
         "annotations": [
          {
           "kind": "circle",
@@ -491,16 +491,16 @@
        },
        "retryLine": {
         "conceptId": "never-stalemate",
-        "text": "Your king guards g7 and h7, so bring the queen hard against his king on h7 — a check he cannot escape and cannot capture. Qh7 is mate. (Beware the quiet queen move that leaves him no square but no check — that is stalemate.)"
+        "text": "Your king guards g7 and h7, so bring the queen hard against his king on h7. A check he cannot escape and cannot capture. Qh7 is mate. (Beware the quiet queen move that leaves him no square but no check; that is stalemate.)"
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — cage and finish with the queen",
+     "title": "Cool-down: cage and finish with the queen",
      "intro": {
-      "text": "Bare king, your king and queen — the real thing, not a busy middlegame. In each, Black moves first; then it is your turn. First, CAGE (set the queen a knight's move from his king to shrink the box); then FINISH the rest (deliver the mate beside him, or the cut-off from afar, your king guarding). Count his squares before every move so you never stalemate."
+      "text": "Bare king, your king and queen: the real thing, not a busy middlegame. In each, Black moves first; then it is your turn. First, CAGE (set the queen a knight's move from his king to shrink the box); then FINISH the rest (deliver the mate beside him, or the cut-off from afar, your king guarding). Count his squares before every move so you never stalemate."
      },
      "puzzle": {
       "themes": [
@@ -553,15 +553,15 @@
   },
   {
    "id": "l2-queen-mate",
-   "title": "King & Queen — The Two Mating Pictures",
+   "title": "King & Queen: The Two Mating Pictures",
    "kind": "endgame",
-   "summary": "The kiss-of-death beside the king, and the cut-off mate from afar with the kings opposed — plus the stalemate trap that lurks beside every one of them.",
+   "summary": "The kiss-of-death beside the king, and the cut-off mate from afar with the kings opposed, plus the stalemate trap that lurks beside every one of them.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — one move to mate",
+     "title": "Warm-up: one move to mate",
      "intro": {
-      "text": "The cage is built and the kings have closed — all that remains is the finishing blow. Warm up on the bare king: Black moves first, then you mate in one. Watch for both shapes — the queen hard against his king, and the queen's check from across the board with the kings opposed."
+      "text": "The cage is built and the kings have closed. All that remains is the finishing blow. Warm up on the bare king: Black moves first, then you mate in one. Watch for both shapes. The queen hard against his king, and the queen's check from across the board with the kings opposed."
      },
      "puzzle": {
       "themes": [
@@ -610,7 +610,7 @@
        "conceptId": "king-must-help",
        "coach": {
         "conceptId": "king-must-help",
-        "text": "Picture one — the kiss of death. Your king has marched all the way up to g6, directly below his king on g8. Now the queen swings in beside him: Qg7, hard against the enemy king. He cannot capture her, for your king on g6 guards g7. He cannot flee — f8 and h8 are the queen's, f7 and h7 your king's. Queen and king cheek to cheek. This is the most common mate in all of chess; engrave the picture.",
+        "text": "Picture one: the kiss of death. Your king has marched all the way up to g6, directly below his king on g8. Now the queen swings in beside him: Qg7, hard against the enemy king. He cannot capture her, for your king on g6 guards g7. He cannot flee: f8 and h8 are the queen's, f7 and h7 your king's. Queen and king cheek to cheek. This is the most common mate in all of chess; engrave the picture.",
         "annotations": [
          {
           "kind": "circle",
@@ -637,7 +637,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "Picture two — the cut-off mate from afar. Here the kings stand in direct OPPOSITION: yours on e6, his on e8, one square between, and it is his to move into a wall he cannot pass. Your king already steals d7, e7, f7. So the queen needs only to check the back rank from any safe distance — Qa8, the length of the board — and it is mate. The king does the caging; the queen reaches across and finishes. No need to come close.",
+        "text": "Picture two: the cut-off mate from afar. Here the kings stand in direct OPPOSITION: yours on e6, his on e8, one square between, and it is his to move into a wall he cannot pass. Your king already steals d7, e7, f7. So the queen needs only to check the back rank from any safe distance (Qa8, the length of the board) and it is mate. The king does the caging; the queen reaches across and finishes. No need to come close.",
         "annotations": [
          {
           "kind": "circle",
@@ -664,7 +664,7 @@
        "conceptId": "never-stalemate",
        "coach": {
         "conceptId": "never-stalemate",
-        "text": "Now the trap — and it has ended a million won games. The king is jammed in the corner on h8, your king on g6. You feel the win and reach for Qf7, hugging him close. STOP. After Qf7 the king is NOT in check — and he has no square: g7, g8, h7 are all covered. No check, no move. Stalemate. A draw. The full point thrown into the sea. Beside every mate sits a stalemate that looks just like it.",
+        "text": "Now the trap, and it has ended a million won games. The king is jammed in the corner on h8, your king on g6. You feel the win and reach for Qf7, hugging him close. STOP. After Qf7 the king is NOT in check, and he has no square: g7, g8, h7 are all covered. No check, no move. Stalemate. A draw. The full point thrown into the sea. Beside every mate sits a stalemate that looks just like it.",
         "annotations": [
          {
           "kind": "circle",
@@ -701,7 +701,7 @@
        "conceptId": "never-stalemate",
        "coach": {
         "conceptId": "never-stalemate",
-        "text": "The cure is one habit: before a quiet queen move near a cornered king, ask 'does he still have a square?' — and if you want to END it, the move must be a CHECK he cannot meet. From this very position, Qf8 is mate: it checks along the eighth rank, your king covers g7 and h7, and h8 has nowhere to go. Same queen, one square different from the stalemate. Qf7 draws; Qf8 wins. Count, then strike.",
+        "text": "The cure is one habit: before a quiet queen move near a cornered king, ask 'does he still have a square?', and if you want to END it, the move must be a CHECK he cannot meet. From this very position, Qf8 is mate: it checks along the eighth rank, your king covers g7 and h7, and h8 has nowhere to go. Same queen, one square different from the stalemate. Qf7 draws; Qf8 wins. Count, then strike.",
         "annotations": [
          {
           "kind": "circle",
@@ -722,14 +722,14 @@
     },
     {
      "kind": "guided",
-     "title": "Deliver the mate — never the draw",
+     "title": "Deliver the mate: never the draw",
      "steps": [
       {
        "fen": "k7/3Q4/2K5/8/8/8/8/8 w - - 0 1",
        "conceptId": "never-stalemate",
        "coach": {
         "conceptId": "never-stalemate",
-        "text": "King driven to the corner on a8, your king on c6, queen on d7 — a position you will reach a thousand times. One queen move is mate. One looks identical and is stalemate. Count his squares — b8, b7, a7 — before you touch the piece. Now deliver the mate that checks while your king guards the queen.",
+        "text": "King driven to the corner on a8, your king on c6, queen on d7. A position you will reach a thousand times. One queen move is mate. One looks identical and is stalemate. Count his squares (b8, b7, a7) before you touch the piece. Now deliver the mate that checks while your king guards the queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -748,7 +748,7 @@
        ],
        "successLine": {
         "conceptId": "never-stalemate",
-        "text": "Qb7, mate — the kiss of death in the corner. The queen checks from b7, your king on c6 defends her, and a8 has no flight. Note the trap you stepped past: Qc7 would have been stalemate, not check, no move, a drawn game. You counted, and you won.",
+        "text": "Qb7, mate: the kiss of death in the corner. The queen checks from b7, your king on c6 defends her, and a8 has no flight. Note the trap you stepped past: Qc7 would have been stalemate, not check, no move, a drawn game. You counted, and you won.",
         "annotations": [
          {
           "kind": "circle",
@@ -766,7 +766,7 @@
        },
        "retryLine": {
         "conceptId": "never-stalemate",
-        "text": "Careful — if you played Qc7 you have STALEMATED him: not in check, not a square to move, a draw from a winning game. The mate must be a CHECK your king guards. Bring the queen to b7, beside his king, defended by yours."
+        "text": "Careful. If you played Qc7 you have STALEMATED him: not in check, not a square to move, a draw from a winning game. The mate must be a CHECK your king guards. Bring the queen to b7, beside his king, defended by yours."
        }
       },
       {
@@ -774,7 +774,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "The cut-off shape. The kings are opposed — yours on e6 covers d7, e7, f7; his on e8 is walled in. The queen need not come close; she finishes from across the board. Check the back rank and mate him.",
+        "text": "The cut-off shape. The kings are opposed: yours on e6 covers d7, e7, f7; his on e8 is walled in. The queen need not come close; she finishes from across the board. Check the back rank and mate him.",
         "annotations": [
          {
           "kind": "circle",
@@ -793,7 +793,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Qa8, mate along the eighth rank. The king's opposition did the real work, sealing every flight; the queen merely reached out and touched him. When your own king already cages his, do not come close — look first for the distant check.",
+        "text": "Qa8, mate along the eighth rank. The king's opposition did the real work, sealing every flight; the queen merely reached out and touched him. When your own king already cages his, do not come close. Look first for the distant check.",
         "annotations": [
          {
           "kind": "circle",
@@ -811,16 +811,16 @@
        },
        "retryLine": {
         "conceptId": "the-opposition",
-        "text": "Your king already holds d7, e7, f7 — the king has no escape if you simply check the eighth rank. Slide the queen along to a8 and check him on the back rank."
+        "text": "Your king already holds d7, e7, f7. The king has no escape if you simply check the eighth rank. Slide the queen along to a8 and check him on the back rank."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the two pictures, no stalemate",
+     "title": "Cool-down: the two pictures, no stalemate",
      "intro": {
-      "text": "Bare-king finishes, the two shapes you just learned. Black moves first into the corner or the edge; then you mate in one. Two are the kiss of death hard against his king; two are the cut-off from across the board with the kings opposed. Count his flight squares first — beside every mate sits a stalemate that looks the same."
+      "text": "Bare-king finishes, the two shapes you just learned. Black moves first into the corner or the edge; then you mate in one. Two are the kiss of death hard against his king; two are the cut-off from across the board with the kings opposed. Count his flight squares first: beside every mate sits a stalemate that looks the same."
      },
      "puzzle": {
       "themes": [
@@ -873,15 +873,15 @@
   },
   {
    "id": "l3-rook-mate",
-   "title": "King & Rook — The Box and the Opposition",
+   "title": "King & Rook: The Box and the Opposition",
    "kind": "endgame",
    "summary": "No queen now. The rook builds a wall the king cannot cross; your king shoulders his into opposition; and only then does the rook check. The waiting move is the secret lever.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the back-rank rook",
+     "title": "Warm-up: the back-rank rook",
      "intro": {
-      "text": "The rook mates more slowly than the queen and demands real technique — so first, recall its finishing shape on a bare king. In each, your king is up and his is trapped on the edge; Black moves first, then you check from a safe distance along the edge for mate. The rook never lands beside his king — he would simply take it."
+      "text": "The rook mates more slowly than the queen and demands real technique, so first, recall its finishing shape on a bare king. In each, your king is up and his is trapped on the edge; Black moves first, then you check from a safe distance along the edge for mate. The rook never lands beside his king. He would simply take it."
      },
      "puzzle": {
       "themes": [
@@ -930,7 +930,7 @@
        "conceptId": "rook-cuts-off",
        "coach": {
         "conceptId": "rook-cuts-off",
-        "text": "The rook's gift is the cut-off. A rook on the fifth rank is a wall: the black king on e4 cannot set foot on the fifth rank or beyond — every square up there is the rook's. He is sealed into the bottom of the board. The rook does not chase the king; it builds a fence and shrinks the pen. First lesson of the rook mate: cut the king off, then make the box smaller.",
+        "text": "The rook's gift is the cut-off. A rook on the fifth rank is a wall: the black king on e4 cannot set foot on the fifth rank or beyond. Every square up there is the rook's. He is sealed into the bottom of the board. The rook does not chase the king; it builds a fence and shrinks the pen. First lesson of the rook mate: cut the king off, then make the box smaller.",
         "annotations": [
          {
           "kind": "circle",
@@ -967,7 +967,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "Now the rook alone cannot mate — it needs your king, and it needs the OPPOSITION. Look: his king on d8, yours on d6, one square between, the same file. He is to move and he must give way, because your king robs him of c7, d7, e7. This face-off is the lever of the whole mate. The rook is far away on a1, doing nothing yet — and that is correct. Set the opposition first.",
+        "text": "Now the rook alone cannot mate. It needs your king, and it needs the OPPOSITION. Look: his king on d8, yours on d6, one square between, the same file. He is to move and he must give way, because your king robs him of c7, d7, e7. This face-off is the lever of the whole mate. The rook is far away on a1, doing nothing yet, and that is correct. Set the opposition first.",
         "annotations": [
          {
           "kind": "circle",
@@ -1002,7 +1002,7 @@
        "conceptId": "king-must-help",
        "coach": {
         "conceptId": "king-must-help",
-        "text": "With the kings opposed and his on the edge, the rook delivers. Ra8, check on the eighth rank — and he is mated. He cannot step off the rank: c7, d7, e7 are your king's. He cannot block; he cannot capture a rook the length of the board away. King and rook, the bread-and-butter mate you will use to win a hundred bare endings. The rook checks ONLY once the king is opposed and on the rim — never before.",
+        "text": "With the kings opposed and his on the edge, the rook delivers. Ra8, check on the eighth rank, and he is mated. He cannot step off the rank: c7, d7, e7 are your king's. He cannot block; he cannot capture a rook the length of the board away. King and rook, the bread-and-butter mate you will use to win a hundred bare endings. The rook checks ONLY once the king is opposed and on the rim, never before.",
         "annotations": [
          {
           "kind": "circle",
@@ -1024,7 +1024,7 @@
        "conceptId": "rook-waiting-move",
        "coach": {
         "conceptId": "rook-waiting-move",
-        "text": "But what if the kings are NOT yet opposed? Here the rook on a7 fences his king onto the eighth rank, but his king on d8 and yours on e6 are off by a file. Check now with Ra8 and he simply walks out to c7 — nothing gained. And if you step your king up to oppose, you lose the chance, because then it is HIS move. The answer is the WAITING MOVE: keep the rook on the seventh, holding the fence, and just slide it to a safe square — Ra7 to g7, say. Now HE must move, into your opposition, and then the rook checks for mate. Without the waiting move you chase forever; with it, you win in three.",
+        "text": "But what if the kings are NOT yet opposed? Here the rook on a7 fences his king onto the eighth rank, but his king on d8 and yours on e6 are off by a file. Check now with Ra8 and he simply walks out to c7. Nothing gained. And if you step your king up to oppose, you lose the chance, because then it is HIS move. The answer is the WAITING MOVE: keep the rook on the seventh, holding the fence, and just slide it to a safe square. Ra7 to g7, say. Now HE must move, into your opposition, and then the rook checks for mate. Without the waiting move you chase forever; with it, you win in three.",
         "annotations": [
          {
           "kind": "circle",
@@ -1057,7 +1057,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "Everything is in place: his king on d8, yours on d6 in direct opposition, the rook idle on a1. He is on the edge and boxed. Now — and only now — does the rook earn its keep. Deliver the back-rank mate.",
+        "text": "Everything is in place: his king on d8, yours on d6 in direct opposition, the rook idle on a1. He is on the edge and boxed. Now (and only now) does the rook earn its keep. Deliver the back-rank mate.",
         "annotations": [
          {
           "kind": "circle",
@@ -1081,7 +1081,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Ra8, mate. The opposition sealed c7, d7, e7; the rook closed the eighth. That is the K+R mate entire: wall, opposition, check. The rook never moved until the king was trapped — discipline, not chasing.",
+        "text": "Ra8, mate. The opposition sealed c7, d7, e7; the rook closed the eighth. That is the K+R mate entire: wall, opposition, check. The rook never moved until the king was trapped, discipline, not chasing.",
         "annotations": [
          {
           "kind": "circle",
@@ -1099,7 +1099,7 @@
        },
        "retryLine": {
         "conceptId": "the-opposition",
-        "text": "The kings are opposed and his is on the edge — this is the moment. Send the rook to the eighth rank to check him. He cannot step off: your king holds c7, d7, e7."
+        "text": "The kings are opposed and his is on the edge. This is the moment. Send the rook to the eighth rank to check him. He cannot step off: your king holds c7, d7, e7."
        }
       },
       {
@@ -1107,7 +1107,7 @@
        "conceptId": "rook-waiting-move",
        "coach": {
         "conceptId": "rook-waiting-move",
-        "text": "The heart of the technique. Your rook on a7 fences the king onto the eighth rank; his king on d8, yours on e6 — but NOT opposed (off by a file). Check now with Ra8 and he slips out to c7, free. Step your king toward him and you lose the chance at opposition. So do neither. Keep the rook on the seventh rank, holding the fence, and just shuffle it to a safe square — passing the move to HIM.",
+        "text": "The heart of the technique. Your rook on a7 fences the king onto the eighth rank; his king on d8, yours on e6, but NOT opposed (off by a file). Check now with Ra8 and he slips out to c7, free. Step your king toward him and you lose the chance at opposition. So do neither. Keep the rook on the seventh rank, holding the fence, and just shuffle it to a safe square. Passing the move to HIM.",
         "annotations": [
          {
           "kind": "circle",
@@ -1135,7 +1135,7 @@
        ],
        "successLine": {
         "conceptId": "rook-waiting-move",
-        "text": "A waiting move along the seventh — exactly right. The fence still holds, but now it is HIS move in a position he cannot improve. If his king steps to e8 it walks straight into your opposition, and the rook checks down the eighth from its own file for mate (Rb8#, Rg8#, or Rh8#, depending where it waited); if it goes to c8 you simply march your king over and repeat. Beginners check here and chase for fifty moves; the technician waits one tempo and wins. That is the whole difference.",
+        "text": "A waiting move along the seventh, exactly right. The fence still holds, but now it is HIS move in a position he cannot improve. If his king steps to e8 it walks straight into your opposition, and the rook checks down the eighth from its own file for mate (Rb8#, Rg8#, or Rh8#, depending where it waited); if it goes to c8 you simply march your king over and repeat. Beginners check here and chase for fifty moves; the technician waits one tempo and wins. That is the whole difference.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1151,16 +1151,16 @@
        },
        "retryLine": {
         "conceptId": "rook-waiting-move",
-        "text": "Not a check — after Ra8 he escapes to c7. And not a king move — you would forfeit the opposition. PASS the move to him: keep the rook on the seventh rank, holding the fence, and slide it to a safe square far from his king (b7, g7, or h7). Then he must step into the opposition himself."
+        "text": "Not a check (after Ra8 he escapes to c7. And not a king move) you would forfeit the opposition. PASS the move to him: keep the rook on the seventh rank, holding the fence, and slide it to a safe square far from his king (b7, g7, or h7). Then he must step into the opposition himself."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — close the box with the rook",
+     "title": "Cool-down: close the box with the rook",
      "intro": {
-      "text": "King and rook against a bare king — your own endgame, the one you will win a hundred times. Your king is set one square from his; Black moves first, stepping into the opposition; then you deliver the mate. With the kings opposed and his on the rim, the rook earns its keep: check from a safe distance along the edge. Drive him to different edges, the same idea each time."
+      "text": "King and rook against a bare king: your own endgame, the one you will win a hundred times. Your king is set one square from his; Black moves first, stepping into the opposition; then you deliver the mate. With the kings opposed and his on the rim, the rook earns its keep: check from a safe distance along the edge. Drive him to different edges, the same idea each time."
      },
      "puzzle": {
       "themes": [
@@ -1213,15 +1213,15 @@
   },
   {
    "id": "l4-two-rook-ladder",
-   "title": "Two Rooks — The Ladder (Lawnmower)",
+   "title": "Two Rooks: The Ladder (Lawnmower)",
    "kind": "endgame",
-   "summary": "Two rooks need no king at all. One checks the king's rank, he retreats, the other checks the next — a ladder that rolls him to the edge. And when he attacks a rook, you swing it across the world.",
+   "summary": "Two rooks need no king at all. One checks the king's rank, he retreats, the other checks the next. A ladder that rolls him to the edge. And when he attacks a rook, you swing it across the world.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — finish on the back rank",
+     "title": "Warm-up: finish on the back rank",
      "intro": {
-      "text": "Two rooks are the friendliest mate of all — they need no king to help. First recall the finish: in each, one rook already seals the rank beside the king's edge; Black moves first, then the other rook checks along the edge for mate. Notice your own king sits idle — it is never needed here."
+      "text": "Two rooks are the friendliest mate of all. They need no king to help. First recall the finish: in each, one rook already seals the rank beside the king's edge; Black moves first, then the other rook checks along the edge for mate. Notice your own king sits idle. It is never needed here."
      },
      "puzzle": {
       "themes": [
@@ -1270,7 +1270,7 @@
        "conceptId": "two-rook-ladder",
        "coach": {
         "conceptId": "two-rook-ladder",
-        "text": "Two rooks, a lone king on d5, and your own king fast asleep on g1 — and it does not matter, because two rooks mate WITHOUT their king. Here is the engine of it. One rook checks along the rank the king stands on; he must step off that rank; the other rook immediately checks the next rank he lands on. Up he goes, rung by rung, a ladder to the edge. Watch it roll.",
+        "text": "Two rooks, a lone king on d5, and your own king fast asleep on g1, and it does not matter, because two rooks mate WITHOUT their king. Here is the engine of it. One rook checks along the rank the king stands on; he must step off that rank; the other rook immediately checks the next rank he lands on. Up he goes, rung by rung, a ladder to the edge. Watch it roll.",
         "annotations": [
          {
           "kind": "circle",
@@ -1292,7 +1292,7 @@
        "conceptId": "two-rook-ladder",
        "coach": {
         "conceptId": "two-rook-ladder",
-        "text": "Ra5 check. The king is hit along the whole fifth rank and must leave it — and you choose which way. Drive him toward the nearer edge: say he retreats to d6. At once the lower rook on b1 swings up to check the rank he just reached — Rb6, check — and he must climb again. One rook always checks; the other always waits a rank back, ready to take over. That is the whole machine, and it works toward whichever edge you herd him.",
+        "text": "Ra5 check. The king is hit along the whole fifth rank and must leave it, and you choose which way. Drive him toward the nearer edge: say he retreats to d6. At once the lower rook on b1 swings up to check the rank he just reached (Rb6, check) and he must climb again. One rook always checks; the other always waits a rank back, ready to take over. That is the whole machine, and it works toward whichever edge you herd him.",
         "annotations": [
          {
           "kind": "circle",
@@ -1314,7 +1314,7 @@
        "conceptId": "two-rook-ladder",
        "coach": {
         "conceptId": "two-rook-ladder",
-        "text": "He has been driven to the last rank, his king on e8 — nowhere left to climb. Your rook on a7 has sealed the seventh, so d7, e7, f7 are barred and his king is pinned to the eighth with only d8 and f8 to shuffle between. Now the other rook delivers: Rb8, check along the eighth — and both d8 and f8 are covered by that same rook. Mate. The king walked the ladder all the way to the roof and fell off. Two rooks, no king, a handful of moves — the simplest mate of all once you see the rhythm.",
+        "text": "He has been driven to the last rank, his king on e8. Nowhere left to climb. Your rook on a7 has sealed the seventh, so d7, e7, f7 are barred and his king is pinned to the eighth with only d8 and f8 to shuffle between. Now the other rook delivers: Rb8, check along the eighth, and both d8 and f8 are covered by that same rook. Mate. The king walked the ladder all the way to the roof and fell off. Two rooks, no king, a handful of moves. The simplest mate of all once you see the rhythm.",
         "annotations": [
          {
           "kind": "circle",
@@ -1342,7 +1342,7 @@
        "conceptId": "ladder-swing",
        "coach": {
         "conceptId": "ladder-swing",
-        "text": "One danger, and one cure. The ladder breaks if the marching king steps toward a rook and attacks it — here his king on c7 is right beside the rook on b6 and threatens to eat it. Never let him. The cure is beautiful and simple: SWING that rook to the far side of the board — Rh6 — out of the king's reach entirely. From h6 it still guards the whole sixth rank, and the ladder rolls on. A king can never catch a rook a full board away.",
+        "text": "One danger, and one cure. The ladder breaks if the marching king steps toward a rook and attacks it. Here his king on c7 is right beside the rook on b6 and threatens to eat it. Never let him. The cure is beautiful and simple: SWING that rook to the far side of the board (Rh6) out of the king's reach entirely. From h6 it still guards the whole sixth rank, and the ladder rolls on. A king can never catch a rook a full board away.",
         "annotations": [
          {
           "kind": "circle",
@@ -1401,7 +1401,7 @@
        ],
        "successLine": {
         "conceptId": "two-rook-ladder",
-        "text": "Rb4, check — and the king must climb, for the third rank is barred behind him. He goes up to the fifth and your a3-rook is ready to check him there. Rung after rung. You are driving him exactly where you want: the edge.",
+        "text": "Rb4, check, and the king must climb, for the third rank is barred behind him. He goes up to the fifth and your a3-rook is ready to check him there. Rung after rung. You are driving him exactly where you want: the edge.",
         "annotations": [
          {
           "kind": "circle",
@@ -1418,7 +1418,7 @@
        },
        "retryLine": {
         "conceptId": "two-rook-ladder",
-        "text": "Check him on his own rank with the free rook. The a3-rook holds the line below, so a check on the fourth rank from the b1-rook forces the king UP — Rb4+."
+        "text": "Check him on his own rank with the free rook. The a3-rook holds the line below, so a check on the fourth rank from the b1-rook forces the king UP, Rb4+."
        }
       },
       {
@@ -1426,7 +1426,7 @@
        "conceptId": "ladder-swing",
        "coach": {
         "conceptId": "ladder-swing",
-        "text": "Danger on the ladder. The king has lunged to c5, right next to your rook on b6 — one more step and he captures it, and your mating net falls apart. Do not panic and do not retreat backward. Swing the threatened rook clear across the board, far from his king, keeping its grip on the sixth rank.",
+        "text": "Danger on the ladder. The king has lunged to c5, right next to your rook on b6. One more step and he captures it, and your mating net falls apart. Do not panic and do not retreat backward. Swing the threatened rook clear across the board, far from his king, keeping its grip on the sixth rank.",
         "annotations": [
          {
           "kind": "circle",
@@ -1455,7 +1455,7 @@
        ],
        "successLine": {
         "conceptId": "ladder-swing",
-        "text": "The rook flees to the far wing and is untouchable, yet it still rules the sixth rank — the ladder is intact. That is the only trick the two-rook mate ever asks of you: when the king attacks a rook, send it to the other side of the world. Now resume rolling him to the edge.",
+        "text": "The rook flees to the far wing and is untouchable, yet it still rules the sixth rank. The ladder is intact. That is the only trick the two-rook mate ever asks of you: when the king attacks a rook, send it to the other side of the world. Now resume rolling him to the edge.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1471,16 +1471,16 @@
        },
        "retryLine": {
         "conceptId": "ladder-swing",
-        "text": "The king is about to win your rook on b6. Slide that rook far along the sixth rank, away from his king — to f6, g6, or h6 — where he can never reach it, but it still holds the rank."
+        "text": "The king is about to win your rook on b6. Slide that rook far along the sixth rank, away from his king (to f6, g6, or h6) where he can never reach it, but it still holds the rank."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — roll the ladder home",
+     "title": "Cool-down: roll the ladder home",
      "intro": {
-      "text": "Two rooks against a lone king — no king of your own needed. Black moves first; then you play the ladder. Mostly it is the last rung (one rook seals the rank behind, the other checks the edge for mate); once the king lunges at a rook and you must swing it clear; once you drive him up a rung with a check. Read each picture and roll him in."
+      "text": "Two rooks against a lone king: no king of your own needed. Black moves first; then you play the ladder. Mostly it is the last rung (one rook seals the rank behind, the other checks the edge for mate); once the king lunges at a rook and you must swing it clear; once you drive him up a rung with a check. Read each picture and roll him in."
      },
      "puzzle": {
       "themes": [
@@ -1533,15 +1533,15 @@
   },
   {
    "id": "l5-mixed-and-boss",
-   "title": "Choose the Method — and Finish the Game",
+   "title": "Choose the Method, and Finish the Game",
    "kind": "practice",
    "summary": "Recognise which mate is on the board, deliver it cleanly, and above all never stalemate. Then prove it: walk a bare king to the edge with king and rook and mate it over the board.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — any heavy piece, one move",
+     "title": "Warm-up: any heavy piece, one move",
      "intro": {
-      "text": "Queen or rook, kiss or back rank — the finish is always a check the king cannot answer. Warm up across all three shapes on a bare king: Black moves first, then you mate in one. Queen, king-and-rook, two rooks — name the method, then deliver it."
+      "text": "Queen or rook, kiss or back rank. The finish is always a check the king cannot answer. Warm up across all three shapes on a bare king: Black moves first, then you mate in one. Queen, king-and-rook, two rooks: name the method, then deliver it."
      },
      "puzzle": {
       "themes": [
@@ -1590,7 +1590,7 @@
        "conceptId": "never-stalemate",
        "coach": {
         "conceptId": "never-stalemate",
-        "text": "Whatever the piece, one discipline rules every elementary mate: drive the king to the edge, bring your own king up to help, and never — NEVER — take his last square unless you are giving check. Here is the test in one position. The king is cornered on h8. Qf7 is the stalemate that throws the win away; Qf8 is the check that ends it. The difference between a master and a club player is often exactly this: the master counts the king's squares before every quiet move.",
+        "text": "Whatever the piece, one discipline rules every elementary mate: drive the king to the edge, bring your own king up to help, and never (NEVER) take his last square unless you are giving check. Here is the test in one position. The king is cornered on h8. Qf7 is the stalemate that throws the win away; Qf8 is the check that ends it. The difference between a master and a club player is often exactly this: the master counts the king's squares before every quiet move.",
         "annotations": [
          {
           "kind": "circle",
@@ -1644,7 +1644,7 @@
        ],
        "successLine": {
         "conceptId": "king-must-help",
-        "text": "Qg7, mate — guarded by your king, hard against his. The commonest finish in chess, and now it is yours on sight.",
+        "text": "Qg7, mate: guarded by your king, hard against his. The commonest finish in chess, and now it is yours on sight.",
         "annotations": [
          {
           "kind": "circle",
@@ -1656,7 +1656,7 @@
        },
        "retryLine": {
         "conceptId": "king-must-help",
-        "text": "Your king on g6 guards g7. Put the queen there, beside his king — he can neither take her nor run. Qg7 is mate."
+        "text": "Your king on g6 guards g7. Put the queen there, beside his king. He can neither take her nor run. Qg7 is mate."
        }
       },
       {
@@ -1664,7 +1664,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "Now king and rook — a different tool, the same idea. The kings are opposed, his on the edge. The rook has been waiting for this moment. Finish on the back rank.",
+        "text": "Now king and rook: a different tool, the same idea. The kings are opposed, his on the edge. The rook has been waiting for this moment. Finish on the back rank.",
         "annotations": [
          {
           "kind": "circle",
@@ -1683,7 +1683,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Ra8, mate. Opposition first, then the rook check — never the other way round. You are reading the position and choosing the right method. That is the skill this whole chapter was for.",
+        "text": "Ra8, mate. Opposition first, then the rook check, never the other way round. You are reading the position and choosing the right method. That is the skill this whole chapter was for.",
         "annotations": [
          {
           "kind": "circle",
@@ -1695,7 +1695,7 @@
        },
        "retryLine": {
         "conceptId": "the-opposition",
-        "text": "The kings are opposed and his is on the rim — check the eighth rank with the rook. He cannot step off: your king holds c7, d7, e7. Ra8 is mate."
+        "text": "The kings are opposed and his is on the rim. Check the eighth rank with the rook. He cannot step off: your king holds c7, d7, e7. Ra8 is mate."
        }
       },
       {
@@ -1728,7 +1728,7 @@
        ],
        "successLine": {
         "conceptId": "two-rook-ladder",
-        "text": "Rb8, mate. The a7-rook held the seventh, the b-rook closed the eighth, and the king had nowhere on earth to go. The ladder's last rung. Queen, rook, two rooks — you can finish them all.",
+        "text": "Rb8, mate. The a7-rook held the seventh, the b-rook closed the eighth, and the king had nowhere on earth to go. The ladder's last rung. Queen, rook, two rooks: you can finish them all.",
         "annotations": [
          {
           "kind": "circle",
@@ -1740,16 +1740,16 @@
        },
        "retryLine": {
         "conceptId": "two-rook-ladder",
-        "text": "The king is on the eighth and the seventh is sealed by your a7-rook. Bring the b1-rook to the eighth rank and check — Rb8 is mate."
+        "text": "The king is on the eighth and the seventh is sealed by your a7-rook. Bring the b1-rook to the eighth rank and check. Rb8 is mate."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — read it, then finish",
+     "title": "Cool-down: read it, then finish",
      "intro": {
-      "text": "Every method, mixed together — the last drills before you prove it over the board. Bare king each time; Black moves first; you mate in one. Recognise the shape on sight: the queen's kiss, the queen's cut-off from afar, the king-and-rook box, the two-rook ladder. Count the flights, deliver the check, never stalemate."
+      "text": "Every method, mixed together: the last drills before you prove it over the board. Bare king each time; Black moves first; you mate in one. Recognise the shape on sight: the queen's kiss, the queen's cut-off from afar, the king-and-rook box, the two-rook ladder. Count the flights, deliver the check, never stalemate."
      },
      "puzzle": {
       "themes": [
@@ -1810,14 +1810,14 @@
     },
     {
      "kind": "guided",
-     "title": "Dress rehearsal — drive him in with king and rook",
+     "title": "Dress rehearsal: drive him in with king and rook",
      "steps": [
       {
        "fen": "3k4/R7/4K3/8/8/8/8/8 w - - 0 1",
        "conceptId": "rook-waiting-move",
        "coach": {
         "conceptId": "rook-waiting-move",
-        "text": "One move at a time you have learned every part; now string them together — five moves to mate, the exact loop the boss will demand. The rook on a7 fences his king on the eighth; your king on e6 is close but NOT opposed (off by a file). If you check, he escapes; if you walk up, you lose the tempo. So WAIT: slide the rook along the seventh, far from his king, and hand him the move.",
+        "text": "One move at a time you have learned every part; now string them together: five moves to mate, the exact loop the boss will demand. The rook on a7 fences his king on the eighth; your king on e6 is close but NOT opposed (off by a file). If you check, he escapes; if you walk up, you lose the tempo. So WAIT: slide the rook along the seventh, far from his king, and hand him the move.",
         "annotations": [
          {
           "kind": "circle",
@@ -1843,7 +1843,7 @@
        ],
        "successLine": {
         "conceptId": "rook-waiting-move",
-        "text": "Rg7 — the fence holds and now HE must move. He will run the hard way, away from your king toward the far corner. Follow him. The waiting move forced the action without giving up a thing.",
+        "text": "Rg7: the fence holds and now HE must move. He will run the hard way, away from your king toward the far corner. Follow him. The waiting move forced the action without giving up a thing.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1859,7 +1859,7 @@
        },
        "retryLine": {
         "conceptId": "rook-waiting-move",
-        "text": "Do not check (he escapes) and do not move your king (you lose the opposition). Keep the rook on the seventh and slide it far from his king — Rg7 — passing him the move."
+        "text": "Do not check (he escapes) and do not move your king (you lose the opposition). Keep the rook on the seventh and slide it far from his king (Rg7) passing him the move."
        }
       },
       {
@@ -1867,7 +1867,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "He fled to c8, running from your king. Do not check — chase. WALK your king to keep facing his: Kd6. Step for step you shoulder him toward the corner; the rook keeps the eighth-rank fence the whole time.",
+        "text": "He fled to c8, running from your king. Do not check, chase. WALK your king to keep facing his: Kd6. Step for step you shoulder him toward the corner; the rook keeps the eighth-rank fence the whole time.",
         "annotations": [
          {
           "kind": "circle",
@@ -1893,7 +1893,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Kd6 — opposition kept, the king shouldered one file nearer the corner. Wall, walk, wall, walk. You are squeezing him with the king while the rook simply holds its line.",
+        "text": "Kd6: opposition kept, the king shouldered one file nearer the corner. Wall, walk, wall, walk. You are squeezing him with the king while the rook simply holds its line.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1909,7 +1909,7 @@
        },
        "retryLine": {
         "conceptId": "the-opposition",
-        "text": "No check yet — keep the opposition. March your king to d6, staying face to face with his, herding him toward the corner. The rook holds the fence."
+        "text": "No check yet. Keep the opposition. March your king to d6, staying face to face with his, herding him toward the corner. The rook holds the fence."
        }
       },
       {
@@ -1943,7 +1943,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Kc6 — he is almost in the corner now, and you are right on top of him. One more squeeze and he will have nowhere to hide. The rook has not moved since the waiting tempo, and it does not need to.",
+        "text": "Kc6: he is almost in the corner now, and you are right on top of him. One more squeeze and he will have nowhere to hide. The rook has not moved since the waiting tempo, and it does not need to.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1967,7 +1967,7 @@
        "conceptId": "the-opposition",
        "coach": {
         "conceptId": "the-opposition",
-        "text": "Cornered on a8. Careful — this is the moment beginners blunder a stalemate or waste the win. Do NOT check yet (he would slip to b8 with your king too far). Instead take the close opposition with Kb6: now the only square he has is b8, and you are ready to spring the trap.",
+        "text": "Cornered on a8. Careful. This is the moment beginners blunder a stalemate or waste the win. Do NOT check yet (he would slip to b8 with your king too far). Instead take the close opposition with Kb6: now the only square he has is b8, and you are ready to spring the trap.",
         "annotations": [
          {
           "kind": "circle",
@@ -1993,7 +1993,7 @@
        ],
        "successLine": {
         "conceptId": "the-opposition",
-        "text": "Kb6 — and he is squeezed to a single square. He must play ...Kb8, stepping right into the opposition, and then the rook ends it. Notice you never checked while he could run; you waited until the king did the caging. Now the finish.",
+        "text": "Kb6, and he is squeezed to a single square. He must play ...Kb8, stepping right into the opposition, and then the rook ends it. Notice you never checked while he could run; you waited until the king did the caging. Now the finish.",
         "annotations": [
          {
           "kind": "highlight",
@@ -2009,7 +2009,7 @@
        },
        "retryLine": {
         "conceptId": "the-opposition",
-        "text": "Not the check — he escapes to b8 with your king too far. Take the opposition first: Kb6, leaving him only b8. Then the rook mates next move."
+        "text": "Not the check. He escapes to b8 with your king too far. Take the opposition first: Kb6, leaving him only b8. Then the rook mates next move."
        }
       },
       {
@@ -2017,7 +2017,7 @@
        "conceptId": "rook-cuts-off",
        "coach": {
         "conceptId": "rook-cuts-off",
-        "text": "He was forced to b8, into the opposition — exactly as planned. Now the rook, idle since move one, delivers. Check him along the eighth from a safe distance, where his king cannot reach it: Rg8. Your king on b6 covers a7, b7, c7, so the back rank is his coffin. Finish him.",
+        "text": "He was forced to b8, into the opposition, exactly as planned. Now the rook, idle since move one, delivers. Check him along the eighth from a safe distance, where his king cannot reach it: Rg8. Your king on b6 covers a7, b7, c7, so the back rank is his coffin. Finish him.",
         "annotations": [
          {
           "kind": "circle",
@@ -2038,7 +2038,7 @@
        ],
        "successLine": {
         "conceptId": "rook-cuts-off",
-        "text": "Rg8, mate — and there is the entire king-and-rook ending, end to end. Wait, walk, walk, oppose, check: you drove a king from the open eighth into the corner and mated it, the rook touched only twice, and you never once stalemated or chased. That is the whole technique. You are ready for the boss.",
+        "text": "Rg8, mate, and there is the entire king-and-rook ending, end to end. Wait, walk, walk, oppose, check: you drove a king from the open eighth into the corner and mated it, the rook touched only twice, and you never once stalemated or chased. That is the whole technique. You are ready for the boss.",
         "annotations": [
          {
           "kind": "circle",
@@ -2056,20 +2056,20 @@
        },
        "retryLine": {
         "conceptId": "rook-cuts-off",
-        "text": "The kings are opposed and his is in the corner — now the rook strikes. Check along the eighth rank from a square his king cannot touch: Rg8 is mate. (Not Ra8 or Rc8 — he would capture the rook.)"
+        "text": "The kings are opposed and his is in the corner, now the rook strikes. Check along the eighth rank from a square his king cannot touch: Rg8 is mate. (Not Ra8 or Rc8: he would capture the rook.)"
        }
       }
      ]
     },
     {
      "kind": "boss",
-     "title": "Boss — mate with king and rook",
+     "title": "Boss: mate with king and rook",
      "bossFen": "4k3/8/8/8/8/8/2R5/4K3 w - - 0 1",
      "bossEngineElo": 700,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "the-opposition",
-      "text": "Now earn the chapter. You are White: king, rook, and a bare enemy king. Material means nothing here — only technique. Build the box with the rook and cut the king off; march your own king up to take the opposition; shrink the pen rank by rank; and when the kings are opposed on the edge, check with the rook to mate. When you cannot improve your king, make a waiting move with the rook far away and let him step into the opposition. Be patient, never chase, and never, ever leave him stalemated with no square unless it is mate. Drive him to the edge and finish him. Begin."
+      "text": "Now earn the chapter. You are White: king, rook, and a bare enemy king. Material means nothing here, only technique. Build the box with the rook and cut the king off; march your own king up to take the opposition; shrink the pen rank by rank; and when the kings are opposed on the edge, check with the rook to mate. When you cannot improve your king, make a waiting move with the rook far away and let him step into the opposition. Be patient, never chase, and never, ever leave him stalemated with no square unless it is mate. Drive him to the edge and finish him. Begin."
      }
     }
    ]
@@ -2088,7 +2088,7 @@
      "The queen would be captured by the lone king"
     ],
     "answerIndex": 1,
-    "explain": "A lone king is only mated on the edge or in a corner, never in open space — out there it always has a flight square. The whole technique is herding it to the rim first."
+    "explain": "A lone king is only mated on the edge or in a corner, never in open space. Out there it always has a flight square. The whole technique is herding it to the rim first."
    },
    {
     "kind": "mc",
@@ -2100,19 +2100,19 @@
      "As far from both kings as possible"
     ],
     "answerIndex": 1,
-    "explain": "Holding the queen a knight's-move from the enemy king shrinks its box every turn yet keeps the queen safe — and it always leaves the king one square, so you never accidentally stalemate it."
+    "explain": "Holding the queen a knight's-move from the enemy king shrinks its box every turn yet keeps the queen safe, and it always leaves the king one square, so you never accidentally stalemate it."
    },
    {
     "kind": "mc",
     "prompt": "You are a queen up against a lone king. It is NOT in check, and after the move you are about to play it will have no legal move at all. What does that move produce?",
     "options": [
-     "Checkmate — you win",
-     "Stalemate — the game is a draw",
-     "Nothing special — the opponent simply passes",
+     "Checkmate: you win",
+     "Stalemate: the game is a draw",
+     "Nothing special: the opponent simply passes",
      "A win on time"
     ],
     "answerIndex": 1,
-    "explain": "No check plus no legal move is stalemate — a draw, and from a queen up that is the full point thrown away. Before any quiet move near a cornered king, confirm it still has a square; to END the game the move must be a check it cannot answer."
+    "explain": "No check plus no legal move is stalemate. A draw, and from a queen up that is the full point thrown away. Before any quiet move near a cornered king, confirm it still has a square; to END the game the move must be a check it cannot answer."
    },
    {
     "kind": "mc",
@@ -2124,18 +2124,18 @@
      "To set up a fork of the king and a pawn"
     ],
     "answerIndex": 1,
-    "explain": "When your king cannot improve without losing the opposition, you pass the move to the enemy with a safe rook tempo. Forced to move, its king steps into the opposition — and then the rook checks for mate."
+    "explain": "When your king cannot improve without losing the opposition, you pass the move to the enemy with a safe rook tempo. Forced to move, its king steps into the opposition, and then the rook checks for mate."
    },
    {
     "kind": "play",
-    "prompt": "King and queen versus a lone king. Your king on c6 faces his on c8. Deliver the 'kiss of death' mate in one — the queen beside his king.",
+    "prompt": "King and queen versus a lone king. Your king on c6 faces his on c8. Deliver the 'kiss of death' mate in one: the queen beside his king.",
     "fen": "2k5/7Q/2K5/8/8/8/8/8 w - - 0 1",
     "solutionUci": [
      "h7c7",
      "h7g8",
      "h7h8"
     ],
-    "explain": "Qc7# is the kiss of death: the queen drops in beside the enemy king, defended by your king on c6; b8 and d8 are the queen's, b7 and d7 your king's. No capture, no escape. (Because his king is already sealed on the eighth rank, the cut-off check from afar — Qg8# or Qh8# — mates too; both methods this chapter taught work here. The kiss is the one named, and the picture, not the square, is what you memorise.)"
+    "explain": "Qc7# is the kiss of death: the queen drops in beside the enemy king, defended by your king on c6; b8 and d8 are the queen's, b7 and d7 your king's. No capture, no escape. (Because his king is already sealed on the eighth rank, the cut-off check from afar; Qg8# or Qh8#; mates too; both methods this chapter taught work here. The kiss is the one named, and the picture, not the square, is what you memorise.)"
    },
    {
     "kind": "play",
@@ -2144,7 +2144,7 @@
     "solutionUci": [
      "g8a8"
     ],
-    "explain": "Qa8#. Your king on c1 already covers b1, b2, so the king is walled in the corner; the queen need only check down the a-file from across the board. It cannot step off and cannot reach the queen — mate. The king does the caging, the queen finishes from afar."
+    "explain": "Qa8#. Your king on c1 already covers b1, b2, so the king is walled in the corner; the queen need only check down the a-file from across the board. It cannot step off and cannot reach the queen, mate. The king does the caging, the queen finishes from afar."
    },
    {
     "kind": "play",
@@ -2156,16 +2156,16 @@
      "g8h7",
      "g8h8"
     ],
-    "explain": "Four moves mate, and they are the two shapes you drilled: Qg2# and Qg1# are the kiss of death beside the king (guarded by your king on f2); Qh7# and Qh8# are the file check down the h-file that your king's grip on g2 makes inescapable. The one to avoid is Qg3?? — not check, yet h1 has no square: stalemate, the win thrown away. Count his squares, then strike with a check."
+    "explain": "Four moves mate, and they are the two shapes you drilled: Qg2# and Qg1# are the kiss of death beside the king (guarded by your king on f2); Qh7# and Qh8# are the file check down the h-file that your king's grip on g2 makes inescapable. The one to avoid is Qg3??. Not check, yet h1 has no square: stalemate, the win thrown away. Count his squares, then strike with a check."
    },
    {
     "kind": "play",
-    "prompt": "King and rook. The kings are opposed (yours c4, his a4) and his is pinned to the edge — the a-file this time. Deliver the mate along the edge.",
+    "prompt": "King and rook. The kings are opposed (yours c4, his a4) and his is pinned to the edge, the a-file this time. Deliver the mate along the edge.",
     "fen": "7R/8/8/8/k1K5/8/8/8 w - - 0 1",
     "solutionUci": [
      "h8a8"
     ],
-    "explain": "Ra8#. The opposition seals b3, b4, b5 with your king; the rook checks down the a-file from a safe distance. The king cannot step off, block, or capture — mate. Opposition first, then the rook check — the same recipe on any edge of the board, files as well as ranks."
+    "explain": "Ra8#. The opposition seals b3, b4, b5 with your king; the rook checks down the a-file from a safe distance. The king cannot step off, block, or capture, mate. Opposition first, then the rook check. The same recipe on any edge of the board, files as well as ranks."
    },
    {
     "kind": "play",
@@ -2176,16 +2176,16 @@
      "a2g2",
      "a2h2"
     ],
-    "explain": "A waiting move along the second rank keeps the fence and passes the move to Black. Forced to move, his king steps to c1 or e1 — toward your opposition — and the rook checks down the first rank for mate (e.g. ...Ke1 Rb1#). Keep the rook far from his king; a check now (Ra1+) only lets him run out to c2."
+    "explain": "A waiting move along the second rank keeps the fence and passes the move to Black. Forced to move, his king steps to c1 or e1 (toward your opposition) and the rook checks down the first rank for mate (e.g. ...Ke1 Rb1#). Keep the rook far from his king; a check now (Ra1+) only lets him run out to c2."
    },
    {
     "kind": "play",
-    "prompt": "Two rooks versus a lone king, the king driven into the corner on a1 with the second rank sealed by your h2-rook. Finish the ladder — mate in one.",
+    "prompt": "Two rooks versus a lone king, the king driven into the corner on a1 with the second rank sealed by your h2-rook. Finish the ladder: mate in one.",
     "fen": "2R5/8/8/8/8/8/7R/k5K1 w - - 0 1",
     "solutionUci": [
      "c8c1"
     ],
-    "explain": "Rc1#. The h2-rook holds the second rank so the king cannot climb; the c-rook checks the first rank and seals it, covering b1. The ladder's last rung — mate with two rooks and no king of your own. The ladder rolls toward whichever corner or edge you drive him."
+    "explain": "Rc1#. The h2-rook holds the second rank so the king cannot climb; the c-rook checks the first rank and seals it, covering b1. The ladder's last rung. Mate with two rooks and no king of your own. The ladder rolls toward whichever corner or edge you drive him."
    },
    {
     "kind": "play",
@@ -2197,7 +2197,7 @@
      "b3f3",
      "b3e3"
     ],
-    "explain": "Swing the threatened rook far along the third rank, away from the king (Rh3 is cleanest). It is now untouchable yet still rules the rank, so the ladder rolls on. A king can never catch a rook a whole board away — never let the marching king win a laddering rook."
+    "explain": "Swing the threatened rook far along the third rank, away from the king (Rh3 is cleanest). It is now untouchable yet still rules the rank, so the ladder rolls on. A king can never catch a rook a whole board away. Never let the marching king win a laddering rook."
    },
    {
     "kind": "judge",
@@ -2205,7 +2205,7 @@
     "fen": "k7/2Q5/2K5/8/8/8/8/8 b - - 1 1",
     "lastMoveUci": "d7c7",
     "verdict": "blunder",
-    "explain": "Blunder — it is stalemate, not mate. The black king is NOT in check, yet b8, b7 and a7 are all covered, so it has no legal move. A drawn game from a queen up. Qb7 would have been the mate — a check the king cannot answer."
+    "explain": "Blunder: it is stalemate, not mate. The black king is NOT in check, yet b8, b7 and a7 are all covered, so it has no legal move. A drawn game from a queen up. Qb7 would have been the mate. A check the king cannot answer."
    },
    {
     "kind": "judge",
@@ -2213,7 +2213,7 @@
     "fen": "R5k1/8/6K1/8/8/8/8/8 b - - 1 1",
     "lastMoveUci": "a1a8",
     "verdict": "correct",
-    "explain": "Correct — Ra8# is mate. The rook checks along the eighth rank; the king cannot step off because your king on g6 holds f7, g7, h7, and nothing can block or capture a rook that far away. The textbook K+R finish."
+    "explain": "Correct: Ra8# is mate. The rook checks along the eighth rank; the king cannot step off because your king on g6 holds f7, g7, h7, and nothing can block or capture a rook that far away. The textbook K+R finish."
    },
    {
     "kind": "judge",
@@ -2221,7 +2221,7 @@
     "fen": "R2k4/8/4K3/8/8/8/8/8 b - - 1 1",
     "lastMoveUci": "a1a8",
     "verdict": "blunder",
-    "explain": "Blunder — it is only check, not mate. Because the kings were not opposed, the black king simply walks out to c7 (your king on e6 does not cover it). You must take the opposition first — here with a waiting move — and only then check. Premature checks just chase the king around."
+    "explain": "Blunder: it is only check, not mate. Because the kings were not opposed, the black king simply walks out to c7 (your king on e6 does not cover it). You must take the opposition first (here with a waiting move) and only then check. Premature checks just chase the king around."
    }
   ]
  },

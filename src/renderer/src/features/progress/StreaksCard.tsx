@@ -29,7 +29,7 @@ export default function StreaksCard({ games, summary }: StreaksCardProps): JSX.E
   const hasGames = games.length > 0
 
   const currentStat: StreakStat = !hasGames
-    ? { key: 'current', Icon: Flame, value: '—', label: 'Current streak', tone: 'neutral' }
+    ? { key: 'current', Icon: Flame, value: '·', label: 'Current streak', tone: 'neutral' }
     : current > 0
       ? {
           key: 'current',
@@ -53,14 +53,14 @@ export default function StreaksCard({ games, summary }: StreaksCardProps): JSX.E
     {
       key: 'best',
       Icon: Trophy,
-      value: bestWin > 0 ? `${bestWin}W` : '—',
+      value: bestWin > 0 ? `${bestWin}W` : '·',
       label: 'Best win streak',
       tone: bestWin > 0 ? 'success' : 'neutral'
     },
     {
       key: 'solve',
       Icon: Target,
-      value: solveRate == null ? '—' : `${solveRate}%`,
+      value: solveRate == null ? '·' : `${solveRate}%`,
       label: 'Puzzle solve rate',
       tone: 'neutral'
     }

@@ -1,5 +1,5 @@
-// A5 J1 — Web JudgeEngine adapter (spec §8, §11): the canonical judge in the
-// browser. UNCONDITIONALLY loads `stockfish-18-lite-single` — this module
+// A5 J1, Web JudgeEngine adapter (spec §8, §11): the canonical judge in the
+// browser. UNCONDITIONALLY loads `stockfish-18-lite-single`. This module
 // deliberately BYPASSES assets.ts's context-sensitive chessWorkerUrl()
 // selection (which stays for play/analysis): "identical binary everywhere"
 // means the judge's single-thread binary, by hash, even on crossOriginIsolated
@@ -9,11 +9,11 @@
 // them against PARAMS_A5.judgeWasmSha256, and hand the engine those exact
 // verified bytes via an immutable blob: URL passed in the worker's location
 // hash (the stockfish.js glue's documented `#<wasmUrl>` override). The worker
-// therefore instantiates from the verified bytes — a server that swaps the
+// therefore instantiates from the verified bytes. A server that swaps the
 // asset between our fetch and instantiation cannot win, and a mismatch throws
 // a typed JudgeWasmHashError before any worker exists.
 //
-// Every newWebJudgeEngine() is a judge-DEDICATED worker — never the pools.ts
+// Every newWebJudgeEngine() is a judge-DEDICATED worker. Never the pools.ts
 // play/analysis instances. Keep this module small; no UI.
 
 import { PARAMS_A5, JudgeWasmHashError, type JudgeEngine } from '@shared/accounts/judge'
@@ -58,7 +58,7 @@ function expect(engine: JudgeEngine, cmd: string, token: string, timeoutMs: numb
 /**
  * The subset of the DOM `Worker` surface the judge adapter drives. Declared
  * explicitly so the fail-closed engine object below can be built over either a
- * real dedicated Worker (newWebJudgeEngine) or a test double — the teardown and
+ * real dedicated Worker (newWebJudgeEngine) or a test double: the teardown and
  * post-close send() semantics are then exercisable without a browser.
  */
 export interface JudgeWorkerLike {
@@ -80,7 +80,7 @@ export interface JudgeWorkerLike {
  * begun on a closed engine fails the same way.
  *
  * A5-23: Worker.terminate() fires no `error` event, so without this the web
- * adapter defeated onError's documented purpose (types.ts) — an in-flight or
+ * adapter defeated onError's documented purpose (types.ts): an in-flight or
  * post-close judgeGame hung forever, while the node path already rejected loudly
  * (child exit -> onExit -> onError -> JudgeEngineError; post-exit send() throws).
  */

@@ -1,4 +1,4 @@
-// Grid-family boards — ONE polished component parameterized per kind
+// Grid-family boards: ONE polished component parameterized per kind
 // (docs/GAMES-PLATFORM-SPEC.md P2 wave 2):
 //
 //   othello    8x8 felt board, two-faced discs, flip-cascade animation
@@ -17,7 +17,7 @@
 //
 // All idioms propose moves through the spec codecs and never validate rules
 // beyond membership in spec.legalMoves. Orientation is ignored for every kind
-// except morris (flipPolicy 'rotate' — the board is symmetric, so OTB flips
+// except morris (flipPolicy 'rotate': the board is symmetric, so OTB flips
 // rotate the point layout 180°). Sounds ride useBoardSound (discFlip /
 // discDrop / discPlace / penStroke).
 
@@ -576,9 +576,9 @@ function MorrisBoard({ state, orientation, interactive, onMove }: GameBoardProps
       : captureMode
         ? 'Mill! Take an enemy man'
         : placing
-          ? `Place a man — ${s.inHand[s.turn - 1]} left in hand`
+          ? `Place a man (${s.inHand[s.turn - 1]} left in hand)`
           : flying
-            ? 'Three men left — fly anywhere'
+            ? 'Three men left: fly anywhere'
             : 'Move a man along a line'
 
   // board lines (three rings + connectors), rotated with the points

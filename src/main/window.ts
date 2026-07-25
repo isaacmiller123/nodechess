@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import path from 'node:path'
 
 // Locked security defaults (architecture §2.4). Changing any of these is a review bug.
-// opts.smokeWasm: --smoke-wasm self-test (see main/smokeWasm.ts) — the window
+// opts.smokeWasm: --smoke-wasm self-test (see main/smokeWasm.ts). The window
 // stays hidden and the renderer gets ?smoke-wasm=1 so it runs the WASM probe.
 export function createWindow(opts?: { smokeWasm?: boolean }): BrowserWindow {
   const smokeWasm = opts?.smokeWasm === true

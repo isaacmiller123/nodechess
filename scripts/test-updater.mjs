@@ -1,5 +1,5 @@
-// Headless test for the update decision logic (src/main/updates/updateLogic.ts
-// — the PURE half of the update service; no electron imports, so it bundles
+// Headless test for the update decision logic (src/main/updates/updateLogic.ts.
+// The PURE half of the update service; no electron imports, so it bundles
 // straight into bare node).
 //
 // Pins the contract the update feature stands on:
@@ -19,7 +19,7 @@
 //
 //   node scripts/test-updater.mjs
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -69,7 +69,7 @@ try {
   } = await import(pathToFileURL(outfile).href)
 
   // ==========================================================================
-  // 1. decideUpdatePath — the mac-vs-win decision table (BINDING).
+  // 1. decideUpdatePath, the mac-vs-win decision table (BINDING).
   // ==========================================================================
   console.log('decideUpdatePath: unsigned-build decision table')
   const TABLE = [
@@ -78,7 +78,7 @@ try {
     ['win32', false, 'notify-download'], // dev on Windows: never touch the real installer
     ['darwin', true, 'notify-download'], // mac packaged: UNSIGNED → Squirrel refuses; NEVER in-place
     ['darwin', false, 'notify-download'], // mac dev
-    ['linux', true, 'notify-download'], // no linux artifacts — release page fallback
+    ['linux', true, 'notify-download'], // no linux artifacts: release page fallback
     ['freebsd', false, 'notify-download'] // anything unknown
   ]
   for (const [platform, packaged, want] of TABLE) {
@@ -94,7 +94,7 @@ try {
   )
 
   // ==========================================================================
-  // 2. semver — parse goldens.
+  // 2. semver, parse goldens.
   // ==========================================================================
   console.log('\nparseSemver: goldens')
   eq(JSON.stringify(parseSemver('1.2.3')), '{"major":1,"minor":2,"patch":3,"pre":[]}', 'plain 1.2.3')
@@ -113,7 +113,7 @@ try {
   eq(parseSemver('1.2.x'), null, 'wildcard → null')
 
   // ==========================================================================
-  // 3. semver — ordering goldens (cmpSemver via isNewerVersion).
+  // 3. semver, ordering goldens (cmpSemver via isNewerVersion).
   // ==========================================================================
   console.log('\nisNewerVersion: ordering goldens')
   const NEWER = [
@@ -172,7 +172,7 @@ try {
   )
 
   // ==========================================================================
-  // 5. parseLatestRelease — payload narrowing.
+  // 5. parseLatestRelease, payload narrowing.
   // ==========================================================================
   console.log('\nparseLatestRelease: payload narrowing')
   const good = parseLatestRelease({
@@ -201,13 +201,13 @@ try {
   ok(noAssets !== null && noAssets.assets.length === 0, 'missing assets array → empty list, not null')
 
   // ==========================================================================
-  // 6. Asset selection — against electron-builder.yml's EXACT artifact names.
+  // 6. Asset selection, against electron-builder.yml's EXACT artifact names.
   // ==========================================================================
   console.log('\npickMacAsset / pickWinAsset: artifact-name goldens')
   const V = '1.2.0'
   const RELEASE_ASSETS = [
     { name: `nodechess-Setup-${V}.exe`, url: 'u:setup' }, // nsis (the auto-update target)
-    { name: `nodechess-Portable-${V}.exe`, url: 'u:portable' }, // portable — NEVER offered
+    { name: `nodechess-Portable-${V}.exe`, url: 'u:portable' }, // portable, NEVER offered
     { name: `nodechess-${V}-win-x64.zip`, url: 'u:winzip' },
     { name: `nodechess-${V}-arm64.dmg`, url: 'u:dmg-arm64' },
     { name: `nodechess-${V}-x64.dmg`, url: 'u:dmg-x64' },
@@ -246,7 +246,7 @@ try {
   eq(pickAssetForPlatform(RELEASE_ASSETS, 'win32', 'x64')?.url, 'u:setup', 'win32 → win pick')
   eq(pickAssetForPlatform(RELEASE_ASSETS, 'linux', 'x64'), null, 'linux → null (release page fallback)')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } finally {
   rmSync(tmp, { recursive: true, force: true })
 }

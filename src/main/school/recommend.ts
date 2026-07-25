@@ -3,23 +3,23 @@ import { getMastery, getTestState } from './mastery.repo'
 import { allChapters, chapterMetas, conceptToChapter } from './school.repo'
 
 // ============================================================================
-// FEATURE 2 — Weakness-driven next-chapter recommendation.  ★ BUILDER SLICE 1 ★
+// FEATURE 2: Weakness-driven next-chapter recommendation.  ★ BUILDER SLICE 1 ★
 //
 // recommendNextChapter() picks the chapter Viktor should steer the learner to
 // next, derived from per-concept mastery. The contract:
 //   - Read mastery (concept_mastery via getMastery() in mastery.repo) + the
 //     curriculum order (allChapters() in school.repo) + which chapters are
-//     unlocked (chapterMetas() in school.repo — respects placement/Elo gating).
+//     unlocked (chapterMetas() in school.repo: respects placement/Elo gating).
 //   - Score each NOT-yet-passed, UNLOCKED chapter by how weak the learner is on
 //     its concepts (low mastery / unseen concepts pull a chapter up).
 //   - Return the best one with a NAME-BASED `reason` sentence (NEVER an internal
-//     Elo or band number — spec §2.2a) and the display names of the concepts that
+//     Elo or band number: spec §2.2a) and the display names of the concepts that
 //     drove it (`weakConcepts`).
 //   - Return null when nothing sensible to recommend (all caught up / all locked).
 // ============================================================================
 
 /** A concept whose mastery a NEVER-seen concept is treated as: fully weak. An
- *  unseen concept (no concept_mastery row) is the strongest possible pull — the
+ *  unseen concept (no concept_mastery row) is the strongest possible pull. The
  *  learner has demonstrably not touched it yet. */
 const UNSEEN_MASTERY = 0
 
@@ -53,7 +53,7 @@ interface Scored {
  *
  * Strategy:
  *   1. Build a conceptId -> mastery (0..1) lookup from getMastery(); a concept
- *      with no row is UNSEEN (weakness 1 — the strongest pull).
+ *      with no row is UNSEEN (weakness 1; the strongest pull).
  *   2. Walk every chapter; skip the locked ones (chapterMetas() owns the
  *      placement/Elo gate) and the already-passed ones (test passed is sticky).
  *   3. Score a candidate by the summed weakness of the concepts it TEACHES
@@ -61,7 +61,7 @@ interface Scored {
  *      it, so a later chapter that merely references an earlier idea isn't pulled
  *      up by a gap that an earlier chapter owns).
  *   4. Pick the highest score; ties break toward the earlier chapter in
- *      curriculum order (knowledge strictly builds — spec §2.2a, fix the
+ *      curriculum order (knowledge strictly builds, spec §2.2a, fix the
  *      foundation first). The earliest unlocked-not-passed chapter is the natural
  *      fallback when the learner is fresh (everything unseen ⇒ all equal-ish, so
  *      curriculum order wins).
@@ -106,7 +106,7 @@ export function recommendNextChapter(): RecommendedChapter | null {
     }
 
     // A chapter with no own-concept weakness (fully solid / all its concepts are
-    // owned elsewhere) is not worth recommending — drop it.
+    // owned elsewhere) is not worth recommending. Drop it.
     if (score <= 0) continue
 
     weak.sort((a, b) => b.weakness - a.weakness)
@@ -124,7 +124,7 @@ export function recommendNextChapter(): RecommendedChapter | null {
   if (candidates.length === 0) return null
 
   // Highest weakness wins; on a tie, the earlier chapter in curriculum order
-  // (band then order — the canonical sequence) so foundations are fixed first.
+  // (band then order: the canonical sequence) so foundations are fixed first.
   candidates.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     if (a.band !== b.band) return a.band < b.band ? -1 : 1
@@ -146,16 +146,16 @@ export function recommendNextChapter(): RecommendedChapter | null {
 
 /**
  * A warm, NAME-BASED reason sentence in Viktor's voice. Names the chapter and the
- * one-to-few concepts that pulled it up — NEVER an internal Elo or band (spec
+ * one-to-few concepts that pulled it up. NEVER an internal Elo or band (spec
  * §2.2a: the band is invisible to the learner). Degrades gracefully when there are
  * no specific concept names (recommend the chapter on its own merits).
  */
 function buildReason(title: string, weakNames: string[]): string {
   const names = weakNames.slice(0, 3)
   if (names.length === 0) {
-    return `“${title}” is the next step in your training — let's build on it.`
+    return `“${title}” is the next step in your training. Let's build on it.`
   }
-  return `You're still shaky on ${joinNames(names)} — “${title}” drills exactly that, so let's tackle it next.`
+  return `You're still shaky on ${joinNames(names)}: “${title}” drills exactly that, so let's tackle it next.`
 }
 
 /** Oxford-style join: "A", "A and B", "A, B and C". */

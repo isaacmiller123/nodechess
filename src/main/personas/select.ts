@@ -6,7 +6,7 @@
 //   2. Search the position with MultiPV 6 at a bounded depth/movetime; collect the
 //      top lines (move + eval, mover POV).
 //   3. Keep lines within an eval TOLERANCE of the best move (tolerance widens with
-//      aggression/risk — sharp personas accept giving up a little eval for fire).
+//      aggression/risk: sharp personas accept giving up a little eval for fire).
 //   4. Score each surviving candidate by persona style: aggressive personas reward
 //      captures, checks, sacrifices, and king-attacking moves; solid personas reward
 //      the safest / most consolidating move. Pick the highest-scoring candidate.
@@ -14,7 +14,7 @@
 // Real opening books from a player's games are a later add (feature-addendum §2b
 // step 1); repertoire bias is intentionally omitted here.
 //
-// Built on chessops (the project's rules library) — no chess.js. Engine access is
+// Built on chessops (the project's rules library). No chess.js. Engine access is
 // the arms-length UciEngine UCI subprocess.
 
 import { Chess } from 'chessops/chess'
@@ -167,10 +167,10 @@ function posFromFen(fen: string): Chess | null {
 interface MoveTraits {
   isCapture: boolean
   isCheck: boolean
-  /** Captures or promotes to queen — generally forcing/material-positive. */
+  /** Captures or promotes to queen. Generally forcing/material-positive. */
   isPromotion: boolean
   /** Net material the mover concedes immediately after this move + best reply, in pawns
-   *  (> 0 means the mover is giving material away — a speculative sac). */
+   *  (> 0 means the mover is giving material away; a speculative sac). */
   immediateSacPawns: number
   /** Heuristic: this move increases pressure on the enemy king zone. */
   attacksKingZone: boolean
@@ -368,27 +368,27 @@ function evalTolerancePawns(persona: Persona): number {
 // ---- Shared persona engine ---------------------------------------------------------
 //
 // One long-lived Stockfish reused across persona moves (previously a brand-new
-// process was spawned PER MOVE — constant spawn/teardown churn and possible
+// process was spawned PER MOVE. Constant spawn/teardown churn and possible
 // concurrent spawns). Mirrors the engine:play discipline in
 // src/main/ipc/engine.ipc.ts: a single pooled process, a serialization chain so
 // two calls can never interleave their option/search writes, and stop() before
 // each search. It stays arms-length from the analysis/play pool (StockfishPool)
 // so a persona game never starves analysis. The process is disposed after a
-// short idle window — game over or persona deselected means no more moves, so
-// the engine goes away by itself — and lazily respawned on the next move. A
+// short idle window: game over or persona deselected means no more moves, so
+// the engine goes away by itself, and lazily respawned on the next move. A
 // crashed or wedged engine is dropped immediately so the next move respawns
 // cleanly instead of writing to a dead process.
 
 const PERSONA_ENGINE_IDLE_MS = 60_000
 /** Hard per-search ceiling (movetime path is <= 10s by the ipc schema; the
- *  depth path for a 3190 persona is seconds) — the renderer additionally falls
+ *  depth path for a 3190 persona is seconds). The renderer additionally falls
  *  back to a random legal move if this rejects, so the turn never hangs. */
 const PERSONA_SEARCH_TIMEOUT_MS = 30_000
 
 let personaEngine: UciEngine | null = null
 let personaIdleTimer: NodeJS.Timeout | null = null
 
-// personas:move calls all share the one engine — serialize them (own chain,
+// personas:move calls all share the one engine. Serialize them (own chain,
 // independent of engine.ipc.ts's queues) exactly like serializePlay there.
 let personaChain: Promise<unknown> = Promise.resolve()
 function serializePersona<T>(fn: () => Promise<T>): Promise<T> {
@@ -425,7 +425,7 @@ function dropPersonaEngine(engine: UciEngine): void {
   void engine.quit().catch(() => engine.kill())
 }
 
-/** After each move, (re)arm the idle disposal — the "returned on game end" path. */
+/** After each move, (re)arm the idle disposal, the "returned on game end" path. */
 function schedulePersonaIdleDisposal(): void {
   if (personaIdleTimer) clearTimeout(personaIdleTimer)
   personaIdleTimer = setTimeout(() => {
@@ -440,10 +440,10 @@ function schedulePersonaIdleDisposal(): void {
 
 /**
  * Select a style-weighted move for the given persona in the given position.
- * Runs on the shared persona engine (see above — pooled + serialized, arms-length
+ * Runs on the shared persona engine (see above; pooled + serialized, arms-length
  * from the analysis/play pool so a persona game never starves analysis), caps
  * strength near the persona's MODERN-era Elo estimate (a 2700 from 1900 is far
- * weaker than a 2700 today — the bot should play at the honest present-day
+ * weaker than a 2700 today: the bot should play at the honest present-day
  * strength the detail card advertises; peakElo remains the historical display
  * number), and returns the chosen UCI move plus its line eval.
  */
@@ -459,14 +459,14 @@ export async function selectMove(args: SelectMoveArgs): Promise<SelectMoveResult
   const fen = makeFen(pos.toSetup())
 
   // Opening book: while in this persona's real repertoire, play their move and
-  // skip the engine entirely — so Tal plays Tal's openings, Fischer plays 1.e4, etc.
+  // skip the engine entirely, so Tal plays Tal's openings, Fischer plays 1.e4, etc.
   const booked = bookMove(args.personaId, fen)
   if (booked) return { bestmove: booked }
 
   return serializePersona(async () => {
     const engine = await getPersonaEngine()
     try {
-      // Drain any abandoned search to idle before touching options — same
+      // Drain any abandoned search to idle before touching options. Same
       // discipline as engine:play in engine.ipc.ts.
       await engine.stop()
       engine.setOption('UCI_LimitStrength', true)

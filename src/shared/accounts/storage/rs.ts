@@ -1,25 +1,25 @@
-// A3 storage — Reed-Solomon erasure codec over GF(2^8) (spec §5 layer 3;
+// A3 storage: Reed-Solomon erasure codec over GF(2^8) (spec §5 layer 3;
 // framing contract: ./types.ts Shard). Systematic coding matrix [I_k; C]
-// where C[r][j] = inverse((k + r) XOR j) — a Cauchy block with x = {k..n-1}
+// where C[r][j] = inverse((k + r) XOR j). A Cauchy block with x = {k..n-1}
 // and y = {0..k-1}. The index sets are disjoint, so every k-row subset of the
 // stacked matrix is invertible: true MDS, ANY k of n shards reconstruct. This
 // deliberately sidesteps the Vandermonde-systematic construction, whose k-row
 // submatrices can be singular.
 //
 // Field recipe (FIXED, preserved prework finding): GF(2^8) with irreducible
-// polynomial 0x11d and primitive element 0x02. 0x03 is FORBIDDEN here — it
+// polynomial 0x11d and primitive element 0x02. 0x03 is FORBIDDEN here. It
 // has multiplicative order 51 mod 0x11d (3 = 2^25, so ord = 255/gcd(255,25) =
 // 51) and does NOT generate the field. (The preserved prework note said 85;
-// the true order is 51 — either way ord != 255, so 0x03 is disqualified; the
+// the true order is 51. Either way ord != 255, so 0x03 is disqualified; the
 // suite locks generatorOrder(0x03) === 51.) The exp/log tables are built from
 // 0x02 at module init.
 //
 // Integrity is end-to-end: every shard's framing carries dataHash =
-// sha256(original blob) and reconstruct() re-hashes its output against it —
-// a corrupted or substituted shard set can never yield an accepted blob.
+// sha256(original blob) and reconstruct() re-hashes its output against it.
+// A corrupted or substituted shard set can never yield an accepted blob.
 //
 // Platform-neutral + pure: no `node:` imports, no DOM globals, no clocks, no
-// randomness — same inputs → same shard bytes on node and in the browser.
+// randomness: same inputs → same shard bytes on node and in the browser.
 
 import { fromB64u, sha256, toB64u } from '../hash'
 import type { Shard } from './types'
@@ -32,7 +32,7 @@ export type RsErrorCode =
   | 'bad-field-element' // gfMul/gfInv/generatorOrder input outside GF(2^8), or inverse/order of 0
   | 'bad-geometry' // k/n not integers, k < 1, n < k, or n > 255
   | 'bad-shard' // a single shard's framing is malformed (version, idx range, body length/encoding)
-  | 'mixed-framing' // shards disagree on k/n/dataLen/dataHash — not one job's set
+  | 'mixed-framing' // shards disagree on k/n/dataLen/dataHash: not one job's set
   | 'duplicate-shard' // two shards claim one idx with DIFFERENT bytes
   | 'insufficient-shards' // fewer than k distinct rows
   | 'singular-matrix' // k×k submatrix not invertible (unreachable with the Cauchy block; kept as a hard stop)
@@ -46,7 +46,7 @@ export class RsError extends Error {
 }
 
 // ---------------------------------------------------------------------------
-// GF(2^8) arithmetic — poly 0x11d, generator 0x02
+// GF(2^8) arithmetic: poly 0x11d, generator 0x02
 // ---------------------------------------------------------------------------
 
 export const GF_POLY = 0x11d
@@ -73,7 +73,7 @@ function checkElem(x: number, what: string): void {
     throw new RsError('bad-field-element', `${what} must be an integer in [0, 255] (got ${x})`)
 }
 
-/** Table-free carry-less (Russian peasant) multiply mod GF_POLY — used by
+/** Table-free carry-less (Russian peasant) multiply mod GF_POLY. Used by
  * generatorOrder so the generator claim is provable INDEPENDENTLY of the
  * tables built from that very generator. */
 function gfMulSlow(a: number, b: number): number {
@@ -107,7 +107,7 @@ export function gfInv(a: number): number {
 /**
  * Multiplicative order of `g` in GF(2^8)/0x11d, computed with the table-free
  * multiply. The suite uses this to lock the field recipe: order(0x02) = 255
- * (generates the field), order(0x03) = 51 (does not — hence forbidden).
+ * (generates the field), order(0x03) = 51 (does not; hence forbidden).
  */
 export function generatorOrder(g: number): number {
   checkElem(g, 'g')
@@ -135,7 +135,7 @@ function checkGeometry(k: number, n: number): void {
   if (n > 255)
     throw new RsError(
       'bad-geometry',
-      `n must be <= 255 (got ${n}) — row indices and Cauchy x-coordinates must fit GF(2^8)`,
+      `n must be <= 255 (got ${n}): row indices and Cauchy x-coordinates must fit GF(2^8)`,
     )
 }
 
@@ -172,7 +172,7 @@ function shardLenOf(dataLen: number, k: number): number {
   return Math.max(1, Math.ceil(dataLen / k))
 }
 
-/** dst ^= coef * src, bytewise over GF(2^8) (the hot loop — tables inlined). */
+/** dst ^= coef * src, bytewise over GF(2^8) (the hot loop; tables inlined). */
 function addScaledRow(dst: Uint8Array, coef: number, src: Uint8Array): void {
   if (coef === 0) return
   const clog = LOG[coef]
@@ -231,7 +231,7 @@ interface CheckedShard {
   body: Uint8Array
 }
 
-/** Validate ONE shard's framing (runtime checks — shards arrive untrusted). */
+/** Validate ONE shard's framing (runtime checks; shards arrive untrusted). */
 function checkFrame(s: Shard): CheckedShard {
   const u = s as { readonly [key: string]: unknown }
   if (typeof u !== 'object' || u === null)
@@ -281,7 +281,7 @@ function invertMatrix(m: number[][], k: number): number[][] {
         break
       }
     if (pivot < 0)
-      throw new RsError('singular-matrix', `no pivot in column ${col} — shard rows not independent`)
+      throw new RsError('singular-matrix', `no pivot in column ${col}: shard rows not independent`)
     if (pivot !== col) {
       const tmp = a[col]
       a[col] = a[pivot]
@@ -303,7 +303,7 @@ function invertMatrix(m: number[][], k: number): number[][] {
  * consistent across the set (same k/n/dataLen/dataHash); duplicate idx with
  * identical bytes collapses to one, with different bytes is rejected. Row
  * selection is deterministic (k lowest indices). The output MUST hash to the
- * framing's dataHash or the whole reconstruction is rejected — corrupt shards
+ * framing's dataHash or the whole reconstruction is rejected. Corrupt shards
  * can waste work but never produce an accepted wrong blob.
  */
 export function reconstruct(shards: Shard[]): Uint8Array {
@@ -320,7 +320,7 @@ export function reconstruct(shards: Shard[]): Uint8Array {
     if (prior) {
       if (prior.bodyB64 !== c.bodyB64)
         throw new RsError('duplicate-shard', `two shards claim idx ${c.idx} with different bytes`)
-      continue // identical duplicate — keep one
+      continue // identical duplicate: keep one
     }
     byIdx.set(c.idx, c)
   }
@@ -347,7 +347,7 @@ export function reconstruct(shards: Shard[]): Uint8Array {
   if (toB64u(sha256(data)) !== dataHash)
     throw new RsError(
       'hash-mismatch',
-      'reconstructed bytes do not hash to dataHash — shard set corrupted or substituted',
+      'reconstructed bytes do not hash to dataHash: shard set corrupted or substituted',
     )
   return data
 }

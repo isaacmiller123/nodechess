@@ -1,5 +1,5 @@
 // Key certificates + revocations (spec §1). Certificates are ALWAYS
-// root-signed, personal-lane events — that is what makes their chain
+// root-signed, personal-lane events: that is what makes their chain
 // position immaterial at verification time. Revocations are witnessed-lane
 // events, root- or device-signed.
 //
@@ -70,7 +70,7 @@ export function makeCertEvent(
 
 /**
  * Build a witnessed-lane revocation of `pub`, signed by `key` (the root or
- * any device key — admissibility of the signer is a verification concern).
+ * any device key: admissibility of the signer is a verification concern).
  */
 export function makeRevokeEvent(
   priv: Uint8Array,

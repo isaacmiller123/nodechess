@@ -29,7 +29,7 @@ export type FamousGroup = 'romantic' | 'classical' | 'modern'
 /** Result of a famous game in PGN tag form. */
 export type FamousResult = '1-0' | '0-1' | '1/2-1/2' | '*'
 
-/** Metadata for one famous game (no moves) — what `list` returns per game. */
+/** Metadata for one famous game (no moves), what `list` returns per game. */
 export interface FamousGameMeta {
   id: string
   white: string
@@ -61,7 +61,7 @@ export interface FamousMove {
   fenAfter: string
 }
 
-/** Full payload for one game — metadata plus the expanded move list. */
+/** Full payload for one game: metadata plus the expanded move list. */
 export interface FamousGameDetail {
   game: FamousGameMeta
   moves: FamousMove[]
@@ -172,7 +172,7 @@ export function list(opts?: { group?: string }): FamousGameMeta[] {
 /**
  * Fetch one famous game by id, expanding its SAN movetext into a per-ply move
  * list with before/after FENs and UCI strings. Returns null if the id is
- * unknown or the stored movetext is not fully legal (should never happen — the
+ * unknown or the stored movetext is not fully legal (should never happen; the
  * dataset is validated offline by scripts/build-famous.mjs).
  */
 export function get(id: string): FamousGameDetail | null {
@@ -185,7 +185,7 @@ export function get(id: string): FamousGameDetail | null {
 
   for (let i = 0; i < sans.length; i++) {
     const move = parseSan(pos, sans[i])
-    if (!move) return null // illegal/ambiguous SAN — bail rather than emit garbage
+    if (!move) return null // illegal/ambiguous SAN: bail rather than emit garbage
 
     const fenBefore = makeFen(pos.toSetup())
     const color: 'white' | 'black' = pos.turn

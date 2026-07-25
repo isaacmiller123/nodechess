@@ -1,12 +1,12 @@
 /**
- * Viktor — the Chess School coach's voice. A terse, exacting old-school master.
+ * Viktor: the Chess School coach's voice. A terse, exacting old-school master.
  * Direct about mistakes, precise, generous with EARNED praise, always says WHY.
  *
  * This is a VOICE LAYER over the existing local coaching engine (./index.ts).
  * It does not re-classify anything: explainMove() does the work (verdict, motif,
  * eval swing), and we rewrite its result into Viktor's register and attach the
  * on-board annotations the renderer paints while he speaks. Fully deterministic,
- * offline — no LLM. The debrief uses the shared analysis engine (the pool) only
+ * offline: no LLM. The debrief uses the shared analysis engine (the pool) only
  * to fill in missing evals, with bounded depth and a hard cap on positions.
  */
 
@@ -44,18 +44,18 @@ interface ConceptInfo {
   short: string
 }
 const MOTIF_CONCEPT: Record<string, ConceptInfo> = {
-  fork: { id: 'fork', short: 'A fork is one piece attacking two targets at once — he cannot save both.' },
+  fork: { id: 'fork', short: 'A fork is one piece attacking two targets at once. He cannot save both.' },
   pin: { id: 'pin', short: 'A pin freezes a piece: it cannot move without exposing something worse behind it.' },
-  skewer: { id: 'skewer', short: 'A skewer is a pin reversed — the greater piece is in front and must step aside, losing the lesser one behind.' },
+  skewer: { id: 'skewer', short: 'A skewer is a pin reversed. The greater piece is in front and must step aside, losing the lesser one behind.' },
   discoveredAttack: { id: 'discovered-attack', short: 'A discovered attack: one piece moves and unmasks the attack of another.' },
   discoveredCheck: { id: 'discovered-check', short: 'A discovered check: the moving piece unveils a check from behind it.' },
-  doubleCheck: { id: 'double-check', short: 'A double check attacks the king with two pieces at once — only the king may move.' },
-  hangingPiece: { id: 'hanging-piece', short: 'A hanging piece is undefended and attacked — it is yours for the taking.' },
+  doubleCheck: { id: 'double-check', short: 'A double check attacks the king with two pieces at once. Only the king may move.' },
+  hangingPiece: { id: 'hanging-piece', short: 'A hanging piece is undefended and attacked. It is yours for the taking.' },
   backRankMate: { id: 'back-rank-mate', short: 'A back-rank mate: the king is trapped on its own first rank by its own pawns.' },
   mate: { id: 'mate', short: 'A forced mate: a sequence the opponent cannot escape.' },
   deflection: { id: 'deflection', short: 'A deflection drags a defender off its duty so what it guarded falls.' },
   interference: { id: 'interference', short: 'Interference plants a piece between a defender and what it guards, cutting the line.' },
-  overloaded: { id: 'overloaded-piece', short: 'An overloaded piece guards two things at once — load it past breaking and one must fall.' },
+  overloaded: { id: 'overloaded-piece', short: 'An overloaded piece guards two things at once. Load it past breaking and one must fall.' },
   capturingDefender: { id: 'removing-the-defender', short: 'Remove the defender, and the piece it guarded hangs.' },
   xRay: { id: 'x-ray', short: 'An x-ray attacks through a piece along the same line.' }
 }
@@ -164,7 +164,7 @@ const REBUKE_MISTAKE = [
   'You were not watching the whole board.'
 ]
 const REBUKE_BLUNDER = [
-  'No — look again.',
+  'No: look again.',
   'That is a blunder.',
   'Stop. Count the attackers before you touch a piece.'
 ]
@@ -263,7 +263,7 @@ function buildAnnotations(
 /**
  * Viktor narrates a just-played move (proactive coaching). Reuses explainMove()
  * for the verdict/motif/eval, recasts it into Viktor's voice, builds board cues,
- * and — when the move's motif is a concept the learner does NOT yet know —
+ * and (when the move's motif is a concept the learner does NOT yet know)
  * prepends a one-sentence primer on the idea.
  */
 export function narrate(req: SchoolNarrateReq): CoachLine {
@@ -535,13 +535,13 @@ function openingLine(
   }
   const openers = [
     `Let us go through your game with ${userColor}. I will show you where it turned.`,
-    `Sit. We will replay your game with ${userColor} together — I have marked the moments that matter.`
+    `Sit. We will replay your game with ${userColor} together. I have marked the moments that matter.`
   ]
   return { text: pick(openers, `${userColor}|${n}`), fen: startFen }
 }
 
 /** One coached "moment" line: Viktor's voice + board cues for that move.
- *  `fen` is the position BEFORE the move under discussion — the renderer must
+ *  `fen` is the position BEFORE the move under discussion. The renderer must
  *  show THAT board, or the highlights/arrows land on empty squares of the
  *  final position (the blank-square bug). */
 function momentLine(e: EnrichedMove): CoachLine {
@@ -591,14 +591,14 @@ function closingVerdict(
 
   const conceptPhrase =
     usedConcepts.length > 0
-      ? ` You found the ${conceptNames(usedConcepts)} — that is the lesson, and you used it.`
+      ? ` You found the ${conceptNames(usedConcepts)}. That is the lesson, and you used it.`
       : ''
 
   if (won === true) {
     if (blunders === 0 && mistakes === 0) {
       return `A clean win. You gave him nothing.${conceptPhrase}`
     }
-    return `The win is yours — but it was untidy. Tighten up, and he will not survive next time.${conceptPhrase}`
+    return `The win is yours, but it was untidy. Tighten up, and he will not survive next time.${conceptPhrase}`
   }
   if (blunders > 0) {
     return `You lost the thread. ${blunders === 1 ? 'One blunder' : `${blunders} blunders`} decided it. Study them; do not repeat them.${conceptPhrase}`

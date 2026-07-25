@@ -1,4 +1,4 @@
-// Fairy-Stockfish UCI probe — proves the bundled mac binary plays every games-
+// Fairy-Stockfish UCI probe: proves the bundled mac binary plays every games-
 // platform variant, and verifies the castling codec at the engine boundary
 // (docs/GAMES-PLATFORM-SPEC.md §Bots; games/bots.ts KIND→UCI_Variant map).
 //
@@ -11,11 +11,11 @@
 //   2. per variant: position startpos → go movetime → a bestmove that the
 //      engine itself then accepts via `position startpos moves <bm>`;
 //   3. castling codec: standard chess accepts e1g1 (NOT e1h1) without
-//      UCI_Chess960; with UCI_Chess960=true it accepts e1h1 (king-takes-rook)
-//      — matching games/bots.ts's translate-only-for-non-960 boundary rule;
+//      UCI_Chess960; with UCI_Chess960=true it accepts e1h1 (king-takes-rook).
+//      Matching games/bots.ts's translate-only-for-non-960 boundary rule;
 //   4. xiangqi bestmove on THIS mac (the task gate).
 //
-// Final line: 'ALL GREEN — N checks'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N checks'. Exit 0 = all green.
 
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -161,15 +161,15 @@ ok(expandRank(stdRank1)[6] === 'K', 'standard chess: e1g1 lands the king on g1 (
 const fenKxR = await fenAfter(`${CASTLE_READY} e1h1`)
 // Fairy-SF (like Stockfish) IGNORES an illegal/unparseable move token, leaving
 // the pre-move position: white still to move. That proves e1h1 is NOT accepted
-// as standard-chess castling — the boundary must translate KxR → e1g1.
-ok(fenKxR.includes(' w '), `standard chess: e1h1 rejected/ignored — translation required (fen: ${fenKxR.slice(0, 40)}…)`)
+// as standard-chess castling: the boundary must translate KxR → e1g1.
+ok(fenKxR.includes(' w '), `standard chess: e1h1 rejected/ignored. Translation required (fen: ${fenKxR.slice(0, 40)}…)`)
 
 send('setoption name UCI_Chess960 value true')
 send('ucinewgame')
 await expectToken('isready', 'readyok')
 const fen960 = await fenAfter(`${CASTLE_READY} e1h1`)
 const rank1960 = fen960.split(' ')[0].split('/')[7]
-ok(fen960.includes(' b ') && expandRank(rank1960)[6] === 'K', '960 mode: e1h1 (king-takes-rook) castles — keep KxR for chess960')
+ok(fen960.includes(' b ') && expandRank(rank1960)[6] === 'K', '960 mode: e1h1 (king-takes-rook) castles. Keep KxR for chess960')
 
 // ---- 4. xiangqi gate (explicit, per the task) ----------------------------------
 send('setoption name UCI_Chess960 value false')
@@ -186,7 +186,7 @@ ok(/^[a-i](10|[1-9])[a-i](10|[1-9])$/.test(xbm), `xiangqi on this mac: bestmove 
 // KERNEL state, feed its fen via `position fen`, and require (a) the engine
 // echoes the same board field + side to move (dialect accepted, incl. 3check
 // check counts and crazyhouse pockets), (b) the engine's bestmove is LEGAL in
-// the kernel state (spec.play accepts it — e1g1 castling normalizes).
+// the kernel state (spec.play accepts it; e1g1 castling normalizes).
 console.log('kernel-state FEN round-trip (chessops wave)')
 const { build } = await import('esbuild')
 const { mkdtempSync, rmSync, writeFileSync } = await import('node:fs')
@@ -260,7 +260,7 @@ for (const [kind, uciVariant, prefix] of KERNEL_CASES) {
 
 send('quit')
 proc.stdin.end()
-console.log(`\nALL GREEN — ${passed} checks`)
+console.log(`\nALL GREEN: ${passed} checks`)
 process.exit(0)
 
 function expandRank(rank) {

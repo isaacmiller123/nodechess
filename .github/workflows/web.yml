@@ -6,7 +6,7 @@ name: web
 #
 # Runs on every push/PR: the web target compiles the shared renderer + the
 # src/main logic the IPC bridge bundles, so "desktop-only" changes can break
-# it — cheap to check every time.
+# it. Checking every time is cheap.
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
 
       # The accounts browser gate (scripts/test-web-accounts-browser.mjs, picked
       # up by the test glob below) drives real headless chromium. Provision it
-      # here so the suite never hits its offline-skip path — in CI that path is
+      # here so the suite never hits its offline-skip path. In CI that path is
       # a hard failure by design (spec §14 quality gate).
       - name: Install chromium (playwright headless shell)
         run: npx playwright-core install chromium-headless-shell
@@ -57,7 +57,7 @@ jobs:
           npm run typecheck:server
 
       # build:server is the single source of truth for dist-server's contents
-      # (index.cjs + the IPC bridge prebundle) — CI must never build pieces the
+      # (index.cjs + the IPC bridge prebundle). CI must never build pieces the
       # npm script doesn't.
       - name: Build SPA + server
         run: |
@@ -147,7 +147,7 @@ jobs:
         run: docker build -t nodechess-web .
 
       # Boot the container exactly as a user would and wait for the image's own
-      # HEALTHCHECK to go green (interval shortened for CI) — this exercises the
+      # HEALTHCHECK to go green (interval shortened for CI). This exercises the
       # in-image probe, USER node, the /data volume, and the env defaults.
       - name: Run container + smoke
         shell: bash

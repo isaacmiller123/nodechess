@@ -1,6 +1,6 @@
 // The WEB implementation of the shared `Api` contract (docs/WEB-PORT-SPEC.md).
 //
-// This is the second implementation of src/shared/types.ts `Api` — the desktop
+// This is the second implementation of src/shared/types.ts `Api`. The desktop
 // one lives in src/preload/api.ts (Electron IPC). The renderer is untouched:
 // src/web/main.web.tsx installs this object as `window.api` before any
 // renderer module evaluates.
@@ -10,23 +10,23 @@
 //
 //   PUZZLE LIBRARY (src/web/data via ./puzzles):
 //     the ~2 GB puzzle database, split into static chunks and read over HTTP
-//     range requests — next/get/themes/batch/daily. Reads degrade to their
+//     range requests: next/get/themes/batch/daily. Reads degrade to their
 //     honest empty shapes when the artifact isn't deployed, and datasets.status
 //     reports puzzles:false so the gated surfaces show their own notice.
 //
 //   STATIC CONTENT (src/web/content):
-//     curriculum chapters, famous games, the persona catalog — the same
+//     curriculum chapters, famous games, the persona catalog: the same
 //     resource files the desktop main process reads, emitted into the build by
 //     vite.web.config.ts and fetched on demand.
 //
 //   CLIENT COMPUTE:
 //     engines/review/perf/persona moves (src/web/engines, WASM), the coach's
-//     move explanations (src/main/coach — pure chessops, no engine, shared
+//     move explanations (src/main/coach; pure chessops, no engine, shared
 //     verbatim with desktop) and the opening table (the same EPD-keyed JSON).
 //
 //   LOCAL STATE (src/web/localData, src/web/reviewStore):
 //     games, ratings, settings, custom variants, puzzle attempts/daily/rush,
-//     stored reviews. This browser IS the database — there is no account to
+//     stored reviews. This browser IS the database. There is no account to
 //     sync to and no server that could hold it.
 //
 // Two things are honestly missing rather than moved, both in School:
@@ -85,8 +85,8 @@ import { createEngineApi, createPerfApi, createPersonaMove, createReviewApi } fr
 // ---- Honest degradation ----------------------------------------------------------
 
 /** A READ against something that ships with the site (the puzzle artifact, the
- *  content tree). When it can't be reached — an incomplete deploy, a network
- *  drop — the call resolves to its EMPTY shape, which is exactly what the
+ *  content tree). When it can't be reached. An incomplete deploy, a network
+ *  drop. The call resolves to its EMPTY shape, which is exactly what the
  *  desktop does with a missing dataset directory and what every renderer
  *  surface already renders (no chapters, no games, no puzzle). The cause is
  *  never guessed at: the first failure of the page logs the real error, naming
@@ -98,7 +98,7 @@ async function staticRead<T>(what: string, run: () => Promise<T>, empty: () => T
   } catch (err) {
     if (!loggedReadFailure) {
       loggedReadFailure = true
-      console.error(`nodechess static read failed (${what}) — the app is running degraded.`, err)
+      console.error(`nodechess static read failed (${what}). The app is running degraded.`, err)
     }
     return empty()
   }
@@ -108,7 +108,7 @@ async function staticRead<T>(what: string, run: () => Promise<T>, empty: () => T
  *  paths (toasts, status strips, best-effort try/catch) surface this string. */
 function comingOnline(what: string): Promise<never> {
   return Promise.reject(
-    new Error(`${what} is coming online — this part of the nodechess web app isn't wired up yet.`)
+    new Error(`${what} is coming online. This part of the nodechess web app isn't wired up yet.`)
   )
 }
 
@@ -118,7 +118,7 @@ function comingOnline(what: string): Promise<never> {
  *  writes say plainly that nothing is being kept. */
 function schoolProgressUnavailable(what: string): Promise<never> {
   return Promise.reject(
-    new Error(`${what} isn't saved yet — the nodechess web app has nowhere to keep School progress.`)
+    new Error(`${what} isn't saved yet. The nodechess web app has nowhere to keep School progress.`)
   )
 }
 
@@ -139,14 +139,14 @@ function viktorUnavailable(): Promise<never> {
 async function botComingOnline(what: string): Promise<never> {
   const { BotUnavailableError } = await import('@/games/bots')
   throw new BotUnavailableError(
-    `${what} are coming online — not available in the nodechess web app yet.`
+    `${what} are coming online. Not available in the nodechess web app yet.`
   )
 }
 
 const ok = Promise.resolve({ ok: true as const })
 const noopUnsubscribe = (): (() => void) => () => {}
 
-// ---- The lazy engine layer (src/web/engines — the W2 contract) --------------------
+// ---- The lazy engine layer (src/web/engines: the W2 contract) --------------------
 // The factories are constructed on FIRST USE and cached; in an environment
 // without Worker/WebAssembly they throw ("not supported"), which parks the
 // cache at null and keeps the fallbacks answering. Nothing here re-probes: a
@@ -239,7 +239,7 @@ let puzzlesDatasetMemo = false
 async function probePuzzlesDataset(): Promise<boolean> {
   if (puzzlesDatasetMemo) return true
   try {
-    // The manifest alone answers this — one small fetch, no database read.
+    // The manifest alone answers this: one small fetch, no database read.
     puzzlesDatasetMemo = (await puzzleDatasetInfo()).puzzleCount > 0
   } catch {
     puzzlesDatasetMemo = false
@@ -247,7 +247,7 @@ async function probePuzzlesDataset(): Promise<boolean> {
   return puzzlesDatasetMemo
 }
 
-// Opening-name lookup — REAL on web, and byte-identical to desktop: the same
+// Opening-name lookup, REAL on web, and byte-identical to desktop: the same
 // EPD-keyed resources/openings/openings.json the main process reads (488 KB)
 // lazy-loads as its own chunk on first lookup, and the same chessops EPD
 // normalization keys the match (src/main/openings/openings.repo.ts).
@@ -262,7 +262,7 @@ function loadOpenings(): Promise<Record<string, OpeningInfo>> {
   return openingsTable
 }
 
-// The web app updates by refresh — there is nothing to check or download.
+// The web app updates by refresh. There is nothing to check or download.
 const UPDATE_STATUS: UpdateStatus = {
   state: 'idle',
   currentVersion: __WEB_APP_VERSION__,
@@ -272,7 +272,7 @@ const UPDATE_STATUS: UpdateStatus = {
 export const webApi: Api = {
   app: {
     ping: async () => ({ ok: true, ts: Date.now() }),
-    // engineVersion reflects the W2 WASM engines (static string — the About
+    // engineVersion reflects the W2 WASM engines (static string: the About
     // panel copy, not a capability claim); the puzzle date is the artifact's
     // own build stamp, so About reports the library actually being served.
     dataVersion: async () => ({
@@ -342,12 +342,12 @@ export const webApi: Api = {
     get: (id) => staticRead('puzzles:get', () => puzzleReader().get(id), () => ({ puzzle: null })),
     themes: () => staticRead('puzzles:themes', () => puzzleReader().themes(), () => ({ themes: [] })),
     batch: (req) => staticRead('puzzles:batch', () => puzzleReader().batch(req), () => ({ puzzles: [] })),
-    // Local Glicko-2 — the exact desktop applyPuzzleResult math + mode rules.
+    // Local Glicko-2. The exact desktop applyPuzzleResult math + mode rules.
     attempt: async (req) => recordLocalPuzzleAttempt(req),
     saveRush: async (req) => saveLocalRushRun(req),
     rushRuns: async (req) => ({ runs: listLocalRushRuns(req) }),
     rushBests: async () => ({ bests: localRushBests() }),
-    // The artifact holds no user state, so it always answers result:null — the
+    // The artifact holds no user state, so it always answers result:null. The
     // day's outcome is merged in from this browser's record.
     daily: async (req) => {
       const ymd = normalizeYmd(req?.ymd)
@@ -450,7 +450,7 @@ export const webApi: Api = {
     },
     get: async (gameId) => ({ game: readGames().rows.find((g) => g.id === gameId) ?? null }),
     // The desktop pipeline run locally: nominal→measured Elo mapping
-    // (shared/botStrength — main owns this on desktop) then the vs-bot Glicko
+    // (shared/botStrength; main owns this on desktop) then the vs-bot Glicko
     // update.
     reportResult: async (req) => {
       const rated = measuredElo({ kind: req.opponentKind ?? 'engine', elo: req.botElo })
@@ -458,7 +458,7 @@ export const webApi: Api = {
     }
   },
 
-  // REAL — same table, same EPD keying as the desktop lookup.
+  // REAL. Same table, same EPD keying as the desktop lookup.
   openings: {
     lookup: async (fen) => {
       const setup = parseFen(fen)
@@ -468,7 +468,7 @@ export const webApi: Api = {
     }
   },
 
-  // The coaching engine itself — src/main/coach is pure chessops (no engine, no
+  // The coaching engine itself: src/main/coach is pure chessops (no engine, no
   // LLM, no network), so the browser runs the SAME code the desktop main
   // process does, on the evals the caller already has.
   coach: {
@@ -478,7 +478,7 @@ export const webApi: Api = {
 
   // W2 client-side review behind the lazy layer, persisting through the
   // localStorage reviewStore. review.get answers from the store EVEN when the
-  // engine layer is unavailable — stored reviews are readable without an engine.
+  // engine layer is unavailable. Stored reviews are readable without an engine.
   review: {
     run: (req) => reviewLayer()?.run(req) ?? comingOnline('Game review'),
     get: (gameId) => reviewLayer()?.get(gameId) ?? reviewStore.load(gameId),
@@ -498,7 +498,7 @@ export const webApi: Api = {
   // Curriculum CONTENT is static and complete. PROGRESS is not stored anywhere
   // in the web build: reads answer empty (an unplaced, unstudied learner, which
   // is exactly what this browser knows) and writes reject with copy that says
-  // so. Every chapter therefore reports locked:'placement' — the honest state,
+  // so. Every chapter therefore reports locked:'placement'. The honest state,
   // not a bug in the content pipeline.
   school: {
     chapters: () =>
@@ -533,11 +533,11 @@ export const webApi: Api = {
     placementState: async () => ({ placed: false, estimatedElo: null, band: null, games: [] }),
     recordPlacementGame: () => schoolProgressUnavailable('Placement games'),
     resetPlacement: async () => ({ placed: false, estimatedElo: null, band: null, games: [] }),
-    // Desktop's fixed placement level (school/placement.ts) — same constant.
+    // Desktop's fixed placement level (school/placement.ts). Same constant.
     placementConfig: async () => ({ engineElo: 1350 }),
     // Viktor's voice layer (src/main/coach/viktor.ts) constructs a native
-    // StockfishPool at module scope, so it cannot be bundled for the browser —
-    // narrate and debrief are the only two channels this build cannot answer,
+    // StockfishPool at module scope, so it cannot be bundled for the browser.
+    // Narrate and debrief are the only two channels this build cannot answer,
     // and they fail immediately rather than doing work they can't finish. The
     // WASM eval pass a debrief needs already exists here
     // (src/web/engines/debrief.ts): split the pool out of viktor.ts and both
@@ -558,7 +558,7 @@ export const webApi: Api = {
   // probe (useEngineReady gates Play/Analysis off this flag) and `puzzles` the
   // static artifact's manifest. In engineless environments (old browsers) or a
   // deploy without the puzzle chunks both degrade to false and the required-
-  // notice gates return — honest in both directions. maia/katago stay
+  // notice gates return. Honest in both directions. maia/katago stay
   // desktop-only, and there is nothing to import in a browser.
   datasets: {
     status: async () => {
@@ -569,13 +569,13 @@ export const webApi: Api = {
     import: async () => ({
       ok: false,
       status: { ...DATASETS_NONE },
-      error: 'Nothing to download on the web — the engines and puzzle library are served with the app.'
+      error: 'Nothing to download on the web: the engines and puzzle library are served with the app.'
     }),
     cancel: async () => ok,
     onProgress: () => noopUnsubscribe()
   },
 
-  // localStorage — Variant Lab works fully in-browser (ffish WASM validates the
+  // localStorage: Variant Lab works fully in-browser (ffish WASM validates the
   // ini in the renderer).
   customVariants: {
     save: async (req) => {
@@ -617,7 +617,7 @@ export const webApi: Api = {
     }
   },
 
-  // The web app updates by refresh — check honestly reports up-to-date,
+  // The web app updates by refresh. Check honestly reports up-to-date,
   // download has nothing to do.
   updates: {
     status: async () => ({ ...UPDATE_STATUS }),
@@ -625,7 +625,7 @@ export const webApi: Api = {
     download: async () => ({
       ok: false,
       action: 'none',
-      error: 'The web app is always current — refresh the page to pick up new releases.'
+      error: 'The web app is always current. Refresh the page to pick up new releases.'
     }),
     onStatus: () => noopUnsubscribe()
   }

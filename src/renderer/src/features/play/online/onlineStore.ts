@@ -1,4 +1,4 @@
-// onlineStore — the app-lifetime home of a live internet game (the B1 fix).
+// onlineStore: the app-lifetime home of a live internet game (the B1 fix).
 //
 // This is a PLAIN module singleton with NO React imports: it runs unchanged in
 // bare node against a mocked `mp` (scripts/test-mp-store.mjs). The React binding
@@ -9,8 +9,8 @@
 // The store subscribes to `mp.onEvent` exactly ONCE at module init, for the
 // lifetime of the process. Everything the session reports (§8 MpEvent v3) flows
 // through the single event pump below; every action the UI can take is a method
-// on the exported `onlineStore`. State is a single immutable snapshot object —
-// every mutation replaces it wholesale and notifies subscribers.
+// on the exported `onlineStore`. State is a single immutable snapshot object.
+// Every mutation replaces it wholesale and notifies subscribers.
 //
 // Authority split (unchanged from the session design): the HOST owns clocks and
 // flagging; this store never runs a clock of its own for adjudication. It DOES
@@ -20,7 +20,7 @@
 
 import type { MpByo, MpColor, MpEvent, MpGameConfig, MpClocks } from '@shared/types'
 import { mp } from './mpClient'
-// A6 (Lane C): TYPE-ONLY — fully erased at bundle, so the bare-node store test
+// A6 (Lane C): TYPE-ONLY. Fully erased at bundle, so the bare-node store test
 // (which mocks `mp`) never pulls the session/accounts/crypto stack.
 import type { MpSigningConfig, MpWitnessMsg } from './mpSession'
 import type { SignedMove } from '@shared/accounts/segment'
@@ -45,14 +45,14 @@ import type { GameViewBanner } from '../GameView'
 // Sound seam (documented for builder-ui).
 //
 // The store must run in bare node (test-mp-store.mjs), but the SoundManager
-// module pulls Vite-only `import.meta.glob` at import time — so the store can NOT
+// module pulls Vite-only `import.meta.glob` at import time, so the store can NOT
 // statically import it. Instead the store computes WHICH sound to play and hands
 // the name to a registered sink. The UI wires the real sink once, from a
 // top-level effect:
 //   onlineStore.setSoundSink((name) => getSoundManager().play(name))
 // Until registered (and always in bare node) the sink is a silent no-op.
 //
-// The low-time one-shot is NOT here — it lives in Clock.tsx's onLowTime hook,
+// The low-time one-shot is NOT here. It lives in Clock.tsx's onLowTime hook,
 // which the view gates on settings.lowTimeWarning.
 // ---------------------------------------------------------------------------
 
@@ -90,11 +90,11 @@ export interface OnlineState {
   gameId: number
   myColor: 'white' | 'black'
   orientation: 'white' | 'black'
-  /** Registry kind of the live/last game ('chess' when idle — wire default). */
+  /** Registry kind of the live/last game ('chess' when idle. Wire default). */
   gameKind: string
   moves: string[] // codec moves from the start position (chess: UCIs)
-  fen: string // the adapter's positionKey (chess: the FEN) — chess boards read this
-  /** The adapter's opaque game state — non-chess board renderers consume it
+  fen: string // the adapter's positionKey (chess: the FEN). Chess boards read this
+  /** The adapter's opaque game state: non-chess board renderers consume it
    *  directly (GameBoardProps.state). Chess: the FEN string (=== fen). */
   boardState: unknown
   plyCount: number
@@ -123,14 +123,14 @@ export interface OnlineSettingsSnapshot {
 }
 
 // ---------------------------------------------------------------------------
-// A6 (Lane C) — signed rated play seams.
+// A6 (Lane C): signed rated play seams.
 //
 // The store stays free of the accounts/crypto import (the bare-node store test
 // mocks `mp` and never bundles it): the signed-in device key arrives through a
 // PROVIDER the app boot wires (useOnlineGame.ts), exactly like setSoundSink; and
 // a finished signed+witnessed game's SEGMENT is handed to a PUBLISHER the lead
 // wires to Lane E's buildAndPublishSegment. The store only decides rated↔casual
-// and assembles the writer's inputs — it never reimplements crypto.
+// and assembles the writer's inputs: it never reimplements crypto.
 // ---------------------------------------------------------------------------
 
 /** The verified terminal witness end-signature (wend) surfaced by the session. */
@@ -170,7 +170,7 @@ export type SegmentPublisher = (outcome: SignedGameOutcome) => void
 
 /** After a decline, the SAME side waits this many plies before re-offering. */
 const DRAW_COOLDOWN_PLIES = 20
-/** No draw offers before this ply (game is still abortable) — lichess parity. */
+/** No draw offers before this ply (game is still abortable), lichess parity. */
 const DRAW_MIN_PLY = 2
 const OPPONENT_DEFAULT = 'Opponent'
 
@@ -231,7 +231,7 @@ const FRESH: OnlineState = {
 }
 
 // The built-in default game. Registered at module init so 'chess' (and an
-// absent config.game — full back-compat) always resolves. Chess keeps its
+// absent config.game: full back-compat) always resolves. Chess keeps its
 // dedicated adapter (SAN-producing moveMeta feeds the PGN archive).
 registerOnlineGameAdapter(chessOnlineAdapter)
 // Every OTHER kernel game bridges in from the registry (spec §Wire-v4): any
@@ -259,7 +259,7 @@ class OnlineStore {
 
   /** The kernel for the CURRENT game (spec §Wire-v4). Chess by default; swapped
    *  per game at start from config.game.kind. All rules-shaped questions (apply
-   *  a move, terminal check, whose turn) go through it — never chessops direct. */
+   *  a move, terminal check, whose turn) go through it. Never chessops direct. */
   private adapter: OnlineGameAdapter<unknown> = chessOnlineAdapter as OnlineGameAdapter<unknown>
 
   /** The adapter's opaque game state (chess: the FEN). Mirrors state.moves;
@@ -279,7 +279,7 @@ class OnlineStore {
   private saved = false
 
   /** Registered sound sink (UI wires it to getSoundManager().play). No-op until
-   *  registered — and always in bare node, where the sound module can't load. */
+   *  registered, and always in bare node, where the sound module can't load. */
   private soundSink: ((name: SoundName) => void) | null = null
 
   /** A6 (Lane C): provider for the signed-in device signing key (boot wires it
@@ -303,7 +303,7 @@ class OnlineStore {
     // Register the host-side legality check (kernel seam, wire v4): the session
     // relays opaque strings and consults us before committing a guest move.
     // Optional-chained: the bare-node store test mocks `mp` without this method,
-    // and the seam's default (unregistered) is accept — chess-identical.
+    // and the seam's default (unregistered) is accept. Chess-identical.
     mp.setMoveValidator?.((moves, move) => this.validateGuestMove(moves, move))
     // A6 (Lane C): collect the verified witness stream. Only the terminal wend
     // assembles a segment; the mock mp (bare-node store test) lacks this method
@@ -313,7 +313,7 @@ class OnlineStore {
 
   /** Host-side legality gate for GUEST moves (called by the session pre-commit).
    *  Judged with the current game's kernel. Defensive: if our mirrored state
-   *  isn't at the ply the session is committing (mid-resync races), accept —
+   *  isn't at the ply the session is committing (mid-resync races), accept:
    *  authority/behavior then matches pre-v4 exactly. */
   private validateGuestMove(moves: readonly string[], move: string): boolean {
     if (this.state.phase !== 'game') return true
@@ -416,7 +416,7 @@ class OnlineStore {
       return
     }
     if (adapter.preload && adapter.needsPreload?.()) {
-      // The joiner learns the kind only at 'start' — load the rules engine
+      // The joiner learns the kind only at 'start': load the rules engine
       // now, surfaced as the tail of the connection dance. Early wire traffic
       // is impossible in practice (the opponent's first move takes longer than
       // the WASM load) and dropped safely by the gameId gate if it happens.
@@ -434,7 +434,7 @@ class OnlineStore {
     this.startGame(gameId, yourColor, cfg, adapter, opponentName)
   }
 
-  /** The synchronous tail of beginGame — adapter is resolved and preloaded. */
+  /** The synchronous tail of beginGame. Adapter is resolved and preloaded. */
   private startGame(
     gameId: number,
     yourColor: MpColor,
@@ -452,7 +452,7 @@ class OnlineStore {
     }
     this.sans = []
     this.saved = false
-    // A6 (Lane C): reset per-game segment state — a prior game's wend/terminal
+    // A6 (Lane C): reset per-game segment state. A prior game's wend/terminal
     // must never leak into this one (a signed rematch mints a fresh game key).
     this.lastWend = null
     this.pendingSegment = null
@@ -586,11 +586,11 @@ class OnlineStore {
    *
    *  Archive format (the game table's `pgn` column): standard chess keeps the
    *  real PGN writer (byte-for-byte the pre-v4 output); every other game gets
-   *  the generic serialization — PGN-style tags (incl. [Variant "<kind>"]) +
+   *  the generic serialization: PGN-style tags (incl. [Variant "<kind>"]) +
    *  the wire-codec move list joined by spaces. */
   private saveFinished(result: GameResult): void {
     if (this.saved) return
-    if (this.state.plyCount < 2) return // not a real game — don't archive
+    if (this.state.plyCount < 2) return // not a real game: don't archive
     this.saved = true
     const uc = this.state.myColor
     const me = cleanName(this.settings.username) || 'Anonymous'
@@ -610,7 +610,7 @@ class OnlineStore {
         ? treeToPgn(this.buildTree(), headers)
         : genericArchive(this.adapter.kind, headers, this.state.moves, result)
     // Best-effort; never block the banner on a failed save. (window.api is
-    // undefined in bare-node tests — guarded.)
+    // undefined in bare-node tests. Guarded.)
     void (globalThis as { window?: typeof window }).window?.api?.games
       ?.save({
         pgn,
@@ -653,7 +653,7 @@ class OnlineStore {
   }
 
   // ==========================================================================
-  // Event pump — one entry per §8 MpEvent v3 variant.
+  // Event pump: one entry per §8 MpEvent v3 variant.
   // ==========================================================================
 
   private onEvent(ev: MpEvent): void {
@@ -689,7 +689,7 @@ class OnlineStore {
         // No result, nothing saved. Neutral banner.
         this.endGame(null, 'Game aborted', {
           save: false,
-          title: ev.reason === 'no-first-move' ? 'Game aborted — no first move' : 'Game aborted'
+          title: ev.reason === 'no-first-move' ? 'Game aborted: no first move' : 'Game aborted'
         })
         return
 
@@ -706,7 +706,7 @@ class OnlineStore {
         return
 
       case 'drawDecline':
-        // Our standing offer was declined — clear it; UI shows "declined".
+        // Our standing offer was declined: clear it; UI shows "declined".
         this.set({ drawSent: false })
         return
 
@@ -745,7 +745,7 @@ class OnlineStore {
       case 'peer-back':
         // Resume immediately: re-arm the display clock for the side on move so it
         // ticks again without waiting for the host's next re-sync (which corrects
-        // any drift). The snapshot value is the frozen one — we only restart it.
+        // any drift). The snapshot value is the frozen one. We only restart it.
         this.set({
           peerAway: null,
           clock: this.resumedClock()
@@ -768,10 +768,10 @@ class OnlineStore {
   /** Apply a move the REMOTE peer made (drop stale gameId / out-of-order ply). */
   private onRemoteMove(gameId: number, ply: number, uci: string, clockMs: MpClocks, byo?: MpByo): void {
     if (gameId !== this.state.gameId) return
-    if (ply !== this.state.plyCount) return // duplicate / out-of-order — drop (D8)
+    if (ply !== this.state.plyCount) return // duplicate / out-of-order: drop (D8)
     const meta = this.adapter.moveMeta(this.gameState, uci) ?? { san: uci, capture: false, check: false }
     const next = this.adapter.play(this.gameState, uci)
-    if (next === null) return // illegal against our state — ignore rather than corrupt
+    if (next === null) return // illegal against our state: ignore rather than corrupt
     this.pushMove(uci, next, meta)
     this.sound(this.moveSound(meta))
     // Adopt the authoritative clocks; the side now on move is the running side.
@@ -806,12 +806,12 @@ class OnlineStore {
   }
 
   // ==========================================================================
-  // A6 (Lane C) — signed rated play wiring.
+  // A6 (Lane C): signed rated play wiring.
   // ==========================================================================
 
   /** Configure the session's signed-play identity BEFORE host()/join(). Rated +
    *  signed-in ⇒ offer our device key (the game becomes SIGNED only if the
-   *  opponent's hello ALSO carries identity — honest degradation otherwise).
+   *  opponent's hello ALSO carries identity. Honest degradation otherwise).
    *  Casual, signed-out, or no provider ⇒ null, which also CLEARS any prior
    *  rated identity so casual play is byte-identical v5. `oppRoot` pins a
    *  specific opponent when the matchmaker knows it (M2). */
@@ -876,7 +876,7 @@ class OnlineStore {
   }
 
   // ==========================================================================
-  // Actions (§4) — everything the UI can invoke.
+  // Actions (§4): everything the UI can invoke.
   // ==========================================================================
 
   /** Host a table. `opts.rated` (default false ⇒ casual, byte-identical v5)
@@ -884,7 +884,7 @@ class OnlineStore {
    *  the joiner also offers identity. Every existing caller (no opts) is casual. */
   async host(cfg: MpGameConfig, opts?: { rated?: boolean }): Promise<void> {
     const kind = cfg.game?.kind ?? 'chess'
-    // Wire v4: the session is game-agnostic — it cannot know that go/gomoku/
+    // Wire v4: the session is game-agnostic. It cannot know that go/gomoku/
     // othello/checkers open with BLACK. Stamp the game's first mover into the
     // selector so the move ORDER travels in the config; the joiner adopts it
     // from start/resync automatically. The first mover is options-aware via
@@ -978,7 +978,7 @@ class OnlineStore {
 
     const res = await mp.sendMove(uci)
     if (!res.ok) {
-      // Roll back the optimistic apply — the session refused it.
+      // Roll back the optimistic apply. The session refused it.
       this.sans.pop()
       this.gameState = priorState
       this.set({
@@ -993,7 +993,7 @@ class OnlineStore {
     }
     // Committed. Optimistically flip the display clock to the side now on move
     // (§4: "snapshot updates … AND after our own committed move") so our own
-    // clock stops and the opponent's starts immediately — the host's authoritative
+    // clock stops and the opponent's starts immediately, the host's authoritative
     // 'clock' ack (or the mirrored 'move') re-anchors any drift. After ANY move
     // the side on move (turnColor(m.fen)) is running: white's own first move ends
     // the idle phase and starts black's clock, exactly per the §2 first-move rule.
@@ -1002,8 +1002,8 @@ class OnlineStore {
     if (this.state.clock && this.live) {
       const c = this.frozenClock()
       if (c) {
-        // v5: optimistically credit OUR committed move like the host will —
-        // in byo-yomi the current period resets to full (the authoritative
+        // v5: optimistically credit OUR committed move like the host will.
+        // In byo-yomi the current period resets to full (the authoritative
         // ack corrects any drift, but without this our period would keep
         // draining visually until the opponent's next message).
         let snap = c.snapshot
@@ -1113,7 +1113,7 @@ class OnlineStore {
 
 /** Generic archive text for non-chess games (the game table's `pgn` column):
  *  PGN-style tag pairs + a [Variant] tag + the wire-codec moves joined by
- *  spaces, terminated by the result — readable, greppable, replayable. */
+ *  spaces, terminated by the result. Readable, greppable, replayable. */
 function genericArchive(
   kind: string,
   headers: Record<string, string>,

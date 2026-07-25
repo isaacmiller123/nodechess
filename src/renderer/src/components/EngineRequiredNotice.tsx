@@ -1,4 +1,4 @@
-// Inline "Stockfish isn't installed yet" prompt — the chess siblings of the go
+// Inline "Stockfish isn't installed yet" prompt: the chess siblings of the go
 // bots' KataGo install card (KernelBot's .vbot-install): explains the one-time
 // engine download and deep-links to Settings → Datasets instead of dead-ending
 // (no board, no error) or spinning at depth 0 forever.
@@ -26,14 +26,14 @@ export function EngineRequiredNotice({
   /** Deep link to Settings → Datasets (the download lives there). */
   onOpenSettings?: () => void
 }): JSX.Element {
-  // Web build: nothing to download and nowhere to deep-link — engines are
+  // Web build: nothing to download and nowhere to deep-link. Engines are
   // coming online in a later update, so say exactly that (no false CTA).
   if (isWebBuild) {
     return (
       <div className="engine-required" role="status">
         <p>
           {LEAD[context]} <strong>Stockfish</strong>. Engines are coming online here in a future
-          update — today they&apos;re in the desktop app.
+          update. Today they&apos;re in the desktop app.
         </p>
       </div>
     )
@@ -41,7 +41,7 @@ export function EngineRequiredNotice({
   return (
     <div className="engine-required" role="status">
       <p>
-        {LEAD[context]} <strong>Stockfish</strong> — a one-time engine download that stays on this
+        {LEAD[context]} <strong>Stockfish</strong>, a one-time engine download that stays on this
         machine. Grab it once and every strength, plus hints, analysis and game review, unlocks.
       </p>
       <SettingsCta onOpenSettings={onOpenSettings} />
@@ -51,20 +51,20 @@ export function EngineRequiredNotice({
 
 /** The puzzles sibling: same install card, but for the Lichess puzzle database
  *  (datasets:status().puzzles). School warm-up/cool-down segments show this
- *  instead of dead-ending — or worse, faking a puzzle — when the DB is absent. */
+ *  instead of dead-ending (or worse, faking a puzzle) when the DB is absent. */
 export function PuzzlesRequiredNotice({
   onOpenSettings
 }: {
   onOpenSettings?: () => void
 }): JSX.Element {
   // Web build: the puzzle DB lives on the server, so there's nothing the user
-  // can download to fix an absence — same honest no-CTA card as the engine.
+  // can download to fix an absence. Same honest no-CTA card as the engine.
   if (isWebBuild) {
     return (
       <div className="engine-required" role="status">
         <p>
           Warm-up and cool-down drills come from the <strong>Lichess puzzle database</strong>,
-          which hasn&apos;t come online here yet — today it&apos;s in the desktop app.
+          which hasn&apos;t come online here yet. Today it&apos;s in the desktop app.
         </p>
       </div>
     )
@@ -72,7 +72,7 @@ export function PuzzlesRequiredNotice({
   return (
     <div className="engine-required" role="status">
       <p>
-        Warm-up and cool-down drills come from the <strong>Lichess puzzle database</strong> — a
+        Warm-up and cool-down drills come from the <strong>Lichess puzzle database</strong>, a
         one-time download that stays on this machine. Grab it once and every puzzle in the app,
         School drills included, unlocks.
       </p>

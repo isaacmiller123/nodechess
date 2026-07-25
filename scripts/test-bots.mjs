@@ -19,7 +19,7 @@
 // The Fairy-Stockfish side of §Bots is proven by scripts/probe-fairy-sf.mjs
 // (engine handshake, all 13 variants, castling codec, xiangqi gate).
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -223,7 +223,7 @@ try {
     )
   }
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
   rmSync(tmp, { recursive: true, force: true })
   process.exit(0)
 } catch (err) {

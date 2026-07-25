@@ -1,7 +1,7 @@
 // Persistent opening recognition over a game tree.
 //
 // useOpeningTrace walks the CURRENT path (root -> tree.current) and reports the
-// DEEPEST openings-DB hit along it (window.api.openings.lookup — an EPD-keyed
+// DEEPEST openings-DB hit along it (window.api.openings.lookup; an EPD-keyed
 // local table in the main process). Because the deepest hit on the path is
 // reported rather than a per-position lookup, the opening name PERSISTS after
 // the game leaves theory instead of vanishing: past that point the trace keeps
@@ -9,7 +9,7 @@
 //
 // Lookups are cached per NODE ID in a ref (node fens are immutable, ids are
 // unique per tree generation), so navigating back and forth across known nodes
-// is free; only newly created nodes — or a whole new tree after reset() —
+// is free; only newly created nodes, or a whole new tree after reset(),
 // touch the API. Everything degrades to "no opening" when the preload bridge
 // is absent.
 
@@ -54,7 +54,7 @@ export function useOpeningTrace(tree: GameTree): OpeningTrace {
   useEffect(() => {
     const api = window.api?.openings
     if (!api) return // no preload bridge: trace stays empty
-    // reset() renews every node id — drop the previous tree's cache.
+    // reset() renews every node id: drop the previous tree's cache.
     if (rootIdRef.current !== rootId) {
       rootIdRef.current = rootId
       cacheRef.current.clear()
@@ -74,7 +74,7 @@ export function useOpeningTrace(tree: GameTree): OpeningTrace {
             if (rootIdRef.current === rootId) cacheRef.current.set(id, opening)
           },
           () => {
-            // The lookup is a local, deterministic table read — treat failure
+            // The lookup is a local, deterministic table read: treat failure
             // as "not in book" rather than retry-looping.
             if (rootIdRef.current === rootId) cacheRef.current.set(id, null)
           }
@@ -114,7 +114,7 @@ export interface OpeningTagProps {
 
 /**
  * Compact one-line opening identity for panel headers, e.g.
- * "Ruy Lopez: Berlin Defence · ECO C65 · book to move 8" — or "· in book"
+ * "Ruy Lopez: Berlin Defence · ECO C65 · book to move 8", or "· in book"
  * while the current position is still theory. Renders nothing until the trace
  * has a name. (This module is a .ts file, so the tiny DOM is built with
  * createElement rather than JSX.)

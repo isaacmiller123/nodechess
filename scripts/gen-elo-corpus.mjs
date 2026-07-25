@@ -5,7 +5,7 @@
 //  - bands >= 1320: native UCI_LimitStrength/UCI_Elo, go movetime (the app's
 //    1320+ bot path uses movetime-limited native play);
 //  - bands < 1320: the production sub-floor pick model (scripts/lib/
-//    weak-model.mjs — mirror of engine.ipc.ts), full-strength engine, short
+//    weak-model.mjs: mirror of engine.ipc.ts), full-strength engine, short
 //    MultiPV depth search + softmax/blunder pick.
 //
 // Pairings per the fit design: self-play at equal Elo plus cross-pairings at
@@ -105,7 +105,7 @@ const mateToCpSide = (mate) => (mate === 0 ? -1000 : Math.sign(mate) * 1000)
 
 /**
  * Analyze one game's plies exactly like review.ts runReview() and return
- * per-side { accuracy, acpl, nMoves } (accuracy rounded to 0.1, acpl rounded —
+ * per-side { accuracy, acpl, nMoves } (accuracy rounded to 0.1, acpl rounded;
  * same rounding as review's sideSummary).
  * @param plies [{ uci, fenBefore, fenAfter, mateDelivered }]
  */
@@ -150,7 +150,7 @@ async function analyzeGame(eng, plies, depth) {
     perMove.push({ color, accuracy, cpLoss, winAfter })
   }
 
-  // Summaries — review.ts summarize()/sideSummary() parity.
+  // Summaries: review.ts summarize()/sideSummary() parity.
   const whitePovWin = []
   const blackPovWin = []
   const acc = { white: [], black: [] }

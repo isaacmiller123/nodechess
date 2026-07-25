@@ -1,29 +1,29 @@
-// A6 social surface — SOCIAL presence (spec §10 "presence (ephemeral)", C-3).
+// A6 social surface: SOCIAL presence (spec §10 "presence (ephemeral)", C-3).
 // Ephemeral ROOT-signed "I am online / playing / away" claims plus a pure,
 // deterministic aggregation. Expiring, reconstructible, NO account data
-// (no rating, no name — viewers derive those from the chain), NO authority.
+// (no rating, no name: viewers derive those from the chain), NO authority.
 //
 // Relationship to witness/presence.ts (checked first, deliberately not
-// duplicated): that module is FABRIC presence — a device-key-signed
+// duplicated): that module is FABRIC presence. A device-key-signed
 // capability advertisement (witness/committee/shardMb) feeding the
 // observer-local NodeDirectory that seeds witness-set selection. Social
 // presence is a different surface with a different signer (the account ROOT,
 // so no cert verification is needed to attribute it), different content
 // (a status enum, no capabilities), and a different consumption contract (a
 // pure fold over a claim set, not a mutable directory). What IS shared is the
-// underlying machinery — canonicalBytes signing, verifySigB64u, strict zod
-// shapes, compareKeys ordering, newest-per-root + staleness pruning — reused
+// underlying machinery: canonicalBytes signing, verifySigB64u, strict zod
+// shapes, compareKeys ordering, newest-per-root + staleness pruning. Reused
 // here from codec/hash/events rather than re-implemented.
 //
 // §0 stance, stated honestly: presence is NON-consequence-bearing UI state.
-// A modified client can claim to be online — that feeds no rating, trust,
+// A modified client can claim to be online. That feeds no rating, trust,
 // reputation, ban, or witnessed-time input, so lying gains nothing. The real
 // §0 protection is attribution: the root signature means nobody can forge
 // SOMEONE ELSE'S presence, and verification fails closed on any bad shape or
 // signature. The claimed `ts` is sender-asserted (exactly like fabric
 // presence) and is BOUNDED by the verifier: ttl capped by params, far-future
 // claims dropped, expiry judged against a caller-supplied `nowWts` derived
-// from witnessed time (§4) — never ambient clock. No Date.now() anywhere.
+// from witnessed time (§4): never ambient clock. No Date.now() anywhere.
 //
 // Platform-neutral: no `node:` imports, no DOM globals, integers only.
 
@@ -34,13 +34,13 @@ import { ed25519, toB64u, verifySigB64u } from '../hash'
 import type { B64u } from '../types'
 
 // ---------------------------------------------------------------------------
-// Parameters (C-3 coordination state — revisable, not frozen-at-genesis;
+// Parameters (C-3 coordination state: revisable, not frozen-at-genesis;
 // same discipline as witness/params.ts: consumers pin a digest per rule set)
 // ---------------------------------------------------------------------------
 
 export interface SocialPresenceParams extends CanonicalObject {
   v: number
-  /** Hard cap on a claim's self-declared ttl — a claim cannot assert immortal presence. */
+  /** Hard cap on a claim's self-declared ttl. A claim cannot assert immortal presence. */
   ttlMaxMs: number
   /** Claims timestamped further than this into the verifier's future are dropped. */
   skewMaxMs: number
@@ -48,7 +48,7 @@ export interface SocialPresenceParams extends CanonicalObject {
 
 export const PARAMS_SOCIAL_PRESENCE = {
   v: 1,
-  ttlMaxMs: 300_000, // 5 min — clients re-announce well inside this
+  ttlMaxMs: 300_000, // 5 min. Clients re-announce well inside this
   skewMaxMs: 120_000,
 } as const satisfies SocialPresenceParams
 
@@ -64,12 +64,12 @@ export type SocialStatus = (typeof SOCIAL_STATUSES)[number]
 /** Ephemeral, ROOT-signed presence claim. No account data beyond the root id. */
 export interface SocialPresenceBody extends CanonicalObject {
   v: 1
-  /** Account root public key (b64u, 32 bytes) — also the signer. */
+  /** Account root public key (b64u, 32 bytes). Also the signer. */
   root: B64u
   status: SocialStatus
-  /** Sender-claimed unix ms at issue — bounded by verifiers, never trusted raw. */
+  /** Sender-claimed unix ms at issue. Bounded by verifiers, never trusted raw. */
   ts: number
-  /** Self-declared lifetime, ms — capped at params.ttlMaxMs by verifiers. */
+  /** Self-declared lifetime, ms. Capped at params.ttlMaxMs by verifiers. */
   ttlMs: number
 }
 
@@ -119,7 +119,7 @@ export function verifySocialPresence(
 }
 
 // ---------------------------------------------------------------------------
-// Aggregation — pure, deterministic, order-independent
+// Aggregation: pure, deterministic, order-independent
 // ---------------------------------------------------------------------------
 
 export interface SocialPresenceView {
@@ -127,18 +127,18 @@ export interface SocialPresenceView {
   status: SocialStatus
   /** The winning claim's issue timestamp. */
   ts: number
-  /** When this view expires (body.ts + body.ttlMs) — for renders, not authority. */
+  /** When this view expires (body.ts + body.ttlMs). For renders, not authority. */
   expiresWts: number
 }
 
 /**
  * Deterministic aggregation of a claim set at witnessed time `nowWts`
- * (caller-supplied, §4 — NEVER ambient time):
+ * (caller-supplied, §4, NEVER ambient time):
  *
  *  1. drop every claim failing verifySocialPresence (fail-closed skip);
- *  2. drop expired claims — nowWts − body.ts > body.ttlMs (a claim at exactly
+ *  2. drop expired claims: nowWts − body.ts > body.ttlMs (a claim at exactly
  *     ts + ttlMs is still live, mirroring witness/presence.ts age ≤ stale);
- *  3. drop far-future claims — body.ts − nowWts > params.skewMaxMs (bounded
+ *  3. drop far-future claims: body.ts − nowWts > params.skewMaxMs (bounded
  *     skew tolerance; within the bound counts as live, like fabric presence);
  *  4. freshest-wins per root: highest body.ts; exact-ts tie broken by the
  *     lexicographically GREATER sig (compareKeys) so the result is a pure
@@ -146,7 +146,7 @@ export interface SocialPresenceView {
  *  5. output sorted by root (compareKeys ascending).
  *
  * Pure and bit-deterministic: same claim multiset + same nowWts ⇒ identical
- * result on every platform. Absence of a claim means offline — there is no
+ * result on every platform. Absence of a claim means offline. There is no
  * negative claim and no authority anywhere in this file.
  */
 export function presenceOf(

@@ -1,4 +1,4 @@
-// Persona detail pane — opened from the gallery. Large portrait, biography,
+// Persona detail pane: opened from the gallery. Large portrait, biography,
 // playing style, honest strength stats (peak vs estimated-today), their famous
 // games (each opens in Analysis via the onOpenFamousGame prop App threaded
 // through PlayView), and a self-contained Challenge block (color + time +
@@ -15,7 +15,7 @@ import { personaInitials } from './PersonaGallery'
 export interface PersonaDetailProps {
   persona: Persona
   /** Famous-game metadata by id, for labeling the games list. May be sparse or
-   *  empty (fetch failed) — rows fall back to "Famous game N". */
+   *  empty (fetch failed): rows fall back to "Famous game N". */
   famousGames: Record<string, FamousGameMeta>
   colorChoice: ColorChoice
   /** Shared Play time control (the same value the Local tab edits). */
@@ -26,7 +26,7 @@ export interface PersonaDetailProps {
   onBack: () => void
   /** Start the game vs this persona (PlayView's startGame). */
   onChallenge: () => void
-  /** Open a famous game in Analysis. Optional — rows render inert without it. */
+  /** Open a famous game in Analysis. Optional. Rows render inert without it. */
   onOpenFamousGame?: (famousId: string) => void
 }
 

@@ -1,17 +1,17 @@
-// chessSet piece system — the photoreal Poly Haven chess set (chessSet.ts
+// chessSet piece system. The photoreal Poly Haven chess set (chessSet.ts
 // loader): scanned board + per-piece GLB geometries with the native PBR
 // photoscan materials. Unlike the procedural systems this one also OWNS the
 // board mesh (the scan includes board + frame), so Tabletop3D skips BoardPlane
 // for provider.system === 'chessSet'.
 //
 // Load states:
-//   loading  → BoardPlane fallback only (pieces land together with the GLBs —
+//   loading  → BoardPlane fallback only (pieces land together with the GLBs;
 //              file:// loads settle in well under a second)
 //   failed   → BoardPlane + procedural Tokens with piece-letter decals (the
 //              renderer must never dead-end; art may be missing in dev runs)
 //   loaded   → scanned board aligned to the layout grid + GLB pieces
 //
-// Pieces are plain meshes (≤ 32 + ghosts — instancing would save nothing) that
+// Pieces are plain meshes (≤ 32 + ghosts; instancing would save nothing) that
 // sample MotionController poses per frame, exactly like Tokens. Knights face
 // the opponent per color; a whisper of deterministic yaw/offset jitter keeps a
 // full board reading hand-placed rather than CAD-perfect.

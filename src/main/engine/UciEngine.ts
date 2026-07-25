@@ -82,7 +82,7 @@ function parseInfo(line: string): InfoLine | null {
 
 /**
  * Thin, hand-rolled UCI wrapper over a spawned engine binary (architecture §6.3).
- * Pure Node — no Electron import — so it can be unit/smoke-tested headlessly.
+ * Pure Node (no Electron import) so it can be unit/smoke-tested headlessly.
  * Emits 'info' (InfoLine) and 'bestmove' (BestMove). One search at a time.
  */
 export class UciEngine extends EventEmitter {
@@ -94,7 +94,7 @@ export class UciEngine extends EventEmitter {
   private pendingRejectors = new Set<(e: Error) => void>()
 
   /** `args` are extra launch arguments (lc0 needs `--weights=<file>`; Stockfish
-   *  callers pass nothing — the default keeps every existing call site as-is). */
+   *  callers pass nothing. The default keeps every existing call site as-is). */
   constructor(
     private readonly exePath: string,
     private readonly args: readonly string[] = []
@@ -112,7 +112,7 @@ export class UciEngine extends EventEmitter {
   }
 
   async start(): Promise<void> {
-    // shell:false (the default, stated explicitly) — launch the binary directly on
+    // shell:false (the default, stated explicitly). Launch the binary directly on
     // every OS. Never set shell:true or windowsHide here: they change argument
     // handling and are unnecessary for a path-resolved engine binary.
     const proc = spawn(this.exePath, [...this.args], {
@@ -172,7 +172,7 @@ export class UciEngine extends EventEmitter {
     try {
       proc.stdin.write(cmd + '\n')
     } catch {
-      /* engine gone between checks — ignore */
+      /* engine gone between checks: ignore */
     }
   }
 
@@ -260,13 +260,13 @@ export class UciEngine extends EventEmitter {
     try {
       await settled
     } catch {
-      /* engine already idle or gone — nothing to stop */
+      /* engine already idle or gone: nothing to stop */
     }
   }
 
   // Graceful UCI `quit`, then a hard kill as a fallback. Universal across OSes:
   // Windows ignores SIGTERM (so the explicit kill is what actually stops it),
-  // while macOS/Linux also honor the kill — no platform-conditional logic needed.
+  // while macOS/Linux also honor the kill. No platform-conditional logic needed.
   async quit(): Promise<void> {
     if (!this.proc) return
     this.write('quit')

@@ -52,7 +52,7 @@ export function Layout({
   onNavigate: (v: ViewKey) => void
   title: string
   topRight?: ReactNode
-  /** Pulse a dot on the Play rail item — a live online game is running while
+  /** Pulse a dot on the Play rail item. A live online game is running while
    *  the Play view isn't the one showing. */
   playPulse?: boolean
   children: ReactNode
@@ -91,7 +91,7 @@ export function Layout({
           type="button"
           className={`profile-chip${active === 'settings' ? ' is-active' : ''}`}
           aria-current={active === 'settings' ? 'page' : undefined}
-          aria-label={`Profile and settings — ${settings.username}`}
+          aria-label={`Profile and settings for ${settings.username}`}
           title="Profile & settings"
           onClick={() => onNavigate('settings')}
         >

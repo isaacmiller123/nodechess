@@ -2,14 +2,14 @@
  "id": "ch39-strategic-mastery",
  "band": "39",
  "order": 39,
- "title": "Strategic Mastery — The Complete Middlegame",
+ "title": "Strategic Mastery: The Complete Middlegame",
  "subtitle": "Dynamic versus static, the pawn-sac for the initiative, the exchange sac for a bind, judging long-term compensation, and forming the plan.",
  "estMinutes": 52,
  "concepts": [
   {
    "id": "dynamic-vs-static",
    "name": "Dynamic vs. Static",
-   "short": "Static factors are permanent — pawn structure, weak squares, the better minor piece. Dynamic factors are temporary — the initiative, a lead in development, an exposed king. The whole of strategy is trading one for the other on your terms."
+   "short": "Static factors are permanent. Pawn structure, weak squares, the better minor piece. Dynamic factors are temporary. The initiative, a lead in development, an exposed king. The whole of strategy is trading one for the other on your terms."
   },
   {
    "id": "the-imbalance",
@@ -19,41 +19,41 @@
   {
    "id": "the-initiative",
    "name": "The Initiative",
-   "short": "The initiative is the power to make threats faster than the opponent can answer them. It is dynamic — it must be used or it evaporates. When you hold it, keep making him react; when you don't, neutralise it and the static factors decide."
+   "short": "The initiative is the power to make threats faster than the opponent can answer them. It is dynamic. It must be used or it evaporates. When you hold it, keep making him react; when you don't, neutralise it and the static factors decide."
   },
   {
    "id": "pawn-sac-initiative",
    "name": "The Pawn Sacrifice for the Initiative",
-   "short": "Give a pawn to gain time — to open lines, seize the centre, or get every piece working while his pieces still sleep. The compensation is dynamic: develop fast and strike before he consolidates, or the pawn is just gone."
+   "short": "Give a pawn to gain time. To open lines, seize the centre, or get every piece working while his pieces still sleep. The compensation is dynamic: develop fast and strike before he consolidates, or the pawn is just gone."
   },
   {
    "id": "exchange-sac-bind",
    "name": "The Exchange Sacrifice for a Bind",
-   "short": "Give rook for minor piece to win a lasting grip: a monster knight he cannot evict, a fatally weak colour complex, a clamped structure. You trade a static count of material for a static bind — and the bind, not the rook, decides."
+   "short": "Give rook for minor piece to win a lasting grip: a monster knight he cannot evict, a fatally weak colour complex, a clamped structure. You trade a static count of material for a static bind, and the bind, not the rook, decides."
   },
   {
    "id": "compensation",
    "name": "Long-Term Compensation",
-   "short": "When you are down material, ask: what do I have FOR it, and will it last? Lasting trumps — a bind, a wrecked enemy structure, the safer king, the bishop pair — are worth a pawn or the exchange. Fleeting ones are not."
+   "short": "When you are down material, ask: what do I have FOR it, and will it last? Lasting trumps (a bind, a wrecked enemy structure, the safer king, the bishop pair) are worth a pawn or the exchange. Fleeting ones are not."
   },
   {
    "id": "the-plan",
    "name": "Forming the Plan",
-   "short": "A plan grows out of the imbalance. Name the feature in your favour, name the target it points at, then route your pieces to attack that target. No plan is worse than a bad plan — but the plan must fit the position you actually have."
+   "short": "A plan grows out of the imbalance. Name the feature in your favour, name the target it points at, then route your pieces to attack that target. No plan is worse than a bad plan, but the plan must fit the position you actually have."
   }
  ],
  "lessons": [
   {
    "id": "l1-dynamic-vs-static",
-   "title": "Dynamic vs. Static — The Two Clocks",
+   "title": "Dynamic vs. Static, The Two Clocks",
    "kind": "positional",
    "summary": "Every position runs on two clocks: the permanent static features and the temporary dynamic ones. Mastery is knowing which clock is running in your favour and playing to it.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the precise positional blow",
+     "title": "Warm-up: the precise positional blow",
      "intro": {
-      "text": "Before we talk theory, sharpen the eye. In each of these the strongest move is not the loudest — it is the most precise. A quiet improving move, a clamp, a deflection that wins the strategic battle. Find the move a master would play."
+      "text": "Before we talk theory, sharpen the eye. In each of these the strongest move is not the loudest. It is the most precise. A quiet improving move, a clamp, a deflection that wins the strategic battle. Find the move a master would play."
      },
      "puzzle": {
       "themes": [
@@ -74,7 +74,7 @@
        "conceptId": "dynamic-vs-static",
        "coach": {
         "conceptId": "dynamic-vs-static",
-        "text": "Every position is judged on two clocks at once. The STATIC clock never stops ticking: the pawn structure, the weak squares, the good or bad bishop, who has the long-term better piece — these are permanent, they survive trades, they decide slow games. The DYNAMIC clock is fast and runs down: a lead in development, the initiative, an exposed king, a passed pawn racing. Dynamic advantages must be SPENT before they expire; static ones you can bank and cash in later.",
+        "text": "Every position is judged on two clocks at once. The STATIC clock never stops ticking: the pawn structure, the weak squares, the good or bad bishop, who has the long-term better piece. These are permanent, they survive trades, they decide slow games. The DYNAMIC clock is fast and runs down: a lead in development, the initiative, an exposed king, a passed pawn racing. Dynamic advantages must be SPENT before they expire; static ones you can bank and cash in later.",
         "annotations": [
          {
           "kind": "circle",
@@ -96,7 +96,7 @@
        "conceptId": "dynamic-vs-static",
        "coach": {
         "conceptId": "dynamic-vs-static",
-        "text": "The single most important strategic decision you ever make is which clock you are playing. If you are ahead on the static clock — better structure, the better minor piece — you want to TRADE pieces, kill the opponent's activity, and reach a slow position where your permanent edge tells. If you are ahead on the dynamic clock — better developed, the initiative — you want to OPEN the position and strike NOW, before he untangles and your lead evaporates. Wrong clock, wrong plan, lost game.",
+        "text": "The single most important strategic decision you ever make is which clock you are playing. If you are ahead on the static clock (better structure, the better minor piece) you want to TRADE pieces, kill the opponent's activity, and reach a slow position where your permanent edge tells. If you are ahead on the dynamic clock (better developed, the initiative) you want to OPEN the position and strike NOW, before he untangles and your lead evaporates. Wrong clock, wrong plan, lost game.",
         "annotations": [
          {
           "kind": "arrow",
@@ -118,7 +118,7 @@
        "conceptId": "dynamic-vs-static",
        "coach": {
         "conceptId": "dynamic-vs-static",
-        "text": "Here is the trade in action. Material is dead level and Black has no development lead and no attack — any edge here is static, not dynamic. So Black plays the slow game: ...c4, fixing White's pawns and clamping the queenside, then grinds. He is not hunting a knockout; he is taking a permanent grip and aiming to cash it many moves from now. Recognising that the game is static, not dynamic, is what stops you from forcing matters and spoiling a clean position.",
+        "text": "Here is the trade in action. Material is dead level and Black has no development lead and no attack. Any edge here is static, not dynamic. So Black plays the slow game: ...c4, fixing White's pawns and clamping the queenside, then grinds. He is not hunting a knockout; he is taking a permanent grip and aiming to cash it many moves from now. Recognising that the game is static, not dynamic, is what stops you from forcing matters and spoiling a clean position.",
         "annotations": [
          {
           "kind": "arrow",
@@ -146,7 +146,7 @@
        "conceptId": "dynamic-vs-static",
        "coach": {
         "conceptId": "dynamic-vs-static",
-        "text": "Black to move. Material is level and you have no attack and no development lead — the only edge on offer is static. Play the SLOW game: find the quiet pawn move that fixes White's queenside and clamps the structure for the long haul.",
+        "text": "Black to move. Material is level and you have no attack and no development lead. The only edge on offer is static. Play the SLOW game: find the quiet pawn move that fixes White's queenside and clamps the structure for the long haul.",
         "annotations": [
          {
           "kind": "circle",
@@ -165,7 +165,7 @@
        ],
        "successLine": {
         "conceptId": "dynamic-vs-static",
-        "text": "Exactly — ...c4. You did not lash out; you banked. The d3-bishop is shut behind its pawns, White's queenside is fixed, and you have a permanent target to grind at. That is playing the static clock correctly: no hurry, no risk, a slow accumulation.",
+        "text": "Exactly: ...c4. You did not lash out; you banked. The d3-bishop is shut behind its pawns, White's queenside is fixed, and you have a permanent target to grind at. That is playing the static clock correctly: no hurry, no risk, a slow accumulation.",
         "annotations": [
          {
           "kind": "highlight",
@@ -182,7 +182,7 @@
        },
        "retryLine": {
         "conceptId": "dynamic-vs-static",
-        "text": "Not a lunge — you have no attack to justify one. Your edge is static, so the right move is the quiet clamp ...c5-c4. Play the clock you are actually on.",
+        "text": "Not a lunge: you have no attack to justify one. Your edge is static, so the right move is the quiet clamp ...c5-c4. Play the clock you are actually on.",
         "annotations": [
          {
           "kind": "circle",
@@ -198,7 +198,7 @@
   },
   {
    "id": "l2-reading-the-imbalance",
-   "title": "Reading the Imbalance — The Balance Sheet",
+   "title": "Reading the Imbalance: The Balance Sheet",
    "kind": "positional",
    "summary": "A position is a list of imbalances. Total them up, decide who they favour, and let the verdict pick your plan. This is the diagnosis that every strategic decision rests on.",
    "segments": [
@@ -211,7 +211,7 @@
        "conceptId": "the-imbalance",
        "coach": {
         "conceptId": "the-imbalance",
-        "text": "Before any move, take inventory. The strategic imbalances are: (1) pawn structure — who has the weaknesses, the better pawns; (2) the minor pieces — who owns the better bishop or knight, who has the bishop pair; (3) space — who has more room; (4) the worst piece — every position has one badly-placed piece, find both sides'; (5) king safety; (6) time and the initiative. Read this position. Material is equal, so the IMBALANCES decide. White: lovely Scheveningen pile-up — knight on d4, two bishops raking, more space. Black: solid but cramped, the b7-bishop biting on granite and the d7-knight passive.",
+        "text": "Before any move, take inventory. The strategic imbalances are: (1) pawn structure, who has the weaknesses, the better pawns; (2) the minor pieces, who owns the better bishop or knight, who has the bishop pair; (3) space, who has more room; (4) the worst piece: every position has one badly-placed piece, find both sides'; (5) king safety; (6) time and the initiative. Read this position. Material is equal, so the IMBALANCES decide. White: lovely Scheveningen pile-up. Knight on d4, two bishops raking, more space. Black: solid but cramped, the b7-bishop biting on granite and the d7-knight passive.",
         "annotations": [
          {
           "kind": "circle",
@@ -237,7 +237,7 @@
        "conceptId": "the-imbalance",
        "coach": {
         "conceptId": "the-imbalance",
-        "text": "The verdict tells you the GAME you want. Here the kings have castled on opposite wings — White long, Black short. That single imbalance dominates everything: with the kings apart, the side that attacks FASTER wins, and pawn-storming costs you nothing because your own king is on the other flank. White's target is the black king, and the route is a kingside pawn avalanche: g2-g4-g5, h2-h4-h5, ripping the shield. Read the imbalance wrong — try to grind a slow endgame here — and you let Black's attack arrive first.",
+        "text": "The verdict tells you the GAME you want. Here the kings have castled on opposite wings, White long, Black short. That single imbalance dominates everything: with the kings apart, the side that attacks FASTER wins, and pawn-storming costs you nothing because your own king is on the other flank. White's target is the black king, and the route is a kingside pawn avalanche: g2-g4-g5, h2-h4-h5, ripping the shield. Read the imbalance wrong (try to grind a slow endgame here) and you let Black's attack arrive first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -259,7 +259,7 @@
        "conceptId": "the-imbalance",
        "coach": {
         "conceptId": "the-imbalance",
-        "text": "Now a quiet one — the other kind of imbalance. There is no attack here for anyone; the kings are both snug and the centre is calm. But look at the structure: Black's a6 and b5 pawns are advanced and fixed, the c6-square is soft, and his b7-bishop bites on White's solid centre, while White's pawns are compact and his pieces have more room. That is a small STATIC edge. The plan that fits is the opposite of the storm: bring a rook to the c-file, probe the queenside, trade off Black's active pieces, and grind the fixed weaknesses over many moves. Same skill — read the imbalance — but here it points to a slow plan, not a race.",
+        "text": "Now a quiet one: the other kind of imbalance. There is no attack here for anyone; the kings are both snug and the centre is calm. But look at the structure: Black's a6 and b5 pawns are advanced and fixed, the c6-square is soft, and his b7-bishop bites on White's solid centre, while White's pawns are compact and his pieces have more room. That is a small STATIC edge. The plan that fits is the opposite of the storm: bring a rook to the c-file, probe the queenside, trade off Black's active pieces, and grind the fixed weaknesses over many moves. Same skill (read the imbalance) but here it points to a slow plan, not a race.",
         "annotations": [
          {
           "kind": "highlight",
@@ -313,7 +313,7 @@
        ],
        "successLine": {
         "conceptId": "the-imbalance",
-        "text": "Right — g4. You let the diagnosis choose the plan. With the kings on opposite wings, you throw the g- and h-pawns at his king with no risk to your own. g4-g5 kicks the f6-knight and h4-h5 pries open the h-file. You are playing to your imbalance, not against it.",
+        "text": "Right: g4. You let the diagnosis choose the plan. With the kings on opposite wings, you throw the g- and h-pawns at his king with no risk to your own. g4-g5 kicks the f6-knight and h4-h5 pries open the h-file. You are playing to your imbalance, not against it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -331,7 +331,7 @@
        },
        "retryLine": {
         "conceptId": "the-imbalance",
-        "text": "Do not trade or shuffle — with opposite-side castling, whoever attacks faster wins, and your storm is free. The move is g2-g4, beginning the avalanche.",
+        "text": "Do not trade or shuffle. With opposite-side castling, whoever attacks faster wins, and your storm is free. The move is g2-g4, beginning the avalanche.",
         "annotations": [
          {
           "kind": "arrow",
@@ -346,7 +346,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — convert the better position",
+     "title": "Cool-down: convert the better position",
      "intro": {
       "text": "You diagnosed the imbalance; now cash it in. Each of these is a position where one side's strategic edge has become a concrete tactic. Find the move that turns the advantage into something countable."
      },
@@ -364,9 +364,9 @@
   },
   {
    "id": "l3-the-initiative",
-   "title": "The Initiative — Use It or Lose It",
+   "title": "The Initiative: Use It or Lose It",
    "kind": "positional",
-   "summary": "The initiative is the right to make threats first. It is dynamic — it costs nothing to hold but everything to waste. Learn to keep the opponent reacting, and to neutralise his initiative when it is your turn to defend.",
+   "summary": "The initiative is the right to make threats first. It is dynamic. It costs nothing to hold but everything to waste. Learn to keep the opponent reacting, and to neutralise his initiative when it is your turn to defend.",
    "segments": [
     {
      "kind": "teach",
@@ -377,7 +377,7 @@
        "conceptId": "the-initiative",
        "coach": {
         "conceptId": "the-initiative",
-        "text": "The initiative is the power to make threats faster than the opponent can answer them. While you have it, HE moves to your tune — every one of his moves is forced or half-forced, so he never gets to carry out a plan of his own. That is its whole value: it denies the opponent time. But it is the most fleeting asset on the board. One slow move and he untangles, consolidates, and the initiative — which was never material — is simply gone.",
+        "text": "The initiative is the power to make threats faster than the opponent can answer them. While you have it, HE moves to your tune. Every one of his moves is forced or half-forced, so he never gets to carry out a plan of his own. That is its whole value: it denies the opponent time. But it is the most fleeting asset on the board. One slow move and he untangles, consolidates, and the initiative (which was never material) is simply gone.",
         "annotations": [
          {
           "kind": "arrow",
@@ -399,7 +399,7 @@
        "conceptId": "the-initiative",
        "coach": {
         "conceptId": "the-initiative",
-        "text": "To KEEP the initiative you make moves that carry a threat — develop with tempo, attack a piece, force a weakening. Each move must ask him a question he has to answer. The moment you make a move that asks nothing, you hand him the move, and he becomes the questioner. So when you hold the initiative, value time above almost everything: a tempo is worth more than a pawn while the attack is live. Spend the initiative the way you'd spend a melting ice cube — fast, while it still exists.",
+        "text": "To KEEP the initiative you make moves that carry a threat. Develop with tempo, attack a piece, force a weakening. Each move must ask him a question he has to answer. The moment you make a move that asks nothing, you hand him the move, and he becomes the questioner. So when you hold the initiative, value time above almost everything: a tempo is worth more than a pawn while the attack is live. Spend the initiative the way you'd spend a melting ice cube. Fast, while it still exists.",
         "annotations": [
          {
           "kind": "highlight",
@@ -420,7 +420,7 @@
        "conceptId": "the-initiative",
        "coach": {
         "conceptId": "the-initiative",
-        "text": "The other side of the coin: when the opponent holds the initiative, your job is to NEUTRALISE it, not to grab material. Return a pawn to break the attack, trade the attacking pieces, get your king safe — do whatever kills his momentum. Because the instant his initiative dies, the position reverts to its STATIC verdict, and if the static factors favour you, you are simply winning. Defenders lose by being greedy under fire; survivors give a little back to turn off the clock.",
+        "text": "The other side of the coin: when the opponent holds the initiative, your job is to NEUTRALISE it, not to grab material. Return a pawn to break the attack, trade the attacking pieces, get your king safe. Do whatever kills his momentum. Because the instant his initiative dies, the position reverts to its STATIC verdict, and if the static factors favour you, you are simply winning. Defenders lose by being greedy under fire; survivors give a little back to turn off the clock.",
         "annotations": [
          {
           "kind": "arrow",
@@ -448,7 +448,7 @@
        "conceptId": "the-initiative",
        "coach": {
         "conceptId": "the-initiative",
-        "text": "White to move, with the small initiative the extra space and freer development give him. Do not release the central tension passively. Strike with the pawn capture that opens the position on your terms — forcing Black to recapture and react instead of completing his own development.",
+        "text": "White to move, with the small initiative the extra space and freer development give him. Do not release the central tension passively. Strike with the pawn capture that opens the position on your terms. Forcing Black to recapture and react instead of completing his own development.",
         "annotations": [
          {
           "kind": "circle",
@@ -468,7 +468,7 @@
        ],
        "successLine": {
         "conceptId": "the-initiative",
-        "text": "Yes — cxd5. You open the position the moment you are better mobilised, forcing him to recapture and react rather than complete his own development. That is using the initiative: every move a question.",
+        "text": "Yes: cxd5. You open the position the moment you are better mobilised, forcing him to recapture and react rather than complete his own development. That is using the initiative: every move a question.",
         "annotations": [
          {
           "kind": "highlight",
@@ -486,7 +486,7 @@
        },
        "retryLine": {
         "conceptId": "the-initiative",
-        "text": "A quiet move hands him the tempo to untangle. With the initiative you must keep asking questions — open it with cxd5 while you are ahead in development.",
+        "text": "A quiet move hands him the tempo to untangle. With the initiative you must keep asking questions. Open it with cxd5 while you are ahead in development.",
         "annotations": [
          {
           "kind": "arrow",
@@ -505,11 +505,11 @@
    "id": "l4-pawn-sac-initiative",
    "title": "The Pawn Sacrifice for the Initiative",
    "kind": "tactics",
-   "summary": "Trade a pawn — a static unit — for time and open lines, the purest dynamic currency. Sound only when you can develop fast and strike before he consolidates.",
+   "summary": "Trade a pawn (a static unit) for time and open lines, the purest dynamic currency. Sound only when you can develop fast and strike before he consolidates.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the price was worth it",
+     "title": "Warm-up: the price was worth it",
      "intro": {
       "text": "A material investment only pays if you collect. In each of these, one side has given something up; your job is to find the move that cashes the activity in. Hunt the most forcing continuation."
      },
@@ -532,7 +532,7 @@
        "conceptId": "pawn-sac-initiative",
        "coach": {
         "conceptId": "pawn-sac-initiative",
-        "text": "This is a Catalan structure: Black has grabbed the c4-pawn and clings to it with ...b5, ...c4 ideas. White does not chase it. White plays the pawn-sac mentality: I give the c-pawn freely, fianchetto with Bg2, and aim every piece at the long light diagonal and the queenside Black has weakened to hold the pawn. The compensation is dynamic — a development lead and pressure — so I must develop fast and open lines before he untangles. The pawn is the cheapest thing on the board; time is the expensive thing.",
+        "text": "This is a Catalan structure: Black has grabbed the c4-pawn and clings to it with ...b5, ...c4 ideas. White does not chase it. White plays the pawn-sac mentality: I give the c-pawn freely, fianchetto with Bg2, and aim every piece at the long light diagonal and the queenside Black has weakened to hold the pawn. The compensation is dynamic (a development lead and pressure) so I must develop fast and open lines before he untangles. The pawn is the cheapest thing on the board; time is the expensive thing.",
         "annotations": [
          {
           "kind": "arrow",
@@ -560,7 +560,7 @@
        "conceptId": "pawn-sac-initiative",
        "coach": {
         "conceptId": "compensation",
-        "text": "How do you know a pawn-sac is sound and not just charity? Three tests. One: do you get a real LEAD in development — more pieces out, faster? Two: do you get OPEN LINES — files and diagonals pointing at him? Three: is HIS position loosened by holding the pawn — has he had to play ...b5, ...c4, weakening squares? If all three are yes, the dynamic compensation is real. If you are only 'hoping' for an attack, you are just a pawn down. Here all three hold: hence Bg2, O-O, and the pressure is worth more than the pawn.",
+        "text": "How do you know a pawn-sac is sound and not just charity? Three tests. One: do you get a real LEAD in development, more pieces out, faster? Two: do you get OPEN LINES, files and diagonals pointing at him? Three: is HIS position loosened by holding the pawn. Has he had to play ...b5, ...c4, weakening squares? If all three are yes, the dynamic compensation is real. If you are only 'hoping' for an attack, you are just a pawn down. Here all three hold: hence Bg2, O-O, and the pressure is worth more than the pawn.",
         "annotations": [
          {
           "kind": "arrow",
@@ -583,7 +583,7 @@
        "conceptId": "pawn-sac-initiative",
        "coach": {
         "conceptId": "pawn-sac-initiative",
-        "text": "Sometimes you sacrifice a pawn to seize the CENTRE, the most valuable dynamic real estate. Here White (the Scotch Gambit / Italian centre) has thrown the d-pawn forward and will gladly let it go to keep two pawns abreast on d4-e4 and a raking c4-bishop. The lesson is the same: a central pawn-sac buys space and lines for the pieces. The pawn count drops by one; the piece activity rises by a lot. Just remember — you must USE the lead. Develop, castle, open a file at him. Sit on it for three slow moves and the only thing left is the missing pawn.",
+        "text": "Sometimes you sacrifice a pawn to seize the CENTRE, the most valuable dynamic real estate. Here White (the Scotch Gambit / Italian centre) has thrown the d-pawn forward and will gladly let it go to keep two pawns abreast on d4-e4 and a raking c4-bishop. The lesson is the same: a central pawn-sac buys space and lines for the pieces. The pawn count drops by one; the piece activity rises by a lot. Just remember. You must USE the lead. Develop, castle, open a file at him. Sit on it for three slow moves and the only thing left is the missing pawn.",
         "annotations": [
          {
           "kind": "circle",
@@ -611,13 +611,13 @@
      "kind": "model",
      "title": "A pawn-sac played out",
      "intro": {
-      "text": "Watch the idea run its course. White gives the centre pawn, races out the pieces, and the activity becomes a concrete attack. Notice that not one White move is slow — every move develops or threatens."
+      "text": "Watch the idea run its course. White gives the centre pawn, races out the pieces, and the activity becomes a concrete attack. Notice that not one White move is slow. Every move develops or threatens."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 — we are heading for an open, dynamic game where a pawn means less than time."
+        "text": "1.e4: we are heading for an open, dynamic game where a pawn means less than time."
        }
       },
       {
@@ -635,7 +635,7 @@
       {
        "uci": "f1c4",
        "coach": {
-        "text": "The Italian bishop, aimed at f7 — the long-term target."
+        "text": "The Italian bishop, aimed at f7: the long-term target."
        }
       },
       {
@@ -644,7 +644,7 @@
       {
        "uci": "c2c3",
        "coach": {
-        "text": "Preparing d4 — we are about to throw a pawn into the centre to open lines."
+        "text": "Preparing d4: we are about to throw a pawn into the centre to open lines."
        }
       },
       {
@@ -653,7 +653,7 @@
       {
        "uci": "d2d4",
        "coach": {
-        "text": "The pawn-sac break. We do not care to hold d4 — we want the centre OPEN for our better-developed pieces.",
+        "text": "The pawn-sac break. We do not care to hold d4. We want the centre OPEN for our better-developed pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -684,7 +684,7 @@
       {
        "uci": "b1c3",
        "coach": {
-        "text": "Develop with a block — another piece out, the initiative intact. This is the Greco/Møller complex: White's lead in development and big centre are textbook dynamic compensation.",
+        "text": "Develop with a block, another piece out, the initiative intact. This is the Greco/Møller complex: White's lead in development and big centre are textbook dynamic compensation.",
         "annotations": [
          {
           "kind": "circle",
@@ -731,7 +731,7 @@
        ],
        "successLine": {
         "conceptId": "pawn-sac-initiative",
-        "text": "Correct — d4, the gambit choice. You strike the centre. After ...exd4 cxd4 you have two pawns abreast and a raking bishop on c4; if Black grabs more you race ahead in development. (The quiet d3 — the modern Pianissimo — is also perfectly good; but here we want the OPEN, dynamic game, so we throw the pawn in.) You bought activity with structure, exactly the trade this lesson is about.",
+        "text": "Correct: d4, the gambit choice. You strike the centre. After ...exd4 cxd4 you have two pawns abreast and a raking bishop on c4; if Black grabs more you race ahead in development. (The quiet d3, the modern Pianissimo, is also perfectly good; but here we want the OPEN, dynamic game, so we throw the pawn in.) You bought activity with structure, exactly the trade this lesson is about.",
         "annotations": [
          {
           "kind": "highlight",
@@ -749,7 +749,7 @@
        },
        "retryLine": {
         "conceptId": "pawn-sac-initiative",
-        "text": "Do not shuffle a piece — your trumps are dynamic and want OPEN lines. The break is d2-d4, hitting e5 and opening the centre for your pieces.",
+        "text": "Do not shuffle a piece. Your trumps are dynamic and want OPEN lines. The break is d2-d4, hitting e5 and opening the centre for your pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -779,7 +779,7 @@
        "conceptId": "exchange-sac-bind",
        "coach": {
         "conceptId": "exchange-sac-bind",
-        "text": "This is the most famous positional sacrifice in chess: the Sicilian Dragon exchange sac ...Rxc3. Material is dead level. Black gives a whole rook for the c3-knight. Why? Look at what the rook BUYS. bxc3 shatters White's queenside pawns into doubled, weak c-pawns and pries the b-file open right at White's castled king. It strips a key defender of the dark squares, and the g7-bishop suddenly rakes a long diagonal no White piece of its colour can contest. Black hands back the exchange and in return holds the initiative against the exposed king with lasting dark-square pressure — full, textbook compensation, not a swindle.",
+        "text": "This is the most famous positional sacrifice in chess: the Sicilian Dragon exchange sac ...Rxc3. Material is dead level. Black gives a whole rook for the c3-knight. Why? Look at what the rook BUYS. bxc3 shatters White's queenside pawns into doubled, weak c-pawns and pries the b-file open right at White's castled king. It strips a key defender of the dark squares, and the g7-bishop suddenly rakes a long diagonal no White piece of its colour can contest. Black hands back the exchange and in return holds the initiative against the exposed king with lasting dark-square pressure, full, textbook compensation, not a swindle.",
         "annotations": [
          {
           "kind": "arrow",
@@ -808,7 +808,7 @@
        "conceptId": "exchange-sac-bind",
        "coach": {
         "conceptId": "exchange-sac-bind",
-        "text": "Here is the rule for a SOUND exchange sac. You are not giving the exchange for a vague attack — you are buying a STATIC, permanent feature: (1) a knight that lands on a hole and can never be driven off, or (2) lasting structural damage — doubled, isolated, fixed pawns, or (3) a colour complex the opponent can no longer defend. A rook is worth about two minor-piece points; a true positional bind outweighs that for the rest of the game. If the bind is temporary, the sac is just bad. If it is permanent, you have made a profit.",
+        "text": "Here is the rule for a SOUND exchange sac. You are not giving the exchange for a vague attack. You are buying a STATIC, permanent feature: (1) a knight that lands on a hole and can never be driven off, or (2) lasting structural damage. Doubled, isolated, fixed pawns, or (3) a colour complex the opponent can no longer defend. A rook is worth about two minor-piece points; a true positional bind outweighs that for the rest of the game. If the bind is temporary, the sac is just bad. If it is permanent, you have made a profit.",
         "annotations": [
          {
           "kind": "highlight",
@@ -831,7 +831,7 @@
        "conceptId": "exchange-sac-bind",
        "coach": {
         "conceptId": "exchange-sac-bind",
-        "text": "The other classic: sac the exchange to plant an ETERNAL knight. Imagine White's rook on d1 gives itself for a piece to install a knight on d5 or f5 — a square with no enemy pawn able to challenge it. That knight, immovable, splits the board in two and dominates rooks for the rest of the game. Petrosian built a career on this. The test is always the same question: is the thing I am buying PERMANENT? An eternal knight is permanent; therefore the exchange is well spent.",
+        "text": "The other classic: sac the exchange to plant an ETERNAL knight. Imagine White's rook on d1 gives itself for a piece to install a knight on d5 or f5. A square with no enemy pawn able to challenge it. That knight, immovable, splits the board in two and dominates rooks for the rest of the game. Petrosian built a career on this. The test is always the same question: is the thing I am buying PERMANENT? An eternal knight is permanent; therefore the exchange is well spent.",
         "annotations": [
          {
           "kind": "arrow",
@@ -864,7 +864,7 @@
        "conceptId": "exchange-sac-bind",
        "coach": {
         "conceptId": "exchange-sac-bind",
-        "text": "Black to move — the real Sicilian Dragon, the textbook exchange sac. White traded the dark bishops and his queen has reached h6; the kings are castled on opposite wings and it is a race. The c3-knight shields White's king and braces the b2-pawn in front of it. Give the rook for it. After bxc3 White's queenside pawns are shattered, the b- and c-files crack open at his king, and your knight on e5 and the ...a5-a4 pawn storm arrive FIRST. Play the exchange sacrifice.",
+        "text": "Black to move. The real Sicilian Dragon, the textbook exchange sac. White traded the dark bishops and his queen has reached h6; the kings are castled on opposite wings and it is a race. The c3-knight shields White's king and braces the b2-pawn in front of it. Give the rook for it. After bxc3 White's queenside pawns are shattered, the b- and c-files crack open at his king, and your knight on e5 and the ...a5-a4 pawn storm arrive FIRST. Play the exchange sacrifice.",
         "annotations": [
          {
           "kind": "arrow",
@@ -891,7 +891,7 @@
        ],
        "successLine": {
         "conceptId": "exchange-sac-bind",
-        "text": "Yes — ...Rxc3. After bxc3 White's pawn shield is wrecked, the b-file is half-open onto his king, and his doubled c-pawns are permanent weaknesses. You follow with ...a5-a4, prying open the last lines, while the e5-knight dominates and your queen swings to the attack. You traded a static rook for a lasting grip on White's king — and here the race is yours. The bind, not the rook, decides.",
+        "text": "Yes: ...Rxc3. After bxc3 White's pawn shield is wrecked, the b-file is half-open onto his king, and his doubled c-pawns are permanent weaknesses. You follow with ...a5-a4, prying open the last lines, while the e5-knight dominates and your queen swings to the attack. You traded a static rook for a lasting grip on White's king, and here the race is yours. The bind, not the rook, decides.",
         "annotations": [
          {
           "kind": "highlight",
@@ -910,7 +910,7 @@
        },
        "retryLine": {
         "conceptId": "exchange-sac-bind",
-        "text": "This is the Dragon — the c3-knight guards White's king and the b2-pawn in front of it. Take it with the rook — ...Rxc3 — and after bxc3 his queenside shatters and your storm gets there first.",
+        "text": "This is the Dragon. The c3-knight guards White's king and the b2-pawn in front of it. Take it with the rook (...Rxc3) and after bxc3 his queenside shatters and your storm gets there first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -925,9 +925,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — the activity outweighs material",
+     "title": "Cool-down: the activity outweighs material",
      "intro": {
-      "text": "Material is only one column of the balance sheet. In each of these the active side has invested material for a grip or an attack — find the move that proves the investment sound."
+      "text": "Material is only one column of the balance sheet. In each of these the active side has invested material for a grip or an attack. Find the move that proves the investment sound."
      },
      "puzzle": {
       "themes": [
@@ -956,7 +956,7 @@
        "conceptId": "compensation",
        "coach": {
         "conceptId": "compensation",
-        "text": "Compensation is what you hold INSTEAD of the missing material. The one question that decides whether a sacrifice was good is not 'do I have an attack right now?' — it is 'will my compensation still be there in twenty moves?' Permanent trumps — a wrecked enemy pawn structure, a colour complex, a bind, the bishop pair in an open position, a protected passed pawn — these do not fade. Temporary trumps — a half-open file, a momentary lead in development, a check or two — these evaporate. You must learn to tell which kind you bought.",
+        "text": "Compensation is what you hold INSTEAD of the missing material. The one question that decides whether a sacrifice was good is not 'do I have an attack right now?'. It is 'will my compensation still be there in twenty moves?' Permanent trumps: a wrecked enemy pawn structure, a colour complex, a bind, the bishop pair in an open position, a protected passed pawn. These do not fade. Temporary trumps (a half-open file, a momentary lead in development, a check or two) these evaporate. You must learn to tell which kind you bought.",
         "annotations": [
          {
           "kind": "highlight",
@@ -977,7 +977,7 @@
        "conceptId": "compensation",
        "coach": {
         "conceptId": "compensation",
-        "text": "Run the checklist on any sacrifice — yours or his. (1) STRUCTURE: did the sac permanently damage his pawns or hand me a passed pawn? (2) KING: is his king permanently less safe than mine? (3) PIECES: did I gain a lasting good piece — an outpost knight, the bishop pair, his bad bishop locked away? (4) ACTIVITY: do my pieces dominate squares his cannot contest? Tick two or three of these and the compensation is real and durable. Tick none, and your 'compensation' is hope — you are simply down material.",
+        "text": "Run the checklist on any sacrifice, yours or his. (1) STRUCTURE: did the sac permanently damage his pawns or hand me a passed pawn? (2) KING: is his king permanently less safe than mine? (3) PIECES: did I gain a lasting good piece. An outpost knight, the bishop pair, his bad bishop locked away? (4) ACTIVITY: do my pieces dominate squares his cannot contest? Tick two or three of these and the compensation is real and durable. Tick none, and your 'compensation' is hope. You are simply down material.",
         "annotations": [
          {
           "kind": "arrow",
@@ -999,7 +999,7 @@
        "conceptId": "compensation",
        "coach": {
         "conceptId": "compensation",
-        "text": "The trap to avoid: confusing TEMPORARY initiative with LASTING compensation. A flurry of checks that wins nothing is not compensation — when the checks run out, you are just down a pawn. Before you sacrifice, you must SEE the permanent feature you will be left holding once the dust settles, not merely the first three forcing moves. Masters calculate to the point where the position quiets, then ask: 'in this quiet position, am I better, equal, or just material down?' If you cannot name the lasting trump, do not make the sacrifice.",
+        "text": "The trap to avoid: confusing TEMPORARY initiative with LASTING compensation. A flurry of checks that wins nothing is not compensation. When the checks run out, you are just down a pawn. Before you sacrifice, you must SEE the permanent feature you will be left holding once the dust settles, not merely the first three forcing moves. Masters calculate to the point where the position quiets, then ask: 'in this quiet position, am I better, equal, or just material down?' If you cannot name the lasting trump, do not make the sacrifice.",
         "annotations": [
          {
           "kind": "circle",
@@ -1028,7 +1028,7 @@
        "conceptId": "compensation",
        "coach": {
         "conceptId": "compensation",
-        "text": "White to move. Black grabbed the c4-pawn but it is weak and undefended, and White is better developed. Do not chase an attack you cannot prove — collect the durable plus instead. Win the pawn back with the bishop, restoring material while keeping the better structure and pieces.",
+        "text": "White to move. Black grabbed the c4-pawn but it is weak and undefended, and White is better developed. Do not chase an attack you cannot prove, collect the durable plus instead. Win the pawn back with the bishop, restoring material while keeping the better structure and pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1048,7 +1048,7 @@
        ],
        "successLine": {
         "conceptId": "compensation",
-        "text": "Right — Bxc4. Material is level again, and you kept every positional plus: the better centre, the active bishop on the a2-g8 diagonal, the lead in development. You did not gamble on a fleeting attack; you banked the lasting edge. That is the mature reading of compensation.",
+        "text": "Right, Bxc4. Material is level again, and you kept every positional plus: the better centre, the active bishop on the a2-g8 diagonal, the lead in development. You did not gamble on a fleeting attack; you banked the lasting edge. That is the mature reading of compensation.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1066,7 +1066,7 @@
        },
        "retryLine": {
         "conceptId": "compensation",
-        "text": "No need to lash out — your edge is real and lasting. Simply recapture the weak pawn with Bxc4, keeping the better structure and the active pieces.",
+        "text": "No need to lash out. Your edge is real and lasting. Simply recapture the weak pawn with Bxc4, keeping the better structure and the active pieces.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1081,7 +1081,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — prove the compensation",
+     "title": "Cool-down: prove the compensation",
      "intro": {
       "text": "The investment is on the board; now make it pay. In each position the active side must find the move that turns long-term pressure into a concrete gain. Calculate to the point where the advantage is countable."
      },
@@ -1099,7 +1099,7 @@
   },
   {
    "id": "l7-forming-the-plan",
-   "title": "Forming the Plan — Feature, Target, Route",
+   "title": "Forming the Plan: Feature, Target, Route",
    "kind": "positional",
    "summary": "A plan is not a hope; it is a three-step recipe. Name the feature in your favour, name the target it points at, route your pieces to that target. The plan must fit the position you actually have.",
    "segments": [
@@ -1112,7 +1112,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "A plan is built in three steps, in order. STEP ONE — name the FEATURE: the one permanent thing in your favour. This is a King's Indian structure — the centre is locked by the d5/e4 pawn chain, and White has more space on the QUEENSIDE, where his pawns point. STEP TWO — name the TARGET that feature points at: a locked centre means the game is decided on the wings, and White's space says the queenside is his. His target is to break with c4-c5 and pry open files against Black's queenside. A feature you cannot connect to a target is just decoration.",
+        "text": "A plan is built in three steps, in order. STEP ONE. Name the FEATURE: the one permanent thing in your favour. This is a King's Indian structure. The centre is locked by the d5/e4 pawn chain, and White has more space on the QUEENSIDE, where his pawns point. STEP TWO. Name the TARGET that feature points at: a locked centre means the game is decided on the wings, and White's space says the queenside is his. His target is to break with c4-c5 and pry open files against Black's queenside. A feature you cannot connect to a target is just decoration.",
         "annotations": [
          {
           "kind": "circle",
@@ -1135,7 +1135,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "STEP THREE — ROUTE the pieces. Now that the feature (locked centre, queenside space) and the target (Black's queenside, via b4 and c5) are named, every move has a job: b2-b4 and a2-a4 roll the pawns, the rooks come to b1 and c1, the queen supports c5. Crucially, Black is doing the mirror image on the OTHER wing — storming your king with ...f5, ...g5, ...f4. This is the great King's Indian race, and it is decided by who is faster. The amateur asks 'what's a good move?' every turn; the master names the plan once and then just executes the route — and races.",
+        "text": "STEP THREE: ROUTE the pieces. Now that the feature (locked centre, queenside space) and the target (Black's queenside, via b4 and c5) are named, every move has a job: b2-b4 and a2-a4 roll the pawns, the rooks come to b1 and c1, the queen supports c5. Crucially, Black is doing the mirror image on the OTHER wing. Storming your king with ...f5, ...g5, ...f4. This is the great King's Indian race, and it is decided by who is faster. The amateur asks 'what's a good move?' every turn; the master names the plan once and then just executes the route, and races.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1158,7 +1158,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "Same recipe, a quiet structure. FEATURE: this is a Carlsbad structure, and White's permanent asset is the half-open c-file and the chance for the minority attack — b2-b4-b5 to give Black a weak pawn. TARGET: the backward c-pawn Black will be saddled with after b5xc6. ROUTE: rooks to the c-file, b-pawn to b5, and the queen supports the break. Notice the plan grew entirely out of the STRUCTURE — read the pawns, and they tell you the plan. No plan is worse than a bad plan, but the plan you pick must be the one the position is offering.",
+        "text": "Same recipe, a quiet structure. FEATURE: this is a Carlsbad structure, and White's permanent asset is the half-open c-file and the chance for the minority attack: b2-b4-b5 to give Black a weak pawn. TARGET: the backward c-pawn Black will be saddled with after b5xc6. ROUTE: rooks to the c-file, b-pawn to b5, and the queen supports the break. Notice the plan grew entirely out of the STRUCTURE. Read the pawns, and they tell you the plan. No plan is worse than a bad plan, but the plan you pick must be the one the position is offering.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1187,7 +1187,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "White to move. Feature: locked centre, queenside space. Target: Black's queenside, prying it open with the c5 break. Begin the route — play the flank pawn advance that gains space and prepares c4-c5, launching your half of the King's Indian race.",
+        "text": "White to move. Feature: locked centre, queenside space. Target: Black's queenside, prying it open with the c5 break. Begin the route. Play the flank pawn advance that gains space and prepares c4-c5, launching your half of the King's Indian race.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1207,7 +1207,7 @@
        ],
        "successLine": {
         "conceptId": "the-plan",
-        "text": "Yes — b4. The centre is locked, so the wings decide the game, and your space is on the queenside. b4 and a4 roll forward, c4-c5 will rip open files against Black's queenside, and your rooks swing to b1 and c1. You named the feature, found the target, and started the route. That is a plan, not a wish — now win the race.",
+        "text": "Yes: b4. The centre is locked, so the wings decide the game, and your space is on the queenside. b4 and a4 roll forward, c4-c5 will rip open files against Black's queenside, and your rooks swing to b1 and c1. You named the feature, found the target, and started the route. That is a plan, not a wish. Now win the race.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1225,7 +1225,7 @@
        },
        "retryLine": {
         "conceptId": "the-plan",
-        "text": "With the centre locked, sitting still wastes your space. Your play is on the queenside — begin it with b2-b4, heading for the c5 break.",
+        "text": "With the centre locked, sitting still wastes your space. Your play is on the queenside. Begin it with b2-b4, heading for the c5 break.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1242,15 +1242,15 @@
   },
   {
    "id": "l8-putting-it-together",
-   "title": "Putting It Together — The Strategist's Choices",
+   "title": "Putting It Together: The Strategist's Choices",
    "kind": "practice",
    "summary": "Three positions, three different verdicts. Read each one, decide which idea from the chapter applies, and make the move it demands. This is strategy as a single connected skill.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the strategic blow",
+     "title": "Warm-up: find the strategic blow",
      "intro": {
-      "text": "One more set to tune the eye before the synthesis. Each is decided by a single precise move — a clamp, a sacrifice, a deflection that converts a positional edge. Find it."
+      "text": "One more set to tune the eye before the synthesis. Each is decided by a single precise move. A clamp, a sacrifice, a deflection that converts a positional edge. Find it."
      },
      "puzzle": {
       "themes": [
@@ -1271,7 +1271,7 @@
        "conceptId": "the-initiative",
        "coach": {
         "conceptId": "the-initiative",
-        "text": "Position one — a new board, the same question. White has the bigger centre and more space; Black has just played ...d5, but his pieces are cramped and the f6-knight has nowhere good. The verdict says use the SPACE while you have it — gain ground and the initiative with the central pawn advance that kicks the knight and clamps Black further. Play the thematic space-grabbing break.",
+        "text": "Position one: a new board, the same question. White has the bigger centre and more space; Black has just played ...d5, but his pieces are cramped and the f6-knight has nowhere good. The verdict says use the SPACE while you have it. Gain ground and the initiative with the central pawn advance that kicks the knight and clamps Black further. Play the thematic space-grabbing break.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1291,7 +1291,7 @@
        ],
        "successLine": {
         "conceptId": "the-initiative",
-        "text": "Yes — e5. The knight is kicked, your space swells, and Black is squeezed for room — exactly what you do when your edge is in space and development. You used the dynamic asset before it could fade.",
+        "text": "Yes (e5. The knight is kicked, your space swells, and Black is squeezed for room) exactly what you do when your edge is in space and development. You used the dynamic asset before it could fade.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1309,7 +1309,7 @@
        },
        "retryLine": {
         "conceptId": "the-initiative",
-        "text": "A quiet move lets Black free himself with ...c5 or ...f6. Use your space advantage now — push e4-e5, kicking the knight and clamping him.",
+        "text": "A quiet move lets Black free himself with ...c5 or ...f6. Use your space advantage now. Push e4-e5, kicking the knight and clamping him.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1325,7 +1325,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "Position two — another fresh board, Black to move. Material is level, the structure is quiet, no attack in the air. Feature: you can fix White's queenside pawns and clamp the position. Target: the long-term squeeze of his pieces behind their own pawns. This is a STATIC plan, not a storm. Begin it: play the quiet pawn advance that locks the structure.",
+        "text": "Position two: another fresh board, Black to move. Material is level, the structure is quiet, no attack in the air. Feature: you can fix White's queenside pawns and clamp the position. Target: the long-term squeeze of his pieces behind their own pawns. This is a STATIC plan, not a storm. Begin it: play the quiet pawn advance that locks the structure.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1345,7 +1345,7 @@
        ],
        "successLine": {
         "conceptId": "the-plan",
-        "text": "Correct — ...c4. The structure is fixed: White's d3-bishop is buried behind its pawns, his queenside is frozen, and you have a permanent grip to grind at over the next forty moves. You read the position, saw it was static, and chose the slow plan it offered.",
+        "text": "Correct, ...c4. The structure is fixed: White's d3-bishop is buried behind its pawns, his queenside is frozen, and you have a permanent grip to grind at over the next forty moves. You read the position, saw it was static, and chose the slow plan it offered.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1362,7 +1362,7 @@
        },
        "retryLine": {
         "conceptId": "the-plan",
-        "text": "This is a slow, structural position — the plan is the clamp, not a lunge. Push ...c5-c4 to freeze his queenside and bury the d3-bishop.",
+        "text": "This is a slow, structural position. The plan is the clamp, not a lunge. Push ...c5-c4 to freeze his queenside and bury the d3-bishop.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1378,7 +1378,7 @@
        "conceptId": "exchange-sac-bind",
        "coach": {
         "conceptId": "exchange-sac-bind",
-        "text": "Position three — a fresh board, Black to move, and this time the right idea is the Dragon exchange sac you just learned. Opposite-side castling, so it is a race and the side that breaks through first wins. The c3-knight is the brick wall in front of White's king. Spend the exchange to demolish it: after bxc3 his queenside pawns shatter, the b-file rips open onto his king, and your counterattack lands first.",
+        "text": "Position three: a fresh board, Black to move, and this time the right idea is the Dragon exchange sac you just learned. Opposite-side castling, so it is a race and the side that breaks through first wins. The c3-knight is the brick wall in front of White's king. Spend the exchange to demolish it: after bxc3 his queenside pawns shatter, the b-file rips open onto his king, and your counterattack lands first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1398,7 +1398,7 @@
        ],
        "successLine": {
         "conceptId": "exchange-sac-bind",
-        "text": "Yes — ...Rxc3. After bxc3 White is left with shattered, doubled c-pawns and a king with no shelter, while your e5-knight, the open c-file and the ...a5-a4 storm crash in. You read the race correctly and bought a lasting grip on his king with the exchange. The bind, not the rook count, decided. That is the strategist's choice — material is just one column of the balance sheet.",
+        "text": "Yes: ...Rxc3. After bxc3 White is left with shattered, doubled c-pawns and a king with no shelter, while your e5-knight, the open c-file and the ...a5-a4 storm crash in. You read the race correctly and bought a lasting grip on his king with the exchange. The bind, not the rook count, decided. That is the strategist's choice. Material is just one column of the balance sheet.",
         "annotations": [
          {
           "kind": "highlight",
@@ -1417,7 +1417,7 @@
        },
        "retryLine": {
         "conceptId": "exchange-sac-bind",
-        "text": "Do not play it safe — with opposite-side castling this is a race, and the c3-knight is what shields White's king. ...Rxc3 shatters his pawns and your storm arrives first.",
+        "text": "Do not play it safe. With opposite-side castling this is a race, and the c3-knight is what shields White's king. ...Rxc3 shatters his pawns and your storm arrives first.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1447,7 +1447,7 @@
        "conceptId": "the-plan",
        "coach": {
         "conceptId": "the-plan",
-        "text": "Here is the entire chapter as one routine you run every move. FIRST, read the position: static or dynamic — which clock favours me? List the imbalances and total them. SECOND, if I am ahead in time, OPEN and use the initiative — and a pawn or the exchange is a fair price for lasting compensation. If I am ahead in structure or pieces, TRADE, deaden, and grind the static edge. THIRD, name the feature, the target, and the route, then execute. Diagnosis, then verdict, then plan. That is strategic mastery.",
+        "text": "Here is the entire chapter as one routine you run every move. FIRST, read the position: static or dynamic, which clock favours me? List the imbalances and total them. SECOND, if I am ahead in time, OPEN and use the initiative, and a pawn or the exchange is a fair price for lasting compensation. If I am ahead in structure or pieces, TRADE, deaden, and grind the static edge. THIRD, name the feature, the target, and the route, then execute. Diagnosis, then verdict, then plan. That is strategic mastery.",
         "annotations": [
          {
           "kind": "circle",
@@ -1469,9 +1469,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — convert like a master",
+     "title": "Cool-down: convert like a master",
      "intro": {
-      "text": "Last reps. Each position rewards the strategic eye with a concrete blow — a piece that dominates, a sacrifice that binds, a quiet move that wins. Find the master's move."
+      "text": "Last reps. Each position rewards the strategic eye with a concrete blow. A piece that dominates, a sacrifice that binds, a quiet move that wins. Find the master's move."
      },
      "puzzle": {
       "themes": [
@@ -1485,13 +1485,13 @@
     },
     {
      "kind": "boss",
-     "title": "Boss — grind the static edge",
+     "title": "Boss: grind the static edge",
      "bossFen": "r2q1rk1/pb2bppp/1pn1pn2/2pp4/3P1B2/2PBPN2/PP1N1PPP/R2Q1RK1 w - - 0 1",
      "bossEngineElo": 1900,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "the-plan",
-      "text": "Now play it for real. You are White. Material is level and there is no attack for either side — so this is a STATIC battle, decided by who reads it better. You hold a shade more central space and slightly the freer pieces; nothing more. Do not go hunting for a knockout that is not there. Read the imbalance, name your plan — keep the central tension, pressure d5, trade the pieces that help you, fix a target on the queenside — and grind. Use everything: the right clock, the durable trump, feature-target-route. Beat the engine the strategist's way.",
+      "text": "Now play it for real. You are White. Material is level and there is no attack for either side, so this is a STATIC battle, decided by who reads it better. You hold a shade more central space and slightly the freer pieces; nothing more. Do not go hunting for a knockout that is not there. Read the imbalance, name your plan. Keep the central tension, pressure d5, trade the pieces that help you, fix a target on the queenside, and grind. Use everything: the right clock, the durable trump, feature-target-route. Beat the engine the strategist's way.",
       "annotations": [
        {
         "kind": "circle",
@@ -1525,7 +1525,7 @@
      "Static means a closed position; dynamic means an open position"
     ],
     "answerIndex": 1,
-    "explain": "Static = permanent, survives trades, decides slow games — so you bank it and grind. Dynamic = temporary, must be spent now — so you open and strike before it evaporates."
+    "explain": "Static = permanent, survives trades, decides slow games, so you bank it and grind. Dynamic = temporary, must be spent now, so you open and strike before it evaporates."
    },
    {
     "kind": "mc",
@@ -1537,7 +1537,7 @@
      "Grab material wherever you can"
     ],
     "answerIndex": 2,
-    "explain": "A development lead and the initiative are dynamic — use them or lose them. Open lines and keep making threats; trading and waiting just lets the opponent untangle."
+    "explain": "A development lead and the initiative are dynamic. Use them or lose them. Open lines and keep making threats; trading and waiting just lets the opponent untangle."
    },
    {
     "kind": "mc",
@@ -1545,7 +1545,7 @@
     "options": [
      "Whenever you can give a check afterwards",
      "Only when you immediately regain the rook",
-     "When it buys a PERMANENT positional feature — an eternal knight, lasting structural damage, or a colour complex he cannot defend — worth more than the material",
+     "When it buys a PERMANENT positional feature (an eternal knight, lasting structural damage, or a colour complex he cannot defend) worth more than the material",
      "Only in the endgame, never in the middlegame"
     ],
     "answerIndex": 2,
@@ -1565,25 +1565,25 @@
    },
    {
     "kind": "play",
-    "prompt": "Black to move. Read the position first: material is level, there is no attack and no lead in development — the only edge on offer is static, and White's d3-bishop is hemmed in by its own pawns. Choose and play the plan that fits a purely static game.",
+    "prompt": "Black to move. Read the position first: material is level, there is no attack and no lead in development. The only edge on offer is static, and White's d3-bishop is hemmed in by its own pawns. Choose and play the plan that fits a purely static game.",
     "fen": "r4rk1/pb1nbppp/1pn1p3/q1pp4/3P1B2/2PBPN2/PP1N1PPP/R2Q1RK1 b - - 0 1",
     "solutionUci": [
      "c5c4"
     ],
-    "explain": "...c4 clamps the queenside and shuts the d3-bishop behind its own pawns. With only static factors in play you take a lasting grip with a quiet clamp, not a lunge — playing the right clock."
+    "explain": "...c4 clamps the queenside and shuts the d3-bishop behind its own pawns. With only static factors in play you take a lasting grip with a quiet clamp, not a lunge, playing the right clock."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Total the imbalances: you have the bigger centre and more space, Black is cramped and his pieces want room. You are ahead on the fast clock — play the move that uses that edge before Black can free himself.",
+    "prompt": "White to move. Total the imbalances: you have the bigger centre and more space, Black is cramped and his pieces want room. You are ahead on the fast clock. Play the move that uses that edge before Black can free himself.",
     "fen": "r1bqkb1r/ppp2ppp/2n2n2/3p4/3PP3/2P2N2/PP3PPP/RNBQKB1R w KQkq - 0 1",
     "solutionUci": [
      "e4e5"
     ],
-    "explain": "e5 advances the dynamic asset, gaining space and chasing the f6-knight to the edge. When your edge is in space and development, expand and clamp — do not sit and let him untangle."
+    "explain": "e5 advances the dynamic asset, gaining space and chasing the f6-knight to the edge. When your edge is in space and development, expand and clamp. Do not sit and let him untangle."
    },
    {
     "kind": "play",
-    "prompt": "White to move. You are the better-developed side and you hold the initiative; the centre is still fluid. Find the move that uses your lead in time — keep Black reacting instead of letting him finish developing.",
+    "prompt": "White to move. You are the better-developed side and you hold the initiative; the centre is still fluid. Find the move that uses your lead in time. Keep Black reacting instead of letting him finish developing.",
     "fen": "r1bqk2r/ppp1bppp/2n2n2/3pp3/2B1P3/3P1N2/PPP2PPP/RNBQ1RK1 w kq - 0 1",
     "solutionUci": [
      "e4d5"
@@ -1592,21 +1592,21 @@
    },
    {
     "kind": "play",
-    "prompt": "Black to move in a Sicilian Dragon. Material is equal and the kings are castled on opposite wings — a race. Read the imbalance: the c3-knight is the brick wall shielding White's king. Choose the strategic blow that fits and play it.",
+    "prompt": "Black to move in a Sicilian Dragon. Material is equal and the kings are castled on opposite wings, a race. Read the imbalance: the c3-knight is the brick wall shielding White's king. Choose the strategic blow that fits and play it.",
     "fen": "2r2rk1/pp1bpp2/3p1npQ/q3n2p/3NP2P/1BN2P2/PPP3P1/1K1R3R b - - 0 15",
     "solutionUci": [
      "c8c3"
     ],
-    "explain": "...Rxc3! The Dragon exchange sac: after bxc3 White's queenside pawns are shattered into weak doubled c-pawns, the b-file cracks open onto his king, and Black's e5-knight, queen on a5 and ...a4 storm break through first. You trade a static rook for a lasting grip on the king — the bind, not the rook count, decides."
+    "explain": "...Rxc3! The Dragon exchange sac: after bxc3 White's queenside pawns are shattered into weak doubled c-pawns, the b-file cracks open onto his king, and Black's e5-knight, queen on a5 and ...a4 storm break through first. You trade a static rook for a lasting grip on the king. The bind, not the rook count, decides."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Black grabbed the c4-pawn, but it is weak and undefended and you are better developed. Decide between chasing an attack and banking the durable plus — then play the move your reading demands.",
+    "prompt": "White to move. Black grabbed the c4-pawn, but it is weak and undefended and you are better developed. Decide between chasing an attack and banking the durable plus. Then play the move your reading demands.",
     "fen": "r2r2k1/pp1bbppp/2n1pn2/q7/2pP4/2N1PN2/PPQ1BPPP/R1BR2K1 w - - 0 1",
     "solutionUci": [
      "e2c4"
     ],
-    "explain": "Bxc4 restores material while keeping every positional plus — the better centre, the active bishop, the lead in development. Mature compensation play: bank the lasting edge, don't gamble on a fleeting attack."
+    "explain": "Bxc4 restores material while keeping every positional plus: the better centre, the active bishop, the lead in development. Mature compensation play: bank the lasting edge, don't gamble on a fleeting attack."
    },
    {
     "kind": "judge",
@@ -1614,7 +1614,7 @@
     "fen": "r1bq1rk1/ppp1bppp/2np4/4p3/2B1n3/2NP1N2/PPP2PPP/R1BQ1RK1 w - - 0 2",
     "lastMoveUci": "f6e4",
     "verdict": "blunder",
-    "explain": "Blunder. The e4-pawn was guarded: White simply plays dxe4 and is up a clean piece. The natural try ...d5, forking the c4-bishop and the e4-pawn, does exist — but it is refuted: White answers exd5, and after ...Na5 he just steps the bishop back (Be2) and stays a full piece ahead. Black has given a knight for a single pawn with no sound way to recover it. Snatching a defended pawn from an equal position just loses material; a strategic edge is built with sound moves, not greed."
+    "explain": "Blunder. The e4-pawn was guarded: White simply plays dxe4 and is up a clean piece. The natural try ...d5, forking the c4-bishop and the e4-pawn, does exist, but it is refuted: White answers exd5, and after ...Na5 he just steps the bishop back (Be2) and stays a full piece ahead. Black has given a knight for a single pawn with no sound way to recover it. Snatching a defended pawn from an equal position just loses material; a strategic edge is built with sound moves, not greed."
    },
    {
     "kind": "judge",
@@ -1622,7 +1622,7 @@
     "fen": "r1bqkb1r/ppp2ppp/2n2n2/3pN3/3PP3/2N5/PPP2PPP/R1BQKB1R b KQkq - 0 1",
     "lastMoveUci": "f3e5",
     "verdict": "correct",
-    "explain": "Correct — but for POSITION, not a free pawn. After ...Nxe5 dxe5 Nxe4 Nxe4 dxe4 the material is dead level; what White keeps is the protected e5-pawn, the freer pieces and the better structure — a clear, lasting positional plus. The better-developed side strikes in the centre; he does not win a clean pawn, he wins the squeeze."
+    "explain": "Correct, but for POSITION, not a free pawn. After ...Nxe5 dxe5 Nxe4 Nxe4 dxe4 the material is dead level; what White keeps is the protected e5-pawn, the freer pieces and the better structure, a clear, lasting positional plus. The better-developed side strikes in the centre; he does not win a clean pawn, he wins the squeeze."
    },
    {
     "kind": "judge",
@@ -1630,7 +1630,7 @@
     "fen": "r1bq1rk1/pp2bppp/2n2n2/3N4/3P4/4PN2/PP3PPP/R1BQKB1R b KQ - 0 1",
     "lastMoveUci": "c3d5",
     "verdict": "blunder",
-    "explain": "Blunder. After ...Nxd5 White is simply down a piece. Greed under your own initiative throws the game away — a dynamic edge is used to make threats, not to grab material that hangs."
+    "explain": "Blunder. After ...Nxd5 White is simply down a piece. Greed under your own initiative throws the game away. A dynamic edge is used to make threats, not to grab material that hangs."
    },
    {
     "kind": "judge",
@@ -1638,7 +1638,7 @@
     "fen": "5rk1/pp1bppbp/3p1np1/q7/3NP3/1Br1B3/PPP1QPPP/1K1R3R w - - 0 2",
     "lastMoveUci": "c8c3",
     "verdict": "blunder",
-    "explain": "Blunder — this is the exchange sac copied without the conditions that make it sound. White simply plays bxc3 (or Bd2), and there is no bind to show for the rook: the queen is offside on a5, the b7-bishop bites on the d5/e4 wall, and the Nd4 plus the b3/e3 bishops hold every dark square. White is up the exchange with no compensation. The motif only works when removing the knight leaves a PERMANENT grip — here it leaves nothing."
+    "explain": "Blunder: this is the exchange sac copied without the conditions that make it sound. White simply plays bxc3 (or Bd2), and there is no bind to show for the rook: the queen is offside on a5, the b7-bishop bites on the d5/e4 wall, and the Nd4 plus the b3/e3 bishops hold every dark square. White is up the exchange with no compensation. The motif only works when removing the knight leaves a PERMANENT grip. Here it leaves nothing."
    }
   ]
  },

@@ -13,7 +13,7 @@ import {
   puzzlesInstalled
 } from './paths'
 // Group importers (circular-safe: both sides only reference each other inside
-// functions — maia/katago/fairy pull downloadVerified from this module).
+// functions: maia/katago/fairy pull downloadVerified from this module).
 import { importMaia, maiaGroupBytes, maiaGroupInstalled } from './maia'
 import {
   importKatago,
@@ -98,7 +98,7 @@ const PUZZLES_ITEM: DatasetItem = {
   installedBytes: 2148864000
 }
 
-// The puzzle DB is a plain SQLite file — identical on every OS. The engine is
+// The puzzle DB is a plain SQLite file, identical on every OS. The engine is
 // per-platform; on a platform with no published binary the engine row is simply
 // absent (a bundled engine, if any, still resolves) and only puzzles import.
 export const DATASET_ITEMS: DatasetItem[] = [engineItem(), PUZZLES_ITEM].filter(
@@ -181,7 +181,7 @@ export interface DownloadSpec {
   executable?: boolean
 }
 
-/** Abort a download if NO bytes arrive for this long — a stalled connection
+/** Abort a download if NO bytes arrive for this long. A stalled connection
  *  (dead wifi, half-open socket) must fail with a clear error instead of
  *  hanging the import forever with no way to make progress. */
 const STALL_TIMEOUT_MS = 30_000
@@ -193,7 +193,7 @@ const STALL_TIMEOUT_MS = 30_000
  *
  * A 1s watchdog guards the whole transfer: it aborts the fetch when no bytes
  * have arrived for STALL_TIMEOUT_MS (surfaced as a clear retryable error), and
- * it also honors cancelImport() while the stream is stalled — previously a
+ * it also honors cancelImport() while the stream is stalled. Previously a
  * cancel was only observed on the NEXT chunk, which never came.
  */
 export async function downloadVerified(
@@ -272,7 +272,7 @@ export async function downloadVerified(
     // opaque AbortError/ERR_STREAM_PREMATURE_CLOSE from fetch/pipeline.
     if (stalled) {
       throw new Error(
-        `${spec.label}: download stalled — no data received for ${Math.round(STALL_TIMEOUT_MS / 1000)}s. Check your connection and retry.`
+        `${spec.label}: download stalled. No data received for ${Math.round(STALL_TIMEOUT_MS / 1000)}s. Check your connection and retry.`
       )
     }
     if (cancelFlag) throw new Error('cancelled')

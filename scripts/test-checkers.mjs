@@ -7,12 +7,12 @@
 // esbuild-bundles the adapter for bare node (like scripts/test-games-kernel.mjs).
 // Covers: forced-capture enforcement (both variants), multi-jump chains,
 // kinging/crowning, flying-king moves, the MAJORITY-CAPTURE AUDIT of
-// @jortvl/draughts (hand-constructed positions — the library must only allow
+// @jortvl/draughts (hand-constructed positions: the library must only allow
 // sequences capturing the most pieces, quantity rule), Turkish-strike king
 // cycles, promotion only at sequence end, draw conventions (WCDF 40-ply,
 // FMJD 25-move + threefold) and a scripted full quick game per variant.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -100,7 +100,7 @@ try {
   ok(am.flipPolicy === 'rotate' && intl.flipPolicy === 'rotate', 'both: OTB flip policy rotate')
 
   // =========================================================================
-  console.log('american — basics')
+  console.log('american: basics')
   let a = am.init()
   const aStart = am.legalMoves(a)
   eq(aStart.length, 7, 'american: 7 legal moves at start')
@@ -114,7 +114,7 @@ try {
   eq(aBase.moves.length, 0, 'american: play() never mutates the input state')
   eq(a.moves.join(' '), '11-15', 'american: codec history recorded')
 
-  console.log('american — forced capture')
+  console.log('american: forced capture')
   a = playAll(am, am.init(), ['11-15', '22-18'])
   eqSet(am.legalMoves(a), ['15x22'], 'american: capture available → ONLY the capture is legal')
   eq(am.play(a, '9-13'), null, 'american: quiet move while capture exists → null')
@@ -123,7 +123,7 @@ try {
   a = playAll(am, a, ['15x22'])
   eqSet(am.legalMoves(a), ['25x18', '26x17'], 'american: forced recapture with a choice of two jumps')
 
-  console.log('american — multi-jump chain')
+  console.log('american: multi-jump chain')
   a = am.init({ blackMen: [11], whiteMen: [15, 22], player: 'black' })
   eqSet(am.legalMoves(a), ['11x18x25'], 'american: double jump enumerated as the full chain 11x18x25 (no partial stop)')
   eq(am.moveMeta(a, '11x18x25').capture, true, 'american: chain meta capture')
@@ -137,7 +137,7 @@ try {
   )
   eq(am.legalMoves(a).length, 0, 'american: no legal moves after the game ends')
 
-  console.log('american — crowning')
+  console.log('american: crowning')
   a = am.init({ blackMen: [26], whiteMen: [1], player: 'black' })
   eq(am.moveMeta(a, '26-30').sound, 'promote', 'american: quiet crowning meta sound = promote')
   a = playAll(am, a, ['26-30'])
@@ -147,7 +147,7 @@ try {
   const manState = am.init({ blackMen: [18], whiteMen: [1], player: 'black' })
   eq(am.legalMoves(manState).length, 2, 'american: a man only moves forward (two diagonals)')
 
-  console.log('american — endings')
+  console.log('american: endings')
   const drawn = am.init({
     blackKings: [1],
     whiteKings: [32],
@@ -166,14 +166,14 @@ try {
     'american: blocked side to move loses (no-moves)'
   )
 
-  console.log('american — scripted quick game')
+  console.log('american: scripted quick game')
   const aFinal = scriptedGame(am, am.init(), 400)
   ok(aFinal !== null, 'american: scripted first-move game terminates within 400 plies')
   ok(am.result(aFinal) !== null && am.legalMoves(aFinal).length === 0, 'american: terminal state is consistent')
   console.log(`    (ended ${am.result(aFinal).score} '${am.result(aFinal).reason}' after ${aFinal.moves.length} plies)`)
 
   // =========================================================================
-  console.log('intl — basics')
+  console.log('intl: basics')
   let i = intl.init()
   const iStart = intl.legalMoves(i)
   eq(iStart.length, 9, 'intl: 9 legal moves at start')
@@ -186,35 +186,35 @@ try {
   eq(iBase.moves.length, 0, 'intl: play() never mutates the input state')
   ok(intl.legalMoves(i).includes('19-23'), 'intl: black to move after white opens')
 
-  console.log('intl — forced capture')
+  console.log('intl: forced capture')
   i = intl.init({ fen: 'W:W28:B23' })
   eqSet(intl.legalMoves(i), ['28x19'], 'intl: capture available → ONLY the capture is legal')
   eq(intl.play(i, '28-22'), null, 'intl: quiet move while capture exists → null')
   const iMeta = intl.moveMeta(i, '28x19')
   ok(iMeta.capture === true && iMeta.sound === 'capture', 'intl: capture meta = capture + capture sound')
 
-  console.log('intl — MAJORITY-CAPTURE AUDIT (@jortvl/draughts)')
+  console.log('intl: MAJORITY-CAPTURE AUDIT (@jortvl/draughts)')
   // White man on 28; capturing 22 takes ONE piece, capturing 23 then 14 takes
   // TWO. FMJD majority rule: only the two-piece sequence is legal.
   i = intl.init({ fen: 'W:W28:B14,22,23' })
-  eqSet(intl.legalMoves(i), ['28x19x10'], 'AUDIT: majority capture — only the 2-piece chain is legal')
+  eqSet(intl.legalMoves(i), ['28x19x10'], 'AUDIT: majority capture. Only the 2-piece chain is legal')
   eq(intl.play(i, '28x17'), null, 'AUDIT: the 1-piece capture is rejected')
   i = playAll(intl, i, ['28x19x10'])
   eq(i.fen, 'B:W10:B22', 'AUDIT: exactly the majority pieces (23, 14) are removed')
-  // Quantity rule: a king counts the same as a man — 2 men beat 1 king.
+  // Quantity rule: a king counts the same as a man, 2 men beat 1 king.
   i = intl.init({ fen: 'W:W28:B14,K22,23' })
-  eqSet(intl.legalMoves(i), ['28x19x10'], 'AUDIT: quantity rule — 2 men outweigh 1 king')
+  eqSet(intl.legalMoves(i), ['28x19x10'], 'AUDIT: quantity rule, 2 men outweigh 1 king')
   // King majority: 3-capture sequences only, never the shorter ones.
   i = intl.init({ fen: 'W:WK35:B8,9,19,30' })
   eqSet(
     intl.legalMoves(i),
     ['35x24x13x4', '35x24x13x2'],
-    'AUDIT: flying-king majority — only the two 3-piece chains are legal'
+    'AUDIT: flying-king majority. Only the two 3-piece chains are legal'
   )
   i = playAll(intl, i, ['35x24x13x4'])
   eq(i.fen, 'B:WK4:B8', 'AUDIT: king chain removes 30, 19, 9 and keeps the king')
 
-  console.log('intl — flying kings')
+  console.log('intl: flying kings')
   i = intl.init({ fen: 'W:WK46:B28' })
   eqSet(
     intl.legalMoves(i),
@@ -227,7 +227,7 @@ try {
   eq(intl.legalMoves(i).length, 8, 'intl: flying king quiet range covers the whole diagonal')
   ok(intl.legalMoves(i).includes('46-10'), 'intl: long quiet king slide 46-10 enumerated')
 
-  console.log('intl — man rules')
+  console.log('intl: man rules')
   i = intl.init({ fen: 'W:W23:B29' })
   eqSet(intl.legalMoves(i), ['23x34'], 'intl: men capture BACKWARDS (FMJD)')
   i = intl.init({ fen: 'W:W7:B45' })
@@ -235,13 +235,13 @@ try {
   i = playAll(intl, i, ['7-1'])
   ok(i.fen.startsWith('B:WK1:'), 'intl: man promotes to king on the back row')
   // Promotion ONLY at the end of a capture sequence: 12x3 lands on the back
-  // row mid-chain, continues 3x14 — the piece must remain a MAN.
+  // row mid-chain, continues 3x14. The piece must remain a MAN.
   i = intl.init({ fen: 'W:W12:B8,9' })
   eqSet(intl.legalMoves(i), ['12x3x14'], 'intl: pass-through chain enumerated (majority forces both captures)')
   i = playAll(intl, i, ['12x3x14'])
   eq(i.fen, 'B:W14:B', 'intl: NO promotion when a chain only passes through the back row')
 
-  console.log('intl — Turkish-strike king cycle')
+  console.log('intl: Turkish-strike king cycle')
   i = intl.init({ fen: 'W:WK43:B12,14,32,34' })
   const cycle = intl.legalMoves(i)
   eq(cycle.length, 6, 'intl: 4-piece diamond gives 6 full cycles')
@@ -255,7 +255,7 @@ try {
     'intl: black wiped out → white wins (no-moves)'
   )
 
-  console.log('intl — endings & draw conventions')
+  console.log('intl: endings & draw conventions')
   const stuck = intl.init({ fen: 'B:W10,14,19:B5' })
   const stuckRes = intl.result(stuck)
   ok(
@@ -283,7 +283,7 @@ try {
   const rep = intl.result(i)
   ok(rep && rep.winner === null && rep.reason === 'threefold', 'intl: threefold repetition → draw')
 
-  console.log('intl — scripted quick game')
+  console.log('intl: scripted quick game')
   const iFinal = scriptedGame(intl, intl.init(), 2000)
   ok(iFinal !== null, 'intl: scripted first-move game terminates within 2000 plies')
   ok(intl.result(iFinal) !== null && intl.legalMoves(iFinal).length === 0, 'intl: terminal state is consistent')
@@ -294,7 +294,7 @@ try {
   eq(am.serializeOptions({ blackMen: [11] }), '{"blackMen":[11]}', 'american: serializeOptions stable JSON')
   eq(intl.serializeOptions(null), 'null', 'intl: serializeOptions stable JSON')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

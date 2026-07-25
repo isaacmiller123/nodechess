@@ -9,7 +9,7 @@
   {
    "id": "london-setup",
    "name": "The London setup",
-   "short": "d4, Bf4, e3, Bd3, Nf3, Nbd2, c3, O-O — the same harmonious build against almost any Black reply."
+   "short": "d4, Bf4, e3, Bd3, Nf3, Nbd2, c3, O-O: the same harmonious build against almost any Black reply."
   },
   {
    "id": "london-bishop",
@@ -24,7 +24,7 @@
   {
    "id": "queenside-pressure",
    "name": "Meeting ...c5 and ...Qb6",
-   "short": "Black hits d4 and b2 with ...c5/...Qb6. Answer with c3 (propping d4) and Qb3 or Qc1 (covering b2) — don't panic."
+   "short": "Black hits d4 and b2 with ...c5/...Qb6. Answer with c3 (propping d4) and Qb3 or Qc1 (covering b2). Don't panic."
   },
   {
    "id": "ne5-jump",
@@ -34,7 +34,7 @@
   {
    "id": "greek-gift",
    "name": "The Greek Gift (Bxh7+)",
-   "short": "Bishop takes h7, knight checks from g5, queen swings to h5. It only works when h7 has NO knight guard, g5 cannot be met by ...Bxg5 or ...Qxg5, and Black has no ...Nf6 to block — then it crashes through."
+   "short": "Bishop takes h7, knight checks from g5, queen swings to h5. It only works when h7 has NO knight guard, g5 cannot be met by ...Bxg5 or ...Qxg5, and Black has no ...Nf6 to block. Then it crashes through."
   }
  ],
  "lessons": [
@@ -63,7 +63,7 @@
      "kind": "model",
      "title": "Walk the London, move by move",
      "intro": {
-      "text": "I am Viktor. You will learn ONE system and play it against everything. Watch each move — I will tell you its job, not just its name."
+      "text": "I am Viktor. You will learn ONE system and play it against everything. Watch each move. I will tell you its job, not just its name."
      },
      "line": [
       {
@@ -89,13 +89,13 @@
       {
        "uci": "d7d5",
        "coach": {
-        "text": "Black stakes a fair share of the centre. It does not matter much what Black plays — the London is a SYSTEM, the same setup against ...d5, ...Nf6, ...g6, all of it."
+        "text": "Black stakes a fair share of the centre. It does not matter much what Black plays. The London is a SYSTEM, the same setup against ...d5, ...Nf6, ...g6, all of it."
        }
       },
       {
        "uci": "c1f4",
        "coach": {
-        "text": "2.Bf4. The defining move. The bishop goes OUTSIDE the pawn chain — before we play e3. Get this wrong (e3 first) and the bishop is buried behind its own pawn for the whole game.",
+        "text": "2.Bf4. The defining move. The bishop goes OUTSIDE the pawn chain. Before we play e3. Get this wrong (e3 first) and the bishop is buried behind its own pawn for the whole game.",
         "annotations": [
          {
           "kind": "highlight",
@@ -121,7 +121,7 @@
       {
        "uci": "e2e3",
        "coach": {
-        "text": "3.e3. NOW the modest pawn move — the bishop is already out, so e3 only opens lines for our other pieces. It supports d4 and frees the f1-bishop.",
+        "text": "3.e3. NOW the modest pawn move. The bishop is already out, so e3 only opens lines for our other pieces. It supports d4 and frees the f1-bishop.",
         "annotations": [
          {
           "kind": "highlight",
@@ -141,7 +141,7 @@
       {
        "uci": "g1f3",
        "coach": {
-        "text": "4.Nf3. Knight to its best square, controlling e5 — the square we want for OUR knight later. Always know which squares you are fighting for.",
+        "text": "4.Nf3. Knight to its best square, controlling e5. The square we want for OUR knight later. Always know which squares you are fighting for.",
         "annotations": [
          {
           "kind": "arrow",
@@ -161,7 +161,7 @@
       {
        "uci": "f4g3",
        "coach": {
-        "text": "5.Bg3. We RETREAT rather than trade. The London bishop is our prized attacker — keeping it is worth a tempo. Note it still eyes the b8-h2 diagonal toward Black's king.",
+        "text": "5.Bg3. We RETREAT rather than trade. The London bishop is our prized attacker. Keeping it is worth a tempo. Note it still eyes the b8-h2 diagonal toward Black's king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -187,7 +187,7 @@
       {
        "uci": "f1d3",
        "coach": {
-        "text": "6.Bd3. The light bishop takes aim at h7 — directly at Black's freshly-castled king. The two bishops now point like guns at the kingside.",
+        "text": "6.Bd3. The light bishop takes aim at h7, directly at Black's freshly-castled king. The two bishops now point like guns at the kingside.",
         "annotations": [
          {
           "kind": "highlight",
@@ -212,7 +212,7 @@
       {
        "uci": "b1d2",
        "coach": {
-        "text": "7.Nbd2. The last minor piece. It will reroute via f3 or f1 toward the kingside. Everything points one way — toward Black's king.",
+        "text": "7.Nbd2. The last minor piece. It will reroute via f3 or f1 toward the kingside. Everything points one way, toward Black's king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -234,7 +234,7 @@
       {
        "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P4/8/PPP1PPPP/RNBQKBNR w KQkq - 0 2",
        "coach": {
-        "text": "Black has just played ...d5. Develop the bishop to its home square — the one move that defines our whole opening.",
+        "text": "Black has just played ...d5. Develop the bishop to its home square. The one move that defines our whole opening.",
         "conceptId": "london-bishop"
        },
        "solutionUci": [
@@ -266,7 +266,7 @@
       {
        "fen": "r1bq1rk1/pp3ppp/2nbpn2/2pp4/3P4/2PBPNB1/PP3PPP/RN1Q1RK1 b - - 0 9",
        "coach": {
-        "text": "Wrong side to move? No — here YOU are Black for one move so you can see the trade offer. Black plays ...Bxg3, hitting your bishop. (Played for you next.) The real question is your reply.",
+        "text": "Wrong side to move? No: here YOU are Black for one move so you can see the trade offer. Black plays ...Bxg3, hitting your bishop. (Played for you next.) The real question is your reply.",
         "conceptId": "london-bishop"
        },
        "solutionUci": [
@@ -276,13 +276,13 @@
         "text": "Black trades on g3. Now: how should White recapture? That is the next position."
        },
        "retryLine": {
-        "text": "Just play ...Bxg3 — we are studying how White answers the trade of the good bishop."
+        "text": "Just play ...Bxg3. We are studying how White answers the trade of the good bishop."
        }
       },
       {
        "fen": "r1bq1rk1/pp3ppp/2n1pn2/2pp4/3P4/2PBPNb1/PP3PPP/RN1Q1RK1 w - - 0 10",
        "coach": {
-        "text": "Black took on g3. Recapture — but choose the pawn that OPENS a file toward Black's king, not the one that does nothing.",
+        "text": "Black took on g3. Recapture, but choose the pawn that OPENS a file toward Black's king, not the one that does nothing.",
         "conceptId": "ne5-jump"
        },
        "solutionUci": [
@@ -292,7 +292,7 @@
         "text": "hxg3! Now the h-file is half-open and points straight at h7 and the Black king. The 'wrong' recapture fxg3 would have wasted that attacking gift."
        },
        "retryLine": {
-        "text": "fxg3 just sits there. Take with the h-pawn — hxg3 — and the h-file becomes an attacking highway."
+        "text": "fxg3 just sits there. Take with the h-pawn (hxg3) and the h-file becomes an attacking highway."
        }
       }
      ]
@@ -378,13 +378,13 @@
      "kind": "guided",
      "title": "Hold the line",
      "intro": {
-      "text": "Two ways to meet ...Qb6 — I want you to find the principled one."
+      "text": "Two ways to meet ...Qb6. I want you to find the principled one."
      },
      "steps": [
       {
        "fen": "rnb1k2r/pp1pppbp/1q3np1/2p5/3P1B2/2P1PN2/PP3PPP/RN1QKB1R w KQkq - 1 6",
        "coach": {
-        "text": "Here Black has fianchettoed (...g6, ...Bg7) and still fired ...Qb6 at b2 — d4 is safe behind c3+e3, so the only real threat is ...Qxb2. Defend b2 AND offer to trade the attacking queen in one move. Where does your queen go?",
+        "text": "Here Black has fianchettoed (...g6, ...Bg7) and still fired ...Qb6 at b2: d4 is safe behind c3+e3, so the only real threat is ...Qxb2. Defend b2 AND offer to trade the attacking queen in one move. Where does your queen go?",
         "conceptId": "queenside-pressure"
        },
        "solutionUci": [
@@ -392,16 +392,16 @@
         "d1c1"
        ],
        "successLine": {
-        "text": "Qb3 is the cleanest: it guards b2 and offers a queen trade — if Black takes, your b2-pawn recaptures and your rook gets the open b-file. (Qc1 also defends b2 and keeps queens on; both are fine.) The setup of Black's pieces changed, but the answer did not — that is the point."
+        "text": "Qb3 is the cleanest: it guards b2 and offers a queen trade. If Black takes, your b2-pawn recaptures and your rook gets the open b-file. (Qc1 also defends b2 and keeps queens on; both are fine.) The setup of Black's pieces changed, but the answer did not. That is the point."
        },
        "retryLine": {
-        "text": "Defend b2 without losing the d4-pawn. The queen does both jobs: Qb3 (defends b2, offers a trade) — or the quieter Qc1."
+        "text": "Defend b2 without losing the d4-pawn. The queen does both jobs: Qb3 (defends b2, offers a trade), or the quieter Qc1."
        }
       },
       {
        "fen": "r1bqkb1r/pp2pppp/2n2n2/3p4/3p1B2/2P1PN2/PP3PPP/RN1QKB1R w KQkq - 0 6",
        "coach": {
-        "text": "A different idea: Black has just captured on d4 with ...cxd4. Recapture — but with the pawn that keeps your structure and your bishop's diagonal healthy.",
+        "text": "A different idea: Black has just captured on d4 with ...cxd4. Recapture, but with the pawn that keeps your structure and your bishop's diagonal healthy.",
         "conceptId": "central-triangle"
        },
        "solutionUci": [
@@ -438,7 +438,7 @@
    "id": "l3-ne5-attack",
    "title": "The Engine of the Attack: Ne5",
    "kind": "variation",
-   "summary": "The London is not just solid — it attacks. The knight to e5 lights the fuse.",
+   "summary": "The London is not just solid. It attacks. The knight to e5 lights the fuse.",
    "segments": [
     {
      "kind": "puzzle",
@@ -491,14 +491,14 @@
       {
        "fen": "r1bqr1k1/p2n1ppp/2pbpn2/3p4/3P4/3BPNB1/PPP2PPP/RN1Q1RK1 w - - 4 9",
        "coach": {
-        "text": "A different London middlegame — Black chose ...c6 and slid a rook to e8 — but the picture is the same: bishops aimed at the kingside, king castled, f3 free. Make the same central leap on this new board.",
+        "text": "A different London middlegame (Black chose ...c6 and slid a rook to e8) but the picture is the same: bishops aimed at the kingside, king castled, f3 free. Make the same central leap on this new board.",
         "conceptId": "ne5-jump"
        },
        "solutionUci": [
         "f3e5"
        ],
        "successLine": {
-        "text": "Ne5! Same idea, fresh position. The knight dominates, clears f3 for the queen (Qf3-h3, or Qh5), and from e5 it eyes f7 and g6. If Black trades it off (...Nxe5 or ...Bxe5), dxe5 hits the f6-knight and grabs space — the outpost pays either way."
+        "text": "Ne5! Same idea, fresh position. The knight dominates, clears f3 for the queen (Qf3-h3, or Qh5), and from e5 it eyes f7 and g6. If Black trades it off (...Nxe5 or ...Bxe5), dxe5 hits the f6-knight and grabs space. The outpost pays either way."
        },
        "retryLine": {
         "text": "The whole London points at the kingside. Send the f3-knight to the central outpost: Ne5."
@@ -510,7 +510,7 @@
      "kind": "puzzle",
      "title": "Cool-down: convert the attack",
      "intro": {
-      "text": "The attack is set — now land the tactic that ends it."
+      "text": "The attack is set. Now land the tactic that ends it."
      },
      "puzzle": {
       "themes": [
@@ -537,7 +537,7 @@
       {
        "fen": "r4rk1/pbq2ppp/1p2p3/n2pP3/3P4/2PB1N2/PP3PPP/R2QR1K1 w - - 0 1",
        "coach": {
-        "text": "Before you ever sacrifice, run the full checklist — six conditions, ALL required. THREE attackers: (1) bishop on d3 aimed at h7, (2) knight on f3 that can reach g5, (3) a clear path for the queen to h5. THREE defenders that must be ABSENT: (4) no Black knight guarding h7 — here our e5-pawn drove the f6-knight away, (5) no Black bishop that can answer Ng5 with ...Bxg5, (6) no ...Nf6 to block the mate. Tick all six and the gift is sound.",
+        "text": "Before you ever sacrifice, run the full checklist. Six conditions, ALL required. THREE attackers: (1) bishop on d3 aimed at h7, (2) knight on f3 that can reach g5, (3) a clear path for the queen to h5. THREE defenders that must be ABSENT: (4) no Black knight guarding h7. Here our e5-pawn drove the f6-knight away, (5) no Black bishop that can answer Ng5 with ...Bxg5, (6) no ...Nf6 to block the mate. Tick all six and the gift is sound.",
         "annotations": [
          {
           "kind": "arrow",
@@ -568,7 +568,7 @@
       {
        "fen": "r4rk1/pbq2ppp/1p2p3/n2pP3/3P4/2PB1N2/PP3PPP/R2QR1K1 w - - 0 1",
        "coach": {
-        "text": "See WHY this Black position fails the defence test. The dark bishop is gone, so there is no ...Bxg5. The knight sits on a5, far away — it cannot jump to f6. And the e5-pawn covers f6, so even a knight could not block there. Every defender is missing. THIS is the difference between a winning sacrifice and a losing one — never play Bxh7+ until you have checked that Black cannot answer Ng5 with ...Bxg5, ...Qxg5, or ...Nf6.",
+        "text": "See WHY this Black position fails the defence test. The dark bishop is gone, so there is no ...Bxg5. The knight sits on a5, far away. It cannot jump to f6. And the e5-pawn covers f6, so even a knight could not block there. Every defender is missing. THIS is the difference between a winning sacrifice and a losing one. Never play Bxh7+ until you have checked that Black cannot answer Ng5 with ...Bxg5, ...Qxg5, or ...Nf6.",
         "annotations": [
          {
           "kind": "highlight",
@@ -597,13 +597,13 @@
      "title": "Deliver the gift, move by move",
      "fen": "r4rk1/pbq2ppp/1p2p3/n2pP3/3P4/2PB1N2/PP3PPP/R2QR1K1 w - - 0 1",
      "intro": {
-      "text": "Watch the machine run. Black's pieces are all on the queenside — the king has no help. Each move is forcing."
+      "text": "Watch the machine run. Black's pieces are all on the queenside. The king has no help. Each move is forcing."
      },
      "line": [
       {
        "uci": "d3h7",
        "coach": {
-        "text": "1.Bxh7+! The sacrifice. We give a bishop to rip open the king's cover. Declining with ...Kh8 just loses the pawn for nothing and leaves the attack — so the king must take.",
+        "text": "1.Bxh7+! The sacrifice. We give a bishop to rip open the king's cover. Declining with ...Kh8 just loses the pawn for nothing and leaves the attack, so the king must take.",
         "annotations": [
          {
           "kind": "highlight",
@@ -623,7 +623,7 @@
       {
        "uci": "f3g5",
        "coach": {
-        "text": "2.Ng5+! Check, and there is no ...Bxg5 or ...Qxg5 to answer it. The king must move. ...Kh8 allows Qh5 then Qh7#. ...Kg6 loses to Qg4 (the king is hunted down). ...Kh6 runs into Re3! with a decisive attack — Rh3 threats, and if ...Kxg5 then h4+/f4+ hunt the exposed king; White is winning. Best is ...Kg8 — back home.",
+        "text": "2.Ng5+! Check, and there is no ...Bxg5 or ...Qxg5 to answer it. The king must move. ...Kh8 allows Qh5 then Qh7#. ...Kg6 loses to Qg4 (the king is hunted down). ...Kh6 runs into Re3! with a decisive attack. Rh3 threats, and if ...Kxg5 then h4+/f4+ hunt the exposed king; White is winning. Best is ...Kg8, back home.",
         "annotations": [
          {
           "kind": "highlight",
@@ -643,13 +643,13 @@
       {
        "uci": "h7g8",
        "coach": {
-        "text": "2...Kg8. Back home — but the h7-shield is gone forever, and the knight on g5 is a monster one square from the king."
+        "text": "2...Kg8. Back home, but the h7-shield is gone forever, and the knight on g5 is a monster one square from the king."
        }
       },
       {
        "uci": "d1h5",
        "coach": {
-        "text": "3.Qh5! The third attacker arrives, threatening Qh7#. There is no ...Nf6 to block it. Black's only parry is to give the king the f8-square with ...Re8 — and then the rook joins: Re3-f3-h3 swings to the open h-file and the attack is winning. The gift has cracked the king open.",
+        "text": "3.Qh5! The third attacker arrives, threatening Qh7#. There is no ...Nf6 to block it. Black's only parry is to give the king the f8-square with ...Re8, and then the rook joins: Re3-f3-h3 swings to the open h-file and the attack is winning. The gift has cracked the king open.",
         "annotations": [
          {
           "kind": "highlight",
@@ -678,7 +678,7 @@
      "kind": "guided",
      "title": "Deliver it yourself",
      "intro": {
-      "text": "A FRESH position — Black's pieces sit differently (queen on c7, light bishop on d7, knight on c6) but every checklist condition still holds. Re-verify, then deliver all three moves of the sacrifice yourself."
+      "text": "A FRESH position: Black's pieces sit differently (queen on c7, light bishop on d7, knight on c6) but every checklist condition still holds. Re-verify, then deliver all three moves of the sacrifice yourself."
      },
      "steps": [
       {
@@ -691,7 +691,7 @@
         "d3h7"
        ],
        "successLine": {
-        "text": "Bxh7+! The roof comes off — and you proved the gift was sound on a board you'd never seen."
+        "text": "Bxh7+! The roof comes off, and you proved the gift was sound on a board you'd never seen."
        },
        "retryLine": {
         "text": "Begin with the sacrifice that removes the king's shelter: the bishop takes h7 with check."
@@ -700,7 +700,7 @@
       {
        "fen": "r4r2/p1qb1ppk/1pn1p3/3pP3/3P4/2P2N2/PP3PPP/R2Q1RK1 w - - 0 2",
        "coach": {
-        "text": "The king took on h7. Bring the knight in with check — and notice again Black has no piece that can answer with ...Bxg5 or ...Qxg5.",
+        "text": "The king took on h7. Bring the knight in with check, and notice again Black has no piece that can answer with ...Bxg5 or ...Qxg5.",
         "conceptId": "greek-gift"
        },
        "solutionUci": [
@@ -723,7 +723,7 @@
         "d1h5"
        ],
        "successLine": {
-        "text": "Qh5! Threatening Qh7#, and there is no ...Nf6 to block. Black must give the king air with ...Re8 (forced) — then White is completely winning. The Greek Gift, delivered on fresh ground."
+        "text": "Qh5! Threatening Qh7#, and there is no ...Nf6 to block. Black must give the king air with ...Re8 (forced). Then White is completely winning. The Greek Gift, delivered on fresh ground."
        },
        "retryLine": {
         "text": "Bring the last attacker: Qh5, threatening mate on h7."
@@ -762,7 +762,7 @@
       {
        "fen": "rnbqkbnr/ppp2ppp/3p4/4p3/3P1B2/8/PPP1PPPP/RN1QKBNR w KQkq - 0 3",
        "coach": {
-        "text": "Black, impatient, has played ...e5 to challenge our bishop. But the pawn is loose. Watch how the bishop on f4 — out in the open, doing its job — collects it by force.",
+        "text": "Black, impatient, has played ...e5 to challenge our bishop. But the pawn is loose. Watch how the bishop on f4 (out in the open, doing its job) collects it by force.",
         "annotations": [
          {
           "kind": "highlight",
@@ -798,7 +798,7 @@
         "d4e5"
        ],
        "successLine": {
-        "text": "dxe5! Now if ...dxe5 the queens come off — Qxd8+ Kxd8 — and then Bxe5 wins the pawn clean, because Black has lost the right to castle and we simply scoop e5."
+        "text": "dxe5! Now if ...dxe5 the queens come off (Qxd8+ Kxd8) and then Bxe5 wins the pawn clean, because Black has lost the right to castle and we simply scoop e5."
        },
        "retryLine": {
         "text": "Take the centre pawn first: dxe5. The follow-up Qxd8+ and Bxe5 nets the pawn."
@@ -807,14 +807,14 @@
       {
        "fen": "rnbk1bnr/ppp2ppp/8/4p3/5B2/8/PPP1PPPP/RN2KBNR w KQ - 0 5",
        "coach": {
-        "text": "The queens are off and Black's king has been chased to d8. Finish the job — grab the loose e5-pawn with the bishop that has aimed at it all along.",
+        "text": "The queens are off and Black's king has been chased to d8. Finish the job. Grab the loose e5-pawn with the bishop that has aimed at it all along.",
         "conceptId": "london-bishop"
        },
        "solutionUci": [
         "f4e5"
        ],
        "successLine": {
-        "text": "Bxe5! A clean extra pawn, the bishop dominant in the centre, and Black's king stuck on d8. THIS is why we put the bishop on f4 — it was always pointing here."
+        "text": "Bxe5! A clean extra pawn, the bishop dominant in the centre, and Black's king stuck on d8. THIS is why we put the bishop on f4. It was always pointing here."
        },
        "retryLine": {
         "text": "Your f4-bishop has eyed e5 the whole game. Take the pawn: Bxe5."
@@ -844,7 +844,7 @@
    "id": "l6-typical-plans",
    "title": "Typical Plans & The Whole Game",
    "kind": "practice",
-   "summary": "Tie it together: which bishop to keep, which file to open, where to attack — then beat the engine with it.",
+   "summary": "Tie it together: which bishop to keep, which file to open, where to attack. Then beat the engine with it.",
    "segments": [
     {
      "kind": "teach",
@@ -853,7 +853,7 @@
       {
        "fen": "r1bq1rk1/p1pn1ppp/1p1bpn2/3pN3/3P4/3BP1B1/PPP2PPP/RN1Q1RK1 b - - 1 8",
        "coach": {
-        "text": "Three rules. ONE: keep your dark bishop — retreat to g3, never trade it for free. TWO: when you can, recapture on g3 with the h-pawn to open the h-file. THREE: the plan is Ne5, then bring the queen to h5/h3 and the rook to the open file. Attack the castled king.",
+        "text": "Three rules. ONE: keep your dark bishop. Retreat to g3, never trade it for free. TWO: when you can, recapture on g3 with the h-pawn to open the h-file. THREE: the plan is Ne5, then bring the queen to h5/h3 and the rook to the open file. Attack the castled king.",
         "annotations": [
          {
           "kind": "highlight",
@@ -885,7 +885,7 @@
      "bossUserColor": "white",
      "bossEngineElo": 1250,
      "bossIntro": {
-      "text": "Now play it for real, with White. Build the setup — d4, Bf4 (before e3!), e3, Bd3, Nf3, Nbd2, c3, castle — keep your good bishop, then look for Ne5 and the kingside attack. Show me you understand the WHY, not just the moves."
+      "text": "Now play it for real, with White. Build the setup: d4, Bf4 (before e3!), e3, Bd3, Nf3, Nbd2, c3, castle. Keep your good bishop, then look for Ne5 and the kingside attack. Show me you understand the WHY, not just the moves."
      }
     }
    ]
@@ -944,12 +944,12 @@
    },
    {
     "kind": "play",
-    "prompt": "1.d4 d5 2.Nf3 Nf6. White to move — develop a piece the London way.",
+    "prompt": "1.d4 d5 2.Nf3 Nf6. White to move. Develop a piece the London way.",
     "fen": "rnbqkb1r/ppp1pppp/5n2/3p4/3P4/5N2/PPP1PPPP/RNBQKB1R w KQkq - 2 3",
     "solutionUci": [
      "c1f4"
     ],
-    "explain": "Bf4. The dark-squared bishop must come OUTSIDE the pawn chain before e3 is ever played — otherwise it is buried for the game. The knight already being on f3 changes nothing: Bf4 is still the move that gives the London its identity."
+    "explain": "Bf4. The dark-squared bishop must come OUTSIDE the pawn chain before e3 is ever played. Otherwise it is buried for the game. The knight already being on f3 changes nothing: Bf4 is still the move that gives the London its identity."
    },
    {
     "kind": "play",
@@ -958,21 +958,21 @@
     "solutionUci": [
      "e2e3"
     ],
-    "explain": "e3. Only now — with the bishop safely out — does the modest pawn move come. It props up d4 and frees the f1-bishop; the c3-d4-e3 triangle takes shape."
+    "explain": "e3. Only now (with the bishop safely out) does the modest pawn move come. It props up d4 and frees the f1-bishop; the c3-d4-e3 triangle takes shape."
    },
    {
     "kind": "play",
-    "prompt": "A more developed London — Black has ...Be7 and ...Nc6 out and has just lunged ...Qb6 at b2. White to move: find the principled reply.",
+    "prompt": "A more developed London. Black has ...Be7 and ...Nc6 out and has just lunged ...Qb6 at b2. White to move: find the principled reply.",
     "fen": "r1b1k2r/pp2bppp/1qn1pn2/2pp4/3P1B2/2PBPN2/PP1N1PPP/R2QK2R w KQkq - 1 8",
     "solutionUci": [
      "d1b3",
      "d1c1"
     ],
-    "explain": "Same antidote, new board: ...Qb6 really does threaten ...Qxb2 (b2 is only loosely held), while d4 is safe — c3 and e3 guard it, so ...Qxd4 is impossible. Qb3 covers b2 and offers the queen trade; Qc1 is the calm alternative that also defends b2 and sidesteps ...Na5. Either holds — derive it, don't panic."
+    "explain": "Same antidote, new board: ...Qb6 really does threaten ...Qxb2 (b2 is only loosely held), while d4 is safe: c3 and e3 guard it, so ...Qxd4 is impossible. Qb3 covers b2 and offers the queen trade; Qc1 is the calm alternative that also defends b2 and sidesteps ...Na5. Either holds. Derive it, don't panic."
    },
    {
     "kind": "play",
-    "prompt": "Black has just captured on d4 with ...cxd4. White to move — recapture.",
+    "prompt": "Black has just captured on d4 with ...cxd4. White to move, recapture.",
     "fen": "r1bqkb1r/pp3ppp/2n1pn2/3p4/3p1B2/2PBPN2/PP3PPP/RN1QK2R w KQkq - 0 7",
     "solutionUci": [
      "e3d4"
@@ -981,21 +981,21 @@
    },
    {
     "kind": "play",
-    "prompt": "A London middlegame against a fianchetto setup. White to move — find the strongest plan.",
+    "prompt": "A London middlegame against a fianchetto setup. White to move. Find the strongest plan.",
     "fen": "r2q1rk1/pb1nbppp/1p2pn2/2pp4/3P4/2PBPNB1/PP1N1PPP/R2Q1RK1 w - - 0 9",
     "solutionUci": [
      "f3e5"
     ],
-    "explain": "Ne5 — the same dream outpost even though this is a brand-new structure. The knight dominates the centre, clears f3 for the queen, and points at f7 and g6. Recognising this leap in an unfamiliar position is the whole point."
+    "explain": "Ne5: the same dream outpost even though this is a brand-new structure. The knight dominates the centre, clears f3 for the queen, and points at f7 and g6. Recognising this leap in an unfamiliar position is the whole point."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Before you decide, run the Greek-Gift checklist yourself — then play the best move.",
+    "prompt": "White to move. Before you decide, run the Greek-Gift checklist yourself. Then play the best move.",
     "fen": "r1b2rk1/ppq2ppp/2n1p3/3pP3/3P4/2PB1N2/PP3PPP/R2QR1K1 w - - 0 12",
     "solutionUci": [
      "d3h7"
     ],
-    "explain": "Bxh7+! is sound here: the bishop hits h7, the knight reaches g5, the queen can swing to h5 — and Black has NO knight on f6 (the e5-pawn covers f6), no dark bishop for ...Bxg5, and no ...Nf6 block. Every defender is missing, so the gift crashes through. You had to verify the checklist, not just recognise the shape."
+    "explain": "Bxh7+! is sound here: the bishop hits h7, the knight reaches g5, the queen can swing to h5, and Black has NO knight on f6 (the e5-pawn covers f6), no dark bishop for ...Bxg5, and no ...Nf6 block. Every defender is missing, so the gift crashes through. You had to verify the checklist, not just recognise the shape."
    },
    {
     "kind": "judge",
@@ -1003,7 +1003,7 @@
     "fen": "r1bq1rk1/pp3ppB/2nbpn2/2pp4/3P4/2P1PNB1/PP2QPPP/RN3RK1 b - - 0 9",
     "lastMoveUci": "d3h7",
     "verdict": "blunder",
-    "explain": "Blunder. The checklist fails on condition four: Black's knight is still on f6, guarding h7. After ...Nxh7 White has simply given away a bishop for one pawn and has nothing. The Greek Gift only works when NO knight defends h7 — recognising when it does NOT apply is as important as knowing when it does."
+    "explain": "Blunder. The checklist fails on condition four: Black's knight is still on f6, guarding h7. After ...Nxh7 White has simply given away a bishop for one pawn and has nothing. The Greek Gift only works when NO knight defends h7. Recognising when it does NOT apply is as important as knowing when it does."
    },
    {
     "kind": "judge",
@@ -1019,7 +1019,7 @@
     "fen": "r1bqk2r/pp3ppp/2nBpn2/2pp4/3P4/2P1PN2/PP1N1PPP/R2QKB1R b KQkq - 0 7",
     "lastMoveUci": "f4d6",
     "verdict": "blunder",
-    "explain": "Blunder of judgment: the f4/g3 bishop is the London's prized attacker. You should retreat with Bg3 and keep it — trading it away surrenders your main attacking piece."
+    "explain": "Blunder of judgment: the f4/g3 bishop is the London's prized attacker. You should retreat with Bg3 and keep it. Trading it away surrenders your main attacking piece."
    },
    {
     "kind": "judge",

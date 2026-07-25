@@ -1,7 +1,7 @@
 // OTB auto-flip timing shared by every games-platform local view (KernelOtb,
 // VariantOtb, the Variant Lab's PlayCustom). Mirrors the chess Play OTB feel:
 // the board turns to face the side to move a brief moment AFTER a move
-// commits — the move animation is seen completing first, then the board flips
+// commits: the move animation is seen completing first, then the board flips
 // in one instant repaint (the boards themselves guarantee no cross-board
 // slides on an orientation change). Turning auto-flip off snaps back to
 // White-side-up immediately.

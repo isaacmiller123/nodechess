@@ -5,7 +5,7 @@
 // resolve in BOTH runtimes:
 //  - dev: the Vite dev server serves the repo's resources/ dir via /@fs
 //    (electron.vite.config.ts allows the repo root). The base is derived from
-//    an import.meta.glob over the tiny per-set attribution .txt files — a
+//    an import.meta.glob over the tiny per-set attribution .txt files. A
 //    sentinel, NOT a full asset glob, so the ~14 MB of art is never emitted
 //    into the renderer bundle (boards/chessFamilyArt.ts already bundles the 2D
 //    piece SVGs it needs; this module serves everything else, e.g. 3D textures).
@@ -16,7 +16,7 @@
 //    An unpackaged `electron .` run (out/renderer under the repo) falls back to
 //    the repo's resources/games-art.
 //
-// URLs are NOT existence-checked — callers keep their procedural/glyph
+// URLs are NOT existence-checked. Callers keep their procedural/glyph
 // fallbacks on load failure (games/three/artLoader.ts already does).
 //
 // Importing this module also installs the base as window.__gamesArtBase, the
@@ -64,7 +64,7 @@ function fileBase(): string | null {
 /**
  * Base URL of the games-art directory (no trailing slash), or null when
  * unresolvable (headless tests, non-Vite preview). Callers must fall back
- * gracefully — never throw.
+ * gracefully. Never throw.
  */
 export function gamesArtBase(): string | null {
   return import.meta.env.DEV ? devBase() : fileBase()

@@ -4,9 +4,9 @@
 // NOMINAL level label. Sub-floor (<1320) engine levels actually play measurably
 // stronger than their labels (see src/shared/botStrength.ts calibration record),
 // so every stored update against them was wrong. The game table keeps enough to
-// reconstruct the truth per game — opponent_kind ('engine' | 'persona'),
+// reconstruct the truth per game, opponent_kind ('engine' | 'persona'),
 // opponent_elo (the nominal label as reported at save time), result and
-// user_color — so instead of resetting the rating to provisional we REPLAY the
+// user_color, so instead of resetting the rating to provisional we REPLAY the
 // entire vs-bot history from the seed with corrected opponent Elos.
 //
 // This module is deliberately electron-free (node:sqlite is type-only) so

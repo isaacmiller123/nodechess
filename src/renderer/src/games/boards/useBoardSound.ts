@@ -1,11 +1,11 @@
-// Board-level move sounds — shared by every non-chess board component.
+// Board-level move sounds, shared by every non-chess board component.
 //
 // The boards are presentation-only and never OWN state transitions, so the one
 // place that reliably sees "a move just happened" in every mode (local OTB,
 // vs bot, online) is the board itself: this hook watches the spec state's
 // `moves` history and, when it grows by exactly one ply, plays the
 // kind-idiomatic sample (goStone / discFlip / discDrop / pieceSlideCapture /
-// penStroke — synthesized into assets/sounds/games/, see SoundManager).
+// penStroke: synthesized into assets/sounds/games/, see SoundManager).
 //
 // The generic MoveMeta ('move' | 'capture' | 'promote') from the spec is
 // remapped per kind; 'pass' and 'swap' plies stay silent. Resets/history jumps
@@ -64,10 +64,10 @@ export function useBoardSound(kind: GameKind, state: unknown): void {
     try {
       meta = spec ? spec.moveMeta(prev, move) : {}
     } catch {
-      /* ffish preload race — stay silent over guessing */
+      /* ffish preload race: stay silent over guessing */
     }
     // Chess family: the spec's sound IS the chess vocabulary (move/capture/
-    // castle/check/promote) — play it verbatim. Other families remap to their
+    // castle/check/promote). Play it verbatim. Other families remap to their
     // material-idiomatic samples.
     const name: SoundName =
       spec?.family === 'chess'

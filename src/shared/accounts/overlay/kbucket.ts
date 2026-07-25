@@ -1,10 +1,10 @@
-// A3 overlay — k-bucket routing table (overlay/types.ts contract, spec §5).
+// A3 overlay: k-bucket routing table (overlay/types.ts contract, spec §5).
 // 256 buckets indexed by the shared-prefix length of a contact's nodeId vs
 // SELF (bucket p holds contacts sharing exactly p leading bits); each bucket
 // holds at most kBucket contacts ordered least-recently-seen first.
 //
 // Anti-eclipse admission is MANDATORY and lives HERE: a full bucket never
-// evicts a live long-standing contact for a newcomer — insertContact returns
+// evicts a live long-standing contact for a newcomer: insertContact returns
 // the least-recently-seen contact as an eviction CANDIDATE and does NOT admit
 // the newcomer; the node pings the candidate and calls touchContact (keep old,
 // drop new) on success or replaceContact on failure.
@@ -12,7 +12,7 @@
 // All distance math reuses witness/distance.ts (never reimplemented); every
 // ordering is XOR distance with the compareNodeIdBytes tie-break, so the same
 // call sequence produces the same table on node and in the browser bundle.
-// Platform-neutral: no `node:` imports, no DOM globals, no ambient clock —
+// Platform-neutral: no `node:` imports, no DOM globals, no ambient clock:
 // every lastSeenMs is the caller's injected time.
 
 import { closestEligible, xorDistance } from '../witness/distance'
@@ -32,7 +32,7 @@ export function newRoutingTable(self: NodeId): RoutingTable {
 /**
  * Bucket index of `other` relative to `self` = shared-prefix length of the two
  * nodeIds (the XOR distance's leading-zero count). Returns -1 for self
- * (distance 0 — never bucketed).
+ * (distance 0; never bucketed).
  */
 export function bucketIndexOf(self: NodeId, other: NodeId): number {
   const d = xorDistance(self, other)
@@ -41,8 +41,8 @@ export function bucketIndexOf(self: NodeId, other: NodeId): number {
   return idx < 0 ? 0 : idx > BUCKET_COUNT - 1 ? BUCKET_COUNT - 1 : idx
 }
 
-/** Outcome of an admission attempt. On 'full' the newcomer was NOT admitted —
- * the caller pings the candidate and then keeps old (touchContact) or replaces
+/** Outcome of an admission attempt. On 'full' the newcomer was NOT admitted.
+ * The caller pings the candidate and then keeps old (touchContact) or replaces
  * (replaceContact). */
 export type InsertOutcome =
   | { kind: 'inserted' }
@@ -123,14 +123,14 @@ export function tableSize(table: RoutingTable): number {
 }
 
 /**
- * The k closest tabled contacts to `target` — ordering delegated to
+ * The k closest tabled contacts to `target`. Ordering delegated to
  * witness/distance.ts closestEligible (XOR distance, compareNodeIdBytes
  * tie-break), the ONE ordering every layer shares.
  */
 export function closestContacts(table: RoutingTable, target: NodeId, k: number): Contact[] {
   const all = allContacts(table)
-  // A nodeId lives in exactly one bucket, so allContacts never repeats one —
-  // the map is a plain id→contact index (no dedup guard needed).
+  // A nodeId lives in exactly one bucket, so allContacts never repeats one.
+  // The map is a plain id→contact index (no dedup guard needed).
   const byId = new Map<NodeId, Contact>()
   for (const c of all) byId.set(c.nodeId, c)
   const ids = closestEligible(target, all, () => true, k)

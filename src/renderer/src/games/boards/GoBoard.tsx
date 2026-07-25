@@ -1,16 +1,16 @@
-// Go + Gomoku board — interactive Shudan mount (P2 wave 2).
+// Go + Gomoku board, interactive Shudan mount (P2 wave 2).
 //
 // @sabaki/shudan is a PREACT component. Rather than aliasing react →
 // preact/compat app-wide (the app is React 19; chessground and friends must
 // stay on real React), we mount a self-contained preact island: this React
 // component owns a host <div> and renders a BoundedGoban into it with preact's
-// own runtime (shudan imports 'preact' directly, which is installed — no
+// own runtime (shudan imports 'preact' directly, which is installed. No
 // electron.vite.config.ts alias needed; JSX in this file stays React JSX, the
 // preact side uses h() calls only). The island is mounted ONCE and re-rendered
 // in place on prop changes so shudan's stone-placement animation survives.
 //
 // kind === 'go':      full play (vertex click → onMove, hover ghost stone,
-//                     last-move dot, ko square) + the SCORING PHASE UI — after
+//                     last-move dot, ko square) + the SCORING PHASE UI: after
 //                     two passes, taps propose `onAction('markdead <vertex>')`,
 //                     dead groups render dimmed, territory is painted live and
 //                     a floating strip shows the area count + a
@@ -18,7 +18,7 @@
 // kind === 'gomoku':  same mount over gomokuSignMapOf with a win-line
 //                     highlight when five in a row lands.
 //
-// Never rotated: flipPolicy 'none' for both kinds — orientation is ignored.
+// Never rotated: flipPolicy 'none' for both kinds: orientation is ignored.
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
@@ -170,7 +170,7 @@ export default function GoBoard({
     if (!isGo) return undefined
     if (!scoring && !finalized) {
       // Live territory-estimate overlay (owner-fed KataGo ownership): shudan
-      // paints |value|·0.5 opacity, sign +1 = black fill — our grid is
+      // paints |value|·0.5 opacity, sign +1 = black fill. Our grid is
       // white-positive, so it flips. A dead-zone mutes near-neutral noise.
       if (!territory || territory.length !== size * size) return undefined
       const map = Array.from({ length: size }, (_, y) =>

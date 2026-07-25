@@ -1,8 +1,8 @@
 # nostr-rs-relay config for the nodechess signaling relay (image
 # scsibug/nostr-rs-relay). nodechess uses Nostr purely as a WebRTC signaling
-# rendezvous (trystero) — small ephemeral events, not a social relay — so the
-# limits are tuned for high connection churn + tiny events, and retention is
-# short (signaling events are worthless after the handshake).
+# rendezvous (trystero), not a social relay. The events are small and ephemeral,
+# so the limits are tuned for high connection churn plus tiny payloads, and
+# retention is short (signaling events are worthless after the handshake).
 
 [info]
 relay_url = "wss://relay.example.com/"
@@ -19,7 +19,7 @@ port = 8080
 address = "0.0.0.0"
 
 [options]
-# Reject events older than a day / far in the future — signaling is live-only.
+# Reject events older than a day / far in the future. Signaling is live-only.
 reject_future_seconds = 1800
 
 [limits]
@@ -34,6 +34,6 @@ broadcast_buffer = 65536
 event_persist_buffer = 8192
 
 [retention]
-# Signaling events are useless after the handshake — keep the store tiny.
+# Signaling events are useless after the handshake. Keep the store tiny.
 # (nostr-rs-relay: max_seconds prunes events older than this.)
 max_seconds = 3600

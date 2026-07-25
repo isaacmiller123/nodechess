@@ -103,7 +103,7 @@ export function mateTransition(before: PovScore, after: PovScore): MateTransitio
   if (mb != null && mb > 0 && ma == null) return 'mateLost'
   // mate(pos) -> mate(neg): had a mate, now being mated.
   if (mb != null && mb > 0 && ma != null && ma < 0) return 'mateLost'
-  // mate(pos) -> worse (larger) mate(pos): slower but still mating — not annotated.
+  // mate(pos) -> worse (larger) mate(pos): slower but still mating. Not annotated.
   if (mb != null && mb > 0 && ma != null && ma > 0 && ma > mb) return 'mateDelayed'
   return null
 }

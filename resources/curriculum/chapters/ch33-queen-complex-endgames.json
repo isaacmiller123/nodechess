@@ -8,7 +8,7 @@
  "concepts": [
   {
    "id": "q-vs-p-method",
-   "name": "Queen vs. Pawn — the Checking Method",
+   "name": "Queen vs. Pawn, the Checking Method",
    "short": "Against a pawn on the seventh, check and approach: force the enemy king IN FRONT of its own pawn, gain a tempo, and march your king closer until you can win the pawn or mate."
   },
   {
@@ -28,18 +28,18 @@
   },
   {
    "id": "q-plus-r-coordinate",
-   "name": "Queen + Rook — Coordinate the Attack",
+   "name": "Queen + Rook: Coordinate the Attack",
    "short": "Queen and rook are a mating machine: line them up on the same rank or file against the enemy king, the rook checks where the queen guards (or vice versa), and the king is hunted to the edge."
   },
   {
    "id": "perpetual-defence",
-   "name": "Perpetual Check — the Saving Draw",
+   "name": "Perpetual Check: the Saving Draw",
    "short": "When you are losing, a perpetual check is a lifeline: an endless series of checks the king can never escape forces a draw by repetition. Hunt for it before you resign a lost game."
   },
   {
    "id": "checks-first-endgame",
    "name": "Forcing Moves First",
-   "short": "In sharp queen endgames, examine every check before anything else — it is how you find both the mating net and the saving perpetual."
+   "short": "In sharp queen endgames, examine every check before anything else. It is how you find both the mating net and the saving perpetual."
   }
  ],
  "lessons": [
@@ -47,11 +47,11 @@
    "id": "l1-queen-vs-pawn",
    "title": "Queen vs. Pawn on the Seventh",
    "kind": "endgame",
-   "summary": "The checking-and-approaching method that stops a pawn one step from queening — and the two pawns that draw anyway.",
+   "summary": "The checking-and-approaching method that stops a pawn one step from queening, and the two pawns that draw anyway.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — convert the queen endgame",
+     "title": "Warm-up: convert the queen endgame",
      "intro": {
       "text": "We open the summit of endgame craft: the queen. First, three positions where a queen must do its work cleanly. Find the strongest move in each."
      },
@@ -73,7 +73,7 @@
        "conceptId": "q-vs-p-method",
        "coach": {
         "conceptId": "q-vs-p-method",
-        "text": "A queen against a pawn one square from queening. If the pawn promotes, Black is saved — so the queen alone cannot just sit and watch; the king on e4 is too far to help yet. The winning machine is this: check the king, and force it onto b1, IN FRONT of its own pawn. A king blocking its own pawn cannot push it. That gives me a free move — a tempo — to march my king one step closer. I begin with Qe1+.",
+        "text": "A queen against a pawn one square from queening. If the pawn promotes, Black is saved, so the queen alone cannot just sit and watch; the king on e4 is too far to help yet. The winning machine is this: check the king, and force it onto b1, IN FRONT of its own pawn. A king blocking its own pawn cannot push it. That gives me a free move (a tempo) to march my king one step closer. I begin with Qe1+.",
         "annotations": [
          {
           "kind": "circle",
@@ -95,7 +95,7 @@
        "conceptId": "q-vs-p-method",
        "coach": {
         "conceptId": "q-vs-p-method",
-        "text": "After Qe1+ the king fled to a2, and now Qd1 stops the pawn on the queening square b1. Whenever the pawn lunges ...b2-b1, the queen is already watching b1 — and whenever the king blocks on b1, the pawn is frozen. Either way Black makes no progress, while on my free moves the king walks in: Ke4-d3-c3. The pawn is going nowhere; my king is coming. That is the engine of the win.",
+        "text": "After Qe1+ the king fled to a2, and now Qd1 stops the pawn on the queening square b1. Whenever the pawn lunges ...b2-b1, the queen is already watching b1, and whenever the king blocks on b1, the pawn is frozen. Either way Black makes no progress, while on my free moves the king walks in: Ke4-d3-c3. The pawn is going nowhere; my king is coming. That is the engine of the win.",
         "annotations": [
          {
           "kind": "circle",
@@ -122,7 +122,7 @@
        "conceptId": "q-vs-p-method",
        "coach": {
         "conceptId": "q-vs-p-method",
-        "text": "Several cycles later the king has arrived on c3, the enemy king is back on b1 in front of its pawn, and the net snaps shut. Qxb2 — the queen takes the pawn with check, my king on c3 guards her, and b1 has no flight: a1, a2, c1, c2 are all covered. Checkmate. Check, force the block, bring the king up, and finish. That is the whole technique against a knight-pawn.",
+        "text": "Several cycles later the king has arrived on c3, the enemy king is back on b1 in front of its pawn, and the net snaps shut. Qxb2: the queen takes the pawn with check, my king on c3 guards her, and b1 has no flight: a1, a2, c1, c2 are all covered. Checkmate. Check, force the block, bring the king up, and finish. That is the whole technique against a knight-pawn.",
         "annotations": [
          {
           "kind": "circle",
@@ -149,7 +149,7 @@
        "conceptId": "q-vs-p-draw",
        "coach": {
         "conceptId": "q-vs-p-draw",
-        "text": "Now the cruel exception — a ROOK-pawn. The same plan drove the king to a1, in front of its pawn, the queen on b3 freezing b1 and b2, the pawn stuck on a2. With the knight-pawn the king then had to step out and you kept checking. But here a1 is the corner: the pawn blocks a2, the queen covers b1 and b2, and it is Black's move with NO legal move — and the king is NOT in check. That is STALEMATE, a draw. Because forcing this king in front of a rook-pawn stalemates it, you can never win the tempo to bring your king up. Rook-pawn on the seventh, king beside it: drawn.",
+        "text": "Now the cruel exception: a ROOK-pawn. The same plan drove the king to a1, in front of its pawn, the queen on b3 freezing b1 and b2, the pawn stuck on a2. With the knight-pawn the king then had to step out and you kept checking. But here a1 is the corner: the pawn blocks a2, the queen covers b1 and b2, and it is Black's move with NO legal move, and the king is NOT in check. That is STALEMATE, a draw. Because forcing this king in front of a rook-pawn stalemates it, you can never win the tempo to bring your king up. Rook-pawn on the seventh, king beside it: drawn.",
         "annotations": [
          {
           "kind": "circle",
@@ -174,7 +174,7 @@
        "conceptId": "q-vs-p-draw",
        "coach": {
         "conceptId": "q-vs-p-draw",
-        "text": "The second exception — a BISHOP-pawn (the c- or f-pawn), and notice my king sits way off on h4, too far to help. Why does it draw? Because the defending king has a second bolt-hole: the corner. When you check this king toward its pawn, it can duck to a1, away from the pawn. From a1 the threat is ...c1=Q; and every time you try to capture the c-pawn or force the king in front of it, the king on a1 is left stalemated — exactly the rook-pawn trap, one file over. So you never gain the tempo to bring your king up, and with your own king this far away, the position is a draw. This board shows the MECHANISM — the king ducking to the corner to be stalemated — not a single forced line. Remember the rule, not the maze: ROOK- and BISHOP-pawns on the seventh draw; KNIGHT- and CENTRE-pawns lose.",
+        "text": "The second exception: a BISHOP-pawn (the c- or f-pawn), and notice my king sits way off on h4, too far to help. Why does it draw? Because the defending king has a second bolt-hole: the corner. When you check this king toward its pawn, it can duck to a1, away from the pawn. From a1 the threat is ...c1=Q; and every time you try to capture the c-pawn or force the king in front of it, the king on a1 is left stalemated, exactly the rook-pawn trap, one file over. So you never gain the tempo to bring your king up, and with your own king this far away, the position is a draw. This board shows the MECHANISM (the king ducking to the corner to be stalemated) not a single forced line. Remember the rule, not the maze: ROOK- and BISHOP-pawns on the seventh draw; KNIGHT- and CENTRE-pawns lose.",
         "annotations": [
          {
           "kind": "circle",
@@ -198,14 +198,14 @@
     },
     {
      "kind": "guided",
-     "title": "The king has arrived — finish it",
+     "title": "The king has arrived, finish it",
      "steps": [
       {
        "fen": "8/8/8/8/8/2K5/1p2Q3/1k6 w - - 0 1",
        "conceptId": "q-vs-p-method",
        "coach": {
         "conceptId": "q-vs-p-method",
-        "text": "The king has arrived on c3. The enemy king sits on b1, its pawn frozen on b2. This is the moment the whole method was building toward. One move ends the game — and your king guards the landing square. Deliver mate.",
+        "text": "The king has arrived on c3. The enemy king sits on b1, its pawn frozen on b2. This is the moment the whole method was building toward. One move ends the game, and your king guards the landing square. Deliver mate.",
         "annotations": [
          {
           "kind": "circle",
@@ -224,7 +224,7 @@
        ],
        "successLine": {
         "conceptId": "q-vs-p-method",
-        "text": "Qxb2, mate. The queen takes the pawn with check, your king on c3 defends her, and b1 has no flight — a1, a2, c1, c2 all covered. The pawn that threatened to queen is gone, and so is the game. Check, force the block, bring up the king, finish.",
+        "text": "Qxb2, mate. The queen takes the pawn with check, your king on c3 defends her, and b1 has no flight: a1, a2, c1, c2 all covered. The pawn that threatened to queen is gone, and so is the game. Check, force the block, bring up the king, finish.",
         "annotations": [
          {
           "kind": "circle",
@@ -242,14 +242,14 @@
        },
        "retryLine": {
         "conceptId": "q-vs-p-method",
-        "text": "No. Your king on c3 is right beside the enemy king — that means the queen can finally go all the way in. Take the pawn with check on a square your king defends, and the cornered king has nowhere to run."
+        "text": "No. Your king on c3 is right beside the enemy king. That means the queen can finally go all the way in. Take the pawn with check on a square your king defends, and the cornered king has nowhere to run."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — queen technique",
+     "title": "Cool-down: queen technique",
      "intro": {
       "text": "Three more queen-endgame positions. The queen rewards precision: find the move that forces the issue."
      },
@@ -266,15 +266,15 @@
   },
   {
    "id": "l2-qp-king-safety",
-   "title": "Queen-and-Pawn Endings — King Safety First",
+   "title": "Queen-and-Pawn Endings: King Safety First",
    "kind": "endgame",
    "summary": "With queens on, the checks never stop. Shelter your king before you push, and a centralised queen is worth more than a pawn.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the queen in the ending",
+     "title": "Warm-up: the queen in the ending",
      "intro": {
-      "text": "Queens on the board late in the game make the sharpest endings of all — one loose king and the checks rain down forever. Warm up: find the strongest queen move in each."
+      "text": "Queens on the board late in the game make the sharpest endings of all. One loose king and the checks rain down forever. Warm up: find the strongest queen move in each."
      },
      "puzzle": {
       "themes": [
@@ -294,7 +294,7 @@
        "conceptId": "qp-king-safety",
        "coach": {
         "conceptId": "qp-king-safety",
-        "text": "Material is dead level — a queen each, three pawns each — so nothing is decided yet. With queens on, the question that matters is not the pawns but the kings. His king on h7 is open: only f7 and g7 shield it, and the h-file is wide open to my queen. Mine on g1 sits behind f2, g2, h2 — it LOOKS safe. But look closer: those three pawns are unmoved, so my king has no luft, and a back-rank check like ...Qb1+ is deadly — I can only block with Qe1, and then ...Qxe1 is mate. My king is not safe yet. In a queen ending that is the very first thing to fix.",
+        "text": "Material is dead level (a queen each, three pawns each) so nothing is decided yet. With queens on, the question that matters is not the pawns but the kings. His king on h7 is open: only f7 and g7 shield it, and the h-file is wide open to my queen. Mine on g1 sits behind f2, g2, h2. It LOOKS safe. But look closer: those three pawns are unmoved, so my king has no luft, and a back-rank check like ...Qb1+ is deadly. I can only block with Qe1, and then ...Qxe1 is mate. My king is not safe yet. In a queen ending that is the very first thing to fix.",
         "annotations": [
          {
           "kind": "circle",
@@ -322,7 +322,7 @@
        "conceptId": "qp-king-safety",
        "coach": {
         "conceptId": "qp-king-safety",
-        "text": "So before anything else I spend a move on luft: g3. Now g2 is a hole for my king, and f2-g3-h2 form a roof. Black still has checks — Qb1+, Qd1+ — but they trap nothing: my king simply walks up through g2 toward the centre, and with every step the checks run dry. No back-rank mate, no airless king, no endless harassment. THAT is a safe king. The half-move on g3 is the best move on the board — safety before activity.",
+        "text": "So before anything else I spend a move on luft: g3. Now g2 is a hole for my king, and f2-g3-h2 form a roof. Black still has checks (Qb1+, Qd1+) but they trap nothing: my king simply walks up through g2 toward the centre, and with every step the checks run dry. No back-rank mate, no airless king, no endless harassment. THAT is a safe king. The half-move on g3 is the best move on the board, safety before activity.",
         "annotations": [
          {
           "kind": "highlight",
@@ -348,7 +348,7 @@
        "conceptId": "qp-king-safety",
        "coach": {
         "conceptId": "qp-king-safety",
-        "text": "Now that MY king is safe, I turn the same weapon on HIS. Qh5+ — the queen swings onto the open h-file with check, and the exposed king has a single legal answer: ...Kg8, dragged into the corner. Material is still dead level, so this one check wins nothing by force — but I now hold the safer king AND the more active queen, free to probe for pawns and a mating net while Black's queen sits far away on b3. That is the king-safety edge cashed in: secure your own king first, then harass the open one. Activity and safety, in that order.",
+        "text": "Now that MY king is safe, I turn the same weapon on HIS. Qh5+: the queen swings onto the open h-file with check, and the exposed king has a single legal answer: ...Kg8, dragged into the corner. Material is still dead level, so this one check wins nothing by force, but I now hold the safer king AND the more active queen, free to probe for pawns and a mating net while Black's queen sits far away on b3. That is the king-safety edge cashed in: secure your own king first, then harass the open one. Activity and safety, in that order.",
         "annotations": [
          {
           "kind": "circle",
@@ -376,7 +376,7 @@
        "conceptId": "qp-king-safety",
        "coach": {
         "conceptId": "qp-king-safety",
-        "text": "You have already made luft with g3, so your own king is safe — no back-rank tricks. Now strike the open king: his on h7 is bare, the h-file wide open. Bring your queen to the h-file with check, straight at h7. There is only one square that does it. One move.",
+        "text": "You have already made luft with g3, so your own king is safe, no back-rank tricks. Now strike the open king: his on h7 is bare, the h-file wide open. Bring your queen to the h-file with check, straight at h7. There is only one square that does it. One move.",
         "annotations": [
          {
           "kind": "circle",
@@ -395,7 +395,7 @@
        ],
        "successLine": {
         "conceptId": "qp-king-safety",
-        "text": "Qh5+ — the queen swings to the open h-file with check, and the exposed king has one answer: ...Kg8, dragged into the corner. Your own king, given luft on g2, stays untouched. The material is level, so this is not a knockout — but with the safer king and the more active queen, you hold the initiative and the easier game. Secure your king, then find the open one.",
+        "text": "Qh5+: the queen swings to the open h-file with check, and the exposed king has one answer: ...Kg8, dragged into the corner. Your own king, given luft on g2, stays untouched. The material is level, so this is not a knockout, but with the safer king and the more active queen, you hold the initiative and the easier game. Secure your king, then find the open one.",
         "annotations": [
          {
           "kind": "circle",
@@ -420,9 +420,9 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — queen endings",
+     "title": "Cool-down: queen endings",
      "intro": {
-      "text": "Real queen endgames. Keep the first question in mind — whose king is safe? — and let it guide you to the move."
+      "text": "Real queen endgames. Keep the first question in mind, whose king is safe?, and let it guide you to the move."
      },
      "puzzle": {
       "themes": [
@@ -437,15 +437,15 @@
   },
   {
    "id": "l3-active-queen",
-   "title": "The Active Queen — Activity Beats Material",
+   "title": "The Active Queen: Activity Beats Material",
    "kind": "endgame",
    "summary": "A centralised queen that attacks pawns and shepherds a passer outweighs a passive queen and even an extra pawn.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — find the active move",
+     "title": "Warm-up: find the active move",
      "intro": {
-      "text": "The queen is a sprinter and a sniper at once — wasted on defence, lethal when active. Warm up by finding the most active, forcing queen move in each."
+      "text": "The queen is a sprinter and a sniper at once, wasted on defence, lethal when active. Warm up by finding the most active, forcing queen move in each."
      },
      "puzzle": {
       "themes": [
@@ -458,14 +458,14 @@
     },
     {
      "kind": "teach",
-     "title": "Centralise — one queen does the work of two",
+     "title": "Centralise: one queen does the work of two",
      "steps": [
       {
        "fen": "6k1/5pp1/7p/8/8/6P1/1q3P1P/3Q2K1 w - - 0 1",
        "conceptId": "queen-activity",
        "coach": {
         "conceptId": "queen-activity",
-        "text": "Two queens, level pawns — three each, nothing between us on material. But look how differently the queens stand. Black's on b2 is busy nibbling at the edge, far from the action. Mine wants the centre. From a central square a queen touches both wings at once: it attacks pawns, guards its own, and is ready to check the enemy king on a moment's notice. The plan is Qd5 — centralise, and the single queen suddenly does the work of two pieces. Nothing is won by force here, but the active side plays for everything while the passive side only suffers.",
+        "text": "Two queens, level pawns: three each, nothing between us on material. But look how differently the queens stand. Black's on b2 is busy nibbling at the edge, far from the action. Mine wants the centre. From a central square a queen touches both wings at once: it attacks pawns, guards its own, and is ready to check the enemy king on a moment's notice. The plan is Qd5. Centralise, and the single queen suddenly does the work of two pieces. Nothing is won by force here, but the active side plays for everything while the passive side only suffers.",
         "annotations": [
          {
           "kind": "circle",
@@ -478,7 +478,7 @@
           "from": "d1",
           "to": "d5",
           "color": "good",
-          "label": "Qd5 — centralise"
+          "label": "Qd5: centralise"
          }
         ]
        }
@@ -488,7 +488,7 @@
        "conceptId": "queen-activity",
        "coach": {
         "conceptId": "queen-activity",
-        "text": "There she is, planted on d5 in the centre. Count what she does from this one square: she eyes the a8-h1 diagonal, the d-file, the fifth rank — she hits f7, she watches Black's king, she covers her own king's approaches. Black's queen on b2 does a fraction of that. The material is dead level, yet White is plainly the one playing for a win — that is the law of queen endings: the more active queen is worth more than a pawn of material. Activity first, material second.",
+        "text": "There she is, planted on d5 in the centre. Count what she does from this one square: she eyes the a8-h1 diagonal, the d-file, the fifth rank. She hits f7, she watches Black's king, she covers her own king's approaches. Black's queen on b2 does a fraction of that. The material is dead level, yet White is plainly the one playing for a win. That is the law of queen endings: the more active queen is worth more than a pawn of material. Activity first, material second.",
         "annotations": [
          {
           "kind": "circle",
@@ -544,7 +544,7 @@
        "conceptId": "queen-activity",
        "coach": {
         "conceptId": "queen-activity",
-        "text": "Material is level, but Black's queen sulks on b2 while yours can dominate the board. Find the centralising move that puts your queen on the strongest square — eyeing both wings, f7, and the enemy king at once.",
+        "text": "Material is level, but Black's queen sulks on b2 while yours can dominate the board. Find the centralising move that puts your queen on the strongest square. Eyeing both wings, f7, and the enemy king at once.",
         "annotations": [
          {
           "kind": "circle",
@@ -563,7 +563,7 @@
        ],
        "successLine": {
         "conceptId": "queen-activity",
-        "text": "Qd5 — the queen owns the centre. From d5 she rakes the long diagonal at f7, commands the d-file and the fifth rank, and stands ready to check the black king. One active queen outweighs a passive one and a pawn besides. In queen endings, centralise before you do anything else.",
+        "text": "Qd5: the queen owns the centre. From d5 she rakes the long diagonal at f7, commands the d-file and the fifth rank, and stands ready to check the black king. One active queen outweighs a passive one and a pawn besides. In queen endings, centralise before you do anything else.",
         "annotations": [
          {
           "kind": "circle",
@@ -580,16 +580,16 @@
        },
        "retryLine": {
         "conceptId": "queen-activity",
-        "text": "Not the most active. The strongest square is the CENTRE, where the queen touches both wings and the enemy king. Put her on d5 — the dominating central post."
+        "text": "Not the most active. The strongest square is the CENTRE, where the queen touches both wings and the enemy king. Put her on d5, the dominating central post."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — activity decides",
+     "title": "Cool-down: activity decides",
      "intro": {
-      "text": "Queen endings where the active move is the winning move. Trust activity: centralise, attack, check — and let the passive defender suffer."
+      "text": "Queen endings where the active move is the winning move. Trust activity: centralise, attack, check, and let the passive defender suffer."
      },
      "puzzle": {
       "themes": [
@@ -605,15 +605,15 @@
   },
   {
    "id": "l4-queen-plus-rook",
-   "title": "Queen + Rook — the Mating Machine",
+   "title": "Queen + Rook: the Mating Machine",
    "kind": "tactics",
    "summary": "Coordinated, queen and rook drive any king to the edge: one piece checks where the other guards.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — heavy pieces hunt the king",
+     "title": "Warm-up: heavy pieces hunt the king",
      "intro": {
-      "text": "Queen and rook together are the deadliest pair on the board — two long-range pieces that can wall off a rank and a file at once. Warm up: find the strongest move for the heavy pieces in each."
+      "text": "Queen and rook together are the deadliest pair on the board. Two long-range pieces that can wall off a rank and a file at once. Warm up: find the strongest move for the heavy pieces in each."
      },
      "puzzle": {
       "themes": [
@@ -633,14 +633,14 @@
        "conceptId": "q-plus-r-coordinate",
        "coach": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "The coordination principle in its purest form. The king is on e8. The recipe: one heavy piece SEALS the rank beside the king, the other delivers check on the king's rank. First Qa7 — the queen takes the entire seventh rank, so the king can never step down to d7, e7, or f7. The seventh is a wall. Now the king is trapped on the eighth with nowhere to hide.",
+        "text": "The coordination principle in its purest form. The king is on e8. The recipe: one heavy piece SEALS the rank beside the king, the other delivers check on the king's rank. First Qa7: the queen takes the entire seventh rank, so the king can never step down to d7, e7, or f7. The seventh is a wall. Now the king is trapped on the eighth with nowhere to hide.",
         "annotations": [
          {
           "kind": "arrow",
           "from": "a2",
           "to": "a7",
           "color": "good",
-          "label": "Qa7 — seal the 7th"
+          "label": "Qa7: seal the 7th"
          },
          {
           "kind": "circle",
@@ -655,7 +655,7 @@
        "conceptId": "q-plus-r-coordinate",
        "coach": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "The queen on a7 has walled off the seventh rank — d7, e7, f7 are all forbidden to the king. Now the rook delivers the blow on the eighth: Rb8. Check along the back rank; the king cannot step to d8 or f8 (the rook owns the rank), and cannot drop to the seventh (the queen owns it). No flight, no block, no capture — checkmate. That is the machine: one piece guards the escape rank, the other gives mate on the king's rank.",
+        "text": "The queen on a7 has walled off the seventh rank: d7, e7, f7 are all forbidden to the king. Now the rook delivers the blow on the eighth: Rb8. Check along the back rank; the king cannot step to d8 or f8 (the rook owns the rank), and cannot drop to the seventh (the queen owns it). No flight, no block, no capture, checkmate. That is the machine: one piece guards the escape rank, the other gives mate on the king's rank.",
         "annotations": [
          {
           "kind": "arrow",
@@ -684,7 +684,7 @@
        "conceptId": "q-plus-r-coordinate",
        "coach": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "The same idea hunts a king in the OPEN, not just on the edge — the lawnmower. The black king is in the centre on e5. The queen and rook take turns: one checks the king's rank to push it back a row, the other steps to the next rank to fence it in, and they roll the king to the edge like a mower up a lawn. Rook and queen never need to touch the king; the king is herded by two walls advancing together. Coordinate them, and no king survives in the open.",
+        "text": "The same idea hunts a king in the OPEN, not just on the edge, the lawnmower. The black king is in the centre on e5. The queen and rook take turns: one checks the king's rank to push it back a row, the other steps to the next rank to fence it in, and they roll the king to the edge like a mower up a lawn. Rook and queen never need to touch the king; the king is herded by two walls advancing together. Coordinate them, and no king survives in the open.",
         "annotations": [
          {
           "kind": "circle",
@@ -719,7 +719,7 @@
        "conceptId": "q-plus-r-coordinate",
        "coach": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "The king is on e8. First, build the wall: seal the seventh rank with your queen so the king can never escape downward. One move — take the whole rank beside the king.",
+        "text": "The king is on e8. First, build the wall: seal the seventh rank with your queen so the king can never escape downward. One move. Take the whole rank beside the king.",
         "annotations": [
          {
           "kind": "circle",
@@ -738,7 +738,7 @@
        ],
        "successLine": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "Qa7 — the seventh rank is a wall. The king cannot drop to d7, e7, or f7; it is pinned to the back rank. Now the rook can deliver mate on the eighth. First seal the escape, then strike.",
+        "text": "Qa7: the seventh rank is a wall. The king cannot drop to d7, e7, or f7; it is pinned to the back rank. Now the rook can deliver mate on the eighth. First seal the escape, then strike.",
         "annotations": [
          {
           "kind": "arrow",
@@ -759,7 +759,7 @@
        "conceptId": "q-plus-r-coordinate",
        "coach": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "The queen on a7 has sealed the seventh rank — the king is trapped on the eighth. Now deliver the mate with the rook on the back rank.",
+        "text": "The queen on a7 has sealed the seventh rank. The king is trapped on the eighth. Now deliver the mate with the rook on the back rank.",
         "annotations": [
          {
           "kind": "circle",
@@ -796,14 +796,14 @@
        },
        "retryLine": {
         "conceptId": "q-plus-r-coordinate",
-        "text": "No. The queen already covers the seventh rank, so the king is stuck on the eighth. Give the rook check along the eighth rank — that is mate."
+        "text": "No. The queen already covers the seventh rank, so the king is stuck on the eighth. Give the rook check along the eighth rank. That is mate."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — heavy-piece mates",
+     "title": "Cool-down: heavy-piece mates",
      "intro": {
       "text": "Queen-and-rook positions from real games. Look for the coordination: one piece walls off the king's escape while the other delivers the blow."
      },
@@ -820,7 +820,7 @@
   },
   {
    "id": "l5-perpetual-defence",
-   "title": "Perpetual Check — the Saving Draw",
+   "title": "Perpetual Check: the Saving Draw",
    "kind": "endgame",
    "summary": "When you are losing, an endless series of checks the king can never escape rescues a half-point. Hunt for it before you give up.",
    "segments": [
@@ -833,7 +833,7 @@
        "conceptId": "perpetual-defence",
        "coach": {
         "conceptId": "perpetual-defence",
-        "text": "This time YOU are the one in trouble. Count the material: Black has a queen AND a rook to your lone queen — you are a whole rook down. If Black is given a free move, he brings his pieces together and mates you; the game is lost. A lesser player resigns here. But look at Black's king — it marched out to g6, hunting, and now stands in the open with no pawn cover at all. That is your lifeline. Your queen is a checking machine, and a king naked in the centre cannot escape its checks. There is a draw hiding here — a PERPETUAL CHECK.",
+        "text": "This time YOU are the one in trouble. Count the material: Black has a queen AND a rook to your lone queen. You are a whole rook down. If Black is given a free move, he brings his pieces together and mates you; the game is lost. A lesser player resigns here. But look at Black's king: it marched out to g6, hunting, and now stands in the open with no pawn cover at all. That is your lifeline. Your queen is a checking machine, and a king naked in the centre cannot escape its checks. There is a draw hiding here. A PERPETUAL CHECK.",
         "annotations": [
          {
           "kind": "circle",
@@ -860,7 +860,7 @@
        "conceptId": "perpetual-defence",
        "coach": {
         "conceptId": "perpetual-defence",
-        "text": "Qd3+ — the queen checks from a SAFE distance, and the bare king must wander: ...Kf6, then Qf3+ ...Ke6, Qg4+ ...Ke5, Qg5+ — wherever it runs there is another check waiting. Notice the one rule that makes this work: never check from a square the king can reach. From g6 the king cannot touch d3, so the check stands; but a check on g4 right beside the king would lose at once to ...Kg5, the king stepping up to attack the queen. Check from afar. While the king is dodging it can never gather its queen and rook to shelter, and the position repeats — by the threefold-repetition rule, that is a DRAW. A whole rook down, saved with nothing but checks.",
+        "text": "Qd3+. The queen checks from a SAFE distance, and the bare king must wander: ...Kf6, then Qf3+ ...Ke6, Qg4+ ...Ke5, Qg5+. Wherever it runs there is another check waiting. Notice the one rule that makes this work: never check from a square the king can reach. From g6 the king cannot touch d3, so the check stands; but a check on g4 right beside the king would lose at once to ...Kg5, the king stepping up to attack the queen. Check from afar. While the king is dodging it can never gather its queen and rook to shelter, and the position repeats. By the threefold-repetition rule, that is a DRAW. A whole rook down, saved with nothing but checks.",
         "annotations": [
          {
           "kind": "circle",
@@ -873,7 +873,7 @@
           "from": "d3",
           "to": "f3",
           "color": "good",
-          "label": "check again — and repeat"
+          "label": "check again, and repeat"
          }
         ]
        }
@@ -883,7 +883,7 @@
        "conceptId": "checks-first-endgame",
        "coach": {
         "conceptId": "checks-first-endgame",
-        "text": "The discipline that finds the lifeline is the same one that finds the mate: when you are in trouble, look at your CHECKS first. Same story — you are a rook down and lost on material — but the enemy king has strayed even deeper, to e4 in the heart of the board. Qf3+ checks it from the side, Qe2+ checks it on the file, Qa4+ checks it on the rank; every square it touches, a check follows, and it can never break free to bring up its extra force. One caution: keep the queen at a safe distance — a check from right beside the king lets it simply capture the queen, so check from afar. A draw. Whenever you are losing, scan your checks before you do anything else — the save is usually a perpetual against an exposed king.",
+        "text": "The discipline that finds the lifeline is the same one that finds the mate: when you are in trouble, look at your CHECKS first. Same story (you are a rook down and lost on material) but the enemy king has strayed even deeper, to e4 in the heart of the board. Qf3+ checks it from the side, Qe2+ checks it on the file, Qa4+ checks it on the rank; every square it touches, a check follows, and it can never break free to bring up its extra force. One caution: keep the queen at a safe distance. A check from right beside the king lets it simply capture the queen, so check from afar. A draw. Whenever you are losing, scan your checks before you do anything else. The save is usually a perpetual against an exposed king.",
         "annotations": [
          {
           "kind": "circle",
@@ -896,7 +896,7 @@
           "from": "d1",
           "to": "f3",
           "color": "good",
-          "label": "Qf3+ — and never stop"
+          "label": "Qf3+, and never stop"
          }
         ]
        }
@@ -907,7 +907,7 @@
      "kind": "guided",
      "title": "Save the lost game",
      "intro": {
-      "text": "You are losing — a full rook down, and the enemy will consolidate and mate if given a free move. Do not despair: the enemy king is stranded in the open. Find the perpetual check that draws — supply the saving check."
+      "text": "You are losing. A full rook down, and the enemy will consolidate and mate if given a free move. Do not despair: the enemy king is stranded in the open. Find the perpetual check that draws. Supply the saving check."
      },
      "steps": [
       {
@@ -915,7 +915,7 @@
        "conceptId": "perpetual-defence",
        "coach": {
         "conceptId": "perpetual-defence",
-        "text": "You are a whole rook down and lost — but Black's king sits exposed on g6 with no pawn cover, and your king is tucked safe behind f2-g2-h2. Begin the perpetual: check that naked king, and you will never have to stop. One move — any check that the king cannot escape.",
+        "text": "You are a whole rook down and lost, but Black's king sits exposed on g6 with no pawn cover, and your king is tucked safe behind f2-g2-h2. Begin the perpetual: check that naked king, and you will never have to stop. One move. Any check that the king cannot escape.",
         "annotations": [
          {
           "kind": "circle",
@@ -935,29 +935,29 @@
        ],
        "successLine": {
         "conceptId": "perpetual-defence",
-        "text": "A check from a SAFE distance — and the bare king must wander while you check again and again. It can never both shelter behind its pieces and stop the checks, and it can never queen its advantage while dodging. The checks repeat; the game is drawn. A half-point snatched from a lost position. (Note Qg4+ would FAIL here — the king steps to g5 and attacks the queen; always check from where the king cannot reach.) When you are losing, the first thing you hunt for is the perpetual.",
+        "text": "A check from a SAFE distance, and the bare king must wander while you check again and again. It can never both shelter behind its pieces and stop the checks, and it can never queen its advantage while dodging. The checks repeat; the game is drawn. A half-point snatched from a lost position. (Note Qg4+ would FAIL here: the king steps to g5 and attacks the queen; always check from where the king cannot reach.) When you are losing, the first thing you hunt for is the perpetual.",
         "annotations": [
          {
           "kind": "arrow",
           "from": "d3",
           "to": "f3",
           "color": "good",
-          "label": "and repeat — draw"
+          "label": "and repeat: draw"
          }
         ]
        },
        "retryLine": {
         "conceptId": "checks-first-endgame",
-        "text": "Not that — a quiet move and Black consolidates his extra rook and mates you. You have time for nothing but checks. The black king is stranded on g6 with no shelter. Find a queen check it cannot escape, and keep checking forever."
+        "text": "Not that: a quiet move and Black consolidates his extra rook and mates you. You have time for nothing but checks. The black king is stranded on g6 with no shelter. Find a queen check it cannot escape, and keep checking forever."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the perpetual",
+     "title": "Cool-down: find the perpetual",
      "intro": {
-      "text": "Two lost positions — you are down a rook in each — saved by perpetual check. The opponent's king-march is played for you; your job is to find the saving check and hold the draw."
+      "text": "Two lost positions (you are down a rook in each) saved by perpetual check. The opponent's king-march is played for you; your job is to find the saving check and hold the draw."
      },
      "puzzle": {
       "themes": [
@@ -992,15 +992,15 @@
   },
   {
    "id": "l6-practice-and-boss",
-   "title": "Putting It Together — Win the Queen Ending",
+   "title": "Putting It Together: Win the Queen Ending",
    "kind": "practice",
    "summary": "Mixed queen-endgame drills, then a boss: convert a winning queen ending against the engine.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — every idea, mixed",
+     "title": "Warm-up: every idea, mixed",
      "intro": {
-      "text": "All five threads at once — technique, king safety, activity, coordination, the saving check. Find the best move in each."
+      "text": "All five threads at once: technique, king safety, activity, coordination, the saving check. Find the best move in each."
      },
      "puzzle": {
       "themes": [
@@ -1021,7 +1021,7 @@
        "conceptId": "queen-activity",
        "coach": {
         "conceptId": "queen-activity",
-        "text": "Before the boss, fix the five laws in your mind. ONE: against a lone pawn on the seventh, check and force the king in front of it, then bring your king up — but rook- and bishop-pawns draw. TWO: with queens on, your king's SAFETY outweighs a pawn; build luft before you push. THREE: the ACTIVE, centralised queen — like mine on d5 here — is worth more than a passive one. FOUR: queen and rook coordinate — one seals a rank, the other mates. FIVE: when lost, hunt the PERPETUAL. Hold these five, and no queen ending will frighten you.",
+        "text": "Before the boss, fix the five laws in your mind. ONE: against a lone pawn on the seventh, check and force the king in front of it, then bring your king up, but rook- and bishop-pawns draw. TWO: with queens on, your king's SAFETY outweighs a pawn; build luft before you push. THREE: the ACTIVE, centralised queen (like mine on d5 here) is worth more than a passive one. FOUR: queen and rook coordinate. One seals a rank, the other mates. FIVE: when lost, hunt the PERPETUAL. Hold these five, and no queen ending will frighten you.",
         "annotations": [
          {
           "kind": "circle",
@@ -1049,20 +1049,20 @@
     },
     {
      "kind": "boss",
-     "title": "Boss — convert the extra pawn",
+     "title": "Boss: convert the extra pawn",
      "bossFen": "6k1/5pp1/7p/3PQ3/8/q7/5PPP/6K1 w - - 0 1",
      "bossEngineElo": 1780,
      "bossUserColor": "white",
      "bossIntro": {
       "conceptId": "qp-king-safety",
-      "text": "Now prove it over the board. You are White in a queen ending with a clean extra passed pawn on d5 and a centralised queen on e5 — winning, but only if you heed the order of the laws. ALWAYS glance for a forcing tactic first — a check or a queen trade that wins on the spot — but here Black's king has luft on h7 and Black's queen sits safe on a3, so there is no instant knockout; this is a conversion. Your king on g1 has NO luft: those f2-g2-h2 pawns are unmoved, and Black's queen, though offside, eyes the back rank — ...Qa1+, ...Qc1+, a check on the first rank is in the air. So FIRST make your own king safe: spend a move on luft so there is no back-rank trick, then your king can simply walk out of any check toward shelter — they are a nuisance, not a perpetual. THEN cash the win: keep the queen active and escort the d-pawn home from beside or behind, never blocking it, checking the black king to gain the tempi to push. King safety first, then activity and the passer. Stay calm, trade into a won pawn ending if the chance comes, and convert. Begin."
+      "text": "Now prove it over the board. You are White in a queen ending with a clean extra passed pawn on d5 and a centralised queen on e5. Winning, but only if you heed the order of the laws. ALWAYS glance for a forcing tactic first (a check or a queen trade that wins on the spot) but here Black's king has luft on h7 and Black's queen sits safe on a3, so there is no instant knockout; this is a conversion. Your king on g1 has NO luft: those f2-g2-h2 pawns are unmoved, and Black's queen, though offside, eyes the back rank. ...Qa1+, ...Qc1+, a check on the first rank is in the air. So FIRST make your own king safe: spend a move on luft so there is no back-rank trick, then your king can simply walk out of any check toward shelter. They are a nuisance, not a perpetual. THEN cash the win: keep the queen active and escort the d-pawn home from beside or behind, never blocking it, checking the black king to gain the tempi to push. King safety first, then activity and the passer. Stay calm, trade into a won pawn ending if the chance comes, and convert. Begin."
      }
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — finish them off",
+     "title": "Cool-down: finish them off",
      "intro": {
-      "text": "A last set of queen endings. Apply the five laws — technique, safety, activity, coordination, and the eye for a perpetual either way."
+      "text": "A last set of queen endings. Apply the five laws. Technique, safety, activity, coordination, and the eye for a perpetual either way."
      },
      "puzzle": {
       "themes": [
@@ -1089,7 +1089,7 @@
      "It is always a win for the queen"
     ],
     "answerIndex": 2,
-    "explain": "Rook-pawns (and bishop-pawns) on the seventh draw: forcing the defending king in front of the pawn stalemates it, so you can never win the tempo to bring your king up. Knight- and centre-pawns lose — there you check, force the block, and march the king in."
+    "explain": "Rook-pawns (and bishop-pawns) on the seventh draw: forcing the defending king in front of the pawn stalemates it, so you can never win the tempo to bring your king up. Knight- and centre-pawns lose. There you check, force the block, and march the king in."
    },
    {
     "kind": "mc",
@@ -1113,11 +1113,11 @@
      "Owning the only open file"
     ],
     "answerIndex": 1,
-    "explain": "A centralised, active queen attacks both wings, escorts a passer, and harasses the enemy king — it is worth more than a passive queen and even more than a small material edge. In queen endings, activity is the trump."
+    "explain": "A centralised, active queen attacks both wings, escorts a passer, and harasses the enemy king. It is worth more than a passive queen and even more than a small material edge. In queen endings, activity is the trump."
    },
    {
     "kind": "mc",
-    "prompt": "You are losing a queen ending — the opponent will queen a pawn next move. What is your best practical resource?",
+    "prompt": "You are losing a queen ending. The opponent will queen a pawn next move. What is your best practical resource?",
     "options": [
      "Resign; a queen down is hopeless",
      "Trade queens to reach a pawn ending",
@@ -1125,34 +1125,34 @@
      "Push your own pawns as fast as possible"
     ],
     "answerIndex": 2,
-    "explain": "A perpetual check — an endless series of checks the king can never escape — draws by repetition. When you are lost, look at your checks first: if the enemy king is exposed, the half-point may be hiding in a perpetual."
+    "explain": "A perpetual check (an endless series of checks the king can never escape) draws by repetition. When you are lost, look at your checks first: if the enemy king is exposed, the half-point may be hiding in a perpetual."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The queen-vs-pawn technique has done its work on the kingside: your king has marched up to f3, the enemy king is frozen in front of its g-pawn on g1. Finish it — deliver mate.",
+    "prompt": "White to move. The queen-vs-pawn technique has done its work on the kingside: your king has marched up to f3, the enemy king is frozen in front of its g-pawn on g1. Finish it, deliver mate.",
     "fen": "8/8/8/8/8/5K2/4Q1p1/6k1 w - - 0 1",
     "solutionUci": [
      "e2g2"
     ],
-    "explain": "Qxg2#: the queen takes the knight-pawn with check, your king on f3 guards her, and g1 has no flight — f1, f2, h1, h2 are all covered. The same machine works on either wing: check, force the block, bring the king up, then strike."
+    "explain": "Qxg2#: the queen takes the knight-pawn with check, your king on f3 guards her, and g1 has no flight: f1, f2, h1, h2 are all covered. The same machine works on either wing: check, force the block, bring the king up, then strike."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The black king has been chased into the open on h4 with no shelter, and your king on f3 stands right beside it to support the finish. Punish the exposed king — mate in one.",
+    "prompt": "White to move. The black king has been chased into the open on h4 with no shelter, and your king on f3 stands right beside it to support the finish. Punish the exposed king: mate in one.",
     "fen": "8/8/Q7/8/5K1k/8/8/8 w - - 0 1",
     "solutionUci": [
      "a6h6"
     ],
-    "explain": "Qh6#: the queen swings to the h-file and checks the king on h4, your king on f3 covers g3 and g4, and the queen seals g5, h5 and h3 — no flight. An exposed king with no pawn cover is the thing to hunt in a queen ending; here it has nowhere left to run."
+    "explain": "Qh6#: the queen swings to the h-file and checks the king on h4, your king on f3 covers g3 and g4, and the queen seals g5, h5 and h3, no flight. An exposed king with no pawn cover is the thing to hunt in a queen ending; here it has nowhere left to run."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Queen and rook against a king on d8. Your queen on b7 already seals the seventh rank — c7, d7, e7 are forbidden and the king is pinned to the eighth. Deliver the coordinated mate with the rook.",
+    "prompt": "White to move. Queen and rook against a king on d8. Your queen on b7 already seals the seventh rank: c7, d7, e7 are forbidden and the king is pinned to the eighth. Deliver the coordinated mate with the rook.",
     "fen": "3k4/1Q6/8/8/8/8/8/4K1R1 w - - 0 1",
     "solutionUci": [
      "g1g8"
     ],
-    "explain": "Rg8#: the rook checks down the eighth rank; the king cannot move along it (the rook owns it) or drop to the seventh (the queen owns c7, d7, e7). One heavy piece seals the escape rank, the other mates — queen-and-rook coordination, here with the queen guarding and the rook striking."
+    "explain": "Rg8#: the rook checks down the eighth rank; the king cannot move along it (the rook owns it) or drop to the seventh (the queen owns c7, d7, e7). One heavy piece seals the escape rank, the other mates. Queen-and-rook coordination, here with the queen guarding and the rook striking."
    },
    {
     "kind": "play",
@@ -1161,24 +1161,24 @@
     "solutionUci": [
      "e2e8"
     ],
-    "explain": "Qe8#: the queen checks along the eighth rank. The king on g8 is walled in by its own g7 and h7 pawns, the queen covers f8 and the whole back rank, and nothing can capture or block — checkmate. The heavy pieces hunt the king to the back rank and finish it there."
+    "explain": "Qe8#: the queen checks along the eighth rank. The king on g8 is walled in by its own g7 and h7 pawns, the queen covers f8 and the whole back rank, and nothing can capture or block, checkmate. The heavy pieces hunt the king to the back rank and finish it there."
    },
    {
     "kind": "play",
-    "prompt": "White to move, a whole rook down and lost — Black will consolidate his queen and rook and mate. But Black's king has strayed to e6 in the open with no pawn cover, while your king sits safe behind f2-g2-h2. Save the game: begin the perpetual check.",
+    "prompt": "White to move, a whole rook down and lost. Black will consolidate his queen and rook and mate. But Black's king has strayed to e6 in the open with no pawn cover, while your king sits safe behind f2-g2-h2. Save the game: begin the perpetual check.",
     "fen": "1q5r/8/4k3/8/8/8/5PPP/3Q2K1 w - - 0 1",
     "solutionUci": [
      "d1g4"
     ],
-    "explain": "Qg4+ — the queen checks the stranded king from a safe distance along the g4-e6 diagonal, and the perpetual begins. Wherever the king runs another check waits; it can never both shelter behind its pieces and stop the checks, so it can never bring its extra rook to bear. Endless checks force a draw by repetition — a half-point saved from a lost game. (Check from afar: a check right beside the king would simply be captured.)"
+    "explain": "Qg4+: the queen checks the stranded king from a safe distance along the g4-e6 diagonal, and the perpetual begins. Wherever the king runs another check waits; it can never both shelter behind its pieces and stop the checks, so it can never bring its extra rook to bear. Endless checks force a draw by repetition. A half-point saved from a lost game. (Check from afar: a check right beside the king would simply be captured.)"
    },
    {
     "kind": "judge",
-    "prompt": "White is lost — a full rook down to Black's queen and rook — but the black king has strayed to f4 in the open. White played the move shown, Qd1-d4+. Judge it.",
+    "prompt": "White is lost (a full rook down to Black's queen and rook) but the black king has strayed to f4 in the open. White played the move shown, Qd1-d4+. Judge it.",
     "fen": "1q5r/8/8/8/3Q1k2/8/5PPP/6K1 b - - 0 1",
     "lastMoveUci": "d1d4",
     "verdict": "correct",
-    "explain": "Correct — this begins a perpetual check. Black is up a whole rook, but his king wandered to f4 with no shelter; the queen checks it along the rank from a safe distance and will keep checking from afar wherever the king runs. The king can never both escape the checks and gather its pieces to mate, so the game is drawn by repetition. When you are lost, hunt the perpetual against the exposed king."
+    "explain": "Correct: this begins a perpetual check. Black is up a whole rook, but his king wandered to f4 with no shelter; the queen checks it along the rank from a safe distance and will keep checking from afar wherever the king runs. The king can never both escape the checks and gather its pieces to mate, so the game is drawn by repetition. When you are lost, hunt the perpetual against the exposed king."
    },
    {
     "kind": "judge",
@@ -1186,7 +1186,7 @@
     "fen": "k7/8/1QK5/8/8/8/8/8 b - - 0 1",
     "lastMoveUci": "h6b6",
     "verdict": "blunder",
-    "explain": "A blunder — it is stalemate. The black king on a8 is NOT in check, but b8, b7 and a7 are all covered by the queen and king, so it has no legal move. A won game thrown away. The king on c6 was already doing the boxing-in; the queen had to keep a flight square open and CHECK to drive the king, not quietly plug its last escape. Count the enemy king's squares before every queen move: if a quiet move would leave it with no square and no check, that move is stalemate, not mate."
+    "explain": "A blunder: it is stalemate. The black king on a8 is NOT in check, but b8, b7 and a7 are all covered by the queen and king, so it has no legal move. A won game thrown away. The king on c6 was already doing the boxing-in; the queen had to keep a flight square open and CHECK to drive the king, not quietly plug its last escape. Count the enemy king's squares before every queen move: if a quiet move would leave it with no square and no check, that move is stalemate, not mate."
    },
    {
     "kind": "judge",
@@ -1194,7 +1194,7 @@
     "fen": "8/8/8/8/1Q6/8/p7/k5K1 b - - 0 1",
     "lastMoveUci": "f4b4",
     "verdict": "blunder",
-    "explain": "A blunder — it is stalemate, throwing away... nothing, because this was never winnable: the rook-pawn on the seventh is a known DRAW. Here Qb4 covers b1 and b2, the a2-pawn's own diagonal leaves the king no square, and Black is stalemated. Against a rook- or bishop-pawn beside its king, accept the half-point — there is no win to chase."
+    "explain": "A blunder. It is stalemate, throwing away... nothing, because this was never winnable: the rook-pawn on the seventh is a known DRAW. Here Qb4 covers b1 and b2, the a2-pawn's own diagonal leaves the king no square, and Black is stalemated. Against a rook- or bishop-pawn beside its king, accept the half-point. There is no win to chase."
    },
    {
     "kind": "judge",
@@ -1202,7 +1202,7 @@
     "fen": "2k4R/Q7/8/8/8/8/6K1/8 b - - 0 1",
     "lastMoveUci": "h1h8",
     "verdict": "correct",
-    "explain": "Correct — Rh8# is checkmate. The rook checks down the eighth rank; the king on c8 cannot move along it (the rook owns the rank) and cannot drop to the seventh, where the queen on a7 covers b7, c7 and the b8 escape on the diagonal. One heavy piece seals the escape rank, the other delivers — queen-and-rook coordination, with the queen guarding and the rook striking."
+    "explain": "Correct: Rh8# is checkmate. The rook checks down the eighth rank; the king on c8 cannot move along it (the rook owns the rank) and cannot drop to the seventh, where the queen on a7 covers b7, c7 and the b8 escape on the diagonal. One heavy piece seals the escape rank, the other delivers. Queen-and-rook coordination, with the queen guarding and the rook striking."
    }
   ]
  },

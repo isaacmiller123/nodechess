@@ -1,5 +1,5 @@
 // Shamir T-of-N secret sharing over the ristretto255 SCALAR field (order L),
-// with Feldman verifiable-secret-sharing commitments (spec §1 — the tOPRF PIN
+// with Feldman verifiable-secret-sharing commitments (spec §1; the tOPRF PIN
 // committee holds Shamir shares k_i of the OPRF key k).
 //
 // Platform-neutral: no `node:` imports, no DOM globals. Typechecks under both
@@ -121,7 +121,7 @@ export function lagrangeCoeff(indices: readonly number[], i: number): bigint {
  * Recover the secret (polynomial value at 0) by Lagrange interpolation over
  * the FIRST `t` supplied shares. Pure and deterministic. With ≥ t honest
  * on-curve shares this returns the exact secret; with fewer than t, or with a
- * corrupted share, it returns a different scalar (the field gives no error —
+ * corrupted share, it returns a different scalar (the field gives no error;
  * that is why commitments exist).
  */
 export function recoverScalar(shares: readonly Share[], t: number): bigint {
@@ -145,7 +145,7 @@ export function commitments(coeffs: readonly bigint[]): RPoint[] {
   })
 }
 
-/** Per-share commitment share·G — what the PIN record publishes per member. */
+/** Per-share commitment share·G: what the PIN record publishes per member. */
 export function shareCommitment(share: bigint): RPoint {
   const s = modL(share)
   return s === 0n ? ZERO : G.multiply(s)

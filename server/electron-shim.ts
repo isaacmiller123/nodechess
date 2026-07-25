@@ -3,12 +3,12 @@
 // desktop ipc modules (src/main/ipc/*.ipc.ts) bundle and run in plain Node.
 // They consume exactly two electron surfaces:
 //
-//   ipcMain.handle(channel, fn)  — collected into a Map here; the server drives
+//   ipcMain.handle(channel, fn):   collected into a Map here; the server drives
 //                                  the handlers directly (POST /api/ipc/<channel>),
 //                                  zod validation + all included, because the
 //                                  bundled handle() wrapper (src/main/ipc/util.ts)
 //                                  runs unchanged.
-//   app                          — isPackaged / getPath('userData') / getVersion.
+//   app,                           isPackaged / getPath('userData') / getVersion.
 //
 // Stub choices (build contract, shared decision 1):
 //
@@ -18,7 +18,7 @@
 //     app.isPackaged ? path.join(process.resourcesPath, …)
 //                    : path.join(__dirname, '../../resources', …)
 //   In this bundle __dirname is dist-server (depth 1 from the repo root), so the
-//   dev branch would resolve to <repo>/../resources — the WRONG depth. The
+//   dev branch would resolve to <repo>/../resources, the WRONG depth. The
 //   packaged branch with an injected resourcesPath reads the real content
 //   (curriculum/famous/personas/openings) for every repo from one knob.
 //

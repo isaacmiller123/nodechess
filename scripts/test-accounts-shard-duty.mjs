@@ -1,4 +1,4 @@
-// THE A6-M3 LANE (L-duty + L-store) SUITE — LIVE STORAGE DUTY over a MockFabric
+// THE A6-M3 LANE (L-duty + L-store) SUITE: LIVE STORAGE DUTY over a MockFabric
 // multi-carrier fleet (spec §5 three retention layers / publish-on-write /
 // authenticated pointers / repair; §11 per-platform budgets). Modules:
 //   src/renderer/src/features/account/net/shardDuty.ts
@@ -7,16 +7,16 @@
 //   node scripts/test-accounts-shard-duty.mjs
 //
 // shardDuty COMPOSES the frozen §5 substrate (storage/{rs,shards,pointers,viewer})
-// onto a live overlay — it reimplements no crypto, so this suite proves the
+// onto a live overlay. It reimplements no crypto, so this suite proves the
 // WIRING end to end, fabric-suite style, exactly as it runs in the browser:
-//   1. gate: makeStorageDutyGate composes the shard + pointer store validators —
-//      it accepts a valid shard row at its own key, refuses a foreign-key /
+//   1. gate: makeStorageDutyGate composes the shard + pointer store validators.
+//      It accepts a valid shard row at its own key, refuses a foreign-key /
 //      poisoned row, refuses an off-duty shard pointer, budgets by §11 capacity,
 //      and its subjects() is the repair worklist.
 //   2. THE M3 ACCEPTANCE SLICE (live): an owner writes a witnessed chain,
 //      publishes-on-write + final-syncs it to distance-assigned carriers over
 //      the LIVE overlay, publishes the authenticated pointers, then GOES OFFLINE
-//      FOREVER — and a fresh viewer reconstructs profile + newest checkpoint +
+//      FOREVER, and a fresh viewer reconstructs profile + newest checkpoint +
 //      head + full history from shard space, BIT-FAITHFUL, owner gone.
 //   3. honest degradation (C-8): carriers churn until live rows fall below
 //      K_rec → the viewer reports TYPED temporary unavailability (never a crash,
@@ -70,7 +70,7 @@ async function main() {
     rmSync(outdir, { recursive: true, force: true })
   }
   console.log(
-    `\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
+    `\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`,
   )
   process.exit(failures ? 1 : 0)
 }
@@ -156,7 +156,7 @@ async function run(M) {
   now = t + 1_000_000
 
   // ==========================================================================
-  console.log('\n· 1. makeStorageDutyGate — the composed overlay store-accept gate …')
+  console.log('\n· 1. makeStorageDutyGate, the composed overlay store-accept gate …')
   // ==========================================================================
   {
     const gkp = kpOf('sd-gate-carrier')
@@ -190,7 +190,7 @@ async function run(M) {
   }
 
   // ==========================================================================
-  console.log('\n· 2. THE M3 ACCEPTANCE SLICE — publish → owner offline → reconstruct …')
+  console.log('\n· 2. THE M3 ACCEPTANCE SLICE. Publish → owner offline → reconstruct …')
   // ==========================================================================
   const fabric = new W.MockFabric({ staleAfterMs: 3 * 3_600_000 })
   const subjNid = W.nodeIdOf(owner.pub)
@@ -217,7 +217,7 @@ async function run(M) {
   const carriers = Array.from({ length: CARRIERS }, (_, i) => mkNode('carrier-' + i, kpOf('sd-carrier-' + i), kpOf('sd-carrier-' + i), 50, 3))
   // The owner is a PHONE: advertises no shard capacity (shardMb 0 → refuses its
   // OWN rows), and finalSyncs with a NARROW replicateK so each row lands on only
-  // 1-2 carriers — the thin spread over a wide fleet makes churn (and the
+  // 1-2 carriers: the thin spread over a wide fleet makes churn (and the
   // below-K_rec collapse) deterministically controllable.
   let ownerNode = mkNode('owner', owner, dev, 0, 2)
   const seedsFor = (i) =>
@@ -237,8 +237,8 @@ async function run(M) {
   const fs = await D.finalSyncOwnChain(ownerNode.node, signing, chain, { ...GEO, nowMs: now })
   ok(fs.ok, 'finalSyncOwnChain succeeded (device-signed head is finalSync-signable)')
   eq(fs.header.n, GEO.n, `finalSync cut the ${GEO.n}-shard geometry`)
-  eq(fs.liveRows, GEO.n, 'every shard row landed on ≥1 carrier (owner refused its own — the network IS the storage)')
-  ok(fs.chainPointerStored > 0, 'the self chain pointer (embedded head proof) landed — it pins the head even owner-gone')
+  eq(fs.liveRows, GEO.n, 'every shard row landed on ≥1 carrier (owner refused its own: the network IS the storage)')
+  ok(fs.chainPointerStored > 0, 'the self chain pointer (embedded head proof) landed: it pins the head even owner-gone')
 
   const rowKeys = Array.from({ length: GEO.n }, (_, i) => S.shardKey(subjNid, i))
   const holdersOfRow = (idx) => [...alive].filter((n) => n.node.localGet(rowKeys[idx], 'shard') !== null)
@@ -265,8 +265,8 @@ async function run(M) {
   ok(segPtr > 0, 'a real entanglement partner published a segment pointer under the owner key (publishSegmentPointerFor)')
 
   // A poisoning attacker: replaying the owner's OWN segment event (which names a
-  // real opponent, not the attacker) as "I hold a segment of X" must land NOWHERE
-  // — the naming rule (segment.opp === holder) is re-checked at every gate.
+  // real opponent, not the attacker) as "I hold a segment of X" must land NOWHERE.
+  // The naming rule (segment.opp === holder) is re-checked at every gate.
   {
     const atk = mkNode('attacker', kpOf('sd-atk'), kpOf('sd-atk'), 50, 3)
     await atk.node.bootstrap(seedsFor(3))
@@ -285,7 +285,7 @@ async function run(M) {
   const viewer = mkNode('viewer', kpOf('sd-viewer'), kpOf('sd-viewer'), 50, 3)
   await viewer.node.bootstrap(seedsFor(6))
   const resolveOpts = () => ({ directory: viewer.ep.directory(), nowMs: now, cosig: { eligible, rule: RULE }, spot: { p: 1, roll: 0 }, shard: GEO })
-  // Re-seed the viewer's routing table from the CURRENT live fleet — after heavy
+  // Re-seed the viewer's routing table from the CURRENT live fleet. After heavy
   // churn its table is full of dead contacts; a live viewer re-bootstraps as the
   // topology changes (the browser does this on its presence heartbeat).
   const reseedViewer = () => viewer.node.bootstrap([...alive].filter((n) => n !== viewer).map((n) => n.ep.directory().nodes.get(n.nodeId)).filter(Boolean))
@@ -348,7 +348,7 @@ async function run(M) {
   const actions = await D.runShardRepair({ node: repairer.node, directory: repairer.ep.directory(), subjects: repairer.gate.subjects(), nowMs: now, repair: { ...GEO, dutyK: PARAMS_A3.dutyK } })
   const act = actions.find((a) => a.subject === subjNid)
   ok(act && (act.outcome === 'healed' || act.outcome === 'healthy'), `runShardRepair scanned the subject and healed/was-healthy (${act?.outcome})`)
-  eq(liveRowCount(), GEO.n, 'runShardRepair redistributed the lost rows — full width restored (churn = healed)')
+  eq(liveRowCount(), GEO.n, 'runShardRepair redistributed the lost rows, full width restored (churn = healed)')
   const viewH = await S.resolveProfile(viewer.node, owner.pubB, resolveOpts())
   eq(viewH.status, 'expected', 'after repair the viewer reconstructs at full width')
   eq(shaB(A.chainToBytes(viewH.chain)), shaB(chainBytes), '…still bit-faithful')
@@ -356,7 +356,7 @@ async function run(M) {
   // --- 3c. drop BELOW K_rec: honest typed unavailability, never a fake profile.
   // The lightweight authenticated pointer index (at pointerKey(owner), a DIFFERENT
   // neighborhood than the shardKeys) is far more durable than the heavy shard
-  // rows — so preserve ONE pointer holder (the one carrying the fewest shard
+  // rows, so preserve ONE pointer holder (the one carrying the fewest shard
   // rows) and kill the rest: shard space collapses below K_rec while the pointer
   // floor (embedded head proof) survives. That is the realistic degraded case.
   const ptrKey = S.pointerKeyOfRoot(owner.pubB)
@@ -367,7 +367,7 @@ async function run(M) {
   const keep = ptrHolders[0]
   for (const n of [...alive]) if (n !== viewer && n !== keep) await kill(n)
   const deadLive = liveRowCount()
-  ok(deadLive < GEO.k, `shard space collapsed to ${deadLive} live rows — below K_rec=${GEO.k} (only the pointer floor survives)`)
+  ok(deadLive < GEO.k, `shard space collapsed to ${deadLive} live rows. Below K_rec=${GEO.k} (only the pointer floor survives)`)
   now += 60_000
   for (const n of alive) n.announce()
   await reseedViewer()
@@ -394,11 +394,11 @@ async function run(M) {
   await reseedViewer()
   ok(liveRowCount() >= GEO.k, `returning carriers restored live rows to ${liveRowCount()} (≥ K_rec)`)
   const viewR = await S.resolveProfile(viewer.node, owner.pubB, resolveOpts())
-  eq(viewR.status, 'expected', 'HEALED: once ≥ K_rec rows return, reconstruction succeeds again — unavailability was TEMPORARY')
-  eq(shaB(A.chainToBytes(viewR.chain)), shaB(chainBytes), 'FINAL: bit-faithful after die → floor → return — NEVER silent loss')
+  eq(viewR.status, 'expected', 'HEALED: once ≥ K_rec rows return, reconstruction succeeds again. Unavailability was TEMPORARY')
+  eq(shaB(A.chainToBytes(viewR.chain)), shaB(chainBytes), 'FINAL: bit-faithful after die → floor → return, NEVER silent loss')
 
   // ==========================================================================
-  console.log('\n· 4. kvStore — the §11 per-platform budget with LRU eviction …')
+  console.log('\n· 4. kvStore, the §11 per-platform budget with LRU eviction …')
   // ==========================================================================
   {
     eq(KV.budgetBytesForPlatform('desktop'), PARAMS_A3.budgetDesktopMb * 1024 * 1024, 'desktop budget = 200 MB (§11)')

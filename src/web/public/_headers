@@ -4,13 +4,13 @@
 
 # Cross-origin isolation. The multithreaded Stockfish build (stockfish-18-lite,
 # the one the app prefers) needs SharedArrayBuffer, which browsers only hand to
-# a crossOriginIsolated page — that requires BOTH headers on the document, and
+# a crossOriginIsolated page: that requires BOTH headers on the document, and
 # every subresource to be same-origin (they all are: /assets, /engines, /content,
 # /puzzles). Drop these and chess still works: src/web/engines/assets.ts checks
 # crossOriginIsolated and loads stockfish-18-lite-single instead, at reduced
 # strength-per-second. Fairy-Stockfish does NOT have a single-threaded build
 # here, so engine.status() reports fairyReady:false and the variant bots go
-# quiet — isolation is what keeps the variant half of the games platform alive.
+# quiet: isolation is what keeps the variant half of the games platform alive.
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
@@ -27,7 +27,7 @@
   Cache-Control: public, max-age=31536000, immutable
   Accept-Ranges: bytes
 
-# Unfingerprinted names — engines are pinned to the npm package version and the
+# Unfingerprinted names: engines are pinned to the npm package version and the
 # content tree is regenerated per deploy, so both must revalidate.
 /engines/*
   Cache-Control: public, max-age=0, must-revalidate

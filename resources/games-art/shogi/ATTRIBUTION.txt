@@ -1,4 +1,4 @@
-Shogi pieces by Ka-hu — https://github.com/Ka-hu/shogi-pieces
+Shogi pieces by Ka-hu, https://github.com/Ka-hu/shogi-pieces
   kanji/         = kanji_red_wood (2-kanji glyphs by Hari Seldon, CC-BY-SA-3.0,
                    https://commons.wikimedia.org/wiki/Category:SVG_traditional_shogi_pieces)
   international/ = international (after CouchTomato87 & Hidetchi)

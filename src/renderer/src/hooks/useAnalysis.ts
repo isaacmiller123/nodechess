@@ -25,7 +25,7 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
   })
   // Set when engine:analyze rejects (fresh install without the engine dataset,
   // spawn failure, crash). Consumers surface it instead of "analyzing… depth 0"
-  // forever — the swallowed rejection here was the audit's Analysis hang.
+  // forever: the swallowed rejection here was the audit's Analysis hang.
   const [error, setError] = useState<string | null>(null)
   const handleRef = useRef<number | null>(null)
   const linesRef = useRef<Map<number, PvLine>>(new Map())
@@ -65,7 +65,7 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
 
     const stopCurrent = () => {
       if (handleRef.current !== null) {
-        // stop() can itself reject (engine gone) — never an unhandled rejection.
+        // stop() can itself reject (engine gone). Never an unhandled rejection.
         engine.stop(handleRef.current).catch(() => undefined)
         handleRef.current = null
       }

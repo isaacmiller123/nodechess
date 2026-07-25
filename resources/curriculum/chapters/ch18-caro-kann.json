@@ -3,7 +3,7 @@
  "band": "18",
  "order": 18,
  "title": "The Caro-Kann Defence",
- "subtitle": "1.e4 c6 — a rock-solid structure and a bishop that breathes",
+ "subtitle": "1.e4 c6: a rock-solid structure and a bishop that breathes",
  "estMinutes": 35,
  "concepts": [
   {
@@ -14,7 +14,7 @@
   {
    "id": "ck-good-bishop",
    "name": "The good light-squared bishop",
-   "short": "Develop the c8-bishop OUTSIDE the pawn chain (…Bf5) before playing …e6 — the Caro's whole point."
+   "short": "Develop the c8-bishop OUTSIDE the pawn chain (…Bf5) before playing …e6. The Caro's whole point."
   },
   {
    "id": "ck-advance",
@@ -29,7 +29,7 @@
   {
    "id": "ck-classical",
    "name": "Classical Variation",
-   "short": "3.Nc3 dxe4 4.Nxe4 Bf5 — Black trades the centre but keeps the good bishop active."
+   "short": "3.Nc3 dxe4 4.Nxe4 Bf5: Black trades the centre but keeps the good bishop active."
   },
   {
    "id": "ck-c5-break",
@@ -48,7 +48,7 @@
      "kind": "teach",
      "title": "The solid answer to 1.e4",
      "intro": {
-      "text": "Against 1.e4 most players grab the centre with 1...e5 or fight with the Sicilian. The Caro-Kann does something quieter and very stubborn — and I respect stubborn."
+      "text": "Against 1.e4 most players grab the centre with 1...e5 or fight with the Sicilian. The Caro-Kann does something quieter and very stubborn, and I respect stubborn."
      },
      "steps": [
       {
@@ -74,7 +74,7 @@
       {
        "fen": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3",
        "coach": {
-        "text": "After 2.d4 d5 we reach the heart of the Caro-Kann. Compare it with the French (1...e6 d5): there Black's c8-bishop is locked behind its own e6-pawn. Here the c-pawn moved instead — so our light-squared bishop can still come OUT. That bishop is the soul of this opening.",
+        "text": "After 2.d4 d5 we reach the heart of the Caro-Kann. Compare it with the French (1...e6 d5): there Black's c8-bishop is locked behind its own e6-pawn. Here the c-pawn moved instead, so our light-squared bishop can still come OUT. That bishop is the soul of this opening.",
         "annotations": [
          {
           "kind": "arrow",
@@ -94,7 +94,7 @@
       {
        "fen": "rnbqkbnr/pp2pppp/2p5/3p4/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3",
        "coach": {
-        "text": "From here White must decide what to do about the d5-pawn. Three honest tries: push past it (3.e5, the Advance), trade it (3.exd5, the Exchange), or defend e4 (3.Nc3, the Classical). We will learn all three. In every one, Black ends up solid — no weak pawns, an easy plan.",
+        "text": "From here White must decide what to do about the d5-pawn. Three honest tries: push past it (3.e5, the Advance), trade it (3.exd5, the Exchange), or defend e4 (3.Nc3, the Classical). We will learn all three. In every one, Black ends up solid, no weak pawns, an easy plan.",
         "annotations": [
          {
           "kind": "highlight",
@@ -140,7 +140,7 @@
      "kind": "model",
      "title": "Bishop out first, then strike",
      "intro": {
-      "text": "3.e5 is the most ambitious. White clamps the centre. But unlike the French, our bishop is not trapped — get it out before we ever play …e6."
+      "text": "3.e5 is the most ambitious. White clamps the centre. But unlike the French, our bishop is not trapped. Get it out before we ever play …e6."
      },
      "line": [
       {
@@ -152,7 +152,7 @@
       {
        "uci": "c7c6",
        "coach": {
-        "text": "1...c6 — preparing …d5."
+        "text": "1...c6: preparing …d5."
        }
       },
       {
@@ -170,7 +170,7 @@
       {
        "uci": "e4e5",
        "coach": {
-        "text": "3.e5 — White pushes past and gains space. Now …e6 would block our bishop in, just like a French. So we do NOT play …e6 yet.",
+        "text": "3.e5: White pushes past and gains space. Now …e6 would block our bishop in, just like a French. So we do NOT play …e6 yet.",
         "annotations": [
          {
           "kind": "highlight",
@@ -205,7 +205,7 @@
       {
        "uci": "e7e6",
        "coach": {
-        "text": "4...e6 — NOW e6 is fine, because the bishop already escaped. The pawn chain c6-d5-e6 is rock-solid.",
+        "text": "4...e6: NOW e6 is fine, because the bishop already escaped. The pawn chain c6-d5-e6 is rock-solid.",
         "conceptId": "ck-good-bishop"
        }
       },
@@ -218,7 +218,7 @@
       {
        "uci": "c6c5",
        "coach": {
-        "text": "5...c5! The freeing break. We attack d4 — the base of White's chain. If White ever takes dxc5 we recapture and the centre opens for our pieces; if not, the tension cramps White, not us.",
+        "text": "5...c5! The freeing break. We attack d4, the base of White's chain. If White ever takes dxc5 we recapture and the centre opens for our pieces; if not, the tension cramps White, not us.",
         "annotations": [
          {
           "kind": "arrow",
@@ -272,13 +272,13 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. …e6 first would lock that bishop in for the rest of the game — a French with no compensation. Develop the bishop to f5 before you close the diagonal."
+        "text": "Not yet. …e6 first would lock that bishop in for the rest of the game, a French with no compensation. Develop the bishop to f5 before you close the diagonal."
        }
       },
       {
        "fen": "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/3B4/PPP2PPP/RNBQK1NR b KQkq - 2 4",
        "coach": {
-        "text": "White tried 4.Bd3, offering to trade your prized bishop. Should you avoid the trade? No — White just spent a tempo to swap his developed bishop for yours. Take it.",
+        "text": "White tried 4.Bd3, offering to trade your prized bishop. Should you avoid the trade? No: White just spent a tempo to swap his developed bishop for yours. Take it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -292,7 +292,7 @@
         "f5d3"
        ],
        "successLine": {
-        "text": "4...Bxd3! You trade your good bishop, yes — but White used TWO moves (Bd3, then recapture) to do it, and after …Qxd3 his queen is exposed. Black is comfortable and has no weaknesses."
+        "text": "4...Bxd3! You trade your good bishop, yes, but White used TWO moves (Bd3, then recapture) to do it, and after …Qxd3 his queen is exposed. Black is comfortable and has no weaknesses."
        },
        "retryLine": {
         "text": "Just capture on d3. Declining lets White take on f5 with tempo or chase the bishop. Trading here costs White time, not you."
@@ -312,13 +312,13 @@
      "kind": "model",
      "title": "Recapture and develop",
      "intro": {
-      "text": "3.exd5 is the simplest try. White hopes the symmetry is dull. It is dull — for White. Black equalises with no effort and a clear plan."
+      "text": "3.exd5 is the simplest try. White hopes the symmetry is dull. It is dull, for White. Black equalises with no effort and a clear plan."
      },
      "line": [
       {
        "uci": "e2e4",
        "coach": {
-        "text": "1.e4 c6 2.d4 d5 — our setup."
+        "text": "1.e4 c6 2.d4 d5: our setup."
        }
       },
       {
@@ -340,7 +340,7 @@
       {
        "uci": "c6d5",
        "coach": {
-        "text": "3...cxd5 — recapture toward the centre with the c-pawn. The structure is symmetrical, and crucially Black has NO weak pawn (no isolated d-pawn, nothing to attack).",
+        "text": "3...cxd5: recapture toward the centre with the c-pawn. The structure is symmetrical, and crucially Black has NO weak pawn (no isolated d-pawn, nothing to attack).",
         "annotations": [
          {
           "kind": "highlight",
@@ -372,7 +372,7 @@
       {
        "uci": "g8f6",
        "coach": {
-        "text": "5...Nf6 — and here is the key plan: Black puts the OTHER bishop on g4 or f5, the knight on f6, castles, and plays for the …Qc7/…Bd6 setup. Symmetrical but a half-tempo behind only matters if White attacks — he can't.",
+        "text": "5...Nf6, and here is the key plan: Black puts the OTHER bishop on g4 or f5, the knight on f6, castles, and plays for the …Qc7/…Bd6 setup. Symmetrical but a half-tempo behind only matters if White attacks. He can't.",
         "annotations": [
          {
           "kind": "arrow",
@@ -390,7 +390,7 @@
      "kind": "guided",
      "title": "Recapture the right way",
      "intro": {
-      "text": "White has just played 3.exd5. There are three ways to recapture on d5 — only one keeps the Caro structure. Find it."
+      "text": "White has just played 3.exd5. There are three ways to recapture on d5. Only one keeps the Caro structure. Find it."
      },
      "steps": [
       {
@@ -424,7 +424,7 @@
    "id": "l4-classical",
    "title": "The Classical Variation (3.Nc3)",
    "kind": "variation",
-   "summary": "Trade in the centre, keep the good bishop — and dodge a famous trap.",
+   "summary": "Trade in the centre, keep the good bishop, and dodge a famous trap.",
    "segments": [
     {
      "kind": "model",
@@ -458,14 +458,14 @@
       {
        "uci": "d5e4",
        "coach": {
-        "text": "3...dxe4 — Black resolves the centre, trading the d-pawn for the e-pawn. No structural weakness results.",
+        "text": "3...dxe4: Black resolves the centre, trading the d-pawn for the e-pawn. No structural weakness results.",
         "conceptId": "ck-classical"
        }
       },
       {
        "uci": "c3e4",
        "coach": {
-        "text": "4.Nxe4. White has a nice central knight — for now."
+        "text": "4.Nxe4. White has a nice central knight, for now."
        }
       },
       {
@@ -486,7 +486,7 @@
       {
        "uci": "e4g3",
        "coach": {
-        "text": "5.Ng3 — the knight must move and attacks the bishop."
+        "text": "5.Ng3: the knight must move and attacks the bishop."
        }
       },
       {
@@ -506,7 +506,7 @@
       {
        "uci": "h2h4",
        "coach": {
-        "text": "6.h4 — White grabs kingside space and threatens h5 to harass the bishop."
+        "text": "6.h4: White grabs kingside space and threatens h5 to harass the bishop."
        }
       },
       {
@@ -524,7 +524,7 @@
       {
        "uci": "b8d7",
        "coach": {
-        "text": "7...Nd7 — Black develops flexibly, intending …Ngf6, …e6, …Bd6 and castling. A famously resilient position. White has a touch more space; Black has zero weaknesses and the better bishop is already home.",
+        "text": "7...Nd7: Black develops flexibly, intending …Ngf6, …e6, …Bd6 and castling. A famously resilient position. White has a touch more space; Black has zero weaknesses and the better bishop is already home.",
         "conceptId": "ck-classical"
        }
       }
@@ -565,7 +565,7 @@
         ]
        },
        "retryLine": {
-        "text": "Bring the light-squared bishop to f5 — it attacks the knight on e4 with tempo. That's the Caro's signature move."
+        "text": "Bring the light-squared bishop to f5. It attacks the knight on e4 with tempo. That's the Caro's signature move."
        }
       },
       {
@@ -585,7 +585,7 @@
         "f5g6"
        ],
        "successLine": {
-        "text": "5...Bg6 — retreat one square. The bishop is safe, still controls b1-h7, and can drop to h7 later if pushed by h4-h5. Don't put it on e6 (buries it) or trade it cheaply."
+        "text": "5...Bg6: retreat one square. The bishop is safe, still controls b1-h7, and can drop to h7 later if pushed by h4-h5. Don't put it on e6 (buries it) or trade it cheaply."
        },
        "retryLine": {
         "text": "Step the bishop back to g6. It stays on its diagonal and dodges the knight. Other squares either hang it or bury it."
@@ -603,7 +603,7 @@
       {
        "fen": "r1bqkbnr/pp1npppp/2p5/8/3PN3/8/PPP1QPPP/R1B1KBNR b KQkq - 2 5",
        "coach": {
-        "text": "Here Black chose 4...Nd7 (instead of …Bf5) and White played the sneaky 5.Qe2! It looks like nothing. But it threatens Nd6 — mate, because the d7-knight blocks the king's escape and the e-pawn is pinned by the queen.",
+        "text": "Here Black chose 4...Nd7 (instead of …Bf5) and White played the sneaky 5.Qe2! It looks like nothing. But it threatens Nd6: mate, because the d7-knight blocks the king's escape and the e-pawn is pinned by the queen.",
         "annotations": [
          {
           "kind": "arrow",
@@ -623,7 +623,7 @@
       {
        "fen": "r1bqkb1r/pp1npppp/2p2n2/8/3PN3/8/PPP1QPPP/R1B1KBNR w KQkq - 3 6",
        "coach": {
-        "text": "The natural 5...Ngf6?? walks straight into 6.Nd6#! The knight on f6 no longer guards d6, and it is checkmate — the king has no flight square and nothing can capture or block. The lesson: after 4...Nd7 5.Qe2, develop with 5...Ndf6 (or …e6 first). Mind move orders in the Caro; the structure is forgiving, but tactics never are.",
+        "text": "The natural 5...Ngf6?? walks straight into 6.Nd6#! The knight on f6 no longer guards d6, and it is checkmate. The king has no flight square and nothing can capture or block. The lesson: after 4...Nd7 5.Qe2, develop with 5...Ndf6 (or …e6 first). Mind move orders in the Caro; the structure is forgiving, but tactics never are.",
         "annotations": [
          {
           "kind": "arrow",
@@ -649,13 +649,13 @@
      "kind": "teach",
      "title": "The …c5 break frees you",
      "intro": {
-      "text": "The Caro can feel cramped — White often has more space. The cure is almost always the same pawn break."
+      "text": "The Caro can feel cramped. White often has more space. The cure is almost always the same pawn break."
      },
      "steps": [
       {
        "fen": "rn1qkbnr/pp3ppp/2p1p3/3pPb2/3P4/5N2/PPP1BPPP/RNBQK2R b KQkq - 1 5",
        "coach": {
-        "text": "Advance Variation, a typical position. White has the e5-pawn cramping us. Our pieces want room. The freeing move stares at the base of White's chain — the d4-pawn.",
+        "text": "Advance Variation, a typical position. White has the e5-pawn cramping us. Our pieces want room. The freeing move stares at the base of White's chain, the d4-pawn.",
         "annotations": [
          {
           "kind": "highlight",
@@ -718,7 +718,7 @@
       {
        "uci": "c8f5",
        "coach": {
-        "text": "3...Bf5 — out before the chain closes.",
+        "text": "3...Bf5: out before the chain closes.",
         "annotations": [
          {
           "kind": "highlight",
@@ -738,7 +738,7 @@
       {
        "uci": "f5d3",
        "coach": {
-        "text": "4...Bxd3 — even when we trade it, we make White spend time. In the French, this bishop is Black's lifelong problem piece. In the Caro, it's solved on move three. That single difference is why so many solid players choose 1...c6.",
+        "text": "4...Bxd3: even when we trade it, we make White spend time. In the French, this bishop is Black's lifelong problem piece. In the Caro, it's solved on move three. That single difference is why so many solid players choose 1...c6.",
         "conceptId": "ck-good-bishop"
        }
       }
@@ -792,7 +792,7 @@
      "bossUserColor": "black",
      "bossEngineElo": 1450,
      "bossIntro": {
-      "text": "You are Black, in the main Caro-Kann tabiya after 1.e4 c6 2.d4 d5. Whatever White does — Advance, Exchange, or Classical — you know the plan: get the good bishop out before …e6, stay solid, and free yourself with …c5. No weaknesses. Outlast him."
+      "text": "You are Black, in the main Caro-Kann tabiya after 1.e4 c6 2.d4 d5. Whatever White does (Advance, Exchange, or Classical) you know the plan: get the good bishop out before …e6, stay solid, and free yourself with …c5. No weaknesses. Outlast him."
      }
     }
    ]
@@ -823,7 +823,7 @@
      "Push …f6 at once to break e5"
     ],
     "answerIndex": 2,
-    "explain": "Get the bishop OUT first (…Bf5). Playing …e6 first buries it behind the pawn chain — exactly the French problem the Caro is designed to avoid."
+    "explain": "Get the bishop OUT first (…Bf5). Playing …e6 first buries it behind the pawn chain. Exactly the French problem the Caro is designed to avoid."
    },
    {
     "kind": "mc",
@@ -847,7 +847,7 @@
      "…c5, striking at the base of White's d4-pawn"
     ],
     "answerIndex": 3,
-    "explain": "…c5 hits d4 — the base of White's chain — and frees Black's cramped position. It is the thematic break in the Advance and many other lines."
+    "explain": "…c5 hits d4 (the base of White's chain) and frees Black's cramped position. It is the thematic break in the Advance and many other lines."
    },
    {
     "kind": "play",
@@ -860,12 +860,12 @@
    },
    {
     "kind": "play",
-    "prompt": "Two Knights Caro: 1.e4 c6 2.Nc3 d5 3.Nf3 dxe4 4.Nxe4. No d4-pawn here — but the same idea applies. Play Black's thematic move.",
+    "prompt": "Two Knights Caro: 1.e4 c6 2.Nc3 d5 3.Nf3 dxe4 4.Nxe4. No d4-pawn here, but the same idea applies. Play Black's thematic move.",
     "fen": "rnbqkbnr/pp2pppp/2p5/8/4N3/5N2/PPPP1PPP/R1BQKB1R b KQkq - 0 4",
     "solutionUci": [
      "c8f5"
     ],
-    "explain": "4...Bf5 develops the good bishop and hits the e4-knight with tempo, forcing it to move — exactly as in the d4 lines. The principle travels."
+    "explain": "4...Bf5 develops the good bishop and hits the e4-knight with tempo, forcing it to move, exactly as in the d4 lines. The principle travels."
    },
    {
     "kind": "play",
@@ -887,7 +887,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Advance, deeper position: 1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Be2 Nd7 6.O-O. You've finished developing — now free yourself.",
+    "prompt": "Advance, deeper position: 1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Be2 Nd7 6.O-O. You've finished developing, now free yourself.",
     "fen": "r2qkbnr/pp1n1ppp/2p1p3/3pPb2/3P4/5N2/PPP1BPPP/RNBQ1RK1 b kq - 3 6",
     "solutionUci": [
      "c6c5"
@@ -896,7 +896,7 @@
    },
    {
     "kind": "play",
-    "prompt": "Advance: 1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Bd3 — White offers to trade your good bishop. Respond.",
+    "prompt": "Advance: 1.e4 c6 2.d4 d5 3.e5 Bf5 4.Nf3 e6 5.Bd3. White offers to trade your good bishop. Respond.",
     "fen": "rn1qkbnr/pp3ppp/2p1p3/3pPb2/3P4/3B1N2/PPP2PPP/RNBQK2R b KQkq - 1 5",
     "solutionUci": [
      "f5d3"
@@ -909,7 +909,7 @@
     "fen": "rn1qkbnr/pp2pppp/2p5/3pPb2/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 1 4",
     "lastMoveUci": "c8f5",
     "verdict": "correct",
-    "explain": "3...Bf5 is exactly right — the good bishop develops outside the chain before …e6 is played."
+    "explain": "3...Bf5 is exactly right. The good bishop develops outside the chain before …e6 is played."
    },
    {
     "kind": "judge",
@@ -917,7 +917,7 @@
     "fen": "rnbqkbnr/pp3ppp/2p1p3/3pP3/3P4/8/PPP2PPP/RNBQKBNR w KQkq - 0 4",
     "lastMoveUci": "e7e6",
     "verdict": "blunder",
-    "explain": "Nothing hangs — but this is a strategic blunder, not a tactical one. Playing …e6 before …Bf5 buries the light-squared bishop behind its own pawns for the whole game, surrendering the Caro's entire point and reaching a bad French. Develop the bishop first."
+    "explain": "Nothing hangs, but this is a strategic blunder, not a tactical one. Playing …e6 before …Bf5 buries the light-squared bishop behind its own pawns for the whole game, surrendering the Caro's entire point and reaching a bad French. Develop the bishop first."
    },
    {
     "kind": "judge",
@@ -925,7 +925,7 @@
     "fen": "r1bqkb1r/pp1npppp/2p2n2/8/3PN3/8/PPP1QPPP/R1B1KBNR w KQkq - 3 6",
     "lastMoveUci": "g8f6",
     "verdict": "blunder",
-    "explain": "5...Ngf6?? allows 6.Nd6#! — the d7-knight blocks the king and the e7-pawn is pinned by the queen on e2, so the king has no escape. Black must play 5...Ndf6 or …e6 instead."
+    "explain": "5...Ngf6?? allows 6.Nd6#!. The d7-knight blocks the king and the e7-pawn is pinned by the queen on e2, so the king has no escape. Black must play 5...Ndf6 or …e6 instead."
    },
    {
     "kind": "judge",

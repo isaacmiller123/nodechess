@@ -2,19 +2,19 @@
  "id": "ch36-endgame-theory",
  "band": "36",
  "order": 36,
- "title": "Endgame Theory — Theoretical Draws & Wins",
- "subtitle": "The wrong rook pawn, the Vancura, Philidor & Lucena, the fortress, the breakthrough — the catalogue of known results.",
+ "title": "Endgame Theory: Theoretical Draws & Wins",
+ "subtitle": "The wrong rook pawn, the Vancura, Philidor & Lucena, the fortress, the breakthrough. The catalogue of known results.",
  "estMinutes": 60,
  "concepts": [
   {
    "id": "wrong-rook-pawn",
    "name": "The Wrong Rook Pawn",
-   "short": "A rook pawn whose promotion corner the defending king reaches is a draw — even a queen cannot win it, and a bishop that does not cover the corner is useless."
+   "short": "A rook pawn whose promotion corner the defending king reaches is a draw. Even a queen cannot win it, and a bishop that does not cover the corner is useless."
   },
   {
    "id": "vancura",
    "name": "The Vancura Defence",
-   "short": "Against a rook pawn on the sixth, the defender's rook checks from the side and from afar instead of sitting passively in front — a clean draw a piece down on activity."
+   "short": "Against a rook pawn on the sixth, the defender's rook checks from the side and from afar instead of sitting passively in front. A clean draw a piece down on activity."
   },
   {
    "id": "philidor",
@@ -34,7 +34,7 @@
   {
    "id": "breakthrough",
    "name": "The Pawn Breakthrough",
-   "short": "A pawn sacrifice (or two) that clears a path so a passed pawn outruns the enemy king — the counting trick that decides pawn races."
+   "short": "A pawn sacrifice (or two) that clears a path so a passed pawn outruns the enemy king. The counting trick that decides pawn races."
   },
   {
    "id": "catalogue",
@@ -45,7 +45,7 @@
  "lessons": [
   {
    "id": "ch36-l1-warmup",
-   "title": "Warm-up — Rook-Endgame Eyes",
+   "title": "Warm-up: Rook-Endgame Eyes",
    "kind": "warmup",
    "summary": "Three rook-endgame puzzles to wake up the technique before we name the theory.",
    "segments": [
@@ -53,7 +53,7 @@
      "kind": "puzzle",
      "title": "Wake the rook up",
      "intro": {
-      "text": "Before theory, a warm-up. Rook endgames reward an ACTIVE rook above almost everything. Three positions — find the move that activates or decides."
+      "text": "Before theory, a warm-up. Rook endgames reward an ACTIVE rook above almost everything. Three positions: find the move that activates or decides."
      },
      "puzzle": {
       "themes": [
@@ -70,19 +70,19 @@
    "id": "ch36-l2-wrong-rook-pawn",
    "title": "The Wrong Rook Pawn",
    "kind": "endgame",
-   "summary": "A rook pawn whose promotion corner the defending king reaches is a fortress — even an extra queen or bishop cannot break it. Know it, and you save half-points other players throw away.",
+   "summary": "A rook pawn whose promotion corner the defending king reaches is a fortress. Even an extra queen or bishop cannot break it. Know it, and you save half-points other players throw away.",
    "segments": [
     {
      "kind": "teach",
      "title": "Why the corner saves the game",
      "intro": {
-      "text": "The single most profitable draw to memorise. A rook pawn is the edge pawn — and the edge is where the defending king finds shelter. Watch the trap."
+      "text": "The single most profitable draw to memorise. A rook pawn is the edge pawn, and the edge is where the defending king finds shelter. Watch the trap."
      },
      "steps": [
       {
        "fen": "K7/P1k5/8/8/8/8/8/8 w - - 0 1",
        "coach": {
-        "text": "White has king and a-pawn against a bare king — and it is a DEAD DRAW. My king is jammed in the corner on a8, the pawn blocks a7, and the black king on c7 covers b7 and b8. I have no move that is not illegal. Stalemate. The rook pawn's own corner is its prison.",
+        "text": "White has king and a-pawn against a bare king, and it is a DEAD DRAW. My king is jammed in the corner on a8, the pawn blocks a7, and the black king on c7 covers b7 and b8. I have no move that is not illegal. Stalemate. The rook pawn's own corner is its prison.",
         "annotations": [
          {
           "kind": "highlight",
@@ -111,7 +111,7 @@
       {
        "fen": "k7/8/K7/P7/3B4/8/8/8 w - - 0 1",
        "coach": {
-        "text": "Worse still: here White has a WHOLE EXTRA BISHOP and still cannot win. The promotion square a8 is a LIGHT square; my dark-squared bishop can never control it. The black king sits on a8, I can never evict him, and if I ever push the pawn it is stalemate. This is 'the wrong bishop' — a rook pawn plus a bishop that does not match the corner is only a draw.",
+        "text": "Worse still: here White has a WHOLE EXTRA BISHOP and still cannot win. The promotion square a8 is a LIGHT square; my dark-squared bishop can never control it. The black king sits on a8, I can never evict him, and if I ever push the pawn it is stalemate. This is 'the wrong bishop': a rook pawn plus a bishop that does not match the corner is only a draw.",
         "annotations": [
          {
           "kind": "highlight",
@@ -130,7 +130,7 @@
       {
        "fen": "k7/8/K7/P7/3B4/8/8/8 w - - 0 1",
        "coach": {
-        "text": "The rule to carry: a rook pawn is 'wrong' when the defending king can REACH its promotion corner. Then no queen, no bishop-of-the-wrong-colour, nothing extra wins — only a king that can outflank and an in-time pawn matters. So as the DEFENDER, run for that corner. As the ATTACKER, count whether you can keep him out before you trade into it.",
+        "text": "The rule to carry: a rook pawn is 'wrong' when the defending king can REACH its promotion corner. Then no queen, no bishop-of-the-wrong-colour, nothing extra wins. Only a king that can outflank and an in-time pawn matters. So as the DEFENDER, run for that corner. As the ATTACKER, count whether you can keep him out before you trade into it.",
         "conceptId": "catalogue"
        }
       }
@@ -138,9 +138,9 @@
     },
     {
      "kind": "guided",
-     "title": "Defend — into the corner, and only the corner",
+     "title": "Defend: into the corner, and only the corner",
      "intro": {
-      "text": "You are Black, a bare king against king and a-pawn. My king has already OUTFLANKED yours — it sits on b6, beside the pawn, shouldering you out. Here one tempo decides, and exactly one square draws."
+      "text": "You are Black, a bare king against king and a-pawn. My king has already OUTFLANKED yours. It sits on b6, beside the pawn, shouldering you out. Here one tempo decides, and exactly one square draws."
      },
      "steps": [
       {
@@ -171,11 +171,11 @@
         "b8a8"
        ],
        "successLine": {
-        "text": "Ka8 — the corner, the one square that holds. Now a7 is stalemate the instant I push, and if I shuffle my king I only release you. With my king already on b6 there is no waiting move that wins: dead draw. Reach the corner in time and even an outflanked king cannot break a rook pawn.",
+        "text": "Ka8: the corner, the one square that holds. Now a7 is stalemate the instant I push, and if I shuffle my king I only release you. With my king already on b6 there is no waiting move that wins: dead draw. Reach the corner in time and even an outflanked king cannot break a rook pawn.",
         "conceptId": "wrong-rook-pawn"
        },
        "retryLine": {
-        "text": "No — with my king already on b6, stepping to c8 lets me play a7 and queen: you have been outflanked and cannot get back. Only Ka8, straight into the corner, draws. That tempo was the whole game.",
+        "text": "No. With my king already on b6, stepping to c8 lets me play a7 and queen: you have been outflanked and cannot get back. Only Ka8, straight into the corner, draws. That tempo was the whole game.",
         "conceptId": "wrong-rook-pawn"
        }
       }
@@ -183,7 +183,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — convert or hold",
+     "title": "Cool-down: convert or hold",
      "intro": {
       "text": "A pair of real rook-pawn and pawn endgames. Reading the corner correctly is the whole game here."
      },
@@ -209,13 +209,13 @@
      "kind": "teach",
      "title": "Free the passive rook",
      "intro": {
-      "text": "Rook against rook and an a-pawn on the sixth. The naive defence — rook stuck in front on a7 or a8 — loses, because your rook is paralysed while the enemy king strolls up. Frantisek Vancura found the cure in 1924."
+      "text": "Rook against rook and an a-pawn on the sixth. The naive defence (rook stuck in front on a7 or a8) loses, because your rook is paralysed while the enemy king strolls up. Frantisek Vancura found the cure in 1924."
      },
      "steps": [
       {
        "fen": "R7/6k1/P4r2/8/8/8/6K1/8 b - - 0 1",
        "coach": {
-        "text": "Here is the Vancura set-up. My pawn is on a6, my rook behind it on a8. But your black rook is NOT in front of the pawn — it attacks a6 from the SIDE, along the sixth rank, from as far away as f6. And your king sits safely on g7. This holds.",
+        "text": "Here is the Vancura set-up. My pawn is on a6, my rook behind it on a8. But your black rook is NOT in front of the pawn. It attacks a6 from the SIDE, along the sixth rank, from as far away as f6. And your king sits safely on g7. This holds.",
         "annotations": [
          {
           "kind": "highlight",
@@ -240,7 +240,7 @@
       {
        "fen": "R7/6k1/P4r2/8/8/8/6K1/8 b - - 0 1",
        "coach": {
-        "text": "Two threats keep me helpless. If I ever push a6-a7, your rook drops to a6 behind the pawn and it is lost or traded — my passed pawn evaporates. And I cannot free my own rook on a8: the moment my king walks over to b7 to shoo it out, your rook checks it from the far side and the king can never find shelter from those checks. Activity, not material, decides.",
+        "text": "Two threats keep me helpless. If I ever push a6-a7, your rook drops to a6 behind the pawn and it is lost or traded. My passed pawn evaporates. And I cannot free my own rook on a8: the moment my king walks over to b7 to shoo it out, your rook checks it from the far side and the king can never find shelter from those checks. Activity, not material, decides.",
         "annotations": [
          {
           "kind": "arrow",
@@ -263,13 +263,13 @@
      "kind": "guided",
      "title": "Check from afar, not from beside",
      "intro": {
-      "text": "You are Black. My king has marched to b7 to free my rook and push a7. You must check it away — but HOW you check is everything."
+      "text": "You are Black. My king has marched to b7 to free my rook and push a7. You must check it away, but HOW you check is everything."
      },
      "steps": [
       {
        "fen": "R7/1K4k1/P4r2/8/8/8/8/8 b - - 0 1",
        "coach": {
-        "text": "Tempting: Rb6+, hitting the king and the pawn at once. But look — my king simply plays Kxb6 and your rook is gone, since nothing defends it. The Vancura check must come from DISTANCE, where my king can never reach it. Check along the file from far away.",
+        "text": "Tempting: Rb6+, hitting the king and the pawn at once. But look: my king simply plays Kxb6 and your rook is gone, since nothing defends it. The Vancura check must come from DISTANCE, where my king can never reach it. Check along the file from far away.",
         "annotations": [
          {
           "kind": "circle",
@@ -289,11 +289,11 @@
         "f6f7"
        ],
        "successLine": {
-        "text": "Rf7+ — a check my king on b7 cannot answer by capture, and cannot hide from without abandoning the pawn or its own rook. I shuffle, you keep checking from the long side, and the half-point is yours. That is the Vancura.",
+        "text": "Rf7+: a check my king on b7 cannot answer by capture, and cannot hide from without abandoning the pawn or its own rook. I shuffle, you keep checking from the long side, and the half-point is yours. That is the Vancura.",
         "conceptId": "vancura"
        },
        "retryLine": {
-        "text": "Careful — a check from a square next to my king lets me capture your undefended rook. Keep your distance. Check down the file from afar.",
+        "text": "Careful: a check from a square next to my king lets me capture your undefended rook. Keep your distance. Check down the file from afar.",
         "conceptId": "vancura"
        }
       }
@@ -311,13 +311,13 @@
      "kind": "teach",
      "title": "Hold the third rank",
      "intro": {
-      "text": "Rook and pawn versus rook is the most common endgame in chess, and the Philidor — published in 1777 — is the defence you MUST know. The whole method is two rules. Here is the first."
+      "text": "Rook and pawn versus rook is the most common endgame in chess, and the Philidor (published in 1777) is the defence you MUST know. The whole method is two rules. Here is the first."
      },
      "steps": [
       {
        "fen": "4k3/7R/1r6/3KP3/8/8/8/8 b - - 0 1",
        "coach": {
-        "text": "My pawn is on the fifth and has NOT yet reached the sixth rank. Your defence: park your rook on YOUR third rank — the sixth rank from my side — and shuffle it back and forth. While it sits there, my king can never set foot on the sixth rank to shelter the pawn's advance. Black is to move and simply waits with Ra6, Rc6, Rh6.",
+        "text": "My pawn is on the fifth and has NOT yet reached the sixth rank. Your defence: park your rook on YOUR third rank (the sixth rank from my side) and shuffle it back and forth. While it sits there, my king can never set foot on the sixth rank to shelter the pawn's advance. Black is to move and simply waits with Ra6, Rc6, Rh6.",
         "annotations": [
          {
           "kind": "highlight",
@@ -342,7 +342,7 @@
       {
        "fen": "4k3/7R/r3P3/3K4/8/8/8/8 b - - 0 1",
        "coach": {
-        "text": "Now the second rule. I had no progress, so I was forced to push e5-e6. The moment the pawn reaches the sixth rank, the sixth is no longer useful to you — so SWITCH: drop your rook to the FIRST rank and check the king from behind. With the pawn this far advanced my king cannot hide from the rear checks without stepping in front of its own pawn and blocking it. Perpetual checks, a dead draw.",
+        "text": "Now the second rule. I had no progress, so I was forced to push e5-e6. The moment the pawn reaches the sixth rank, the sixth is no longer useful to you, so SWITCH: drop your rook to the FIRST rank and check the king from behind. With the pawn this far advanced my king cannot hide from the rear checks without stepping in front of its own pawn and blocking it. Perpetual checks, a dead draw.",
         "annotations": [
          {
           "kind": "arrow",
@@ -363,7 +363,7 @@
     },
     {
      "kind": "guided",
-     "title": "The switch — drop behind",
+     "title": "The switch: drop behind",
      "intro": {
       "text": "You are Black. I was forced to advance my pawn to the sixth rank. Your rook is still patrolling the sixth. It is time for rule two."
      },
@@ -371,7 +371,7 @@
       {
        "fen": "4k3/7R/r3P3/3K4/8/8/8/8 b - - 0 1",
        "coach": {
-        "text": "The pawn has reached e6. Patrolling the sixth rank no longer helps — it would even get in the pawn's way. Switch defences: get your rook as far behind the pawn as possible and start checking. Where does the rook belong now?",
+        "text": "The pawn has reached e6. Patrolling the sixth rank no longer helps. It would even get in the pawn's way. Switch defences: get your rook as far behind the pawn as possible and start checking. Where does the rook belong now?",
         "annotations": [
          {
           "kind": "arrow",
@@ -393,7 +393,7 @@
         "a6a3"
        ],
        "successLine": {
-        "text": "The rook drops to the rear and checks from a distance — now I have nowhere to hide. If my king shelters in front of the pawn it stops winning. You check, I run, you check again. The Philidor holds. Two rules: third rank until the pawn comes, then check from behind.",
+        "text": "The rook drops to the rear and checks from a distance. Now I have nowhere to hide. If my king shelters in front of the pawn it stops winning. You check, I run, you check again. The Philidor holds. Two rules: third rank until the pawn comes, then check from behind.",
         "conceptId": "philidor"
        },
        "retryLine": {
@@ -405,7 +405,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — rook technique",
+     "title": "Cool-down: rook technique",
      "intro": {
       "text": "Real rook endgames. Activity and the right rank decide every one."
      },
@@ -422,21 +422,21 @@
   },
   {
    "id": "ch36-l5-lucena",
-   "title": "The Lucena Position — Building a Bridge",
+   "title": "The Lucena Position: Building a Bridge",
    "kind": "endgame",
-   "summary": "The fundamental rook-endgame WIN. Pawn on the seventh, your king in front of it, the enemy king cut off: you win by 'building a bridge' — your rook on the fourth rank interposes on a square your king defends, so the king can step out, recapture if needed, and the pawn queens.",
+   "summary": "The fundamental rook-endgame WIN. Pawn on the seventh, your king in front of it, the enemy king cut off: you win by 'building a bridge': your rook on the fourth rank interposes on a square your king defends, so the king can step out, recapture if needed, and the pawn queens.",
    "segments": [
     {
      "kind": "teach",
-     "title": "When the defence fails — the Lucena",
+     "title": "When the defence fails, the Lucena",
      "intro": {
-      "text": "If the defender does not reach the Philidor in time, you get the Lucena — the winning side of the same endgame. Pawn on the seventh, your king ahead of it, the enemy king cut off by your rook. The problem is only this: your own king blocks the pawn, and the moment it steps aside the checks rain down. The solution is a bridge."
+      "text": "If the defender does not reach the Philidor in time, you get the Lucena, the winning side of the same endgame. Pawn on the seventh, your king ahead of it, the enemy king cut off by your rook. The problem is only this: your own king blocks the pawn, and the moment it steps aside the checks rain down. The solution is a bridge."
      },
      "steps": [
       {
        "fen": "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1",
        "coach": {
-        "text": "The Lucena. My pawn is one step from queening on b8, my king shelters it from b8, and the black king on d8 is cut off by my rook on the c-file. To promote I must free b8, but the instant my king emerges the black rook checks it from the side and along the files. Step one: nudge the king out of the way and seize the d-file with a check — Rd1+.",
+        "text": "The Lucena. My pawn is one step from queening on b8, my king shelters it from b8, and the black king on d8 is cut off by my rook on the c-file. To promote I must free b8, but the instant my king emerges the black rook checks it from the side and along the files. Step one: nudge the king out of the way and seize the d-file with a check, Rd1+.",
         "annotations": [
          {
           "kind": "highlight",
@@ -461,7 +461,7 @@
       {
        "fen": "8/1P2k3/8/1K6/3R4/8/8/1r6 w - - 0 1",
        "coach": {
-        "text": "Here is the whole point of the plan. My rook sits on the fourth rank — Rd4, parked there earlier. My king has shouldered down the b-file to b5, escorting the pawn, chased by checks the whole way: Rc1+, Rb1+. Now Black checks once more from b1. Instead of running — which only invites the next check — I interpose: Rb4. The rook blocks the check AND my king on b5 defends it. If Black grabs it, Rxb4+ Kxb4, I recapture and the pawn runs in.",
+        "text": "Here is the whole point of the plan. My rook sits on the fourth rank, Rd4, parked there earlier. My king has shouldered down the b-file to b5, escorting the pawn, chased by checks the whole way: Rc1+, Rb1+. Now Black checks once more from b1. Instead of running, which only invites the next check. I interpose: Rb4. The rook blocks the check AND my king on b5 defends it. If Black grabs it, Rxb4+ Kxb4, I recapture and the pawn runs in.",
         "annotations": [
          {
           "kind": "arrow",
@@ -489,7 +489,7 @@
      "kind": "guided",
      "title": "Lift the rook",
      "intro": {
-      "text": "You are White. The Lucena — pawn on the seventh, king sheltering it, enemy king cut off. You have nudged the king aside with Rd1+ and it stepped to e7. Now prepare the bridge before you march the king out."
+      "text": "You are White. The Lucena: pawn on the seventh, king sheltering it, enemy king cut off. You have nudged the king aside with Rd1+ and it stepped to e7. Now prepare the bridge before you march the king out."
      },
      "steps": [
       {
@@ -510,7 +510,7 @@
         "d1d4"
        ],
        "successLine": {
-        "text": "Rd4 — the bridge timber is in place. Now my king walks down the b-file toward the pawn, and when the checks come I will swing the rook across to block one on a square my king guards. Preparation before the king moves: that is the whole secret.",
+        "text": "Rd4: the bridge timber is in place. Now my king walks down the b-file toward the pawn, and when the checks come I will swing the rook across to block one on a square my king guards. Preparation before the king moves: that is the whole secret.",
         "conceptId": "lucena"
        },
        "retryLine": {
@@ -530,7 +530,7 @@
       {
        "fen": "8/1P2k3/8/1K6/3R4/8/8/1r6 w - - 0 1",
        "coach": {
-        "text": "This is the moment the whole plan was built for. Black checks down the b-file from b1. Do not run — running only invites the next check and stalls. Swing your rook across to interpose between the checker and your king, onto the square your king already defends. The rook blocks the check, your king guards it, and the pawn queens.",
+        "text": "This is the moment the whole plan was built for. Black checks down the b-file from b1. Do not run. Running only invites the next check and stalls. Swing your rook across to interpose between the checker and your king, onto the square your king already defends. The rook blocks the check, your king guards it, and the pawn queens.",
         "annotations": [
          {
           "kind": "arrow",
@@ -550,11 +550,11 @@
         "d4b4"
        ],
        "successLine": {
-        "text": "Rb4 — the bridge! Black cannot check again without trading: Rxb4+ Kxb4 and the pawn promotes; otherwise I shove b8=Q next move anyway. Lucena complete: cut the king, lift to the fourth rank, walk the king out, then bridge onto a square the king defends. The basic rook-endgame WIN.",
+        "text": "Rb4: the bridge! Black cannot check again without trading: Rxb4+ Kxb4 and the pawn promotes; otherwise I shove b8=Q next move anyway. Lucena complete: cut the king, lift to the fourth rank, walk the king out, then bridge onto a square the king defends. The basic rook-endgame WIN.",
         "conceptId": "lucena"
        },
        "retryLine": {
-        "text": "No — stepping the king aside only invites another check, and you go in circles (Kc5 even throws the win away to a draw). Use the rook you parked on the fourth rank: interpose it on b4, where your king on b5 defends it.",
+        "text": "No: stepping the king aside only invites another check, and you go in circles (Kc5 even throws the win away to a draw). Use the rook you parked on the fourth rank: interpose it on b4, where your king on b5 defends it.",
         "conceptId": "lucena"
        }
       }
@@ -572,13 +572,13 @@
      "kind": "teach",
      "title": "A wall material cannot break",
      "intro": {
-      "text": "A fortress is a drawn structure the stronger side simply cannot crack — the pieces form a wall, and every plan to break in runs out. The most famous fortresses arise with opposite-coloured bishops. Look at this."
+      "text": "A fortress is a drawn structure the stronger side simply cannot crack. The pieces form a wall, and every plan to break in runs out. The most famous fortresses arise with opposite-coloured bishops. Look at this."
      },
      "steps": [
       {
        "fen": "3b4/3k4/8/3P1P2/4B3/4K3/8/8 w - - 0 1",
        "coach": {
-        "text": "White is TWO clean pawns up — d5 and f5 — with an extra bishop's worth of force. And it is a dead draw. The pawns sit on light squares; my light bishop can never control the DARK squares in front of them. Your dark bishop on d8 blockades from the dark squares, and I can never dislodge it. Two extra pawns, and not a single way through.",
+        "text": "White is TWO clean pawns up (d5 and f5) with an extra bishop's worth of force. And it is a dead draw. The pawns sit on light squares; my light bishop can never control the DARK squares in front of them. Your dark bishop on d8 blockades from the dark squares, and I can never dislodge it. Two extra pawns, and not a single way through.",
         "annotations": [
          {
           "kind": "highlight",
@@ -623,7 +623,7 @@
       {
        "fen": "3b4/3k4/5P2/3P4/4B3/3K4/8/8 b - - 0 1",
        "coach": {
-        "text": "I pushed my pawn onto f6 — a DARK square, the colour your bishop owns. The wall is so solid it holds however you shuffle, but the cleanest reply is also the most instructive: there is no need to fear that pawn, so simply remove it. Take it off the board and the blockade is even easier to keep.",
+        "text": "I pushed my pawn onto f6. A DARK square, the colour your bishop owns. The wall is so solid it holds however you shuffle, but the cleanest reply is also the most instructive: there is no need to fear that pawn, so simply remove it. Take it off the board and the blockade is even easier to keep.",
         "annotations": [
          {
           "kind": "arrow",
@@ -643,11 +643,11 @@
         "d8f6"
        ],
        "successLine": {
-        "text": "Bxf6 — the most direct answer, and the position is still a fortress with even less for me to work with. My remaining d-pawn is blockaded the same way. The lesson: when the attacker pushes a pawn onto YOUR bishop's colour, it cannot survive there. Opposite-bishop endings draw a pawn — even two — down, as long as your bishop keeps watching the squares that matter.",
+        "text": "Bxf6: the most direct answer, and the position is still a fortress with even less for me to work with. My remaining d-pawn is blockaded the same way. The lesson: when the attacker pushes a pawn onto YOUR bishop's colour, it cannot survive there. Opposite-bishop endings draw a pawn (even two) down, as long as your bishop keeps watching the squares that matter.",
         "conceptId": "fortress"
        },
        "retryLine": {
-        "text": "Not the cleanest. The pawn stepped onto a dark square, and your bishop rules the dark squares — so the simplest, most convincing reply is to capture it: Bxf6, and the wall is intact with one less attacker.",
+        "text": "Not the cleanest. The pawn stepped onto a dark square, and your bishop rules the dark squares, so the simplest, most convincing reply is to capture it: Bxf6, and the wall is intact with one less attacker.",
         "conceptId": "fortress"
        }
       }
@@ -659,19 +659,19 @@
    "id": "ch36-l7-breakthrough",
    "title": "The Pawn Breakthrough",
    "kind": "endgame",
-   "summary": "When the kings are too far to matter, a pawn race is pure counting — and a well-timed sacrifice can blast a passed pawn through a wall that looked solid. The breakthrough is the move that wins on tempo.",
+   "summary": "When the kings are too far to matter, a pawn race is pure counting, and a well-timed sacrifice can blast a passed pawn through a wall that looked solid. The breakthrough is the move that wins on tempo.",
    "segments": [
     {
      "kind": "teach",
-     "title": "Three against three — and White wins",
+     "title": "Three against three, and White wins",
      "intro": {
-      "text": "A position that looks dead level: three pawns each, kings stranded in opposite corners. It is winning for White by force, and the idea is one of the prettiest in the endgame — the breakthrough."
+      "text": "A position that looks dead level: three pawns each, kings stranded in opposite corners. It is winning for White by force, and the idea is one of the prettiest in the endgame, the breakthrough."
      },
      "steps": [
       {
        "fen": "8/ppp5/8/PPP5/8/8/8/k5K1 w - - 0 1",
        "coach": {
-        "text": "Three pawns versus three, all locked, kings far away in the corners. It looks like nothing. But White plays b5-b6! — sacrificing the middle pawn. Whichever way Black recaptures, a path opens for one of the outside pawns to run, and Black's king is too far to catch it.",
+        "text": "Three pawns versus three, all locked, kings far away in the corners. It looks like nothing. But White plays b5-b6!, sacrificing the middle pawn. Whichever way Black recaptures, a path opens for one of the outside pawns to run, and Black's king is too far to catch it.",
         "annotations": [
          {
           "kind": "arrow",
@@ -696,7 +696,7 @@
       {
        "fen": "8/ppp5/8/PPP5/8/8/8/k5K1 w - - 0 1",
        "coach": {
-        "text": "Count it. After 1.b6 axb6 2.c6! bxc6 3.a6 — the a-pawn runs to a8 and nothing stops it. And if 1.b6 cxb6 2.a6! bxa6 3.c6 — now the c-pawn queens instead. The middle pawn was the battering ram: give it up to clear the file for an outside passer. Always COUNT the race before you sacrifice.",
+        "text": "Count it. After 1.b6 axb6 2.c6! bxc6 3.a6: the a-pawn runs to a8 and nothing stops it. And if 1.b6 cxb6 2.a6! bxa6 3.c6: now the c-pawn queens instead. The middle pawn was the battering ram: give it up to clear the file for an outside passer. Always COUNT the race before you sacrifice.",
         "annotations": [
          {
           "kind": "arrow",
@@ -720,7 +720,7 @@
       {
        "fen": "8/ppp5/8/PPP5/8/8/8/k5K1 w - - 0 1",
        "coach": {
-        "text": "Pushing an outside pawn first — a6 or c6 — gets captured and leads nowhere. The break must come through the MIDDLE: sacrifice the central pawn so that whichever pawn Black uses to recapture, the other wing opens for a runner.",
+        "text": "Pushing an outside pawn first (a6 or c6) gets captured and leads nowhere. The break must come through the MIDDLE: sacrifice the central pawn so that whichever pawn Black uses to recapture, the other wing opens for a runner.",
         "annotations": [
          {
           "kind": "arrow",
@@ -735,11 +735,11 @@
         "b5b6"
        ],
        "successLine": {
-        "text": "b6! — the battering ram. Now both recaptures lose: ...axb6 lets the a-pawn run after c6, and ...cxb6 lets the c-pawn run after a6. Black's king never arrives. The breakthrough decides.",
+        "text": "b6!, the battering ram. Now both recaptures lose: ...axb6 lets the a-pawn run after c6, and ...cxb6 lets the c-pawn run after a6. Black's king never arrives. The breakthrough decides.",
         "conceptId": "breakthrough"
        },
        "retryLine": {
-        "text": "Pushing an edge pawn just gets it traded with no break. Sacrifice through the centre — the middle pawn is the key that opens the door.",
+        "text": "Pushing an edge pawn just gets it traded with no break. Sacrifice through the centre: the middle pawn is the key that opens the door.",
         "conceptId": "breakthrough"
        }
       }
@@ -749,13 +749,13 @@
      "kind": "guided",
      "title": "Finish the break",
      "intro": {
-      "text": "You played b6 and I recaptured with the a-pawn, ...axb6. Don't stop now — the second sacrifice opens the road."
+      "text": "You played b6 and I recaptured with the a-pawn, ...axb6. Don't stop now. The second sacrifice opens the road."
      },
      "steps": [
       {
        "fen": "8/1pp5/1p6/P1P5/8/8/8/k5K1 w - - 0 2",
        "coach": {
-        "text": "Black took with the a-pawn, so the a-file is now clear behind my a5-pawn — except a pawn on b6 and one on c7 still stand in the way of opening the runner. One more sacrifice clears it: which pawn do I give up so my a-pawn can queen?",
+        "text": "Black took with the a-pawn, so the a-file is now clear behind my a5-pawn. Except a pawn on b6 and one on c7 still stand in the way of opening the runner. One more sacrifice clears it: which pawn do I give up so my a-pawn can queen?",
         "annotations": [
          {
           "kind": "arrow",
@@ -776,11 +776,11 @@
         "c5c6"
        ],
        "successLine": {
-        "text": "c6! After ...bxc6, the b-file and the path are clear: a6, a7, a8=Q. The outside passed pawn outruns the king every time. Sacrifice to clear, then queen — that is the whole breakthrough.",
+        "text": "c6! After ...bxc6, the b-file and the path are clear: a6, a7, a8=Q. The outside passed pawn outruns the king every time. Sacrifice to clear, then queen: that is the whole breakthrough.",
         "conceptId": "breakthrough"
        },
        "retryLine": {
-        "text": "The a-pawn still needs a clear road. Throw in the c-pawn — c6 — so that after the recapture nothing blocks the a-pawn's run to a8.",
+        "text": "The a-pawn still needs a clear road. Throw in the c-pawn (c6) so that after the recapture nothing blocks the a-pawn's run to a8.",
         "conceptId": "breakthrough"
        }
       }
@@ -788,7 +788,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — find the break",
+     "title": "Cool-down: find the break",
      "intro": {
       "text": "Pawn endgames where counting and a timely break decide. Look for the sacrifice that makes a passer."
      },
@@ -808,20 +808,20 @@
    "id": "ch36-l8-catalogue",
    "title": "The Catalogue of Known Results",
    "kind": "endgame",
-   "summary": "Strong players don't calculate these endings at the board — they recognise them. A model walkthrough of the Lucena conversion, then the catalogue of book draws and book wins you should simply KNOW.",
+   "summary": "Strong players don't calculate these endings at the board. They recognise them. A model walkthrough of the Lucena conversion, then the catalogue of book draws and book wins you should simply KNOW.",
    "segments": [
     {
      "kind": "model",
      "title": "The Lucena, start to finish",
      "fen": "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1",
      "intro": {
-      "text": "Watch the full Lucena conversion run without interruption — cut the king, lift, walk, bridge, queen. This is what 'a book win' looks like in motion. Pawn b7, king on b8 in front of it, black king cut off on d8 by my rook."
+      "text": "Watch the full Lucena conversion run without interruption. Cut the king, lift, walk, bridge, queen. This is what 'a book win' looks like in motion. Pawn b7, king on b8 in front of it, black king cut off on d8 by my rook."
      },
      "line": [
       {
        "uci": "c1d1",
        "coach": {
-        "text": "Rd1+ — seize the d-file with check, nudging the king off the pawn's path. The black king must step away.",
+        "text": "Rd1+: seize the d-file with check, nudging the king off the pawn's path. The black king must step away.",
         "conceptId": "lucena"
        }
       },
@@ -831,7 +831,7 @@
       {
        "uci": "d1d4",
        "coach": {
-        "text": "Rd4 — lift to the fourth rank, the bridge timber. Nothing else moves yet; this rank is where the rook will later block a check on a square my king defends.",
+        "text": "Rd4: lift to the fourth rank, the bridge timber. Nothing else moves yet; this rank is where the rook will later block a check on a square my king defends.",
         "conceptId": "lucena"
        }
       },
@@ -873,7 +873,7 @@
       {
        "uci": "d4b4",
        "coach": {
-        "text": "The bridge! Rb4 interposes, blocking the check — and my king on b5 defends the rook, so Black cannot just snatch it.",
+        "text": "The bridge! Rb4 interposes, blocking the check, and my king on b5 defends the rook, so Black cannot just snatch it.",
         "conceptId": "lucena"
        }
       },
@@ -883,7 +883,7 @@
       {
        "uci": "b5b4",
        "coach": {
-        "text": "Black gives up the rook to delay the check; my king recaptures. Now the black king on e7 is far too distant — nothing stops the pawn.",
+        "text": "Black gives up the rook to delay the check; my king recaptures. Now the black king on e7 is far too distant. Nothing stops the pawn.",
         "conceptId": "lucena"
        }
       },
@@ -903,27 +903,27 @@
      "kind": "teach",
      "title": "What to simply know",
      "intro": {
-      "text": "The endgame is the one phase you can largely MEMORISE. Carry this short catalogue and you will know the result before you enter the position — which is exactly how masters decide whether to trade into it."
+      "text": "The endgame is the one phase you can largely MEMORISE. Carry this short catalogue and you will know the result before you enter the position, which is exactly how masters decide whether to trade into it."
      },
      "steps": [
       {
        "fen": "4k3/7R/1r6/3KP3/8/8/8/8 b - - 0 1",
        "coach": {
-        "text": "BOOK DRAWS to know cold: the wrong rook pawn (defending king reaches the corner — even an extra queen or wrong bishop can't win); the Philidor (rook on the third rank, then check from behind); the Vancura (rook attacks the a-pawn from the side and checks from afar); and opposite-coloured-bishop endings a pawn or two down. Reach any of these as the weaker side and you have saved the game.",
+        "text": "BOOK DRAWS to know cold: the wrong rook pawn (defending king reaches the corner; even an extra queen or wrong bishop can't win); the Philidor (rook on the third rank, then check from behind); the Vancura (rook attacks the a-pawn from the side and checks from afar); and opposite-coloured-bishop endings a pawn or two down. Reach any of these as the weaker side and you have saved the game.",
         "conceptId": "catalogue"
        }
       },
       {
        "fen": "1K1k4/1P6/8/8/8/8/r7/2R5 w - - 0 1",
        "coach": {
-        "text": "BOOK WINS to know cold: the Lucena (pawn on the seventh, king in front, enemy king cut off — cut, lift, walk, build the bridge); king-and-pawn key squares with the opposition; and a winning pawn breakthrough when you can out-count the race. The skill is recognition: the moment you can name the position, you know whether to head for it or away from it.",
+        "text": "BOOK WINS to know cold: the Lucena (pawn on the seventh, king in front, enemy king cut off; cut, lift, walk, build the bridge); king-and-pawn key squares with the opposition; and a winning pawn breakthrough when you can out-count the race. The skill is recognition: the moment you can name the position, you know whether to head for it or away from it.",
         "conceptId": "catalogue"
        }
       },
       {
        "fen": "3b4/3k4/8/3P1P2/4B3/4K3/8/8 w - - 0 1",
        "coach": {
-        "text": "And the golden rule the whole chapter serves: decide the result BEFORE you simplify. A queen trade is only good if the pawn ending is winning; a rook trade is fatal if it leaves a lost king-and-pawn ending — and a glorious draw if it reaches a fortress. Know the catalogue, and the endgame stops being a gamble.",
+        "text": "And the golden rule the whole chapter serves: decide the result BEFORE you simplify. A queen trade is only good if the pawn ending is winning; a rook trade is fatal if it leaves a lost king-and-pawn ending, and a glorious draw if it reaches a fortress. Know the catalogue, and the endgame stops being a gamble.",
         "conceptId": "catalogue"
        }
       }
@@ -941,7 +941,7 @@
      "kind": "puzzle",
      "title": "Endgame eyes",
      "intro": {
-      "text": "A last set of theoretical endgames. Each rewards naming the position before you move — book draw or book win?"
+      "text": "A last set of theoretical endgames. Each rewards naming the position before you move. Book draw or book win?"
      },
      "puzzle": {
       "themes": [
@@ -956,12 +956,12 @@
     },
     {
      "kind": "boss",
-     "title": "Boss — Break Through and Queen",
+     "title": "Boss: Break Through and Queen",
      "bossFen": "8/ppp5/8/PPP5/8/8/2K5/k7 w - - 0 1",
      "bossUserColor": "white",
      "bossEngineElo": 1500,
      "bossIntro": {
-      "text": "You are White. Three pawns against three, kings stuck in opposite corners — it LOOKS level. It is not: with best play this is winning. Count the race, find the break that springs an outside passer, and escort it home. Show me you can break a wall.",
+      "text": "You are White. Three pawns against three, kings stuck in opposite corners. It LOOKS level. It is not: with best play this is winning. Count the race, find the break that springs an outside passer, and escort it home. Show me you can break a wall.",
       "conceptId": "breakthrough"
      }
     }
@@ -974,8 +974,8 @@
     "kind": "mc",
     "prompt": "You have king and an a-pawn against a lone king, and the enemy king sits on the a8 corner you need to promote into. What is the result with best play?",
     "options": [
-     "A win — the extra pawn always promotes eventually",
-     "A draw — the defending king in the rook-pawn's corner cannot be dislodged",
+     "A win, the extra pawn always promotes eventually",
+     "A draw: the defending king in the rook-pawn's corner cannot be dislodged",
      "A win only if it is your move",
      "A draw only if the pawn is still on its starting square"
     ],
@@ -1004,7 +1004,7 @@
      "Because the extra pawns are always doubled"
     ],
     "answerIndex": 1,
-    "explain": "Each bishop rules one colour; the defender blockades on the squares the attacker's bishop can never touch. To win you must push a pawn onto the defender's colour — where its bishop is waiting. That is the fortress."
+    "explain": "Each bishop rules one colour; the defender blockades on the squares the attacker's bishop can never touch. To win you must push a pawn onto the defender's colour. Where its bishop is waiting. That is the fortress."
    },
    {
     "kind": "mc",
@@ -1020,42 +1020,42 @@
    },
    {
     "kind": "play",
-    "prompt": "You are Black, a bare king against king and an h-pawn. The white king has already OUTFLANKED to g6 beside its h6-pawn. One tempo decides — find the only square that draws.",
+    "prompt": "You are Black, a bare king against king and an h-pawn. The white king has already OUTFLANKED to g6 beside its h6-pawn. One tempo decides. Find the only square that draws.",
     "fen": "6k1/8/6KP/8/8/8/8/8 b - - 0 1",
     "solutionUci": [
      "g8h8"
     ],
-    "explain": "Kh8 — the only move that holds. With the white king already on g6, h7 is then stalemate (the pawn covers g8, the king covers g7). Step the other way with Kf8 and White plays h7 and queens — the outflanked king cannot be let back out. The wrong-rook-pawn draw, mirrored to the h-file."
+    "explain": "Kh8: the only move that holds. With the white king already on g6, h7 is then stalemate (the pawn covers g8, the king covers g7). Step the other way with Kf8 and White plays h7 and queens. The outflanked king cannot be let back out. The wrong-rook-pawn draw, mirrored to the h-file."
    },
    {
     "kind": "play",
-    "prompt": "You are Black, the rook-pawn now on the h-file (h6) and your rook on c6 watching it from the side. White's king has reached g7 to free its rook on h8 and push h7. You are to move — hold the draw.",
+    "prompt": "You are Black, the rook-pawn now on the h-file (h6) and your rook on c6 watching it from the side. White's king has reached g7 to free its rook on h8 and push h7. You are to move. Hold the draw.",
     "fen": "7R/1k4K1/2r4P/8/8/8/8/8 b - - 0 1",
     "solutionUci": [
      "c6c7"
     ],
-    "explain": "Rc7+ — a distant check along the seventh rank the king cannot answer by capture, and cannot escape without abandoning the pawn or its own rook. The Vancura check always comes from afar; a check beside the king (Rg6+?) simply loses the rook to Kxg6."
+    "explain": "Rc7+: a distant check along the seventh rank the king cannot answer by capture, and cannot escape without abandoning the pawn or its own rook. The Vancura check always comes from afar; a check beside the king (Rg6+?) simply loses the rook to Kxg6."
    },
    {
     "kind": "play",
-    "prompt": "You are Black, defending rook versus rook-and-pawn. The white pawn has just reached the sixth rank (d6), king on c5, your king on d8 and your rook patrolling on h6. You are to move — hold the draw.",
+    "prompt": "You are Black, defending rook versus rook-and-pawn. The white pawn has just reached the sixth rank (d6), king on c5, your king on d8 and your rook patrolling on h6. You are to move. Hold the draw.",
     "fen": "3k4/6R1/3P3r/2K5/8/8/8/8 b - - 0 1",
     "solutionUci": [
      "h6h1",
      "h6h2",
      "h6h3"
     ],
-    "explain": "With the pawn on the sixth, patrolling the rank no longer helps — switch to rear checks. Drop the rook far behind (Rh1, Rh2 or Rh3) and check from a distance; the white king can never shelter without blocking its own pawn. The Philidor draw."
+    "explain": "With the pawn on the sixth, patrolling the rank no longer helps. Switch to rear checks. Drop the rook far behind (Rh1, Rh2 or Rh3) and check from a distance; the white king can never shelter without blocking its own pawn. The Philidor draw."
    },
    {
     "kind": "play",
-    "prompt": "You are White in a Lucena with a c-pawn. Pawn on c7, your king sheltering it on c8, the enemy king cut off on e8 by your rook on d1. You are to move — start the winning conversion.",
+    "prompt": "You are White in a Lucena with a c-pawn. Pawn on c7, your king sheltering it on c8, the enemy king cut off on e8 by your rook on d1. You are to move. Start the winning conversion.",
     "fen": "2K1k3/2P5/8/8/8/8/1r6/3R4 w - - 0 1",
     "solutionUci": [
      "d1e1",
      "d1d4"
     ],
-    "explain": "Re1+ first, shoving the king off the pawn's path and seizing the e-file; then Rd4 lifts to the bridge rank. (Lifting straight to the fourth with Rd4 also wins.) What loses the thread is marching the king out before the bridge is built — the side-checks never stop. Same Lucena, one file over."
+    "explain": "Re1+ first, shoving the king off the pawn's path and seizing the e-file; then Rd4 lifts to the bridge rank. (Lifting straight to the fourth with Rd4 also wins.) What loses the thread is marching the king out before the bridge is built. The side-checks never stop. Same Lucena, one file over."
    },
    {
     "kind": "play",
@@ -1064,24 +1064,24 @@
     "solutionUci": [
      "e4c4"
     ],
-    "explain": "Rc4 — the bridge. The rook interposes to block the check, and your king on c5 defends it: ...Rxc4+ Kxc4 and the pawn queens; otherwise c8=Q next move. Running instead (Kd5/Kb5) throws the win away. Same bridge, one file over."
+    "explain": "Rc4: the bridge. The rook interposes to block the check, and your king on c5 defends it: ...Rxc4+ Kxc4 and the pawn queens; otherwise c8=Q next move. Running instead (Kd5/Kb5) throws the win away. Same bridge, one file over."
    },
    {
     "kind": "judge",
-    "prompt": "You are Black, holding an opposite-coloured-bishop fortress (your light bishop vs White's dark bishop and two extra pawns on c6 and e5). The wall holds however you shuffle — capturing the c6-pawn, sitting tight, or stepping the king all draw. But here Black played ...Bd7, parking the bishop directly in FRONT of the passed c-pawn. Sound, or a blunder?",
+    "prompt": "You are Black, holding an opposite-coloured-bishop fortress (your light bishop vs White's dark bishop and two extra pawns on c6 and e5). The wall holds however you shuffle. Capturing the c6-pawn, sitting tight, or stepping the king all draw. But here Black played ...Bd7, parking the bishop directly in FRONT of the passed c-pawn. Sound, or a blunder?",
     "fen": "8/3bk3/2P5/4P3/3B4/4K3/8/8 w - - 1 2",
     "lastMoveUci": "e8d7",
     "verdict": "blunder",
-    "explain": "Blunder — it loses outright, and to one move: cxd7! The c6-pawn simply captures the bishop. After ...Kxd7 White is left with bishop and e-pawn against a bare king, an elementary win — the king escorts the pawn and queens. Note WHY this one move was fatal: the bishop blockaded a passed pawn from a square the pawn could capture, so it was never a blockade at all. Everywhere else the fortress holds: Bxc6, Bg6, Bh5, Bf7 and king shuffles (Kf8, Kd8, Kf7) all draw, because the bishop stays where the c6-pawn cannot reach it and still eyes the queening square. The lesson: against a passed pawn, blockade from a square it CANNOT take — never plant your bishop on the very square in front of an enemy pawn of the wrong colour for you."
+    "explain": "Blunder. It loses outright, and to one move: cxd7! The c6-pawn simply captures the bishop. After ...Kxd7 White is left with bishop and e-pawn against a bare king, an elementary win, the king escorts the pawn and queens. Note WHY this one move was fatal: the bishop blockaded a passed pawn from a square the pawn could capture, so it was never a blockade at all. Everywhere else the fortress holds: Bxc6, Bg6, Bh5, Bf7 and king shuffles (Kf8, Kd8, Kf7) all draw, because the bishop stays where the c6-pawn cannot reach it and still eyes the queening square. The lesson: against a passed pawn, blockade from a square it CANNOT take. Never plant your bishop on the very square in front of an enemy pawn of the wrong colour for you."
    },
    {
     "kind": "play",
-    "prompt": "You are White. Three pawns against three on the OTHER wing now — yours on f5, g5, h5, Black's on f7, g7, h7 — and both kings stranded in the corners. Find the breakthrough.",
+    "prompt": "You are White. Three pawns against three on the OTHER wing now (yours on f5, g5, h5, Black's on f7, g7, h7) and both kings stranded in the corners. Find the breakthrough.",
     "fen": "8/5ppp/8/5PPP/8/8/8/K6k w - - 0 1",
     "solutionUci": [
      "g5g6"
     ],
-    "explain": "g6! — the central battering ram, same idea on the kingside. After ...hxg6 the f-pawn breaks; after ...fxg6 the h-pawn breaks. Whichever pawn recaptures, an outside passer runs and Black's king is too far to catch it."
+    "explain": "g6!. The central battering ram, same idea on the kingside. After ...hxg6 the f-pawn breaks; after ...fxg6 the h-pawn breaks. Whichever pawn recaptures, an outside passer runs and Black's king is too far to catch it."
    },
    {
     "kind": "play",
@@ -1098,15 +1098,15 @@
     "fen": "k7/8/PK6/8/8/8/8/8 w - - 1 2",
     "lastMoveUci": "b8a8",
     "verdict": "correct",
-    "explain": "Correct — the only move that holds. With the white king already on b6, a7 is now stalemate the instant it is pushed, and any king shuffle only releases Black. Reaching the corner in time draws even against an outflanked king. A textbook rook-pawn draw."
+    "explain": "Correct: the only move that holds. With the white king already on b6, a7 is now stalemate the instant it is pushed, and any king shuffle only releases Black. Reaching the corner in time draws even against an outflanked king. A textbook rook-pawn draw."
    },
    {
     "kind": "judge",
-    "prompt": "Same outflanked position (white king on b6, pawn a6). This time Black stepped the OTHER way from b8 — ...Kc8, away from the corner. Correct defence or a blunder?",
+    "prompt": "Same outflanked position (white king on b6, pawn a6). This time Black stepped the OTHER way from b8, ...Kc8, away from the corner. Correct defence or a blunder?",
     "fen": "2k5/8/PK6/8/8/8/8/8 w - - 1 2",
     "lastMoveUci": "b8c8",
     "verdict": "blunder",
-    "explain": "Blunder — now it actually loses. With the king already outflanked on b6, White plays a7 and queens: ...Kc8 a7 Kd7 a8=Q. The defender had exactly one tempo and had to spend it on Ka8; stepping away surrenders the corner for good."
+    "explain": "Blunder: now it actually loses. With the king already outflanked on b6, White plays a7 and queens: ...Kc8 a7 Kd7 a8=Q. The defender had exactly one tempo and had to spend it on Ka8; stepping away surrenders the corner for good."
    },
    {
     "kind": "judge",
@@ -1114,7 +1114,7 @@
     "fen": "8/1P2k3/8/2K5/3R4/8/8/1r6 b - - 1 1",
     "lastMoveUci": "b5c5",
     "verdict": "blunder",
-    "explain": "Blunder — it throws the whole win away to a draw. Running from the checks goes in circles forever; only Rb4, the bridge, blocks the check on a square the king defends, so ...Rxb4+ Kxb4 queens the pawn. Engine-verified: after Kc5 the position is a dead draw."
+    "explain": "Blunder: it throws the whole win away to a draw. Running from the checks goes in circles forever; only Rb4, the bridge, blocks the check on a square the king defends, so ...Rxb4+ Kxb4 queens the pawn. Engine-verified: after Kc5 the position is a dead draw."
    }
   ],
   "passThreshold": 0.7

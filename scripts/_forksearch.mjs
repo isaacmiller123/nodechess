@@ -62,7 +62,7 @@ for(let i=0;i<targets.length;i++) for(let j=0;j<targets.length;j++){ if(i===j) c
     ]
     for(const bk of bkOpts){ if(bk===qSq||bk===rSq||bk===launch) continue
       for(const ws of wkSetups){
-        const bpawns=[] // start with no black pawns (sparser, fewer surprises) — but black needs SOME pawns? not required
+        const bpawns=[] // start with no black pawns (sparser, fewer surprises), but black needs SOME pawns? not required
         const res=tryBoard(qSq,rSq,launch,bk,ws.wk,ws.wp,bpawns)
         if(res) results.push({...res,qSq,rSq,launch,bk,wk:ws.wk})
       }

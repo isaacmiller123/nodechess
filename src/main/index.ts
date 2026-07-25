@@ -27,7 +27,7 @@ if (!app.isPackaged) {
 }
 
 // Smoke containment (after dev containment, so it wins in both modes): the
-// smoke run must never touch — or corrupt — the real user profile/DBs.
+// smoke run must never touch (or corrupt) the real user profile/DBs.
 if (SMOKE_WASM) {
   const smokeData = fs.mkdtempSync(path.join(os.tmpdir(), 'nodechess-smoke-'))
   app.setPath('userData', smokeData)

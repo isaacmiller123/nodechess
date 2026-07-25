@@ -14,7 +14,7 @@ export type BrushColor = 'green' | 'red' | 'blue' | 'yellow'
 export interface Annotation {
   /** Origin square. */
   orig: Key
-  /** Destination square — present for arrows, absent for circles. */
+  /** Destination square. Present for arrows, absent for circles. */
   dest?: Key
   brush: BrushColor
 }

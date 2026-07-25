@@ -42,6 +42,6 @@ function placeFen(bkSq,wkSq,rSq){
   for(let r=7;r>=0;r--){ let row=''; let e=0; for(let f=0;f<8;f++){ const c=board[r][f]; if(c){ if(e){row+=e;e=0} row+=c } else e++ } if(e)row+=e; rows.push(row) }
   return rows.join('/')+' w - - 0 1'
 }
-console.log('Kf6 vs Kh8, single rook scan — clean rook-CHECK mate-in-2:')
+console.log('Kf6 vs Kh8, single rook scan. Clean rook-CHECK mate-in-2:')
 hits.forEach(h=>console.log('  ',h))
 console.log('total hits:',hits.length)

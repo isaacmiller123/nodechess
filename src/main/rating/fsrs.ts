@@ -1,7 +1,7 @@
 // ============================================================================
 // SM-2-lite spaced-repetition scheduler (pure math).        ★ BUILDER SLICE 3 ★
 //
-// Deliberately a *lite* SM-2 — simple and ship-fast — NOT full FSRS, despite the
+// Deliberately a *lite* SM-2: simple and ship-fast: NOT full FSRS, despite the
 // filename living next to the rating code. Given a concept's prior schedule
 // (stability/difficulty/reps/lapses/state/last_review) and a single binary grade
 // (correct / incorrect), it returns the next card plus the next due epoch-ms.

@@ -1,10 +1,10 @@
-// Headless test for the ffish family wave — GameSpec adapters over ffish-es6
+// Headless test for the ffish family wave: GameSpec adapters over ffish-es6
 // (src/renderer/src/games/{ffish,ffishVariants}.ts + registry entries).
 //
 //   node scripts/test-ffish-games.mjs
 //
 // esbuild-bundles the games tree for bare node (the Vite-only
-// 'ffish-es6/ffish.wasm?url' import stays external — never executed here) and
+// 'ffish-es6/ffish.wasm?url' import stays external. Never executed here) and
 // copies ffish.wasm next to the bundle; the loader gets the bytes via
 // preloadFfish({ wasmBinary }). Per game we assert: preload gating (clear
 // throw before ready), legal-move count at the start position, a scripted
@@ -12,7 +12,7 @@
 // a full quick game (legal sequence found via ffish playouts, then hardcoded)
 // to a terminal result.
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -53,7 +53,7 @@ await build({
   jsx: 'automatic',
   loader: { '.css': 'empty' },
   // games/ffish.ts resolves the WASM asset via a Vite '?url' import; headless
-  // bundles keep it external (never executed in node — we pass wasmBinary).
+  // bundles keep it external (never executed in node; we pass wasmBinary).
   external: ['*?url'],
   alias: { '@shared': resolve(ROOT, 'src/shared'), '@': resolve(ROOT, 'src/renderer/src') },
   logLevel: 'silent'
@@ -76,7 +76,7 @@ function playAll(sp, state, moves) {
   return state
 }
 
-// Full quick games to a terminal result — legal sequences found with ffish
+// Full quick games to a terminal result: legal sequences found with ffish
 // (seeded mate-in-1-preferring playouts), then frozen here for determinism.
 const TERMINAL_LINES = {
   xiangqi:
@@ -125,7 +125,7 @@ try {
   ok(gateErr instanceof Error && /preload/i.test(gateErr.message), 'spec use before preload throws a clear preload error')
   const ffishA = await preloadFfish({ wasmBinary: readFileSync(wasmCopy) })
   const ffishB = await preloadFfish()
-  ok(isFfishReady() && ffishA === ffishB, 'preloadFfish: singleton — second call returns the same module')
+  ok(isFfishReady() && ffishA === ffishB, 'preloadFfish: singleton. Second call returns the same module')
   await spec('shogi').preload()
   ok(true, 'spec.preload(): resolves once the module is loaded')
 
@@ -166,7 +166,7 @@ try {
     'xiangqi: central cannon vs screens opening reaches the expected FEN')
   const xqMid = playAll(xq, xq.init(), ['h3e3', 'h10g8'])
   const xqMeta = xq.moveMeta(xqMid, 'e3e7')
-  ok(xqMeta.capture === true && xqMeta.sound === 'capture', 'xiangqi: cannon takes the central pawn — capture meta')
+  ok(xqMeta.capture === true && xqMeta.sound === 'capture', 'xiangqi: cannon takes the central pawn. Capture meta')
   checkTerminal('xiangqi', 'checkmate')
 
   // ---- shogi ----------------------------------------------------------------------
@@ -181,7 +181,7 @@ try {
   s = playAll(sh, s, ['c3c4', 'g7g6', 'h2g2'])
   const shPromoMeta = sh.moveMeta(s, 'h8b2+')
   ok(shPromoMeta.capture === true && shPromoMeta.sound === 'promote',
-    'shogi: Bxb2+ (bishop takes, promotes to horse) — capture + promote meta')
+    'shogi: Bxb2+ (bishop takes, promotes to horse). Capture + promote meta')
   s = playAll(sh, s, ['h8b2+', 'g2b2'])
   ok(sh.legalMoves(s).includes('B@e5'), 'shogi: after the bishop trade, black can drop B@e5')
   const shDropped = sh.play(s, 'B@e5')
@@ -200,7 +200,7 @@ try {
   eq(jg.play(s, 'e3e3'), null, 'janggi: same-square non-king move → null')
   const jgOpen = playAll(jg, s, ['h1g3', 'h10g8', 'h3e3', 'h8e8'])
   eq(jg.result(jgOpen), null, 'janggi: ongoing after the cannon opening')
-  checkTerminal('janggi', 'stalemate') // double-pass end: no moves, no check — black wins on adjudication
+  checkTerminal('janggi', 'stalemate') // double-pass end: no moves, no check. Black wins on adjudication
 
   // ---- makruk ------------------------------------------------------------------------
   console.log('makruk')
@@ -212,12 +212,12 @@ try {
   eq(mk.play(s, 'e3e5'), null, 'makruk: two-square pawn push → null')
   const mkOpen = playAll(mk, s, ['e3e4', 'e6e5', 'g1e2', 'b8d7', 'e2d4'])
   const mkCapMeta = mk.moveMeta(mkOpen, 'e5d4')
-  ok(mkCapMeta.capture === true && mkCapMeta.sound === 'capture', 'makruk: pawn takes knight — capture meta')
+  ok(mkCapMeta.capture === true && mkCapMeta.sound === 'capture', 'makruk: pawn takes knight. Capture meta')
   const mkLine = TERMINAL_LINES.makruk.split(' ')
   const mkPrePromo = playAll(mk, mk.init(), mkLine.slice(0, 23))
   const mkPromoMeta = mk.moveMeta(mkPrePromo, 'c4b3m')
   ok(mkPromoMeta.capture === true && mkPromoMeta.sound === 'promote',
-    'makruk: cxb3=M — capture + promote meta (met promotion, verbatim m suffix)')
+    'makruk: cxb3=M. Capture + promote meta (met promotion, verbatim m suffix)')
   checkTerminal('makruk', 'checkmate')
 
   // ---- placement -----------------------------------------------------------------------
@@ -236,7 +236,7 @@ try {
   const plOpen = playAll(pl, s, plLine)
   ok(plOpen.fen.includes('KQkq'), 'placement: castling rights granted once the back ranks are placed')
   const plCapMeta = pl.moveMeta(plOpen, 'f3e5')
-  ok(plCapMeta.capture === true && plCapMeta.sound === 'capture', 'placement: Nxe5 — capture meta')
+  ok(plCapMeta.capture === true && plCapMeta.sound === 'capture', 'placement: Nxe5. Capture meta')
   checkTerminal('placement', 'checkmate')
 
   // ---- kernel contract ---------------------------------------------------------------------
@@ -255,7 +255,7 @@ try {
   }
   ok(fenErr instanceof Error && /invalid xiangqi FEN/.test(fenErr.message), 'init: invalid FEN throws a clear error')
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

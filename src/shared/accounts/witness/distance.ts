@@ -1,4 +1,4 @@
-// A2 fabric-core — key-distance (spec §4 canonical witness set / §5 overlay
+// A2 fabric-core: key-distance (spec §4 canonical witness set / §5 overlay
 // metric). nodeId = sha256(rootPub); all fabric distance is XOR over the raw
 // 32-byte nodeId. Pure + deterministic: same inputs → same bytes on node and
 // in the browser bundle. Platform-neutral: no `node:` imports, no DOM globals.
@@ -7,7 +7,7 @@ import { fromB64u, sha256, toB64u } from '../hash'
 import type { B64u } from '../types'
 import type { NodeId } from './types'
 
-/** nodeId = base64url(sha256(rootPub)) — 32 bytes. Accepts raw pub bytes or a
+/** nodeId = base64url(sha256(rootPub)), 32 bytes. Accepts raw pub bytes or a
  * b64u-encoded root pubkey (the form carried in PresenceBody.root / LeaseBody.root). */
 export function nodeIdOf(rootPub: Uint8Array | B64u): NodeId {
   const bytes = typeof rootPub === 'string' ? fromB64u(rootPub) : rootPub
@@ -28,7 +28,7 @@ export function compareNodeIdBytes(a: NodeId, b: NodeId): number {
 /**
  * XOR distance between two nodeIds as a bigint (Kademlia metric). Because XOR
  * against a fixed subject is a bijection, distances from one subject are unique
- * per distinct nodeId — so closestEligible's byte tie-break is only ever reached
+ * per distinct nodeId, so closestEligible's byte tie-break is only ever reached
  * for duplicate nodeIds, but is applied for full determinism regardless.
  */
 export function xorDistance(a: NodeId, b: NodeId): bigint {
@@ -44,7 +44,7 @@ export function xorDistance(a: NodeId, b: NodeId): bigint {
  * The canonical closest set: the `k` closest CANDIDATES for which `eligible`
  * holds, by XOR distance to `subject`, deterministic tie-break by raw nodeId
  * bytes. Returns fewer than `k` when fewer eligible candidates exist (the
- * small-population case — the M-of-N + diversity rules bound single-witness
+ * small-population case: the M-of-N + diversity rules bound single-witness
  * power downstream). Duplicate nodeIds are collapsed (first occurrence wins).
  */
 export function closestEligible<C extends { nodeId: NodeId }>(

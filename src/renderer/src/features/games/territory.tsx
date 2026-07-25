@@ -1,4 +1,4 @@
-// Live territory estimate for go views (OTB / bot / replay) — KataGo's raw
+// Live territory estimate for go views (OTB / bot / replay). KataGo's raw
 // neural-net ownership via engine:estimateGo (KatagoPool.estimate, one forward
 // pass, no search). Strictly advisory and never blocking: requests are
 // throttled to one per MIN_INTERVAL_MS, always for the LATEST position, and a
@@ -7,7 +7,7 @@
 //
 // Owners (KernelOtb / KernelBot / GameReplayView) hold the toggle state, hand
 // `estimate.ownership` to GoBoard's `territory` prop for the shading overlay,
-// and render <TerritoryControl> — the toggle chip + the score strip — in
+// and render <TerritoryControl> (the toggle chip + the score strip) in
 // their side panel.
 
 import { useEffect, useRef, useState, type JSX } from 'react'
@@ -31,7 +31,7 @@ const HIDDEN: TerritoryState = { available: false, estimate: null, pending: fals
 
 /**
  * Throttled ownership estimates for the given live position. `enabled` is the
- * user's toggle — while false nothing is probed beyond the one-shot
+ * user's toggle, while false nothing is probed beyond the one-shot
  * availability check (which gates whether the toggle renders at all).
  */
 export function useTerritoryEstimate(state: GoState | null, enabled: boolean): TerritoryState {
@@ -45,7 +45,7 @@ export function useTerritoryEstimate(state: GoState | null, enabled: boolean): T
   const failedRef = useRef(false)
 
   // Availability probe (once per mount): the toggle only exists when KataGo is
-  // actually installed — spec: "graceful hidden state when katago absent".
+  // actually installed, spec: "graceful hidden state when katago absent".
   useEffect(() => {
     let cancelled = false
     const api = typeof window !== 'undefined' ? window.api : undefined
@@ -56,7 +56,7 @@ export function useTerritoryEstimate(state: GoState | null, enabled: boolean): T
         if (!cancelled && !failedRef.current) setAvailable(s.katagoReady)
       })
       .catch(() => {
-        /* engines unavailable — stay hidden */
+        /* engines unavailable: stay hidden */
       })
     return () => {
       cancelled = true
@@ -81,13 +81,13 @@ export function useTerritoryEstimate(state: GoState | null, enabled: boolean): T
           size: state.size,
           komi: state.komi,
           ...(state.handicap >= 2 ? { handicap: handicapPlacement(state.size, state.handicap) } : {}),
-          moves: [...state.moves] // 'pass' plies included — GTP replays them verbatim
+          moves: [...state.moves] // 'pass' plies included, GTP replays them verbatim
         })
         .then((r) => {
           if (seqRef.current !== seq) return
           setPending(false)
           if (r === null) {
-            // Engine build without kata-raw-nn — hide for good, quietly.
+            // Engine build without kata-raw-nn. Hide for good, quietly.
             failedRef.current = true
             setAvailable(false)
             setEstimate(null)

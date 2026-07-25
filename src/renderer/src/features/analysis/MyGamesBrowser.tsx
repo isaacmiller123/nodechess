@@ -95,7 +95,7 @@ export function MyGamesBrowser({ onLoadGame }: MyGamesBrowserProps): JSX.Element
       {list.status === 'error' && <div className="famous-empty">Could not load your games.</div>}
 
       {list.status === 'ready' && (list.data?.length ?? 0) === 0 && (
-        <div className="famous-empty">No saved games yet — finish a game and it lands here.</div>
+        <div className="famous-empty">No saved games yet. Finish a game and it lands here.</div>
       )}
 
       {list.status === 'ready' && (list.data?.length ?? 0) > 0 && (

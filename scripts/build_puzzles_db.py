@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-build_puzzles_db.py — Lichess puzzle CSV(.zst) -> bundled read-only SQLite.
+build_puzzles_db.py: Lichess puzzle CSV(.zst) -> bundled read-only SQLite.
 
 Implements docs/architecture.md §5.2 with the adversarial review's refinement:
   decompress (zstd long window) -> validate header -> THEME-AWARE prune ->
@@ -40,7 +40,7 @@ except ImportError:
     def _open_zst_text(src):
         if _zstandard is None:
             sys.exit(
-                "zstd support missing — use Python 3.14+ (stdlib compression.zstd) "
+                "zstd support missing. Use Python 3.14+ (stdlib compression.zstd) "
                 "or run `pip install zstandard`."
             )
         dctx = _zstandard.ZstdDecompressor(max_window_size=2 ** 31)

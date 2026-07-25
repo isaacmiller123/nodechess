@@ -1,4 +1,4 @@
-// A6 M1 — LEAD INTEGRATION glue: SignedGameOutcome → the countersigned rated
+// A6 M1, LEAD INTEGRATION glue: SignedGameOutcome → the countersigned rated
 // segment in THIS player's own chain (spec §3 entanglement, §4 write lease, §6
 // ladders).
 //
@@ -14,8 +14,8 @@
 // head-cache from it) via Lane E's `servePreGame` + `makeSnapshotProvider`.
 //
 // It COMPOSES the built lanes and re-implements no crypto. Every honest scarcity
-// — signed out, no account peer, opponent unreachable, no seated witness, lease
-// short — is a NO-OP (logged), never a crash or a dead button: casual/unwitnessed
+//, signed out, no account peer, opponent unreachable, no seated witness, lease
+// short, is a NO-OP (logged), never a crash or a dead button: casual/unwitnessed
 // play is entirely unaffected (§4/C-10). Renderer-hosted (it drives a live
 // FabricEndpoint); `src/shared/accounts` stays pure. Persistence + wall clock are
 // INJECTED so the whole path folds headless exactly as it runs in the browser.
@@ -42,7 +42,7 @@ import type { AccountPeer } from './peerService'
 // stack, so it stays independently bundleable/headless-testable.
 import type { SignedGameOutcome } from '../../play/online/onlineStore'
 
-/** THIS device's signing identity — exactly `accounts.deviceSigningKey()`. */
+/** THIS device's signing identity: exactly `accounts.deviceSigningKey()`. */
 export interface DeviceSigning {
   root: B64u
   key: B64u
@@ -110,7 +110,7 @@ export interface SegmentPublisherDeps {
   /** The live write-lease runner for THIS account (M2). Present ⇒ the segment
    *  lands at the SAME monotonic epoch the pre-game 'pairing' was anchored under
    *  (leaseRunner.currentEpoch), and the lease is released once the game settles.
-   *  Absent ⇒ the M1 default epoch (1) — casual back-compat, byte-identical. */
+   *  Absent ⇒ the M1 default epoch (1). Casual back-compat, byte-identical. */
   getLeaseRunner?: () => LeaseRunner | null
   /** Wall clock (ms). Default Date.now. */
   now?: () => number
@@ -123,7 +123,7 @@ export interface SegmentPublisherDeps {
   onPublished?: (res: PublishedSegment) => void
 }
 
-/** The finished, signed rated game the M5 Tier-1 runner judges — everything the
+/** The finished, signed rated game the M5 Tier-1 runner judges. Everything the
  *  post-game anticheat pass needs that the landed 'segment' event does NOT carry
  *  (the transcript + OUR played color). Structurally the judgeRunner Tier1GameView
  *  input; kept as a local shape so this module stays free of the judge import
@@ -138,7 +138,7 @@ export interface FinishedRatedGame {
   /** Ladder binding (§6). */
   kind: string
   tc: { baseMs: number; incMs: number }
-  /** The full interleaved signed transcript (SignedGameOutcome.signed.moves —
+  /** The full interleaved signed transcript (SignedGameOutcome.signed.moves,
    *  the extra per-move `sig` is ignored by the judge's bare-FEN surface). */
   moves: SignedGameOutcome['signed']['moves']
 }
@@ -171,7 +171,7 @@ const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms
 /**
  * Build the `SegmentPublisher` the store calls at a finished rated game. Returns
  * a fire-and-forget function (the store's seam is `(outcome) => void`); all async
- * work is self-contained and every failure is swallowed to a log — a rated write
+ * work is self-contained and every failure is swallowed to a log. A rated write
  * that can't complete degrades honestly, it never throws into the UI.
  */
 export function createSegmentPublisher(deps: SegmentPublisherDeps): (outcome: SignedGameOutcome) => void {
@@ -179,7 +179,7 @@ export function createSegmentPublisher(deps: SegmentPublisherDeps): (outcome: Si
   const log = deps.log ?? ((): void => {})
   return (outcome: SignedGameOutcome): void => {
     void publishOne(outcome, deps, now, log).catch((err) =>
-      log(`segment publish error (ignored — rated write waits): ${String(err)}`),
+      log(`segment publish error (ignored; rated write waits): ${String(err)}`),
     )
   }
 }
@@ -201,7 +201,7 @@ async function publishOne(
   if (selfRoot !== signing.root)
     return log('segment publish skipped: signed-game seat does not match the signed-in root')
 
-  // 1. The opponent's SIGNED pre-game snapshot over the fabric — its start head
+  // 1. The opponent's SIGNED pre-game snapshot over the fabric. Its start head
   //    + height + profile (+ checkpoint for an older account). Unreachable /
   //    unverifiable ⇒ honest no-op (casual play was unaffected either way).
   const snapRes = await requestPreGameSnapshot({
@@ -222,11 +222,11 @@ async function publishOne(
   }
 
   // 2. Build + append THIS player's rated segment under the live write lease.
-  //    result/reason come from the WITNESS-ADJUDICATED wend — the exact bytes the
+  //    result/reason come from the WITNESS-ADJUDICATED wend. The exact bytes the
   //    wstream signature and the transcript digest were signed over (§3), never
   //    the store's human-readable display text. The lease EPOCH (M2 fencing
   //    token) is the leaseRunner's live epoch, so the segment lands at the SAME
-  //    epoch as the pre-game 'pairing' — one monotonic run, non-stale at the
+  //    epoch as the pre-game 'pairing': one monotonic run, non-stale at the
   //    witness (a same-device renewal). Absent runner ⇒ the M1 default (epoch 1).
   const runner = deps.getLeaseRunner?.() ?? null
   const epoch = runner?.currentEpoch() ?? undefined
@@ -256,16 +256,16 @@ async function publishOne(
     }
     if (!res.ok)
       return log(
-        `segment publish degraded: ${res.reason} — rated write waits (a third witness); casual play unaffected`,
+        `segment publish degraded: ${res.reason}. Rated write waits (a third witness); casual play unaffected`,
       )
 
     // Landed: advance the local head so the NEXT game snapshots the new head, and
     // notify (the fold is already re-derived inside the writer). `game` carries the
     // signed transcript + binding the M5 Tier-1 judge needs (the segment event does
     // not embed the moves), sourced from the SAME SignedGameOutcome this append was
-    // built from — so the judge re-derives BYTE-IDENTICAL positions to the game.
+    // built from, so the judge re-derives BYTE-IDENTICAL positions to the game.
     deps.chain.set(res.chain)
-    log(`segment landed: ${outcome.kind} ${outcome.wend.result} (${outcome.wend.reason}) — ladders re-folded`)
+    log(`segment landed: ${outcome.kind} ${outcome.wend.result} (${outcome.wend.reason}), ladders re-folded`)
     deps.onPublished?.({
       chain: res.chain,
       event: res.event,
@@ -300,7 +300,7 @@ export interface RatedGameStart {
   /** Ladder binding (§6). */
   kind: string
   tc: { baseMs: number; incMs: number }
-  /** The pairing-legality witnessed timestamp (§7/A4-16) — the matchmaker's
+  /** The pairing-legality witnessed timestamp (§7/A4-16): the matchmaker's
    *  single pinned instant BOTH sides evaluate pairingLegal at. */
   atWts: number
 }
@@ -330,11 +330,11 @@ export interface RatedGamePrepDeps {
  * Build the pre-game hook the store calls when a RATED match is confirmed, BEFORE
  * the first move. It (1) acquires the live write lease at the correct monotonic
  * epoch and (2) anchors THIS player's witnessed 'pairing' event under it (spec
- * §3/§4/§8) — the on-chain record that turns on the witness's pairing gate. It
+ * §3/§4/§8): the on-chain record that turns on the witness's pairing gate. It
  * returns the anchored PairingPayload (the witness's `{ w, b }` gate input) and
  * the lease epoch, or an honest failure the UI surfaces WITHOUT a dead button:
- *   • 'playing-elsewhere'       — another device of this account holds the lease;
- *   • 'insufficient-witnesses'  — no third machine reachable ⇒ the rated button
+ *   • 'playing-elsewhere':        another device of this account holds the lease;
+ *   • 'insufficient-witnesses':   no third machine reachable ⇒ the rated button
  *                                 HONESTLY WAITS (casual/link play stays live).
  * Casual play never reaches here (only a rated match between two signed-in
  * players), so the v5 unwitnessed path is byte-identical.
@@ -358,7 +358,7 @@ export function createRatedGamePrep(deps: RatedGamePrepDeps): (start: RatedGameS
     // 1. Acquire the live lease (honest degradation surfaces verbatim).
     const acq = await runner.acquire()
     if (!acq.ok) {
-      log(`rated prep: lease unavailable (${acq.reason}) — the rated button waits`)
+      log(`rated prep: lease unavailable (${acq.reason}). The rated button waits`)
       return { ok: false, reason: acq.reason }
     }
 
@@ -388,14 +388,14 @@ export function createRatedGamePrep(deps: RatedGamePrepDeps): (start: RatedGameS
       res = await anchorOnce()
     }
     if (!res.ok) {
-      log(`rated prep: pairing anchor degraded (${res.reason}) — the rated button waits`)
-      // Drop the lease we grabbed but couldn't use — never hold it idle.
+      log(`rated prep: pairing anchor degraded (${res.reason}). The rated button waits`)
+      // Drop the lease we grabbed but couldn't use. Never hold it idle.
       runner.release()
       return { ok: false, reason: res.reason }
     }
 
     deps.chain.set(res.chain) // the segment (post-game) chains AFTER the pairing
-    log(`rated prep: pairing anchored (epoch ${acq.epoch}) — witness gate armed`)
+    log(`rated prep: pairing anchored (epoch ${acq.epoch}), witness gate armed`)
     return { ok: true, epoch: acq.epoch, pairing: res.payload }
   }
 }

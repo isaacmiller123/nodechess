@@ -2,7 +2,7 @@
 //
 // World frame: origin at board center, +y up, the FIRST-seat player ('white')
 // sits toward +z. `orientation: 'black'` mirrors x/z so the black seat faces
-// the camera — piece systems add `seatYaw` to keep directional pieces (wedges)
+// the camera: piece systems add `seatYaw` to keep directional pieces (wedges)
 // pointing the right way. 'holes' boards stand upright in the x/y plane.
 
 import * as THREE from 'three'
@@ -15,7 +15,7 @@ export interface TabletopLayout {
   boardTopY: number
   /** Border width in cells beyond the playable area (frame/goban margin). */
   margin: number
-  /** Overall board width/depth in world units (incl. margin) — camera fitting. */
+  /** Overall board width/depth in world units (incl. margin). Camera fitting. */
   width: number
   depth: number
   /** Height of an upright 'holes' frame (0 otherwise). */

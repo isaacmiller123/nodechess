@@ -1,9 +1,9 @@
-// Dev harness for Replay Theater (`?theater=<kind>` — see main.tsx).
+// Dev harness for Replay Theater (`?theater=<kind>`. See main.tsx).
 //
 // Mounts ReplayTheater over a canned finished game so the cinematic camera,
 // capture emphasis, transport controls and export are visually verifiable
 // without playing a full game first. Chess gets an authored miniature (Légal's
-// mate — two captures and a checkmate in 13 plies); every other kind plays a
+// mate: two captures and a checkmate in 13 plies); every other kind plays a
 // deterministic seeded self-play through its real GameSpec, biased toward
 // captures so the emphasis choreography shows up. Code-split: nothing in the
 // app shell imports this module.
@@ -20,7 +20,7 @@ const LEGAL_MATE = [
   'f3e5', 'g4d1', 'c4f7', 'e8e7', 'c3d5'
 ]
 
-/** Deterministic PRNG (mulberry32) — the demo take is identical every run. */
+/** Deterministic PRNG (mulberry32). The demo take is identical every run. */
 function rng(seed: number): () => number {
   let a = seed >>> 0
   return () => {
@@ -99,7 +99,7 @@ export default function TheaterDemo({ kindParam }: { kindParam: string }): JSX.E
   // rAF-starvation fallback: occluded/backgrounded preview tabs get no rAF, so R3F
   // never draws (the reason GameBoard3D exposes window.__tabletopAdvance).
   // While rAF is starved, force real-time frames so automated screenshots see
-  // the live take. Harness-only — the packaged app never mounts this module.
+  // the live take. Harness-only: the packaged app never mounts this module.
   useEffect(() => {
     let rafSeen = performance.now()
     let rafId = 0

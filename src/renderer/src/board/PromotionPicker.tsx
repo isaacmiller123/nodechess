@@ -9,7 +9,7 @@ const ROLES = ['queen', 'rook', 'bishop', 'knight'] as const
  * Modal promotion chooser over the board. Click a piece to promote (buttons
  * are natively keyboard-operable: Tab + Enter/Space); clicking the dimmed
  * overlay cancels. Choices render the real artwork of the active piece set
- * via PieceIcon — no unicode glyphs.
+ * via PieceIcon: no unicode glyphs.
  */
 export function PromotionPicker({
   color,

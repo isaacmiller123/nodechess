@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { DatabaseSync } from 'node:sqlite'
 import { migrateRatingsIntegrityV8, recomputeVsBotGlicko } from '../ratings/recompute'
 
-// We use Node's built-in node:sqlite (Electron 42 / Node 24) — no native module
+// We use Node's built-in node:sqlite (Electron 42 / Node 24). No native module
 // build needed. The puzzles.sqlite (imported at runtime, or bundled) is opened
 // read-only; the writable app.sqlite lives in an INJECTED directory: this
 // module is deliberately electron-free (web-port seam, docs/WEB-PORT-SPEC.md)
@@ -42,7 +42,7 @@ export function openAppDb(dir: string): DatabaseSync {
 }
 
 /** Reroute getAppDb() (and with it every repo) to another DB for the duration
- *  of one request — the web server's per-user scoping. The server serializes
+ *  of one request: the web server's per-user scoping. The server serializes
  *  bridge calls, sets the override, awaits the handler, clears it. The
  *  desktop never calls this. */
 export function setDbOverride(get: (() => DatabaseSync) | null): void {
@@ -50,7 +50,7 @@ export function setDbOverride(get: (() => DatabaseSync) | null): void {
 }
 
 /** Inject where the DBs live. Must run once, before any getAppDb()/getPuzzlesDb()
- *  caller — the desktop does this at startup in src/main/index.ts. */
+ *  caller: the desktop does this at startup in src/main/index.ts. */
 export function configureDb(c: DbConfig): void {
   config = c
 }
@@ -247,19 +247,19 @@ function migrate(db: DatabaseSync): void {
   }
 
   if (row.user_version < 5) {
-    // Puzzles trainer overhaul — three slices in ONE migration block:
+    // Puzzles trainer overhaul. Three slices in ONE migration block:
     //   (A) Themed/Custom training, (B) Puzzle Rush/Storm, (C) Daily + stats/history.
     //
     // puzzle_attempt gains `theme` + `mode` so per-theme stats (slice C) and
     //   mode-scoped history are queryable without re-deriving from the puzzle DB.
     //   `mode` distinguishes how the attempt was made ('train' | 'rush' | 'daily' |
     //   'custom'); rating-affecting attempts stay 'train'/'daily' (Rush does NOT
-    //   move the Glicko rating — it has its own high-score record).
+    //   move the Glicko rating. It has its own high-score record).
     // puzzle_rush_run is one finished Rush/Storm run (slice B): mode, score, the
     //   accuracy/streak stats, and the duration. Indexed by score for leaderboard
     //   reads and by created_at for history.
     // daily_result is one row per UTC day (slice C): the deterministic daily
-    //   puzzle's id, whether it was solved first-try, and when — the source of the
+    //   puzzle's id, whether it was solved first-try, and when, the source of the
     //   daily-streak computation. `ymd` is the YYYY-MM-DD key (UTC).
     db.exec('BEGIN')
     try {
@@ -302,17 +302,17 @@ function migrate(db: DatabaseSync): void {
   }
 
   if (row.user_version < 6) {
-    // Chess School — spaced repetition of concepts + daily-lesson/streak surface.
+    // Chess School: spaced repetition of concepts + daily-lesson/streak surface.
     //
-    // concept_srs is one SM-2-lite card per taught concept (NOT full FSRS — see
+    // concept_srs is one SM-2-lite card per taught concept (NOT full FSRS; see
     //   school plan): `due` epoch-ms when the concept is next owed a review,
     //   `stability`/`difficulty` the SM-2 ease/interval state, reps/lapses the
     //   counters, `state` (0 new / 1 learning / 2 review), last_review epoch-ms.
     //   Indexed by `due` so "what's owed now" is an indexed range scan.
-    // school_day is one row per LOCAL calendar day the user did School work —
+    // school_day is one row per LOCAL calendar day the user did School work,
     //   `lesson_done` set once a daily lesson is completed, `review_done` once an
     //   SRS review is done that day; either counts the day toward the streak. `ymd`
-    //   is the user's LOCAL 'YYYY-MM-DD' (see src/main/util/day.ts) — deliberately
+    //   is the user's LOCAL 'YYYY-MM-DD' (see src/main/util/day.ts). Deliberately
     //   LOCAL, not UTC, because the study streak is a private habit metric.
     db.exec('BEGIN')
     try {
@@ -349,7 +349,7 @@ function migrate(db: DatabaseSync): void {
     // were bulk-written by the placement auto-completion (bulkCompleteChapters)
     // rather than earned by actually studying. auto_completed=1 rows are
     // placement artifacts: a lower re-placement prunes the ones above the new
-    // estimate, and school:resetPlacement deletes them all — manual rows
+    // estimate, and school:resetPlacement deletes them all. Manual rows
     // (recordLesson / completeChapter / recordSegment write 0) always survive.
     // Pre-migration rows default to 0 (treated as earned) so an existing DB never
     // loses progress it can't attribute.
@@ -371,7 +371,7 @@ function migrate(db: DatabaseSync): void {
     // Ratings integrity: every historical vs-bot Glicko update rated the user
     // against the bot's NOMINAL level label, but sub-floor (<1320) engine
     // levels measurably play up to ~+270 Elo above their labels (calibration
-    // record in src/shared/botStrength.ts) — the stored rating is corrupted.
+    // record in src/shared/botStrength.ts): the stored rating is corrupted.
     // The game table stores opponent_kind + opponent_elo per game, so the
     // corrected labels ARE reconstructible: replay the whole history from the
     // seed via measuredElo() instead of resetting to provisional. No schema
@@ -425,7 +425,7 @@ function migrate(db: DatabaseSync): void {
     // (2) Maia self-heal: the v8 vs-bot recompute excluded opponent_kind='maia'
     //     (and coerced it to 'engine'), so anyone who played Maia bots carries a
     //     wrong vs-bot rating. recomputeVsBotGlicko now includes maia; re-run it
-    //     once here (idempotent — replays the whole history from the seed).
+    //     once here (idempotent: replays the whole history from the seed).
     db.exec('BEGIN')
     try {
       db.exec(`ALTER TABLE game ADD COLUMN game_kind TEXT NOT NULL DEFAULT 'chess';`)

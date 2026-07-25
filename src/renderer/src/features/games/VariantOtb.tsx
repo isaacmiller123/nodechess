@@ -15,7 +15,7 @@ import { useSaveFinishedGame } from './useSaveFinishedGame'
 /**
  * Local over-the-board play for the WHOLE chess family (all 14 kinds), driven
  * entirely by the game kernel registry: rules via GameSpec (chessops wave +
- * ffish WASM wave — awaited via spec.preload() behind a shimmer), board via
+ * ffish WASM wave: awaited via spec.preload() behind a shimmer), board via
  * the entry's lazy renderer (games/boards/ChessFamilyBoard.tsx: pockets,
  * promotion dialogs, intersection grids), accurate variant end states,
  * auto-flip per spec.flipPolicy, and kernel moveMeta sounds.
@@ -58,7 +58,7 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   const [autoFlip, setAutoFlip] = useState(true)
   const { is3d } = useBoardMode(kind)
 
-  // ffish WASM preload — the board renders behind a shimmer until resolved.
+  // ffish WASM preload: the board renders behind a shimmer until resolved.
   useEffect(() => {
     if (ready || !spec.preload) return
     let cancelled = false
@@ -93,7 +93,7 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
     }
   }, [ready, state, outcome, spec])
 
-  // Janggi pass = a same-square king move ('e2e2') — not expressible as a
+  // Janggi pass = a same-square king move ('e2e2'): not expressible as a
   // board gesture, so it gets a dedicated control.
   const passMove = useMemo(() => legal.find((m) => PASS_RE.test(m)), [legal])
 
@@ -135,8 +135,8 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   const resultLabel =
     outcome &&
     (outcome.winner === null
-      ? `Draw — ${outcome.reason.replace(/-/g, ' ')}`
-      : `${sideName(outcome.winner)} wins — ${outcome.reason.replace(/-/g, ' ')}`)
+      ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
+      : `${sideName(outcome.winner)} wins: ${outcome.reason.replace(/-/g, ' ')}`)
 
   // Post-game Replay Theater (cinematic 3D/2D re-run of the finished game).
   const [theater, setTheater] = useState<TheaterInput | null>(null)
@@ -226,7 +226,7 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         <button type="button" className="votb-btn" onClick={reset} disabled={!ready}>
           <RotateCcw size={14} aria-hidden /> {kind === 'chess960' ? 'New position' : 'Restart game'}
         </button>
-        <p className="votb-note">Over-the-board: two players, one machine — pass it between moves.</p>
+        <p className="votb-note">Over-the-board: two players, one machine. Pass it between moves.</p>
       </aside>
     </div>
   )

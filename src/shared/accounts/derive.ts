@@ -2,7 +2,7 @@
 //   password + username → argon2id seed → SLIP-0010 ed25519 root + hardened children.
 // Everything here is deterministic and platform-neutral: no `node:` imports,
 // no DOM globals, no clocks, no randomness. All parameters come from PARAMS_V1
-// (FROZEN-AT-GENESIS) — never re-literal them.
+// (FROZEN-AT-GENESIS): never re-literal them.
 import { argon2id } from 'hash-wasm'
 import { concatBytes, ed25519, hmacSha512, sha256, utf8 } from './hash'
 import { PARAMS_V1 } from './params'
@@ -17,7 +17,7 @@ export type NameErrorReason =
   | 'empty' // nothing left after normalization/strip/trim
   | 'too-short' // folded form < NAME_MIN chars
   | 'too-long' // folded form > NAME_MAX chars
-  | 'hash-char' // '#' anywhere — it delimits the tag in name#TAG
+  | 'hash-char' // '#' anywhere: it delimits the tag in name#TAG
   | 'not-printable' // control/format/line-sep chars survive the strip
 
 export class NameError extends Error {
@@ -35,7 +35,7 @@ const ZERO_WIDTH_RE = /[\u200b-\u200d\ufeff]/g
 /** C0 + DEL + C1 control chars, stripped before validation. */
 const CONTROL_RE = /[\u0000-\u001f\u007f-\u009f]/g
 /** Anything non-printable that survives the strip is rejected (Cc/Cf/Zl/Zp),
- * plus lone surrogates (Cs) — TextEncoder would silently substitute U+FFFD,
+ * plus lone surrogates (Cs): TextEncoder would silently substitute U+FFFD,
  * letting distinct names collide onto one salt. */
 const NON_PRINTABLE_RE = /[\p{Cc}\p{Cf}\p{Zl}\p{Zp}\p{Cs}]/u
 
@@ -74,7 +74,7 @@ export function normalizeUsername(raw: string): NormalizedName {
  * Accepts a raw or normalized name; normalization is applied here so every
  * caller derives identical bytes for 'Isaac' / 'isaac' / 'ＩSAAC'.
  *
- * The password is NFKD-normalized (PARAMS_V1.pwNorm, FROZEN-AT-GENESIS — the
+ * The password is NFKD-normalized (PARAMS_V1.pwNorm, FROZEN-AT-GENESIS; the
  * BIP39 precedent): visually identical passwords typed through NFC- vs
  * NFD-emitting input pipelines must derive the same key, because with no
  * recovery (C-5) a mismatch is silent permanent lockout.
@@ -94,7 +94,7 @@ export async function deriveSeed(name: string | NormalizedName, password: string
 }
 
 // ---------------------------------------------------------------------------
-// SLIP-0010 ed25519 (hardened-only — ed25519 has no public derivation)
+// SLIP-0010 ed25519 (hardened-only: ed25519 has no public derivation)
 // ---------------------------------------------------------------------------
 
 export interface Slip10Node {
@@ -104,7 +104,7 @@ export interface Slip10Node {
 
 const HARDENED = 0x80000000
 
-/** ser32(index) — 4-byte big-endian. */
+/** ser32(index), 4-byte big-endian. */
 function ser32(index: number): Uint8Array {
   const out = new Uint8Array(4)
   out[0] = (index >>> 24) & 0xff

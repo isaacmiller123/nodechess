@@ -4,14 +4,14 @@
 //   node scripts/test-small-games.mjs
 //
 // esbuild-bundles the small-games tree for bare node (same pattern as
-// scripts/test-games-kernel.mjs; registry/renderer are NOT pulled in — the
+// scripts/test-games-kernel.mjs; registry/renderer are NOT pulled in. The
 // registry wiring is covered by test-games-kernel.mjs). Covers rules edges
 // (othello pass + disc-count, connect4 gravity + diagonal win + full-board
 // draw, hex winding-path connection + swap rule, morris mill-capture
 // constraint + flying + no-move loss, ttt draw) and bot sanity (legality at
 // every level; level 5 beats level 1 in ≥4/5 quick games for othello + c4).
 //
-// Final line: 'ALL GREEN — N assertions'. Exit 0 = all green.
+// Final line: 'ALL GREEN: N assertions'. Exit 0 = all green.
 
 import { build } from 'esbuild'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -347,7 +347,7 @@ try {
     }
   }
 
-  console.log('bots (strength — this is the slow part)')
+  console.log('bots (strength: this is the slow part)')
   // ttt: perfect (5) vs perfect (5) is always a draw; perfect never loses to random
   {
     const r = botGame(TICTACTOE_SPEC, undefined, () => 5)
@@ -383,12 +383,12 @@ try {
   // othello + connect4: level 5 dominates level 1 (colours alternate). Seeded RNG
   // so weak-bot noise is identical on every machine (a Windows-CI run drew twice
   // in connect4 and failed the old unseeded ≥4/5-wins bar). Draws don't disprove
-  // superiority — losses do: assert zero strong-bot losses AND a wins majority.
+  // superiority. Losses do: assert zero strong-bot losses AND a wins majority.
   {
     const realRandom = Math.random
     let seed = 0xc0ffee
     Math.random = () => {
-      // mulberry32 — deterministic across platforms
+      // mulberry32: deterministic across platforms
       seed = (seed + 0x6d2b79f5) | 0
       let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
       t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
@@ -416,7 +416,7 @@ try {
     }
   }
 
-  console.log(`\nALL GREEN — ${passed} assertions`)
+  console.log(`\nALL GREEN: ${passed} assertions`)
 } catch (err) {
   console.error(`\n${err.message}`)
   process.exitCode = 1

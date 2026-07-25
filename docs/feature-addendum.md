@@ -9,7 +9,7 @@
 >    (analysis + calibrated-Elo play). lc0 (CPU) + Maia-1 weights is the human-feel opponent.
 >    Do not bundle a third engine in v0.
 > 2. **Moves are free; words are not.** Raw moves/PGNs are uncopyrightable facts. Prose annotations
->    are copyrightable — ship only PD/CC0/CC-BY-SA, or engine-generate them.
+>    are copyrightable. Ship only PD/CC0/CC-BY-SA, or engine-generate them.
 > 3. **Engines are arms-length UCI subprocesses.** All engines (Stockfish/lc0, both GPL-3.0) run
 >    via `child_process.spawn` over stdin/stdout, bundled with `electron-builder extraResources`,
 >    resolved via `process.resourcesPath`. Ship each engine's source/offer-of-source + license text.
@@ -25,14 +25,14 @@
 Reuse the already-bundled Stockfish for adjustable-strength play. Spawn a dedicated Stockfish
 instance (separate from the analysis instance so a game and an analysis can run concurrently), set
 `UCI_LimitStrength = true` and `UCI_Elo` in the calibrated range **1320–3190**. `Skill Level` (0–20)
-is the legacy fallback; `UCI_Elo` overrides it. Stockfish's floor is **1320** — it cannot emulate a
+is the legacy fallback; `UCI_Elo` overrides it. Stockfish's floor is **1320**. It cannot emulate a
 true beginner, so the sub-1320 band is covered by Maia-1100 (capability #2) or, if Maia is not yet
 present, extra randomization (MultiPV + weighted-random pick of a slightly inferior legal move).
 Because nominal `UCI_Elo` is calibrated to CCRL 40/4 time controls, build an **in-app calibration
 loop**: nudge the effective level based on the user's results rather than trusting the label blindly.
 
 **Data/engines to bundle (+ license + size).**
-- Stockfish 17.x NNUE, CPU build — **GPL-3.0** — already in the bundle (~40–75 MB incl. NNUE). **No
+- Stockfish 17.x NNUE, CPU build (**GPL-3.0**) already in the bundle (~40–75 MB incl. NNUE). **No
   new asset.**
 
 **DB schema additions.** None unique to this item; games are persisted by capability #6 (`game`,
@@ -58,42 +58,42 @@ have very different maturity.
 **Technical approach.**
 Bundle the **lc0 CPU build** and the **Maia-1 weight files** (`maia-1100.pb.gz` … `maia-1900.pb.gz`,
 100-Elo steps). Map the user's rating to the nearest Maia net; spawn `lc0 --weights=maia-1500.pb.gz`.
-Run with a **small fixed search (`go nodes 8`)** rather than strict `go nodes 1` — this preserves the
+Run with a **small fixed search (`go nodes 8`)** rather than strict `go nodes 1`. This preserves the
 human move distribution while cutting the worst un-human one-move piece blunders that strict policy-only
 play produces (esp. maia-1900). **Rating-to-engine routing:** below ~1900 → Maia (most human);
 1900–3190 → Stockfish `UCI_Elo`; below 1320 → Maia-1100.
 
 **Data/engines to bundle (+ license + size).**
-- lc0 CPU-only Windows build (`cpu-openblas` or `cpu-dnnl`) — **GPL-3.0-or-later** — ~23 MB. No GPU/CUDA.
-- Maia-1 weights, all nine nets — **treat as GPL-3.0** (repo is GPL-3.0; weights license unstated —
-  conservative reading) — a few MB each, **tens of MB total**. Confirm weights license with CSSLab
+- lc0 CPU-only Windows build (`cpu-openblas` or `cpu-dnnl`), **GPL-3.0-or-later**, ~23 MB. No GPU/CUDA.
+- Maia-1 weights, all nine nets: **treat as GPL-3.0** (the repo is GPL-3.0 and the weights license is
+  unstated, so this is the conservative reading). A few MB each, **tens of MB total**. Confirm weights license with CSSLab
   before commercial release.
 
 ### 2b. Named top-player styles & openings
 
 **Technical approach.**
-**No open, redistributable net plays "as Magnus/Kasparov"** — CSSLab's `maia-individual` deliberately
+**No open, redistributable net plays "as Magnus/Kasparov"**. CSSLab's `maia-individual` deliberately
 withholds per-player models (privacy/stylometry) and needs a GPU to train. The honest, fully-offline,
 license-clean design is **opening book + style-matched engine**:
 1. **Build per-player Polyglot `.bin` books at package time** from that player's PGNs, split by color
    (White/Black repertoire) and weighted by frequency/score. Generate with an external CLI
    (`ddugovic/polyglot` `make-book -only-white/-only-black` + `merge-book`, or a tiny custom 16-byte-
-   entry writer — python-chess can READ but not WRITE books). Validate the Zobrist hash matches the
+   entry writer: python-chess can READ but not WRITE books). Validate the Zobrist hash matches the
    runtime reader against known signature openings.
 2. **At runtime:** play the book for the opening, then hand off to Stockfish (capped Elo) or Maia
    (human feel) for the middlegame/endgame.
 3. **Style lean (optional):** lc0's shipped **WDL-Contempt** system (`Contempt`, `ContemptMode`,
    `WDLCalibrationElo`, `WDLEvalObjectivity`, `DrawScore`) biases toward sharp/aggressive vs solid
-   play. Stockfish has **no style knob** in the NNUE era (Contempt removed) — strength only.
+   play. Stockfish has **no style knob** in the NNUE era (Contempt removed). Strength only.
 4. **Frame honestly in UI:** "plays X's opening repertoire, then a strength/style-matched engine,"
    **never** "play AS X."
 
 **Data/engines to bundle (+ license + size).**
-- Per-player PGNs for book building — assemble from **Lichess CC0** dumps and/or pgnmentor per-player
+- Per-player PGNs for book building: assemble from **Lichess CC0** dumps and/or pgnmentor per-player
   collections. **Bundle only the generated `.bin` books, not third-party PGN files verbatim**
   (pgnmentor grants no redistribution license; the *moves* are free facts, but ship books you built).
   Books are small (KB–low-MB each).
-- Optional: **Gyal personality nets** (aggressive/solid/sacrificial archetypes) — **license
+- Optional: **Gyal personality nets** (aggressive/solid/sacrificial archetypes). **license
   unspecified → DO NOT bundle** until a clear open license is confirmed.
 - **Do NOT** bundle `maia-individual` (AGPL, no models), ChessBase Mega (paid, copyrighted
   annotations), or Maia-2 (MIT but Python-library-only, no UCI).
@@ -153,12 +153,12 @@ Implement the **open Lichess accuracy pipeline** with the already-bundled Stockf
 5. **Aggregate** per-game estimates via **inverse-variance shrinkage** toward a Bayesian prior
    (e.g. 1200, low confidence), weighting each game by its count of non-trivial decisions (drop
    opening plies 1–8 and trivial recaptures). **Always report a range, never a single number.**
-6. **Second independent estimator (NEXT):** Maia move-match — run several Maia nets, take the
+6. **Second independent estimator (NEXT):** Maia move-match. Run several Maia nets, take the
    interpolated argmax move-match level, combine with the accuracy estimate by inverse-variance
    weighting. Add a cheap Regan-style complexity correction by weighting cp-loss with the win-%
    delta (already S-curve-scaled) and excluding positions with |eval| > ~3.00.
 
-Single-game ACPL/accuracy explains only ~5–7% of rating variance — useful only after aggregating many
+Single-game ACPL/accuracy explains only ~5–7% of rating variance. Useful only after aggregating many
 games, and only as a band.
 
 **Data/engines to bundle.** None new for the accuracy estimator (Stockfish already present). Maia nets
@@ -246,14 +246,14 @@ Cleanly separate the **moves layer** (always free) from the **annotation layer**
   Kasparov–Topalov 1999, etc.) assembled from **public-domain facts / Lichess CC0**, with your own
   headers. Pick one authoritative move list per game and **validate legality at build time** via
   chess.js (some 19th-c. games have disputed move orders).
-- **Primary annotations (do first):** **engine-generated at build time** — run Stockfish + the local
+- **Primary annotations (do first):** **engine-generated at build time**. Run Stockfish + the local
   coaching/motif layer over every game, emit best-move/blunder/brilliancy tags + idea explanations,
   cache as shipped JSON. **Zero licensing risk, uniform coverage.** Tune so famous sacrifices read as
   brilliant, not as "−0.7 blunder."
-- **Secondary annotations (marquee ~40 games):** bundle **Wikipedia CC BY-SA 4.0** prose — requires
+- **Secondary annotations (marquee ~40 games):** bundled **Wikipedia CC BY-SA 4.0** prose requires
   attribution + share-alike, so **keep CC BY-SA content partitioned** with a per-annotation source/
   license field and an auto-generated **in-app credits screen**. Optionally add **Project Gutenberg
-  PD** book prose (Lasker, Capablanca, *Morphy's Games of Chess*) — zero obligations but OCR +
+  PD** book prose (Lasker, Capablanca, *Morphy's Games of Chess*). Zero obligations but OCR +
   descriptive→SAN conversion effort. **Self-authored Lichess Studies** (your license) are a clean
   owned pipeline.
 - **Do NOT bundle:** pgnmentor files verbatim (no redistribution grant), ChessBase Mega annotations
@@ -261,10 +261,10 @@ Cleanly separate the **moves layer** (always free) from the **annotation layer**
   the uncopyrightable-moves principle + your own engine annotations.
 
 **Data/engines to bundle (+ license + size).**
-- ~100-game curated PGN (moves) — **PD / CC0** — small (low single-digit MB).
-- Engine-generated annotation JSON — **your content, no third-party license** — small.
-- Wikipedia prose for ~40 games — **CC BY-SA 4.0** (attribution + share-alike) — small.
-- Stockfish — already bundled (build-time only here).
+- ~100-game curated PGN (moves). **PD / CC0**. Small (low single-digit MB).
+- Engine-generated annotation JSON (**your content, no third-party license**) small.
+- Wikipedia prose for ~40 games: **CC BY-SA 4.0** (attribution + share-alike), small.
+- Stockfish: already bundled (build-time only here).
 
 **DB schema additions.**
 ```sql
@@ -395,7 +395,7 @@ fully specified. The shared module also unlocks vs-bot ratings for #1/#2 at no e
 | lc0 CPU build | Body for Maia human play | GPL-3.0-or-later | ~23 MB | Yes |
 | Maia-1 weights (1100–1900) | Human-like opponent + (later) move-match estimator | Treat as GPL-3.0 (unstated) | tens of MB | Yes |
 | Per-player Polyglot books | Named-player repertoires | Self-built from CC0/PD facts | small | Next |
-| Gyal nets | Style archetypes | Unspecified — verify | small | Hold |
+| Gyal nets | Style archetypes | Unspecified: verify | small | Hold |
 | Maia-3 (5M) native UCI | Higher-fidelity human play, Elo/SelfElo/OppoElo | **AGPL-3.0** | 150–300+ MB (PyTorch) | Next (flagged) |
 | Famous-games PGN (moves) | Library | PD / CC0 | low MB | Yes |
 | Wikipedia/Gutenberg prose | Human annotations | CC BY-SA 4.0 / PD | small | Next |
@@ -410,24 +410,24 @@ sound sacrifices are not flagged as blunders; never present a single over-precis
 
 ## ADD TO FOUNDATION (v0)
 
-1. **Play vs engine at any level** — Stockfish `UCI_LimitStrength`/`UCI_Elo` 1320–3190 (no new asset).
-2. **Saved game history + core progress tracking** — `game`/`game_move`/`progress_snapshot`; the
+1. **Play vs engine at any level**: Stockfish `UCI_LimitStrength`/`UCI_Elo` 1320–3190 (no new asset).
+2. **Saved game history + core progress tracking**: `game`/`game_move`/`progress_snapshot`; the
    persistence backbone everything writes into.
-3. **Full game review** — accuracy %, blunder/mistake/brilliant classification, local coach idea
+3. **Full game review**: accuracy %, blunder/mistake/brilliant classification, local coach idea
    explanations, cached evals.
-4. **Accuracy-based Elo/performance estimation** — open Lichess pipeline, aggregated, shown as a band.
-5. **Puzzle local rating (Glicko-2)** — per-puzzle updates; shared module also powers vs-bot ratings.
-6. **Human-like opponent (Maia-1 on lc0 CPU)** — `go nodes 8`, rating-to-engine routing; +~25 MB.
-7. **Famous-games library with engine-generated idea explanations** — ~100 PD/CC0 games, build-time
+4. **Accuracy-based Elo/performance estimation**: the open Lichess pipeline, aggregated, shown as a band.
+5. **Puzzle local rating (Glicko-2)**: per-puzzle updates; the shared module also powers vs-bot ratings.
+6. **Human-like opponent (Maia-1 on lc0 CPU)**: `go nodes 8`, rating-to-engine routing; +~25 MB.
+7. **Famous-games library with engine-generated idea explanations**: ~100 PD/CC0 games, build-time
    Stockfish commentary.
 
 ## ADD TO NEXT ITERATION
 
-1. **Named top-player styles & openings** — per-player Polyglot books (built at package time) + style-
+1. **Named top-player styles & openings**: per-player Polyglot books (built at package time) + style-
    matched engine, with optional lc0 WDL-Contempt aggression lever and honest "plays X's repertoire" framing.
-2. **Maia move-match Elo estimator + Regan-style complexity correction** — second independent strength estimator.
-3. **Curated human annotations for famous games** — Wikipedia CC BY-SA + Gutenberg PD prose, partitioned,
+2. **Maia move-match Elo estimator + Regan-style complexity correction**: a second independent strength estimator.
+3. **Curated human annotations for famous games**: Wikipedia CC BY-SA + Gutenberg PD prose, partitioned,
    with an in-app attribution/credits screen.
-4. **Maia-3 (5M) native-UCI human engine (behind a feature flag)** — higher fidelity + Elo/SelfElo/OppoElo,
+4. **Maia-3 (5M) native-UCI human engine (behind a feature flag)**: higher fidelity + Elo/SelfElo/OppoElo,
    pending AGPL-3.0 review and heavier PyTorch packaging.
-5. **Richer progress dashboards** — long-horizon trend charts and curriculum analytics atop the v0 snapshots.
+5. **Richer progress dashboards**: long-horizon trend charts and curriculum analytics atop the v0 snapshots.

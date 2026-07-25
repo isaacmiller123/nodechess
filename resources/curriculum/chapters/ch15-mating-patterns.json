@@ -3,18 +3,18 @@
  "band": "15",
  "order": 15,
  "title": "Mating Patterns & Attacking the King",
- "subtitle": "The named mates — smothered, back-rank, Anastasia, Arabian, hook, Boden — and the f7/f2 attack: sacrifices that force a mate you already know.",
+ "subtitle": "The named mates (smothered, back-rank, Anastasia, Arabian, hook, Boden) and the f7/f2 attack: sacrifices that force a mate you already know.",
  "estMinutes": 55,
  "concepts": [
   {
    "id": "smothered-mate",
    "name": "Smothered Mate",
-   "short": "A lone knight mates a king walled in by its own pieces — often after a queen sacrifice on g8 forces the rook to block."
+   "short": "A lone knight mates a king walled in by its own pieces. Often after a queen sacrifice on g8 forces the rook to block."
   },
   {
    "id": "back-rank",
    "name": "Back-Rank Mate",
-   "short": "A rook or queen mates a castled king trapped on the first rank by its own un-moved pawns. The cure is luft — a square to breathe."
+   "short": "A rook or queen mates a castled king trapped on the first rank by its own un-moved pawns. The cure is luft, a square to breathe."
   },
   {
    "id": "anastasia-mate",
@@ -47,13 +47,13 @@
    "id": "l1-smothered",
    "title": "The Smothered Mate",
    "kind": "tactics",
-   "summary": "A king buried by its own pieces is mated by a single knight — and the queen sacrifice that forces it.",
+   "summary": "A king buried by its own pieces is mated by a single knight, and the queen sacrifice that forces it.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — knight to the throat",
+     "title": "Warm-up: knight to the throat",
      "intro": {
-      "text": "You can mate with heavy pieces. Now learn the patterns that mate with a NET — where the king's own army is its prison. Warm the eye first: in each position the knight delivers a check the king cannot escape, because its own pieces smother it. Find the knight move. One move."
+      "text": "You can mate with heavy pieces. Now learn the patterns that mate with a NET. Where the king's own army is its prison. Warm the eye first: in each position the knight delivers a check the king cannot escape, because its own pieces smother it. Find the knight move. One move."
      },
      "puzzle": {
       "themes": [
@@ -71,7 +71,7 @@
       {
        "fen": "6rk/5Npp/8/8/8/8/8/6K1 b - - 0 1",
        "coach": {
-        "text": "Look at the Black king. It sits on h8, and every square it might flee to is occupied by its OWN men — rook on g8, pawns on g7 and h7. The white knight on f7 gives check. A check must be answered: capture the checker, block the check, or run. The king cannot capture f7 — too far. Nothing can block a knight check, ever. And it cannot run, because its own pieces fill every escape. That is checkmate. This is the smothered mate.",
+        "text": "Look at the Black king. It sits on h8, and every square it might flee to is occupied by its OWN men. Rook on g8, pawns on g7 and h7. The white knight on f7 gives check. A check must be answered: capture the checker, block the check, or run. The king cannot capture f7, too far. Nothing can block a knight check, ever. And it cannot run, because its own pieces fill every escape. That is checkmate. This is the smothered mate.",
         "annotations": [
          {
           "kind": "highlight",
@@ -106,7 +106,7 @@
       {
        "fen": "6rk/6pp/8/6N1/8/8/8/6K1 w - - 0 1",
        "coach": {
-        "text": "Here the knight is on g5 and it is White to move. The cage is already built: rook on g8, pawns g7 and h7. All that remains is to drop the knight onto the one square that checks the king AND is shielded from capture. That square is f7. Remember the geometry — Nf7 is the smothered-mate square against a king on h8.",
+        "text": "Here the knight is on g5 and it is White to move. The cage is already built: rook on g8, pawns g7 and h7. All that remains is to drop the knight onto the one square that checks the king AND is shielded from capture. That square is f7. Remember the geometry. Nf7 is the smothered-mate square against a king on h8.",
         "annotations": [
          {
           "kind": "arrow",
@@ -139,7 +139,7 @@
         "e5f7"
        ],
        "successLine": {
-        "text": "Nf7 — checkmate. One knight, no support needed, because the king's own army did the jailing. Burn the picture into memory: king on h8, knight to f7.",
+        "text": "Nf7: checkmate. One knight, no support needed, because the king's own army did the jailing. Burn the picture into memory: king on h8, knight to f7.",
         "annotations": [
          {
           "kind": "arrow",
@@ -150,7 +150,7 @@
         ]
        },
        "retryLine": {
-        "text": "No. Only one square gives check that the king cannot answer. The knight must reach f7 — from there it strikes h8 and the king is smothered."
+        "text": "No. Only one square gives check that the king cannot answer. The knight must reach f7. From there it strikes h8 and the king is smothered."
        }
       }
      ]
@@ -160,13 +160,13 @@
      "title": "The queen sacrifice that forces it",
      "fen": "5r1k/6pp/7N/3Q4/8/8/8/6K1 w - - 0 1",
      "intro": {
-      "text": "Often the cage is missing one bar — the king still has an empty square. So you build the bar yourself. Watch how a queen sacrifice FORCES a defender to plug the last hole. This is the smothered mate's famous engine."
+      "text": "Often the cage is missing one bar. The king still has an empty square. So you build the bar yourself. Watch how a queen sacrifice FORCES a defender to plug the last hole. This is the smothered mate's famous engine."
      },
      "line": [
       {
        "uci": "d5g8",
        "coach": {
-        "text": "Qg8+!! The queen offers herself on g8 — right next to the king. Why throw away the queen? Because the king cannot take (the knight on h6 guards g8), so the rook is FORCED to capture.",
+        "text": "Qg8+!! The queen offers herself on g8, right next to the king. Why throw away the queen? Because the king cannot take (the knight on h6 guards g8), so the rook is FORCED to capture.",
         "annotations": [
          {
           "kind": "arrow",
@@ -185,7 +185,7 @@
       {
        "uci": "f8g8",
        "coach": {
-        "text": "...Rxg8 — forced. And see what Black has done to himself: the rook that was on f8, the king's last escape hatch, is now glued to g8. The cage is complete.",
+        "text": "...Rxg8: forced. And see what Black has done to himself: the rook that was on f8, the king's last escape hatch, is now glued to g8. The cage is complete.",
         "annotations": [
          {
           "kind": "highlight",
@@ -198,7 +198,7 @@
       {
        "uci": "h6f7",
        "coach": {
-        "text": "Nf7# — smothered mate. The queen died so the knight could deliver the blow alone. Sacrifice to FORCE the pattern: that is the lesson of this whole chapter.",
+        "text": "Nf7#: smothered mate. The queen died so the knight could deliver the blow alone. Sacrifice to FORCE the pattern: that is the lesson of this whole chapter.",
         "annotations": [
          {
           "kind": "arrow",
@@ -219,7 +219,7 @@
       {
        "fen": "5r1k/6pp/7N/3Q4/8/8/8/6K1 w - - 0 1",
        "coach": {
-        "text": "Knight on h6 already guards g8. The king has one hole — f8, via the rook. Begin the forcing sequence. Lead with the queen.",
+        "text": "Knight on h6 already guards g8. The king has one hole, f8, via the rook. Begin the forcing sequence. Lead with the queen.",
         "annotations": [
          {
           "kind": "circle",
@@ -233,7 +233,7 @@
         "d5g8"
        ],
        "successLine": {
-        "text": "Qg8+!! Now ...Rxg8 is forced (the king can't take — the h6-knight covers g8), and after the rook plugs g8, Nf7# finishes. You sacrificed the strongest piece to force the mate you already knew.",
+        "text": "Qg8+!! Now ...Rxg8 is forced (the king can't take; the h6-knight covers g8), and after the rook plugs g8, Nf7# finishes. You sacrificed the strongest piece to force the mate you already knew.",
         "annotations": [
          {
           "kind": "arrow",
@@ -244,14 +244,14 @@
         ]
        },
        "retryLine": {
-        "text": "Not yet. A quiet knight check lets the king slip to f8. You must FORCE the rook to block first. Throw the queen onto g8 with check — the rook has to take."
+        "text": "Not yet. A quiet knight check lets the king slip to f8. You must FORCE the rook to block first. Throw the queen onto g8 with check. The rook has to take."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — smother them",
+     "title": "Cool-down: smother them",
      "intro": {
       "text": "Three more. Some are the bare knight blow; some need the queen sacrifice first. If the king has one hole, force a defender to plug it, then mate with the knight."
      },
@@ -274,7 +274,7 @@
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the first rank is a trap",
+     "title": "Warm-up: the first rank is a trap",
      "intro": {
       "text": "A castled king feels safe behind three pawns. But those same pawns can become its coffin lid. In each position, a heavy piece reaches the back rank and the king, walled in by its own pawns, cannot escape. Deliver the mate."
      },
@@ -289,12 +289,12 @@
     },
     {
      "kind": "teach",
-     "title": "Death on the first rank — and the cure",
+     "title": "Death on the first rank, and the cure",
      "steps": [
       {
        "fen": "6k1/5ppp/8/8/8/8/8/4R1K1 w - - 0 1",
        "coach": {
-        "text": "The Black king on g8 has never made luft — a breathing square. Its pawns sit on f7, g7, h7, unmoved. Send the rook to e8: check along the back rank. The king cannot run to f8 or h8 (the rook covers the whole rank), cannot capture, cannot block. Mate. The pawns that sheltered it are now the bars of its cell.",
+        "text": "The Black king on g8 has never made luft, a breathing square. Its pawns sit on f7, g7, h7, unmoved. Send the rook to e8: check along the back rank. The king cannot run to f8 or h8 (the rook covers the whole rank), cannot capture, cannot block. Mate. The pawns that sheltered it are now the bars of its cell.",
         "annotations": [
          {
           "kind": "arrow",
@@ -324,7 +324,7 @@
       {
        "fen": "6k1/5pp1/7p/8/8/8/8/4R1K1 w - - 0 1",
        "coach": {
-        "text": "Now Black has played ...h6 at some earlier point — a hole on h7. This is LUFT. Send Re8+ and the king simply steps to h7. No mate. The single tempo spent pushing a flank pawn is what saves a king from the back rank. Make luft before you are forced to — but never carelessly, or you weaken the king another way. Judgement, always.",
+        "text": "Now Black has played ...h6 at some earlier point. A hole on h7. This is LUFT. Send Re8+ and the king simply steps to h7. No mate. The single tempo spent pushing a flank pawn is what saves a king from the back rank. Make luft before you are forced to, but never carelessly, or you weaken the king another way. Judgement, always.",
         "annotations": [
          {
           "kind": "arrow",
@@ -357,7 +357,7 @@
         "e1e8"
        ],
        "successLine": {
-        "text": "Re8# — mate. Whenever you see a king on its first rank behind three un-moved pawns, your eye should snap to the back rank like a magnet.",
+        "text": "Re8#: mate. Whenever you see a king on its first rank behind three un-moved pawns, your eye should snap to the back rank like a magnet.",
         "annotations": [
          {
           "kind": "arrow",
@@ -368,19 +368,19 @@
         ]
        },
        "retryLine": {
-        "text": "The king is walled in by its own pawns. Put the rook on the back rank, behind the king — e8 — with check."
+        "text": "The king is walled in by its own pawns. Put the rook on the back rank, behind the king (e8) with check."
        }
       }
      ]
     },
     {
      "kind": "teach",
-     "title": "Anastasia's Mate — the knight nails the king to the h-file",
+     "title": "Anastasia's Mate: the knight nails the king to the h-file",
      "steps": [
       {
        "fen": "8/4N1pk/8/R7/8/8/8/K7 w - - 0 1",
        "coach": {
-        "text": "A second cage for the castled king. The white knight stands on e7 — from there it covers g8 and g6, the two squares to the king's left. The king on h7 is hemmed by its own pawn on g7. Now bring the rook to the h-file: Rh5. Check along the file — and the king has nowhere. g8 and g6: knight. g7: its own pawn. h6 and h8: the rook. Anastasia's mate.",
+        "text": "A second cage for the castled king. The white knight stands on e7. From there it covers g8 and g6, the two squares to the king's left. The king on h7 is hemmed by its own pawn on g7. Now bring the rook to the h-file: Rh5. Check along the file, and the king has nowhere. g8 and g6: knight. g7: its own pawn. h6 and h8: the rook. Anastasia's mate.",
         "annotations": [
          {
           "kind": "arrow",
@@ -430,7 +430,7 @@
         "a4h4"
        ],
        "successLine": {
-        "text": "Rh4# — Anastasia's mate. The knight on e7 is the soul of the pattern: without it, the king escapes to g8 or g6. Knight first, rook to the h-file second.",
+        "text": "Rh4#: Anastasia's mate. The knight on e7 is the soul of the pattern: without it, the king escapes to g8 or g6. Knight first, rook to the h-file second.",
         "annotations": [
          {
           "kind": "arrow",
@@ -457,7 +457,7 @@
       {
        "uci": "d5e7",
        "coach": {
-        "text": "Ne7+ — the knight leaps in with check, seizing the g8 and g6 squares. The natural reply walks the king into the corner.",
+        "text": "Ne7+: the knight leaps in with check, seizing the g8 and g6 squares. The natural reply walks the king into the corner.",
         "annotations": [
          {
           "kind": "arrow",
@@ -471,7 +471,7 @@
       {
        "uci": "g8h8",
        "coach": {
-        "text": "...Kh8. The king tucks away — straight onto the h-file, exactly where we want it.",
+        "text": "...Kh8. The king tucks away. Straight onto the h-file, exactly where we want it.",
         "annotations": [
          {
           "kind": "highlight",
@@ -484,7 +484,7 @@
       {
        "uci": "h5h7",
        "coach": {
-        "text": "Qxh7+!! The queen smashes into h7 with check. It cannot be ignored, and the king must take — every other escape is covered.",
+        "text": "Qxh7+!! The queen smashes into h7 with check. It cannot be ignored, and the king must take. Every other escape is covered.",
         "annotations": [
          {
           "kind": "arrow",
@@ -503,7 +503,7 @@
       {
        "uci": "h8h7",
        "coach": {
-        "text": "...Kxh7 — forced. The king is dragged onto h7, beside its own choking g7-pawn. The trap is set.",
+        "text": "...Kxh7: forced. The king is dragged onto h7, beside its own choking g7-pawn. The trap is set.",
         "annotations": [
          {
           "kind": "highlight",
@@ -516,7 +516,7 @@
       {
        "uci": "f1h1",
        "coach": {
-        "text": "Rh1# — Anastasia's mate. The rook checks down the h-file; g8 and g6 belong to the knight, g7 to Black's own pawn. Queen sacrificed to force the picture you already knew.",
+        "text": "Rh1#: Anastasia's mate. The rook checks down the h-file; g8 and g6 belong to the knight, g7 to Black's own pawn. Queen sacrificed to force the picture you already knew.",
         "annotations": [
          {
           "kind": "arrow",
@@ -532,7 +532,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — h-file hunt",
+     "title": "Cool-down: h-file hunt",
      "intro": {
       "text": "Anastasia patterns. Each needs the knight on e7 (or the equivalent) doing its silent work and a rook arriving on the h-file. Find the finish."
      },
@@ -549,13 +549,13 @@
   },
   {
    "id": "l3-corner-mates",
-   "title": "The Corner Mates — Arabian & Hook",
+   "title": "The Corner Mates: Arabian & Hook",
    "kind": "tactics",
    "summary": "Rook and knight cooperate to cage a king in the corner: the Arabian (knight guards the rook beside the king) and the hook (a pawn nails the knight).",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the rook–knight team",
+     "title": "Warm-up: the rook–knight team",
      "intro": {
       "text": "A rook is powerful but the king can walk up to it and capture. Pair it with a knight, and the knight guards the rook while the rook delivers. In each position the rook and knight together corner the king. Find the mate."
      },
@@ -571,12 +571,12 @@
     },
     {
      "kind": "teach",
-     "title": "The Arabian Mate — knight guards the executioner",
+     "title": "The Arabian Mate: knight guards the executioner",
      "steps": [
       {
        "fen": "7k/7R/5N2/8/8/8/8/7K b - - 0 1",
        "coach": {
-        "text": "The oldest recorded mate in chess. The rook sits on h7, right next to the Black king — normally suicide, the king just captures it. But the knight on f6 GUARDS h7. So Kxh7 is illegal. The rook checks; g8 is covered by the same knight; g7 and h6 are covered by the rook. Mate. Rook beside the king, knight behind the rook: the Arabian.",
+        "text": "The oldest recorded mate in chess. The rook sits on h7, right next to the Black king. Normally suicide, the king just captures it. But the knight on f6 GUARDS h7. So Kxh7 is illegal. The rook checks; g8 is covered by the same knight; g7 and h6 are covered by the rook. Mate. Rook beside the king, knight behind the rook: the Arabian.",
         "annotations": [
          {
           "kind": "highlight",
@@ -601,7 +601,7 @@
       {
        "fen": "7k/7R/6PN/8/8/8/8/6K1 b - - 0 1",
        "coach": {
-        "text": "Now the hook mate — the Arabian's cousin, with the pieces shifted by one. The rook is on h7 right beside the king, but here it is a PAWN on g6 that guards it, not the knight. The knight on h6 has the other job: it seals g8. And the rook itself plugs the last hole, g7. See the shape — pawn g6, knight h6, rook h7 curling up the corner like a hook. Where the Arabian leans on the knight alone, the hook needs the pawn to hold the rook in place.",
+        "text": "Now the hook mate: the Arabian's cousin, with the pieces shifted by one. The rook is on h7 right beside the king, but here it is a PAWN on g6 that guards it, not the knight. The knight on h6 has the other job: it seals g8. And the rook itself plugs the last hole, g7. See the shape. Pawn g6, knight h6, rook h7 curling up the corner like a hook. Where the Arabian leans on the knight alone, the hook needs the pawn to hold the rook in place.",
         "annotations": [
          {
           "kind": "highlight",
@@ -632,7 +632,7 @@
       {
        "fen": "7k/1R6/5N2/8/8/8/8/7K w - - 0 1",
        "coach": {
-        "text": "The knight on f6 already covers g8 and — crucially — h7. Bring the rook beside the king, where the knight protects it.",
+        "text": "The knight on f6 already covers g8 and (crucially) h7. Bring the rook beside the king, where the knight protects it.",
         "annotations": [
          {
           "kind": "circle",
@@ -646,7 +646,7 @@
         "b7h7"
        ],
        "successLine": {
-        "text": "Rh7# — the Arabian mate. The rook sits one square from the king and is untouchable, because the f6-knight guards h7. The knight is everything here: it covers the rook AND the g8 escape.",
+        "text": "Rh7#: the Arabian mate. The rook sits one square from the king and is untouchable, because the f6-knight guards h7. The knight is everything here: it covers the rook AND the g8 escape.",
         "annotations": [
          {
           "kind": "arrow",
@@ -669,7 +669,7 @@
       {
        "fen": "7k/1R6/6PN/8/8/8/8/6K1 w - - 0 1",
        "coach": {
-        "text": "Knight on h6 seals g8, pawn on g6 guards h7, king boxed on h8. Complete the hook — rook to the square beside the king.",
+        "text": "Knight on h6 seals g8, pawn on g6 guards h7, king boxed on h8. Complete the hook, rook to the square beside the king.",
         "annotations": [
          {
           "kind": "circle",
@@ -683,7 +683,7 @@
         "b7h7"
        ],
        "successLine": {
-        "text": "Rh7# — the hook mate. The pawn guards the rook, the knight seals g8, the rook itself blocks g7: a chain of protection curling into the corner. Note the rook MUST land on h7 — any other check lets the king slip out to g7.",
+        "text": "Rh7#: the hook mate. The pawn guards the rook, the knight seals g8, the rook itself blocks g7: a chain of protection curling into the corner. Note the rook MUST land on h7. Any other check lets the king slip out to g7.",
         "annotations": [
          {
           "kind": "arrow",
@@ -694,14 +694,14 @@
         ]
        },
        "retryLine": {
-        "text": "The pawn on g6 exists to make h7 safe for the rook — and only the rook on h7 also covers the g7 escape. Put the rook on h7."
+        "text": "The pawn on g6 exists to make h7 safe for the rook, and only the rook on h7 also covers the g7 escape. Put the rook on h7."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — corner the king",
+     "title": "Cool-down: corner the king",
      "intro": {
       "text": "Rook-and-knight cages, some with a supporting pawn. Spot which piece guards the mating square, then deliver."
      },
@@ -719,13 +719,13 @@
   },
   {
    "id": "l4-boden",
-   "title": "Boden's Mate — the Crossing Bishops",
+   "title": "Boden's Mate: the Crossing Bishops",
    "kind": "tactics",
    "summary": "Two bishops on intersecting diagonals deliver mate to a king castled long, its flight squares plugged by its own men.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — the bishop pair bites",
+     "title": "Warm-up: the bishop pair bites",
      "intro": {
       "text": "Two bishops raking toward one king are a fearsome battery. When their diagonals cross at the king, with its escape blocked by friends, it is mate. Find the bishop blow."
      },
@@ -745,7 +745,7 @@
       {
        "fen": "2kr4/p2p4/B7/8/5B2/8/8/6K1 b - - 0 1",
        "coach": {
-        "text": "Black castled queenside and the king on c8 is hemmed by its own men: rook on d8, pawn on d7, pawn on a7. The light bishop on a6 checks along the a6–c8 diagonal (b7 is empty — that is the key). Where can the king go? b8 and c7 are both covered by the dark bishop on f4, along the b8–c7–f4 diagonal. d7 and d8: its own pieces. b7: the checking bishop. Mate. Two bishops, two crossing diagonals — Boden's mate.",
+        "text": "Black castled queenside and the king on c8 is hemmed by its own men: rook on d8, pawn on d7, pawn on a7. The light bishop on a6 checks along the a6–c8 diagonal (b7 is empty; that is the key). Where can the king go? b8 and c7 are both covered by the dark bishop on f4, along the b8–c7–f4 diagonal. d7 and d8: its own pieces. b7: the checking bishop. Mate. Two bishops, two crossing diagonals: Boden's mate.",
         "annotations": [
          {
           "kind": "arrow",
@@ -782,7 +782,7 @@
       {
        "fen": "2kr4/p2p4/8/1B6/5B2/8/8/6K1 w - - 0 1",
        "coach": {
-        "text": "The dark bishop on f4 already rakes b8 and c7 — the king's dark escape squares. You need the light bishop to deliver check on the a6–c8 diagonal. It is on b5. One step.",
+        "text": "The dark bishop on f4 already rakes b8 and c7, the king's dark escape squares. You need the light bishop to deliver check on the a6–c8 diagonal. It is on b5. One step.",
         "annotations": [
          {
           "kind": "arrow",
@@ -802,7 +802,7 @@
         "b5a6"
        ],
        "successLine": {
-        "text": "Ba6# — Boden's mate. The two bishops cross on the king: a6 hits c8, f4 hits b8 and c7, and the king's own rook and pawns seal the rest. A picture worth memorising — it appears again and again against the long-castled king.",
+        "text": "Ba6#: Boden's mate. The two bishops cross on the king: a6 hits c8, f4 hits b8 and c7, and the king's own rook and pawns seal the rest. A picture worth memorising: it appears again and again against the long-castled king.",
         "annotations": [
          {
           "kind": "arrow",
@@ -813,16 +813,16 @@
         ]
        },
        "retryLine": {
-        "text": "The dark bishop has done its half — b8 and c7 are covered. You must give check with the light bishop on the diagonal that ends on c8. Move it to a6."
+        "text": "The dark bishop has done its half: b8 and c7 are covered. You must give check with the light bishop on the diagonal that ends on c8. Move it to a6."
        }
       }
      ]
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — both bishops fire",
+     "title": "Cool-down: both bishops fire",
      "intro": {
-      "text": "Boden patterns against the queenside-castled king. Find the move — sometimes a sacrifice — that crosses the two diagonals on the king."
+      "text": "Boden patterns against the queenside-castled king. Find the move (sometimes a sacrifice) that crosses the two diagonals on the king."
      },
      "puzzle": {
       "themes": [
@@ -837,13 +837,13 @@
   },
   {
    "id": "l5-f7-attack",
-   "title": "Attacking f7 — the Weakest Square",
+   "title": "Attacking f7: the Weakest Square",
    "kind": "tactics",
    "summary": "f7 (and f2 for White) is guarded only by the king at the start. Aim your pieces there; a queen + bishop battery mates on it.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — strike at f7 / f2",
+     "title": "Warm-up: strike at f7 / f2",
      "intro": {
       "text": "At the start of the game, one square by each king is defended by the king alone: f7 for Black, f2 for White. It is the bullseye of every quick attack. In each position, an attack crashes through on f2 or f7. Find the blow."
      },
@@ -863,7 +863,7 @@
       {
        "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5Q2/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
        "coach": {
-        "text": "An everyday opening — 1.e4 e5 2.Bc4 Nc6 3.Qf3. Look where White's bishop and queen point: both aim straight at f7. That square is defended by exactly one piece, the king. Two attackers, one defender. If Black is careless, White plays Qxf7# — the queen captures, the bishop on c4 protects it, and the king cannot recapture or run. This crude threat, the Scholar's Mate, is the first attacking idea every player must both wield and refute.",
+        "text": "An everyday opening, 1.e4 e5 2.Bc4 Nc6 3.Qf3. Look where White's bishop and queen point: both aim straight at f7. That square is defended by exactly one piece, the king. Two attackers, one defender. If Black is careless, White plays Qxf7#. The queen captures, the bishop on c4 protects it, and the king cannot recapture or run. This crude threat, the Scholar's Mate, is the first attacking idea every player must both wield and refute.",
         "annotations": [
          {
           "kind": "arrow",
@@ -889,7 +889,7 @@
       {
        "fen": "r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4",
        "coach": {
-        "text": "Here the queen has gone to h5 and Black has just played ...Nf6??, defending nothing that matters and ignoring the threat. f7 is still attacked twice — queen h5 and bishop c4 — and guarded once. The execution is immediate.",
+        "text": "Here the queen has gone to h5 and Black has just played ...Nf6??, defending nothing that matters and ignoring the threat. f7 is still attacked twice (queen h5 and bishop c4) and guarded once. The execution is immediate.",
         "annotations": [
          {
           "kind": "arrow",
@@ -935,7 +935,7 @@
         "h5f7"
        ],
        "successLine": {
-        "text": "Qxf7# — mate. The queen is defended by the c4-bishop, so the king cannot capture, and from f7 the queen covers every escape square. f7 fell because two attackers beat one defender. Aim at the weak square, count the guards, then strike.",
+        "text": "Qxf7#: mate. The queen is defended by the c4-bishop, so the king cannot capture, and from f7 the queen covers every escape square. f7 fell because two attackers beat one defender. Aim at the weak square, count the guards, then strike.",
         "annotations": [
          {
           "kind": "arrow",
@@ -946,7 +946,7 @@
         ]
        },
        "retryLine": {
-        "text": "Two pieces hit f7; only the king defends it. Capture on f7 with the queen — the bishop on c4 backs it up, so it is mate."
+        "text": "Two pieces hit f7; only the king defends it. Capture on f7 with the queen. The bishop on c4 backs it up, so it is mate."
        }
       }
      ]
@@ -958,7 +958,7 @@
       {
        "fen": "rnbqkbnr/pppp1ppp/8/4p3/2B1P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 2",
        "coach": {
-        "text": "The mirror is just as real. f2 is White's only king-guarded square. When you play Black, point your bishop to c5 and your queen toward f2/h4 with the same plan reversed: ...Qh4 and ...Bc5 hunt f2 exactly as White hunts f7. Know the weak square for BOTH colours — attack it as one player, defend it religiously as the other.",
+        "text": "The mirror is just as real. f2 is White's only king-guarded square. When you play Black, point your bishop to c5 and your queen toward f2/h4 with the same plan reversed: ...Qh4 and ...Bc5 hunt f2 exactly as White hunts f7. Know the weak square for BOTH colours. Attack it as one player, defend it religiously as the other.",
         "annotations": [
          {
           "kind": "circle",
@@ -979,7 +979,7 @@
     },
     {
      "kind": "puzzle",
-     "title": "Cool-down — crack the f-square",
+     "title": "Cool-down: crack the f-square",
      "intro": {
       "text": "More attacks on f7 and f2. Some win material, some mate. Always start by counting attackers against defenders on that one square."
      },
@@ -996,15 +996,15 @@
   },
   {
    "id": "l6-practice-boss",
-   "title": "Sacrifice into a Known Mate — and the Attack",
+   "title": "Sacrifice into a Known Mate, and the Attack",
    "kind": "practice",
    "summary": "Tie it together: recognise the pattern, give material to force it, then play out a full attack against the engine.",
    "segments": [
     {
      "kind": "puzzle",
-     "title": "Warm-up — force the picture",
+     "title": "Warm-up: force the picture",
      "intro": {
-      "text": "Every named mate in this chapter can be FORCED by a sacrifice — you give a piece to drag the king into the pattern you know. Here are mixed sacrificial mates. Trust the pattern: if the mate is certain, the material is worth it."
+      "text": "Every named mate in this chapter can be FORCED by a sacrifice. You give a piece to drag the king into the pattern you know. Here are mixed sacrificial mates. Trust the pattern: if the mate is certain, the material is worth it."
      },
      "puzzle": {
       "themes": [
@@ -1018,12 +1018,12 @@
     },
     {
      "kind": "guided",
-     "title": "Sacrifice to force the smother — a new position",
+     "title": "Sacrifice to force the smother: a new position",
      "steps": [
       {
        "fen": "4r2k/6pp/7N/8/2Q5/8/8/6K1 w - - 0 1",
        "coach": {
-        "text": "A fresh board, the same idea. Knight on h6 already guards g8; the king's only hole is the rook on e8. Recall the smothered combination and force it — what is the one move that drags the rook onto its own king's last square?",
+        "text": "A fresh board, the same idea. Knight on h6 already guards g8; the king's only hole is the rook on e8. Recall the smothered combination and force it. What is the one move that drags the rook onto its own king's last square?",
         "annotations": [
          {
           "kind": "circle",
@@ -1037,7 +1037,7 @@
         "c4g8"
        ],
        "successLine": {
-        "text": "Qg8+!! ...Rxg8 (forced — the king can't take, the h6-knight covers g8), Nf7#. The rook on e8 had to swing to g8 and bury its own king. A piece is nothing against a forced mate: calculate it to the end, then pay whatever it costs.",
+        "text": "Qg8+!! ...Rxg8 (forced: the king can't take, the h6-knight covers g8), Nf7#. The rook on e8 had to swing to g8 and bury its own king. A piece is nothing against a forced mate: calculate it to the end, then pay whatever it costs.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1048,14 +1048,14 @@
         ]
        },
        "retryLine": {
-        "text": "A quiet check lets the king escape. Force the rook to block g8 first — sacrifice the queen there, on the diagonal the knight already guards."
+        "text": "A quiet check lets the king escape. Force the rook to block g8 first. Sacrifice the queen there, on the diagonal the knight already guards."
        }
       }
      ]
     },
     {
      "kind": "guided",
-     "title": "One more deliver — Anastasia, flipped",
+     "title": "One more deliver: Anastasia, flipped",
      "steps": [
       {
        "fen": "K7/8/8/8/3R4/8/4N1pk/8 w - - 0 1",
@@ -1067,7 +1067,7 @@
         "d4h4"
        ],
        "successLine": {
-        "text": "Rh4# — Anastasia, mirrored. Knight covers g1 and g3, the king's own pawn blocks g2, the rook checks down the h-file. The geometry flips, the pattern does not.",
+        "text": "Rh4#: Anastasia, mirrored. Knight covers g1 and g3, the king's own pawn blocks g2, the rook checks down the h-file. The geometry flips, the pattern does not.",
         "annotations": [
          {
           "kind": "arrow",
@@ -1078,19 +1078,19 @@
         ]
        },
        "retryLine": {
-        "text": "The knight on e2 has the king's escape squares. Bring the rook onto the king's file with check — to h4."
+        "text": "The knight on e2 has the king's escape squares. Bring the rook onto the king's file with check, to h4."
        }
       }
      ]
     },
     {
      "kind": "boss",
-     "title": "Boss — conduct the attack",
+     "title": "Boss: conduct the attack",
      "bossFen": "r1bq1rk1/ppp2ppp/2np1n2/2b1p1N1/2B1P3/3P4/PPP2PPP/RNBQ1RK1 w - - 0 1",
      "bossUserColor": "white",
      "bossEngineElo": 1350,
      "bossIntro": {
-      "text": "Now play, not solve. You are White. Your knight already eyes f7, your bishop rakes the same square, and the Black king sits castled before you. Do not grab pawns at random — build threats against f7 and the kingside, aim every piece at the king, and when a known mating pattern appears, FORCE it. Material spent to deliver a mate you can see is never a loss. Attack with purpose."
+      "text": "Now play, not solve. You are White. Your knight already eyes f7, your bishop rakes the same square, and the Black king sits castled before you. Do not grab pawns at random. Build threats against f7 and the kingside, aim every piece at the king, and when a known mating pattern appears, FORCE it. Material spent to deliver a mate you can see is never a loss. Attack with purpose."
      }
     }
    ]
@@ -1109,19 +1109,19 @@
      "The king has too many open squares around it"
     ],
     "answerIndex": 0,
-    "explain": "A knight check cannot be blocked. If the king's own men fill every flight square and it cannot capture the knight, it is mate — the king is smothered by its own army."
+    "explain": "A knight check cannot be blocked. If the king's own men fill every flight square and it cannot capture the knight, it is mate. The king is smothered by its own army."
    },
    {
     "kind": "mc",
     "prompt": "Your king is castled kingside behind un-moved f-, g-, and h-pawns. What is the simplest insurance against a back-rank mate?",
     "options": [
      "Push all three pawns forward at once",
-     "Make luft — give the king one breathing square (e.g. play h6 or g6) at the right moment",
+     "Make luft. Give the king one breathing square (e.g. play h6 or g6) at the right moment",
      "Move the king to the centre",
      "Keep a rook permanently on the back rank forever"
     ],
     "answerIndex": 1,
-    "explain": "Luft — a single escape square for the king — defuses the back-rank mate. Spend the tempo at the right moment; pushing all three pawns or centralising the king creates worse weaknesses."
+    "explain": "Luft (a single escape square for the king) defuses the back-rank mate. Spend the tempo at the right moment; pushing all three pawns or centralising the king creates worse weaknesses."
    },
    {
     "kind": "mc",
@@ -1145,16 +1145,16 @@
      "It is always occupied by the queen"
     ],
     "answerIndex": 0,
-    "explain": "At the start, f7/f2 is guarded only by the king. Train two attackers on it before the defender brings help, and it collapses — the engine of the Scholar's Mate and countless early attacks."
+    "explain": "At the start, f7/f2 is guarded only by the king. Train two attackers on it before the defender brings help, and it collapses. The engine of the Scholar's Mate and countless early attacks."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The Black king is smothered by its own pieces — find the mate in one.",
+    "prompt": "White to move. The Black king is smothered by its own pieces. Find the mate in one.",
     "fen": "6rk/6pp/3N4/8/8/8/8/6K1 w - - 0 1",
     "solutionUci": [
      "d6f7"
     ],
-    "explain": "Nf7# — the knight checks the smothered king, which cannot capture, block, or flee. The same f7 picture you drilled, reached from a new knight square."
+    "explain": "Nf7#: the knight checks the smothered king, which cannot capture, block, or flee. The same f7 picture you drilled, reached from a new knight square."
    },
    {
     "kind": "play",
@@ -1163,43 +1163,43 @@
     "solutionUci": [
      "b3g8"
     ],
-    "explain": "Qg8+!! The king can't take (the h6-knight guards g8), so ...Rxg8 is forced — the rook buries its own king — and Nf7# is smothered mate."
+    "explain": "Qg8+!! The king can't take (the h6-knight guards g8), so ...Rxg8 is forced (the rook buries its own king) and Nf7# is smothered mate."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The king is shut on its first rank by its own pawns — find the mate.",
+    "prompt": "White to move. The king is shut on its first rank by its own pawns. Find the mate.",
     "fen": "1k6/ppp5/8/8/8/8/8/3R2K1 w - - 0 1",
     "solutionUci": [
      "d1d8"
     ],
-    "explain": "Rd8# — a back-rank mate on the queenside. The king on b8, walled in by a7/b7/c7, has no flight on the eighth rank."
+    "explain": "Rd8#: a back-rank mate on the queenside. The king on b8, walled in by a7/b7/c7, has no flight on the eighth rank."
    },
    {
     "kind": "play",
-    "prompt": "White to move. The same net as Anastasia's mate, swung to the queenside — deliver it.",
+    "prompt": "White to move. The same net as Anastasia's mate, swung to the queenside, deliver it.",
     "fen": "8/8/8/8/8/7R/1p1N4/k6K w - - 0 1",
     "solutionUci": [
      "h3a3"
     ],
-    "explain": "Ra3# — Anastasia on the a-file. The knight on d2 seals b1 and b3, the king's own b2-pawn blocks b2, and the rook checks down the a-file."
+    "explain": "Ra3#: Anastasia on the a-file. The knight on d2 seals b1 and b3, the king's own b2-pawn blocks b2, and the rook checks down the a-file."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Rook and knight have the king cornered — find the mate in one.",
+    "prompt": "White to move. Rook and knight have the king cornered. Find the mate in one.",
     "fen": "7k/2R5/5N2/8/8/8/8/7K w - - 0 1",
     "solutionUci": [
      "c7h7"
     ],
-    "explain": "Rh7# — the Arabian mate. The knight on f6 guards h7 (so the rook is untouchable beside the king) and also seals the g8 escape."
+    "explain": "Rh7#: the Arabian mate. The knight on f6 guards h7 (so the rook is untouchable beside the king) and also seals the g8 escape."
    },
    {
     "kind": "play",
-    "prompt": "White to move. Two bishops rake the long-castled king — cross them and mate.",
+    "prompt": "White to move. Two bishops rake the long-castled king: cross them and mate.",
     "fen": "2kr4/p2p4/8/8/8/8/4B2B/6K1 w - - 0 1",
     "solutionUci": [
      "e2a6"
     ],
-    "explain": "Ba6# — Boden's mate. The h2-bishop already covers b8 and c7; the light bishop checks along a6–c8, and the king's own rook and pawns seal the rest."
+    "explain": "Ba6#: Boden's mate. The h2-bishop already covers b8 and c7; the light bishop checks along a6–c8, and the king's own rook and pawns seal the rest."
    },
    {
     "kind": "play",
@@ -1208,7 +1208,7 @@
     "solutionUci": [
      "f3f7"
     ],
-    "explain": "Qxf7# — the knight on g5 defends the queen, so the king cannot recapture, and from f7 the queen covers every flight. A different battery, the same weak square."
+    "explain": "Qxf7#: the knight on g5 defends the queen, so the king cannot recapture, and from f7 the queen covers every flight. A different battery, the same weak square."
    },
    {
     "kind": "judge",
@@ -1216,23 +1216,23 @@
     "fen": "kr6/ppN5/8/8/8/8/8/7K b - - 0 1",
     "lastMoveUci": "d5c7",
     "verdict": "correct",
-    "explain": "Nc7# is a smothered mate in the a8 corner — the knight checks the king, which cannot capture or block, and its own rook and pawns fill every escape."
+    "explain": "Nc7# is a smothered mate in the a8 corner. The knight checks the king, which cannot capture or block, and its own rook and pawns fill every escape."
    },
    {
     "kind": "judge",
-    "prompt": "White played Ra7 — rook beside the king, with a knight on a6 and a pawn on b6 behind it. Checkmate, or a blunder?",
+    "prompt": "White played Ra7. Rook beside the king, with a knight on a6 and a pawn on b6 behind it. Checkmate, or a blunder?",
     "fen": "k7/R7/NP6/8/8/8/8/6K1 b - - 0 1",
     "lastMoveUci": "e7a7",
     "verdict": "correct",
-    "explain": "Ra7# is the hook mate: the b6-pawn guards the rook, the a6-knight seals b8, and the rook itself blocks the b7 escape. Pawn, knight, rook curling into the corner — here in the a8 corner."
+    "explain": "Ra7# is the hook mate: the b6-pawn guards the rook, the a6-knight seals b8, and the rook itself blocks the b7 escape. Pawn, knight, rook curling into the corner, here in the a8 corner."
    },
    {
     "kind": "judge",
-    "prompt": "Trying for Anastasia's mate, White swung the rook to the h-file with Rh4+ — but there is no knight on e7. Correct mate, or a blunder?",
+    "prompt": "Trying for Anastasia's mate, White swung the rook to the h-file with Rh4+, but there is no knight on e7. Correct mate, or a blunder?",
     "fen": "8/6pk/8/8/7R/8/8/6K1 b - - 0 1",
     "lastMoveUci": "a4h4",
     "verdict": "blunder",
-    "explain": "Not mate. Anastasia needs the knight on e7 to seal g8 and g6 — without it, the king simply steps to g8 or g6 and escapes. The pattern's heart is the knight, not the rook check."
+    "explain": "Not mate. Anastasia needs the knight on e7 to seal g8 and g6. Without it, the king simply steps to g8 or g6 and escapes. The pattern's heart is the knight, not the rook check."
    },
    {
     "kind": "judge",

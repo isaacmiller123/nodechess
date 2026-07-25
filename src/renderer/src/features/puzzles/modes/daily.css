@@ -1,4 +1,4 @@
-/* Daily + streaks + stats/history — slice C styles. Owned by the daily builder.
+/* Daily + streaks + stats/history: slice C styles. Owned by the daily builder.
    Design tokens only (var(--…)); mirrors the look of puzzles.css / the app shell.
    Everything namespaced .daily-* so loading alongside the shared sheets is inert.
    Does NOT edit the shared puzzles.css. */
@@ -64,7 +64,7 @@
 }
 
 /* ============================================================
-   1. DAILY TAB — board + side panel
+   1. DAILY TAB: board + side panel
    ============================================================ */
 .daily-board-layout {
   display: grid;
@@ -321,7 +321,7 @@
 }
 
 /* Hint overlay: the shared .hint-overlay SVG from puzzles.css (same brush as
-   Train/Custom) — the old namespaced .daily-hint-* SVG is gone. */
+   Train/Custom): the old namespaced .daily-hint-* SVG is gone. */
 
 /* ============================================================
    Shared stat cards (Streak + Stats sections)
@@ -764,7 +764,7 @@
 }
 
 /* ============================================================
-   Responsive — stack the board layout, soften grids on narrow widths
+   Responsive: stack the board layout, soften grids on narrow widths
    ============================================================ */
 @media (max-width: 1100px) {
   .daily-board-layout {

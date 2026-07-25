@@ -1,6 +1,6 @@
 // Dev harness for the shared 3D tabletop renderer (games/three/**).
 //
-// Reached ONLY via the `?three=<kind>` query flag (see main.tsx) — nothing in
+// Reached ONLY via the `?three=<kind>` query flag (see main.tsx). Nothing in
 // the app shell links here, and GamePage wiring is wave-2's. Renders static
 // demo positions with fake-but-plausible interactions so every contract
 // surface is visually verifiable now: drag+snap, click-to-place (spawn),
@@ -109,7 +109,7 @@ function shogiDemo(): TabletopPiece[] {
 }
 
 function chessDemo(): TabletopPiece[] {
-  // Italian Game middlegame — mixed material, both castled kings visible.
+  // Italian Game middlegame: mixed material, both castled kings visible.
   const fen = 'r1bq1rk1/1pp2ppp/p1np1n2/2b1p3/2B1P3/2NP1N2/PPP2PPP/R1BQ1RK1'
   const pieces: TabletopPiece[] = []
   fen.split('/').forEach((row, i) => {
@@ -222,7 +222,7 @@ export default function Three3DDemo({ kindParam }: { kindParam: string }): JSX.E
   const demos = useMemo(makeDemos, [])
   const demo = demos[kindParam] ?? demos.go
   // `&probe=f,r[;f,r…]` replaces the demo position with marker pieces at exact
-  // squares — alignment/parity ground truth when eyeballing screenshots.
+  // squares: alignment/parity ground truth when eyeballing screenshots.
   const initialPieces = useMemo(() => {
     const probe = new URLSearchParams(window.location.search).get('probe')
     if (!probe) return demo.pieces
@@ -336,7 +336,7 @@ export default function Three3DDemo({ kindParam }: { kindParam: string }): JSX.E
         }}
       >
         <strong style={{ color: '#f0ead9', font: '600 14px Inter, system-ui, sans-serif' }}>
-          Tabletop3D — {demo.title}
+          Tabletop3D: {demo.title}
         </strong>
         {Object.keys(demos).map((k) => (
           <a
@@ -380,7 +380,7 @@ export default function Three3DDemo({ kindParam }: { kindParam: string }): JSX.E
               textAlign: 'center'
             }}
           >
-            3D unavailable ({unavailable}) — the app would fall back to the 2D board here.
+            3D unavailable ({unavailable}). The app would fall back to the 2D board here.
           </div>
         ) : (
           <Tabletop3D

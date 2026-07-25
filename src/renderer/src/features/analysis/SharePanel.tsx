@@ -49,7 +49,7 @@ export function SharePanel({
         .writeText(text)
         .then(() => flagCopied(which))
         .catch(() => {
-          /* clipboard denied — silently no-op */
+          /* clipboard denied: silently no-op */
         })
     },
     [flagCopied]

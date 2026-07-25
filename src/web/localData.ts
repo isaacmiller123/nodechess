@@ -1,4 +1,4 @@
-// The local data layer — the browser's copy of the desktop's writable app DB.
+// The local data layer: the browser's copy of the desktop's writable app DB.
 //
 // The web build has no server and no account database, so EVERYTHING the user
 // accumulates lives here, in localStorage with an in-memory fallback
@@ -42,7 +42,7 @@ export function storageGet(key: string): string | null {
   try {
     const v = window.localStorage.getItem(key)
     // A value written to memoryFallback (setItem threw on quota) still reads
-    // back as null from localStorage — fall through to memory so those writes
+    // back as null from localStorage: fall through to memory so those writes
     // are never invisible (the signup import enumerates memory keys too).
     if (v !== null) return v
     return memoryFallback.get(key) ?? null
@@ -70,7 +70,7 @@ export function storageRemove(key: string): void {
 
 // These localStorage keys keep their pre-rebrand prefix. They address data
 // already sitting in browsers that have used the web app; renaming the prefix
-// does not migrate that data, it orphans it — settings, saved games, ratings and
+// does not migrate that data, it orphans it. Settings, saved games, ratings and
 // puzzle history would all come back empty on the next visit. A rename has to
 // ship as a read-old/write-new migration, not as a string edit.
 export const SETTING_PREFIX = 'chess-sharp.setting.'
@@ -81,7 +81,7 @@ const ATTEMPTS_KEY = 'chess-sharp.puzzleAttempts'
 const DAILY_KEY = 'chess-sharp.puzzleDaily'
 const RUSH_KEY = 'chess-sharp.puzzleRush'
 
-/** Setting keys (without the prefix) present in local storage — the signup
+/** Setting keys (without the prefix) present in local storage. The signup
  *  import (migrate.ts) enumerates these to copy them into a fresh account. */
 export function listLocalSettingKeys(): string[] {
   const keys = new Set<string>()
@@ -91,7 +91,7 @@ export function listLocalSettingKeys(): string[] {
       if (k && k.startsWith(SETTING_PREFIX)) keys.add(k.slice(SETTING_PREFIX.length))
     }
   } catch {
-    // storage unavailable — the memory fallback below still answers
+    // storage unavailable: the memory fallback below still answers
   }
   for (const k of memoryFallback.keys()) {
     if (k.startsWith(SETTING_PREFIX)) keys.add(k.slice(SETTING_PREFIX.length))
@@ -314,7 +314,7 @@ function prevYmd(ymd: string): string {
 
 // ---- Puzzle attempt history (desktop `puzzle_attempt`) ----------------------
 // The desktop table is unbounded and its stats are exact over all time. Here the
-// newest ATTEMPT_CAP attempts are kept — enough for the 30-day sparkline, the
+// newest ATTEMPT_CAP attempts are kept. Enough for the 30-day sparkline, the
 // per-theme bars and several pages of history, at roughly 60 KB of storage.
 // `bestStreak` and the totals are therefore over the retained window; the
 // all-time solved/attempted counters ride on the rating record instead and stay
@@ -371,8 +371,8 @@ export function localPuzzleStats(): PuzzleStats {
   const totalAttempts = rec.attempts
   const totalSolved = rec.solved
 
-  // Best solved run. Rows are newest-first, so walk them in either direction —
-  // the longest run is orientation-independent.
+  // Best solved run. Rows are newest-first, so walk them in either direction.
+  // The longest run is orientation-independent.
   let bestStreak = 0
   let run = 0
   for (const r of rows) {

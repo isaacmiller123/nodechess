@@ -1,6 +1,6 @@
 // Proof-of-life for the KataGo dataset group (docs/GAMES-PLATFORM-SPEC.md §Engines):
 // spawns the imported mac KataGo over GTP with the b6c96 net, plays one 9x9
-// genmove and prints the move. No app code involved — this exercises exactly
+// genmove and prints the move. No app code involved: this exercises exactly
 // what src/main/datasets/katago.ts installs.
 //
 //   node scripts/verify-katago.mjs

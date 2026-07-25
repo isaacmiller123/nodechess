@@ -7,21 +7,21 @@ import { CATALOG, type CatalogEntry } from './catalog'
 import { ArtThumb } from './ArtThumb'
 import { GamePage } from './GamePage'
 import './games.css'
-// The Lab hero card is styled by the editor's stylesheet (vl-hero) — imported
+// The Lab hero card is styled by the editor's stylesheet (vl-hero). Imported
 // eagerly so the hero renders styled before the lazy EditorView chunk loads.
 import './editor/editor.css'
 // Same for the section tabs (games-sections), styled by the Library sheet.
 import '../library/library.css'
 
-// Variant Lab (features/games/editor) — code-split: the builder + ffish tooling
+// Variant Lab (features/games/editor), code-split: the builder + ffish tooling
 // only load when the user opens the Lab.
 const EditorView = lazy(() => import('./editor/EditorView'))
-// Library (features/library) — code-split: the archive list + replay viewer
+// Library (features/library), code-split: the archive list + replay viewer
 // only load when the user opens the Library section.
 const LibraryView = lazy(() => import('../library/LibraryView'))
 
 /**
- * Games library — the storefront. Card grid over the game catalog: playable
+ * Games library: the storefront. Card grid over the game catalog: playable
  * chess variants render a live mini board with a characteristic position;
  * coming-soon games get vector art placeholders with a P2 pill. Clicking a
  * card opens the per-game page (Play / Manual). The Variant Lab hero at the
@@ -61,7 +61,7 @@ export default function GamesView({
   }
 
   // Section tabs: the storefront ('games') and the cross-mode saved-game
-  // Library ('library' — features/library, replayable on every kind's board).
+  // Library ('library': features/library, replayable on every kind's board).
   const sectionTabs = (
     <div className="games-sections" role="tablist" aria-label="Games sections">
       <button
@@ -103,7 +103,7 @@ export default function GamesView({
   }
 
   const boardCls = `board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`
-  // Everything shipped in P2 — the section only renders if a future wave adds
+  // Everything shipped in P2: the section only renders if a future wave adds
   // new not-yet-playable entries (an empty "Coming soon" header looks broken).
   const comingSoon = CATALOG.filter((e) => e.status === 'coming' && e.kind !== 'custom-editor')
 
@@ -156,7 +156,7 @@ export default function GamesView({
       <section aria-labelledby="games-lab">
         <h2 id="games-lab" className="games-section-title">
           Make your own
-          <span className="games-section-sub">The Variant Lab — real Fairy-Stockfish rules</span>
+          <span className="games-section-sub">The Variant Lab: real Fairy-Stockfish rules</span>
         </h2>
         <button type="button" className="vl-hero" onClick={() => setLabOpen(true)}>
           <span className="vl-hero-icon">
@@ -166,7 +166,7 @@ export default function GamesView({
             <span className="vl-hero-title">Variant Lab</span>
             <span className="vl-hero-sub">
               Thirty pawns against the world. Queens that jump like knights. Captures that explode.
-              Paint a start position, flip the rules, and play it over the board — instantly.
+              Paint a start position, flip the rules, and play it over the board instantly.
             </span>
           </span>
           <span className="vl-hero-cta">

@@ -79,5 +79,5 @@ desktop.ini
 /dist-seed/
 /out-seed/
 
-# local web-server state (accounts + per-user DBs) — never commit
+# local web-server state (accounts + per-user DBs): never commit
 .webdata/

@@ -44,7 +44,7 @@ export function registerPuzzles(): void {
     'puzzles:batch',
     z
       .object({
-        // Cap ABOVE the full theme catalog (73 today) — the desktop Custom
+        // Cap ABOVE the full theme catalog (73 today): the desktop Custom
         // trainer lets a user toggle every theme individually with no cap of
         // its own, so this must never reject a full selection.
         themes: z.array(z.string().max(64)).max(256).optional(),
@@ -76,7 +76,7 @@ export function registerPuzzles(): void {
           count,
           exclude: merged,
           ascending,
-          // 'any' means "no length filter" — pass through undefined so the repo
+          // 'any' means "no length filter". Pass through undefined so the repo
           // skips the clause rather than building an impossible bound.
           length: length === 'any' ? undefined : length,
           minPopularity
@@ -121,7 +121,7 @@ export function registerPuzzles(): void {
           delta: res.delta
         }
       }
-      // Rush/custom: no rating change — echo the puzzle rating so callers stay typed.
+      // Rush/custom: no rating change. Echo the puzzle rating so callers stay typed.
       return { ratingAfter: puzzleRating, rd: 0, delta: 0 }
     }
   )

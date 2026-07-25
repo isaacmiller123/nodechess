@@ -1,25 +1,25 @@
-// A6 M1 — LEAD INTEGRATION: run a live witness for one online game (spec §3/§4).
+// A6 M1, LEAD INTEGRATION: run a live witness for one online game (spec §3/§4).
 //
 // The witness BODY (Lane D `witnessRunner`) joins a game room as the third,
 // non-playing peer, drives a `WitnessCore` over the host's mirrored stream, and
 // broadcasts wclk/wend back to both players. THIS controller is the app-facing
 // lifecycle around it: it supplies the live game transport (`createRtcTransport`)
-// and this device's signing identity, and — the piece that makes the players'
-// witnessed APPENDS actually land — on the witnessed terminal it seeds each
+// and this device's signing identity, and: the piece that makes the players'
+// witnessed APPENDS actually land. On the witnessed terminal it seeds each
 // player's current head into this peer's `witnessServe` attest cache, so the
 // peer can hand each player the NON-PLAYER attestation their `clientAppendWitnessed`
 // requires (spec §4). The head is learned from that player's OWN signed pre-game
-// snapshot over the fabric — a signed head, never an unverified claim.
+// snapshot over the fabric: a signed head, never an unverified claim.
 //
 // M1 DEV FLOW (A6 milestone M1, lane D): the room code + participants are
 // handed in out of band (a manual dev handoff, or the always-on operator peer
-// running the same `witnessServe` — server/operator/peer.ts). Full auto-assignment
+// running the same `witnessServe`, server/operator/peer.ts). Full auto-assignment
 // from the matchmaking pool is M2. Casual play is NEVER blocked on witness
 // availability: this is opt-in, only for a rated game whose players both signed in.
 //
 // Renderer-hosted next to the `mp` singleton (it owns a live transport); the
 // transport + peer + clock are INJECTED so it is headless-testable and consumes
-// only the lanes' exports — `src/shared/accounts` stays pure.
+// only the lanes' exports: `src/shared/accounts` stays pure.
 
 import { nodeIdOf } from '@shared/accounts/witness'
 import { sha256, toB64u, utf8 } from '@shared/accounts/hash'
@@ -38,7 +38,7 @@ export interface WitnessControllerDeps {
   /** The live account peer (getAccountPeer): its `witnessServe` grants the lease
    *  + non-player attestation, and its fabric fetches the players' snapshots. */
   getPeer: () => AccountPeer | null
-  /** This device's signing identity (accounts.deviceSigningKey) — the witness
+  /** This device's signing identity (accounts.deviceSigningKey). The witness
    *  signs wclk/wend + the witnessed-result record with it. */
   signing: () => DeviceSigning | null
   /** The live game transport factory (prod: createRtcTransport). Injected so a
@@ -77,14 +77,14 @@ export function startWitnessing(
   // seed both players' CURRENT heads into this peer's witnessServe attest cache so
   // the pairing appends (and everything after) get this non-player witness's
   // attestation (spec §4). Each head is read from that player's own SIGNED pre-game
-  // snapshot over the fabric — a signed head, never a claim. Best-effort: an
+  // snapshot over the fabric: a signed head, never a claim. Best-effort: an
   // unreachable player simply isn't seeded and its append retries. The known roots
   // come from the matchmaker's `participants` (the guest's hello is aimed at the
   // host, not us, so we cannot learn it from the wire alone).
   //
   // The head is GAME-INDEPENDENT (a player's current witnessed head does not
   // depend on which game it is about to play), so we do NOT need this game's
-  // host-minted, runtime-random gameKey — which does not exist yet at attach time.
+  // host-minted, runtime-random gameKey, which does not exist yet at attach time.
   // A stable per-ROOM placeholder key (derived from the room code) keys the signed
   // snapshot request; its game binding is anti-replay for the snapshot only, never
   // the segment. This is what lets the seed run at ATTACH time so the players'
@@ -107,7 +107,7 @@ export function startWitnessing(
       ...(deps.now ? { now: deps.now } : {}),
       onWitnessed: (result) => {
         // Terminal re-seed (robustness): the witness's attest cache auto-advances
-        // through each attested append, so this is usually a no-op — it heals a
+        // through each attested append, so this is usually a no-op. It heals a
         // witness that missed a pre-game append (e.g. joined late).
         void seedHeadsFor(peer, signing.root, result.gameKey, [result.players.w, result.players.b], log).catch((err) =>
           log(`witness seed error (ignored): ${String(err)}`),
@@ -121,7 +121,7 @@ export function startWitnessing(
 
 /**
  * Build the REAL `{ w, b }` pairing anchors the WitnessCore gate cross-checks from
- * the match terms the matchmaker already holds (preGame.pairingAnchorsFor) — the
+ * the match terms the matchmaker already holds (preGame.pairingAnchorsFor). The
  * M2 replacement for M1's blind 'embedder-verified'. The caller sets this on
  * `WitnessRunnerGameInit.pairing`; the witness then enforces the exact anchors
  * both players committed on-chain (game key, ladder binding, cross-wise opp roots)
@@ -145,9 +145,9 @@ function seedGameKeyFor(roomCode: string): B64u {
  * cache so that player's `clientAppendWitnessed` round-trips (its pre-game
  * 'pairing' and post-game 'segment') get this (non-player) witness's attestation
  * (spec §4). Each head is read from that player's own SIGNED pre-game snapshot
- * over the fabric — a signed head, never a claim. Best-effort + idempotent: a
+ * over the fabric: a signed head, never a claim. Best-effort + idempotent: a
  * player that can't be reached simply isn't seeded (its append then waits and the
- * client retries) — never a throw, never a torn-down game.
+ * client retries). Never a throw, never a torn-down game.
  */
 async function seedHeadsFor(
   peer: AccountPeer,

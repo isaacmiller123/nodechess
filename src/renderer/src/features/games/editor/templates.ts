@@ -1,4 +1,4 @@
-// Variant Lab — start-from templates (PURE module, headless-testable).
+// Variant Lab: start-from templates (PURE module, headless-testable).
 //
 // Each template is a complete EditorModel: picking one drops the user into the
 // builder with a live, valid variant they can immediately play or riff on.
@@ -51,7 +51,7 @@ function pawnArmyModel(): EditorModel {
   const files = 8
   const ranks = 8
   const board = emptyBoard(files, ranks)
-  // White: one king and THIRTY pawns — ranks 2–4 full, six more on rank 5.
+  // White: one king and THIRTY pawns. Ranks 2–4 full, six more on rank 5.
   put(board, files, ranks, 'white', 'k', [[4, 0]])
   const pawns: [number, number][] = []
   for (let f = 0; f < files; f++) for (let r = 1; r <= 3; r++) pawns.push([f, r])
@@ -65,7 +65,7 @@ function pawnArmyModel(): EditorModel {
   }
   return {
     name: '30 Pawns Army',
-    description: 'One king, thirty pawns — pure zerg rush against a classic army.',
+    description: 'One king, thirty pawns: pure zerg rush against a classic army.',
     parent: 'chess',
     files,
     ranks,
@@ -129,7 +129,7 @@ function setupModel(): EditorModel {
 function tinyModel(): EditorModel {
   return {
     name: 'Tiny Chess',
-    description: '6×6 blitz brain — no bishops, no double step, straight to the fight.',
+    description: '6×6 blitz brain: no bishops, no double step, straight to the fight.',
     parent: 'chess',
     files: 6,
     ranks: 6,
@@ -144,7 +144,7 @@ function tinyModel(): EditorModel {
 function grandModel(): EditorModel {
   return {
     name: 'Grand Arena',
-    description: '10×10 Grand Chess — Archbishops and Chancellors join the royal court.',
+    description: '10×10 Grand Chess: Archbishops and Chancellors join the royal court.',
     parent: 'grand',
     files: 10,
     ranks: 10,
@@ -157,12 +157,12 @@ function grandModel(): EditorModel {
 }
 
 export const TEMPLATES: readonly VariantTemplate[] = [
-  { id: 'standard', title: 'Standard Chess', blurb: 'The classic start — tweak anything.', model: standardModel() },
+  { id: 'standard', title: 'Standard Chess', blurb: 'The classic start, tweak anything.', model: standardModel() },
   { id: 'pawn-army', title: '30 Pawns Army', blurb: 'A king and thirty pawns vs the world.', model: pawnArmyModel() },
   { id: 'amazon', title: 'Amazon Queen', blurb: 'Queens that jump like knights.', model: amazonModel() },
-  { id: 'nuke', title: 'Nuclear Chess', blurb: 'Captures explode — atomic rules.', model: nukeModel() },
+  { id: 'nuke', title: 'Nuclear Chess', blurb: 'Captures explode, atomic rules.', model: nukeModel() },
   { id: 'setup', title: 'Setup Chess', blurb: 'Draft your own back rank first.', model: setupModel() },
-  { id: 'tiny', title: 'Tiny 6×6', blurb: 'Los Alamos chess — small board, fast blood.', model: tinyModel() },
+  { id: 'tiny', title: 'Tiny 6×6', blurb: 'Los Alamos chess: small board, fast blood.', model: tinyModel() },
   { id: 'grand', title: 'Grand 10×10', blurb: 'The big board with fairy officers.', model: grandModel() }
 ] as const
 

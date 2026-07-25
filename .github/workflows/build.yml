@@ -3,8 +3,8 @@ name: build
 # Builds the desktop app for macOS and Windows.
 #
 # Triggers:
-#   - workflow_dispatch — manual run from the Actions tab (any branch).
-#   - push of a v* tag  — e.g. `git tag v0.1.0 && git push origin v0.1.0`.
+#   - workflow_dispatch: a manual run from the Actions tab (any branch).
+#   - push of a v* tag, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
 #
 # Each matrix leg runs on its own OS (electron-builder cannot cross-compile the
 # native installers), installs deps, typechecks, builds the renderer/main bundles,
@@ -14,7 +14,7 @@ name: build
 #
 # No code signing: the mac build is unsigned (electron-builder.yml sets identity:
 # null) and the win build is unsigned too. Users clear Gatekeeper / SmartScreen
-# manually on first run — see the README "unsigned build" caveats.
+# manually on first run. See the README "unsigned build" caveats.
 
 on:
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
     name: build (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
-      # One failing OS should not abort the other — you still get the build that
+      # One failing OS should not abort the other. You still get the build that
       # did succeed as an artifact.
       fail-fast: false
       matrix:
@@ -64,8 +64,8 @@ jobs:
         run: npm run build
 
       # Cross-platform congruence gate: the pure-node game/platform suites run on
-      # BOTH OS legs (they need no engine binaries or display — headless esbuild
-      # bundles). Engine-dependent suites (bots-ui live probes) stay local-only.
+      # BOTH OS legs (they need no engine binaries and no display, just headless
+      # esbuild bundles). Engine-dependent suites (bots-ui live probes) stay local-only.
       - name: Game & platform suites
         # Skippable for a fast release when the suites already passed on the other
         # leg: put [skip-tests] in the tagged commit message. Packaging/publish
@@ -102,7 +102,7 @@ jobs:
       # Package for the current OS only. electron-builder auto-selects the win/mac
       # target block from electron-builder.yml based on the runner. --publish never
       # keeps it from touching any GitHub release. The datasets (engine + puzzle DB)
-      # are NOT bundled — they import at runtime — so no large downloads happen here.
+      # are NOT bundled (they import at runtime), so no large downloads happen here.
       - name: Package (electron-builder)
         run: npx electron-builder --publish never
         env:
@@ -126,15 +126,15 @@ jobs:
             release/*.blockmap
             release/latest*.yml
 
-      # Tag builds also publish the installers as GitHub Release assets — the
-      # public download page. Both matrix legs race to create the release; the
+      # Tag builds also publish the installers as GitHub Release assets. That is
+      # the public download page. Both matrix legs race to create the release; the
       # loser's create fails harmlessly (|| true) and both then upload their own
       # platform's files (--clobber makes re-runs idempotent). `gh` is
       # preinstalled on all runners; the ambient GITHUB_TOKEN has contents:write
       # (see permissions above). Besides the installers/zips, the update feed
       # files MUST be attached too: latest.yml + *.blockmap (win leg) feed
       # electron-updater's in-place Windows auto-update, and latest-mac.yml (mac
-      # leg) is harmless metadata kept for symmetry — the mac app checks the
+      # leg) is harmless metadata kept for symmetry. The mac app checks the
       # releases API instead (unsigned build, see src/main/updates).
       - name: Publish installers to the GitHub Release (tag builds only)
         if: startsWith(github.ref, 'refs/tags/v')
@@ -145,14 +145,14 @@ jobs:
           cat > "$RUNNER_TEMP/notes.md" <<'EOF'
           Offline board-game studio for Windows & macOS.
 
-          - **Chess** — Stockfish analysis with chess.com-style game review, a 0→2000 School (coach Viktor), ~4.7M Lichess puzzles, 24 famous-player bots, and human-like Maia opponents.
-          - **Online multiplayer** — worldwide peer-to-peer: host, share a code, play anyone anywhere. No account, no port forwarding.
-          - **20+ games** — chess variants, xiangqi, shogi, janggi, makruk, go, checkers, othello, connect four, gomoku, hex, morris — each local, vs a bot, or online, with 2D & 3D boards. Plus a custom-variant Lab.
+          - **Chess**: Stockfish analysis with chess.com-style game review, a 0→2000 School (coach Viktor), ~4.7M Lichess puzzles, 24 famous-player bots, and human-like Maia opponents.
+          - **Online multiplayer**: worldwide peer-to-peer. Host, share a code, play anyone anywhere. No account, no port forwarding.
+          - **20+ games**: chess variants, xiangqi, shogi, janggi, makruk, go, checkers, othello, connect four, gomoku, hex, morris. Each one plays local, vs a bot, or online, with 2D & 3D boards. Plus a custom-variant Lab.
 
           **Windows:** `nodechess-Setup-*.exe` (installer) or `nodechess-Portable-*.exe` (no install).
           **macOS:** the `.dmg` for your chip (arm64 = Apple Silicon, x64 = Intel).
 
-          Both players must run the same version for online play — the app checks for updates on launch (Windows updates itself; macOS offers the new `.dmg` to install over the old app). Builds are unsigned: Windows SmartScreen → More info → Run anyway; macOS → right-click the app → Open (first launch only). On first run, use Settings → Datasets to import the engine and puzzle database.
+          Both players must run the same version for online play. The app checks for updates on launch (Windows updates itself; macOS offers the new `.dmg` to install over the old app). Builds are unsigned: Windows SmartScreen → More info → Run anyway; macOS → right-click the app → Open (first launch only). On first run, use Settings → Datasets to import the engine and puzzle database.
           EOF
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "nodechess $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" \

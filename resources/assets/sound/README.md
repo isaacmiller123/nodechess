@@ -23,7 +23,7 @@ If you want to ship recorded samples instead of (or in addition to) the synth:
    `import moveUrl from '@/../resources/assets/sound/move.ogg?url'` (or place the
    files under a `public/` dir and reference by path).
 3. The manager will prefer a decoded sample when present and **fall back to the
-   synth** automatically if a sample is missing or fails to decode — so partial
+   synth** automatically if a sample is missing or fails to decode, so partial
    coverage is fine.
 
 No code change beyond populating `samplePaths` is required.

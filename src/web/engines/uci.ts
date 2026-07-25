@@ -1,4 +1,4 @@
-// Pure UCI wire helpers for the web engine layer — a byte-faithful port of the
+// Pure UCI wire helpers for the web engine layer. A byte-faithful port of the
 // parsing/serialization half of src/main/engine/UciEngine.ts, kept separate so
 // the headless suite (scripts/test-web-engines.mjs) can golden-test it without
 // any Worker/WASM machinery.
@@ -25,7 +25,7 @@ export interface BestMove {
 
 export type { GoLimit }
 
-/** `go <args>` serialization — mirrors desktop goArgs exactly. */
+/** `go <args>` serialization. Mirrors desktop goArgs exactly. */
 export function goArgs(l: GoLimit): string {
   switch (l.kind) {
     case 'depth':
@@ -39,7 +39,7 @@ export function goArgs(l: GoLimit): string {
   }
 }
 
-/** Parse an `info ...` line — mirrors desktop parseInfo exactly (returns null
+/** Parse an `info ...` line: mirrors desktop parseInfo exactly (returns null
  *  for lines carrying neither a depth nor a pv, e.g. `info string ...`). */
 export function parseInfo(line: string): InfoLine | null {
   const t = line.split(/\s+/)
@@ -84,7 +84,7 @@ export function parseInfo(line: string): InfoLine | null {
   return info.depth !== undefined || info.pv ? info : null
 }
 
-/** Parse a `bestmove <move> [ponder <move>]` line — mirrors desktop onLine. */
+/** Parse a `bestmove <move> [ponder <move>]` line. Mirrors desktop onLine. */
 export function parseBestmove(line: string): BestMove {
   const p = line.split(/\s+/)
   return { bestmove: p[1], ponder: p[3] }

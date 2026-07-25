@@ -1,4 +1,4 @@
-// A4 brick 1b — the four A2→A3 residual witness seams, forced shut
+// A4 brick 1b: the four A2→A3 residual witness seams, forced shut
 // (the four A2→A3 residual seams, A4 brick 1b).
 //
 //   node scripts/test-accounts-seams.mjs
@@ -46,7 +46,7 @@ async function main() {
   } finally {
     rmSync(outdir, { recursive: true, force: true })
   }
-  console.log(`\n${failures ? `❌ ${failures} FAILED — ` : 'ALL GREEN — '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
+  console.log(`\n${failures ? `❌ ${failures} FAILED, ` : 'ALL GREEN: '}${passed} assertions${failures ? `, ${failures} failures` : ''}`)
   process.exit(failures ? 1 : 0)
 }
 
@@ -114,7 +114,7 @@ async function run(M) {
   const subjectOf = (p) => ({ root: p.root.pubB, nodeId: p.nodeId, entangledRoots: new Set(), secondDegreeRoots: new Set() })
 
   /** Deal + directly provision a committee (with the committee list wired so
-   * the members can converge — the A4 opts). Returns the full descriptor. */
+   * the members can converge, the A4 opts). Returns the full descriptor. */
   function provisionCommittee(nodes, rootPriv, rootB, pin, rng) {
     const members = nodes.slice(0, N)
     const k = W.randScalar(rng)
@@ -144,7 +144,7 @@ async function run(M) {
     const kOf = new Map(nodes.map((n) => [n.nodeId, n.device.pubB]))
 
     // Hot+rotate spread: 5 fixed hot members in every quorum, the 6th slot
-    // rotates over the remaining 4 — the schedule that maximizes the legacy
+    // rotates over the remaining 4: the schedule that maximizes the legacy
     // t-th-largest discount. 100 true guesses.
     const G = PARAMS_A2.pinLifetimeFails // 100
     const hot = nodes.slice(0, T - 1)
@@ -157,7 +157,7 @@ async function run(M) {
     eq(W.memberFails(nodes[0].member.counter(rootB)), G, 'a hot member observed all 100 failures locally')
     eq(W.memberFails(nodes[T - 1].member.counter(rootB)), G / 4, 'a rotated member observed only 25 locally (the spread)')
 
-    // THE HOLE (legacy statistic): t-th-largest of local counters = 25 — the
+    // THE HOLE (legacy statistic): t-th-largest of local counters = 25. The
     // spread stretched the 100-guess budget 4× under A2's effectiveCount.
     const legacy = await W.collectAttemptReports(victim.ep, rootB, com.members, (w) => kOf.get(w))
     eq(W.effectiveCount(legacy, T), G / 4, `legacy t-th-largest sees only ${G / 4} of ${G} true failures (the spread hole)`)
@@ -168,7 +168,7 @@ async function run(M) {
     eq(conv, G, 'after one pin-counter-sync round the converged count equals the TRUE guess count (100)')
     eq(nodes[T - 1].member.counterReports(rootB).length, N - 1, 'the member holds a verified signed report from every peer')
 
-    // The fuse now trips at the true count — the merged report set rides the
+    // The fuse now trips at the true count: the merged report set rides the
     // trip flow, so even never-synced members self-qualify on the converged view.
     const fuse = await W.tripFuseIfDue({ fabric: victim.ep, root: rootB, committee: com.members, pinRecord: com.recId, keyOf: kOf, wts: NOW })
     ok(fuse !== null, 'tripFuseIfDue trips the fuse despite the quorum-rotation spread')
@@ -186,7 +186,7 @@ async function run(M) {
     const forged = vcom.members.map((w) =>
       W.signCounterReport({ root: clean.root.pubB, w, rec: vcom.recId, gen: 0, fails: 1_000_000, asOfWts: NOW }, evil.pubB, evil.priv))
     const noTrip = await W.tripFuseIfDue({ fabric: clean.ep, root: clean.root.pubB, committee: vcom.members, pinRecord: vcom.recId, keyOf: vkOf, wts: NOW, reports: forged })
-    ok(noTrip === null, 'reports signed by a non-member key are worthless — a clean account cannot be fuse-tripped')
+    ok(noTrip === null, 'reports signed by a non-member key are worthless: a clean account cannot be fuse-tripped')
 
     // A single MALICIOUS member's inflated (real-signature) report is
     // trim-bounded: it cannot poison the converged count without ≥ n−t peers.
@@ -195,7 +195,7 @@ async function run(M) {
       nodes[1].device.pubB, nodes[1].device.priv)
     await victim.ep.request(nodes[0].nodeId, 'pin-counter-sync', { root: rootB, reports: [inflated] })
     const bounded = nodes[0].member.convergedCount(rootB)
-    ok(bounded <= 2 * G, `one inflated report is trimmed — converged count stays bounded by honest observations (${bounded})`)
+    ok(bounded <= 2 * G, `one inflated report is trimmed. Converged count stays bounded by honest observations (${bounded})`)
 
     // Monotonicity: a member signing a REGRESSING pair is misbehavior evidence.
     const rA = W.signCounterReport({ root: rootB, w: nodes[2].nodeId, rec: com.recId, gen: 0, fails: 50, asOfWts: NOW }, nodes[2].device.pubB, nodes[2].device.priv)
@@ -203,12 +203,12 @@ async function run(M) {
     const mres = W.mergeCounterReports(new Map(), [rA, rB])
     eq(mres.regressions.length, 1, 'a signed regressing pair is detected at merge')
     ok(mres.regressions[0].later.body.fails === 10 && mres.regressions[0].earlier.body.fails === 50, 'the evidence carries both signed reports (portable misbehavior proof)')
-    ok(mres.merged.get(nodes[2].nodeId).body.fails === 50, 'the monotonic maximum wins the merge — the regression never lowers the count')
+    ok(mres.merged.get(nodes[2].nodeId).body.fails === 50, 'the monotonic maximum wins the merge, the regression never lowers the count')
     await victim.ep.request(nodes[3].nodeId, 'pin-counter-sync', { root: rootB, reports: [rA, rB] })
     eq(nodes[3].member.counterEvidence(rootB).length, 1, 'a live member retains regression evidence from a sync exchange')
 
     // RE-PROVISION CANNOT RESET (the §1 carry, now spread-proof): a rotated old
-    // member — locally at 25 — refuses to co-sign a handoff carrying less than
+    // member (locally at 25) refuses to co-sign a handoff carrying less than
     // the CONVERGED 100; at 100 it signs; the new committee starts at 100.
     const rng2 = seededRng('seam1-handoff')
     const deal2 = W.dealScalar(com.k, T, N, rng2)
@@ -232,7 +232,7 @@ async function run(M) {
       if (!res.ok) reOk = false
     }
     ok(reOk, 'the full handoff re-provision is accepted by every new-committee member')
-    eq(c2nodes[1].member.counter(rootB).evaluations, G, 'a FRESH new-committee member starts at the true carried count — the spread cannot be laundered out by re-provisioning')
+    eq(c2nodes[1].member.counter(rootB).evaluations, G, 'a FRESH new-committee member starts at the true carried count. The spread cannot be laundered out by re-provisioning')
     // gen-tagging: the overlapping member re-provisioned at gen 1; a fresh peer
     // learns that from its signed report.
     await c2nodes[1].member.syncCounters(rootB)
@@ -272,7 +272,7 @@ async function run(M) {
     for (const w of witnesses) await w.witness.seedHead(rootB, { id: genesisHead.id, height: 0 })
 
     // Leases are granted to the ROOT key as device (so chain events are
-    // root-signed — scenario 3 appends a root-signed 'pin' anchor here too).
+    // root-signed: scenario 3 appends a root-signed 'pin' anchor here too).
     const summaries = summariesFor(witnesses)
     const full = await W.clientRequestLease({
       fabric: alice.ep, root: rootB, epoch: 1, deviceKey: rootB, devicePriv: alice.root.priv,
@@ -281,12 +281,12 @@ async function run(M) {
     })
     ok(full.ok && full.lease.grants.length === PARAMS_A2.tLease, 'a full canonical lease gathers tLease grants')
 
-    // A SUB-THRESHOLD lease: ONE real canonical grantor — passes the A2
+    // A SUB-THRESHOLD lease: ONE real canonical grantor. Passes the A2
     // context-free ≥1-grant floor, fails the full threshold check.
     const subBody = W.buildLeaseBody({ root: rootB, epoch: 1, device: rootB, grantedWts: NOW, ttlMs: PARAMS_A2.leaseTtlMs, params: PARAMS_A2_DIGEST })
     const subLease = W.grantLease(subBody, [W.signGrant(subBody, w1.nodeId, w1.device.pubB, w1.device.priv, NOW)])
     // A NON-CANONICAL-SET lease: tLease valid signatures from rogue nodes that
-    // are in NOBODY's directory — also ≥1-grant-floor-passing.
+    // are in NOBODY's directory. Also ≥1-grant-floor-passing.
     const rogues = Array.from({ length: PARAMS_A2.tLease }, (_, i) => kp(3000 + i))
     const rogueLease = W.grantLease(subBody, rogues.map((r) => W.signGrant(subBody, W.nodeIdOf(r.pub), r.pubB, r.priv, NOW)))
 
@@ -337,14 +337,14 @@ async function run(M) {
     const fabric = new W.MockFabric()
     const acct = makePlayer(fabric, 120, 121, 'Anchored')
     const rootB = acct.root.pubB
-    // The replica the members resolve — scenario stand-in for the A3
+    // The replica the members resolve: scenario stand-in for the A3
     // viewer/overlay resolution (verifiedPinAnchor gates on verifyChain either way).
     const replica = { chain: acct.chain }
     const anchorOf = (root) => (root === rootB ? W.verifiedPinAnchor(replica.chain) : null)
     const withAnchor = { member: () => ({ anchorOf }) }
     const c1 = Array.from({ length: N }, (_, i) => makeNode(fabric, 2600 + i, 2650 + i, new Map(), withAnchor))
     const c2 = Array.from({ length: N }, (_, i) => makeNode(fabric, 2700 + i, 2750 + i, new Map(), withAnchor))
-    const noChainNode = makeNode(fabric, 2790, 2791, new Map()) // no anchorOf — the A2 fallback member
+    const noChainNode = makeNode(fabric, 2790, 2791, new Map()) // no anchorOf: the A2 fallback member
 
     const rng = seededRng('seam3')
     const k = W.randScalar(rng)
@@ -370,7 +370,7 @@ async function run(M) {
     ok(a0 && a0.record === rec1Id && a0.gen === 0, 'the appended anchor (gen 0) reads back from the VERIFIED chain')
 
     // With an anchor on-chain, an initial-shaped record is refused EVEN at a
-    // fresh member holding no local share — the root-key thief's reset dies here.
+    // fresh member holding no local share: the root-key thief's reset dies here.
     const kThief = W.randScalar(seededRng('seam3-thief'))
     const dThief = W.dealScalar(kThief, T, N, seededRng('seam3-thief-deal'))
     const thiefPub = A.toB64u(W.pinKeyFromOutput(W.singleKeyOutput('9999', kThief, seededRng('seam3-thief-out'))).pub)
@@ -399,7 +399,7 @@ async function run(M) {
     eq(W.nextAnchorGen(rootB, replica.chain.events), 2, 'nextAnchorGen advances past the newest anchor')
 
     // STALE-RECORD ATTACK: a thief re-plays the CAPTURED rec1 (once real, now
-    // superseded) to authorize a re-provision — with the pinKey and enough old
+    // superseded) to authorize a re-provision: with the pinKey and enough old
     // co-signatures, the A2 gate would pass. The anchor kills it.
     const deal3 = deal('c3')
     const c3members = [...c2.slice(0, N - 1), noChainNode] // fallback member holds the last slot
@@ -413,10 +413,10 @@ async function run(M) {
     eq(stale.error, 'stale-old-record', 'a handoff built on the STALE captured record is refused once the chain anchors the current one')
 
     // The A2 co-signature gate remains the LIVE fallback where no chain is
-    // resolvable — and the admission says which path let it in.
+    // resolvable, and the admission says which path let it in.
     noChainNode.member.provision(rootB, 2, deal2.shares[1].share, commits(deal2)[1], pinPub, rec2Id, { committee: c2.map((m) => m.nodeId) })
     const fb = await acct.ep.request(noChainNode.nodeId, 'pin-provision', { newRecord: rec3, i: N, share: shareB(deal3, N - 1), oldRecord: rec1, handoff: ho3 })
-    ok(fb.ok && fb.path === 'cosig-fallback', 'with NO resolvable chain the pinKey-gated co-signature gate admits — LABELED cosig-fallback (honest surfacing)')
+    ok(fb.ok && fb.path === 'cosig-fallback', 'with NO resolvable chain the pinKey-gated co-signature gate admits, LABELED cosig-fallback (honest surfacing)')
 
     // Pure-check coverage: a FOREIGN record digest never matches the anchor.
     const foreign = W.checkHandoffAnchor(rec1, { record: rec3Id, gen: 7, height: 9 })
@@ -450,27 +450,27 @@ async function run(M) {
       return c ? W.deviceOwnershipFromChain(c) : null
     }
     const wAuth = makeNode(fabric, 2800, 2801, fuses, { witness: () => ({ ownershipOf }) })
-    const wBare = makeNode(fabric, 2810, 2811, fuses) // no ownershipOf — pure A2
+    const wBare = makeNode(fabric, 2810, 2811, fuses) // no ownershipOf: pure A2
 
     const body = (device) => ({ leaseBody: W.buildLeaseBody({ root: rootB, epoch: 1, device, grantedWts: NOW, ttlMs: PARAMS_A2.leaseTtlMs, params: PARAMS_A2_DIGEST }) })
 
     const gA = await owner.ep.request(wAuth.nodeId, 'lease-grant', body(devA.pubB))
-    ok(gA.grant && gA.path === 'chain-verified', 'a CERTIFIED unrevoked device is granted — path chain-verified')
+    ok(gA.grant && gA.path === 'chain-verified', 'a CERTIFIED unrevoked device is granted, path chain-verified')
     const gRoot = await owner.ep.request(wAuth.nodeId, 'lease-grant', body(rootB))
     ok(gRoot.grant && gRoot.path === 'chain-verified', 'the root key itself is granted (it owns itself)')
     const gB = await owner.ep.request(wAuth.nodeId, 'lease-grant', body(devB.pubB))
     eq(gB.error, 'device-uncertified', 'an UNCERTIFIED device key is refused a grant (no more blind-signing)')
     ok(gB.grant === undefined, 'the refusal carries no grant signature')
     const gC = await owner.ep.request(wAuth.nodeId, 'lease-grant', body(devC.pubB))
-    eq(gC.error, 'device-revoked', 'a REVOKED device key is refused — revocation wins over its certificate (§1)')
+    eq(gC.error, 'device-revoked', 'a REVOKED device key is refused: revocation wins over its certificate (§1)')
 
     // No chain facts (foreign root / bare witness) ⇒ the A2 attribution-only
-    // grant remains, labeled — never a silent blind-sign upgrade.
+    // grant remains, labeled. Never a silent blind-sign upgrade.
     const other = makePlayer(fabric, 140, 141, 'Foreign')
     const gF = await other.ep.request(wAuth.nodeId, 'lease-grant', { leaseBody: W.buildLeaseBody({ root: other.root.pubB, epoch: 1, device: other.device.pubB, grantedWts: NOW, ttlMs: PARAMS_A2.leaseTtlMs, params: PARAMS_A2_DIGEST }) })
     ok(gF.grant && gF.path === 'attributed', 'a root with no replicated chain gets the A2 grant, LABELED attributed')
     const gBare = await owner.ep.request(wBare.nodeId, 'lease-grant', body(devB.pubB))
-    ok(gBare.grant && gBare.path === 'attributed', 'a witness without the ownership hook behaves exactly as A2 — and says so (attributed)')
+    ok(gBare.grant && gBare.path === 'attributed', 'a witness without the ownership hook behaves exactly as A2, and says so (attributed)')
 
     // The fuse still outranks everything at the grant gate.
     fuses.set(rootB, W.makeFuseRecord(rootB, 100, NOW - 1000, A.toB64u(A.sha256(A.utf8('rec'))), []))

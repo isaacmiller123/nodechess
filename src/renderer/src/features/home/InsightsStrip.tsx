@@ -142,13 +142,13 @@ export default function InsightsStrip({
         <StatTile
           Icon={Target}
           label="Recent accuracy"
-          value={accuracy ?? '—'}
+          value={accuracy ?? '·'}
           hint={accuracy ? 'last reviewed game' : 'review a game'}
         />
         <StatTile
           Icon={Layers}
           label="School"
-          value={totalChapters > 0 ? `${completedChapters}/${totalChapters}` : '—'}
+          value={totalChapters > 0 ? `${completedChapters}/${totalChapters}` : '·'}
           hint={
             totalChapters > 0
               ? completedChapters > 0

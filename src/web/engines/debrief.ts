@@ -2,7 +2,7 @@
 // debrief (src/main/coach/viktor.ts) fills in missing move evals with the
 // NATIVE analysis engine server-side. The web server has no engine, so
 // without this the bridge's debrief silently classified every move "fine"
-// (cp:0 fallback) — confidently-wrong coaching.
+// (cp:0 fallback), confidently-wrong coaching.
 //
 // The web fix runs the SAME enrichment CLIENT-side on the WASM analysis
 // instance before webApi.school.debrief posts to the bridge: identical depth,
@@ -22,7 +22,7 @@ import { webEngineSupported } from './assets'
 import { engineAnalyze, type AnalyzeFn } from './review'
 import type { InfoLine } from './uci'
 
-// Desktop constants (viktor.ts) — keep in lockstep or web/desktop coaching drifts.
+// Desktop constants (viktor.ts): keep in lockstep or web/desktop coaching drifts.
 const DEBRIEF_DEPTH = 12
 const MAX_POSITIONS = 24
 
@@ -52,7 +52,7 @@ function negate(e: CoachEngineEval): CoachEngineEval {
 /** Enrich a debrief request's USER moves with WASM evals (viktor.ts's own
  *  loop, moved client-side). Per-move engine failures degrade exactly like
  *  desktop (that move keeps whatever evals it had), but if the engine answers
- *  NOTHING at all the whole call throws — an honest error beats a debrief
+ *  NOTHING at all the whole call throws. An honest error beats a debrief
  *  that calls every blunder fine. */
 export async function enrichDebriefMoves(
   req: SchoolDebriefReq,
@@ -117,8 +117,8 @@ export async function enrichDebriefMoves(
           }
         }
       } catch {
-        // Engine hiccup mid-debrief: keep whatever evals this move has —
-        // the same degradation as desktop's in-viktor catch.
+        // Engine hiccup mid-debrief: keep whatever evals this move has.
+        // The same degradation as desktop's in-viktor catch.
       }
     }
 

@@ -1,4 +1,4 @@
-// A5 judge — platform-neutral canonical-judge core (spec §8).
+// A5 judge: platform-neutral canonical-judge core (spec §8).
 // Same sub-barrel convention as mm/ and ratings/: not re-exported from the
 // accounts root; consumers import '@shared/accounts/judge'.
 export * from './params'

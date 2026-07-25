@@ -14,7 +14,7 @@ const PRESET_DUR = 0.85
 
 interface CameraRigProps {
   center: THREE.Vector3
-  /** Largest board dimension in world units — drives distances. */
+  /** Largest board dimension in world units. Drives distances. */
   span: number
   topDown: boolean
   /** Upright boards (connect four) get a lower, more frontal default. */
@@ -23,7 +23,7 @@ interface CameraRigProps {
   enabled: boolean
 }
 
-// The camera always sits at azimuth 0 — the user's seat. Board orientation is
+// The camera always sits at azimuth 0, the user's seat. Board orientation is
 // handled entirely by the layout (world mirror + piece seatYaw); giving the
 // orientation to the camera as well would cancel the mirror out.
 function presetSpherical(props: CameraRigProps): THREE.Spherical {

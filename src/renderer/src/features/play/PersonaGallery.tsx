@@ -1,9 +1,9 @@
-// Grandmaster gallery — the browsing surface of the Play "Grandmasters" tab.
+// Grandmaster gallery: the browsing surface of the Play "Grandmasters" tab.
 // Photo cards grouped by era with era filter chips; clicking a card opens
 // PersonaDetail (via onOpen). Purely presentational: personas + loading state
 // come from PlayView, which owns the (lazy, latched) personas:list fetch.
-// All Persona fields beyond id/name/era/peakElo/style/bio are nullable —
-// everything here renders defensively (initials disc when no photo, era as a
+// All Persona fields beyond id/name/era/peakElo/style/bio are nullable.
+// Everything here renders defensively (initials disc when no photo, era as a
 // stand-in when years are missing, bio when styleDesc is missing).
 
 import { useMemo, useState } from 'react'
@@ -110,7 +110,7 @@ export function PersonaGallery({ personas, loading, onOpen }: PersonaGalleryProp
       <header className="pgal-head">
         <h2>Grandmasters</h2>
         <span className="muted small">
-          {personas.length} legends from the Romantic era to today. Pick one to study their games —
+          {personas.length} legends from the Romantic era to today. Pick one to study their games,
           or challenge them.
         </span>
       </header>

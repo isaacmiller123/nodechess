@@ -7,16 +7,16 @@
 // raw `.wasm` bytes; a loader (server/judge/nodeEngine.ts, and the browser
 // judge at A5) MUST verify the file against this hash before trusting any
 // output. If the shipped binary ever drifts (e.g. a floated `stockfish` semver
-// bump republishes the blob), this check fails LOUDLY — which is the intended
+// bump republishes the blob), this check fails LOUDLY, which is the intended
 // behaviour for a content-pinned judge.
 //
 // SINGLE SOURCE OF TRUTH (A5-12): the sha256 of record is
-// PARAMS_A5.judgeWasmSha256 (src/shared/accounts/judge/params.ts) — the only
+// PARAMS_A5.judgeWasmSha256 (src/shared/accounts/judge/params.ts). The only
 // copy folded into PARAMS_A5_DIGEST (which every JudgeOutput/Tier1Record
 // attests) and the value the web gate (src/web/engines/judge.ts) verifies.
 // JUDGE_WASM_SHA256 below is DERIVED from it, never a second literal, so the
 // node and web gates can never silently diverge: re-pinning the binary
-// requires editing params.ts, which drifts PARAMS_A5_DIGEST — every verdict
+// requires editing params.ts, which drifts PARAMS_A5_DIGEST. Every verdict
 // then names the new rule set, exactly as §8 demands.
 //
 // node-only (server/**). Not imported by src/shared/** (this server → shared
@@ -25,7 +25,7 @@
 //
 // JUDGE_WASM_BYTES is the byte length of
 //   node_modules/stockfish/bin/stockfish-18-lite-single.wasm
-// as resolved by the repo lockfile (stockfish@18.0.8) — an independent
+// as resolved by the repo lockfile (stockfish@18.0.8): an independent
 // cross-check kept HERE because canonical PARAMS_A5 carries the hash only
 // (adding a field would drift PARAMS_A5_DIGEST). It also equals the
 // `l=7295411` constant the Emscripten glue (stockfish-18-lite-single.js)
@@ -42,9 +42,9 @@ import { PARAMS_A5 } from '@shared/accounts/judge/params'
 export const JUDGE_WASM_MODULE_ID = 'stockfish/bin/stockfish-18-lite-single.wasm'
 
 /**
- * sha256 (hex) of the pinned judge WASM — the spec §8 content-hash pin,
+ * sha256 (hex) of the pinned judge WASM: the spec §8 content-hash pin,
  * derived from the digest-attested PARAMS_A5.judgeWasmSha256 (single source
- * of truth; see header — never re-pin here, re-pin in params.ts).
+ * of truth; see header. Never re-pin here, re-pin in params.ts).
  */
 export const JUDGE_WASM_SHA256 = PARAMS_A5.judgeWasmSha256
 
