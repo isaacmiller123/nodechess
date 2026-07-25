@@ -77,6 +77,8 @@ desktop.ini
 /dist-web/
 /dist-server/
 /dist-seed/
+/dist-puzzles/
+src/web/public/puzzles
 /out-seed/
 
 # local web-server state (accounts + per-user DBs): never commit
