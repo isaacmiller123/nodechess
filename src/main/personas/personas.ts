@@ -109,11 +109,6 @@ export function listPersonas(): Persona[] {
   return load()
 }
 
-/** All persona ids, in catalog order. */
-export function personaIds(): string[] {
-  return load().map((p) => p.id)
-}
-
 /** Look up a persona by id, or undefined if unknown. */
 export function getPersona(id: string): Persona | undefined {
   return load().find((p) => p.id === id)

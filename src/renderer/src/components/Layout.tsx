@@ -61,11 +61,9 @@ export function Layout({
   return (
     <div className="app-shell">
       <nav className="rail" aria-label="Primary">
-        <div className="rail-brand" role="img" aria-label="Chess#" title="Chess#">
-          <Logo size={26} />
-          <span className="rail-wordmark">
-            Chess<span className="rail-wordmark-hash">#</span>
-          </span>
+        <div className="rail-brand" role="img" aria-label="nodechess" title="nodechess">
+          <Logo size={24} />
+          <span className="rail-wordmark">nodechess</span>
         </div>
         <div className="rail-nav">
           {NAV.map(({ key, label, Icon }) => {

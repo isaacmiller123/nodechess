@@ -30,7 +30,7 @@ import { fairyImportNeeded, importFairyStockfish } from './fairyStockfish'
 // half-finished download never corrupts an install (write to *.part, then rename).
 
 const RELEASE_BASE =
-  'https://github.com/isaacmiller123/chess-sharp/releases/download/datasets-v1'
+  'https://github.com/isaacmiller123/nodechess/releases/download/datasets-v1'
 
 export interface DatasetItem {
   key: 'engine' | 'puzzles'

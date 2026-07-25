@@ -1,0 +1,22 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/web/main.web.tsx",
+    "src/seed/main.tsx",
+    "src/seed/electron-main.ts",
+    "server/index.ts",
+    "server/bridge-entry.ts",
+    "scripts/**/*.mjs",
+    "electron.seed.config.ts",
+    "vite.web.config.ts",
+    "vite.seed.config.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}", "server/**/*.ts", "scripts/**/*.mjs"],
+  "paths": {
+    "@/*": ["src/renderer/src/*"],
+    "@shared/*": ["src/shared/*"]
+  },
+  "ignoreDependencies": [".*"],
+  "ignoreBinaries": [".*"],
+  "includeEntryExports": true
+}

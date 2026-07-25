@@ -1,13 +1,13 @@
-# nostr-rs-relay config for the Chess# signaling relay (image
-# scsibug/nostr-rs-relay). Chess# uses Nostr purely as a WebRTC signaling
+# nostr-rs-relay config for the nodechess signaling relay (image
+# scsibug/nostr-rs-relay). nodechess uses Nostr purely as a WebRTC signaling
 # rendezvous (trystero) — small ephemeral events, not a social relay — so the
 # limits are tuned for high connection churn + tiny events, and retention is
 # short (signaling events are worthless after the handshake).
 
 [info]
 relay_url = "wss://relay.example.com/"
-name = "Chess# signaling relay"
-description = "WebRTC signaling rendezvous for Chess# (chess-sharp) peer matchmaking."
+name = "nodechess signaling relay"
+description = "WebRTC signaling rendezvous for nodechess peer matchmaking."
 
 [database]
 data_directory = "/usr/src/app/db"

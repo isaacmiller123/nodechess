@@ -32,6 +32,11 @@ export function mnemonicToSeed(words: string): Uint8Array {
 
 // ---------------------------------------------------------------------------
 // Keyfile (plaintext by design — it IS the lifeline; UI copy states it plainly)
+//
+// `kind` keeps its pre-rebrand spelling: keyfileSchema below matches it as a
+// literal, so renaming it would make every keyfile a user has already saved
+// fail to import — and a keyfile is the only way back into a lost account.
+// Accepting a new spelling means accepting both, not swapping one for the other.
 // ---------------------------------------------------------------------------
 
 export function makeKeyfile(identity: Identity): Keyfile {

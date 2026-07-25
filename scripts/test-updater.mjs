@@ -159,10 +159,10 @@ try {
   // ==========================================================================
   console.log('\nlatestReleaseApiUrl: construction')
   eq(UPDATE_OWNER, 'isaacmiller123', 'owner constant')
-  eq(UPDATE_REPO, 'chess-sharp', 'repo constant')
+  eq(UPDATE_REPO, 'nodechess', 'repo constant')
   eq(
     latestReleaseApiUrl(),
-    'https://api.github.com/repos/isaacmiller123/chess-sharp/releases/latest',
+    'https://api.github.com/repos/isaacmiller123/nodechess/releases/latest',
     'default feed URL'
   )
   eq(
@@ -177,20 +177,20 @@ try {
   console.log('\nparseLatestRelease: payload narrowing')
   const good = parseLatestRelease({
     tag_name: 'v1.2.0',
-    html_url: 'https://github.com/isaacmiller123/chess-sharp/releases/tag/v1.2.0',
+    html_url: 'https://github.com/isaacmiller123/nodechess/releases/tag/v1.2.0',
     assets: [
-      { name: 'Chess-Setup-1.2.0.exe', browser_download_url: 'https://x/Chess-Setup-1.2.0.exe' },
-      { name: 'Chess-1.2.0-arm64.dmg', browser_download_url: 'https://x/Chess-1.2.0-arm64.dmg' },
+      { name: 'nodechess-Setup-1.2.0.exe', browser_download_url: 'https://x/nodechess-Setup-1.2.0.exe' },
+      { name: 'nodechess-1.2.0-arm64.dmg', browser_download_url: 'https://x/nodechess-1.2.0-arm64.dmg' },
       { name: 'not-a-real-asset' } // missing url → skipped, not fatal
     ]
   })
   ok(good !== null, 'well-formed payload parses')
   eq(good.version, '1.2.0', "tag 'v1.2.0' → version '1.2.0' (v stripped)")
   eq(good.assets.length, 2, 'malformed asset entries are skipped')
-  eq(good.assets[0].url, 'https://x/Chess-Setup-1.2.0.exe', 'asset url comes from browser_download_url')
+  eq(good.assets[0].url, 'https://x/nodechess-Setup-1.2.0.exe', 'asset url comes from browser_download_url')
   eq(
     good.releaseUrl,
-    'https://github.com/isaacmiller123/chess-sharp/releases/tag/v1.2.0',
+    'https://github.com/isaacmiller123/nodechess/releases/tag/v1.2.0',
     'release page URL captured'
   )
   eq(parseLatestRelease(null), null, 'null payload → null')
@@ -206,15 +206,15 @@ try {
   console.log('\npickMacAsset / pickWinAsset: artifact-name goldens')
   const V = '1.2.0'
   const RELEASE_ASSETS = [
-    { name: `Chess-Setup-${V}.exe`, url: 'u:setup' }, // nsis (the auto-update target)
-    { name: `Chess-Portable-${V}.exe`, url: 'u:portable' }, // portable — NEVER offered
-    { name: `Chess-${V}-win-x64.zip`, url: 'u:winzip' },
-    { name: `Chess-${V}-arm64.dmg`, url: 'u:dmg-arm64' },
-    { name: `Chess-${V}-x64.dmg`, url: 'u:dmg-x64' },
-    { name: `Chess-${V}-mac-arm64.zip`, url: 'u:zip-arm64' },
-    { name: `Chess-${V}-mac-x64.zip`, url: 'u:zip-x64' },
+    { name: `nodechess-Setup-${V}.exe`, url: 'u:setup' }, // nsis (the auto-update target)
+    { name: `nodechess-Portable-${V}.exe`, url: 'u:portable' }, // portable — NEVER offered
+    { name: `nodechess-${V}-win-x64.zip`, url: 'u:winzip' },
+    { name: `nodechess-${V}-arm64.dmg`, url: 'u:dmg-arm64' },
+    { name: `nodechess-${V}-x64.dmg`, url: 'u:dmg-x64' },
+    { name: `nodechess-${V}-mac-arm64.zip`, url: 'u:zip-arm64' },
+    { name: `nodechess-${V}-mac-x64.zip`, url: 'u:zip-x64' },
     { name: 'latest.yml', url: 'u:latest' },
-    { name: `Chess-Setup-${V}.exe.blockmap`, url: 'u:blockmap' }
+    { name: `nodechess-Setup-${V}.exe.blockmap`, url: 'u:blockmap' }
   ]
   eq(pickMacAsset(RELEASE_ASSETS, 'arm64')?.url, 'u:dmg-arm64', 'mac arm64 → arm64 dmg')
   eq(pickMacAsset(RELEASE_ASSETS, 'x64')?.url, 'u:dmg-x64', 'mac x64 → x64 dmg')
@@ -223,12 +223,23 @@ try {
   eq(pickMacAsset(RELEASE_ASSETS, 'riscv')?.url, 'u:dmg-arm64', 'unknown arch → any dmg fallback')
   eq(pickMacAsset([], 'arm64'), null, 'no assets → null (release page link remains)')
   ok(
-    pickMacAsset(RELEASE_ASSETS, 'x64').name !== `Chess-${V}-arm64.dmg`,
+    pickMacAsset(RELEASE_ASSETS, 'x64').name !== `nodechess-${V}-arm64.dmg`,
     'x64 mac never handed the arm64 dmg'
   )
-  eq(pickWinAsset(RELEASE_ASSETS)?.url, 'u:setup', 'win → the NSIS Chess-Setup exe')
+  eq(pickWinAsset(RELEASE_ASSETS)?.url, 'u:setup', 'win → the NSIS nodechess-Setup exe')
   ok(pickWinAsset(RELEASE_ASSETS).url !== 'u:portable', 'win never offered the portable exe')
-  eq(pickWinAsset([{ name: `Chess-Portable-${V}.exe`, url: 'u:portable' }]), null, 'portable-only → null')
+  eq(pickWinAsset([{ name: `nodechess-Portable-${V}.exe`, url: 'u:portable' }]), null, 'portable-only → null')
+  // Releases cut before the rename are still installable from a nodechess build.
+  eq(
+    pickWinAsset([{ name: `Chess-Setup-${V}.exe`, url: 'u:legacy' }])?.url,
+    'u:legacy',
+    'legacy Chess-Setup naming still resolves'
+  )
+  eq(
+    pickMacAsset([{ name: `Chess-${V}-arm64.dmg`, url: 'u:legacy-dmg' }], 'arm64')?.url,
+    'u:legacy-dmg',
+    'legacy mac dmg naming still resolves (suffix match)'
+  )
 
   console.log('pickAssetForPlatform: per-platform dispatch')
   eq(pickAssetForPlatform(RELEASE_ASSETS, 'darwin', 'arm64')?.url, 'u:dmg-arm64', 'darwin → mac pick')

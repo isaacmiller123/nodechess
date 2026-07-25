@@ -1,8 +1,8 @@
 /*
- * Accounts UI — profile surfaces (.aprof- namespace).
+ * Accounts UI: profile surfaces (.aprof- namespace).
  * ProfileTab (own profile + personal-lane editor), ProfilePage (view anyone),
  * ReconstructionCard (§5 staged viewing flow), RatingLadders (§6 display
- * states), ReputationPanel (§6b). Tokens only — no hard-coded color/space/
+ * states), ReputationPanel (§6b). Tokens only: no hard-coded color/space/
  * radius/shadow/font/duration values. Imported once by ProfileTab.tsx.
  */
 
@@ -92,7 +92,7 @@
 }
 
 /* ============================================================
-   ProfileTab — two-up: preview | editor
+   ProfileTab: two-up: preview | editor
    ============================================================ */
 
 .aprof-tab {
@@ -214,7 +214,7 @@
 }
 
 /* ============================================================
-   RatingLadders — §6 display states
+   RatingLadders: §6 display states
    ============================================================ */
 
 .aprof-ladders {
@@ -313,7 +313,7 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
-/* §9 active ladder ban — a public fact, shown to every viewer (A4-17). */
+/* §9 active ladder ban: a public fact, shown to every viewer (A4-17). */
 .aprof-state-pill.is-banned {
   display: inline-flex;
   align-items: center;
@@ -412,7 +412,7 @@
 }
 
 /* ============================================================
-   ReputationPanel — §6b
+   ReputationPanel: §6b
    ============================================================ */
 
 .aprof-rep {
@@ -694,90 +694,6 @@
   margin-top: var(--space-1);
 }
 
-/* ============================================================
-   ReconstructionCard — §5 staged viewing flow
-   ============================================================ */
-
-.aprof-stages {
-  list-style: none;
-  margin: 0;
-  padding: var(--space-3) var(--space-5);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-.aprof-stage {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--border);
-}
-.aprof-stage:first-child {
-  border-top: 0;
-}
-
-.aprof-stage-mark {
-  width: 26px;
-  height: 26px;
-  flex: none;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  color: var(--text-muted);
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-}
-.aprof-stage.is-done .aprof-stage-mark {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.aprof-stage.is-active .aprof-stage-mark {
-  background: var(--account-accent-soft);
-  color: var(--account-accent);
-}
-
-.aprof-stage-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-  flex: 1;
-}
-.aprof-stage-title {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  line-height: var(--lh-tight);
-}
-.aprof-stage.is-pending .aprof-stage-title {
-  color: var(--text-muted);
-  font-weight: var(--fw-medium);
-}
-.aprof-stage-detail {
-  line-height: var(--lh-body);
-}
-
-.aprof-shardmeter {
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  height: 6px;
-  margin-top: var(--space-1);
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.aprof-shardmeter-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--account-accent);
-  transition: width var(--dur-fast) var(--ease-out);
-}
-
 .aprof-spin {
   animation: aprof-spin calc(var(--dur-slow) * 3) linear infinite;
 }
@@ -788,7 +704,7 @@
 }
 
 /* ============================================================
-   ProfilePage — view anyone (§5, §9, §10)
+   ProfilePage: view anyone (§5, §9, §10)
    ============================================================ */
 
 .aprof-page {
@@ -902,32 +818,6 @@
   line-height: var(--lh-body);
 }
 
-/* ---- §2 verification strip ---- */
-.aprof-verify {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--success-soft);
-  color: var(--success);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  animation: fade-rise var(--dur-base) var(--ease-out) both;
-}
-.aprof-verify svg {
-  flex: none;
-}
-.aprof-verify-spot {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-xs);
-}
-
 .aprof-columns {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
@@ -998,12 +888,6 @@
   margin-left: auto;
   flex: none;
 }
-.aprof-game-witnessed {
-  display: inline-flex;
-  flex: none;
-  color: var(--success);
-}
-
 .aprof-games-empty {
   margin: 0;
   padding: var(--space-4) var(--space-5);
@@ -1141,19 +1025,4 @@
   color: var(--text-secondary);
   font-size: var(--fs-sm);
   line-height: var(--lh-body);
-}
-.aprof-degraded-badge,
-.aprof-mofn-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--warning);
-  border-radius: var(--radius-pill);
-  background: var(--warning-soft);
-  color: var(--warning);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  white-space: nowrap;
-  cursor: help;
 }

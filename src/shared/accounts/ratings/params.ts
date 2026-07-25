@@ -1,4 +1,4 @@
-// A4 parameters (docs/building/ACCOUNTS-PARAMS.md §Ratings / §Matchmaking /
+// A4 parameters (docs/ACCOUNTS-PARAMS.md §Ratings / §Matchmaking /
 // §Social reputation weights). Like PARAMS_A2/A3 these are NOT frozen-at-
 // genesis: they govern folds and pairing rules that every verifier recomputes,
 // so records that depend on them embed PARAMS_A4_DIGEST — a verifier always

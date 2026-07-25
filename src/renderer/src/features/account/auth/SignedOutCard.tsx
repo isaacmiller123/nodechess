@@ -4,10 +4,10 @@ import { AuthDialog } from './AuthDialog'
 import './auth.css'
 
 /**
- * Signed-out hero for the Account view (spec §0 one-line model, §1 identity,
- * §10 sign-in anywhere). Honest framing: everything local already works with
- * no account at all; an account is a signed file you carry, derived from
- * name + password — no email, no server record, no reset.
+ * Signed-out hero for the Account view. It answers one question, the one the
+ * player arrived with: do I need an account, and what does it get me? What an
+ * account IS internally (a derived keypair, a signed local file, a chain anyone
+ * can re-verify) is not an answer to that question and is not on the card.
  */
 
 export function SignedOutCard(): JSX.Element {
@@ -20,12 +20,10 @@ export function SignedOutCard(): JSX.Element {
           <FileKey size={22} />
         </span>
         <h2 id="aauth-hero-title" className="aauth-hero-title">
-          Your account is a signed file you carry
+          Create an account to play rated
         </h2>
         <p className="aauth-hero-lead">
-          No email, no server record. Your name and password derive your keys on this machine;
-          every rated game writes itself into both players&rsquo; files, and anything the network
-          says about you is math anyone can re-check.
+          A username and a password is all it takes. No email, and nothing to confirm.
         </p>
 
         <ul className="aauth-perks">
@@ -34,7 +32,7 @@ export function SignedOutCard(): JSX.Element {
               <Swords size={16} />
             </span>
             <span className="aauth-perk-body">
-              <strong>Full local &amp; offline play — no account needed</strong>
+              <strong>Full local and offline play, no account needed</strong>
               <span>
                 Engine games, analysis, puzzles, School: everything on this machine already works.
               </span>
@@ -46,14 +44,13 @@ export function SignedOutCard(): JSX.Element {
             </span>
             <span className="aauth-perk-body">
               <strong>Unrated play by link</strong>
-              <span>Send a friend a link and play — unrated, no sign-in on either side.</span>
+              <span>Send a friend a link and play. No sign-in on either side.</span>
             </span>
           </li>
         </ul>
 
         <p className="aauth-hero-more">
-          An account adds rated ladders, friends, reputation, and a history that travels with you —
-          carried in your file, verifiable by anyone.
+          An account adds rated ladders, friends, and a game history that follows you to any device.
         </p>
 
         <div className="aauth-cta-row">
@@ -67,8 +64,7 @@ export function SignedOutCard(): JSX.Element {
 
         <p className="aauth-hero-foot">
           <KeyRound size={13} aria-hidden />
-          Signing in on any device is pure re-derivation — same name and password, same keys.
-          Nothing to look up, nothing to reset: guard your recovery phrase instead.
+          There is no password reset. Save the recovery phrase you get when you create the account.
         </p>
       </section>
 

@@ -29,6 +29,12 @@
     "src/seed/**/*",
     "src/main/rating/glicko2.ts",
     "src/main/analysis/accuracy.ts",
-    "src/main/analysis/estElo.ts"
+    "src/main/analysis/estElo.ts",
+    "src/main/coach/index.ts",
+    "src/main/coach/board.ts",
+    "src/main/coach/motifs.ts",
+    "src/main/coach/nlg.ts",
+    "src/main/coach/positional.ts",
+    "src/main/coach/winrate.ts"
   ]
 }

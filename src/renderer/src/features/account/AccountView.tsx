@@ -16,11 +16,10 @@ import './account.css'
  *  - Rated play. Playing happens in Play; an account is identity, not a lobby.
  *    Splitting "find a rated game" from "find a game" was the single most
  *    confusing thing about the old layout.
- *  - The chain viewer, shard-duty tables, overlay stats and witness-peer lists.
- *    Real machinery, but it is machinery: a player has no decision to make with
- *    a k-bucket count, and surfacing it invited people to read it as something
- *    they were supposed to manage.
- *  - The anticheat explainer. It described the judge's thresholds and the exact
+ *  - Every network-machinery readout. Real machinery, but it is machinery: a
+ *    player has no decision to make with any of those counts, and surfacing them
+ *    invited people to read them as something they were supposed to manage.
+ *  - The anticheat explainer. It described the thresholds and the exact
  *    conditions that do and do not oblige a ban, which is a cheating roadmap
  *    with extra steps. Detection is not more effective for being advertised.
  *

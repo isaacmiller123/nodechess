@@ -4,13 +4,12 @@ import { OverlayDialog } from '../../../components/OverlayDialog'
 import { accountsUiStore } from '../mock/store'
 
 /**
- * Recovery export (spec §1 recovery + C-5): there is no credential recovery,
- * by design — the 24-word mnemonic and the keyfile are the only lifelines.
- * WIRED: the words and keyfile come from the REAL session seed
- * (src/web/accounts.ts exportMnemonic/exportKeyfile) — never fixture data.
- * `RecoveryExportBody` is the raw content so AuthDialog can show it as the
- * post-creation step inside its own modal; `RecoveryExport` wraps the same
- * body in an OverlayDialog so SecurityTab can reopen it later.
+ * Recovery export: there is no password reset, so the 24-word mnemonic and the
+ * keyfile are the only lifelines. The words and keyfile come from the REAL
+ * session seed (src/web/accounts.ts exportMnemonic/exportKeyfile), never fixture
+ * data. `RecoveryExportBody` is the raw content so AuthDialog can show it as the
+ * post-creation step inside its own modal; `RecoveryExport` wraps the same body
+ * in an OverlayDialog so SecurityTab can reopen it later.
  */
 
 export function RecoveryExportBody({ onDone }: { onDone: () => void }): JSX.Element {
@@ -18,21 +17,20 @@ export function RecoveryExportBody({ onDone }: { onDone: () => void }): JSX.Elem
   const [copied, setCopied] = useState(false)
   const [saved, setSaved] = useState(false)
   const [acked, setAcked] = useState(false)
-  // Real exports, read once per mount — the session seed never changes
-  // underneath an open dialog.
+  // Real exports, read once per mount. The session seed never changes underneath
+  // an open dialog.
   const [words] = useState<string[] | null>(() => accountsUiStore.exportMnemonicWords())
   const [keyfile] = useState<{ json: string; filename: string } | null>(() =>
     accountsUiStore.exportKeyfile()
   )
 
   if (words === null || keyfile === null) {
-    // No live session seed (fail-closed) — never show placeholder words a
-    // user could mistake for a lifeline.
+    // No live session seed (fail-closed). Never show placeholder words a user
+    // could mistake for a lifeline.
     return (
       <div className="aauth-recovery">
         <p className="aauth-err" role="alert">
-          <AlertCircle size={13} aria-hidden /> No signed-in session — recovery export is
-          unavailable. Sign in again to export your phrase.
+          <AlertCircle size={13} aria-hidden /> Sign in again to save your recovery phrase.
         </p>
         <div className="aauth-recovery-foot">
           <button type="button" className="btn" onClick={onDone}>
@@ -106,9 +104,9 @@ function RecoveryContent({
   return (
     <div className="aauth-recovery">
       <p className="aauth-lead">
-        These 24 words are your account — anyone holding them can rebuild your keys, and nothing
-        else can. Write them down somewhere offline, or download the keyfile. Either one restores
-        your account on any device.
+        These 24 words are the only way back into your account, and anyone who has them has your
+        account. Write them down somewhere offline, or download the keyfile. Either one restores it
+        on any device.
       </p>
 
       <div className="aauth-words-wrap">
@@ -155,7 +153,7 @@ function RecoveryContent({
 
       <label className="aauth-ack">
         <input type="checkbox" checked={acked} onChange={(e) => setAcked(e.target.checked)} />
-        <span>I&rsquo;ve written these down — there is no reset, by design.</span>
+        <span>I&rsquo;ve written these down. There is no reset.</span>
       </label>
 
       <div className="aauth-recovery-foot">

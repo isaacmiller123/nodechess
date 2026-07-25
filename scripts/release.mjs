@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Guarded release helper for the Chess# DESKTOP app (mac + win).
+// Guarded release helper for the nodechess DESKTOP app (mac + win).
 //
 // What cutting a release actually is here: bump package.json `version`, commit
 // it, push an annotated `vX.Y.Z` tag, and let .github/workflows/build.yml build
 // + attach the mac/win installers to the GitHub Release. This script owns the
 // SAFE, boring parts of that — it validates the tree is release-ready and bumps
 // the version — and it REFUSES to do the dangerous part (push a tag) without an
-// explicit, confirmed opt-in. The full story lives in docs/deploy/RELEASE.md.
+// explicit, confirmed opt-in. The full story lives in docs/RELEASE.md.
 //
 // It is deliberately conservative:
 //   • default command is `check` — read-only, mutates nothing, just tells you
@@ -152,7 +152,7 @@ function updaterTarget() {
 /** Returns a snapshot of the checks so callers (bump) can reuse the results. */
 function validate({ full = false } = {}) {
   const pkg = readPkg()
-  console.log(C.bold(`\nChess# release check — version ${pkg.version}\n`))
+  console.log(C.bold(`\nnodechess release check — version ${pkg.version}\n`))
 
   // 1. git repo + branch + cleanliness
   const inRepo = tryRun('git', ['rev-parse', '--is-inside-work-tree']).ok
@@ -282,7 +282,7 @@ async function cmdBump() {
   console.log(C.bold('Plan:'))
   console.log(`  • package.json version ${current} → ${C.green(target)}`)
   if (wantTag) console.log(`  • git commit package.json ("release: ${target}")`)
-  if (wantTag) console.log(`  • git tag -a ${tagName} -m "Chess# ${target}"`)
+  if (wantTag) console.log(`  • git tag -a ${tagName} -m "nodechess ${target}"`)
   if (wantPush) console.log(`  • git push origin ${state.branch} && git push origin ${tagName}  ${C.dim('(triggers CI build.yml)')}`)
   if (!wantTag) console.log(C.dim('  • (no git actions — add --tag to commit+tag, --push to also push)'))
   console.log('')
@@ -301,7 +301,7 @@ async function cmdBump() {
   if (wantTag) {
     run('git', ['add', 'package.json'])
     run('git', ['commit', '-m', `release: ${target}`])
-    run('git', ['tag', '-a', tagName, '-m', `Chess# ${target}`])
+    run('git', ['tag', '-a', tagName, '-m', `nodechess ${target}`])
     ok(`committed and tagged ${tagName} (local)`)
   }
   if (wantPush) {
@@ -320,11 +320,11 @@ function printManualNext(branch, tagName, tagged, pushed) {
   console.log(C.bold('\nNext steps (run when ready):'))
   if (!tagged) {
     console.log(`  git commit -am "release: ${tagName.slice(1)}"`)
-    console.log(`  git tag -a ${tagName} -m "Chess# ${tagName.slice(1)}"`)
+    console.log(`  git tag -a ${tagName} -m "nodechess ${tagName.slice(1)}"`)
   }
   console.log(`  git push origin ${branch} && git push origin ${tagName}`)
   console.log(C.dim(`  → the ${tagName} push triggers .github/workflows/build.yml (mac + win).`))
-  console.log(C.dim('  → see docs/deploy/RELEASE.md for the full flow.\n'))
+  console.log(C.dim('  → see docs/RELEASE.md for the full flow.\n'))
 }
 
 // ---- dispatch -----------------------------------------------------------------

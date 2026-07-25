@@ -1,6 +1,6 @@
 // THE A3 RECONSTRUCTION SUITE — brick 5 + THE A3 ACCEPTANCE PROOF (spec §5
 // viewing flow / §2 checkpoint rules / §14-A3 acceptance scenario; module:
-// src/shared/accounts/storage/viewer.ts; docs/accounts-spec/14 + 07 + 29 + 12).
+// src/shared/accounts/storage/viewer.ts; docs/ACCOUNTS-SPEC.md).
 //
 //   node scripts/test-accounts-reconstruct.mjs
 //

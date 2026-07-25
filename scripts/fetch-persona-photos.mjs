@@ -43,7 +43,7 @@ async function fetchPhoto(persona) {
     redirect: 'follow',
     headers: {
       // Commons asks automated clients to identify themselves.
-      'User-Agent': 'chess-sharp/0.0.1 (offline desktop chess app; persona portrait fetch)'
+      'User-Agent': 'nodechess/0.0.1 (offline desktop chess app; persona portrait fetch)'
     }
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)

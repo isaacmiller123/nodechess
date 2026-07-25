@@ -176,7 +176,7 @@ try {
   console.log('legacy generic archive')
   const legacyText = [
     '[Event "Online game"]',
-    '[Site "Chess#"]',
+    '[Site "nodechess"]',
     '[Date "2026.07.01"]',
     '[White "Alice"]',
     '[Black "Bob"]',

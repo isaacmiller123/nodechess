@@ -607,7 +607,7 @@ export function installMock(): void {
               currentVersion: 'mock',
               mode: seeded === 'ready' ? 'auto' : 'manual',
               latestVersion: '9.9.9',
-              downloadUrl: 'https://example.com/Chess-9.9.9-arm64.dmg',
+              downloadUrl: 'https://example.com/nodechess-9.9.9-arm64.dmg',
               releaseUrl: 'https://example.com/releases',
               checkedAt: Date.now()
             } as const)

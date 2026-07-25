@@ -1,11 +1,11 @@
 /*
- * People tab (A-UI social surface) — find player (§5), friends as witnessed
+ * People tab (A-UI social surface): find player (§5), friends as witnessed
  * countersigned edges (§3), mailbox with relayer anti-spam priorities (§10,
- * C-3). Namespace: .asoc-. Tokens only — no hard-coded color/space/radius/
+ * C-3). Namespace: .asoc-. Tokens only: no hard-coded color/space/radius/
  * shadow/font/duration values. Shared primitives (.panel, .panel-head, .btn,
  * .text-input, .muted, .small, .num, .account-handle-mono) come from
  * global.css / app.css / account.css; the small/danger button variants are
- * namespaced under .asoc-people (same pattern as online.css — none are global).
+ * namespaced under .asoc-people (same pattern as online.css: none are global).
  */
 
 .asoc-people {
@@ -40,7 +40,7 @@
   color: var(--account-accent);
 }
 
-/* Small + danger button variants (namespaced — no global ones exist). */
+/* Small + danger button variants (namespaced: no global ones exist). */
 .asoc-people .btn.small {
   display: inline-flex;
   align-items: center;
@@ -74,7 +74,7 @@
 }
 
 /* ============================================================
-   FIND PLAYER (§5 — anyone is viewable, verification is local)
+   FIND PLAYER (§5: anyone is viewable, verification is local)
    ============================================================ */
 .asoc-search {
   display: flex;
@@ -99,7 +99,7 @@
   padding-left: var(--space-8);
 }
 
-/* Local suggestions — every row navigates to the full profile view. */
+/* Local suggestions: every row navigates to the full profile view. */
 .asoc-suggest {
   list-style: none;
   margin: 0;
@@ -167,7 +167,7 @@
 }
 
 /* ============================================================
-   FRIENDS (§3 — witnessed countersigned edges)
+   FRIENDS (§3: witnessed countersigned edges)
    ============================================================ */
 .asoc-friends {
   list-style: none;
@@ -196,7 +196,7 @@
   min-width: 0;
 }
 
-/* Presence dot — ephemeral coordination state, never chain data (C-3). */
+/* Presence dot: ephemeral coordination state, never chain data (C-3). */
 .asoc-presence {
   width: 9px;
   height: 9px;
@@ -238,28 +238,13 @@
   white-space: nowrap;
 }
 
-/* Two-signature edge indicator — the §3 guarantee, worn as a pill. */
-.asoc-edge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--account-accent-soft);
-  color: var(--account-accent);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  white-space: nowrap;
-  cursor: help;
-}
-
 .asoc-friend-actions {
   display: flex;
   gap: var(--space-3);
   flex: none;
 }
 
-/* Inline two-step remove confirm (house pattern — no window.confirm, no modal). */
+/* Inline two-step remove confirm (house pattern: no window.confirm, no modal). */
 .asoc-remove-confirm {
   margin-top: var(--space-4);
   padding: var(--space-4);
@@ -391,30 +376,6 @@
   gap: var(--space-3);
   color: var(--text-secondary);
   font-size: var(--fs-sm);
-}
-
-/* §10 priority chips — why the relayers let this item through. */
-.asoc-prio {
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  white-space: nowrap;
-  cursor: help;
-}
-.asoc-prio.is-entangled {
-  background: var(--account-accent-soft);
-  color: var(--account-accent);
-}
-.asoc-prio.is-reputable {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.asoc-prio.is-new {
-  background: var(--surface-2);
-  color: var(--text-secondary);
 }
 
 /* Post-accept confirmation (role="status"). */

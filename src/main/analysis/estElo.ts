@@ -160,18 +160,6 @@ function interp(points: [number, number][], x: number): number {
 const ACC_POINTS: [number, number][] = ACC_KNOTS.map((k) => [k.acc, k.elo])
 const ACPL_POINTS: [number, number][] = ACPL_KNOTS.map((k) => [k.la, k.elo])
 
-/** Calibrated accuracy% -> Elo (the accuracy-only estimator, fitted curve). */
-export function accuracyToElo(accuracy: number): number {
-  const a = Math.max(0, Math.min(100, accuracy))
-  return Math.max(ELO_FLOOR, Math.min(ELO_CEIL, C0 + interp(ACC_POINTS, a)))
-}
-
-/** Calibrated ACPL -> Elo on the fitted log(1+acpl) curve (exposed for tooling). */
-export function acplToElo(acplValue: number): number {
-  const la = Math.log(1 + Math.max(0, acplValue))
-  return interp(ACPL_POINTS, la)
-}
-
 /** Short-game evidence factor: sqrt(30/clamp(n,6,30)) - 1 (0 for n >= 30). */
 function shrinkS(n: number): number {
   return Math.sqrt(30 / Math.max(6, Math.min(30, n))) - 1

@@ -1,25 +1,33 @@
 #!/usr/bin/env node
-// Web client ROUTING suite (web port W3 — build contract AGENT-CLIENT).
+// Web client LOCAL-LAYER suite (web port W3).
 //
 //   node scripts/test-web-client.mjs
 //
-// Asserts the webApi backend routing that scripts/test-web-stub.mjs (shape +
-// logged-out behavior) cannot see: global fetch is MOCKED — nothing here ever
-// talks to a real server — and the suite drives authStore through the same
-// transitions the account UI performs:
-//   1. logged out → puzzle CONTENT posts to the public bridge
-//      (POST /api/ipc/puzzles:next, credentials same-origin) and degrades to
-//      the honest empty shape when the bridge is unreachable
-//   2. logged out → games.save stays 100% local (zero fetch calls)
-//   3. logged out → puzzles.attempt moves the LOCAL Glicko-2 rating with
-//      exactly the desktop math (glicko2Update, opp rd 50, tau 0.3, seed
-//      1200/350/0.06), chained deterministically across attempts
-//   4. simulated login → user-data calls (games:save, settings:get,
-//      ratings:get) post to the auth bridge
-//   5. a 401 flips authStore to logged out and subsequent calls land back on
-//      the local layer (no fetch)
-//   6. the logged-out ReviewStore is an LRU capped at 40 and mirrors review
-//      accuracy onto the local game archive row
+// This suite was the webApi ROUTING suite: it drove an `authStore` singleton
+// through logged-out → logged-in → 401 and asserted which of three backends
+// each call landed on (public bridge, authenticated bridge, local fallback).
+// The web target has no server any more. Content is read from the static
+// artifact (src/web/data for puzzles, src/web/content for the catalogs) and
+// every user-scoped call is localStorage, so `authStore.ts`, `http.ts` and
+// `migrate.ts` were deleted along with the three-way routing they existed for.
+//
+// The assertions are RE-POINTED at that surface rather than dropped:
+//   - "puzzle content POSTs to /api/ipc/puzzles:next"  → content is read from
+//     the artifact and NOTHING anywhere asks for a /api/ path (§1, §2)
+//   - "an unreachable bridge degrades to the empty shape" → an unreachable
+//     static host degrades to the same empty shape (§1, §2)
+//   - "logged-in user data POSTs to the auth bridge" and "a 401 falls back to
+//     local" → user data has no remote path to route to or fall back from: it
+//     survives a fetch that throws on every call (§5)
+//   - "signup import copies local progress into a fresh account" → there is no
+//     account to import into; the Rush and daily state that import carried is
+//     asserted against the local store that now keeps it (§7)
+// §3, §4, §6 and §8 (local games, the Glicko-2 chain, the review LRU, debrief
+// enrichment) describe behavior the port did not change and are unchanged.
+//
+// global fetch is MOCKED and every call through it is recorded — the mock is
+// itself an assertion, since a `/api/` URL appearing in the log means the app
+// has grown a server dependency again.
 // Exit 1 on any failure.
 
 import { execSync } from 'node:child_process'
@@ -31,23 +39,28 @@ import path from 'node:path'
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dir = mkdtempSync(path.join(tmpdir(), 'webclient-'))
 
-// ONE bundle for webApi + authStore + reviewStore so they share module state
-// (authStore is the routing singleton). The glicko oracle is a separate pure
-// bundle — no shared state, used only to compute expected rating values.
+// ONE bundle for webApi + reviewStore + the debrief enricher so they share the
+// localData module state the assertions read back. The glicko oracle is a
+// separate pure bundle — no shared state, used only to compute expected values.
 const entry = path.join(dir, 'entry.ts')
 writeFileSync(
   entry,
   [
     `export { webApi } from '${repoRoot}/src/web/webApi'`,
-    `export { authStore } from '${repoRoot}/src/web/authStore'`,
     `export { localReviewStore, LOCAL_REVIEWS_CAP } from '${repoRoot}/src/web/reviewStore'`,
     `export { enrichDebriefMoves } from '${repoRoot}/src/web/engines/debrief'`,
-    `export { importLocalProgress, localProgressSummary } from '${repoRoot}/src/web/migrate'`,
     ''
   ].join('\n')
 )
 const glickoEntry = path.join(dir, 'glicko.ts')
 writeFileSync(glickoEntry, `export { glicko2Update } from '${repoRoot}/src/main/rating/glicko2'\n`)
+
+// The puzzle reader's two sql.js-httpvfs `?url` imports are BARE package
+// specifiers; left external they resolve against the bundle's temp dir, which
+// has no node_modules, and the import throws before the first assertion. Stub
+// them — no SQLite worker is ever spawned here (see §2).
+const urlStub = path.join(dir, 'url-stub.mjs')
+writeFileSync(urlStub, `export default ''\n`)
 
 function bundle(entryFile, name) {
   const out = path.join(dir, name)
@@ -55,6 +68,8 @@ function bundle(entryFile, name) {
     `npx esbuild ${entryFile} --bundle --format=esm --outfile=${out} ` +
       `--platform=node --jsx=automatic --external:*?url --loader:.css=empty ` +
       `--alias:@shared=${repoRoot}/src/shared --alias:@=${repoRoot}/src/renderer/src ` +
+      `"--alias:sql.js-httpvfs/dist/sqlite.worker.js?url=${urlStub}" ` +
+      `"--alias:sql.js-httpvfs/dist/sql-wasm.wasm?url=${urlStub}" ` +
       `--define:__WEB_APP_VERSION__='"0.0.0-test"'`,
     { stdio: 'pipe', cwd: repoRoot }
   )
@@ -87,19 +102,12 @@ globalThis.fetch = async (url, init = {}) => {
   return {
     ok: r.status >= 200 && r.status < 300,
     status: r.status,
-    json: async () => r.body
+    json: async () => r.body,
+    text: async () => JSON.stringify(r.body)
   }
 }
 
-const {
-  webApi,
-  authStore,
-  localReviewStore,
-  LOCAL_REVIEWS_CAP,
-  enrichDebriefMoves,
-  importLocalProgress,
-  localProgressSummary
-} = await import(
+const { webApi, localReviewStore, LOCAL_REVIEWS_CAP, enrichDebriefMoves } = await import(
   pathToFileURL(webOut).href
 )
 const { glicko2Update } = await import(pathToFileURL(glickoOut).href)
@@ -115,48 +123,82 @@ function check(name, cond) {
 }
 const last = () => calls[calls.length - 1]
 
-// ---- 0. boot ----------------------------------------------------------------------
+// The static build's own console.error on a degraded read would drown the
+// assertion log; it fires once per process and is the behavior §1/§2 assert.
+const realError = console.error.bind(console)
+console.error = (...args) => {
+  if (typeof args[0] === 'string' && args[0].startsWith('nodechess static read failed')) return
+  realError(...args)
+}
 
-check('authStore starts unknown + logged out', !authStore.state.known && !authStore.isAuthed())
-await authStore.boot() // responder null → /api/auth/me fails → logged out
-check('boot hits GET /api/auth/me', last().url === '/api/auth/me' && last().method === 'GET')
-check('failed boot resolves to logged out', authStore.state.known && !authStore.isAuthed())
+// ---- 0. boot -----------------------------------------------------------------------
+// The old suite booted authStore against GET /api/auth/me here. Nothing is
+// eager now: importing the module graph must not touch the network at all.
 
-// ---- 1. logged out: puzzle content → PUBLIC bridge -------------------------------
+check('module import makes no request', calls.length === 0)
 
+// ---- 1. catalog content → the static content tree ------------------------------------
+
+const CH_01 = {
+  id: 'ch-01',
+  band: 'foundations',
+  order: 1,
+  title: 'Opening principles',
+  subtitle: 'Centre, development, king safety',
+  estMinutes: 25,
+  conceptCount: 4,
+  lessonCount: 3,
+  eloFloor: 600
+}
 responder = (c) =>
-  c.url === '/api/ipc/puzzles:next' ? { status: 200, body: { puzzle: { id: 'p_1' } } } : null
-const next = await webApi.puzzles.next({ theme: 'fork', ratingLo: 800 })
-check('puzzles.next posts to /api/ipc/puzzles:next', last().url === '/api/ipc/puzzles:next')
-check('puzzles.next is a POST', last().method === 'POST')
-check('puzzles.next sends same-origin credentials', last().credentials === 'same-origin')
+  c.url.endsWith('content/school/chapters.json') ? { status: 200, body: { chapters: [CH_01] } } : null
+const chapters = await webApi.school.chapters()
+check('school.chapters fetches the static content tree', /content\/school\/chapters\.json$/.test(last().url))
+check('content reads are plain GETs', last().method === 'GET')
+check('content reads send no credentials', last().credentials === undefined)
+check('content reads carry no request body', last().body === undefined)
+check('the fetched catalog reaches the caller', chapters.chapters[0]?.id === 'ch-01')
+// SCHOOL-SPEC §2.2a: eloFloor has to reach the browser now that the unlock rule
+// runs there, but it must not survive into anything renderable.
+check('eloFloor is stripped from the rendered chapter card', !('eloFloor' in chapters.chapters[0]))
 check(
-  'puzzles.next body is the payload object',
-  last().body.theme === 'fork' && last().body.ratingLo === 800
+  'nothing is unlocked without a placement',
+  chapters.chapters[0].locked === true && chapters.chapters[0].lockReason === 'placement'
 )
-check('puzzles.next passes the bridge result through', next.puzzle?.id === 'p_1')
 
-responder = null // bridge unreachable
-check('unreachable bridge → honest null puzzle', (await webApi.puzzles.next({})).puzzle === null)
-check('unreachable bridge → honest empty themes', (await webApi.puzzles.themes()).themes.length === 0)
+responder = null // the content tree is not hosted
+check(
+  'unreachable content host → honest empty famous list',
+  (await webApi.famous.list({})).games.length === 0
+)
+check(
+  'unreachable content host → honest empty persona catalog',
+  (await webApi.personas.list()).personas.length === 0
+)
 
-// ---- 2. logged out: games stay local ----------------------------------------------
+// ---- 2. puzzle content → the chunked artifact ------------------------------------------
+
+const preArtifact = calls.length
+const next = await webApi.puzzles.next({ theme: 'fork', ratingLo: 800 })
+check('unhosted artifact → honest null puzzle', next.puzzle === null)
+check('unhosted artifact → honest empty themes', (await webApi.puzzles.themes()).themes.length === 0)
+check('unhosted artifact → honest empty batch', (await webApi.puzzles.batch({ ids: ['p1'] })).puzzles.length === 0)
+check(
+  'no puzzle read ever asks for an /api/ path',
+  calls.slice(preArtifact).every((c) => !c.url.includes('/api/'))
+)
+
+// ---- 3. games stay local ----------------------------------------------------------
 
 let fetchCount = calls.length
 const saved1 = await webApi.games.save({ pgn: '1. e4 e5', source: 'play', result: '1-0' })
-check('logged-out games.save makes NO fetch call', calls.length === fetchCount)
-check('logged-out games.save returns local id 1', saved1.gameId === 1)
+check('games.save makes NO fetch call', calls.length === fetchCount)
+check('games.save returns local id 1', saved1.gameId === 1)
 const listed = await webApi.games.list()
-check('logged-out games.list serves the local archive', listed.games[0]?.pgn === '1. e4 e5')
-check('logged-out games.list made no fetch call', calls.length === fetchCount)
+check('games.list serves the local archive', listed.games[0]?.pgn === '1. e4 e5')
+check('games.list made no fetch call', calls.length === fetchCount)
 
-// sign-in-gated actions reject with sign-in copy (and no fetch)
-let rushErr = null
-await webApi.puzzles.saveRush({ mode: 'rush3', score: 5, best: 5 }).catch((e) => (rushErr = e))
-check('logged-out saveRush rejects with sign-in copy', /sign in/i.test(String(rushErr)))
-check('logged-out saveRush made no fetch call', calls.length === fetchCount)
-
-// ---- 3. logged out: deterministic local glicko ------------------------------------
+// ---- 4. deterministic local glicko ------------------------------------------------
 
 const SEED = { rating: 1200, rd: 350, vol: 0.06 }
 const exp1 = glicko2Update(SEED, [{ rating: 1400, rd: 50, score: 1 }], 0.3)
@@ -186,63 +228,25 @@ check(
   (await webApi.ratings.get('puzzle')).rating === Math.round(exp2.rating)
 )
 
-// ---- 4. simulated login → user data hits the AUTH bridge ---------------------------
+// ---- 5. user data has no remote path ------------------------------------------------
+// Replaces the old "logged-in calls hit the auth bridge" and "a 401 drops back
+// to local" sections. There is no bridge to hit and no session to lose, so the
+// property that matters is the inverse: a fetch that fails on EVERY call must
+// be invisible to user-scoped reads and writes.
 
-let notified = 0
-const unsub = authStore.subscribe(() => notified++)
-responder = (c) =>
-  c.url === '/api/auth/login'
-    ? { status: 200, body: { user: { id: 7, username: 'kasparova' } } }
-    : null
-const user = await authStore.login('kasparova', 'password123')
-check('login posts to /api/auth/login', last().url === '/api/auth/login')
-check('login flips the store', authStore.isAuthed() && user.username === 'kasparova')
-check('login notifies subscribers', notified === 1)
-unsub()
-
-responder = (c) => (c.url === '/api/ipc/games:save' ? { status: 200, body: { gameId: 777 } } : null)
-const saved2 = await webApi.games.save({ pgn: '1. d4' })
-check('logged-in games.save posts to /api/ipc/games:save', last().url === '/api/ipc/games:save')
-check('logged-in games.save sends the input payload', last().body.pgn === '1. d4')
-check('logged-in games.save sends same-origin credentials', last().credentials === 'same-origin')
-check('logged-in games.save returns the bridge gameId', saved2.gameId === 777)
-
-responder = (c) =>
-  c.url === '/api/ipc/settings:get' ? { status: 200, body: { value: { name: 'walnut' } } } : null
+const hostileFrom = calls.length
+responder = null
+await webApi.settings.set('boardTheme', { name: 'walnut' })
 const setting = await webApi.settings.get('boardTheme')
-check(
-  'logged-in settings.get posts {key} to the bridge',
-  last().url === '/api/ipc/settings:get' && last().body.key === 'boardTheme'
-)
-check('logged-in settings.get returns the bridge value', setting.value?.name === 'walnut')
+check('settings round-trip through this browser', setting.value?.name === 'walnut')
+check('ratings.get is unaffected by a dead network', (await webApi.ratings.get('puzzle')).rating === Math.round(exp2.rating))
+const saved2 = await webApi.games.save({ pgn: '1. d4' })
+check('games.save keeps its local sequence', saved2.gameId === 2)
+const progress = await webApi.progress.summary()
+check('progress.summary counts the local archive', progress.gamesPlayed >= 2)
+check('not one user-data call touched the network', calls.length === hostileFrom)
 
-responder = (c) =>
-  c.url === '/api/ipc/ratings:get'
-    ? { status: 200, body: { rating: 1512, rd: 61, vol: 0.058 } }
-    : null
-check(
-  'logged-in ratings.get serves the bridge, not local',
-  (await webApi.ratings.get('puzzle')).rating === 1512
-)
-
-// ---- 5. 401 → logged out + local ---------------------------------------------------
-
-responder = () => ({ status: 401, body: { error: 'auth-required' } })
-let err401 = null
-await webApi.games.list().catch((e) => (err401 = e))
-check('bridge 401 rejects the call', err401 !== null)
-check('bridge 401 flips authStore to logged out', !authStore.isAuthed())
-
-fetchCount = calls.length
-const saved3 = await webApi.games.save({ pgn: '1. c4' })
-check('post-401 games.save is local again (no fetch)', calls.length === fetchCount)
-check('post-401 local archive kept its sequence', saved3.gameId === 2)
-check(
-  'post-401 ratings.get is local again',
-  (await webApi.ratings.get('puzzle')).rating === Math.round(exp2.rating)
-)
-
-// ---- 6. logged-out ReviewStore: LRU cap + accuracy mirror ---------------------------
+// ---- 6. ReviewStore: LRU cap + accuracy mirror ---------------------------------------
 
 const side = (acc) => ({
   accuracy: acc,
@@ -278,20 +282,43 @@ check(
   gameRow.game?.accuracy_white === 90 && gameRow.game?.accuracy_black === 85
 )
 
-// ---- 7. logout resilience -----------------------------------------------------------
+// ---- 7. Rush + daily live in this browser ----------------------------------------------
+// The section this replaces imported local Rush runs and daily results into a
+// fresh server account. Both calls used to be sign-in-gated rejections on the
+// web; they are now writes to the local store, so assert the store.
 
-responder = (c) =>
-  c.url === '/api/auth/login'
-    ? { status: 200, body: { user: { id: 7, username: 'kasparova' } } }
-    : null
-await authStore.login('kasparova', 'password123')
-responder = null // server unreachable during logout
-await authStore.logout()
-check('logout flips locally even when the request fails', !authStore.isAuthed())
+const rushFrom = calls.length
+const run1 = await webApi.puzzles.saveRush({ mode: 'rush3', score: 5, best: 5 })
+check('saveRush persists locally instead of rejecting', run1.id === 1 && run1.isBest)
+const run2 = await webApi.puzzles.saveRush({ mode: 'rush3', score: 9, best: 9 })
+check('a higher score takes the best', run2.best === 9 && run2.isBest)
+const run3 = await webApi.puzzles.saveRush({ mode: 'rush3', score: 2, best: 9 })
+check('a lower score keeps the standing best', run3.best === 9 && !run3.isBest)
+check('rushRuns lists them newest-first', (await webApi.puzzles.rushRuns({ mode: 'rush3' })).runs[0].score === 2)
+const bests = await webApi.puzzles.rushBests()
+check('rushBests reports one row per mode', bests.bests.length >= 1)
+check(
+  'rushBests carries the mode best',
+  bests.bests.find((b) => b.mode === 'rush3')?.best === 9
+)
+
+const today = new Date().toISOString().slice(0, 10)
+const daily = await webApi.puzzles.recordDaily({
+  ymd: today,
+  puzzleId: 'd1',
+  solved: true,
+  firstTry: true
+})
+check('recordDaily returns the recomputed streak', daily.streak.current >= 1)
+check('dailyStreak reads the same record back', (await webApi.puzzles.dailyStreak()).streak.current === daily.streak.current)
+const stats = await webApi.puzzles.stats()
+check('puzzle stats accuracy is a 0..1 fraction, not a percent', stats.accuracy >= 0 && stats.accuracy <= 1)
+check('puzzle history serves the attempt rows', (await webApi.puzzles.history({ limit: 10 })).rows.length >= 2)
+check('none of the Rush/daily state touched the network', calls.length === rushFrom)
 
 // ---- 8. school debrief enrichment (audit W-01) --------------------------------------
-// The server has no engine, so webApi must fill user-move evals CLIENT-side
-// before the bridge call. enrichDebriefMoves takes an injectable analyze fn —
+// There is no server engine, so the move evals Viktor's debrief needs must be
+// computed CLIENT-side. enrichDebriefMoves takes an injectable analyze fn —
 // the canned one below stands in for the WASM engine.
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
@@ -372,8 +399,11 @@ await enrichDebriefMoves(
 })
 check('a dead engine rejects the debrief instead of faking evals', deadRejected)
 
-// webApi.school.debrief in an engineless environment (bare node: no Worker)
-// must reject with honest copy and NEVER post empty evals to the bridge.
+// webApi.school.debrief is inert on web: viktor.ts builds a node StockfishPool
+// at module scope and cannot enter the browser graph, so the enricher above is
+// built but unwired. What the suite pins is that the call says so and writes
+// nothing — the old assertion was the same shape against the engine-copy
+// rejection the bridge path used to produce.
 fetchCount = calls.length
 let debriefErr = null
 await webApi.school
@@ -382,55 +412,13 @@ await webApi.school
     debriefErr = err
   })
 check(
-  'engineless school.debrief rejects with honest engine copy',
-  debriefErr instanceof Error && /analysis engine/i.test(debriefErr.message)
+  'school.debrief rejects with honest unavailable copy',
+  debriefErr instanceof Error && /isn’t available/.test(debriefErr.message)
 )
-check('engineless school.debrief never hits the bridge', calls.length === fetchCount)
-
-// ---- 9. signup import (audit WEB-1) --------------------------------------------------
-// importLocalProgress copies the localStorage layer into a fresh account:
-// games oldest-first (+ their cached reviews under the NEW server ids),
-// variants, settings — ratings intentionally stay local.
-
-// The LRU test above evicted the low-id reviews — re-seed one for local game 2
-// so the import provably carries a review across.
-await localReviewStore.save(2, mkReview(2))
-
-const summaryBefore = localProgressSummary()
-check(
-  'localProgressSummary sees the accumulated local state',
-  summaryBefore.hasAny && summaryBefore.games >= 2
-)
-
-const bridgeWrites = []
-let serverGameSeq = 100
-responder = (c) => {
-  if (c.url.startsWith('/api/ipc/') || c.url === '/api/review/save') {
-    bridgeWrites.push(c)
-    if (c.url === '/api/ipc/games:save') return { status: 200, body: { gameId: ++serverGameSeq } }
-    if (c.url === '/api/review/save') return { status: 200, body: { ok: true } }
-    return { status: 200, body: { ok: true } }
-  }
-  return null
-}
-const imported = await importLocalProgress()
-check('import saves every local game', imported.games === summaryBefore.games)
-const gameSaves = bridgeWrites.filter((c) => c.url === '/api/ipc/games:save')
-check(
-  'games import oldest-first (local seq order preserved)',
-  gameSaves.length >= 2 && gameSaves[0].body.pgn === '1. e4 e5'
-)
-const reviewSaves = bridgeWrites.filter((c) => c.url === '/api/review/save')
-check(
-  'cached local reviews ride along under their NEW server ids',
-  imported.reviews > 0 &&
-    reviewSaves.every((c) => c.body.gameId > 100 && c.body.review.gameId === c.body.gameId)
-)
-check('import reports zero failures against a healthy server', imported.failures === 0)
-responder = null
+check('school.debrief sends nothing anywhere', calls.length === fetchCount)
 
 if (failures > 0) {
   console.error(`\n${failures} failure(s)`)
   process.exit(1)
 }
-console.log('\nWeb client routing: all green')
+console.log('\nWeb client local layer: all green')

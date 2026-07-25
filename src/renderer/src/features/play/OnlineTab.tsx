@@ -1,12 +1,20 @@
-// Play → Online tab. Two copies of Chess# anywhere in the world play each other
-// over a direct, encrypted WebRTC peer-to-peer connection: one HOSTS (shares a
-// short join code = a random room key), the other JOINS (enters the code).
-// Signaling runs through public relays in the renderer — no account, no server,
-// no port forwarding.
+// Play → Online tab. Everything you can play against another person over the
+// internet, on one page and in one order:
+//
+//   RATED   : pick a ladder pool and hit Play; the matchmaking pool finds a
+//             stranger and a witness (features/play/online/RatedPanel). Needs a
+//             signed-in account: it supplies the identity that signs the moves
+//             and the ladder numbers that decide who is a legal opponent.
+//   CASUAL  : one player HOSTS (shares a short join code = a random room key),
+//             the other JOINS. No account, no server, no port forwarding.
+//
+// Both end up in the SAME live game below: a direct, encrypted WebRTC peer-to-
+// peer connection with signaling through public relays in the renderer. Rated
+// vs casual is a choice inside one flow, never a separate destination.
 //
 // v3 (MP-V3-SPEC §5): this file is a PURE VIEW over the module-level `onlineStore`
 // (features/play/online/onlineStore.ts). The live game lives in that store for the
-// app's whole lifetime, so navigating away and back is SAFE — unmount does NOT
+// app's whole lifetime, so navigating away and back is SAFE. Unmount does NOT
 // tear the session down (the L1/L2/MP-01 fix). All game state (phase, colors,
 // clocks, banner, offers, peer-away, errors) is read from the store snapshot via
 // useOnlineGame(); every action goes through the store singleton, which is the
@@ -23,8 +31,10 @@ import { Copy, Check, Globe, Radio, LogIn, Loader2, AlertTriangle, X } from 'luc
 import type { MpColor, MpGameConfig } from '@shared/types'
 import type { GameKind } from '../../games/kernel'
 import { isRegisteredGame } from '../../games/registry'
+import { useMatchmaking } from '../account/net/matchmaking'
 import { onlineStore } from './online/onlineStore'
 import { useOnlineGame } from './online/useOnlineGame'
+import { RatedPanel } from './online/RatedPanel'
 import { GamePicker } from './online/GamePicker'
 import { KernelOnlineGame } from './online/KernelOnlineGame'
 import { liveMs, LeaveConfirm, OnlineStatusBar, PeerStrips, RematchStrip } from './online/OnlineChrome'
@@ -57,12 +67,12 @@ const GO_HANDICAPS: readonly GoHandicap[] = [0, 2, 3, 4, 5, 6, 7, 8, 9]
 
 /** What the host surface needs to know about this tab: nothing live ('idle'),
  *  a session is open but no game yet ('lobby'), or a game is live ('game'). Kept
- *  for SetupCard's width handoff — it is NO LONGER a nav lock (the store survives
+ *  for SetupCard's width handoff. It is NO LONGER a nav lock (the store survives
  *  unmount, so switching tabs or views can never kill the session). */
 export type OnlineStage = 'idle' | 'lobby' | 'game'
 
 export interface OnlineTabProps {
-  /** Seed for the host card's time control — the shared Play control. Untimed
+  /** Seed for the host card's time control, the shared Play control. Untimed
    *  values fall back to 10+0 (the wire refuses initialMs < 1s). */
   initialTimeControl?: TimeControl
   /** Reflect host-card picker changes back into the shared Play control. */
@@ -70,11 +80,11 @@ export interface OnlineTabProps {
   /** Stage reports for the host surface (game-width handoff only). */
   onStage?: (stage: OnlineStage) => void
   /** Pre-seed the host card's game picker (GamePage Online tab passes its
-   *  kind). Chess remains the default — and the picker stays changeable. */
+   *  kind). Chess remains the default, and the picker stays changeable. */
   initialGameKind?: GameKind
 }
 
-/** True for the hello-gate failure (mpSession's version-mismatch copy) —
+/** True for the hello-gate failure (mpSession's version-mismatch copy):
  *  the one lobby error a new build actually fixes. */
 function isVersionMismatchError(message: string): boolean {
   return /version/i.test(message) && /(mismatch|incompatible)/i.test(message)
@@ -82,7 +92,7 @@ function isVersionMismatchError(message: string): boolean {
 
 /** Shown under a version-mismatch lobby error when an update is genuinely
  *  waiting: one click starts it (in-place on Windows, browser .dmg download on
- *  macOS — decided by main). The error copy itself already points the OTHER
+ *  macOS, decided by main). The error copy itself already points the OTHER
  *  player at Settings → Updates. */
 function VersionMismatchNudge(): JSX.Element | null {
   const updates = useUpdates()
@@ -90,7 +100,7 @@ function VersionMismatchNudge(): JSX.Element | null {
   return (
     <div className="online-update-nudge">
       <span>
-        <strong>Chess# v{updates.latestVersion}</strong> is out — updating both apps fixes this.
+        <strong>nodechess v{updates.latestVersion}</strong> is out. Updating both apps fixes this.
       </span>
       <button type="button" className="btn" onClick={() => void applyUpdate()}>
         {updates.state === 'ready' ? 'Restart & update' : 'Update now'}
@@ -107,11 +117,17 @@ export default function OnlineTab({
 }: OnlineTabProps = {}): JSX.Element {
   const { settings } = useSettings()
   const state = useOnlineGame()
+  // A rated search owns the session while it runs: once the pool strikes a
+  // match it opens (or joins) the mp room itself, so the code cards below must
+  // stand down and the host card's join code must not be presented as
+  // something to share: nobody types a code into a matchmade game.
+  const mm = useMatchmaking()
+  const ratedActive = mm.phase !== 'idle' && mm.phase !== 'signed-out'
 
   // ---- setup form (local, pre-session only) --------------------------------
   // Online games must be timed (the wire refuses initialMs < 1s): seed from the
   // shared Play control when it carries a clock, else default to a friendly rapid
-  // control — and forbid Unlimited at Start either way.
+  // control, and forbid Unlimited at Start either way.
   const [hostTc, setHostTcState] = useState<TimeControl>(() =>
     initialTimeControl && initialTimeControl.baseMs > 0
       ? initialTimeControl
@@ -130,7 +146,7 @@ export default function OnlineTab({
     initialGameKind && isRegisteredGame(initialGameKind) ? initialGameKind : 'chess'
   )
   // Go-only host options (QoL): board size, handicap stones, byo-yomi periods.
-  // They ride the wire in config.game.options / config.tc.byoyomi — the joiner
+  // They ride the wire in config.game.options / config.tc.byoyomi; the joiner
   // adopts whatever arrives in start/resync, no local selection involved.
   const [goSize, setGoSize] = useState<9 | 13 | 19>(19)
   const [goHandicap, setGoHandicap] = useState<GoHandicap>(0)
@@ -195,7 +211,7 @@ export default function OnlineTab({
   useEffect(() => {
     onStageRef.current?.(stage)
   }, [stage])
-  // Leaving THIS tab no longer tears anything down — but report 'idle' so the
+  // Leaving THIS tab no longer tears anything down, but report 'idle' so the
   // host surface stops widening while the tab isn't shown. The session persists.
   useEffect(
     () => () => {
@@ -266,7 +282,7 @@ export default function OnlineTab({
   // ---- host / join actions -------------------------------------------------
   const doHost = useCallback(() => {
     if (hostTc.baseMs <= 0) {
-      setFormError('Online games need a clock — pick a time control (Unlimited is not supported online).')
+      setFormError('Online games need a clock. Pick a time control (Unlimited is not supported online).')
       return
     }
     setFormError(null)
@@ -342,7 +358,7 @@ export default function OnlineTab({
   if (state.phase === 'game') {
     // Non-chess kinds (wire v4): the registry's own board inside the same
     // online chrome. The joiner renders whatever kind arrived in the start
-    // config — no local selection involved.
+    // config. No local selection involved.
     if (state.gameKind !== 'chess') {
       return (
         <KernelOnlineGame
@@ -385,8 +401,8 @@ export default function OnlineTab({
       <header className="online-lobby-head">
         <h2>Play online</h2>
         <p className="muted">
-          One of you hosts and shares a code; the other joins — from anywhere in the world. No account,
-          no setup.
+          Rated games pair you with a stranger and count on your ladder. Casual games are a code you
+          send to someone you know. No account, no setup.
         </p>
       </header>
 
@@ -412,7 +428,23 @@ export default function OnlineTab({
         </>
       )}
 
-      {state.phase === 'hosting' && state.code ? (
+      {/* RATED: the pool. It owns the whole surface once a search or a
+          matchmade handoff is running (a matchmade game has no code to share),
+          and steps aside entirely while a casual session is dialing. */}
+      {(ratedActive || state.phase === 'idle') && (
+        <RatedPanel initialTimeControl={initialTimeControl} />
+      )}
+
+      {!ratedActive && state.phase === 'idle' && (
+        <div className="online-friend-head">
+          <h3>Play a friend</h3>
+          <span className="muted small">
+            Casual: one of you hosts and shares the code. Nothing here is rated.
+          </span>
+        </div>
+      )}
+
+      {ratedActive ? null : state.phase === 'hosting' && state.code ? (
         <HostWaiting
           code={state.code}
           copied={copied}
@@ -488,8 +520,8 @@ export default function OnlineTab({
                         aria-pressed={goByoId === p.id}
                         title={
                           p.byo
-                            ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s — a move inside a period resets it`
-                            : 'No overtime — main time only'
+                            ? `${p.byo.periods} overtime periods of ${p.byo.periodMs / 1000}s, and a move inside a period resets it`
+                            : 'No overtime, main time only'
                         }
                         onClick={() => setGoByoId(p.id)}
                       >
@@ -510,7 +542,7 @@ export default function OnlineTab({
               <span className="online-label">Time control</span>
               <TimeControlPicker value={hostTc} onChange={setHostTc} dense />
               {hostTc.baseMs <= 0 && (
-                <p className="online-note warn">Online games need a clock — pick any timed control.</p>
+                <p className="online-note warn">Online games need a clock. Pick any timed control.</p>
               )}
             </div>
 
@@ -607,10 +639,10 @@ function guestStatusText(stage: 'relays' | 'searching' | 'connecting' | null): s
     case 'searching':
       return 'Looking for your opponent…'
     case 'connecting':
-      return 'Found them — connecting directly…'
+      return 'Found them, connecting…'
     case 'relays':
     default:
-      return 'Contacting matchmaking relays…'
+      return 'Connecting…'
   }
 }
 
@@ -632,9 +664,7 @@ function HostWaiting({
   relays: { connected: number; total: number } | null
 }): JSX.Element {
   const online = (relays?.connected ?? 0) > 0
-  const relayTitle = relays
-    ? `${relays.connected} of ${relays.total} matchmaking relays connected`
-    : 'Connecting to matchmaking relays'
+  const relayTitle = relays && relays.connected > 0 ? 'Connected' : 'Connecting…'
 
   return (
     <div className="online-card online-hosting" aria-label="Waiting for an opponent">
@@ -657,14 +687,13 @@ function HostWaiting({
       <div className="online-net" role="status" title={relayTitle}>
         <span className={`online-net-dot${online ? ' is-online' : ''}`} aria-hidden />
         <span className="online-net-text">
-          {online ? 'Online — waiting for your opponent' : 'Contacting matchmaking relays…'}
+          {online ? 'Waiting for your opponent' : 'Connecting…'}
         </span>
       </div>
 
       <div className="online-note-block">
         <p className="online-note">
-          <Globe size={13} aria-hidden /> This is a <strong>direct, encrypted peer-to-peer</strong> connection.
-          Share the code any way you like — text, Discord, anything.
+          <Globe size={13} aria-hidden /> Share the code any way you like: text, Discord, anything.
         </p>
       </div>
 
@@ -742,10 +771,10 @@ function OnlineGame({
   const baseMs = state.config?.tc.initialMs ?? 0
   const clockLive = timed && !over && !state.peerAway
   // Live remaining ms from the store snapshot; `interp` hands the Clock the
-  // authoritative snapshot so it self-ticks at 100ms (B2/D5/MP-02) — the coarse
+  // authoritative snapshot so it self-ticks at 100ms (B2/D5/MP-02); the coarse
   // ms value keeps GameView's ClockSide contract and drives the active glow.
   // (byo is stripped from the spread: OnlineClock.byo is the v5 PER-GAME shape;
-  // ClockInterp.byo is per-side and only go games — KernelOnlineGame — build it.)
+  // ClockInterp.byo is per-side and only go games, so only KernelOnlineGame builds it.)
   const chessInterp = (side: Color) => {
     if (!state.clock) return undefined
     const { byo: _byo, ...clock } = state.clock
@@ -834,7 +863,7 @@ function OnlineGame({
         />
       )}
 
-      {/* Leave confirm (L10) — only reachable while a live undecided game is up. */}
+      {/* Leave confirm (L10): only reachable while a live undecided game is up. */}
       {leaveArmed && <LeaveConfirm onConfirm={onConfirmResignLeave} onCancel={onCancelLeave} />}
     </div>
   )

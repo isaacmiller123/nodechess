@@ -1,6 +1,6 @@
 # Third-party notices
 
-Chess# is distributed under GPL-3.0-or-later (see [LICENSE](LICENSE)). It bundles or imports the following
+nodechess is distributed under GPL-3.0-or-later (see [LICENSE](LICENSE)). It bundles or imports the following
 third-party software and data. Each is used under its own license, reproduced or linked below.
 
 ---
@@ -13,7 +13,7 @@ third-party software and data. Each is used under its own license, reproduced or
 - **Corresponding source:** https://github.com/official-stockfish/Stockfish/tree/sf_18
 - **Notes:** Distributed as the official Windows x86-64 (AVX2) build with the NNUE evaluation network
   embedded. GPLv3 requires that the corresponding source be available to recipients; it is, at the link
-  above, and Chess# is itself GPL-3.0-or-later. Stockfish's NNUE network is trained in part on
+  above, and nodechess is itself GPL-3.0-or-later. Stockfish's NNUE network is trained in part on
   Leela Chess Zero self-play data (ODbL); that affects the network's training data, not redistribution of
   the compiled binary, which is governed by GPLv3.
 

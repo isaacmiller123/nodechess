@@ -356,7 +356,7 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
             : 'Play vs Stockfish'
       const headers: Record<string, string> = {
         Event: event,
-        Site: 'Chess#',
+        Site: 'nodechess',
         Date: yyyymmdd(),
         White: whiteName,
         Black: blackName,

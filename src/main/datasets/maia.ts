@@ -23,7 +23,7 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 // extract the Homebrew bottle, lc0 0.32.1, eigen CPU backend, fine at nodes=1).
 
 const RELEASE_BASE =
-  'https://github.com/isaacmiller123/chess-sharp/releases/download/datasets-v1'
+  'https://github.com/isaacmiller123/nodechess/releases/download/datasets-v1'
 const MAIA_RELEASE = 'https://github.com/CSSLab/maia-chess/releases/download/v1.0'
 
 export { MAIA_LEVELS, type MaiaLevel }

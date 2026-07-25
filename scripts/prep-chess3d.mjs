@@ -196,7 +196,7 @@ function buildPieceGlb(gltf, bin, node, pieceId) {
   const json = {
     asset: {
       version: '2.0',
-      generator: 'chess-sharp prep-chess3d',
+      generator: 'nodechess prep-chess3d',
       copyright: 'Poly Haven "Chess Set" by Riley Queen — CC0-1.0 (polyhaven.com/a/chess_set)'
     },
     scene: 0,
@@ -313,7 +313,7 @@ async function main() {
     'Poly Haven "Chess Set" by Riley Queen\nhttps://polyhaven.com/a/chess_set\n\n' +
       'License: CC0 1.0 Universal (public domain dedication)\n' +
       'https://creativecommons.org/publicdomain/zero/1.0/\n\n' +
-      'Repackaged for Chess#: per-piece geometry GLBs re-exported from the 2k glTF\n' +
+      'Repackaged for nodechess: per-piece geometry GLBs re-exported from the 2k glTF\n' +
       'release; textures are the official 2k diffuse and 1k normal/ARM JPEGs.\n'
   )
 

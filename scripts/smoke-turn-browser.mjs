@@ -41,7 +41,7 @@ const RELAYS = (process.env.ACCEPT_RELAY_URL ||
   .split(',').map((s) => s.trim()).filter(Boolean)
 const TURN_PORT = 3478
 const ICE = [{ urls: `turn:127.0.0.1:${TURN_PORT}`, username: 'chess', credential: 'chess' }]
-const APP_ID = 'chess-sharp-turn-proof-v1'
+const APP_ID = 'nodechess-turn-proof-v1'
 const ROOM = 'turn-proof-room'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
@@ -58,7 +58,7 @@ function startCoturn() {
   const args = [
     '-n', '--listening-ip=127.0.0.1', '--relay-ip=127.0.0.1', `--listening-port=${TURN_PORT}`,
     '--min-port=50000', '--max-port=50200', '--lt-cred-mech', '--user=chess:chess',
-    '--realm=chesssharp', '--no-tls', '--no-dtls', '--no-cli', '--no-multicast-peers',
+    '--realm=nodechess', '--no-tls', '--no-dtls', '--no-cli', '--no-multicast-peers',
     '--allow-loopback-peers', `--log-file=${logFile}`, '--simple-log', '-a', '-v',
   ]
   const proc = spawn(bin, args, { stdio: 'ignore' })

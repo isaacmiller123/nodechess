@@ -404,7 +404,7 @@ export function AssistPanel({ assist }: { assist: AssistState }): JSX.Element {
     statusNote
   } = assist
 
-  const pending = done ? '—' : '…'
+  const pending = done ? '·' : '…'
 
   return (
     <div className="panel assist-panel">

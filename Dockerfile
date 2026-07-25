@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
-# Chess# web (docs/WEB-PORT-SPEC.md, deploy guide: docs/WEB-DEPLOY.md).
+# nodechess web (docs/WEB-PORT-SPEC.md, deploy guide: docs/WEB-DEPLOY.md).
 #
 # One image = the whole web app: SPA + Fastify server + IPC bridge + the static
 # content trees the server serves. `docker run -p 8080:8080` is the local host
 # AND the deploy artifact (same image on any VPS).
 #
-#   docker build -t chess-sharp-web .
-#   docker run --rm -p 8080:8080 -v "$PWD/data-web:/data" chess-sharp-web
+#   docker build -t nodechess-web .
+#   docker run --rm -p 8080:8080 -v "$PWD/data-web:/data" nodechess-web
 #
 # Puzzle DB (~2.1 GB resources/data/puzzles.sqlite) — two options:
 #   1. VOLUME (default, keeps the image lean): mount it read-only at runtime and
@@ -14,7 +14,7 @@
 #      is .dockerignore'd, so the build context stays small either way.
 #   2. BAKE-IN: pass the DB directory as a NAMED BUILD CONTEXT (named contexts
 #      are not subject to this repo's .dockerignore), plus the build arg:
-#        docker build -t chess-sharp-web \
+#        docker build -t nodechess-web \
 #          --build-arg WITH_PUZZLES=true \
 #          --build-context puzzles-db=resources/data .
 #      The baked file lands at /app/resources/data/puzzles.sqlite — the image's

@@ -1,5 +1,5 @@
-appId: org.chesssharp.app
-productName: Chess#
+appId: org.nodechess.app
+productName: nodechess
 directories:
   output: release
 # Update feed (src/main/updates). Declaring the GitHub provider makes
@@ -13,7 +13,7 @@ directories:
 publish:
   provider: github
   owner: isaacmiller123
-  repo: chess-sharp
+  repo: nodechess
 asar: true
 files:
   - "out/**"
@@ -52,8 +52,8 @@ win:
         - x64
   icon: build/icon.ico
   # Fallback for targets without their own block (the win zip): os+arch so the
-  # per-platform zips never collide; avoids '#' from productName in paths.
-  artifactName: Chess-${version}-${os}-${arch}.${ext}
+  # per-platform zips never collide.
+  artifactName: nodechess-${version}-${os}-${arch}.${ext}
 mac:
   # Same lean model as Windows: the engine + puzzle DB are imported at runtime,
   # not bundled, so the .dmg/.zip stay small. arm64 (Apple Silicon) + x64 (Intel).
@@ -81,16 +81,16 @@ mac:
   hardenedRuntime: false
   gatekeeperAssess: false
   # Fallback for the mac zip target (dmg has its own block below).
-  artifactName: Chess-${version}-${os}-${arch}.${ext}
+  artifactName: nodechess-${version}-${os}-${arch}.${ext}
 dmg:
-  artifactName: Chess-${version}-${arch}.${ext}
+  artifactName: nodechess-${version}-${arch}.${ext}
 nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
-  # Artifact names avoid the '#' in productName ("Chess#") — it breaks shell paths
-  # and needs %23 URL-encoding on download links.
-  artifactName: Chess-Setup-${version}.${ext}
+  # Names are spelled out rather than left to electron-builder's default because
+  # updateLogic.pickWinAsset matches the installer by this exact prefix.
+  artifactName: nodechess-Setup-${version}.${ext}
 portable:
-  artifactName: Chess-Portable-${version}.${ext}
+  artifactName: nodechess-Portable-${version}.${ext}

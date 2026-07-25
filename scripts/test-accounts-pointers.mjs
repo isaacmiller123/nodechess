@@ -1,5 +1,5 @@
 // THE A3 AUTHENTICATED-POINTERS SUITE — brick 4 (spec §5 "authenticated
-// pointer records / closes index poisoning", docs/accounts-spec/14 + 08).
+// pointer records / closes index poisoning"; docs/ACCOUNTS-SPEC.md).
 //
 //   node scripts/test-accounts-pointers.mjs
 //

@@ -3,12 +3,15 @@
  *
  * A6 WIRING STATUS: identity, chain, profile, ladders, reputation, standing,
  * devices and recovery export are REAL (mock/store.ts over src/web/accounts.ts
- * + ../store/derive.ts). Everything still imported from THIS file feeds a
- * network/overlay-dependent surface with no backend yet (presence, friends
- * transport, mailbox, witness set, shard duty, verdicts, PIN committee, other
- * profiles). Every such surface mounts ./FixturePreviewBadge.tsx behind an
- * explicit DEV_FIXTURE gate, so it labels itself as sample data in the UI and
+ * + ../store/derive.ts). What is LEFT here is only what a live surface still
+ * reads: own account, PIN status, mailbox, recent games and other profiles.
+ * Every such surface mounts ./FixturePreviewBadge.tsx behind an explicit
+ * DEV_FIXTURE gate, so it labels itself as sample data in the UI and
  * `grep DEV_FIXTURE` across features/account lists every fixture surface.
+ *
+ * Fixtures for a surface that no longer renders them are DELETED, not parked:
+ * an unreferenced sample constant is one careless import away from putting
+ * invented numbers on screen, which this app does not do.
  *
  * Shapes follow ./types (which mirror src/shared/accounts). Timestamps are
  * absolute unix ms near MOCK_NOW so relative-time copy stays stable in tests.
@@ -28,20 +31,13 @@ export const DEV_FIXTURE: boolean = true
 import { displayState } from '@shared/accounts/ratings/display'
 import type {
   LadderKey,
-  UiChainEvent,
-  UiDevice,
-  UiFriend,
   UiGameRow,
   UiLadder,
   UiMailItem,
-  UiOverlayStatus,
   UiOwnAccount,
   UiPinStatus,
   UiProfile,
-  UiReputation,
-  UiShardDuty,
-  UiVerdict,
-  UiWitnessNode
+  UiReputation
 } from './types'
 
 /** "Now" for the preview: 2026-07-15T00:00Z. All fixture times are relative. */
@@ -142,36 +138,6 @@ export const OWN_ACCOUNT: UiOwnAccount = {
   chainEvents: 1734
 }
 
-/** Other keyring entries on this device (same name, different password ⇒ different tag). */
-export const KEYRING_ACCOUNTS: { handle: string; displayName: string; tag: string; current: boolean }[] = [
-  { handle: 'isaac#K7Q2M', displayName: 'isaac', tag: 'K7Q2M', current: true },
-  { handle: 'isaac#W3ZP6', displayName: 'isaac', tag: 'W3ZP6', current: false },
-  { handle: 'club_night#H4RD7', displayName: 'club_night', tag: 'H4RD7', current: false }
-]
-
-// ---------------------------------------------------------------------------
-// Recovery (C-5: mnemonic/keyfile export is the lifeline)
-// ---------------------------------------------------------------------------
-
-export const MNEMONIC_WORDS = [
-  'orbit', 'canyon', 'velvet', 'praise', 'lumber', 'quiz',
-  'shadow', 'brisk', 'meadow', 'copper', 'noble', 'tissue',
-  'raven', 'outer', 'sketch', 'divert', 'humble', 'jazz',
-  'plateau', 'wagon', 'ember', 'salute', 'trophy', 'kingdom'
-]
-
-export const KEYFILE_JSON = JSON.stringify(
-  {
-    v: 1,
-    kind: 'chess-sharp-keyfile',
-    name: 'isaac',
-    tag: 'K7Q2M',
-    seed: fakeB64u('isaac-seed')
-  },
-  null,
-  2
-)
-
 // ---------------------------------------------------------------------------
 // PIN (§1)
 // ---------------------------------------------------------------------------
@@ -185,184 +151,9 @@ export const PIN_STATUS: UiPinStatus = {
   fuse: null
 }
 
-/** A tripped fuse, for the banned showcase states. */
-export const PIN_FUSE_TRIPPED: UiPinStatus = {
-  set: true,
-  failures: 100,
-  lifetimeCap: 100,
-  refill: 20,
-  committee: { t: 5, n: 8 },
-  fuse: {
-    trippedWts: MOCK_NOW - 12 * DAY,
-    expiryWts: MOCK_NOW + 78 * DAY,
-    fails: 100,
-    signers: 5
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Devices (§1 key certificates)
-// ---------------------------------------------------------------------------
-
-export const DEVICES: UiDevice[] = [
-  {
-    pub: fakeB64u('device-0'),
-    index: 0,
-    label: 'This computer',
-    enrolledTs: MOCK_NOW - 312 * DAY,
-    witnessed: true,
-    thisDevice: true
-  },
-  {
-    pub: fakeB64u('device-1'),
-    index: 1,
-    label: 'MacBook Air',
-    enrolledTs: MOCK_NOW - 200 * DAY,
-    witnessed: true,
-    thisDevice: false
-  },
-  {
-    pub: fakeB64u('device-2'),
-    index: 2,
-    label: 'Phone (browser)',
-    enrolledTs: MOCK_NOW - 45 * DAY,
-    witnessed: false,
-    thisDevice: false
-  },
-  {
-    pub: fakeB64u('device-3'),
-    index: 3,
-    label: 'Old desktop',
-    enrolledTs: MOCK_NOW - 290 * DAY,
-    witnessed: true,
-    thisDevice: false,
-    revoked: true
-  }
-]
-
-// ---------------------------------------------------------------------------
-// Chain (§2 — two lanes)
-// ---------------------------------------------------------------------------
-
-export const CHAIN_EVENTS: UiChainEvent[] = [
-  {
-    id: fakeB64u('ev-genesis'),
-    lane: 'w',
-    type: 'genesis',
-    height: 0,
-    ts: MOCK_NOW - 312 * DAY,
-    summary: 'Account created — params digest pinned',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-cert0'),
-    lane: 'p',
-    type: 'cert',
-    height: 0,
-    ts: MOCK_NOW - 312 * DAY,
-    summary: 'Device 0 enrolled (root-signed certificate)'
-  },
-  {
-    id: fakeB64u('ev-profile1'),
-    lane: 'p',
-    type: 'profile',
-    height: 1,
-    ts: MOCK_NOW - 311 * DAY,
-    summary: 'Profile updated: bio, flair'
-  },
-  {
-    id: fakeB64u('ev-seg1401'),
-    lane: 'w',
-    type: 'segment',
-    height: 1401,
-    ts: MOCK_NOW - 3 * DAY,
-    summary: 'Rated Blitz vs mira#T8FQ2 — 1-0 (countersigned, written into both chains)',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-seg1402'),
-    lane: 'w',
-    type: 'segment',
-    height: 1402,
-    ts: MOCK_NOW - 3 * DAY + 2 * HOUR,
-    summary: 'Rated Blitz vs mira#T8FQ2 — 1/2-1/2 (rematch)',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-friend'),
-    lane: 'w',
-    type: 'friend',
-    height: 1403,
-    ts: MOCK_NOW - 2 * DAY,
-    summary: 'Friendship accepted with mira#T8FQ2 (countersigned edge)',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-conduct'),
-    lane: 'w',
-    type: 'conduct',
-    height: 1404,
-    ts: MOCK_NOW - 2 * DAY + HOUR,
-    summary: 'Commendation received from mira#T8FQ2 — "good game"',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-seg1405'),
-    lane: 'w',
-    type: 'segment',
-    height: 1405,
-    ts: MOCK_NOW - DAY,
-    summary: 'Rated Rapid vs oldguard#N2WQ4 — 0-1',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-ckpt1406'),
-    lane: 'w',
-    type: 'ckpt',
-    height: 1406,
-    ts: MOCK_NOW - DAY + HOUR,
-    summary: 'Checkpoint #70 — ratings, trust digest, ban state',
-    witnesses: 1,
-    ckpt: { verified: 'incremental', cosigners: 4, of: 8 }
-  },
-  {
-    id: fakeB64u('ev-profile2'),
-    lane: 'p',
-    type: 'profile',
-    height: 2,
-    ts: MOCK_NOW - 20 * HOUR,
-    summary: 'Profile updated: avatar'
-  },
-  {
-    id: fakeB64u('ev-seg1407'),
-    lane: 'w',
-    type: 'segment',
-    height: 1407,
-    ts: MOCK_NOW - 6 * HOUR,
-    summary: 'Rated Blitz vs newbie#F2PLC — 1-0',
-    witnesses: 1
-  },
-  {
-    id: fakeB64u('ev-seg1408'),
-    lane: 'w',
-    type: 'segment',
-    height: 1408,
-    ts: MOCK_NOW - 5 * HOUR,
-    summary: 'Rated Blitz vs kestrel#V9DM3 — 1-0',
-    witnesses: 1
-  }
-]
-
 // ---------------------------------------------------------------------------
 // Social (§3 friendships, §10 mailbox)
 // ---------------------------------------------------------------------------
-
-export const FRIENDS: UiFriend[] = [
-  { handle: 'mira#T8FQ2', displayName: 'mira', presence: 'online', since: MOCK_NOW - 2 * DAY, countersigned: true },
-  { handle: 'oldguard#N2WQ4', displayName: 'oldguard', presence: 'away', since: MOCK_NOW - 150 * DAY, countersigned: true },
-  { handle: 'kestrel#V9DM3', displayName: 'kestrel', presence: 'offline', since: MOCK_NOW - 88 * DAY, countersigned: true },
-  { handle: 'club_night#H4RD7', displayName: 'club_night', presence: 'offline', since: MOCK_NOW - 61 * DAY, countersigned: true }
-]
 
 export const MAILBOX: UiMailItem[] = [
   {
@@ -677,77 +468,4 @@ export const PROFILES: Record<string, UiProfile> = {
     },
     checkpoint: { height: 402, cosigners: 1, of: 8, verified: 'incremental', mOfN: false }
   }
-}
-
-// ---------------------------------------------------------------------------
-// Fair play (§8)
-// ---------------------------------------------------------------------------
-
-export const VERDICTS: UiVerdict[] = [
-  {
-    id: 'verdict-hustler-1',
-    accused: 'hustler#B4NN2',
-    window: { fromGame: 84, toGame: 131, games: 48 },
-    z: 6.42,
-    threshold: 5.0,
-    engineMatchPct: 71.3,
-    acplVsStrength: '11 ACPL at an estimated 1450 strength profile',
-    verdict: 'convicted',
-    computedBy: 'kestrel#V9DM3',
-    ts: MOCK_NOW - 18 * DAY,
-    judgeHash: 'sha256:3f9a1c…d24e (stockfish-18-lite-single)',
-    nodesPerMove: 1_200_000
-  },
-  {
-    id: 'verdict-own-spot',
-    accused: 'isaac#K7Q2M',
-    window: { fromGame: 1330, toGame: 1377, games: 48 },
-    z: 0.31,
-    threshold: 5.0,
-    engineMatchPct: 38.2,
-    acplVsStrength: '54 ACPL at an estimated 1490 strength profile — consistent',
-    verdict: 'clean',
-    computedBy: 'oldguard#N2WQ4',
-    ts: MOCK_NOW - 9 * DAY,
-    judgeHash: 'sha256:3f9a1c…d24e (stockfish-18-lite-single)',
-    nodesPerMove: 1_200_000
-  }
-]
-
-export const JUDGE_CONFIG = {
-  binary: 'stockfish-18-lite-single',
-  binaryHash: 'sha256:3f9a1c…d24e',
-  tier1Nodes: 80_000,
-  tier2Nodes: 1_200_000,
-  multiPv: 4,
-  hashMb: 16,
-  kWindow: 48
-}
-
-// ---------------------------------------------------------------------------
-// Storage & network (§4, §5, §11)
-// ---------------------------------------------------------------------------
-
-export const SHARD_DUTY: UiShardDuty = {
-  carriedMb: 34.2,
-  shards: 212,
-  accounts: 57,
-  repairsLast24h: 9,
-  lastRepairTs: MOCK_NOW - 3 * HOUR
-}
-
-export const WITNESS_SET: UiWitnessNode[] = [
-  { nodeId: fakeB64u('w-1'), handle: 'sable#J6KT9', distance: 1, uptimePct: 99.2, entanglementDist: 4, role: 'witness', online: true },
-  { nodeId: fakeB64u('w-2'), handle: 'granite#P8LW3', distance: 2, uptimePct: 97.8, entanglementDist: 6, role: 'committee', online: true },
-  { nodeId: fakeB64u('w-3'), handle: 'ferns#D2QX9', distance: 3, uptimePct: 92.4, entanglementDist: 5, role: 'witness', online: true },
-  { nodeId: fakeB64u('w-4'), handle: 'tundra#M6YC4', distance: 4, uptimePct: 88.1, entanglementDist: 7, role: 'committee', online: false },
-  { nodeId: fakeB64u('w-5'), handle: 'quartz#S3HN8', distance: 5, uptimePct: 95.6, entanglementDist: 3, role: 'witness', online: true },
-  { nodeId: fakeB64u('w-op'), handle: 'operator#AWAKE', distance: 9, uptimePct: 99.97, entanglementDist: 9, role: 'operator', online: true }
-]
-
-export const OVERLAY_STATUS: UiOverlayStatus = {
-  peers: 43,
-  relays: { connected: 4, total: 5 },
-  operatorReachable: true,
-  witnessesReachable: 5
 }

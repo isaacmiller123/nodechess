@@ -111,12 +111,12 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
       # Upload only the distributable artifacts, not the unpacked app trees. The
-      # globs cover: Windows Chess-Setup-*.exe / Chess-Portable-*.exe / Chess-*.zip
-      # and macOS Chess-*.dmg / Chess-*.zip, plus the build metadata files.
+      # globs cover: Windows nodechess-Setup-*.exe / nodechess-Portable-*.exe / nodechess-*.zip
+      # and macOS nodechess-*.dmg / nodechess-*.zip, plus the build metadata files.
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: chess-sharp-${{ matrix.os }}
+          name: nodechess-${{ matrix.os }}
           if-no-files-found: error
           retention-days: 14
           path: |
@@ -149,13 +149,13 @@ jobs:
           - **Online multiplayer** — worldwide peer-to-peer: host, share a code, play anyone anywhere. No account, no port forwarding.
           - **20+ games** — chess variants, xiangqi, shogi, janggi, makruk, go, checkers, othello, connect four, gomoku, hex, morris — each local, vs a bot, or online, with 2D & 3D boards. Plus a custom-variant Lab.
 
-          **Windows:** `Chess-Setup-*.exe` (installer) or `Chess-Portable-*.exe` (no install).
+          **Windows:** `nodechess-Setup-*.exe` (installer) or `nodechess-Portable-*.exe` (no install).
           **macOS:** the `.dmg` for your chip (arm64 = Apple Silicon, x64 = Intel).
 
           Both players must run the same version for online play — the app checks for updates on launch (Windows updates itself; macOS offers the new `.dmg` to install over the old app). Builds are unsigned: Windows SmartScreen → More info → Run anyway; macOS → right-click the app → Open (first launch only). On first run, use Settings → Datasets to import the engine and puzzle database.
           EOF
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
-            --title "Chess# $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" \
+            --title "nodechess $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" \
             2>/dev/null || true
           files=$(ls release/*.exe release/*.dmg release/*.zip release/*.blockmap release/latest*.yml 2>/dev/null || true)
           [ -n "$files" ] && gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber $files

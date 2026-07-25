@@ -355,12 +355,6 @@ function addToTally(t: ResultTally, kind: GameResultKind): void {
   else t.unknown += 1
 }
 
-export function tallyResults(games: GameRow[]): ResultTally {
-  const t = emptyTally()
-  for (const g of games) addToTally(t, resultKind(g))
-  return t
-}
-
 /** Score percentage (win=1, draw=0.5) over decided games, or null if none. */
 export function scorePercent(t: ResultTally): number | null {
   const decided = t.wins + t.draws + t.losses

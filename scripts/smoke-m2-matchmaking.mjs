@@ -24,7 +24,7 @@
 //
 // TRANSPORT (stated honestly): trystero 0.25.2 + werift, pointed at a LOCALHOST
 // Nostr relay (scripts/lib/local-nostr-relay.mjs) rather than public relays —
-// exactly the A6-KICKOFF §4 sanctioned fallback ("a multi-process localhost
+// exactly the sanctioned A6 fallback ("a multi-process localhost
 // signaling harness that KEEPS the real trystero transport"): from bare node,
 // three peers hammering the public pool trip rate-limiting and never mesh, while
 // the werift WebRTC itself is 100% real (ICE over 127.0.0.1 host candidates).

@@ -1,5 +1,5 @@
 // A4 seams 2/3/4 — chain-authoritative helpers for the witness fabric
-// (A3-KICKOFF residual seams; A4-KICKOFF brick 1b). Now that A3 replicates
+// (the A2->A3 residual seams, closed in A4 brick 1b). Now that A3 replicates
 // chains (shards/overlay/viewer), a witness that HOLDS a subject's verified
 // chain can be authoritative where A2 could only enforce context-free floors:
 //

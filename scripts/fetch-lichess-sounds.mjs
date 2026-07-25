@@ -4,13 +4,13 @@
 //   node scripts/fetch-lichess-sounds.mjs
 //
 // Sources files from the lichess-org/lila repository (public/sound/standard),
-// pinned to a specific commit for reproducibility, renames them to Chess#'s
+// pinned to a specific commit for reproducibility, renames them to nodechess's
 // sound-event vocabulary, and writes an ATTRIBUTION.md next to the assets.
 //
 // Licensing: per lila's COPYING.md, files not listed as exceptions are
 // "part of lila and copyright (c) 2012-2026 the lila authors" under the
 // GNU AGPL v3 (or any later version). public/sound/standard is NOT listed as
-// an exception, so these sounds are AGPLv3+. Chess# is GPL-3.0-or-later, and
+// an exception, so these sounds are AGPLv3+. nodechess is GPL-3.0-or-later, and
 // these files remain under their own AGPLv3+ terms (see ATTRIBUTION.md).
 //
 // Event mapping (what Lichess actually plays):

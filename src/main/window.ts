@@ -7,7 +7,7 @@ import path from 'node:path'
 export function createWindow(opts?: { smokeWasm?: boolean }): BrowserWindow {
   const smokeWasm = opts?.smokeWasm === true
   const win = new BrowserWindow({
-    title: 'Chess#',
+    title: 'nodechess',
     width: 1280,
     height: 832,
     minWidth: 1024,

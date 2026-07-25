@@ -128,7 +128,7 @@ export function PersonaDetail({
           </div>
           {p.modernEloNote && <p className="pdet-note muted">{p.modernEloNote}</p>}
           <p className="pdet-note muted">
-            {clockCopy.name} on the clock — {clockCopy.line}
+            {clockCopy.name} on the clock. {clockCopy.line}
           </p>
 
           <div className="pdet-meters">
@@ -246,7 +246,7 @@ export function PersonaDetail({
         </button>
         <p className="pdet-go-note muted">
           Plays in {p.name}&rsquo;s style at ~{challengeElo} strength
-          {p.modernElo != null ? ' — the estimate against today’s field.' : '.'}
+          {p.modernElo != null ? ', the estimate against today’s field.' : '.'}
         </p>
       </section>
 

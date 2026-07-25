@@ -76,7 +76,7 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
         </strong>
         <span>
           {phase === 'opened'
-            ? 'Download started — quit Chess# and install it over the old app.'
+            ? 'Download started — quit nodechess and install it over the old app.'
             : status.state === 'ready'
               ? 'Restart to finish — or it installs on your next quit.'
               : status.mode === 'auto'

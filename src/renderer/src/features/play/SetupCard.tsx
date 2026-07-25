@@ -28,8 +28,6 @@ import { OtbSetup } from './OtbSetup'
 import OnlineTab, { type OnlineStage } from './OnlineTab'
 
 export type ColorChoice = 'white' | 'black' | 'random'
-/** Legacy alias kept for callers: engine = vs-Stockfish, persona = Grandmasters. */
-export type OpponentMode = 'engine' | 'persona'
 /** Top-level Play tab. */
 export type PlayTab = 'local' | 'online' | 'grandmasters'
 /** Which Local sub-mode is active. */

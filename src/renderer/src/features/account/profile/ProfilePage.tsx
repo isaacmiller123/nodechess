@@ -1,18 +1,17 @@
-// §5 viewing flow + §10 profile page: view anyone, including the years-gone.
-// WIRED (A6 M3): when a target account ROOT is opened and the live AccountPeer
-// overlay is up, the page reconstructs the profile over the network via
-// viewerClient (storage/viewer.ts resolveProfile + openHistory) — newest profile
-// snapshot + newest M-of-N checkpoint (verified incrementally, spot-checked per
-// §2) + head + lazy game history — with the owner offline. When there is no
-// target root (a fixture display handle) or no live peer, it falls back to the
-// clearly-labelled DEV_FIXTURE sample profiles (offline preview). Ban state (§9)
-// renders as public signed data — profiles never disappear. The verification
-// strip surfaces the §2 checkpoint claim exactly as verified — including the
-// degradations it must never hide (C-12 revocationContested, the floor path, a
-// below-threshold checkpoint). A target with fewer than K_rec reachable shard
-// rows surfaces honest temporary unavailability that heals via repair — never a
-// crash, never a fabricated profile. Opponent ladders render ONLY through the
-// shared §6 projection (mm/pairing visibleOpponentInfo).
+// The profile page: view anyone, including accounts whose owner is long gone.
+// When a target account root is opened and the live peer is up, the page
+// resolves the profile over the network via viewerClient; without a live peer it
+// falls back to the clearly-labelled sample profiles (offline preview).
+//
+// WHAT THIS PAGE SHOWS A PLAYER: a name, a region, an age, ratings, reputation,
+// and games. Nothing about how any of it was fetched or verified. The protocol
+// facts the resolve returns (checkpoint height, cosigner counts, shard rows,
+// contested revocations, the reconstruction floor) are NOT product copy. They
+// collapse into one honest sentence when the view is incomplete, so a degraded
+// profile is never presented as a complete one, and stay out of the UI
+// otherwise. Opponent ladders render ONLY through the shared projection
+// (mm/pairing visibleOpponentInfo), so a viewer never sees a rating they are not
+// allowed to see.
 
 import { useEffect, useState, type JSX } from 'react'
 import {
@@ -25,14 +24,10 @@ import {
   Copy,
   Globe,
   History,
-  Layers,
   Loader2,
-  Lock,
   RefreshCw,
-  ScanSearch,
   Search,
   ShieldAlert,
-  ShieldCheck,
   Swords,
   Users
 } from 'lucide-react'
@@ -56,13 +51,13 @@ import { ReputationPanel } from './ReputationPanel'
 import { DAY, accountAge, daysRemaining, gameDate, regionName, relativeWts } from './profileFormat'
 
 /**
- * The §6 provisional-information projection for every ladder of a viewed
- * profile (A4-17), computed with the SHARED pure helpers over PairViews built
- * from protocol state. Signed-out viewers are spectators (spectatorOpponentInfo);
- * signed-in viewers project through the store's per-ladder viewer display state
- * via visibleOpponentInfo — a placement/provisional viewer gets 'unranked-pool'
+ * The rating-visibility projection for every ladder of a viewed profile (A4-17),
+ * computed with the SHARED pure helpers over PairViews built from protocol
+ * state. Signed-out viewers are spectators (spectatorOpponentInfo); signed-in
+ * viewers project through the store's per-ladder viewer display state via
+ * visibleOpponentInfo, so a placement/provisional viewer gets 'unranked-pool'
  * for that ladder, never a number or bracket.
- * Exported for the UI suite (scripts/test-a4-ui.mjs) — the pins run against the
+ * Exported for the UI suite (scripts/test-a4-ui.mjs): the pins run against the
  * exact projection this page renders.
  */
 export function projectionFor(
@@ -140,8 +135,8 @@ export function ProfilePage({
     setLive({ phase: 'resolving' })
   }, [handle, root, initialRevealed])
 
-  // Fixture-only lazy-page mock: ask the holders, come back with the honest §5
-  // failure mode (temporary unavailability that heals) — never a dead button.
+  // Fixture-only lazy-page mock: ask the holders, come back with the honest
+  // failure mode (temporary unavailability that heals), never a dead button.
   useEffect(() => {
     if (isLive || paging !== 'busy') return
     const t = window.setTimeout(() => setPaging('settled'), 950)
@@ -201,7 +196,6 @@ export function ProfilePage({
           <UnavailableCard
             handle={shortHandle}
             reason={live.reason}
-            availability={live.availability}
             onRetry={() => setRetryKey((k) => k + 1)}
             onBack={onBack}
           />
@@ -237,11 +231,8 @@ export function ProfilePage({
           <span className="aprof-missing-icon" aria-hidden>
             <Search size={22} />
           </span>
-          <h3 className="aprof-missing-title">No pointers found</h3>
-          <p className="muted">
-            No pointers found under that key — the account may never have entered the witnessed
-            zone.
-          </p>
+          <h3 className="aprof-missing-title">Nothing found</h3>
+          <p className="muted">No account matches that id. Check it and try again.</p>
           <button type="button" className="btn ghost" onClick={onBack}>
             <ArrowLeft size={14} aria-hidden /> Back
           </button>
@@ -259,7 +250,7 @@ export function ProfilePage({
         <span className="aprof-page-title">Profile</span>
         <span className="account-handle-mono muted small">{fixtureProfile.handle}</span>
         {DEV_FIXTURE && (
-          <FixturePreviewBadge label="Sample profile — open a real account root to reconstruct over the live overlay" />
+          <FixturePreviewBadge label="Sample profile (offline preview)" />
         )}
       </div>
 
@@ -284,57 +275,35 @@ export function ProfilePage({
   )
 }
 
-/** Honest §5/C-8 temporary-unavailability surface: the target resolved to fewer
- *  than the K_rec shard rows needed (or no authenticated pointers, or no live
- *  peer). Never a fabricated profile — it degrades, self-heals via repair, and
- *  offers a retry. */
+/** The profile could not be loaded this pass (not connected, nothing found, or
+ *  too little of it reachable). One plain sentence and a retry: the resolve's
+ *  reason codes stay internal, because none of them changes what the player
+ *  does next. Never a fabricated profile. */
 function UnavailableCard({
   handle,
   reason,
-  availability,
   onRetry,
   onBack
 }: {
   handle: string
   reason: string
-  availability: ViewerAvailability | null
   onRetry: () => void
   onBack: () => void
 }): JSX.Element {
-  const copy: Record<string, string> = {
-    'no-peer':
-      'Not connected to the account network yet — sign in and give the overlay a moment to come up, then retry.',
-    'no-pointers':
-      'No authenticated pointers found under this key — this account may never have entered the witnessed zone, or no carrier is online right now.',
-    'below-k':
-      'Temporarily unavailable — fewer than the K_rec shard rows needed are reachable right now. This is churn, not loss: background repair heals it as carriers return.',
-    'no-rows':
-      'No shard rows reachable yet — the network is the storage, and no carrier of this account is online at the moment. Background repair heals it as carriers return.',
-    'reconstruct-failed':
-      'The reachable shard rows did not reconstruct a verified chain this pass — temporary, self-healing as more carriers return.',
-    'bad-chain':
-      'The reachable rows did not verify against the countersigned head this pass — temporary; the guaranteed floor and repair heal it.',
-    error: 'Reconstruction hit a transport error — this is transient; retry in a moment.'
-  }
+  const copy =
+    reason === 'no-peer'
+      ? 'You are not connected yet. Wait a moment, then retry.'
+      : reason === 'no-pointers'
+        ? 'No account matches that id. Check it and try again.'
+        : 'This profile could not be loaded right now. Try again in a moment.'
   return (
     <section className="card aprof-card aprof-rail aprof-recon">
       <header className="aprof-card-head">
         <span className="aprof-eyebrow">
-          <CloudOff size={14} aria-hidden /> Reconstructing{' '}
-          <span className="account-handle-mono">{handle}</span>
+          <CloudOff size={14} aria-hidden /> <span className="account-handle-mono">{handle}</span>
         </span>
-        <p className="aprof-card-sub muted small">{copy[reason] ?? copy['below-k']}</p>
+        <p className="aprof-card-sub muted small">{copy}</p>
       </header>
-      {availability && (
-        <p className="aprof-stage-detail muted small num" role="status">
-          {availability.liveRows} of {availability.totalRows} shard rows reachable · {availability.needK} needed to
-          reconstruct · {availability.segments} game{availability.segments === 1 ? '' : 's'} on the guaranteed floor
-        </p>
-      )}
-      <footer className="aprof-card-foot muted small">
-        <AlertTriangle size={13} aria-hidden /> Temporary unavailability that heals (§5/C-8) — never
-        silent loss, never a fabricated profile.
-      </footer>
       <div className="aprof-games-foot">
         <button type="button" className="btn ghost aprof-btn-sm" onClick={onRetry}>
           <RefreshCw size={13} aria-hidden /> Retry
@@ -347,9 +316,9 @@ function UnavailableCard({
   )
 }
 
-/** The revealed profile body — identical rendering for the live reconstruction
- *  and the fixture preview; the caller supplies the UiProfile + its evaluation
- *  clock (Date.now for live data, MOCK_NOW for the frozen fixture) + the lazy
+/** The revealed profile body. Identical rendering for the live resolve and the
+ *  fixture preview; the caller supplies the UiProfile, its evaluation clock
+ *  (Date.now for live data, MOCK_NOW for the frozen fixture), and the lazy
  *  history pager (live) or the fixture mock paging state. */
 function RevealedProfile({
   profile,
@@ -369,11 +338,14 @@ function RevealedProfile({
   const isLive = pager !== null || fixturePaging === undefined
   const stale = nowMs - profile.lastWitnessedWts > 30 * DAY
   const totalGames = profile.ladders.reduce((n, l) => n + l.games, 0)
-  const ck = profile.checkpoint
   const recon = profile.reconstruction
+  // Every degradation signal the resolve can carry, collapsed to the one bit a
+  // player can act on: is this view missing something?
+  const incomplete =
+    recon.path === 'floor' || recon.revocationContested || !profile.checkpoint.mOfN
   const [copied, setCopied] = useState(false)
 
-  // Live game history — lazy-paged through the §5 pager (openHistory). Fixture
+  // Live game history, lazy-paged through the pager (openHistory). Fixture
   // preview renders profile.games with the mock "load more" note.
   const [liveGames, setLiveGames] = useState<UiGameRow[] | null>(null)
   const [nextPage, setNextPage] = useState(0)
@@ -424,8 +396,8 @@ function RevealedProfile({
     })
   }
 
-  // §6 (A4-17): own profile renders own numbers; anyone else renders through the
-  // shared viewer projection. Signed-out ⇒ spectator projection.
+  // A4-17: own profile renders own numbers; anyone else renders through the
+  // shared viewer projection. Signed-out means the spectator projection.
   const own = ui.account
   const isOwn = own !== null && own.handle === profile.handle
   const projection = isOwn
@@ -444,7 +416,7 @@ function RevealedProfile({
   const pagingBusy = pager ? livePaging === 'busy' : fixturePaging === 'busy'
   const pagingSettled = pager ? livePaging === 'settled' : fixturePaging === 'settled'
   // Live with no pager (rare: a segment floor with no pinned head) has nothing to
-  // page — treat as ended so no dead "Load more" button renders.
+  // page: treat as ended so no dead "Load more" button renders.
   const pagingEnded = pager ? livePaging === 'end' : isLive
   const onLoadMore = pager ? loadMoreLive : (fixtureLoadMore ?? (() => {}))
 
@@ -486,80 +458,51 @@ function RevealedProfile({
               <Users size={12} aria-hidden /> {profile.friendsCount} friends
             </span>
             <span className="aprof-meta-pill num">
-              <Swords size={12} aria-hidden /> {totalGames.toLocaleString()} witnessed games
+              <Swords size={12} aria-hidden /> {totalGames.toLocaleString()} games
             </span>
           </div>
         </div>
         {profile.lastWitnessedWts > 0 && (
           <div className={`aprof-staleness${stale ? ' is-stale' : ''}`}>
-            <Clock size={13} aria-hidden /> Last witnessed activity{' '}
-            {relativeWts(profile.lastWitnessedWts, nowMs)}
+            <Clock size={13} aria-hidden /> Last played {relativeWts(profile.lastWitnessedWts, nowMs)}
           </div>
         )}
       </section>
 
       <StandingStrip standing={profile.standing} nowMs={nowMs} />
 
-      {/* C-12 (A4-29): a device-signed revocation honored on device-attested
-          evidence only — the spec requires this surfaced, never silent. */}
-      {recon.revocationContested && (
+      {/* A4-29 / C-12 in ONE player-facing sentence. Every degradation the
+          resolve can report (the reconstruction floor, a contested revocation, a
+          checkpoint under the cosigner threshold) means the same thing to the
+          person reading: part of this profile is missing. So it is said once, in
+          those words, and the incomplete view is never dressed up as complete.
+          The individual carriers stay internal: they name mechanisms a player
+          cannot act on. */}
+      {incomplete && (
         <div className="aprof-contested" role="status">
           <span className="aprof-contested-icon" aria-hidden>
             <AlertTriangle size={15} />
           </span>
           <div className="aprof-contested-body">
             <strong className="aprof-contested-title">
-              Revocation contested — this view may hide one device&rsquo;s recent content
+              Some of this profile could not be loaded
             </strong>
             <span className="aprof-contested-sub">
-              A device-signed revocation was honored on device-attested evidence only (C-12: no
-              chain linkage to vet the signer). Degraded, self-healing — any reconstructing chain
-              adjudicates and heals it. Never silent.
+              Recent games may be missing. Try again in a moment.
             </span>
           </div>
         </div>
       )}
 
-      <div className="aprof-verify">
-        <ShieldCheck size={15} aria-hidden />
-        <span className="aprof-verify-main num">
-          Checkpoint #{ck.height.toLocaleString()} · {ck.cosigners}-of-{ck.of} cosigned · verified{' '}
-          {ck.verified}
-        </span>
-        {recon.path === 'floor' && (
-          <span
-            className="aprof-degraded-badge"
-            title="Fewer than K_rec shard rows and no verified chain — the reconstruction floor (§5/§12): guaranteed is the union of what survivors hold; background repair heals the rest"
-          >
-            <Layers size={13} aria-hidden /> floor path — degraded view
-          </span>
-        )}
-        {!ck.mOfN && (
-          <span
-            className="aprof-mofn-chip"
-            title="The freshest surfaced checkpoint has not reached the M-of-N witness cosignature threshold (§2) — shown honestly as unattested, never as a cosigned checkpoint"
-          >
-            <AlertTriangle size={13} aria-hidden /> checkpoint below cosigner threshold
-          </span>
-        )}
-        {recon.spotChecked && (
-          <span className="aprof-verify-spot">
-            <ScanSearch size={13} aria-hidden /> spot-checked — deeper range re-derived
-          </span>
-        )}
-      </div>
-
       <div className="aprof-columns">
         <section className="card aprof-card aprof-panel">
           <header className="aprof-card-head">
             <span className="aprof-eyebrow">Ratings</span>
-            <p className="aprof-card-sub muted small">
-              {projection === undefined
-                ? 'Display states derived identically by every client from public data.'
-                : viewerHiddenSomewhere
-                  ? 'Projected through §6: where your own rating is still hidden, you see nothing rating-shaped about anyone.'
-                  : 'Projected through §6: hidden ladders show their quantized bracket only.'}
-            </p>
+            {viewerHiddenSomewhere && (
+              <p className="aprof-card-sub muted small">
+                Ratings stay hidden until your own rating shows.
+              </p>
+            )}
           </header>
           <div className="aprof-card-body">
             <RatingLadders ladders={profile.ladders} projection={projection} />
@@ -570,7 +513,7 @@ function RevealedProfile({
           <header className="aprof-card-head">
             <span className="aprof-eyebrow">Reputation</span>
             <p className="aprof-card-sub muted small">
-              Conduct standing — a separate fold from rating and from trust.
+              How other players have found them to play against.
             </p>
           </header>
           <div className="aprof-card-body">
@@ -581,10 +524,8 @@ function RevealedProfile({
 
       <section className="card aprof-card aprof-panel">
         <header className="aprof-card-head aprof-card-head-row">
-          <span className="aprof-eyebrow">Game history</span>
-          <span className="muted small">
-            newest slice first · countersigned into both players&rsquo; chains
-          </span>
+          <span className="aprof-eyebrow">Games</span>
+          <span className="muted small">newest first</span>
         </header>
         {games.length > 0 ? (
           <ul className="aprof-games">
@@ -593,7 +534,7 @@ function RevealedProfile({
             ))}
           </ul>
         ) : (
-          <p className="aprof-games-empty muted small">No witnessed games in this slice.</p>
+          <p className="aprof-games-empty muted small">No games yet.</p>
         )}
         <div className="aprof-games-foot">
           {!pagingEnded && (
@@ -605,23 +546,21 @@ function RevealedProfile({
             >
               {pagingBusy ? (
                 <>
-                  <Loader2 size={13} className="aprof-spin" aria-hidden /> Paging from holders…
+                  <Loader2 size={13} className="aprof-spin" aria-hidden /> Loading…
                 </>
               ) : (
-                <>
-                  Load more <span className="aprof-btn-note num">~2 KB/game</span>
-                </>
+                'Load more'
               )}
             </button>
           )}
           {pagingEnded && (
             <p className="aprof-games-note muted small" role="status">
-              That&rsquo;s the full verified history — every page checked against the pinned head.
+              That&rsquo;s every game.
             </p>
           )}
           {pagingSettled && (
             <p className="aprof-games-note muted small" role="status">
-              No holder awake with older segments right now — they heal back in as carriers return.
+              Older games could not be loaded right now. Try again in a moment.
             </p>
           )}
         </div>
@@ -630,77 +569,39 @@ function RevealedProfile({
   )
 }
 
-/** §9 standing — every ban cites a public signed record, never a blocklist. */
+/** Standing, when it is not good. A ban is a public fact and the player needs
+ *  the date it lifts, so that is what this says. Which rule produced it, and
+ *  what signed record it cites, are protocol facts with no user action attached:
+ *  they stay out. */
 function StandingStrip({ standing, nowMs }: { standing: UiStanding; nowMs: number }): JSX.Element | null {
   if (standing.state === 'good') return null
 
-  if (standing.state === 'self-ban') {
-    return (
-      <div className="aprof-standing" role="status">
-        <span className="aprof-standing-icon" aria-hidden>
-          <Ban size={15} />
-        </span>
-        <div className="aprof-standing-body">
-          <span className="aprof-standing-titlerow">
-            <strong className="aprof-standing-title">Fair-play self-ban</strong>
-            <span className="aprof-standing-days num">
-              {daysRemaining(standing.expiresWts, nowMs)} days remaining
-            </span>
-          </span>
-          <span className="aprof-standing-sub">
-            Appended by the account&rsquo;s own client when the deterministic trigger fired —
-            serving the lenient path. Cites signed record{' '}
-            <span className="account-handle-mono">{shortB64u(standing.record)}</span>; the profile
-            stays public.
-          </span>
-        </div>
-      </div>
-    )
-  }
-
-  if (standing.state === 'pin-fuse') {
-    return (
-      <div className="aprof-standing" role="status">
-        <span className="aprof-standing-icon" aria-hidden>
-          <Lock size={15} />
-        </span>
-        <div className="aprof-standing-body">
-          <span className="aprof-standing-titlerow">
-            <strong className="aprof-standing-title">Witnessed-zone ban — PIN fuse tripped</strong>
-            <span className="aprof-standing-days num">
-              {daysRemaining(standing.expiresWts, nowMs)} days remaining
-            </span>
-          </span>
-          <span className="aprof-standing-sub">
-            100 lifetime PIN failures tripped the committee&rsquo;s fuse — a threshold-signed
-            public record. Cites{' '}
-            <span className="account-handle-mono">{shortB64u(standing.record)}</span>.
-          </span>
-        </div>
-      </div>
-    )
-  }
+  const permanent = standing.state !== 'self-ban' && standing.state !== 'pin-fuse'
+  const title =
+    standing.state === 'self-ban'
+      ? 'Rated play paused'
+      : standing.state === 'pin-fuse'
+        ? 'Account locked'
+        : 'Account banned'
 
   return (
     <div className="aprof-standing" role="status">
       <span className="aprof-standing-icon" aria-hidden>
-        <ShieldAlert size={15} />
+        {permanent ? <ShieldAlert size={15} /> : <Ban size={15} />}
       </span>
       <div className="aprof-standing-body">
         <span className="aprof-standing-titlerow">
-          <strong className="aprof-standing-title">Same-epoch fork</strong>
-          <span className="aprof-standing-days num">permanent</span>
-        </span>
-        <span className="aprof-standing-sub">
-          Two signed successors of one head under one lease epoch — self-authenticating fraud.
-          Cites <span className="account-handle-mono">{shortB64u(standing.record)}</span>.
+          <strong className="aprof-standing-title">{title}</strong>
+          <span className="aprof-standing-days num">
+            {permanent ? 'permanent' : `${daysRemaining(standing.expiresWts, nowMs)} days remaining`}
+          </span>
         </span>
       </div>
     </div>
   )
 }
 
-/** One witnessed game row, from the profile owner's perspective. */
+/** One game row, from the profile owner's perspective. */
 function GameRow({ game, nowMs }: { game: UiGameRow; nowMs: number }): JSX.Element {
   const Icon = LADDER_ICON[game.ladder]
   const kind =
@@ -723,16 +624,6 @@ function GameRow({ game, nowMs }: { game: UiGameRow; nowMs: number }): JSX.Eleme
         as {game.userColor === 'w' ? 'White' : 'Black'}
       </span>
       <span className="aprof-game-when muted small num">{gameDate(game.ts, nowMs)}</span>
-      {game.witnessed && (
-        <span
-          className="aprof-game-witnessed"
-          role="img"
-          aria-label="Witnessed — countersigned into both chains"
-          title="Witnessed — countersigned into both chains"
-        >
-          <ShieldCheck size={14} aria-hidden />
-        </span>
-      )}
     </li>
   )
 }

@@ -80,7 +80,7 @@
 // is where malformation is an error), and the same (state, event) always
 // yields the same state bytes.
 //
-// INPUT SEMANTICS (docs/building/ACCOUNTS-SPEC.md §6b + types.ts contracts):
+// INPUT SEMANTICS (docs/ACCOUNTS-SPEC.md §6b + types.ts contracts):
 //  segment  — one witnessed game, counted ONLY under the A4-07 gate above.
 //             Counted once per (game, opp) — a duplicate (game, opp) segment
 //             is ignored. On BOUND segments `reason` classifies it:

@@ -40,7 +40,7 @@ export function Onboarding({ onClose, onNavigate }: OnboardingProps): JSX.Elemen
   return (
     <OverlayDialog onClose={onClose} placement="center" className="shell-modal" labelledBy="onboarding-title">
       <div className="shell-modal-head">
-        <h2 id="onboarding-title">Welcome to Chess#</h2>
+        <h2 id="onboarding-title">Welcome to nodechess</h2>
         <button type="button" className="shell-modal-close" aria-label="Close" onClick={onClose}>
           <X size={18} aria-hidden />
         </button>

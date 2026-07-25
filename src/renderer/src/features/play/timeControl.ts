@@ -143,12 +143,6 @@ export function timeControlCategory(tc: TimeControl): TimeCategory {
   return 'Classical'
 }
 
-/** Combined "3+2 · Blitz"-style descriptor for a control. */
-export function timeControlSummary(tc: TimeControl): string {
-  if (tc.baseMs <= 0) return 'Unlimited · No clock'
-  return `${tc.label} · ${timeControlCategory(tc)}`
-}
-
 /** Threshold (ms) under which a side is considered "low on time". */
 export const LOW_TIME_MS = 10_000
 

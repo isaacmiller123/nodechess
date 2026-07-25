@@ -1,5 +1,5 @@
 // A minimal in-process Nostr relay for the A6 M1 live-slice smoke — the sanctioned
-// "localhost signaling harness" (A6-KICKOFF §4) that KEEPS the real trystero
+// "localhost signaling harness" that KEEPS the real trystero
 // transport when public relays are rate-limited/flaky from bare node (they are:
 // three peers in one process trip "you note too much"). It speaks exactly the
 // slice of NIP-01 trystero's Nostr strategy uses — REQ/EVENT/CLOSE in, EVENT/

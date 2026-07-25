@@ -1,4 +1,4 @@
-// A5 judge parameters (docs/building/ACCOUNTS-PARAMS.md §Judge + spec §8).
+// A5 judge parameters (docs/ACCOUNTS-PARAMS.md §Judge + spec §8).
 // Every value here is PROVISIONAL-UNTIL-CALIBRATED per the params doc
 // ([A5-CALIBRATED]): the A5 calibration runs carry proof obligations (empty
 // oracle margin, zero-false-positive holdout) and re-pin these before A-final.

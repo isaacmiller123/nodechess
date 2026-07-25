@@ -143,14 +143,6 @@ export interface UiGameRow {
   witnessed: boolean
 }
 
-/** §5 staged reconstruction of an account nobody is hosting. */
-export type UiReconStage =
-  | 'resolve' // overlay lookup, ~log N hops
-  | 'pointers' // authenticated pointer records, ranked by embedded proof
-  | 'holders' // freshest 3–5 holders contacted
-  | 'shards' // K_rec-of-N_shards erasure reconstruction
-  | 'verify' // checkpoint incremental verify + spot-check
-  | 'done'
 
 export interface UiReconstruction {
   /** Whether the viewing flow needs shard reconstruction (owner offline). */

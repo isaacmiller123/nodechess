@@ -84,14 +84,14 @@ export default function DatasetsPanel(): JSX.Element {
   const itemsRef = useRef(items)
   itemsRef.current = items
 
-  // Web build: assets are served by the site itself — there is no import flow,
+  // Web build: assets are served by the site itself, so there is no import flow,
   // so the whole card reduces to one honest line (all hooks are above; safe).
   if (isWebBuild) {
     return (
       <section className="card settings-card">
         <h2>Datasets</h2>
         <p className="muted small">
-          Everything the web app needs is delivered automatically — nothing to download.
+          Nothing to download. Everything is delivered with the app.
         </p>
       </section>
     )
@@ -121,9 +121,7 @@ export default function DatasetsPanel(): JSX.Element {
     <section className="card settings-card">
       <h2>Datasets</h2>
       <p className="muted small dataset-intro">
-        The engines (Stockfish, Maia, KataGo) and the Lichess puzzle database are downloaded on demand to
-        keep the app lean. They are fetched once from the project&apos;s public release and stored locally —
-        everything stays offline afterwards.
+        Download the engines and the puzzle database once. They work offline afterwards.
       </p>
 
       <ul className="dataset-list">
@@ -151,7 +149,7 @@ export default function DatasetsPanel(): JSX.Element {
                       {it.optIn.label}
                       <span className="muted">
                         {' '}
-                        — {fmtBytes(it.optIn.bytes)}, human-like go bots
+                        · {fmtBytes(it.optIn.bytes)}, human-like go bots
                         {humanInstalled ? ' (installed)' : ''}
                       </span>
                     </span>

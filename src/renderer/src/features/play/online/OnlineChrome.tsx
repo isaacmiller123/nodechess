@@ -3,7 +3,7 @@
 // peer-away countdown + peer-left claim row, the symmetric rematch strip and
 // the two-step Leave confirm. Extracted from OnlineTab so the chess GameView
 // path and the kernel-game path (KernelOnlineGame) render EXACTLY the same
-// surround — behavior lives in the onlineStore singleton either way.
+// surround. Behavior lives in the onlineStore singleton either way.
 
 import { useEffect, useState, type JSX } from 'react'
 import { Globe, Handshake, OctagonX, Repeat, Wifi, WifiOff } from 'lucide-react'
@@ -23,7 +23,7 @@ export function liveMs(clock: OnlineState['clock'], side: Color): number {
 }
 
 /** Slim status strip above the board: online tag, a live status message
- *  (in-game errors surface here — never silent, L12) and the in-game actions
+ *  (in-game errors surface here, never silent, L12) and the in-game actions
  *  (draw offer/accept/decline, abort, leave). */
 export function OnlineStatusBar({
   state,
@@ -55,7 +55,7 @@ export function OnlineStatusBar({
       ) : state.drawOffered && !over ? (
         <span className="online-statusbar-msg">{opponentName} offers a draw.</span>
       ) : state.drawSent && !over ? (
-        <span className="online-statusbar-msg muted">Draw offered — waiting…</span>
+        <span className="online-statusbar-msg muted">Draw offered, waiting…</span>
       ) : (
         <span className="online-statusbar-msg muted">Fair-play mode: hints &amp; takebacks are off.</span>
       )}
@@ -88,7 +88,7 @@ export function OnlineStatusBar({
           <button
             className="btn ghost small"
             onClick={() => onlineStore.abort()}
-            title="Abort — no result recorded"
+            title="Abort, no result recorded"
           >
             <OctagonX size={14} /> Abort
           </button>
@@ -143,7 +143,7 @@ function PeerAwayStrip({ name, deadlineMono }: { name: string; deadlineMono: num
   return (
     <div className="online-away-strip" role="status">
       <span className="online-away-msg">
-        <Wifi size={14} className="online-away-spin" aria-hidden /> {name} disconnected — {secs}s to
+        <Wifi size={14} className="online-away-spin" aria-hidden /> {name} disconnected. {secs}s to
         reconnect…
       </span>
     </div>
@@ -151,8 +151,8 @@ function PeerAwayStrip({ name, deadlineMono }: { name: string; deadlineMono: num
 }
 
 /** Symmetric rematch strip (MP-07). The banner's Rematch button sends the offer;
- *  this strip reports the negotiation the banner can't: sent → waiting + Cancel,
- *  incoming → Accept / Decline. */
+ *  this strip reports the negotiation the banner cannot: sent means waiting plus
+ *  Cancel, incoming means Accept / Decline. */
 export function RematchStrip({
   name,
   sent,
@@ -182,7 +182,7 @@ export function RematchStrip({
   if (sent) {
     return (
       <div className="online-rematch-strip" role="status">
-        <span className="online-rematch-msg muted">Rematch offered — waiting for {name}…</span>
+        <span className="online-rematch-msg muted">Rematch offered, waiting for {name}…</span>
         <div className="online-rematch-actions">
           <button className="btn ghost small" onClick={() => onlineStore.declineRematch()}>
             Cancel
@@ -194,7 +194,7 @@ export function RematchStrip({
   return null
 }
 
-/** Two-step Leave confirm (L10) — only reachable while a live undecided game is
+/** Two-step Leave confirm (L10): only reachable while a live undecided game is
  *  up. "Resign & leave" resigns first so the opponent gets a clean result. */
 export function LeaveConfirm({
   onConfirm,
@@ -207,7 +207,7 @@ export function LeaveConfirm({
     <div className="online-leave-confirm" role="alertdialog" aria-label="Leave the game?">
       <div className="online-leave-card">
         <h3>Leave the game?</h3>
-        <p className="muted">Leaving forfeits the game — your opponent wins by resignation.</p>
+        <p className="muted">Leaving forfeits the game. Your opponent wins by resignation.</p>
         <div className="online-leave-actions">
           <button className="btn danger" onClick={onConfirm}>
             Resign &amp; leave

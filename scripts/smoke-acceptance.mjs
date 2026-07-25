@@ -35,7 +35,7 @@
 //
 // TRANSPORT (stated honestly, exactly like smoke-live-slice / smoke-m2): trystero
 // 0.25.2 + werift, pointed at a LOCALHOST Nostr relay (scripts/lib/local-nostr-
-// relay.mjs) rather than public relays — the A6-KICKOFF §4 sanctioned fallback
+// relay.mjs) rather than public relays — the sanctioned A6 fallback
 // ("a multi-process localhost signaling harness that KEEPS the real trystero
 // transport"): from bare node, N peers hammering the public pool trip rate-
 // limiting and never mesh, while the werift WebRTC itself is 100% real (ICE over

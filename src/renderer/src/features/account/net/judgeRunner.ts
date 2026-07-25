@@ -1,5 +1,5 @@
 // A6 M5 Lane L-t1 — the Tier-1 anticheat runner (spec §8 Tier-1, ACCOUNTS-SPEC
-// §8, A6-KICKOFF M5).
+// §8).
 //
 // The last mile of a signed, witnessed, RATED game on the ANTICHEAT side: after
 // the game settles, run the PINNED canonical judge (content-hash-gated WASM, a

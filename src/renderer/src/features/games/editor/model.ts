@@ -58,8 +58,6 @@ export const PIECE_PALETTE: readonly PaletteDef[] = [
   }
 ] as const
 
-export const FAIRY_LETTERS: readonly PieceLetter[] = ['a', 'c', 'h']
-
 export function paletteDef(letter: string): PaletteDef | undefined {
   return PIECE_PALETTE.find((p) => p.letter === letter.toLowerCase())
 }
@@ -354,7 +352,7 @@ export function generateIni(model: EditorModel): string {
   const parent = parentDef(model.parent)
   const slug = slugify(model.name)
   const lines: string[] = []
-  lines.push(`# ${model.name.trim() || 'Untitled variant'} — built in the Chess# Variant Lab`)
+  lines.push(`# ${model.name.trim() || 'Untitled variant'} — built in the nodechess Variant Lab`)
   if (model.description.trim()) lines.push(`# ${model.description.trim()}`)
   lines.push(`[${slug}:${parent.id}]`)
 
@@ -395,17 +393,6 @@ export function generateIni(model: EditorModel): string {
     lines.push('castling = false')
   }
   return lines.join('\n') + '\n'
-}
-
-/** Reconstruct a painter board from saved ini text (best effort — null = raw-only). */
-export function boardFromIni(
-  iniText: string,
-  files: number,
-  ranks: number
-): BoardCells | null {
-  const m = /^\s*startFen\s*=\s*(.+)$/m.exec(iniText)
-  if (!m) return null
-  return parseFenBoard(m[1].trim(), files, ranks)
 }
 
 /** The startFen recorded in an ini text, else the parent's, else null. */

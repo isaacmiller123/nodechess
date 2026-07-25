@@ -1,5 +1,6 @@
 // Headless RENDER test for the A4 accounts UI (src/renderer/src/features/
-// account/**) — the suite that makes the A4 renderer review fixes revert-proof.
+// account/**) and for the rated-play surface it feeds (features/play/online/**)
+// — the suite that makes the A4 renderer review fixes revert-proof.
 // Every pinned behavior below was applied in the 2026-07 A4 fix pass and then
 // found UNENFORCED by the re-verification (no script rendered any .tsx, so a
 // silent revert kept all suites green). This suite renders the real components
@@ -13,13 +14,18 @@
 //          RatingLadders/ProfilePage render through the SHARED projections
 //          (mm/pairing visibleOpponentInfo / spectatorOpponentInfo); plus the
 //          previously-missing 'banned' OpponentInfo branch renders.
-//   A4-18  TrustWidthMeter geometry equals the SHARED quadratic width()
+//   A4-18  the SHARED quadratic width() curve holds its goldens
 //          (widthMin + floor(widthSpan·(1−T)²)) at several T — a local linear
 //          curve differs at every interior test point.
 //   A4-25  the meter renders NO numeric trust/width oracle (no "T = …",
 //          no "±N") in any build — §7 widening is invisible.
-//   (A4-26 / A4-27 were pinned against the old RatedLobby, which was deleted
-//    when rated play moved into Play. See the note where they used to run.)
+//   A4-26  the rated flow in Play → Online satisfies mm/pairing.pairingLegal
+//          on the EXACT PairViews it builds (features/play/online/
+//          ratedPairing.ownPairView), and its opponent card refuses to render
+//          a pairing the protocol rejects.
+//   A4-27  on a ladder where the signed-in account is NOT ranked, no spillover
+//          bracket and no opponent rating ever renders on that client — not
+//          even when the counterparty advertises a revealed rating (§6).
 //   A4-28  every fixture UiLadder.display IS displayState(state, key) — the
 //          shared §6 authority (PARAMS_A4 reveal thresholds 120/100/80/40).
 //   A4-29  the degradation carriers (reconstruction.path='floor',
@@ -35,11 +41,15 @@
 import { build } from 'esbuild'
 import { pathToFileURL, fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync, readFileSync, readdirSync } from 'node:fs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 const ACCT_UI = resolve(ROOT, 'src/renderer/src/features/account').replace(/\\/g, '/')
+// The rated surface moved here when rated play became a choice inside Play →
+// Online. Only its PURE modules are imported: they deliberately never reach the
+// matchmaking engine, so no relay transport is pulled into this process.
+const PLAY_UI = resolve(ROOT, 'src/renderer/src/features/play').replace(/\\/g, '/')
 
 // ---- tiny check kit ---------------------------------------------------------
 let passed = 0
@@ -98,7 +108,7 @@ function makeFakeStorage() {
 globalThis.localStorage = makeFakeStorage()
 // node ≥21 defines globalThis.navigator as getter-only — defineProperty it.
 Object.defineProperty(globalThis, 'navigator', {
-  value: { userAgent: 'chess-sharp-a4-ui-suite (node)' },
+  value: { userAgent: 'nodechess-a4-ui-suite (node)' },
   configurable: true,
 })
 
@@ -131,7 +141,9 @@ async function run(outdir) {
       `export { RatingLadders } from '${ACCT_UI}/profile/RatingLadders.tsx'`,
       `export { ProfilePage, projectionFor } from '${ACCT_UI}/profile/ProfilePage.tsx'`,
       `export { ReconstructionCard } from '${ACCT_UI}/profile/ReconstructionCard.tsx'`,
-      `export { TrustWidthMeter, widthBand, WIDTH_FLOOR, WIDTH_CEIL } from '${ACCT_UI}/rated/TrustWidthMeter.tsx'`,
+      `export { RatedOpponentCard } from '${PLAY_UI}/online/RatedOpponentCard.tsx'`,
+      `export { RATED_LADDERS, ownPairView, ratedLadderId, ratedLadderOf } from '${PLAY_UI}/online/ratedPairing.ts'`,
+      `export { timeControlById } from '${PLAY_UI}/timeControl.ts'`,
       `export { OWN_ACCOUNT, PROFILES, MOCK_NOW } from '${ACCT_UI}/mock/fixtures.ts'`,
       `export { accountsUiStore } from '${ACCT_UI}/mock/store.ts'`,
       `export { displayState, pairViewOf } from '@shared/accounts/ratings/display'`,
@@ -158,8 +170,10 @@ async function run(outdir) {
     absWorkingDir: ROOT,
     jsx: 'automatic',
     loader: { '.css': 'empty' },
-    // DEV=true ARMS the dev-only module-scope invariants and proves no
-    // dev-only numeric oracle renders (A4-25).
+    // DEV=true ARMS the dev-only module-scope invariants (ratedPairing throws
+    // on import if the picker's speed categories and the protocol's ladder
+    // categories ever disagree) and proves no dev-only numeric oracle renders
+    // (A4-25).
     define: {
       'import.meta.env.DEV': 'true',
       'import.meta.env.PROD': 'false',
@@ -175,10 +189,12 @@ async function run(outdir) {
     ProfilePage,
     projectionFor,
     ReconstructionCard,
-    TrustWidthMeter,
-    widthBand,
-    WIDTH_FLOOR,
-    WIDTH_CEIL,
+    RatedOpponentCard,
+    RATED_LADDERS,
+    ownPairView,
+    ratedLadderId,
+    ratedLadderOf,
+    timeControlById,
     OWN_ACCOUNT,
     PROFILES,
     MOCK_NOW,
@@ -195,7 +211,7 @@ async function run(outdir) {
     spectatorOpponentInfo,
   } = M
   const render = (el) => renderToStaticMarkup(el)
-  ok(true, 'bundle imported — account UI module-scope invariants held (DEV armed)')
+  ok(true, 'bundle imported — account + rated-play module-scope invariants held (DEV armed)')
 
   const mira = PROFILES['mira#T8FQ2']
   const adrift = PROFILES['adrift#P9GH3']
@@ -256,56 +272,73 @@ async function run(outdir) {
   )
 
   // ==========================================================================
-  // A4-18 — TrustWidthMeter geometry equals the shared quadratic width()
+  // A4-18 — the shared quadratic width() curve, and A4-25 — no trust oracle
   // ==========================================================================
-  console.log('\n[A4-18] meter band geometry is the shared quadratic width() …')
+  // TrustWidthMeter is GONE. It rendered a band plus several paragraphs telling
+  // the player how pairing widens under suspicion, which is a description of the
+  // anticheat mechanism handed to the person it defends against.
+  //
+  // Its two rules still matter, so they are pinned WITHOUT it:
+  //  A4-18 kept its golden values of the shared width() curve. Those are what
+  //        actually stop a regression back to the linear curve; the deleted
+  //        component only mirrored them into CSS percentages.
+  //  A4-25 is now a SOURCE scan instead of a render assertion, which is strictly
+  //        stronger: it fails if the vocabulary appears in any player-facing file
+  //        at all, whether or not a code path currently renders it. Grepping for
+  //        this after the fact is how the old copy survived three cleanup passes.
+  console.log('\n[A4-18] the shared quadratic width() curve holds its goldens …')
   eq(width(1_000_000), 50, 'width(T=1) golden: 50')
   eq(width(500_000), 162, 'width(T=0.5) golden: 162')
   eq(width(0), 500, 'width(T=0) golden: 500')
-  eq(WIDTH_FLOOR, width(0), 'meter WIDTH_FLOOR is the shared curve at the trust floor')
-  eq(WIDTH_CEIL, width(1_000_000), 'meter WIDTH_CEIL is the shared curve at full trust')
-  const T_POINTS = [0, 150_000, 250_000, 400_000, 500_000, 750_000, 820_000, 1_000_000]
-  for (const t of T_POINTS) {
-    const markup = render(h(TrustWidthMeter, { tMicro: t }))
-    const frac = width(t) / WIDTH_FLOOR
-    const wantW = `width:${String(frac * 100)}%`
-    const wantL = `left:${String(50 - frac * 50)}%`
-    ok(
-      markup.includes(wantW) && markup.includes(wantL),
-      `T=${t / 1e6}: rendered band is ${wantW} / ${wantL} — width(T)=${width(t)} (shared quadratic)`
-    )
-  }
-  // A local LINEAR curve (the reverted state) differs at every interior point:
   for (const t of [250_000, 500_000, 750_000]) {
     const linear = PARAMS_A4.widthMin + Math.floor((PARAMS_A4.widthSpan * (1_000_000 - t)) / 1_000_000)
-    ok(linear !== width(t), `T=${t / 1e6}: linear curve (${linear}) ≠ quadratic (${width(t)})`)
-    const markup = render(h(TrustWidthMeter, { tMicro: t }))
-    ok(
-      !markup.includes(`width:${String((linear / WIDTH_FLOOR) * 100)}%`),
-      `T=${t / 1e6}: the linear-curve band width does NOT render`
-    )
+    ok(linear !== width(t), `T=${t / 1e6}: linear curve (${linear}) is not the quadratic (${width(t)})`)
   }
-  eq(widthBand(820_000), 'precision', 'T=0.82 classifies as the precision band')
-  ok(
-    render(h(TrustWidthMeter, { tMicro: 820_000 })).includes('Precision band'),
-    'T=0.82 renders the coarse band label'
-  )
 
-  // ==========================================================================
-  // A4-25 — no numeric T / ±width oracle in ANY build (DEV is armed here)
-  // ==========================================================================
-  console.log('\n[A4-25] the meter renders no numeric trust/width readout …')
-  for (const t of [0, 500_000, 820_000, 1_000_000]) {
-    const markup = render(h(TrustWidthMeter, { tMicro: t }))
-    const text = textOf(markup)
-    ok(!/±\s*\d/.test(text), `T=${t / 1e6}: no "±<number>" in rendered text`)
-    ok(!/\bT\s*=/.test(text), `T=${t / 1e6}: no "T =" readout in rendered text`)
-    ok(!/\d\.\d/.test(text), `T=${t / 1e6}: no decimal number in rendered text`)
-    ok(!/\b\d{2,}\b/.test(text), `T=${t / 1e6}: no multi-digit number in rendered text`)
-    ok(
-      !markup.includes('dev-only') && !markup.includes('arate-meter-dev'),
-      `T=${t / 1e6}: the dev-only oracle block is gone`
-    )
+  console.log('\n[A4-25] no player-facing file names trust, suspicion or pairing width …')
+  {
+    const roots = [
+      resolve(ROOT, 'src/renderer/src/features/play'),
+      resolve(ROOT, 'src/renderer/src/features/account'),
+      resolve(ROOT, 'src/seed'),
+    ]
+    const files = []
+    const walk = (dir) => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        const full = resolve(dir, e.name)
+        if (e.isDirectory()) walk(full)
+        else if (e.name.endsWith('.tsx')) files.push(full)
+      }
+    }
+    for (const r of roots) walk(r)
+    ok(files.length > 20, `scanned ${files.length} player-facing .tsx files`)
+
+    // Vocabulary that must never reach a player. Matched against JSX TEXT and
+    // string literals only, so the identical words stay legal in code comments
+    // and in identifiers like trustT / tMicro, which are implementation.
+    const BANNED = [
+      /trust[- ]earned/i,
+      /island term/i,
+      /precision is earned/i,
+      /comparable[- ]suspicion/i,
+      /suspicion/i,
+      /trust score/i,
+      /pairing window/i,
+      /\bwidest\b/i,
+      /precision band/i,
+      /standard band/i,
+    ]
+    for (const f of files) {
+      const src = readFileSync(f, 'utf8')
+      // Strip // and /* */ comments so implementation prose is exempt.
+      const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+      const rel = f.slice(ROOT.length + 1)
+      for (const re of BANNED) {
+        ok(!re.test(code), `${rel}: no ${String(re)} in code or copy`)
+      }
+      ok(!/\bT\s*=\s*\{?\s*\d/.test(code), `${rel}: no numeric "T =" trust readout`)
+      ok(!/±\s*\{?\s*\d/.test(code), `${rel}: no "±<number>" width readout`)
+    }
   }
 
   // ==========================================================================
@@ -360,7 +393,9 @@ async function run(outdir) {
   ok(!provFull.includes('aprof-spark'), 'full mode: no sparkline renders')
   ok(!provFull.includes('progressbar'), 'full mode: no reveal-progress renders')
   ok(!provFull.includes('aprof-bracket'), 'full mode: no bracket element renders')
-  ok(provFull.includes('hidden while your own'), 'full mode: the §6 explainer renders instead')
+  // Same deletion as above: the explainer sentence was exposition. The six
+  // negative assertions immediately preceding are the actual §6 rule.
+  ok(provFullText.trim().length > 40, 'full mode: the page still renders without leaking a rating')
 
   // (b) compact mode is a surface too — the projection binds there as well
   const provCompact = render(
@@ -465,10 +500,11 @@ async function run(outdir) {
   ok(!MIRA_NUMBERS.test(provPageText), 'hidden viewer ProfilePage: no mira rating renders anywhere')
   ok(!provPage.includes('±'), 'hidden viewer ProfilePage: no ± band renders')
   ok(!provPage.includes(miraBracketStr), 'hidden viewer ProfilePage: no bracket renders')
-  ok(
-    provPage.includes('where your own rating is still hidden'),
-    'hidden viewer ProfilePage: the §6 explainer names the rule'
-  )
+  // The old §6 explainer sentence ("where your own rating is still hidden") was
+  // deleted on purpose: it explained the rule instead of doing anything. The rule
+  // itself is enforced by the three negative assertions above, which are what
+  // actually matter. Pin that the page still renders rather than blanking.
+  ok(provPageText.trim().length > 40, 'hidden viewer ProfilePage still renders a page')
   // The exported projection helper is what the page rendered:
   const pageProjection = projectionFor(mira, st.account.rootPub, st.account.ladders, st.viewerDisplay)
   ok(
@@ -476,15 +512,154 @@ async function run(outdir) {
     'projectionFor(hidden viewer) is unranked-pool on every ladder'
   )
 
-  // A4-26 / A4-27 — REMOVED WITH THE OLD RATED LOBBY.
-  //
-  // Both asserted §6 information rules against features/account/rated/RatedLobby
-  // (demo pairings satisfy mm/pairing.pairingLegal; a provisional player's client
-  // renders no spillover bracket and no opponent rating). The lobby was deleted
-  // when rated play moved into Play — the RULES still hold and still matter, so
-  // these must be re-pointed at the new rated flow rather than dropped. The
-  // shared authorities they check (pairingLegal, displayState, widthBand) are
-  // still covered by A4-28, A4-17, A4-18 and A4-25 above.
+  // ==========================================================================
+  // A4-26 — the rated flow's OWN PairViews satisfy the shared pairingLegal
+  // ==========================================================================
+  // Re-pointed from the deleted account/rated/RatedLobby onto the surface that
+  // replaced it: Play → Online's rated pool. `ownPairView` is the builder the
+  // live panel calls for the signed-in account, and the counterparty's side is
+  // that same projection built by THEIR client and carried in the signed seek —
+  // so the views below are the exact ones the surface pairs and renders on.
+  console.log('\n[A4-26] the rated flow’s PairViews satisfy mm/pairing.pairingLegal …')
+  // Preview trust for the two sides (micro-units, §7 recomputable-by-anyone) and
+  // the pinned instant both were evaluated at (A4-16): pairingLegal REQUIRES an
+  // atWts, and a legality verdict must never depend on the auditor's clock.
+  const OWN_TRUST_MICRO = 820_000
+  const OPP_TRUST_MICRO = 700_000
+  const PAIRING_WTS = 1_700_000_000_000
+  /** Both sides of a pairing on `key`, built the way the surface builds them. */
+  const pairOn = (key) => {
+    const ownL = OWN_ACCOUNT.ladders.find((l) => l.key === key)
+    const oppL = newbie.ladders.find((l) => l.key === key)
+    return {
+      own: ownPairView(OWN_ACCOUNT.rootPub, key, ownL.state, OWN_TRUST_MICRO),
+      opp: ownPairView(newbie.rootPub, key, oppL.state, OPP_TRUST_MICRO),
+    }
+  }
+  // The ladder a clock rates in IS half of a PairView's identity: the pool the
+  // surface advertises must be the pool both sides key their pairing on.
+  eq(ratedLadderOf(timeControlById('1+0')), 'Bullet', 'the picker’s 1+0 rates on the Bullet ladder')
+  eq(ratedLadderOf(timeControlById('3+2')), 'Blitz', 'the picker’s 3+2 rates on the Blitz ladder')
+  eq(ratedLadderOf(timeControlById('10+5')), 'Rapid', 'the picker’s 10+5 rates on the Rapid ladder')
+  eq(ratedLadderOf(timeControlById('30+0')), 'Classical', 'the picker’s 30+0 rates on the Classical ladder')
+  eq(ratedLadderOf(timeControlById('unlimited')), null, 'Unlimited rates on no ladder at all (§6)')
+  for (const key of RATED_LADDERS) {
+    const pv = pairOn(key)
+    eq(pv.own.ladderId, ratedLadderId(key), `${key}: our view carries the ladder id the pool keys on`)
+    eq(pv.opp.ladderId, ratedLadderId(key), `${key}: their view carries the same ladder id`)
+    deepEq(
+      pairingLegal(pv.own, pv.opp, PAIRING_WTS),
+      { legal: true },
+      `${key}: the pairing is LEGAL on the exact PairViews the surface builds`
+    )
+    deepEq(
+      pairingLegal(pv.opp, pv.own, PAIRING_WTS),
+      pairingLegal(pv.own, pv.opp, PAIRING_WTS),
+      `${key}: legality is symmetric`
+    )
+  }
+  // Blitz is the true spillover: we are ranked, they are not, and both sit on
+  // the same fixed rail. Derived (not hardcoded) so a fixture retune cannot rot
+  // the pins below.
+  const blitzPv = pairOn('Blitz')
+  eq(blitzPv.own.display.state, 'ranked', 'Blitz: our side is ranked (a true spillover)')
+  ok(blitzPv.opp.display.state !== 'ranked', 'Blitz: their side is still hidden')
+  eq(
+    bracketOf(eloOf(blitzPv.own.ratingMicro)).lo,
+    bracketOf(eloOf(blitzPv.opp.ratingMicro)).lo,
+    'Blitz: both sides sit on the same §7 spillover rail'
+  )
+  const oppElo = eloOf(blitzPv.opp.ratingMicro)
+  const oppBracket = bracketOf(oppElo)
+  const oppBracketStr = `${oppBracket.lo}–${oppBracket.hi}`
+  eq(oppElo, 1493, 'hidden Blitz display-Elo golden')
+  eq(oppBracketStr, '800–1600', 'spillover bracket golden')
+  const rankedCard = render(
+    h(RatedOpponentCard, {
+      own: blitzPv.own,
+      opp: blitzPv.opp,
+      atWts: PAIRING_WTS,
+      ladderKey: 'Blitz',
+    })
+  )
+  const rankedCardText = textOf(rankedCard)
+  ok(rankedCard.includes(oppBracketStr), 'ranked viewer: the card shows the quantized BRACKET (shared projection)')
+  ok(
+    !new RegExp(`\\b${oppElo}\\b`).test(rankedCardText),
+    'ranked viewer: the opponent’s precise hidden rating never renders'
+  )
+  // Fail-closed: the card re-runs pairingLegal on what it is about to render, so
+  // a pairing the protocol rejects is never dressed up as a game.
+  const crossLadder = render(
+    h(RatedOpponentCard, {
+      own: blitzPv.own,
+      opp: pairOn('Rapid').opp,
+      atWts: PAIRING_WTS,
+      ladderKey: 'Blitz',
+    })
+  )
+  ok(crossLadder.includes('Pairing refused'), 'an illegal pairing renders the refusal, not an opponent')
+  // The raw verdict id ('ladder-mismatch') no longer leaks into player copy. The
+  // rule is that an illegal pairing refuses instead of inventing an opponent,
+  // which the assertion above and the no-bracket assertion below both cover.
+  ok(!crossLadder.includes('ladder-mismatch'), 'the refusal does NOT leak the raw verdict id')
+  ok(!/\d+–\d+/.test(textOf(crossLadder)), 'refused pairing: no bracket renders')
+  // A missing counterparty view is an honest gap, never a placeholder number.
+  const noOppCard = render(
+    h(RatedOpponentCard, { own: blitzPv.own, opp: null, atWts: PAIRING_WTS, ladderKey: 'Blitz' })
+  )
+  // Wording changed; the rule is that it never invents a rating, pinned by the
+  // not-one-digit assertion below.
+  ok(noOppCard.trim().length > 20, 'no counterparty view yet: the card renders something honest')
+  ok(!/\d/.test(textOf(noOppCard)), 'no counterparty view yet: not one digit renders')
+
+  // ==========================================================================
+  // A4-27 — no spillover bracket / no opponent rating on a hidden client
+  // ==========================================================================
+  console.log('\n[A4-27] no spillover bracket on a provisional player’s client …')
+  // A counterparty who is loudly RANKED on the same rail: the pairing is legal
+  // and a ranked viewer would see the number, so the silence below is the §6
+  // rendering rule doing its job — not an accident of the fixtures.
+  const loudOpp = (key) =>
+    ownPairView(newbie.rootPub, key, { n: 400, r: 1_499_000_000, rd: 55_000_000 }, OPP_TRUST_MICRO)
+  eq(loudOpp('Blitz').display.state, 'ranked', 'the loud counterparty is ranked (400 games)')
+  for (const key of ['Bullet', 'Classical']) {
+    const pv = pairOn(key)
+    ok(pv.own.display.state !== 'ranked', `${key}: the signed-in account is NOT ranked here`)
+    const loud = loudOpp(key)
+    deepEq(
+      pairingLegal(pv.own, loud, PAIRING_WTS),
+      { legal: true },
+      `${key}: pairing with the ranked counterparty is legal (so the card is not merely refusing)`
+    )
+    for (const [label, opp] of [
+      ['hidden counterparty', pv.opp],
+      ['ranked counterparty', loud],
+    ]) {
+      const markup = render(
+        h(RatedOpponentCard, { own: pv.own, opp, atWts: PAIRING_WTS, ladderKey: key })
+      )
+      const text = textOf(markup)
+      ok(markup.includes('Unranked opponent pool'), `${key} / ${label}: the pool state renders`)
+      ok(!markup.includes(oppBracketStr), `${key} / ${label}: no spillover bracket renders`)
+      ok(!/\d+–\d+/.test(text), `${key} / ${label}: no bracket range of any shape renders`)
+      ok(!/\d/.test(text), `${key} / ${label}: not one digit renders — no rating can leak`)
+    }
+  }
+  // The control: the SAME loud counterparty against a ranked viewer DOES render
+  // its rating, so the assertions above pin the §6 rule and not a blank card.
+  const controlCard = render(
+    h(RatedOpponentCard, {
+      own: blitzPv.own,
+      opp: loudOpp('Blitz'),
+      atWts: PAIRING_WTS,
+      ladderKey: 'Blitz',
+    })
+  )
+  ok(
+    /\b1499\b/.test(textOf(controlCard)),
+    'control: a ranked viewer DOES see a ranked opponent’s rating — the rule above is not vacuous'
+  )
 
   // ==========================================================================
   // A4-29 — C-12 degradation carriers render as a VISIBLE degraded state
@@ -496,35 +671,47 @@ async function run(outdir) {
   const degradedPage = render(
     h(ProfilePage, { handle: 'adrift#P9GH3', onBack: () => {}, initialRevealed: true })
   )
-  ok(degradedPage.includes('Revocation contested'), 'revealed page: revocation-contested banner renders')
+  // C-12 is now ONE sentence instead of three mechanism chips. Every degradation
+  // the resolve can report (floor path, contested revocation, checkpoint under
+  // the cosigner threshold) collapses to the single bit a player can act on:
+  // part of this is missing. The rule is unchanged and strictly better stated,
+  // so it is pinned on the new copy. A degraded view must never read as complete.
   ok(
-    degradedPage.includes('floor path — degraded view'),
-    'revealed page: the floor-path degradation badge renders'
+    degradedPage.includes('Some of this profile could not be loaded'),
+    'revealed page: a degraded view says so, in one sentence'
   )
   ok(
-    degradedPage.includes('checkpoint below cosigner threshold'),
-    'revealed page: the below-M-of-N checkpoint chip renders'
+    !degradedPage.includes('Revocation contested') &&
+      !degradedPage.includes('cosigner threshold') &&
+      !degradedPage.includes('floor path'),
+    'revealed page: the underlying mechanisms are NOT named to the player'
   )
+  // The healthy counterpart: a complete view must NOT show the incomplete notice,
+  // otherwise the signal means nothing.
   const healthyPage = render(
     h(ProfilePage, { handle: 'mira#T8FQ2', onBack: () => {}, initialRevealed: true })
   )
   ok(
-    !healthyPage.includes('Revocation contested') &&
-      !healthyPage.includes('floor path — degraded view') &&
-      !healthyPage.includes('checkpoint below cosigner threshold'),
-    'healthy profile: none of the degradation chips render'
+    !healthyPage.includes('Some of this profile could not be loaded'),
+    'healthy profile: no incomplete notice renders'
   )
+
   const gate = render(h(ProfilePage, { handle: 'adrift#P9GH3', onBack: () => {} }))
-  ok(gate.includes('Reconstructing'), 'owner-offline profile opens with the §5 reconstruction stage')
+  ok(gate.includes('Loading'), 'owner-offline profile opens with the loading stage')
+
+  // ReconstructionCard is now purely the waiting state. Naming the floor path was
+  // its old job and moved to ProfilePage's single sentence, pinned above. What it
+  // must still never do is leak the mechanism while waiting.
   const floorCard = render(h(ReconstructionCard, { profile: adrift, onDone: () => {} }))
+  ok(floorCard.includes('Loading'), 'ReconstructionCard renders the waiting state')
   ok(
-    floorCard.includes('Reconstruction floor:') && floorCard.includes('never silent'),
-    'ReconstructionCard names the floor path degradation (C-12, never silent)'
+    !floorCard.includes('Reconstruction floor') && !floorCard.includes('shard'),
+    'ReconstructionCard names no mechanism to the player'
   )
   const expectedCard = render(h(ReconstructionCard, { profile: vanished, onDone: () => {} }))
   ok(
-    expectedCard.includes('Guaranteed: the union of what survivors hold'),
-    'ReconstructionCard renders the expected-path copy for a full reconstruction'
+    !/survivors|union of what|shard|checkpoint/i.test(textOf(expectedCard)),
+    'ReconstructionCard leaks no storage mechanism on the expected path either'
   )
 }
 

@@ -1,4 +1,4 @@
-# Caddy — automatic HTTPS (Let's Encrypt) reverse proxy for Chess#.
+# Caddy — automatic HTTPS (Let's Encrypt) reverse proxy for nodechess.
 # ${DOMAIN} / ${ACME_EMAIL} are substituted from .env.production by compose.
 #
 # Terminates TLS and forwards to the internal web + relay containers. Caddy

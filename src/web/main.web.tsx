@@ -1,16 +1,13 @@
 // Web entry (docs/WEB-PORT-SPEC.md): install the web `Api` implementation,
-// resolve the session, then boot the UNCHANGED renderer. The import of
-// '@/main' is dynamic so `window.api` (and the platform flag below) are
-// guaranteed to exist before any renderer module evaluates — static imports
-// would hoist above the assignments.
+// then boot the UNCHANGED renderer. The import of '@/main' is dynamic so
+// `window.api` (and the platform flag below) are guaranteed to exist before any
+// renderer module evaluates — static imports would hoist above the assignments.
 
 import { webApi } from './webApi'
-import { authStore } from './authStore'
-import { ACCOUNTS_DECENTRALIZED } from './accountsFlag'
 // Decentralized accounts (A1 packaging): side-effect import pulls the shared
 // accounts tree (ed25519 + hash-wasm argon2) into the web bundle and exposes
-// the window.__chessAccounts dev/test surface. Not the interim server
-// accounts (authStore above) — those stay until A-final. No UI yet (A6).
+// the window.__chessAccounts dev/test surface. This is the account system —
+// the interim server accounts (/api/auth/*) are gone along with the server.
 import './accounts'
 
 declare global {
@@ -26,43 +23,23 @@ window.__chessSharpWeb = true
 
 window.api = webApi
 
-// Production: the web server statically serves resources/games-art at
-// /games-art (server/index.ts), and games/three/artLoader.ts documents this
-// pre-set global as its highest-priority hook — 3D PBR textures work without
-// any Electron path probing. Dev: leave it unset; the renderer's own /@fs
-// sentinel mechanism (games/art.ts) resolves against the Vite dev server.
+// Production: the build copies resources/games-art to <outDir>/games-art, and
+// games/three/artLoader.ts documents this pre-set global as its highest-priority
+// hook — 3D PBR textures load with no Electron path probing. Dev: leave it
+// unset; the renderer's own /@fs sentinel mechanism (games/art.ts) resolves
+// against the Vite dev server.
 if (!import.meta.env.DEV) {
-  window.__gamesArtBase = '/games-art'
-}
-
-async function boot(): Promise<void> {
-  // A-final switch (accountsFlag.ts, spec §14): when the decentralized
-  // accounts are live (the default), the interim session is NEVER consulted —
-  // authStore stays {known:false}, webApi routes all user data to the local
-  // layer, and the interim chip renders null. OFF (VITE_ACCOUNTS_
-  // DECENTRALIZED=0 build): resolve the session cookie BEFORE the renderer
-  // boots, as before — webApi routes every user-data namespace on auth state
-  // at call time, so the first settings/games reads must already know whether
-  // an account is live. boot() never rejects (offline / dev-without-server
-  // resolves to logged-out local mode).
-  if (!ACCOUNTS_DECENTRALIZED) await authStore.boot()
-  await import('@/main')
-  // The account chip is its own React root, mounted after the renderer so the
-  // design-token stylesheet is loaded (the chip's CSS carries dark fallbacks
-  // regardless). A chip failure must never blank a working app — log only.
-  import('./account/mount')
-    .then((m) => m.mountAccountRoot())
-    .catch((err) => console.error('Chess# account chip failed to mount', err))
+  window.__gamesArtBase = `${import.meta.env.BASE_URL}games-art`
 }
 
 // A failed chunk load (flaky network, mid-deploy refresh) must say so — an
 // uncaught boot rejection would leave a silent blank page.
-boot().catch((err) => {
-  console.error('Chess# failed to boot', err)
+import('@/main').catch((err) => {
+  console.error('nodechess failed to boot', err)
   const root = document.getElementById('root')
   if (root) {
     root.innerHTML =
       '<p style="font:14px system-ui,sans-serif;padding:2em">' +
-      'Chess# failed to load — please refresh the page.</p>'
+      'nodechess failed to load — please refresh the page.</p>'
   }
 })

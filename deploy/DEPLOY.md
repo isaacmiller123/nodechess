@@ -1,10 +1,10 @@
-# Chess# — Going Live (web + infrastructure)
+# nodechess — Going Live (web + infrastructure)
 
-This is the runbook to put Chess# on the public internet so anyone in the world
+This is the runbook to put nodechess on the public internet so anyone in the world
 can make an account and play. Desktop app releases (mac/win installers) are a
 separate flow — see [RELEASE.md](RELEASE.md).
 
-Because Chess# is **decentralized peer-to-peer** (gameplay rides WebRTC data
+Because nodechess is **decentralized peer-to-peer** (gameplay rides WebRTC data
 channels; there is no central game server or game database), "hosting for a
 million players" is just three cheap, horizontal pieces:
 

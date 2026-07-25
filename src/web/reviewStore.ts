@@ -1,24 +1,18 @@
-// ReviewStore implementations (web port W3 — build contract AGENT-CLIENT).
+// The ReviewStore (web port W3 — build contract AGENT-CLIENT).
 //
 // The W2 engine layer computes reviews CLIENT-side (src/web/engines) and
-// persists through the ReviewStore seam its contract file defines. Two
-// implementations live here plus a delegator that picks per-call on auth
-// state (auth state is constant for a page lifetime — user-driven changes
-// reload — but the delegator also keeps a mid-session 401 flip coherent):
-//
-//   localReviewStore — logged out: localStorage, LRU-capped at 40 reviews
-//     (reviews are the biggest client payload: tens of KB of move evals per
-//     game; 40 keeps well under localStorage quota, and on a quota error the
-//     tail is evicted until the write fits).
-//   httpReviewStore  — logged in: POST /api/review/save + GET /api/review/:id
-//     (auth-only; the server also marks accuracy on the game row on save).
+// persists through the ReviewStore seam its contract file defines. There is
+// exactly one implementation now that the web build is static: localStorage,
+// LRU-capped at 40 reviews (reviews are the biggest client payload — tens of KB
+// of move evals per game; 40 keeps well under quota, and on a quota error the
+// tail is evicted until the write fits).
 
-import type { GameReview, ReviewMoveEval } from '@shared/types'
+import type { GameReview } from '@shared/types'
 import type { ReviewStore } from './engines'
-import { authStore } from './authStore'
-import { HttpError, reviewLoadHttp, reviewSaveHttp } from './http'
 import { setLocalGameAccuracy, storageGet, storageRemove, storageSet } from './localData'
 
+// Pre-rebrand prefix, kept for the same reason as the keys in localData.ts:
+// it addresses reviews already stored in users' browsers.
 const REVIEWS_KEY = 'chess-sharp.reviews'
 export const LOCAL_REVIEWS_CAP = 40
 
@@ -110,48 +104,10 @@ export const localReviewStore: ReviewStore = {
   }
 }
 
-export const httpReviewStore: ReviewStore = {
-  async save(gameId, review) {
-    const res = (await reviewSaveHttp(gameId, review)) as { reviewId?: unknown } | null
-    return { reviewId: typeof res?.reviewId === 'number' ? res.reviewId : null }
-  },
+/** The store handed to createReviewApi/createPerfApi. */
+export const reviewStore: ReviewStore = localReviewStore
 
-  async load(gameId) {
-    let res: { review: GameReview | null; moveEvals: ReviewMoveEval[] }
-    try {
-      res = await reviewLoadHttp(gameId)
-    } catch (err) {
-      // "No review yet" must read as the empty shape, exactly like desktop
-      // review:get on an unreviewed game — not an error toast.
-      if (err instanceof HttpError && err.status === 404) return { review: null, moveEvals: [] }
-      throw err
-    }
-    return {
-      review: res?.review ?? null,
-      moveEvals: Array.isArray(res?.moveEvals) ? res.moveEvals : []
-    }
-  },
-
-  async markAccuracy() {
-    // POST /api/review/save marks accuracy on the game row server-side
-    // (build contract §5) — nothing further per-call.
-  }
-}
-
-/** The store handed to createReviewApi/createPerfApi: routes per-call so a
- *  mid-session 401 sign-out cleanly lands subsequent saves in local storage. */
-export const reviewStore: ReviewStore = {
-  save: (gameId, review) => active().save(gameId, review),
-  load: (gameId) => active().load(gameId),
-  markAccuracy: (gameId, white, black) =>
-    (active().markAccuracy ?? (async () => {}))(gameId, white, black)
-}
-
-function active(): ReviewStore {
-  return authStore.isAuthed() ? httpReviewStore : localReviewStore
-}
-
-/** app:resetProgress (logged out, 'games' scope) wipes cached local reviews. */
+/** app:resetProgress ('games' scope) wipes cached local reviews. */
 export function clearLocalReviews(): void {
   storageRemove(REVIEWS_KEY)
 }

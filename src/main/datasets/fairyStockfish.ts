@@ -24,7 +24,7 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 // Stockfish, so an imported binary always wins without a reinstall.
 
 const RELEASE_BASE =
-  'https://github.com/isaacmiller123/chess-sharp/releases/download/datasets-v1'
+  'https://github.com/isaacmiller123/nodechess/releases/download/datasets-v1'
 const FAIRY_OFFICIAL =
   'https://github.com/fairy-stockfish/Fairy-Stockfish/releases/download/fairy_sf_14'
 

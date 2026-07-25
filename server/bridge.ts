@@ -48,7 +48,7 @@ export const PUBLIC_CHANNELS: ReadonlySet<string> = new Set([
 // The ipc handle() wrapper origin-checks e.senderFrame.url; file: is allowed
 // (the bundled-renderer origin), so the bridge presents itself as one.
 const BRIDGE_EVENT: BridgeEntry.BridgeIpcEvent = {
-  senderFrame: { url: 'file:///chess-sharp-web-bridge' }
+  senderFrame: { url: 'file:///nodechess-web-bridge' }
 }
 
 export interface Api {

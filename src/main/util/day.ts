@@ -22,11 +22,6 @@ export function localDay(): string {
 
 const YMD_RE = /^\d{4}-\d{2}-\d{2}$/
 
-/** True for a well-formed 'YYYY-MM-DD' string. */
-export function isYmd(s: string): boolean {
-  return YMD_RE.test(s)
-}
-
 /** Validate + normalise a caller-supplied ymd; falls back to today() when absent
  *  or malformed. Use at trust boundaries (IPC) where a string is only guaranteed
  *  to be a string. */
@@ -43,12 +38,3 @@ export function prevYmd(s: string): string {
   return ymd(dt.getTime())
 }
 
-/** Whole-day difference a - b (both 'YYYY-MM-DD'), in LOCAL calendar days.
- *  Positive when a is after b. Anchored at local noon to avoid DST edge slips. */
-export function dayDiff(a: string, b: string): number {
-  const toNoon = (s: string): number => {
-    const [y, m, d] = s.split('-').map((n) => parseInt(n, 10))
-    return new Date(y, m - 1, d, 12, 0, 0, 0).getTime()
-  }
-  return Math.round((toNoon(a) - toNoon(b)) / 86_400_000)
-}

@@ -2,10 +2,10 @@
 // drives everything: current version, a manual "Check for updates" button, and
 // the state-appropriate action.
 //
-// Two delivery modes decided by MAIN (src/main/updates/updateLogic.ts —
+// Two delivery modes decided by MAIN (src/main/updates/updateLogic.ts, the
 // unsigned-build constraint, binding):
 //   - 'auto'   (packaged Windows): electron-updater downloads in place; the
-//     action here is "Restart & update" (quitAndInstall). Skipping it is safe —
+//     action here is "Restart & update" (quitAndInstall). Skipping it is safe:
 //     the update also applies on the next quit.
 //   - 'manual' (macOS always + dev builds): the action opens the right .dmg
 //     download in the browser; the card owns the "install it over the old app"
@@ -53,15 +53,15 @@ export default function UpdatesPanel(): JSX.Element {
       <h2>Updates</h2>
       <div className="updates-head">
         <span className="updates-version">
-          <strong>Chess# v{status?.currentVersion ?? '…'}</strong>
+          <strong>nodechess v{status?.currentVersion ?? '…'}</strong>
           <span className="setting-sub">
-            {/* Web: the served bundle IS the release — there's nothing to check
+            {/* Web: the served bundle IS the release, so there's nothing to check
                 or install, so the manual button goes away with the copy. */}
             {isWebBuild
-              ? 'The web app is always current — refresh to pick up new releases.'
+              ? 'Refresh to pick up new releases.'
               : auto
-                ? 'Checked on launch — updates download and install themselves.'
-                : 'Checked on launch — new versions are a one-click download.'}
+                ? 'Checked on launch. Updates install themselves.'
+                : 'Checked on launch. New versions are one click.'}
           </span>
         </span>
         {!isWebBuild && (
@@ -103,16 +103,16 @@ export default function UpdatesPanel(): JSX.Element {
         <div className="updates-offer">
           <span className="updates-offer-copy">
             <strong>
-              <ArrowUpCircle size={15} aria-hidden /> Chess# v{latest} is out
+              <ArrowUpCircle size={15} aria-hidden /> nodechess v{latest} is out
             </strong>
             <span>
               {state === 'ready'
-                ? 'Downloaded and ready — restart to finish, or it installs on your next quit.'
+                ? 'Restart to finish, or it installs on your next quit.'
                 : auto
                   ? 'It will download and install automatically.'
                   : openedExternal
-                    ? 'Download started in your browser. Quit Chess#, then install the new app over the old one — your games and progress are kept.'
-                    : 'One click downloads the new app. Install it over the old one — your games and progress are kept.'}
+                    ? 'Download started in your browser. Quit nodechess, then install the new app over the old one. Your games and progress are kept.'
+                    : 'One click downloads the new app. Install it over the old one. Your games and progress are kept.'}
             </span>
           </span>
           <button type="button" className="btn" onClick={onUpdate}>

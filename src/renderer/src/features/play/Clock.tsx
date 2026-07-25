@@ -162,7 +162,7 @@ export function Clock({ ms, active, over, label, interp, onLowTime }: ClockProps
     <span
       className={className}
       role="timer"
-      aria-label={inByo ? `${label} clock — byo-yomi, ${periodsLeft} periods left` : `${label} clock`}
+      aria-label={inByo ? `${label} clock, byo-yomi, ${periodsLeft} periods left` : `${label} clock`}
       aria-live={active && !over ? 'off' : 'polite'}
     >
       <span className="play-clock-time num">{formatClock(shown)}</span>

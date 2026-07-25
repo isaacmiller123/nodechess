@@ -10,9 +10,16 @@
 //   - `override` (programmatic, highest priority — e.g. a settings panel),
 //   - `VITE_ICE_SERVERS` (build-time env, JSON RTCIceServer[]),
 //   - else the built-in DEFAULT_ICE_SERVERS (byte-identical to the old inline set),
-//   - plus an OPERATOR-FALLBACK slot appended as relay-of-last-resort.
+//   - plus an OPERATOR-FALLBACK slot appended as relay-of-last-resort, from
+//     `opts.operatorFallback` or `VITE_TURN_FALLBACK`.
 // When no override/env is present the result is byte-identical to the previous
 // inline array, so the proven live path is unchanged.
+//
+// The env fallback exists because a deployment that stands up its own always-awake
+// nodes (src/seed, pinned via net/bootstrapPeers.ts) will run coturn on those same
+// hosts, and a build-time env is the one place that knows their addresses. It is
+// APPENDED, never substituted: TURN is the expensive path, so a self-hosted relay
+// belongs after the STUN entries that resolve most NATs for free.
 //
 // Platform: renderer (DOM RTCIceServer types). The env read is guarded so this
 // module still loads in bare-node suite bundles that have no import.meta.env
@@ -58,23 +65,27 @@ export interface IceResolveOpts {
    * Operator-fallback slot (spec §4 C-11): the operator peer's TURN / a
    * self-hosted coturn, appended AFTER the base set as relay-of-last-resort.
    * ICE prefers earlier (closer) servers, so this is the reliability floor, not
-   * the first choice. Null/absent for the M1 default (no operator TURN yet).
+   * the first choice. Absent ⇒ `VITE_TURN_FALLBACK`; explicit `null` suppresses
+   * that env too, for a caller that must build a bare ICE set.
    */
   operatorFallback?: readonly RTCIceServer[] | null
 }
 
 /**
  * The effective ICE server list. Precedence: `override` → `VITE_ICE_SERVERS`
- * env → DEFAULT_ICE_SERVERS; then the operator-fallback slot is appended.
- * Returns a FRESH, deeply-copied array (safe to hand to a mutable
- * RTCConfiguration). With no override/env/fallback the result is byte-identical
- * to the old inline `ICE_SERVERS` — the live WebRTC path is unchanged.
+ * env → DEFAULT_ICE_SERVERS; then the operator-fallback slot (`operatorFallback`
+ * → `VITE_TURN_FALLBACK`) is appended. Returns a FRESH, deeply-copied array (safe
+ * to hand to a mutable RTCConfiguration). With no override/env/fallback the
+ * result is byte-identical to the old inline `ICE_SERVERS` — the live WebRTC path
+ * is unchanged.
  */
 export function resolveIceServers(opts: IceResolveOpts = {}): RTCIceServer[] {
   const base =
     opts.override && opts.override.length > 0 ? opts.override : (envIceServers() ?? DEFAULT_ICE_SERVERS)
   const out = base.map(cloneIceServer)
-  if (opts.operatorFallback) for (const s of opts.operatorFallback) out.push(cloneIceServer(s))
+  // `undefined` falls through to the env; an explicit `null` means "no fallback".
+  const fallback = opts.operatorFallback === undefined ? envTurnFallback() : opts.operatorFallback
+  if (fallback) for (const s of fallback) out.push(cloneIceServer(s))
   return out
 }
 
@@ -93,6 +104,26 @@ function envIceServers(): RTCIceServer[] | null {
     if (Array.isArray(parsed) && parsed.every(isIceServer)) return parsed.map(cloneIceServer)
   } catch {
     /* malformed VITE_ICE_SERVERS — ignore, keep the defaults */
+  }
+  return null
+}
+
+/**
+ * The operator-fallback slot from env (C-11): a JSON RTCIceServer[] in
+ * `VITE_TURN_FALLBACK`, typically one self-hosted coturn with its credentials.
+ * Same guard + all-or-none validation as envIceServers — a malformed value is
+ * ignored, leaving the base set alone rather than half-applying it.
+ */
+function envTurnFallback(): RTCIceServer[] | null {
+  const env = (import.meta as { env?: Record<string, unknown> }).env
+  const raw = env?.VITE_TURN_FALLBACK
+  if (typeof raw !== 'string' || raw.trim() === '') return null
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.length > 0 && parsed.every(isIceServer))
+      return parsed.map(cloneIceServer)
+  } catch {
+    /* malformed VITE_TURN_FALLBACK — ignore, ship the base set unchanged */
   }
   return null
 }

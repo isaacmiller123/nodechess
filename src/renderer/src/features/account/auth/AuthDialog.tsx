@@ -13,19 +13,20 @@ import { accountsUiStore, useAccountsUi } from '../mock/store'
 import { RecoveryExportBody } from './RecoveryExport'
 
 /**
- * Create / sign-in dialog (spec §1, §10) — WIRED to the real key derivation
- * (src/web/accounts.ts): both flows are pure local computation, no signup
- * round-trip, and signing in anywhere is re-derivation, never a lookup.
- * Steps:
- *   form     — username + password with inline validation and a mode toggle.
- *              Same name + different password IS a different account (its own
- *              derived tag), so no picker step exists: the password selects
- *              the account. When this device's keyring holds several accounts
- *              under one name, a hint says so.
- *   recovery — post-creation mnemonic/keyfile export (C-5), then close
+ * Create / sign-in dialog, wired to the real key derivation
+ * (src/web/accounts.ts). Steps:
+ *   form:     username + password with inline validation and a mode toggle.
+ *             Same name + different password IS a different account, so no
+ *             picker step exists: the password selects the account. When this
+ *             device holds several accounts under one name, a hint says so.
+ *   recovery: post-creation mnemonic/keyfile export, then close.
+ *
+ * Copy rule: the waiting states say what is happening to the player ("setting up
+ * your account"), not what the code is doing to get there. Argon2id, chains,
+ * genesis and re-derivation are not shown.
  */
 
-/** §1: 3–24 chars, letters / digits / underscore / hyphen. */
+/** 3 to 24 chars, letters / digits / underscore / hyphen. */
 const NAME_RE = /^[a-zA-Z0-9_-]{3,24}$/
 
 type Step = 'form' | 'recovery'
@@ -44,7 +45,7 @@ export function AuthDialog({
   const [password, setPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   // Privacy default (wiring-6): the derived seed is stored ONLY on explicit
-  // opt-in — the box starts unchecked, matching src/web/accounts.ts
+  // opt-in, so the box starts unchecked, matching src/web/accounts.ts
   // CreateAccountOpts ("Default: NOT stored") and the types.ts contract.
   const [remember, setRemember] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -52,17 +53,17 @@ export function AuthDialog({
 
   const isBusy = busy === 'deriving' || busy === 'verifying'
 
-  // Closing during the recovery step still commits the created account — the
-  // keys and chain already exist (real create), so hiding them behind a
-  // signed-out card would be a dead end, not a cancel.
+  // Closing during the recovery step still commits the created account: the keys
+  // already exist (real create), so hiding them behind a signed-out card would be
+  // a dead end, not a cancel.
   const handleClose = (): void => {
     if (step === 'recovery') accountsUiStore.finishCreate()
     onClose()
   }
 
-  // Progress fill for the derivation phases (§1: argon2id is seconds-scale on
-  // slow hardware, so the wait deserves a bar). Cosmetic pacing only — the
-  // phase flips come from the real store.
+  // Progress fill for the key-derivation phases: seconds-scale on slow hardware,
+  // so the wait deserves a bar. Cosmetic pacing only; the phase flips come from
+  // the real store.
   useEffect(() => {
     if (busy !== 'deriving' && busy !== 'verifying') {
       setFill(0)
@@ -82,8 +83,8 @@ export function AuthDialog({
   const showNameError = !nameOk && (submitted || name !== '')
   const showPassError = !passOk && (submitted || (activeMode === 'create' && password !== ''))
 
-  // Real keyring rows sharing this display name (same name + different
-  // password coexist under different tags — §1 collision rule).
+  // Real keyring rows sharing this display name (same name + different password
+  // coexist under different tags).
   const sameName = (keyringAccounts ?? []).filter(
     (k) => k.displayName.toLowerCase() === name.toLowerCase()
   )
@@ -100,7 +101,7 @@ export function AuthDialog({
     if (isBusy || !nameOk || !passOk) return
     if (activeMode === 'create') {
       const ok = await accountsUiStore.createAccount(name, password, remember)
-      // Keys exist now — nudge the mnemonic/keyfile export before closing (C-5).
+      // Keys exist now, so nudge the mnemonic/keyfile export before closing.
       if (ok) setStep('recovery')
       return
     }
@@ -116,23 +117,19 @@ export function AuthDialog({
         : 'Sign in'
 
   const primaryLabel =
-    busy === 'deriving'
-      ? 'Deriving…'
-      : busy === 'verifying'
-        ? 'Verifying…'
-        : activeMode === 'create'
-          ? 'Create account'
-          : 'Sign in'
+    busy === 'deriving' || busy === 'verifying'
+      ? 'Working…'
+      : activeMode === 'create'
+        ? 'Create account'
+        : 'Sign in'
 
   const busyNote = isBusy ? (
     <div className="aauth-busy" role="status">
       <span className="aauth-busy-copy">
-        {busy === 'deriving' ? 'Deriving your keys locally (argon2id)…' : 'Verifying your chain…'}
+        {busy === 'deriving' ? 'Setting up your account…' : 'Signing you in…'}
       </span>
       <span className="aauth-busy-sub">
-        {busy === 'deriving'
-          ? 'Pure local computation — nothing leaves this device.'
-          : 'Re-checking your event log from genesis.'}
+        This takes a few seconds. Nothing leaves this device.
       </span>
       <span className="aauth-busy-track" aria-hidden>
         <span className="aauth-busy-fill" style={{ width: `${fill}%` }} />
@@ -163,7 +160,7 @@ export function AuthDialog({
         <div className="shell-modal-body">
           <RecoveryExportBody
             onDone={() => {
-              // Commit the staged account only now — flipping signedIn earlier
+              // Commit the staged account only now. Flipping signedIn earlier
               // would unmount this dialog before the recovery step is seen.
               accountsUiStore.finishCreate()
               onClose()
@@ -258,8 +255,8 @@ export function AuthDialog({
               ) : (
                 <span id="aauth-pass-hint" className="aauth-hint">
                   {activeMode === 'create'
-                    ? 'At least 8 characters. Your password is half of your keys — choose it like it matters.'
-                    : 'The password you created this account with — it re-derives the same keys.'}
+                    ? 'At least 8 characters. There is no password reset, so pick one you will keep.'
+                    : 'The password you created this account with.'}
                 </span>
               )}
             </div>
@@ -268,8 +265,7 @@ export function AuthDialog({
               <p className="aauth-note">
                 <Fingerprint size={14} aria-hidden />
                 This device holds {sameName.length} accounts named &ldquo;{name}&rdquo; (
-                {sameName.map((k) => `#${k.tag}`).join(', ')}). Each password derives its own
-                keys, so your password picks the account.
+                {sameName.map((k) => `#${k.tag}`).join(', ')}). Your password picks which one.
               </p>
             )}
 
@@ -285,8 +281,7 @@ export function AuthDialog({
                     <b>#·····</b>
                   </span>
                   <span className="aauth-tagprev-sub">
-                    Your 5-character tag derives from your keys the moment they exist — no
-                    registry, no squatting.
+                    Your tag is assigned when the account is created. Names are never taken.
                   </span>
                 </span>
               </div>
@@ -296,9 +291,8 @@ export function AuthDialog({
               <div className="aauth-warn">
                 <AlertTriangle size={16} aria-hidden />
                 <span>
-                  <strong>There is no recovery — by design.</strong> No email, no reset. Next
-                  you&rsquo;ll save a 24-word recovery phrase and a keyfile — the only ways back
-                  in.
+                  <strong>There is no password reset.</strong> No email either. Next you save a
+                  24-word recovery phrase and a keyfile. They are the only ways back in.
                 </span>
               </div>
             )}
@@ -306,8 +300,7 @@ export function AuthDialog({
             {activeMode === 'signin' && (
               <p className="aauth-note">
                 <Globe size={14} aria-hidden />
-                Any device works: signing in re-derives your keys from your name and password.
-                There is no server account to look up.
+                Sign in on any device with the same username and password.
               </p>
             )}
 
@@ -318,7 +311,7 @@ export function AuthDialog({
                 disabled={isBusy}
                 onChange={(e) => setRemember(e.target.checked)}
               />
-              <span>Keep me signed in on this device (stores your derived seed locally).</span>
+              <span>Keep me signed in on this device.</span>
             </label>
 
             {error !== null && (

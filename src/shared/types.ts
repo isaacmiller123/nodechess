@@ -1076,7 +1076,7 @@ export interface UpdateActionResult {
 }
 
 // ---- Internet multiplayer (mp) — protocol v3 ---------------------------------
-// Two copies of Chess#, anywhere on the internet, play each other over WebRTC data
+// Two copies of nodechess, anywhere on the internet, play each other over WebRTC data
 // channels established in the RENDERER (Chromium's native RTCPeerConnection).
 // Signaling runs through public relays (trystero/Nostr) — no user-run server and no
 // port forwarding. The join code is a random ROOM KEY (not an address): the host

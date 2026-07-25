@@ -529,10 +529,6 @@ export function americanPiecesOf(s: AmericanCheckersState): CheckersPieceView[] 
   return out.sort((a, b) => a.square - b.square)
 }
 
-export function americanTurnOf(s: AmericanCheckersState): PlayerColor {
-  return s.data.player === DraughtsPlayer.DARK ? 'black' : 'white'
-}
-
 /** Pieces on the board, ascending square order. */
 export function intlPiecesOf(s: IntlCheckersState): CheckersPieceView[] {
   const pos = parseIntlFen(s.fen)
@@ -542,6 +538,3 @@ export function intlPiecesOf(s: IntlCheckersState): CheckersPieceView[] {
   return out.sort((a, b) => a.square - b.square)
 }
 
-export function intlTurnOf(s: IntlCheckersState): PlayerColor {
-  return parseIntlFen(s.fen).turn === 'W' ? 'white' : 'black'
-}

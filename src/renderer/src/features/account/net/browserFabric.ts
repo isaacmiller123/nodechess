@@ -43,7 +43,10 @@ import { resolveNostrRelays } from './relayConfig'
 /** trystero app namespace for the accounts fabric — distinct from the mp game
  *  rooms (rtcTransport.ts APP_ID 'chess-sharp-mp-v3'). The operator peer must
  *  join with the SAME appId + roomId (+ password) to share this fabric; export
- *  the defaults so the lead can pass them to startOperatorPeer (M2/ops). */
+ *  the defaults so the lead can pass them to startOperatorPeer (M2/ops).
+ *  Pre-rebrand spelling on both, and for the same reason as APP_ID: the string
+ *  is the rendezvous, so a rename splits the fabric in two. Version it (`-v2`)
+ *  when the fabric protocol itself changes. */
 export const FABRIC_APP_ID = 'chess-sharp-accounts-fabric-v1'
 export const FABRIC_ROOM_DEFAULT = 'accounts-fabric-v1'
 const REQUEST_NS = 'fabreq' // one request namespace; the kind rides in the frame

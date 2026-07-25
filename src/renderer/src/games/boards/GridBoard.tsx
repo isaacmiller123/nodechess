@@ -25,7 +25,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, JSX } from 'react'
 import './boards.css'
 import type { GameBoardProps } from '../registry'
-import type { PlayerColor } from '../kernel'
 import { useBoardSound } from './useBoardSound'
 import { OTHELLO_SPEC, othelloName, popcount, type OthelloState } from '../small/othello'
 import { CONNECT4_SPEC, type Connect4State } from '../small/connect4'
@@ -794,14 +793,6 @@ function TicTacToeBoard({ state, interactive, onMove }: GameBoardProps): JSX.Ele
 // ===========================================================================
 // Dispatcher
 // ===========================================================================
-
-/** Color naming per grid idiom (owners label turns; boards stay self-lit). */
-export function gridColorLabel(kind: string, color: PlayerColor): string {
-  if (kind === 'connect4') return color === 'white' ? 'Red' : 'Yellow'
-  if (kind === 'hex') return color === 'white' ? 'Red' : 'Blue'
-  if (kind === 'tictactoe') return color === 'white' ? 'X' : 'O'
-  return color === 'white' ? 'White' : 'Black'
-}
 
 export default function GridBoard(props: GameBoardProps): JSX.Element {
   useBoardSound(props.kind, props.state)

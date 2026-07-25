@@ -1,4 +1,4 @@
-# Chess# PRODUCTION stack — the whole thing a million people connect through.
+# nodechess PRODUCTION stack — the whole thing a million people connect through.
 #
 #   cd deploy
 #   cp .env.production.example .env.production   # then EDIT it
@@ -16,7 +16,7 @@
 # carries only strict-NAT pairs' media — size it by bandwidth, add nodes and list
 # them all in VITE_ICE_SERVERS. See DEPLOY.md § Scaling.
 
-name: chess-sharp
+name: nodechess
 
 services:
   # ── The web app (built with OUR relay/ICE baked in) ────────────────────────
@@ -27,7 +27,7 @@ services:
       args:
         VITE_ICE_SERVERS: ${VITE_ICE_SERVERS}
         VITE_NOSTR_RELAYS: ${VITE_NOSTR_RELAYS}
-    image: chess-sharp-web:prod
+    image: nodechess-web:prod
     environment:
       TRUST_PROXY: ${TRUST_PROXY:-1}   # behind Caddy
       NODE_ENV: production

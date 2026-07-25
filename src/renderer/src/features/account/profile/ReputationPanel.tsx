@@ -1,7 +1,8 @@
-// §6b reputation — public conduct standing, distinct from rating and from
-// trust. A deterministic fold over witnessed conduct events, recomputable by
-// anyone, visible from game 1 (only competitive rating hides). Shared by the
-// own-profile preview (ProfileTab) and the viewer page (ProfilePage).
+// Reputation: public conduct standing, separate from rating. A deterministic
+// fold over witnessed conduct events, visible from game 1 (only competitive
+// rating hides). Shared by the own-profile preview (ProfileTab) and the viewer
+// page (ProfilePage). The panel shows a score, a tier, and what moved them.
+// It does not explain how the fold works.
 
 import { type JSX } from 'react'
 import { AlertCircle, Check, ThumbsUp } from 'lucide-react'
@@ -26,7 +27,7 @@ export function ReputationPanel({ reputation }: { reputation: UiReputation }): J
         </div>
         <span
           className="aprof-commend num"
-          title="Countersigned “good game” events — one per opponent per game, rate-limited by the entanglement"
+          title="Good game commendations from opponents"
         >
           <ThumbsUp size={13} aria-hidden /> {reputation.commendations.toLocaleString()}
         </span>
@@ -35,7 +36,7 @@ export function ReputationPanel({ reputation }: { reputation: UiReputation }): J
       <div
         className="aprof-rep-meter"
         role="img"
-        aria-label={`Conduct score ${reputation.score} of 100 — ${reputation.tier}`}
+        aria-label={`Conduct score ${reputation.score} of 100, ${reputation.tier}`}
       >
         <span className={`aprof-rep-fill ${tierClass}`} style={{ width: `${reputation.score}%` }} />
       </div>

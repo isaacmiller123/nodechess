@@ -54,7 +54,7 @@ function devBase(): string | null {
 function fileBase(): string | null {
   if (typeof window === 'undefined') return null
   // file:///…/Resources/app.asar/out/renderer/index.html -> …/Resources/games-art
-  // file:///…/chess-sharp/out/renderer/index.html        -> …/chess-sharp/resources/games-art
+  // file:///…/<checkout>/out/renderer/index.html         -> …/<checkout>/resources/games-art
   const m = window.location.href.match(/^(file:.*)\/out\/renderer\//)
   if (!m) return null
   const asar = m[1].match(/^(.*)\/app(?:\.asar)?$/)

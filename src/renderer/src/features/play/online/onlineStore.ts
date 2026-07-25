@@ -599,7 +599,7 @@ class OnlineStore {
     const blackName = uc === 'white' ? opp : me
     const headers: Record<string, string> = {
       Event: 'Online game',
-      Site: 'Chess#',
+      Site: 'nodechess',
       Date: yyyymmdd(),
       White: whiteName,
       Black: blackName,

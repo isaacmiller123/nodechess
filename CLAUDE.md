@@ -1,29 +1,47 @@
-# Chess# — project instructions
+# nodechess — project instructions
+
+Offline-first chess app: Electron desktop (mac + Windows) and a web target built from the same
+source. Bundled Stockfish, ~4.7M Lichess puzzles, a 40-chapter school, 20+ board games, online
+multiplayer, and a decentralized account system.
+
+## Build / run
+
+Node, npm and brew live at `/opt/homebrew/bin`, which is NOT on the default PATH — prepend it
+before any npm/node command.
+
+| | |
+|---|---|
+| Desktop dev | `npm run dev` (electron-vite) |
+| Web dev | `npm run dev:web`; `npm run start:web` builds SPA + server and serves it |
+| Typecheck | `npm run typecheck` — three targets (node, web, server); all must be green |
+| Tests | `npm run test:*` / `npm run smoke:*`, one script per area under `scripts/` |
+| Datasets | `npm run setup` fetches engines + puzzles and builds the derived DBs |
+
+Docs live flat in `docs/`. Start with `docs/architecture.md`; `docs/STATUS.md` is the phase log.
 
 ## Chess School is governed by a binding spec
-**[docs/building/SCHOOL-SPEC.md](docs/building/SCHOOL-SPEC.md) is the authoritative source of truth for all School work**
-(curriculum, lessons, tests, placement/Elo, UI, and the build process). Read it before any School change and
-conform to it exactly. It outranks any code comment, memory, or prior plan. Do not stray from it; changes
-need explicit user approval.
 
-Non-negotiables from that spec, summarized:
-- **Scale:** beginner → 2000 Elo, ~20 chapters (100-Elo bands), 3–6 lessons each (soft). A lesson = a new
-  opening + scenarios & how to exploit them + Elo-appropriate warm-up AND cool-down puzzles. Openings
-  include London System, Vienna, Bong Cloud, and similar.
-- **Placement & unlock:** placement game(s) estimate Elo from accuracy vs engine level (chess.com-style);
-  lessons unlock up to the user's Elo.
-- **Chapter test:** 10–15 questions, ≥70% to pass, 2 attempts, correct answers hidden on fail, fail both ⇒
-  retake the whole chapter, takeable at any point. 2–4 multiple-choice "key idea" questions; the rest are
-  board questions (play the opening out, exploit the explained moves, judge opponent moves correct/blunder).
-- **Look:** must be genuinely polished (chess.com/Lichess-grade), not just "consistent." Current UI is
-  unacceptable.
-- **Authoring:** Opus 4.8 at MAX effort, one agent per chapter, each play-tests and self-verifies against its
-  plan; then cross-check all chapters against the master curriculum; iterate until perfect.
+**[docs/SCHOOL-SPEC.md](docs/SCHOOL-SPEC.md) is the source of truth for all School work** —
+curriculum, lessons, tests, placement/Elo, and UI. Read it before any School change and conform to
+it exactly. It outranks any code comment or prior plan; changes need the owner's approval. The
+40-chapter arc it governs is in [docs/school-curriculum.md](docs/school-curriculum.md).
 
-Coach persona = **Viktor** (exacting old-school master).
+Non-negotiables from that spec:
+- **Scale:** beginner → 2000 Elo. A lesson teaches an opening or idea, the scenarios it produces and
+  how to exploit them, plus Elo-appropriate warm-up and cool-down puzzles.
+- **Placement & unlock:** placement games estimate Elo from accuracy vs engine level; lessons unlock
+  up to the user's Elo. Elo is internal grouping only and is never shown.
+- **Chapter test:** 10–15 questions, ≥70% to pass, 2 attempts, correct answers hidden on fail,
+  failing both means retaking the chapter. 2–4 multiple-choice "key idea" questions, the rest played
+  on a board.
+- **Look:** chess.com/Lichess-grade, not merely consistent.
+- Coach persona is **Viktor**, an exacting old-school master.
 
-## Build/run notes
-- Node/npm/brew are at `/opt/homebrew/bin` (NOT on default PATH) — prepend it for shell commands.
-- Cross-platform Win+Mac (see docs/building/DATASETS.md, docs/building/architecture.md). Engine + puzzle DB load via
-  src/main/datasets (imported-first, then bundled). Keep all hooks before any early return in React (a
-  hook-after-return caused a prior #300 crash).
+## Gotchas
+
+- Keep every React hook above any early return. A hook after a return caused a prior #300 crash.
+- Cross-platform desktop: engine and puzzle DB resolve through `src/main/datasets` (imported copies
+  first, then bundled). See `docs/DATASETS.md`.
+- Never show fabricated data in the UI. If a surface needs the network and the network isn't there,
+  say so in the UI rather than rendering samples or fixtures.
+- No emojis in product UI chrome, labels, buttons, or navigation.

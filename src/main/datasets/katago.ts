@@ -32,7 +32,7 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 //     94.5 MB, so it is a separate, optional item (`includeHuman`).
 
 const RELEASE_BASE =
-  'https://github.com/isaacmiller123/chess-sharp/releases/download/datasets-v1'
+  'https://github.com/isaacmiller123/nodechess/releases/download/datasets-v1'
 
 export const KATAGO_VERSION = '1.16.5'
 

@@ -61,11 +61,6 @@ export function pieceName(piece: Piece): string {
   return PIECE_NAME[piece.role]
 }
 
-/** All `attacker`-coloured pieces attacking `sq` given the live occupancy. */
-export function attackersOf(pos: Chess, sq: Square, attacker: Color): SquareSet {
-  return pos.kingAttackers(sq, attacker, pos.board.occupied)
-}
-
 /**
  * isDefended: a same-colour (relative to the piece on `sq`) attacker exists, OR
  * a ray-defence reveal — removing a same-colour ray attacker on the line reveals
@@ -187,41 +182,6 @@ export function ringOf(sq: Square): SquareSet {
   return set
 }
 
-/**
- * King-safety attacker count near `color`'s king: number of enemy attacks on the
- * king square plus its ring.
- */
-export function kingDanger(pos: Chess, color: Color): number {
-  const king = pos.board.kingOf(color)
-  if (king === undefined) return 0
-  const enemy = opposite(color)
-  let count = pos.kingAttackers(king, enemy, pos.board.occupied).size()
-  for (const sq of ringOf(king)) {
-    count += pos.kingAttackers(sq, enemy, pos.board.occupied).size()
-  }
-  return count
-}
-
-/**
- * Pawn-shield squares immediately in front of the king (and diagonals) on its
- * own ranks; returns how many are occupied by friendly pawns.
- */
-export function pawnShield(pos: Chess, color: Color): number {
-  const king = pos.board.kingOf(color)
-  if (king === undefined) return 0
-  const dir = color === 'white' ? 1 : -1
-  const f = squareFile(king)
-  const r = squareRank(king)
-  let shield = 0
-  for (let df = -1; df <= 1; df++) {
-    const nf = f + df
-    const nr = r + dir
-    if (nf < 0 || nf > 7 || nr < 0 || nr > 7) continue
-    const p = pos.board.get(nr * 8 + nf)
-    if (p && p.role === 'pawn' && p.color === color) shield++
-  }
-  return shield
-}
 
 /** The set of enemy non-king pieces attacked by the piece standing on `sq`. */
 export function attackedEnemyPieces(pos: Chess, sq: Square): { sq: Square; piece: Piece }[] {

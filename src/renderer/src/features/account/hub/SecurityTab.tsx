@@ -9,17 +9,13 @@ import './hub.css'
 /**
  * Account tab: the devices signed in to this account, and the recovery export.
  *
- * This used to carry the PIN committee, the lifetime-fuse meter, a worked
- * example of a tripped fuse, and a three-item taxonomy of every way to be
- * banned — including the exact anticheat threshold that does and does not
- * oblige one. All of it is gone.
+ * This used to carry a committee meter, a worked example of a tripped fuse, and a
+ * taxonomy of every way to be banned, including the exact anticheat threshold
+ * that does and does not oblige one. All of it is gone and none of it comes back.
  *
- * PIN provisioning is not offered because it cannot currently succeed: it needs
- * a live threshold committee, and a committee made of machines one person runs
- * protects nobody while its lifetime fuse can still lock them out for 90 days.
- * The protocol keeps the PIN lane intact (lease.verifyTakeover), so enabling it
- * later is an append, not a migration — and the account keeps working meanwhile
- * because the root lane covers the same operations with one factor.
+ * PIN provisioning is not offered because it cannot currently succeed. The
+ * protocol keeps that path intact (lease.verifyTakeover), so enabling it later is
+ * an append rather than a migration, and the account keeps working meanwhile.
  */
 
 function enrolledDate(ts: number): string {
@@ -31,9 +27,9 @@ function enrolledDate(ts: number): string {
 }
 
 /**
- * One device signed in to the account. Revocation is a witnessed append and
- * needs a reachable witness, so the control says so rather than pretending to
- * sign — an honest disabled button beats a mock that appears to work.
+ * One device signed in to the account. Removing one needs the network, so the
+ * control is honestly disabled when there is none. A disabled button beats a mock
+ * that appears to work.
  */
 function DeviceRow({ device }: { device: UiDevice }): JSX.Element {
   const revoked = Boolean(device.revoked)
@@ -63,7 +59,7 @@ function DeviceRow({ device }: { device: UiDevice }): JSX.Element {
             type="button"
             className="btn danger small ahub-device-revoke"
             disabled
-            title="Needs a connection to the network"
+            title="Needs a connection"
           >
             Remove
           </button>
@@ -118,8 +114,8 @@ export function SecurityTab(): JSX.Element {
             <span className="setting-label">
               <strong>Save your recovery phrase</strong>
               <span className="setting-sub">
-                There is no password reset. If you forget it, the account is gone — nobody can
-                restore it, including us. Keep one copy somewhere safe.
+                There is no password reset. If you lose your phrase and your password, the account
+                is gone. Keep one copy somewhere safe.
               </span>
             </span>
             <button type="button" className="btn ahub-ibtn" onClick={() => setExportOpen(true)}>

@@ -1,4 +1,4 @@
-// Render the Chess# logo to build/icon.png (512) and build/icon.ico (256) via an
+// Render the nodechess logo to build/icon.png (512) and build/icon.ico (256) via an
 // offscreen Electron window. Run: electron scripts/make-icon.cjs
 const { app, BrowserWindow } = require('electron')
 const fs = require('node:fs')
@@ -15,14 +15,17 @@ const SVG = `
     </linearGradient>
   </defs>
   <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#g)"/>
-  <g transform="translate(256 256) scale(8.6) translate(-24 -24)" stroke="#ffffff" fill="none" stroke-linecap="round">
-    <path d="M34 12.5 A14 14 0 1 0 34 35.5" stroke-width="5"/>
-    <g stroke-width="3.2">
-      <line x1="23" y1="15" x2="20.5" y2="34"/>
-      <line x1="31" y1="14" x2="28.5" y2="33"/>
-      <line x1="17" y1="22" x2="34" y2="19.5"/>
-      <line x1="16" y1="30" x2="33" y2="27.5"/>
+  <!-- The node mark, same geometry as src/renderer/src/components/Logo.tsx. -->
+  <g transform="translate(256 256) scale(8.6) translate(-24 -24)" fill="#ffffff">
+    <g stroke="#ffffff" stroke-width="2.6" stroke-linecap="round">
+      <line x1="24" y1="24" x2="24" y2="8"/>
+      <line x1="24" y1="24" x2="10.1" y2="32"/>
+      <line x1="24" y1="24" x2="37.9" y2="32"/>
     </g>
+    <circle cx="24" cy="24" r="6"/>
+    <circle cx="24" cy="8" r="3.6"/>
+    <circle cx="10.1" cy="32" r="3.6"/>
+    <circle cx="37.9" cy="32" r="3.6"/>
   </g>
 </svg>`
 
@@ -54,18 +57,27 @@ app.on('ready', () => {
     webPreferences: { offscreen: true }
   })
   let done = false
-  win.webContents.on('paint', (_e, _dirty, image) => {
-    if (done || image.isEmpty()) return
-    done = true
-    const dir = path.join(__dirname, '..', 'build')
-    fs.mkdirSync(dir, { recursive: true })
-    const png = image.toPNG()
-    fs.writeFileSync(path.join(dir, 'icon.png'), png)
-    const png256 = image.resize({ width: 256, height: 256 }).toPNG()
-    const ico = icoFromPng(png256)
-    fs.writeFileSync(path.join(dir, 'icon.ico'), ico)
-    console.log(`icon written: png=${png.length}B ico=${ico.length}B at ${dir}`)
-    setTimeout(() => app.quit(), 150)
+  // capturePage AFTER the load settles, not the first 'paint' event: offscreen
+  // rendering emits a blank frame before the SVG is laid out, and taking the
+  // first non-empty frame silently wrote an all-white icon.
+  win.webContents.once('did-finish-load', () => {
+    setTimeout(async () => {
+      const image = await win.webContents.capturePage()
+      if (done || image.isEmpty()) {
+        console.log('FAIL: capturePage returned an empty image')
+        return app.quit()
+      }
+      done = true
+      const dir = path.join(__dirname, '..', 'build')
+      fs.mkdirSync(dir, { recursive: true })
+      const png = image.toPNG()
+      fs.writeFileSync(path.join(dir, 'icon.png'), png)
+      const png256 = image.resize({ width: 256, height: 256 }).toPNG()
+      const ico = icoFromPng(png256)
+      fs.writeFileSync(path.join(dir, 'icon.ico'), ico)
+      console.log(`icon written: png=${png.length}B ico=${ico.length}B at ${dir}`)
+      setTimeout(() => app.quit(), 150)
+    }, 600)
   })
   win.webContents.setFrameRate(2)
   win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(HTML))

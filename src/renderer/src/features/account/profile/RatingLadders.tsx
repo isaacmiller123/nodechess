@@ -1,13 +1,15 @@
-// §6 rating display states — the ONE renderer every account surface reuses.
-// Hiding is a rendering rule (C-4): placement and provisional ladders never
-// show a number, on any surface, for anyone — every compliant client derives
-// the same state from public data (the shared displayState(); fixtures carry
-// its output verbatim). For OTHER accounts' ladders, pass `projection` — the
-// shared §6 provisional-information projection (mm/pairing visibleOpponentInfo
-// / spectatorOpponentInfo): a placement/provisional viewer gets NOTHING
-// rating-shaped ('Unranked pool'); a ranked viewer or spectator gets the
-// quantized bracket for a hidden subject and the revealed rating once ranked.
-// Own surfaces omit `projection` and render the subject's own display states.
+// Rating display states: the ONE renderer every account surface reuses.
+// Hiding is a rendering rule (C-4). Placement and provisional ladders never show
+// a number, on any surface, for anyone; every client derives the same state from
+// public data (the shared displayState(); fixtures carry its output verbatim).
+// For OTHER accounts' ladders, pass `projection`, the shared visibility
+// projection (mm/pairing visibleOpponentInfo / spectatorOpponentInfo): a
+// placement/provisional viewer gets NOTHING rating-shaped ('Unranked pool'); a
+// ranked viewer or spectator gets a bracket for a hidden subject and the
+// revealed rating once ranked. Own surfaces omit `projection`.
+//
+// COPY RULE for this file: a state, or a number, and never the reason the rule
+// exists. Hover text is UI too, so it follows the same rule.
 
 import { type JSX } from 'react'
 import { Ban, EyeOff, Flame, Rabbit, Turtle, Zap } from 'lucide-react'
@@ -15,7 +17,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { OpponentInfo } from '@shared/accounts/mm/pairing'
 import type { LadderKey, UiLadder } from '../mock/types'
 
-/** Category icons — the same mapping the app's TimeControlPicker uses. */
+/** Category icons: the same mapping the app's TimeControlPicker uses. */
 export const LADDER_ICON: Record<LadderKey, LucideIcon> = {
   Bullet: Zap,
   Blitz: Flame,
@@ -23,17 +25,17 @@ export const LADDER_ICON: Record<LadderKey, LucideIcon> = {
   Classical: Turtle
 }
 
-/** §6 projection per ladder for a non-own profile (shared OpponentInfo). */
+/** Visibility projection per ladder for a non-own profile (shared OpponentInfo). */
 export type LadderProjection = Partial<Record<LadderKey, OpponentInfo>>
 
-/** ± half-width beside a ranked rating — 2·RD, matching the app's ratingBand.
- * Input is the protocol micro-RD. */
+/** The ± beside a ranked rating: 2·RD, matching the app's ratingBand. Input is
+ * the protocol micro-RD. */
 function bandOf(rdMicro: number): number {
   const rd = Number.isFinite(rdMicro) && rdMicro > 0 ? rdMicro / 1_000_000 : 0
   return Math.round(2 * rd)
 }
 
-/** Tiny inline rating trend, oldest → newest. Decorative — the number carries. */
+/** Tiny inline rating trend, oldest to newest. Decorative; the number carries. */
 function Sparkline({ points }: { points: number[] }): JSX.Element | null {
   if (points.length < 2) return null
   const w = 72
@@ -64,16 +66,17 @@ function Sparkline({ points }: { points: number[] }): JSX.Element | null {
   )
 }
 
-/** §9 ban expiry, for the banned pills — a public fact, shown to everyone. */
+/** Ban expiry, for the banned pills. A public fact, shown to everyone. */
 function bannedUntilLabel(until: number): string {
   return new Date(until).toLocaleDateString()
 }
 
 /**
- * The §9 ban expiry this cell must surface, or null when not banned. The
- * shared projection wins for other-account surfaces (visibleOpponentInfo /
- * spectatorOpponentInfo put 'banned' ahead of every rating rule — a ban is a
- * public fact, never rating-shaped); own surfaces read the own display state.
+ * The ban expiry this cell must surface, or null when not banned. The shared
+ * projection wins for other-account surfaces: visibleOpponentInfo and
+ * spectatorOpponentInfo put 'banned' ahead of every rating rule, because a ban
+ * is a public fact and never rating-shaped. Own surfaces read the own display
+ * state.
  */
 function bannedUntilOf(l: UiLadder, info: OpponentInfo | undefined): number | null {
   if (info !== undefined) return info.kind === 'banned' ? info.until : null
@@ -84,24 +87,24 @@ function bannedUntilOf(l: UiLadder, info: OpponentInfo | undefined): number | nu
 function compactTitle(l: UiLadder): string {
   const d = l.display
   if (d.state === 'ranked')
-    return `${l.key} — ${d.rating} ±${bandOf(l.state.rd)} over ${l.games} games`
+    return `${l.key}: ${d.rating} ±${bandOf(l.state.rd)} over ${l.games} games`
   if (d.state === 'banned') {
-    // §9: bans are public facts — rendered honestly to everyone.
-    return `${l.key} — banned until ${bannedUntilLabel(d.until)}`
+    // Bans are public facts, rendered honestly to everyone.
+    return `${l.key}: banned until ${bannedUntilLabel(d.until)}`
   }
   if (d.state === 'provisional') {
-    return `${l.key} — provisional, hidden until ${d.of} games (${d.n} played)`
+    return `${l.key}: rating shows at ${d.of} games (${d.n} played)`
   }
-  return `${l.key} — placement, ${d.n} of ${d.of} played`
+  return `${l.key}: placement, ${d.n} of ${d.of} played`
 }
 
-/** Compact hover text through the §6 projection — never the subject's own
- * numbers when the viewer's surface may not carry them. */
+/** Compact hover text through the projection: never the subject's own numbers
+ * when the viewer's surface may not carry them. */
 function compactProjectedTitle(l: UiLadder, info: OpponentInfo): string {
-  if (info.kind === 'banned') return `${l.key} — banned until ${bannedUntilLabel(info.until)}`
-  if (info.kind === 'rating') return `${l.key} — ${info.rating} over ${l.games} games`
-  if (info.kind === 'bracket') return `${l.key} — bracket ${info.lo}–${info.hi} (§7 spillover rail)`
-  return `${l.key} — hidden while your own rating is unrevealed (§6 unranked pool)`
+  if (info.kind === 'banned') return `${l.key}: banned until ${bannedUntilLabel(info.until)}`
+  if (info.kind === 'rating') return `${l.key}: ${info.rating} over ${l.games} games`
+  if (info.kind === 'bracket') return `${l.key}: somewhere in ${info.lo}–${info.hi}`
+  return `${l.key}: hidden until your own ${l.key} rating shows`
 }
 
 export function RatingLadders({
@@ -112,9 +115,9 @@ export function RatingLadders({
   ladders: UiLadder[]
   compact?: boolean
   /**
-   * Present when rendering ANOTHER account's ladders: the §6 shared
-   * projection of what THIS viewer may see per ladder. Absent = own ladders
-   * (own numbers always render per their own display states).
+   * Present when rendering ANOTHER account's ladders: the shared projection of
+   * what THIS viewer may see per ladder. Absent means own ladders (own numbers
+   * always render per their own display states).
    */
   projection?: LadderProjection
 }): JSX.Element {
@@ -132,8 +135,8 @@ export function RatingLadders({
               title={info === undefined ? compactTitle(l) : compactProjectedTitle(l, info)}
             >
               <Icon size={13} aria-hidden />
-              {/* §6 (A4-17): the projection binds on EVERY surface, compact
-                  included — a provisional viewer sees nothing rating-shaped. */}
+              {/* A4-17: the projection binds on EVERY surface, compact
+                  included. A provisional viewer sees nothing rating-shaped. */}
               {info !== undefined ? (
                 info.kind === 'banned' ? (
                   <span className="aprof-compact-state is-banned">Banned</span>
@@ -186,9 +189,9 @@ export function RatingLadders({
               </span>
             </div>
 
-            {/* §9 ban (A4-17 review gap): an ACTIVE ladder ban is a PUBLIC
-                fact — the shared projection ranks it ahead of every rating
-                rule (OpponentInfo 'banned'), and it renders to EVERY viewer,
+            {/* An ACTIVE ladder ban is a PUBLIC fact (A4-17 review gap): the
+                shared projection ranks it ahead of every rating rule
+                (OpponentInfo 'banned'), and it renders to EVERY viewer,
                 provisional included. Never rating-shaped. */}
             {bannedUntil !== null && (
               <div className="aprof-ladder-state is-banned">
@@ -201,31 +204,28 @@ export function RatingLadders({
               </div>
             )}
 
-            {/* §6 provisional-information rule (A4-17): a placement/provisional
-                viewer sees NOTHING rating-shaped about anyone — no number, no
-                bracket, no band, no sparkline, no reveal progress. */}
+            {/* A4-17: a placement/provisional viewer sees NOTHING rating-shaped
+                about anyone. No number, no bracket, no band, no sparkline, no
+                reveal progress. */}
             {info?.kind === 'unranked-pool' && (
               <div className="aprof-ladder-state is-pool">
                 <span className="aprof-state-pill is-pool">
                   <EyeOff size={11} aria-hidden /> Unranked pool
                 </span>
                 <span className="aprof-pool-note muted small">
-                  hidden while your own {l.key} rating is unrevealed (§6)
+                  hidden until your own {l.key} rating shows
                 </span>
               </div>
             )}
 
-            {/* Ranked viewer / spectator on a hidden subject: the quantized
-                spillover bracket ONLY — never the precise number. */}
+            {/* Ranked viewer / spectator on a hidden subject: the wide range
+                ONLY, never the precise number. */}
             {info?.kind === 'bracket' && (
               <div className="aprof-ladder-state is-bracket">
                 <span className="aprof-state-pill">
                   {d.state === 'provisional' ? 'Provisional' : 'Placement'}
                 </span>
-                <span
-                  className="aprof-bracket num"
-                  title="Wide quantized bracket (§7 spillover rail) — estimates nothing precise; the exact rating stays hidden until reveal"
-                >
+                <span className="aprof-bracket num" title="Their rating is somewhere in this range">
                   {info.lo}–{info.hi}
                 </span>
               </div>
@@ -237,10 +237,7 @@ export function RatingLadders({
               <div className="aprof-ladder-state is-ranked">
                 {l.history && l.history.length > 1 && <Sparkline points={l.history} />}
                 <span className="aprof-ladder-rating num">{d.rating}</span>
-                <span
-                  className="aprof-ladder-band num"
-                  title={`Rating deviation ${Math.round(l.state.rd / 1_000_000)} — the band tightens as you play`}
-                >
+                <span className="aprof-ladder-band num" title="Play more games to narrow this">
                   ±{bandOf(l.state.rd)}
                 </span>
               </div>
@@ -264,7 +261,7 @@ export function RatingLadders({
                     />
                   </span>
                   <span className="aprof-reveal-note muted small num">
-                    hidden until {d.of} games · {d.n} played
+                    rating shows at {d.of} games · {d.n} played
                   </span>
                 </span>
               </div>

@@ -1,5 +1,5 @@
 // Headless test for WIRE v6 — signed play + the witness seat (accounts spec
-// §3 entanglement; docs/accounts-spec/08-entanglement.md).
+// §3 entanglement — docs/ACCOUNTS-SPEC.md).
 //
 //   node scripts/test-mp-v6.mjs
 //

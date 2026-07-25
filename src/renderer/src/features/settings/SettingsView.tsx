@@ -22,7 +22,7 @@ import './settings.css'
 /**
  * App theme previews. Keys map 1:1 to the `[data-theme='<key>']` palette blocks
  * in tokens.css ('light' = :root). The preview hexes mirror each palette's
- * bg/surface/accent/text — they are literal on purpose: a swatch must show a
+ * bg/surface/accent/text. They are literal on purpose: a swatch must show a
  * palette that is NOT currently active, so it cannot read live custom props
  * (same exception as the board swatches below; noted in the tokens.css header).
  */
@@ -42,7 +42,7 @@ const APP_THEME_META: {
   { key: 'sepia', label: 'Sepia', bg: '#f5eedd', surface: '#eee4cf', accent: '#8a5f34', text: '#40331f' }
 ]
 
-/** Selectable sound-effect packs — keys map 1:1 to the SoundTheme union and to
+/** Selectable sound-effect packs. Keys map 1:1 to the SoundTheme union and to
  *  the sample folders under assets/sounds/ (see sound/SoundManager.ts). */
 const SOUND_THEME_META: { key: SoundTheme; name: string; desc: string }[] = [
   { key: 'standard', name: 'Standard', desc: 'Lichess-style' },
@@ -50,7 +50,7 @@ const SOUND_THEME_META: { key: SoundTheme; name: string; desc: string }[] = [
   { key: 'real', name: 'Realistic', desc: 'wooden board' }
 ]
 
-/** Selectable board square palettes — keys map 1:1 to the `.board-<key>`
+/** Selectable board square palettes. Keys map 1:1 to the `.board-<key>`
  *  wrapper classes in tokens.css (which expose `--sq-light` / `--sq-dark`). */
 const BOARD_THEMES = [
   { key: 'brown', label: 'Brown', light: '#f0d9b5', dark: '#b58863' },
@@ -113,7 +113,7 @@ function Slider({
   hint?: string
   disabled?: boolean
   onChange: (v: number) => void
-  /** Fired when the user releases the slider (pointer/keyboard) — e.g. to play a preview. */
+  /** Fired when the user releases the slider (pointer/keyboard), e.g. to play a preview. */
   onCommit?: () => void
 }) {
   return (
@@ -135,7 +135,7 @@ function Slider({
         onChange={(e) => onChange(Number(e.target.value))}
         onPointerUp={onCommit}
         onKeyUp={(e) => {
-          // Only keys that move the thumb commit — tabbing onto the slider shouldn't.
+          // Only keys that move the thumb commit; tabbing onto the slider shouldn't.
           if (/^(Arrow|Home$|End$|Page)/.test(e.key)) onCommit?.()
         }}
       />
@@ -535,7 +535,7 @@ export function SettingsView() {
                   >
                     <span className="sound-theme-dot" aria-hidden />
                     <span className="sound-theme-name">{t.name}</span>
-                    <span className="sound-theme-desc">— {t.desc}</span>
+                    <span className="sound-theme-desc">{t.desc}</span>
                   </button>
                   <button
                     type="button"
@@ -606,7 +606,7 @@ export function SettingsView() {
         <ul className="settings-credits">
           {GAMES_ART_CREDITS.map((c) => (
             <li key={c.asset} className="muted small">
-              {c.asset} — {c.author} ({c.license}) —{' '}
+              {c.asset} · {c.author} ({c.license}) ·{' '}
               <span className="settings-credit-url">{c.url}</span>
             </li>
           ))}

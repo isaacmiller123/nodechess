@@ -62,20 +62,6 @@ export function tidy(text: string): string {
   return t
 }
 
-const VERDICT_WORD: Record<Verdict, string> = {
-  best: 'Best',
-  good: 'Good',
-  inaccuracy: 'Inaccuracy',
-  mistake: 'Mistake',
-  blunder: 'Blunder',
-  mateLost: 'Blunder',
-  mateCreated: 'Blunder'
-}
-
-export function verdictWord(v: Verdict): string {
-  return VERDICT_WORD[v]
-}
-
 /**
  * Template table: cell key = `${verdict}:${motif}`. Each cell has variants.
  * A cell describes a BAD played move (verdict mistake/blunder/inaccuracy) by

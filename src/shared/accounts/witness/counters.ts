@@ -1,5 +1,5 @@
 // A4 seam 1 — committee failure-counter ANTI-SPREADING (spec §1 "honest
-// members gossip counts"; A3-KICKOFF residual seam 1; A4-KICKOFF brick 1b).
+// members gossip counts"; A2->A3 residual seam 1, closed in A4 brick 1b).
 //
 // A2's effectiveCount is the t-th-largest of per-member LOCAL counters. An
 // attacker who spreads guesses across rotating quorums (t−1 fixed "hot"

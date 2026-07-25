@@ -14,8 +14,12 @@ import { resolveIceServers } from '../../account/net/iceConfig'
 import { resolveNostrRelays } from '../../account/net/relayConfig'
 import type { MpTransport, MpTransportFactory, MpTransportListeners } from './mpSession'
 
-/** A unique app namespace so only Chess# builds discover each other. Bumped to v3
- *  alongside the wire protocol so a v2 build never even shares a room with v3. */
+/** A unique app namespace so only nodechess builds discover each other. Bumped to
+ *  v3 alongside the wire protocol so a v2 build never even shares a room with v3.
+ *  Kept at the pre-rebrand spelling deliberately: this string IS the rendezvous,
+ *  so changing it partitions the network — already-released builds would never
+ *  see a renamed one, turning "same version required" into "peer never appears".
+ *  Retire it with the next wire-protocol bump, not with the wordmark. */
 const APP_ID = 'chess-sharp-mp-v3'
 
 /** How often we sample relay socket state for the "contacting relays" UI (ms). */

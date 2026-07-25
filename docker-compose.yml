@@ -1,4 +1,4 @@
-# One-command host for the Chess# web app (deploy guide: docs/WEB-DEPLOY.md).
+# One-command host for the nodechess web app (deploy guide: docs/WEB-DEPLOY.md).
 #
 #   docker compose up --build -d
 #   → http://localhost:8080
@@ -13,7 +13,7 @@
 services:
   web:
     build: .
-    image: chess-sharp-web
+    image: nodechess-web
     ports:
       - '8080:8080'
     volumes:

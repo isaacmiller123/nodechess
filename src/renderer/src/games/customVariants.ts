@@ -398,7 +398,3 @@ export function unregisterCustomVariant(id: string): void {
   unregisterDynamic(customKindOf(id))
 }
 
-/** The live registry entry for a custom variant id, if registered this session. */
-export function getRegisteredCustomVariant(id: string): GameEntry | undefined {
-  return LIVE.get(id)
-}

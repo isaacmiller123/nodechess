@@ -1,0 +1,36 @@
+# Cloudflare Pages response headers. Copied to the deploy root by the web build
+# (publicDir in vite.web.config.ts), so `npm run build:web` output is deployable
+# as-is: upload dist-web, add the puzzle chunks under /puzzles, done.
+
+# Cross-origin isolation. The multithreaded Stockfish build (stockfish-18-lite,
+# the one the app prefers) needs SharedArrayBuffer, which browsers only hand to
+# a crossOriginIsolated page — that requires BOTH headers on the document, and
+# every subresource to be same-origin (they all are: /assets, /engines, /content,
+# /puzzles). Drop these and chess still works: src/web/engines/assets.ts checks
+# crossOriginIsolated and loads stockfish-18-lite-single instead, at reduced
+# strength-per-second. Fairy-Stockfish does NOT have a single-threaded build
+# here, so engine.status() reports fairyReady:false and the variant bots go
+# quiet — isolation is what keeps the variant half of the games platform alive.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+
+# Vite fingerprints these filenames, so a byte change is a new URL.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Puzzle chunks carry ?cb=<artifact sha256> and are only ever read by range
+# request; a redeploy changes the query, never a chunk's contents.
+/puzzles/*
+  Cache-Control: public, max-age=31536000, immutable
+  Accept-Ranges: bytes
+
+# Unfingerprinted names — engines are pinned to the npm package version and the
+# content tree is regenerated per deploy, so both must revalidate.
+/engines/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/content/*
+  Cache-Control: public, max-age=0, must-revalidate

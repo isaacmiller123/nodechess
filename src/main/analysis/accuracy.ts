@@ -1,5 +1,8 @@
-// Accuracy / Win% math + move classification (docs/REVIEW-SPEC.md is BINDING for
-// the classification half; content-coaching.md §0.2, §2.3, §3.1 for the Win% math).
+// Accuracy / Win% math + move classification (docs/content-coaching.md §0.2, §2.3,
+// §3.1 for the Win% math). "REVIEW-SPEC S1-S9" below are rule ids for the
+// classification scenarios — there is no REVIEW-SPEC document in this repo, so the
+// behaviour these ids name is defined by the code here and held by
+// scripts/verify-classification.mjs.
 //
 // Clean-room re-implementation of the Lichess Win% + Accuracy% pipeline on plain
 // numbers, plus the chess.com-model move classifier (freechess-corrected, see
@@ -244,9 +247,6 @@ import { parseUci, makeUci, opposite, squareRank } from 'chessops/util'
 import { kingAttacks } from 'chessops/attacks'
 import { SquareSet } from 'chessops/squareSet'
 import type { Color, NormalMove, Role, Square } from 'chessops/types'
-
-/** Material values (pawns) keyed by role char, for the sacrifice detector (S4-B6). */
-export const PIECE_VALUE: Record<string, number> = { p: 1, n: 3, b: 3, r: 5, q: 9 }
 
 // Chess.com official EP-loss bands x100 (REVIEW-SPEC S1), on
 // drop = max(0, winBefore - winAfter) win-points, mover POV:

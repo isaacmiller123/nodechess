@@ -1,7 +1,9 @@
-// The OWN profile tab (§10 social surface, §6 display states, §6b reputation).
-// Left: "As others see you" — the profile exactly as any client would derive
-// it from public data. Right: the personal-lane editor — self-signed records
-// that apply instantly and merge across devices at next sync (no save button).
+// The OWN profile tab. Left: "As others see you", the profile exactly as any
+// other client derives it. Right: the editor, which applies every change
+// instantly and merges across devices at the next sync (no save button).
+//
+// Copy rule: field feedback answers the edit the player just made. It never
+// explains where the value is stored or what signs it.
 
 import { useEffect, useRef, useState, type ChangeEvent, type JSX } from 'react'
 import {
@@ -21,7 +23,7 @@ import { ReputationPanel } from './ReputationPanel'
 import { regionName, relativeWts } from './profileFormat'
 import './profile.css'
 
-/** Chess figurine flairs — the picker's whole vocabulary (personal lane, §2). */
+/** Chess figurine flairs: the picker's whole vocabulary. */
 const FLAIRS = ['♔', '♕', '♖', '♗', '♘', '♙', '♚', '♛', '♜', '♝', '♞', '♟']
 
 const MAX_AVATAR_BYTES = 32 * 1024
@@ -35,14 +37,13 @@ export function ProfileTab(): JSX.Element {
   const account = ui.account
 
   /**
-   * §10 staleness (complete-1): the REAL derived value — the newest VERIFIED
-   * witness-attested time from the canonical shared fold (store →
-   * derive.ts deriveProfile), or null = no witnessed activity on record. This
+   * The REAL derived last-activity value from the canonical shared fold (store
+   * to derive.ts deriveProfile), or null when there is none on record. This
    * surface never asserts a fabricated freshness claim.
    */
   const lastWitnessedWts = ui.signedIn ? ui.lastWitnessedActivityWts : null
 
-  // Personal-lane fields: controlled, applied instantly (house style — no save).
+  // Editable fields: controlled, applied instantly (house style, no save button).
   const [bio, setBio] = useState(account?.profile.bio ?? '')
   const [country, setCountry] = useState(account?.profile.country ?? '')
   const [flair, setFlair] = useState(account?.profile.flair ?? '♟')
@@ -51,8 +52,8 @@ export function ProfileTab(): JSX.Element {
   const [avatarError, setAvatarError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
-  // A7 avatar convention: the chain field is `${mime};${base64}` (documented
-  // at zProfileFields.avatar). Render whatever the verified chain carries;
+  // A7 avatar convention: the stored field is `${mime};${base64}` (documented
+  // at zProfileFields.avatar). Render whatever the verified record carries;
   // a fresh local pick previews via object URL until the chain write lands.
   const chainAvatar = ((): string | null => {
     const v = account?.profile.avatar
@@ -74,18 +75,18 @@ export function ProfileTab(): JSX.Element {
   if (!account) {
     return (
       <div className="aprof-tab">
-        <p className="muted small">Deriving your profile from your signed chain…</p>
+        <p className="muted small">Loading your profile…</p>
       </div>
     )
   }
 
   const region = regionName(country)
-  const regionLabel = country.length === 2 ? region : '—'
+  const regionLabel = country.length === 2 ? region : 'Not set'
 
-  /** WIRED (§10): commit a field as a REAL signed personal-lane 'profile'
-   * record (store → src/web/accounts.ts updateProfile → appendPersonal).
-   * Bio/country commit on blur (one chain record per edit, not per
-   * keystroke); flair commits on pick. Skips unchanged values. */
+  /** Commit a field as a REAL signed 'profile' record (store to
+   * src/web/accounts.ts updateProfile to appendPersonal). Bio and country commit
+   * on blur, one record per edit rather than per keystroke; flair commits on
+   * pick. Skips unchanged values. */
   const commit = (patch: { bio?: string; country?: string; flair?: string }): void => {
     if (!ui.signedIn) return
     const cur = ui.account?.profile
@@ -101,9 +102,7 @@ export function ProfileTab(): JSX.Element {
     if (!file) return
     const kb = Math.max(1, Math.ceil(file.size / 1024))
     if (file.size > MAX_AVATAR_BYTES) {
-      setAvatarError(
-        `${file.name} is ${kb} KB — over the 32 KB limit. The avatar lives inside your chain as base64, so it has to stay small.`
-      )
+      setAvatarError(`${file.name} is ${kb} KB. Pick an image under 32 KB.`)
       setAvatarNote(null)
       return
     }
@@ -115,27 +114,27 @@ export function ProfileTab(): JSX.Element {
     setAvatarError(null)
     setAvatarUrl(URL.createObjectURL(file))
     if (!ui.signedIn) {
-      setAvatarNote(`${file.name} · ${kb} KB — local preview only (sign in to write it to your chain)`)
+      setAvatarNote(`${file.name} · ${kb} KB · preview only. Sign in to save it.`)
       return
     }
-    // A7: the avatar is a REAL chain field now — `mime;base64` in the signed
-    // personal-lane 'profile' record (schema cap AVATAR_B64_MAX_CHARS; the
-    // chain is the only store, so every device derives the same avatar).
+    // A7: the avatar is a REAL stored field now, `mime;base64` in the signed
+    // 'profile' record (schema cap AVATAR_B64_MAX_CHARS), so every device
+    // derives the same avatar.
     void (async () => {
       const bytes = new Uint8Array(await file.arrayBuffer())
       let bin = ''
       for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i])
       const value = `${file.type};${btoa(bin)}`
       if (value.length > AVATAR_B64_MAX_CHARS) {
-        setAvatarError(`${file.name} encodes over the chain cap — use a slightly smaller image.`)
+        setAvatarError(`${file.name} is too large. Use a slightly smaller image.`)
         setAvatarNote(null)
         return
       }
       const okWrite = await accountsUiStore.updateProfile({ avatar: value })
       setAvatarNote(
         okWrite
-          ? `${file.name} · ${kb} KB — written to your chain (signed profile record)`
-          : `${file.name} · ${kb} KB — chain write failed; showing local preview`
+          ? `${file.name} · ${kb} KB · saved`
+          : `${file.name} · ${kb} KB · could not be saved. Try again in a moment.`
       )
     })()
   }
@@ -174,7 +173,7 @@ export function ProfileTab(): JSX.Element {
                 </span>
                 <Clock size={12} aria-hidden />{' '}
                 {lastWitnessedWts !== null
-                  ? `Last witnessed activity: ${relativeWts(lastWitnessedWts, Date.now())}`
+                  ? `Last played ${relativeWts(lastWitnessedWts, Date.now())}`
                   : 'No games played yet.'}
               </span>
             </div>
@@ -199,7 +198,7 @@ export function ProfileTab(): JSX.Element {
         </div>
       </section>
 
-      {/* ---------------- Edit (personal lane) ---------------- */}
+      {/* ---------------- Edit ---------------- */}
       <section className="card aprof-card aprof-edit" aria-label="Edit profile">
         <header className="aprof-card-head">
           <span className="aprof-eyebrow">

@@ -186,7 +186,3 @@ export const COMING_SOON: CatalogEntry[] = [
 ]
 
 export const CATALOG: CatalogEntry[] = [...CHESS_VARIANTS, ...COMING_SOON]
-
-export function catalogEntry(kind: string): CatalogEntry | undefined {
-  return CATALOG.find((e) => e.kind === kind)
-}

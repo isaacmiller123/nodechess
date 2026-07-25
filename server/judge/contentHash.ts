@@ -38,9 +38,6 @@ import { createHash } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { PARAMS_A5 } from '@shared/accounts/judge/params'
 
-/** Base filename of the pinned single-thread judge WASM. */
-export const JUDGE_WASM_FILENAME = 'stockfish-18-lite-single.wasm'
-
 /** Package-relative module id used for default resolution. */
 export const JUDGE_WASM_MODULE_ID = 'stockfish/bin/stockfish-18-lite-single.wasm'
 

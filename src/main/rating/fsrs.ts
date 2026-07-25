@@ -31,7 +31,6 @@ export const SrsState = {
   LEARNING: 1,
   REVIEW: 2
 } as const
-export type SrsStateValue = (typeof SrsState)[keyof typeof SrsState]
 
 const MS_PER_DAY = 86_400_000
 const MS_PER_MINUTE = 60_000

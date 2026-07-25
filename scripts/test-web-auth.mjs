@@ -82,7 +82,7 @@ async function startServer(envOverrides = {}) {
     let buf = ''
     child.stdout.on('data', (d) => {
       buf += String(d)
-      const m = buf.match(/chess-sharp-web listening (\S+)/)
+      const m = buf.match(/nodechess-web listening (\S+)/)
       if (m) {
         clearTimeout(timer)
         resolvePromise(m[1])

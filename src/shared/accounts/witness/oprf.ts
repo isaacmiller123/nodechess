@@ -132,6 +132,11 @@ export function singleKeyOutput(pin: string, k: bigint, rng?: Rng): Uint8Array {
 // PIN key stretch (spec §1: OPRF output → ed25519 keypair)
 // ---------------------------------------------------------------------------
 
+// Domain-separation tags below keep their pre-rebrand spelling on purpose. They
+// are hashed into key material and into the Fiat–Shamir transcript, so editing
+// one is not a rename — it derives a different keypair from the same PIN
+// (locking every existing account out of recovery) and makes new proofs
+// unverifiable against peers still running the old tag.
 const PIN_KEY_DST = utf8('chess-sharp-pin')
 
 export interface PinKeyPair {

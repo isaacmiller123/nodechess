@@ -86,7 +86,7 @@ function friendlyError(err: unknown): string {
 
 async function checkViaGitHub(): Promise<void> {
   const res = await net.fetch(latestReleaseApiUrl(), {
-    headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'chess-sharp-updater' }
+    headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'nodechess-updater' }
   })
   if (!res.ok) throw new Error(`update check failed (HTTP ${res.status})`)
   const release = parseLatestRelease(await res.json())
@@ -145,7 +145,7 @@ export async function downloadUpdate(): Promise<UpdateActionResult> {
     return { ok: false, action: 'none', error: 'no update downloaded yet' }
   }
   // Manual path: one-click browser download of the right artifact. The UI owns
-  // the "quit Chess# and install it over the old app" copy.
+  // the "quit nodechess and install it over the old app" copy.
   const url = status.downloadUrl ?? status.releaseUrl
   if (status.state !== 'available' || !url) {
     return { ok: false, action: 'none', error: 'no update available' }

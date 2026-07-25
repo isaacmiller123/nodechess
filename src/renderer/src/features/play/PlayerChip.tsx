@@ -61,12 +61,12 @@ export function materialSummary(fen: string, color: Color): MaterialSummary {
   return { captured, lead: Math.max(0, points) }
 }
 
-/** Readable summary for assistive tech, e.g. "captured 2 pawns, 1 knight — up 2". */
+/** Readable summary for assistive tech, e.g. "captured 2 pawns, 1 knight, up 2". */
 function capturedAriaLabel(material: MaterialSummary): string {
   if (material.captured.length === 0 && material.lead === 0) return 'No captures'
   const parts = material.captured.map(({ role, count }) => `${count} ${role}${count > 1 ? 's' : ''}`)
   const capturedText = parts.length > 0 ? `Captured ${parts.join(', ')}` : 'No captures'
-  return material.lead > 0 ? `${capturedText} — up ${material.lead}` : capturedText
+  return material.lead > 0 ? `${capturedText}, up ${material.lead}` : capturedText
 }
 
 /* ---------------------------------------------------------------------------

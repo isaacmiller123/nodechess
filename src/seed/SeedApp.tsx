@@ -1,10 +1,10 @@
-// nodechess seed — the whole UI.
+// nodechess seed: the whole UI.
 //
 // One button, a handful of numbers, and nothing else. This page is run by
 // people donating capacity to the network, not administered; every control that
 // isn't start/stop is a control they'd have to understand to use, so there are
-// almost none. The numbers shown are all things the swarm actually measured —
-// no projections, no scores, no gamification.
+// almost none. The numbers shown are all things the swarm actually measured.
+// No projections, no scores, no gamification.
 
 import { useCallback, useEffect, useState, type JSX } from 'react'
 import { MAX_NODES, SeedSwarm, DEFAULT_CONFIG, EMPTY_STATS, type SeedConfig } from './swarm'
@@ -12,8 +12,8 @@ import './seed.css'
 
 const swarm = new SeedSwarm()
 
-/** Bytes → a short human string. Deliberately coarse: this is a status line, not
- *  an accounting report. */
+/** Bytes to a short human string. Deliberately coarse: this is a status line,
+ *  not an accounting report. */
 function formatBytes(n: number): string {
   if (n <= 0) return '0 MB'
   const mb = n / (1024 * 1024)
@@ -23,7 +23,7 @@ function formatBytes(n: number): string {
 }
 
 function formatUptime(ms: number): string {
-  if (ms <= 0) return '—'
+  if (ms <= 0) return '0s'
   const s = Math.floor(ms / 1000)
   const h = Math.floor(s / 3600)
   const m = Math.floor((s % 3600) / 60)
@@ -79,8 +79,8 @@ export default function SeedApp(): JSX.Element {
       </header>
 
       <p className="seed-lead">
-        Runs nodechess nodes on this machine. They store and relay data for other players and help
-        people find each other. Leave the tab open — that&rsquo;s the whole job.
+        Runs nodechess nodes on this machine. They store and relay data for other players. Leave the
+        tab open, that&rsquo;s the whole job.
       </p>
 
       <button
@@ -165,17 +165,13 @@ export default function SeedApp(): JSX.Element {
           />
           <span className="seed-field-label">
             Act as a witness
-            <em>
-              Witnesses sign off on ranked games between other players. Only turn this on if you were
-              asked to — a witness is trusted, and the network needs them to be independent.
-            </em>
+            <em>Only turn this on if you were asked to.</em>
           </span>
         </label>
       </details>
 
       <footer className="seed-foot">
-        Storing and relaying is anonymous and carries no authority — this node can&rsquo;t read
-        anyone&rsquo;s data or vouch for anything.
+        This node cannot read anyone&rsquo;s data.
       </footer>
     </main>
   )

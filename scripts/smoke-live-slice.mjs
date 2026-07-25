@@ -14,7 +14,7 @@
 // WHY: from bare node, three peers hammering the public relay pool trip
 // rate-limiting ("you note too much") and never mesh (verified — see notesForLead);
 // the werift WebRTC itself is 100% real (ICE over 127.0.0.1 host candidates). This
-// is exactly the A6-KICKOFF §4 sanctioned fallback: "a multi-process localhost
+// is exactly the sanctioned A6 fallback: "a multi-process localhost
 // signaling harness that KEEPS the real trystero transport". Point relayConfig at
 // a public relay to run it fully public.
 //

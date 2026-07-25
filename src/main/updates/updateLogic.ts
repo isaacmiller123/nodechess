@@ -13,7 +13,7 @@
 
 /** GitHub repo that hosts the releases (public API — no token needed). */
 export const UPDATE_OWNER = 'isaacmiller123'
-export const UPDATE_REPO = 'chess-sharp'
+export const UPDATE_REPO = 'nodechess'
 
 /** How updates are delivered on a given platform/build. */
 export type UpdatePath = 'electron-updater' | 'notify-download'
@@ -130,9 +130,10 @@ export function parseLatestRelease(json: unknown): LatestRelease | null {
 
 /**
  * The right mac download for this machine. Artifact names come from
- * electron-builder.yml: dmg = `Chess-<v>-<arch>.dmg`, zip =
- * `Chess-<v>-mac-<arch>.zip`. Preference: exact-arch dmg → exact-arch zip →
- * any dmg (better than nothing on an unknown arch) → null.
+ * electron-builder.yml: dmg = `nodechess-<v>-<arch>.dmg`, zip =
+ * `nodechess-<v>-mac-<arch>.zip`. Matched by suffix only, so releases published
+ * under the old `Chess-` name still resolve. Preference: exact-arch dmg →
+ * exact-arch zip → any dmg (better than nothing on an unknown arch) → null.
  */
 export function pickMacAsset(assets: ReleaseAsset[], arch: string): ReleaseAsset | null {
   return (
@@ -144,9 +145,11 @@ export function pickMacAsset(assets: ReleaseAsset[], arch: string): ReleaseAsset
 }
 
 /** The Windows manual-path download (dev builds / fallback): the NSIS
- *  installer `Chess-Setup-<v>.exe`, never the portable exe. */
+ *  installer `nodechess-Setup-<v>.exe`, never the portable exe. The legacy
+ *  `Chess-Setup-` prefix is still accepted so a nodechess build can update off
+ *  a release cut before the rename. */
 export function pickWinAsset(assets: ReleaseAsset[]): ReleaseAsset | null {
-  return assets.find((a) => /^Chess-Setup-.*\.exe$/.test(a.name)) ?? null
+  return assets.find((a) => /^(?:nodechess|Chess)-Setup-.*\.exe$/.test(a.name)) ?? null
 }
 
 /** Per-platform pick for the notify-download path. Unknown platform → null

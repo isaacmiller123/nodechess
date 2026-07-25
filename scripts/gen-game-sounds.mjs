@@ -1,5 +1,5 @@
 // gen-game-sounds.mjs — offline procedural synthesis of the GAMES-PLATFORM
-// sound events for Chess# (docs/GAMES-PLATFORM-SPEC.md).
+// sound events for nodechess (docs/GAMES-PLATFORM-SPEC.md).
 //
 //   node scripts/gen-game-sounds.mjs
 //

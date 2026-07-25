@@ -113,7 +113,7 @@ async function run(outdir) {
 
   console.log('\n· starting the operator peer (MockFabric, judge content-hash-verified) …')
   const op = await peer.startOperatorPeer({
-    appId: 'chess-sharp-accounts',
+    appId: 'nodechess-accounts',
     dataDir: outdir,
     identity,
     fabric: opEndpoint,

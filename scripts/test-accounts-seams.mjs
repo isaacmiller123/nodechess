@@ -1,5 +1,5 @@
 // A4 brick 1b — the four A2→A3 residual witness seams, forced shut
-// (A3-KICKOFF "A2→A3 RESIDUAL SEAMS", A4-KICKOFF brick 1b).
+// (the four A2→A3 residual seams, A4 brick 1b).
 //
 //   node scripts/test-accounts-seams.mjs
 //

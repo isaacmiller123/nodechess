@@ -1,4 +1,4 @@
-// Chess# web server (docs/WEB-PORT-SPEC.md) — W1 statics + W3/W4 API.
+// nodechess web server (docs/WEB-PORT-SPEC.md) — W1 statics + W3/W4 API.
 //
 // One Fastify process: serves the SPA (dist-web) with the cross-origin-
 // isolation headers the W2 WASM engines need, the games-art static tree, a
@@ -219,7 +219,7 @@ async function main(): Promise<void> {
   const apiComingOnline = async (_req: unknown, reply: FastifyReply): Promise<unknown> => {
     return reply.code(503).send({
       error: 'coming-online',
-      message: 'The Chess# web API is coming online — this endpoint is not implemented yet.'
+      message: 'The nodechess web API is coming online — this endpoint is not implemented yet.'
     })
   }
   app.all('/api', apiComingOnline)
@@ -245,7 +245,7 @@ async function main(): Promise<void> {
 
   const address = await app.listen({ port: PORT, host: HOST })
   // Parsed by scripts/test-web-server.mjs — keep the shape stable.
-  console.log(`chess-sharp-web listening ${address}`)
+  console.log(`nodechess-web listening ${address}`)
 }
 
 main().catch((err) => {

@@ -96,7 +96,7 @@ jobs:
             let buf = ''
             child.stdout.on('data', (d) => {
               buf += String(d)
-              const m = buf.match(/chess-sharp-web listening (\S+)/)
+              const m = buf.match(/nodechess-web listening (\S+)/)
               if (m) { clearTimeout(timer); resolvePromise(m[1]) }
             })
             child.on('exit', (code) => rejectPromise(new Error(`server exited early (${code})`)))
@@ -144,7 +144,7 @@ jobs:
 
       # Default (lean) build: no puzzle DB, no named context needed.
       - name: Build image
-        run: docker build -t chess-sharp-web .
+        run: docker build -t nodechess-web .
 
       # Boot the container exactly as a user would and wait for the image's own
       # HEALTHCHECK to go green (interval shortened for CI) — this exercises the
@@ -154,7 +154,7 @@ jobs:
         run: |
           docker run -d --name chess-web \
             --health-interval=2s --health-start-period=5s \
-            -p 8080:8080 chess-sharp-web
+            -p 8080:8080 nodechess-web
 
           status=starting
           for i in $(seq 1 45); do
@@ -206,9 +206,9 @@ jobs:
             db.exec('CREATE TABLE puzzles(id TEXT PRIMARY KEY)');
             db.close();
           "
-          docker build -t chess-sharp-web-puzzles \
+          docker build -t nodechess-web-puzzles \
             --build-arg WITH_PUZZLES=true \
             --build-context puzzles-db=/tmp/puzzles-fixture .
-          docker run --rm --entrypoint test chess-sharp-web-puzzles \
+          docker run --rm --entrypoint test nodechess-web-puzzles \
             -f /app/resources/data/puzzles.sqlite
           echo "bake-in image carries puzzles.sqlite at the default PUZZLES_PATH"

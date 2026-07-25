@@ -1,22 +1,19 @@
-// A-final switch, web side (docs/building/ACCOUNTS-SPEC.md §14).
+// A-final switch, web side (docs/ACCOUNTS-SPEC.md §14).
 //
-// ONE boolean decides which account system the web surface speaks:
-//   ON  (the default) — the decentralized accounts (src/web/accounts.ts over
-//        @shared/accounts) ARE the account system. The interim server-account
-//        client (authStore.ts -> /api/auth/*) is never consulted:
-//        main.web.tsx skips authStore.boot(), so authStore stays
-//        {known:false}, webApi keeps routing every user-data namespace to the
-//        honest local layer, and the interim account chip renders null (it
-//        returns null until `known`) — no dead interim UI against the
-//        server's 410-gated endpoints.
-//   OFF — the interim client path is fully intact (emergency fallback,
-//        mirroring the server's ACCOUNTS_DECENTRALIZED=0).
+// THE SWITCH IS SPENT on the web target. The interim server-account client it
+// used to gate (authStore.ts -> /api/auth/*) is gone along with the server, so
+// the decentralized accounts (src/web/accounts.ts over @shared/accounts) are
+// the only account system a browser can reach and nothing in the web app reads
+// ACCOUNTS_DECENTRALIZED any more.
 //
-// The web default is ON unconditionally: a build flips OFF only via an
-// explicit VITE_ACCOUNTS_DECENTRALIZED=0|false|off at vite build time. An
-// unset or unrecognized value stays ON — the decentralized path is the
-// default, and garbage never silently reverts the flip. (Server-side
-// resolution lives in server/afinal.ts; the token grammar is kept identical.)
+// The module stays because the flag grammar is SHARED: server/afinal.ts
+// resolves the same tokens to 410-gate the retired auth endpoints, and
+// scripts/test-afinal-flag.mjs bundles both halves to prove they agree. Keep
+// them in lockstep, or delete both together.
+//
+// The default is ON unconditionally: a build flips OFF only via an explicit
+// VITE_ACCOUNTS_DECENTRALIZED=0|false|off at vite build time. An unset or
+// unrecognized value stays ON — garbage never silently reverts the flip.
 
 /** Parse one flag token; undefined = unset/unrecognized. Same grammar as
  *  server/afinal.ts parseFlagToken — keep them in lockstep. */

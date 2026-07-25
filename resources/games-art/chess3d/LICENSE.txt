@@ -4,5 +4,5 @@ https://polyhaven.com/a/chess_set
 License: CC0 1.0 Universal (public domain dedication)
 https://creativecommons.org/publicdomain/zero/1.0/
 
-Repackaged for Chess#: per-piece geometry GLBs re-exported from the 2k glTF
+Repackaged for nodechess: per-piece geometry GLBs re-exported from the 2k glTF
 release; textures are the official 2k diffuse and 1k normal/ARM JPEGs.

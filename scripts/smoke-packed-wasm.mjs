@@ -4,7 +4,7 @@
 //
 //   npm run build && npx electron-builder --dir && npm run smoke:packed-wasm
 //
-// Spawns the packed mac binary directly (Contents/MacOS/Chess#) with
+// Spawns the packed mac binary directly (Contents/MacOS/nodechess) with
 // --smoke-wasm: main hides the window, isolates userData in a temp dir, boots
 // the real renderer plus the ffish probe (src/renderer/src/smokeWasm.ts), and
 // exits 0 only if the probe prints SMOKE-WASM-OK with zero CSP violations
@@ -22,12 +22,12 @@ const TIMEOUT_MS = 120000
 const candidates =
   process.platform === 'darwin'
     ? [
-        `release/mac-${process.arch}/Chess#.app/Contents/MacOS/Chess#`,
-        'release/mac/Chess#.app/Contents/MacOS/Chess#',
-        'release/mac-arm64/Chess#.app/Contents/MacOS/Chess#',
-        'release/mac-x64/Chess#.app/Contents/MacOS/Chess#'
+        `release/mac-${process.arch}/nodechess.app/Contents/MacOS/nodechess`,
+        'release/mac/nodechess.app/Contents/MacOS/nodechess',
+        'release/mac-arm64/nodechess.app/Contents/MacOS/nodechess',
+        'release/mac-x64/nodechess.app/Contents/MacOS/nodechess'
       ]
-    : ['release/win-unpacked/Chess#.exe']
+    : ['release/win-unpacked/nodechess.exe']
 
 const bin = candidates.map((c) => resolve(ROOT, c)).find((p) => existsSync(p))
 if (!bin) {

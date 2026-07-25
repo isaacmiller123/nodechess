@@ -11,7 +11,7 @@
 // requires (spec §4). The head is learned from that player's OWN signed pre-game
 // snapshot over the fabric — a signed head, never an unverified claim.
 //
-// M1 DEV FLOW (per A6-KICKOFF §3-M1 Lane D): the room code + participants are
+// M1 DEV FLOW (A6 milestone M1, lane D): the room code + participants are
 // handed in out of band (a manual dev handoff, or the always-on operator peer
 // running the same `witnessServe` — server/operator/peer.ts). Full auto-assignment
 // from the matchmaking pool is M2. Casual play is NEVER blocked on witness

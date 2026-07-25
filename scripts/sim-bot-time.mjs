@@ -20,7 +20,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const ENTRY = path.join(ROOT, 'src/renderer/src/features/play/botTime.ts')
-const OUT_DIR = path.join(ROOT, 'node_modules/.cache/chess-sharp-sim')
+const OUT_DIR = path.join(ROOT, 'node_modules/.cache/nodechess-sim')
 const OUT = path.join(OUT_DIR, 'botTime.bundle.mjs')
 
 const args = process.argv.slice(2)

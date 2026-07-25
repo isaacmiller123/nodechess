@@ -1,5 +1,5 @@
 // gen-sounds.mjs — offline procedural synthesis of the 'classic' and 'real'
-// sound themes for Chess#.
+// sound themes for nodechess.
 //
 //   node scripts/gen-sounds.mjs
 //

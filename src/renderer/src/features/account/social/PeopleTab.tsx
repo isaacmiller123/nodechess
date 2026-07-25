@@ -13,7 +13,6 @@ import {
   Mail,
   RefreshCw,
   Search,
-  Signature,
   UserPlus,
   Users,
   X
@@ -27,7 +26,6 @@ import {
   runSyncMailbox,
   subscribeSocialClient,
   type FriendPresence,
-  type MailPriority,
   type SocialClientState,
   type SocialFriendView,
   type SocialRequestView
@@ -37,29 +35,30 @@ import { ProfilePage } from '../profile/ProfilePage'
 import './social.css'
 
 /**
- * People tab — the LIVE social surface (docs/building/ACCOUNTS-SPEC.md §3, §10,
- * C-3), un-fixtured onto the account net's socialClient (net/socialClient.ts):
+ * People tab: the LIVE social surface, wired to the account net's socialClient
+ * (net/socialClient.ts).
  *
- *  - Find a player: look anyone up by account root/handle; ProfilePage
- *    reconstructs from shard space (§5), owner online or not — no local index.
- *  - Friends: the witnessed countersigned edges folded from THIS account's OWN
- *    chain (§3, one verifiable list), with each friend's live ephemeral presence
- *    overlaid (§10). Remove is a unilateral signed witnessed event.
- *  - Mailbox: incoming friend requests that the relaying peers held for us until
- *    we synced, in the §10 anti-spam priority order (established senders first,
- *    a sybil flood can never evict them). Accept countersigns the edge into both
- *    chains; decline drops it (ephemeral coordination state, C-3).
+ *  - Find a player: look anyone up by account id; ProfilePage loads them whether
+ *    or not their owner is online.
+ *  - Friends: the folded friend list for THIS account, with each friend's live
+ *    presence. Remove is unilateral and needs no consent.
+ *  - Mailbox: incoming friend requests that were held for us until we synced.
  *
- * Every list is live signed data or an honest empty state — NO fixtures, NO dead
- * buttons. When the account peer is still coming up the surface says so.
+ * Every list is live data or an honest empty state. NO fixtures, NO dead
+ * buttons. When the network is still coming up the surface says so.
+ *
+ * COPY RULE: the anti-spam ordering, countersigned edges, relay quotas and
+ * mailbox lifetimes are load-bearing protocol and were previously printed on this
+ * page as chips, captions and confirm text. None of it changes what the player
+ * does, so none of it is rendered. An empty state says what to do next.
  */
 
 const MIN = 60_000
 const HOUR = 3_600_000
 const DAY = 86_400_000
 
-/** Short relative time against the wall clock (renderer glue — real time is
- * allowed here); old timestamps fall back to a date. */
+/** Short relative time against the wall clock; old timestamps fall back to a
+ * date. */
 function ago(ts: number): string {
   const d = Date.now() - ts
   if (d < MIN) return 'just now'
@@ -87,45 +86,16 @@ const PRESENCE_META: Record<FriendPresence, { dot: 'online' | 'away' | 'offline'
   offline: { dot: 'offline', label: 'Offline' }
 }
 
-/** §10 relayer priorities — why this request survived the queue. */
-const PRIORITY_META: Record<MailPriority, { label: string; title: string; className: string }> = {
-  entangled: {
-    label: 'Entangled',
-    title: 'Prioritized — an existing countersigned edge (friendship or witnessed game) with this sender',
-    className: 'is-entangled'
-  },
-  reputable: {
-    label: 'Reputable',
-    title: 'Prioritized — an established conduct/trust record, no edge with you yet',
-    className: 'is-reputable'
-  },
-  new: {
-    label: 'New sender',
-    title: 'No prior edge — rate-limited to a fair share of your mailbox (a sybil flood cannot evict established requests)',
-    className: 'is-new'
-  }
-}
-
-function PriorityChip({ priority }: { priority: MailPriority }): JSX.Element {
-  const meta = PRIORITY_META[priority]
-  return (
-    <span className={`asoc-prio ${meta.className}`} title={meta.title}>
-      {meta.label}
-    </span>
-  )
-}
-
-/** React bridge to the live social client (house useSyncExternalStore pattern —
+/** React bridge to the live social client (house useSyncExternalStore pattern:
  * getSocialClientState returns a stable reference between real changes). */
 function useSocialClient(): SocialClientState {
   return useSyncExternalStore(subscribeSocialClient, getSocialClientState, getSocialClientState)
 }
 
 /**
- * One friend row with the inline two-step remove (arm → confirm → sign the
- * unilateral witnessed removal). §3: removal writes to YOUR chain and the peer
- * cannot block it. The row leaves the list once the fold no longer asserts the
- * edge (or shows an honest "writes when a witness is reachable" note).
+ * One friend row with the inline two-step remove. Removal is unilateral: the
+ * other player is not asked and cannot block it, which is the one fact the
+ * confirm has to carry. The row leaves the list once the fold drops the friend.
  */
 function FriendRow({
   friend,
@@ -156,14 +126,6 @@ function FriendRow({
           <span className="account-handle-mono muted">{friend.label}</span>
         </div>
         <div className="asoc-friend-meta">
-          {friend.countersigned && (
-            <span
-              className="asoc-edge"
-              title="Witnessed countersigned edge — one verifiable list, the same for every viewer"
-            >
-              <Signature size={13} aria-hidden /> Countersigned ×2
-            </span>
-          )}
           {since && <span className="asoc-friend-since num">{since}</span>}
         </div>
         <div className="asoc-friend-actions">
@@ -185,8 +147,7 @@ function FriendRow({
         <div className="asoc-remove-confirm">
           <p className="asoc-remove-note">
             <AlertTriangle size={14} aria-hidden />
-            Removal is a unilateral signed witnessed event — it writes to your chain.{' '}
-            {friend.name ?? friend.label} is not asked and cannot block it.
+            {friend.name ?? friend.label} is not asked and cannot block this.
           </p>
           <div className="asoc-remove-actions">
             <button
@@ -203,7 +164,7 @@ function FriendRow({
               disabled={busy}
               onClick={() => onRemove(friend.root)}
             >
-              {busy ? 'Signing removal…' : 'Remove friend'}
+              {busy ? 'Removing…' : 'Remove friend'}
             </button>
           </div>
         </div>
@@ -212,7 +173,7 @@ function FriendRow({
   )
 }
 
-/** One incoming friend request — the only live mailbox item today (§3 add flow). */
+/** One incoming friend request, the only live mailbox item today. */
 function RequestRow({
   item,
   accepting,
@@ -235,14 +196,13 @@ function RequestRow({
         <div className="asoc-mail-top">
           <span className="account-handle-mono">{item.name ?? item.label}</span>
           <span className="asoc-mail-kind">Friend request</span>
-          <PriorityChip priority={item.priority} />
           <span className="asoc-mail-time num">{ago(item.ts)}</span>
         </div>
 
         {accepting ? (
           <span className="asoc-mail-busy" role="status">
             <Loader2 size={14} className="asoc-spin" aria-hidden />
-            Countersigning acceptance — writing the edge into both chains…
+            Adding them…
           </span>
         ) : (
           <div className="asoc-mail-actions">
@@ -277,8 +237,8 @@ export function PeopleTab(): JSX.Element {
   const [removingRoot, setRemovingRoot] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
 
-  // Opening People pulls anything the relays held for us (a best-effort drain;
-  // the singleton's own poll keeps it fresh thereafter).
+  // Opening People pulls anything that was held for us (best effort; the
+  // singleton's own poll keeps it fresh thereafter).
   useEffect(() => {
     void runSyncMailbox()
   }, [])
@@ -295,8 +255,8 @@ export function PeopleTab(): JSX.Element {
       if (!r.ok)
         setNotice(
           r.reason === 'edge-pending-witness'
-            ? 'Consent sent — the countersigned edge lands in your chain once a witness is reachable.'
-            : `Could not accept (${r.reason ?? 'unavailable'}).`
+            ? 'Accepted. They appear in your friends once the network is reachable.'
+            : 'Could not accept that right now. Try again in a moment.'
         )
     })
   }, [])
@@ -313,8 +273,8 @@ export function PeopleTab(): JSX.Element {
       if (!r.ok)
         setNotice(
           r.reason === 'edge-pending-witness'
-            ? 'Removal signed — it writes to your chain once a witness is reachable.'
-            : `Could not remove (${r.reason ?? 'unavailable'}).`
+            ? 'Removed. It takes effect once the network is reachable.'
+            : 'Could not remove them right now. Try again in a moment.'
         )
     })
   }, [])
@@ -324,10 +284,10 @@ export function PeopleTab(): JSX.Element {
     void runSendFriendRequest(root).then((r) => {
       setNotice(
         r.ok
-          ? 'Friend request sent — it waits with the recipient’s relaying peers until they next sync.'
+          ? 'Friend request sent. They see it the next time they open the app.'
           : r.reason === 'no-relay'
-            ? 'No relaying peers reachable yet — try again once the network is up.'
-            : `Could not send the request (${r.reason ?? 'unavailable'}).`
+            ? 'Not connected yet. Try again in a moment.'
+            : 'Could not send that request. Try again in a moment.'
       )
     })
   }, [])
@@ -341,8 +301,8 @@ export function PeopleTab(): JSX.Element {
   const queryIsRoot = isAccountRoot(q)
   const connecting = social.phase !== 'live'
 
-  // Submitting navigates even for unknown handles — ProfilePage owns the honest
-  // empty state for anything that is not a resolvable account root.
+  // Submitting navigates even for unknown handles; ProfilePage owns the honest
+  // empty state for anything that is not a resolvable account id.
   const onSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     if (q) setSelectedHandle(q)
@@ -350,7 +310,7 @@ export function PeopleTab(): JSX.Element {
 
   return (
     <div className="asoc-people">
-      {/* ---- Find player (§5: anyone is viewable, verification is local) ---- */}
+      {/* ---- Find player ---- */}
       <section className="panel asoc-find">
         <div className="panel-head">
           <span className="asoc-head-icon">
@@ -367,8 +327,8 @@ export function PeopleTab(): JSX.Element {
                 className="text-input asoc-search-input"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Account handle or root — paste a 43-char account id"
-                aria-label="Find a player by account handle or root"
+                placeholder="Paste an account id"
+                aria-label="Find a player by account id"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -381,7 +341,7 @@ export function PeopleTab(): JSX.Element {
                 type="button"
                 className="btn ghost small"
                 onClick={() => onAdd(q)}
-                title="Send a §3 friend request (rides the mailbox — survives them being offline)"
+                title="Send a friend request"
               >
                 <UserPlus size={14} aria-hidden /> Add friend
               </button>
@@ -396,15 +356,13 @@ export function PeopleTab(): JSX.Element {
           )}
 
           <p className="asoc-caption">
-            Anyone is viewable — including accounts offline for years. Your client gathers the
-            pieces from whoever still holds them and checks the math locally; no server is asked.
-            There is no name directory: look someone up by their account id.
+            There is no name search. Ask a player for their account id to look them up.
           </p>
         </div>
       </section>
 
       <div className="asoc-columns">
-        {/* ---- Friends (§3: witnessed countersigned edges) ---- */}
+        {/* ---- Friends ---- */}
         <section className="panel asoc-friends-panel">
           <div className="panel-head">
             <span className="asoc-head-icon">
@@ -419,8 +377,8 @@ export function PeopleTab(): JSX.Element {
                 <Users size={22} aria-hidden />
                 <span>
                   {connecting
-                    ? 'Connecting to the network — your friends and their presence appear once the account peer is up.'
-                    : 'No friends yet. A friendship is a countersigned edge written into both chains — look someone up above and send a request.'}
+                    ? 'Connecting. Your friends appear in a moment.'
+                    : 'No friends yet. Look someone up above and send a request.'}
                 </span>
               </div>
             ) : (
@@ -439,7 +397,7 @@ export function PeopleTab(): JSX.Element {
           </div>
         </section>
 
-        {/* ---- Mailbox (§10 anti-spam; C-3 ephemeral coordination state) ---- */}
+        {/* ---- Mailbox ---- */}
         <section className="panel asoc-mail-panel">
           <div className="panel-head">
             <span className="asoc-head-icon">
@@ -453,7 +411,7 @@ export function PeopleTab(): JSX.Element {
               style={{ marginLeft: 'auto' }}
               onClick={() => void runSyncMailbox()}
               disabled={connecting || social.busy === 'syncing'}
-              title="Drain your relaying peers now"
+              title="Check for new requests now"
             >
               <RefreshCw size={13} aria-hidden className={social.busy === 'syncing' ? 'asoc-spin' : ''} />
               Sync
@@ -465,8 +423,8 @@ export function PeopleTab(): JSX.Element {
                 <Mail size={22} aria-hidden />
                 <span>
                   {connecting
-                    ? 'Connecting to the network — friend requests held for you arrive on the first sync.'
-                    : 'Mailbox clear. New friend requests queue with relaying peers until you next sync.'}
+                    ? 'Connecting. Any friend requests arrive in a moment.'
+                    : 'No friend requests right now.'}
                 </span>
               </div>
             ) : (
@@ -484,12 +442,6 @@ export function PeopleTab(): JSX.Element {
               </ul>
             )}
 
-            <p className="asoc-caption">
-              Relaying peers enforce per-sender-root rate limits and per-recipient fair-share
-              quotas, prioritizing senders with an existing entanglement, trust, or reputation
-              edge — a sybil flood cannot evict these before you next sync. The mailbox itself is
-              ephemeral coordination state: expiring, reconstructible, never account data.
-            </p>
           </div>
         </section>
       </div>

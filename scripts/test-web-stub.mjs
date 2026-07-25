@@ -40,6 +40,17 @@ writeFileSync(
    }\n`
 )
 
+// Vite resolves `…?url` to an emitted asset path; nothing here does. The two
+// sql.js-httpvfs `?url` imports (src/web/data/chunkedDb.ts) are BARE package
+// specifiers, so leaving them external makes node resolve them relative to the
+// bundle — which lives in a temp dir with no node_modules — and the import
+// throws before a single assertion runs. Every other `?url` is a relative asset
+// node can at least locate. Stub the two to empty strings: this suite never
+// spawns the SQLite worker, and an empty URL is what an unconfigured host would
+// hand it anyway.
+const urlStub = path.join(dir, 'url-stub.mjs')
+writeFileSync(urlStub, `export default ''\n`)
+
 function bundle(entry, name, extra) {
   const out = path.join(dir, name)
   execSync(
@@ -62,6 +73,8 @@ const webOut = bundle(
   'webApi.mjs',
   `--platform=node --jsx=automatic --external:*?url --loader:.css=empty ` +
     `--alias:@shared=./src/shared --alias:@=./src/renderer/src ` +
+    `"--alias:sql.js-httpvfs/dist/sqlite.worker.js?url=${urlStub}" ` +
+    `"--alias:sql.js-httpvfs/dist/sql-wasm.wasm?url=${urlStub}" ` +
     `--define:__WEB_APP_VERSION__='"0.0.0-test"'`
 )
 
