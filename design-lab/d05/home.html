@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-style="05" data-palette="ink">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nodechess</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="feel.css">
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="tb-name">nodechess</span>
+  <span class="tb-path">~/home</span>
+  <span class="tb-right">
+    <span class="tb-id">mercer#K4T9P</span>
+    <span class="tb-rating">1500?</span>
+    <span class="pal-switch">
+      <button class="pal is-on" data-pal="ink">ink</button>
+      <button class="pal" data-pal="warm">warm</button>
+      <button class="pal" data-pal="cold">cold</button>
+      <button class="pal" data-pal="hard">hard</button>
+    </span>
+  </span>
+</div>
+
+<main class="main">
+  <div class="wrap">
+    <div class="home-grid">
+
+      <div>
+        <div class="ident">
+          <h1 class="ident-handle">mercer#K4T9P</h1>
+          <p class="ident-meta">provisional rating 1500. no games played yet.</p>
+          <p class="ident-do">Press <span class="kbd">p</span> to play. Press <span class="kbd">/</span> for everything else.</p>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">What you can do now <span class="sect-count">6 of 13 commands</span></div>
+          <div class="roster">
+            <button class="rrow" data-cmd="play">
+              <span class="rkey">p</span>
+              <span class="rname">play</span>
+              <span class="rdesc">chess, ten minutes, against a bot</span>
+            </button>
+            <button class="rrow is-off" disabled>
+              <span class="rkey">r</span>
+              <span class="rname">resume</span>
+              <span class="rdesc">nothing open</span>
+            </button>
+            <button class="rrow" data-cmd="puzzles">
+              <span class="rkey">u</span>
+              <span class="rname">puzzles</span>
+              <span class="rdesc">today's puzzle, unsolved</span>
+            </button>
+            <button class="rrow" data-cmd="school">
+              <span class="rkey">s</span>
+              <span class="rname">school</span>
+              <span class="rdesc">chapter 7, the italian game</span>
+            </button>
+            <button class="rrow" data-cmd="games">
+              <span class="rkey">g</span>
+              <span class="rname">games</span>
+              <span class="rdesc">22 boards, from chess to hex</span>
+            </button>
+            <button class="rrow" data-cmd="account">
+              <span class="rkey">a</span>
+              <span class="rname">account</span>
+              <span class="rdesc">mercer#K4T9P, joined today</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">Recent games</div>
+          <p class="ident-meta">None yet. Finish a game and it lands here with the moves worth a second look.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="sect">
+          <div class="sect-head">Where you left off</div>
+          <a class="m-board-link" href="school.html">
+            <div class="board-wrap">
+              <div class="ranks"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+              <div class="board" data-fen="r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R" data-last="f8 c5"></div>
+              <div class="files"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div>
+            </div>
+            <div class="m-board-foot">
+              <span>
+                <span class="item-name">the italian game</span>
+                <p class="item-line">lesson 3 of 5. Viktor is waiting on a move.</p>
+              </span>
+              <span class="rkey">s</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="dock">
+  <div class="palette" id="palette">
+    <div class="pal-head"><span id="pal-count">13 commands</span><span>up and down to move, enter to run, esc to close</span></div>
+    <div class="pal-list" id="pal-list">
+      <button class="pitem is-sel" data-cmd="play"><span class="pitem-name">play</span><span class="pitem-desc">start a game, any board, any opponent</span><span class="pitem-key">p</span></button>
+      <button class="pitem" data-cmd="resume"><span class="pitem-name">resume</span><span class="pitem-desc">nothing open</span><span class="pitem-key">r</span></button>
+      <button class="pitem" data-cmd="games"><span class="pitem-name">games</span><span class="pitem-desc">22 boards, local, bot or online</span><span class="pitem-key">g</span></button>
+      <button class="pitem" data-cmd="school"><span class="pitem-name">school</span><span class="pitem-desc">40 chapters, you are on 7</span><span class="pitem-key">s</span></button>
+      <button class="pitem" data-cmd="puzzles"><span class="pitem-name">puzzles</span><span class="pitem-desc">today's puzzle, unsolved</span><span class="pitem-key">u</span></button>
+      <button class="pitem" data-cmd="openings"><span class="pitem-name">openings</span><span class="pitem-desc">walk the book line by line</span><span class="pitem-key">o</span></button>
+      <button class="pitem" data-cmd="analysis"><span class="pitem-name">analysis</span><span class="pitem-desc">step through a finished game</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="progress"><span class="pitem-name">progress</span><span class="pitem-desc">what has stuck and what has not</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="library"><span class="pitem-name">library</span><span class="pitem-desc">saved games and studies</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="account"><span class="pitem-name">account</span><span class="pitem-desc">mercer#K4T9P</span><span class="pitem-key">a</span></button>
+      <button class="pitem" data-cmd="settings"><span class="pitem-name">settings</span><span class="pitem-desc">board, pieces, clocks, sound</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="palette"><span class="pitem-name">palette</span><span class="pitem-desc">ink, warm, cold, hard</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="home"><span class="pitem-name">home</span><span class="pitem-desc">back to the start</span><span class="pitem-key">h</span></button>
+    </div>
+  </div>
+  <div class="cmd-out" id="out"></div>
+  <div class="legend">
+    <span class="lg"><b>p</b> play</span>
+    <span class="lg"><b>g</b> games</span>
+    <span class="lg"><b>s</b> school</span>
+    <span class="lg"><b>u</b> puzzles</span>
+    <span class="lg"><b>a</b> account</span>
+    <span class="lg"><b>/</b> commands</span>
+  </div>
+  <div class="cmdline is-empty" id="cmdline">
+    <span class="prompt">mercer@nodechess <b>~/home</b> $</span>
+    <span class="cursor" aria-hidden="true"></span>
+    <input class="cmd-in" id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="command line">
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙',
+                k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+  var FILES = 'abcdefgh';
+
+  [].forEach.call(document.querySelectorAll('[data-fen]'), function (el) {
+    var rows = el.getAttribute('data-fen').split('/');
+    var last = (el.getAttribute('data-last') || '').split(' ');
+    function cell(r, f, p) {
+      var name = FILES.charAt(f) + (8 - r);
+      var cls = 'sq sq--' + ((r + f) % 2 === 0 ? 'l' : 'd') + (last.indexOf(name) > -1 ? ' is-last' : '');
+      return '<div class="' + cls + '">' + (p ? '<span class="pc">' + GLYPH[p] + '</span>' : '') + '</div>';
+    }
+    var html = '';
+    for (var r = 0; r < 8; r++) {
+      var row = rows[r], f = 0;
+      for (var i = 0; i < row.length; i++) {
+        var c = row.charAt(i);
+        if (c >= '1' && c <= '9') { var n = +c; while (n--) { html += cell(r, f++, ''); } }
+        else { html += cell(r, f++, c); }
+      }
+    }
+    el.innerHTML = html;
+  });
+
+  var PALS = ['ink', 'warm', 'cold', 'hard'];
+  function setPal(p) {
+    root.setAttribute('data-palette', p);
+    [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+      b.className = 'pal' + (b.getAttribute('data-pal') === p ? ' is-on' : '');
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+    b.addEventListener('click', function () { setPal(b.getAttribute('data-pal')); });
+  });
+  function cyclePal() {
+    var i = PALS.indexOf(root.getAttribute('data-palette'));
+    setPal(PALS[(i + 1) % PALS.length]);
+    return root.getAttribute('data-palette');
+  }
+
+  var box = document.getElementById('palette');
+  var list = document.getElementById('pal-list');
+  var count = document.getElementById('pal-count');
+  var out = document.getElementById('out');
+  var cmd = document.getElementById('cmd');
+  var cmdline = document.getElementById('cmdline');
+  var filter = document.getElementById('filter');
+  var GO = { home: 'home.html', games: 'games.html', school: 'school.html' };
+  var KEYS = { p: 'play', g: 'games', s: 'school', u: 'puzzles', a: 'account', h: 'home', r: 'resume', o: 'openings' };
+
+  function say(t, bad) { out.textContent = t || ''; out.className = 'cmd-out' + (bad ? ' is-bad' : ''); }
+  function items() { return [].filter.call(list.querySelectorAll('.pitem'), function (i) { return !/is-hidden/.test(i.className); }); }
+  function sel(el) {
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) { i.className = i.className.replace(' is-sel', ''); });
+    if (el) { el.className += ' is-sel'; el.scrollIntoView({ block: 'nearest' }); }
+  }
+  function open() { box.className = 'palette is-open'; cmd.value = ''; refilter(); cmd.focus(); }
+  function close() { box.className = 'palette'; cmd.value = ''; mark(); }
+  function isOpen() { return /is-open/.test(box.className); }
+  function mark() { cmdline.className = 'cmdline' + (cmd.value ? '' : ' is-empty'); }
+
+  function refilter() {
+    var q = cmd.value.trim().toLowerCase(), shown = 0;
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) {
+      var name = i.getAttribute('data-cmd');
+      var hit = !q || name.indexOf(q) === 0 || name.indexOf(q) > -1;
+      i.className = 'pitem' + (hit ? '' : ' is-hidden');
+      if (hit) shown++;
+    });
+    count.textContent = q ? shown + ' of 13 commands' : '13 commands';
+    /* A prefix match beats a match in the middle of the word, so typing s
+       lands on school rather than on resume. */
+    var vis = items(), pre = null;
+    for (var j = 0; j < vis.length; j++) {
+      if (vis[j].getAttribute('data-cmd').indexOf(q) === 0) { pre = vis[j]; break; }
+    }
+    sel(pre || vis[0]);
+  }
+
+  function run(name) {
+    if (!name) return;
+    if (GO[name]) { location.href = GO[name]; return; }
+    close();
+    if (name === 'palette') { say('palette is now ' + cyclePal() + '.'); return; }
+    if (name === 'resume') { say('resume: nothing open. type play to start one.'); return; }
+    if (KEYS[name] || name) { say(name + ': no screen for this in the preview yet.'); return; }
+  }
+
+  cmd.addEventListener('input', function () { mark(); if (isOpen()) refilter(); });
+  cmd.addEventListener('focus', function () { if (!isOpen() && !cmd.value) open(); });
+
+  cmd.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { close(); cmd.blur(); e.preventDefault(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!isOpen()) { open(); return; }
+      var l = items(), i = l.indexOf(list.querySelector('.is-sel'));
+      sel(l[(i + (e.key === 'ArrowDown' ? 1 : l.length - 1) + l.length) % l.length]);
+      e.preventDefault(); return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isOpen()) {
+        var s = list.querySelector('.is-sel');
+        if (s) { run(s.getAttribute('data-cmd')); }
+        else { say('no command matches "' + cmd.value.trim() + '".', true); close(); }
+      } else if (cmd.value.trim()) {
+        var typed = cmd.value.trim().toLowerCase().split(' ')[0];
+        var found = list.querySelector('.pitem[data-cmd="' + typed + '"]');
+        if (found) { run(typed); } else { say(typed + ': not a command. press / to see the list.', true); cmd.value = ''; mark(); }
+      }
+    }
+  });
+
+  [].forEach.call(document.querySelectorAll('[data-cmd]'), function (b) {
+    if (b.tagName !== 'BUTTON') return;
+    b.addEventListener('click', function () { run(b.getAttribute('data-cmd')); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if (t === cmd || t === filter) return;
+    if (e.metaKey || e.ctrlKey) {
+      if (e.key === 'k') { open(); e.preventDefault(); }
+      return;
+    }
+    if (e.key === '/' || e.key === '?') { open(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { close(); return; }
+    var k = KEYS[e.key];
+    if (k) { run(k); e.preventDefault(); return; }
+    if (filter && e.key.length === 1) { filter.focus(); return; }
+    if (e.key.length === 1) { cmd.focus(); }
+  });
+})();
+</script>
+</body>
+</html>

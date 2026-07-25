@@ -1,0 +1,237 @@
+/* ==========================================================================
+   d05 STYLE: MONOCHROME TERMINAL
+   Tokens only. No selectors targeting page structure, no layout, no components.
+
+   Thesis: hierarchy is earned with weight, size, spacing and line, never hue.
+   One family in all three type roles. Zero radius, zero blur. Every "shadow"
+   is a hard offset block, because a blur is a lighting effect and this
+   interface has no light in it.
+
+   Four palettes, all monochrome, all dark:
+     ink  (default)  cold neutral, the house palette
+     warm            warm grey, paper-and-toner
+     cold            blue grey, cathode without the colour
+     hard            pure #000 / #fff, maximum contrast
+
+   Exactly one hue exists in the whole system: --danger. It is reserved for a
+   real failure. --success, --warning and --info are deliberately greys, so
+   nothing decorative can ever borrow a colour.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Non-colour tokens, shared by every palette
+   -------------------------------------------------------------------------- */
+[data-style="05"] {
+  /* Type. One family, three roles: the commitment IS the style.
+     Shipping plan: self-host IBM Plex Mono (SIL OFL 1.1, free for commercial
+     use) as IBMPlexMono-Regular.woff2, -Medium.woff2, -SemiBold.woff2, latin
+     subset, in src/renderer/src/assets/fonts/. No @font-face is declared here
+     because those files are not in the repo yet, and a rule pointing at a
+     missing file is exactly how the app ended up silently rendering
+     system-ui. Until they land, the stack below resolves to the platform
+     monospace on every target, which is a faithful stand-in. */
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo,
+    'Cascadia Mono', 'Segoe UI Mono', Consolas, 'DejaVu Sans Mono', monospace;
+  --font-sans: var(--font-mono);
+  --font-display: var(--font-mono);
+
+  /* Tight scale. Monospace runs wide, so the steps are small and the jumps
+     between them are carried by weight and tracking instead. */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-lg: 15px;
+  --text-xl: 19px;
+  --text-2xl: 25px;
+  --text-3xl: 34px;
+
+  /* 600 is the ceiling. Mono at 700 fills its counters and turns to mud. */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 600;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.55;
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  /* Wide tracking on uppercase is the label device. It does the work a second
+     typeface would do in a two-family design. */
+  --tracking-wide: 0.16em;
+
+  /* 4px base, one value per step, no half steps. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* A character cell has square corners. */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-full: 0;
+
+  --border-width: 1px;
+
+  /* Motion is quantised. steps(3, end) reads as a repaint rather than a
+     glide, and it is the one place this style asserts itself over any feel
+     it gets dropped into. */
+  --motion-fast: 60ms;
+  --motion-base: 110ms;
+  --motion-slow: 200ms;
+  --ease-out: steps(3, end);
+}
+
+/* --------------------------------------------------------------------------
+   PALETTE: ink (default). Cold neutral greys, near black.
+   -------------------------------------------------------------------------- */
+[data-style="05"],
+[data-style="05"][data-palette="ink"] {
+  --bg-page: #0b0c0d;
+  --bg-subtle: #121416;
+  --surface: #16191b;
+  --surface-2: #1e2225;
+  --border: #2b3033;
+  --border-strong: #454c50;
+
+  --text-primary: #e9ecee;
+  --text-secondary: #a3aaae;
+  --text-muted: #6d7478;
+  --text-inverse: #0b0c0d;
+
+  /* The accent is white, because the accent is inverse video. */
+  --accent: #e9ecee;
+  --accent-hover: #ffffff;
+  --accent-active: #c9ced1;
+  --accent-soft: #1e2225;
+  --on-accent: #0b0c0d;
+
+  --success: #d3d9dc;
+  --danger: #d5453b;
+  --warning: #9aa1a5;
+  --info: #7f878b;
+  --focus-ring: #ffffff;
+
+  --shadow-sm: none;
+  --shadow-md: 0 0 0 1px #454c50;
+  --shadow-lg: 6px 6px 0 0 #000000;
+
+  --d05-sq-light: #121516;
+  --d05-sq-dark: #0e1011;
+  --d05-dither: #52595e;
+}
+
+/* --------------------------------------------------------------------------
+   PALETTE: warm. Grey with a toner cast. No hue is present, only temperature.
+   -------------------------------------------------------------------------- */
+[data-style="05"][data-palette="warm"] {
+  --bg-page: #100e0c;
+  --bg-subtle: #171411;
+  --surface: #1b1815;
+  --surface-2: #241f1b;
+  --border: #322c26;
+  --border-strong: #4e453b;
+
+  --text-primary: #f0eae2;
+  --text-secondary: #ada49a;
+  --text-muted: #776f66;
+  --text-inverse: #100e0c;
+
+  --accent: #f0eae2;
+  --accent-hover: #fffaf3;
+  --accent-active: #d3cbc1;
+  --accent-soft: #241f1b;
+  --on-accent: #100e0c;
+
+  --success: #d8d0c6;
+  --danger: #cf5a48;
+  --warning: #a39a8f;
+  --info: #8b8278;
+  --focus-ring: #fffaf3;
+
+  --shadow-sm: none;
+  --shadow-md: 0 0 0 1px #4e453b;
+  --shadow-lg: 6px 6px 0 0 #000000;
+
+  --d05-sq-light: #17130f;
+  --d05-sq-dark: #12100e;
+  --d05-dither: #5c5348;
+}
+
+/* --------------------------------------------------------------------------
+   PALETTE: cold. Blue grey. A cathode tube with the colour gun removed.
+   -------------------------------------------------------------------------- */
+[data-style="05"][data-palette="cold"] {
+  --bg-page: #090c10;
+  --bg-subtle: #0f1319;
+  --surface: #12171e;
+  --surface-2: #1a2028;
+  --border: #262e39;
+  --border-strong: #3f4a58;
+
+  --text-primary: #e5eaf0;
+  --text-secondary: #9ba6b3;
+  --text-muted: #66707c;
+  --text-inverse: #090c10;
+
+  --accent: #e5eaf0;
+  --accent-hover: #ffffff;
+  --accent-active: #c4ccd6;
+  --accent-soft: #1a2028;
+  --on-accent: #090c10;
+
+  --success: #ccd4dd;
+  --danger: #d2483f;
+  --warning: #939ead;
+  --info: #7b8695;
+  --focus-ring: #ffffff;
+
+  --shadow-sm: none;
+  --shadow-md: 0 0 0 1px #3f4a58;
+  --shadow-lg: 6px 6px 0 0 #000000;
+
+  --d05-sq-light: #0f1318;
+  --d05-sq-dark: #0c0f13;
+  --d05-dither: #4d5866;
+}
+
+/* --------------------------------------------------------------------------
+   PALETTE: hard. Pure black, pure white, and only the greys required to keep
+   secondary text legible. Everything gets louder.
+   -------------------------------------------------------------------------- */
+[data-style="05"][data-palette="hard"] {
+  --bg-page: #000000;
+  --bg-subtle: #000000;
+  --surface: #000000;
+  --surface-2: #0d0d0d;
+  --border: #545454;
+  --border-strong: #ffffff;
+
+  --text-primary: #ffffff;
+  --text-secondary: #c9c9c9;
+  --text-muted: #8f8f8f;
+  --text-inverse: #000000;
+
+  --accent: #ffffff;
+  --accent-hover: #ffffff;
+  --accent-active: #e0e0e0;
+  --accent-soft: #1a1a1a;
+  --on-accent: #000000;
+
+  --success: #ffffff;
+  --danger: #ff3b30;
+  --warning: #b0b0b0;
+  --info: #9a9a9a;
+  --focus-ring: #ffffff;
+
+  --shadow-sm: none;
+  --shadow-md: 0 0 0 1px #ffffff;
+  --shadow-lg: 6px 6px 0 0 #545454;
+
+  --d05-sq-light: #000000;
+  --d05-sq-dark: #000000;
+  --d05-dither: #757575;
+}

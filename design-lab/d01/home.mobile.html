@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en" data-style="01" data-feel="01">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body class="is-mobile">
+    <div class="app">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark"></span>nodechess</div>
+        <a class="who" href="#"><span class="who-dot"></span>mercer#K4T9P</a>
+      </header>
+
+      <!-- Same readout, same slots, wrapped for the narrow bezel. -->
+      <div class="readout">
+        <div class="rd-field">
+          <span class="lbl">Rating</span>
+          <span class="rd-value">1500</span>
+          <span class="rd-value is-quiet">provisional</span>
+        </div>
+        <div class="rd-field">
+          <span class="lbl">Games</span>
+          <span class="rd-value">0</span>
+        </div>
+        <div class="rd-field is-next">
+          <span class="lbl">Next</span>
+          <span class="rd-next-text">Play your first game</span>
+        </div>
+        <div class="trace is-0" aria-hidden="true"></div>
+      </div>
+
+      <main class="main">
+        <div class="home">
+          <div class="home-col">
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Start a game</h2>
+                <span class="sec-count">3 ways</span>
+              </div>
+
+              <div class="startrow is-first">
+                <div>
+                  <div class="startrow-name">Play online <span class="tag">start here</span></div>
+                  <div class="startrow-spec">Matched against someone near your strength.</div>
+                </div>
+                <button class="btn is-primary" type="button">Play online</button>
+              </div>
+
+              <div class="startrow">
+                <div>
+                  <div class="startrow-name">Play a bot</div>
+                  <div class="startrow-spec">Eight levels. It waits as long as you need.</div>
+                </div>
+                <button class="btn" type="button">Choose a level</button>
+              </div>
+
+              <div class="startrow">
+                <div>
+                  <div class="startrow-name">Local board</div>
+                  <div class="startrow-spec">Two players, one phone. Clock optional.</div>
+                </div>
+                <button class="btn" type="button">Open board</button>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Resume</h2>
+              </div>
+              <div class="well">
+                <div class="empty-head">
+                  <span class="lbl">Opponent</span>
+                  <span class="lbl">Result</span>
+                </div>
+                <div class="empty">
+                  <p class="empty-line">Nothing to resume yet.</p>
+                  <p class="empty-line">Finished games land here, newest first.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Practice</h2>
+              </div>
+              <div class="panel golist">
+                <a class="go" href="#">
+                  <span>
+                    <span class="go-name">Puzzles</span>
+                    <span class="go-sub">4.7M positions, by theme</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+                <a class="go" href="school.html">
+                  <span>
+                    <span class="go-name">School</span>
+                    <span class="go-sub">CH 07, LESSON 3 OF 5</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+                <a class="go" href="#">
+                  <span>
+                    <span class="go-name">Analysis</span>
+                    <span class="go-sub">Paste a game or set up a position</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Account</h2>
+              </div>
+              <div class="panel facts">
+                <div class="fact">
+                  <span class="lbl">Player</span>
+                  <span class="fact-value">mercer#K4T9P</span>
+                </div>
+                <div class="fact">
+                  <span class="lbl">Keys</span>
+                  <span class="fact-value">On this device</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <!-- The desktop word row becomes a bottom bar. Same five destinations,
+           all still visible, still nothing behind a menu. -->
+      <nav class="tabbar" aria-label="Main">
+        <a class="tab" href="home.html" aria-current="page">
+          <svg class="icon" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path
+              d="M4.5 3l7.5 4.5L4.5 12z"
+              stroke="currentColor"
+              stroke-width="1.1"
+              stroke-linejoin="miter"
+            />
+          </svg>
+          Home
+        </a>
+        <a class="tab" href="games.html">
+          <svg class="icon" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path
+              d="M2.5 2.5h4v4h-4zM8.5 2.5h4v4h-4zM2.5 8.5h4v4h-4zM8.5 8.5h4v4h-4z"
+              stroke="currentColor"
+              stroke-width="1.1"
+            />
+          </svg>
+          Games
+        </a>
+        <a class="tab" href="#">
+          <svg class="icon" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path
+              d="M7.5 2l5.5 5.5L7.5 13 2 7.5z"
+              stroke="currentColor"
+              stroke-width="1.1"
+              stroke-linejoin="miter"
+            />
+          </svg>
+          Puzzles
+        </a>
+        <a class="tab" href="school.html">
+          <svg class="icon" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path
+              d="M7.5 4.6v7.9M7.5 4.6C6.1 3.4 4.2 3.1 2.6 3.3v7.6c1.6-.2 3.5.1 4.9 1.3M7.5 4.6C8.9 3.4 10.8 3.1 12.4 3.3v7.6c-1.6-.2-3.5.1-4.9 1.3"
+              stroke="currentColor"
+              stroke-width="1.1"
+              stroke-linejoin="miter"
+            />
+          </svg>
+          School
+        </a>
+        <a class="tab" href="#">
+          <svg class="icon" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path
+              d="M7.5 7.2a2.2 2.2 0 100-4.4 2.2 2.2 0 000 4.4zM3.1 12.6c0-2.2 2-3.7 4.4-3.7s4.4 1.5 4.4 3.7"
+              stroke="currentColor"
+              stroke-width="1.1"
+            />
+          </svg>
+          Account
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

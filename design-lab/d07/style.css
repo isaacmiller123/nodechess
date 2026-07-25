@@ -1,0 +1,116 @@
+/* d07 STYLE: Studio Indigo Broadcast
+   Tokens only. No layout, no structural selectors, no component rules.
+   Dark only, one palette.
+
+   Why these colours: a live sports graphics package is built from a deep
+   saturated studio backdrop (not black, black kills the depth on a wall of
+   panels), one authority colour that owns every primary action, and a single
+   hot signal colour reserved for the word LIVE. Gold is the authority colour
+   here because it is the one hue that reads as "this is the match" without
+   competing with a chessboard. Signal red is spent only on live pips, so it
+   never becomes decoration. Cyan carries information and focus.
+
+   Fonts: display ships (Barlow Condensed SemiBold + Bold, self-hosted woff2,
+   SIL OFL). Until those files exist the stack falls to Arial Narrow, which is
+   present on macOS and Windows, so the condensed character survives rather
+   than silently collapsing to system-ui. Body and mono deliberately name only
+   faces the OS already has, so nothing is promised that is not shipped.
+
+   Extras are prefixed --d07-. feel.css reads them with fallbacks so another
+   designer's style file still produces a coherent page. */
+
+[data-style='07'] {
+  /* Surfaces: studio backdrop, recessed rails, lifted panels */
+  --bg-page: #101425;
+  --bg-subtle: #090c18;
+  --surface: #191e36;
+  --surface-2: #222948;
+  --border: #2c3459;
+  --border-strong: #414c7e;
+
+  /* Text */
+  --text-primary: #e9edf9;
+  --text-secondary: #a4adca;
+  --text-muted: #737c9d;
+  --text-inverse: #090c18;
+
+  /* Accent: broadcast gold. Carries ink, never white. */
+  --accent: #ffc531;
+  --accent-hover: #ffd45f;
+  --accent-active: #eeb214;
+  --accent-soft: #35290b;
+  --on-accent: #17130a;
+
+  /* Semantic */
+  --success: #3ed88e;
+  --danger: #ff6070;
+  --warning: #ffa033;
+  --info: #45c8ff;
+  --focus-ring: #45c8ff;
+
+  /* Type */
+  --font-display: 'Barlow Condensed', 'Archivo Narrow', 'Arial Narrow',
+    'Liberation Sans Narrow', 'Helvetica Neue', system-ui, sans-serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+    'Liberation Mono', monospace;
+
+  /* Scale: wide gaps, because a score bug needs one enormous size and one
+     tiny label size and very little in between. */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 34px;
+  --text-3xl: 52px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.05;
+  --leading-normal: 1.5;
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.16em;
+
+  /* Rhythm: 4px base, one generous step at the top for panel separation */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 56px;
+
+  /* Radii: overlay hardware, chamfered rather than round */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 5px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 0 rgba(5, 6, 13, 0.6);
+  --shadow-md: 0 6px 18px rgba(5, 6, 13, 0.55);
+  --shadow-lg: 0 22px 48px rgba(5, 6, 13, 0.7);
+
+  --border-width: 1px;
+
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 420ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* d07 extras */
+  --d07-ink: #05060d; /* true black of the bug and the ticker rail */
+  --d07-live: #ff2e43; /* reserved for the word LIVE and nothing else */
+  --d07-live-soft: #35090f;
+  --d07-glow: 0 0 22px rgba(255, 197, 49, 0.28);
+  --d07-live-glow: 0 0 10px rgba(255, 46, 67, 0.85);
+  --d07-bar: 4px; /* thickness of the on-air bar */
+  --d07-figurine: 'Noto Sans Symbols 2', 'Segoe UI Symbol', 'Apple Symbols',
+    system-ui, sans-serif;
+  --d07-scan: rgba(69, 200, 255, 0.055); /* studio grid wash */
+}

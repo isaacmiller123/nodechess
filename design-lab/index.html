@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chess# design lab: feel x style</title>
+<link rel="stylesheet" href="_gallery/gallery.css" />
+</head>
+<body>
+
+<div class="lab">
+  <header class="bar">
+    <div class="brand"><b>Chess#</b> design lab<span class="gen" id="gen"></span></div>
+
+    <span class="barlabel">Screen</span>
+    <div class="seg" id="screens"></div>
+
+    <span class="barlabel">Mode</span>
+    <div class="seg" id="mode"></div>
+
+    <div class="spacer"></div>
+    <button class="ghost" type="button" id="btn-summary">Verdicts and export</button>
+  </header>
+
+  <div class="body">
+    <aside class="panel">
+      <div class="aim" id="aim"></div>
+
+      <h2>Feel<small>Navigation architecture. Layout, motion, where things live.</small></h2>
+      <div class="list" id="feel-list"></div>
+
+      <h2>Style<small>Visual tokens only. Colour, type, radius, spacing.</small></h2>
+      <div class="list" id="style-list"></div>
+
+      <section id="pal-wrap" hidden>
+        <h2 id="pal-head">Palette</h2>
+        <div class="chips" id="pal-list"></div>
+      </section>
+
+      <section id="notes"></section>
+    </aside>
+
+    <main class="stage" id="stage"></main>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <div>
+        <h1>Verdicts</h1>
+        <p class="sub" id="summary-count"></p>
+      </div>
+      <div class="spacer"></div>
+      <button class="ghost" type="button" id="btn-clear">Erase all</button>
+      <button class="ghost" type="button" id="btn-close">Close</button>
+    </div>
+
+    <div id="summary-body"></div>
+
+    <h2 style="margin:22px 0 0;font:600 10px/1 var(--g-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--g-text-2)">Paste this back</h2>
+    <textarea class="export" id="export" spellcheck="false" readonly></textarea>
+    <p style="margin-top:8px"><button class="ghost" type="button" id="btn-copy">Copy to clipboard</button></p>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="_gallery/pages.js"></script>
+<script src="_gallery/app.js"></script>
+</body>
+</html>

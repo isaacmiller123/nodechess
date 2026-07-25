@@ -1,0 +1,125 @@
+/* d02 STYLE: Warm graphite, gilt rule
+   ---------------------------------------------------------------------------
+   Tokens only. No selectors touching page structure, no layout, no components.
+
+   The anchor is a reading room, and the trap in that anchor is parchment: cream
+   fields, big high-contrast serif display, terracotta. So the warmth here is not
+   in any surface. Every surface is a warm graphite, a grey carrying just enough
+   red-yellow to stop reading as slate. The warmth arrives as pigment: gilt from
+   a stamped spine, and a rubric rose from the red a scribe used in a margin.
+   Those two hues, plus a dull sap green and a faded ultramarine, are the whole
+   colour story, and they exist at small sizes only.
+
+   Dark only, by instruction. One palette.
+   --------------------------------------------------------------------------- */
+
+[data-style='02'] {
+  /* Surfaces: warm graphite. Hue holds near 35deg at very low chroma so the
+     room reads warm without reading like leather or paper. */
+  --bg-page: #121110;
+  --bg-subtle: #191715;
+  --surface: #1e1c19;
+  --surface-2: #26231f;
+  --border: #302c27;
+  --border-strong: #4a443c;
+
+  /* Text: warm off-white, never pure white. Long prose at 1.7 leading needs the
+     top end pulled back or it buzzes. */
+  --text-primary: #e8e1d7;
+  --text-secondary: #ada49a;
+  --text-muted: #7e766c;
+  --text-inverse: #121110;
+
+  /* Accent: gilt. Low chroma, sits at 22% saturation, closer to brass than to
+     gold, so it can carry a filled button without turning the page into a
+     jewellery advert. */
+  --accent: #c8a45c;
+  --accent-hover: #d9b771;
+  --accent-active: #e5c889;
+  --accent-soft: #2a2318;
+  --on-accent: #14120f;
+
+  /* Semantic: pigments, not UI primaries. Sap green, rubric rose, ochre,
+     faded ultramarine. */
+  --success: #8fa85a;
+  --danger: #c4626a;
+  --warning: #d79a4e;
+  --info: #8fa3b8;
+  --focus-ring: #d9b771;
+
+  /* Type.
+     --font-sans is the body slot, and in this style the body is a serif: the
+     anchor is text-forward and prose is the material. --font-display is the same
+     family at display optical size, used once per screen at weight 400, never as
+     a high-contrast poster headline. --font-mono carries notation, running heads
+     and every uppercase label, because in chess literature the display material
+     IS notation. That inversion is the point of the pairing. */
+  --font-sans: 'Source Serif 4', 'Source Serif Pro', Charter, 'Iowan Old Style', 'Palatino Linotype',
+    Palatino, 'Book Antiqua', Georgia, serif;
+  --font-display: 'Source Serif 4 Display', 'Source Serif 4', Charter, 'Iowan Old Style',
+    'Palatino Linotype', Palatino, Georgia, serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 16px;
+  --text-lg: 19px;
+  --text-2xl: 27px;
+  --text-xl: 22px;
+  --text-3xl: 40px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 600;
+
+  --leading-tight: 1.16;
+  --leading-normal: 1.7;
+
+  --tracking-tight: -0.012em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.14em;
+
+  /* Space: the restraint in this direction is spending here rather than on
+     ornament, so the top of the scale is unusually generous. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 40px;
+  --space-12: 72px;
+
+  /* Radius: small but never zero. Zero radius plus hairlines is the broadsheet
+     default, and this is a room, not a newspaper. */
+  --radius-sm: 2px;
+  --radius-md: 5px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+
+  /* Shadow: warm black, almost nothing. Depth comes from rules and space. */
+  --shadow-sm: 0 1px 0 rgba(8, 6, 4, 0.4);
+  --shadow-md: 0 6px 18px rgba(8, 6, 4, 0.45);
+  --shadow-lg: 0 24px 60px rgba(8, 6, 4, 0.6);
+
+  --border-width: 1px;
+
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 380ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* d02 extensions. Prefixed, and every consumer in feel.css passes a fallback
+     drawn from the shared namespace, so a swapped style loses these without
+     losing the layout. */
+  --d02-rule: 2px;            /* the marginal gilt rule, the one signature */
+  --d02-nav: 272px;           /* standing contents column */
+  --d02-sheet: 900px;         /* text block outer bound */
+  --d02-measure: 62ch;        /* prose measure, a real reading measure */
+  --d02-sq-light: #7d7367;    /* board: warm stone, not wood, not cream */
+  --d02-sq-dark: #3a332c;
+  --d02-piece-w: #f2ece2;
+  --d02-piece-b: #14100d;
+  --d02-piece-edge: rgba(8, 6, 4, 0.55);   /* under white pieces */
+  --d02-piece-edge-b: rgba(242, 236, 226, 0.22); /* rim on black pieces */
+  --d02-rubric: #c4626a;      /* margin red, for the one annotated move */
+}

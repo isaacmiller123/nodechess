@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en" data-style="03">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess · games</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="band idbar">
+        <a class="brand" href="home.html">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="2" y="2" width="10" height="10" fill="currentColor" />
+            <rect x="12" y="12" width="10" height="10" fill="currentColor" />
+          </svg>
+          <span class="brand-word">nodechess</span>
+        </a>
+        <div class="kv">
+          <span class="kv-k">Player</span>
+          <span class="kv-v">mercer#K4T9P</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Rating</span>
+          <span class="kv-v kv-v--accent">1500?</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Games</span>
+          <span class="kv-v">0</span>
+        </div>
+        <span class="spacer"></span>
+        <label class="find">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M15 15 L21 21" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          <input type="search" placeholder="Filter 22 titles" aria-label="Filter titles" />
+          <kbd>/</kbd>
+        </label>
+        <a class="iconbtn" href="#" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" />
+            <rect x="14" y="3" width="4" height="6" fill="currentColor" />
+            <rect x="6" y="9" width="4" height="6" fill="currentColor" />
+            <rect x="14" y="15" width="4" height="6" fill="currentColor" />
+          </svg>
+        </a>
+        <a class="iconbtn" href="#" aria-label="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M4 21 v-2 a8 8 0 0 1 16 0 v2" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </header>
+
+      <nav class="band dest" aria-label="Sections">
+        <a class="dest-link" href="home.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor" /></svg>
+          Play
+        </a>
+        <a class="dest-link" href="games.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" fill="currentColor" />
+            <rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="14" y="14" width="7" height="7" fill="currentColor" />
+          </svg>
+          Games
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M3 15 L9 15 L9 9 L15 9 L15 3" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Puzzles
+        </a>
+        <a class="dest-link" href="school.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 5 h8 v14 H3 z M13 5 h8 v14 h-8 z" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          School
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="12" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M12 17 v4 M8 21 h8" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          Watch
+        </a>
+        <span class="spacer"></span>
+        <div class="dest-note">
+          <span>8,412 playing</span>
+          <span>19:04 UTC</span>
+        </div>
+      </nav>
+
+      <div class="band ctx">
+        <span class="ctx-path">Games <b>/</b> 22 titles</span>
+        <div class="ctx-facts">
+          <span>L on this screen</span>
+          <span>B against a bot</span>
+          <span>O against a person</span>
+        </div>
+        <span class="spacer"></span>
+        <div class="chips">
+          <button class="chip" type="button" aria-pressed="true">All 22</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--a"></span>Chess</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--b"></span>Variants</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--c"></span>Regional</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--d"></span>Draughts</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--e"></span>Territory</button>
+          <button class="chip" type="button" aria-pressed="false"><span class="chip-dot dot--f"></span>Classics</button>
+        </div>
+      </div>
+
+      <main class="sheet">
+        <div class="col span-12">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Every board we run</h2>
+              <span class="note">numbers hold, 14 is always International draughts</span>
+            </div>
+            <div class="tbl tbl--games">
+              <div class="tbl-head">
+                <span class="f f--idx">No</span>
+                <span class="f">Line</span>
+                <span class="f">Title</span>
+                <span class="f">What it is</span>
+                <span class="f f--num">Size</span>
+                <span class="f f--num">Live</span>
+                <span class="f f--num">Open</span>
+                <span class="f f--act">L / B / O</span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--a">A</span></span>
+                <span class="f f--span">Chess</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">01</span>
+                <span class="f f--line"><span class="badge badge--a">A</span></span>
+                <span class="f f--name">Chess</span>
+                <span class="f f--about">the standard game</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">6,204</span>
+                <span class="f f--num">1,196</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Chess on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Chess against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Chess against a person">O</button>
+                </span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--span">Variants</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">02</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Chess960</span>
+                <span class="f f--about">back rank shuffled, 960 starts</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">412</span>
+                <span class="f f--num">88</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Chess960 on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Chess960 against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Chess960 against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">03</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Crazyhouse</span>
+                <span class="f f--about">captured pieces come back on your side</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">237</span>
+                <span class="f f--num">51</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Crazyhouse on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Crazyhouse against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Crazyhouse against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">04</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Atomic</span>
+                <span class="f f--about">captures blow up the neighbours</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">193</span>
+                <span class="f f--num">44</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Atomic on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Atomic against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Atomic against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">05</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Antichess</span>
+                <span class="f f--about">lose all your pieces to win</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">168</span>
+                <span class="f f--num">39</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Antichess on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Antichess against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Antichess against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">06</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">King of the Hill</span>
+                <span class="f f--about">walk your king to the centre</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">121</span>
+                <span class="f f--num">27</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="King of the Hill on this screen">L</button>
+                  <button class="mode" type="button" aria-label="King of the Hill against a bot">B</button>
+                  <button class="mode" type="button" aria-label="King of the Hill against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">07</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Three-Check</span>
+                <span class="f f--about">check three times and it is over</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">109</span>
+                <span class="f f--num">25</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Three-Check on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Three-Check against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Three-Check against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">08</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Horde</span>
+                <span class="f f--about">36 pawns against a full army</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">74</span>
+                <span class="f f--num">18</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Horde on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Horde against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Horde against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">09</span>
+                <span class="f f--line"><span class="badge badge--b">B</span></span>
+                <span class="f f--name">Racing Kings</span>
+                <span class="f f--about">first king to the eighth rank</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">66</span>
+                <span class="f f--num">15</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Racing Kings on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Racing Kings against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Racing Kings against a person">O</button>
+                </span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--c">C</span></span>
+                <span class="f f--span">Regional chess</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">10</span>
+                <span class="f f--line"><span class="badge badge--c">C</span></span>
+                <span class="f f--name">Xiangqi</span>
+                <span class="f f--about">Chinese chess, river and palace</span>
+                <span class="f f--num">9x10</span>
+                <span class="f f--num">1,880</span>
+                <span class="f f--num">302</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Xiangqi on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Xiangqi against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Xiangqi against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">11</span>
+                <span class="f f--line"><span class="badge badge--c">C</span></span>
+                <span class="f f--name">Shogi</span>
+                <span class="f f--about">Japanese chess, captures change sides</span>
+                <span class="f f--num">9x9</span>
+                <span class="f f--num">1,344</span>
+                <span class="f f--num">226</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Shogi on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Shogi against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Shogi against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">12</span>
+                <span class="f f--line"><span class="badge badge--c">C</span></span>
+                <span class="f f--name">Janggi</span>
+                <span class="f f--about">Korean chess, cannons jump to take</span>
+                <span class="f f--num">9x10</span>
+                <span class="f f--num">296</span>
+                <span class="f f--num">61</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Janggi on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Janggi against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Janggi against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">13</span>
+                <span class="f f--line"><span class="badge badge--c">C</span></span>
+                <span class="f f--name">Makruk</span>
+                <span class="f f--about">Thai chess, short range and slow</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">184</span>
+                <span class="f f--num">37</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Makruk on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Makruk against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Makruk against a person">O</button>
+                </span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--d">D</span></span>
+                <span class="f f--span">Draughts</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">14</span>
+                <span class="f f--line"><span class="badge badge--d">D</span></span>
+                <span class="f f--name">Checkers</span>
+                <span class="f f--about">8x8 draughts, crown on the last row</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">2,015</span>
+                <span class="f f--num">344</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Checkers on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Checkers against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Checkers against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">15</span>
+                <span class="f f--line"><span class="badge badge--d">D</span></span>
+                <span class="f f--name">International draughts</span>
+                <span class="f f--about">10x10, kings fly the diagonal</span>
+                <span class="f f--num">10x10</span>
+                <span class="f f--num">508</span>
+                <span class="f f--num">96</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="International draughts on this screen">L</button>
+                  <button class="mode" type="button" aria-label="International draughts against a bot">B</button>
+                  <button class="mode" type="button" aria-label="International draughts against a person">O</button>
+                </span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--e">E</span></span>
+                <span class="f f--span">Territory</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">16</span>
+                <span class="f f--line"><span class="badge badge--e">E</span></span>
+                <span class="f f--name">Go</span>
+                <span class="f f--about">surround more ground than your opponent</span>
+                <span class="f f--num">19x19</span>
+                <span class="f f--num">3,102</span>
+                <span class="f f--num">418</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Go on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Go against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Go against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">17</span>
+                <span class="f f--line"><span class="badge badge--e">E</span></span>
+                <span class="f f--name">Gomoku</span>
+                <span class="f f--about">five in a row wins</span>
+                <span class="f f--num">15x15</span>
+                <span class="f f--num">641</span>
+                <span class="f f--num">120</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Gomoku on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Gomoku against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Gomoku against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">18</span>
+                <span class="f f--line"><span class="badge badge--e">E</span></span>
+                <span class="f f--name">Hex</span>
+                <span class="f f--about">connect your two sides of the board</span>
+                <span class="f f--num">11x11</span>
+                <span class="f f--num">173</span>
+                <span class="f f--num">34</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Hex on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Hex against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Hex against a person">O</button>
+                </span>
+              </div>
+
+              <div class="rec rec--group">
+                <span class="f f--idx"></span>
+                <span class="f f--line"><span class="badge badge--f">F</span></span>
+                <span class="f f--span">Classics</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">19</span>
+                <span class="f f--line"><span class="badge badge--f">F</span></span>
+                <span class="f f--name">Othello</span>
+                <span class="f f--about">flip discs, most colour at the end wins</span>
+                <span class="f f--num">8x8</span>
+                <span class="f f--num">889</span>
+                <span class="f f--num">151</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Othello on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Othello against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Othello against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">20</span>
+                <span class="f f--line"><span class="badge badge--f">F</span></span>
+                <span class="f f--name">Connect Four</span>
+                <span class="f f--about">four in a row, gravity applies</span>
+                <span class="f f--num">7x6</span>
+                <span class="f f--num">1,472</span>
+                <span class="f f--num">265</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Connect Four on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Connect Four against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Connect Four against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">21</span>
+                <span class="f f--line"><span class="badge badge--f">F</span></span>
+                <span class="f f--name">Nine Men's Morris</span>
+                <span class="f f--about">make a mill, take one of his men</span>
+                <span class="f f--num">3 rings</span>
+                <span class="f f--num">204</span>
+                <span class="f f--num">42</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Nine Men's Morris on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Nine Men's Morris against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Nine Men's Morris against a person">O</button>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">22</span>
+                <span class="f f--line"><span class="badge badge--f">F</span></span>
+                <span class="f f--name">Tic-Tac-Toe</span>
+                <span class="f f--about">three in a row</span>
+                <span class="f f--num">3x3</span>
+                <span class="f f--num">318</span>
+                <span class="f f--num">70</span>
+                <span class="f f--act">
+                  <button class="mode" type="button" aria-label="Tic-Tac-Toe on this screen">L</button>
+                  <button class="mode" type="button" aria-label="Tic-Tac-Toe against a bot">B</button>
+                  <button class="mode" type="button" aria-label="Tic-Tac-Toe against a person">O</button>
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

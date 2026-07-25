@@ -1,0 +1,131 @@
+/* d03 STYLE: Night Slate, Signal Amber
+   Tokens only. No selectors targeting page structure, no layout, no components.
+   Property names match the real app's src/renderer/src/styles/tokens.css so a
+   winning direction drops in. Dark only, one palette.
+
+   Palette logic comes from Swiss rail signage after dark: a blue-slate ground
+   (never neutral black), the yellow of the departure poster as the single
+   attention colour, red held back so it only ever means stop, and a set of
+   route colours that identify a family of games the way a line colour
+   identifies a route. Route colours are prefixed and optional: any feel that
+   uses them must fall back to the shared semantic tokens.
+
+   Icons: Material Symbols Sharp, weight 400 (Apache 2.0, free for commercial
+   use). Chosen because it is drawn in a 24px box with 2px strokes and squared
+   terminals, which is the same construction logic as transit pictograms, and
+   because the set actually contains wayfinding glyphs. The SVGs inlined in the
+   pages are hand-drawn to that same 24px box and 2px stroke; on adoption,
+   replace them with the real Apache 2.0 files.
+
+   Type: no @font-face. This is a deliberately stack-safe choice, not the
+   oversight the app has today. Helvetica Neue / Helvetica / Arial is resident
+   on every target platform and is the correct grotesque for this direction.
+   Arial Narrow carries labels and column heads because narrow faces exist for
+   exactly one reason: fitting text into a column. If we ship webfonts later,
+   the files are Helvetica Now Text and Roboto Condensed as woff2, and this
+   stack stays as the fallback. */
+
+[data-style='03'] {
+  /* Ground and surfaces: four steps, each one lighter, never black */
+  --bg-page: #0e1217;
+  --bg-subtle: #141a21;
+  --surface: #171e26;
+  --surface-2: #1e2731;
+  --border: #28323d;
+  --border-strong: #3c4855;
+
+  /* Text: cool white, two steps down to a label grey that still passes on surface */
+  --text-primary: #e4e9ef;
+  --text-secondary: #a2aebb;
+  --text-muted: #6b7784;
+  --text-inverse: #0e1217;
+
+  /* Accent: signal amber, the departure-poster yellow */
+  --accent: #f2b01e;
+  --accent-hover: #ffc444;
+  --accent-active: #d2960f;
+  --accent-soft: #2a2413;
+  --on-accent: #14100a;
+
+  /* Semantic. Red is reserved: it only ever means stop. */
+  --success: #4fb477;
+  --danger: #e04b42;
+  --warning: #e68a2e;
+  --info: #5b9bd8;
+  --focus-ring: #7fb7ff;
+
+  /* Type */
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', system-ui, sans-serif;
+  --font-display: 'Arial Narrow', 'Helvetica Neue Condensed', 'Roboto Condensed', 'Liberation Sans Narrow',
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, 'DejaVu Sans Mono', Consolas, monospace;
+
+  /* Scale is small on purpose. Density is the point of this direction. */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 13px;
+  --text-lg: 15px;
+  --text-xl: 18px;
+  --text-2xl: 24px;
+  --text-3xl: 34px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.15;
+  --leading-normal: 1.45;
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.09em;
+
+  /* 4px module. Everything on screen is a multiple of it. */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Signage radius: present but almost spent. Not a squared-off broadsheet,
+     not a soft app. 2px is the corner on a platform number plate. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-full: 999px;
+
+  /* Shadows read as a printed ledge, not a glow. Nothing floats here. */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+
+  --border-width: 1px;
+
+  /* Motion is short and linear-ish. State changes, not animations. */
+  --motion-fast: 80ms;
+  --motion-base: 130ms;
+  --motion-slow: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* --- d03 extensions (prefixed, all optional to any feel) --- */
+
+  /* Route colours: one per game family, the way a network map assigns a line */
+  --d03-line-a: #f2b01e; /* chess */
+  --d03-line-b: #7c9cf5; /* variants */
+  --d03-line-c: #e0637a; /* regional */
+  --d03-line-d: #4fb477; /* draughts */
+  --d03-line-e: #3fbfc0; /* territory */
+  --d03-line-f: #b48ce0; /* classics */
+
+  /* Ledger tint for alternating record rows */
+  --d03-zebra: rgba(255, 255, 255, 0.022);
+
+  /* Board: slate, unvarnished, no wood and no felt */
+  --d03-sq-light: #9aa6b2;
+  --d03-sq-dark: #46525f;
+  --d03-sq-mark: rgba(242, 176, 30, 0.34);
+  --d03-piece-light: #f7f9fb;
+  --d03-piece-dark: #14181d;
+}

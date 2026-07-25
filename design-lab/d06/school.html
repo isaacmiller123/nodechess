@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-style="06" data-palette="walnut">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>School, nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="i-pawn" viewBox="0 0 24 24">
+        <path d="M12 3a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 12 3Z" />
+        <path d="M9.2 9.6h5.6c.9 1 1.4 2.3 1.5 3.6H7.7c.1-1.3.6-2.6 1.5-3.6Z" />
+        <path d="M6.4 14.4h11.2L19.4 20H4.6Z" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <path d="M3 4.5h8v6.2H3zM13 4.5h8v6.2h-8zM3 13.3h8v6.2H3zM13 13.3h8v6.2h-8z" />
+      </symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24">
+        <path d="M12 3.6 22.4 8.6 12 13.6 1.6 8.6Z" />
+        <path d="M5.8 11.1v4.6c0 1.9 2.8 3.3 6.2 3.3s6.2-1.4 6.2-3.3v-4.6L12 14.2Z" />
+      </symbol>
+      <symbol id="i-puzzle" viewBox="0 0 24 24">
+        <path d="M4 4h6.2v1.1a1.9 1.9 0 1 0 3.6 0V4H20v6.2h-1.1a1.9 1.9 0 1 1 0 3.6H20V20H4Z" />
+      </symbol>
+      <symbol id="i-bot" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M11 2h2v3h3a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h3V2Zm-1 8a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 10 10Zm4 0a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 14 10Zm-4.4 6.4h4.8v1.4H9.6Z"
+        />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <path d="M9 3a3.6 3.6 0 1 1 0 7.2A3.6 3.6 0 0 1 9 3Zm0 8.6c3.9 0 7 1.9 7 4.3V20H2v-4.1c0-2.4 3.1-4.3 7-4.3Z" />
+        <path d="M16.8 4.4a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Zm.2 7.4c2.9.1 5 1.8 5 3.7V20h-4.2v-4.1c0-1.6-.7-2.9-1.9-3.9.4-.1.7-.2 1.1-.2Z" />
+      </symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M12 2.6a9.4 9.4 0 1 1 0 18.8 9.4 9.4 0 0 1 0-18.8Zm-8.6 8.2h17.2v1.5H3.4Zm1.4 4.2h14.4V16H4.8Zm6.4-11.6h1.6v16.2h-1.6Z"
+        />
+      </symbol>
+      <symbol id="i-caret" viewBox="0 0 24 24">
+        <path d="M9.3 4.8 16.5 12l-7.2 7.2-1.7-1.7L13.1 12 7.6 6.5Z" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M10.5 3a7.5 7.5 0 1 0 4.4 13.6l4.2 4.2 1.7-1.7-4.2-4.2A7.5 7.5 0 0 0 10.5 3Zm0 2.4a5.1 5.1 0 1 1 0 10.2 5.1 5.1 0 0 1 0-10.2Z"
+        />
+      </symbol>
+    </svg>
+    <div class="app">
+      <header class="topbar">
+        <a class="wordmark" href="home.html">node<b>chess</b></a>
+        <div class="topbar-right">
+          <div class="palettes" role="group" aria-label="Palette">
+            <span class="palettes-label">Palette</span>
+            <button class="pal" type="button" data-set-palette="walnut" aria-pressed="true" title="Walnut and brass">
+              <span></span><span class="sr">Walnut</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="slate" aria-pressed="false" title="Slate and copper">
+              <span></span><span class="sr">Slate</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="oxblood" aria-pressed="false" title="Oxblood and bone">
+              <span></span><span class="sr">Oxblood</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="birch" aria-pressed="false" title="Birch and cobalt">
+              <span></span><span class="sr">Birch</span>
+            </button>
+          </div>
+          <!-- No rating on a school screen. Nothing a student does here is scored. -->
+          <a class="account" href="#account">
+            <span class="account-mark">M</span>
+            <span class="account-id">mercer<i>#K4T9P</i></span>
+          </a>
+        </div>
+      </header>
+
+      <nav class="stack" aria-label="Sections">
+        <a class="lid" data-depth="3" href="#">
+          <span class="lid-name">Puzzles</span>
+          <span class="lid-note">8 today</span>
+        </a>
+        <a class="lid" data-depth="2" href="games.html">
+          <span class="lid-name">Games</span>
+          <span class="lid-note">22 titles</span>
+        </a>
+        <a class="lid" data-depth="1" href="home.html">
+          <span class="lid-name">Home</span>
+          <span class="lid-note">nothing in progress</span>
+        </a>
+
+        <main class="sheet" aria-current="page">
+          <div class="sheet-head">
+            <div>
+              <h1 class="sheet-title">The Italian Game</h1>
+              <p class="sheet-sub">Chapter 7, lesson 3 of 5</p>
+            </div>
+            <div class="sheet-aside">
+              <div class="pegs" role="img" aria-label="Lesson 3 of 5">
+                <span class="peg peg-on"></span>
+                <span class="peg peg-on"></span>
+                <span class="peg peg-now"></span>
+                <span class="peg"></span>
+                <span class="peg"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lesson">
+            <div>
+              <div class="mat">
+                <div class="board" aria-hidden="true"><div class="sq sq-l"><span class="pb">♜</span></div><div class="sq sq-d"></div><div class="sq sq-l"><span class="pb">♝</span></div><div class="sq sq-d"><span class="pb">♛</span></div><div class="sq sq-l"><span class="pb">♚</span></div><div class="sq sq-d"><span class="pb">♝</span></div><div class="sq sq-l"><span class="pb">♞</span></div><div class="sq sq-d"><span class="pb">♜</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-d"></div><div class="sq sq-l sq-mark"><span class="pb">♟</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"><span class="pb">♞</span></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l sq-mark"><span class="pw">♝</span></div><div class="sq sq-d"></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"><span class="pw">♞</span></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♜</span></div><div class="sq sq-l"><span class="pw">♞</span></div><div class="sq sq-d"><span class="pw">♝</span></div><div class="sq sq-l"><span class="pw">♛</span></div><div class="sq sq-d"><span class="pw">♚</span></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"><span class="pw">♜</span></div></div>
+                <div class="files" aria-hidden="true">
+                  <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span
+                  ><span>h</span>
+                </div>
+              </div>
+              <div class="moves" aria-label="Moves so far">
+                <span>1.</span><span>e4</span><span>e5</span> <span>2.</span><span>Nf3</span><span>Nc6</span>
+                <span>3.</span><span class="now">Bc4</span><span>&#8230;</span>
+              </div>
+            </div>
+
+            <div>
+              <section class="coach">
+                <div class="coach-top">
+                  <span class="coach-face" aria-hidden="true">V</span>
+                  <div>
+                    <div class="coach-name">Viktor</div>
+                    <div class="coach-role">Your coach</div>
+                  </div>
+                </div>
+                <div class="coach-body">
+                  <p class="said">Bishop to c4. Two of your pieces look at f7 now, not one. Most players point that
+                  bishop at nothing and wonder why the attack never arrives.</p>
+                  <p>
+                    Black's f7 pawn is guarded by the king and nobody else. Your knight on f3 and your bishop on c4 both
+                    aim at it, so every plan Black chooses has to answer that first.
+                  </p>
+                  <p>
+                    Black will defend with Bc5 or Nf6. Both are respectable. What you may not do is hand that bishop off
+                    for a knight and call it development.
+                  </p>
+                </div>
+                <div class="coach-foot">
+                  <button class="btn" type="button">Show me the line</button>
+                  <button class="btn btn-primary" type="button">
+                    Continue
+                    <svg class="icon" aria-hidden="true"><use href="#i-caret" /></svg>
+                  </button>
+                </div>
+              </section>
+
+              <div class="next">
+                Up next
+                <b>Lesson 4, the Fried Liver</b>
+                <svg class="icon" aria-hidden="true"><use href="#i-caret" /></svg>
+              </div>
+
+              <div class="next">
+                After chapter 7
+                <b>Chapter 8, the Ruy Lopez</b>
+                <svg class="icon" aria-hidden="true"><use href="#i-cap" /></svg>
+              </div>
+            </div>
+          </div>
+        </main>
+      </nav>
+    </div>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var saved = localStorage.getItem('d06-palette');
+          if (saved) root.dataset.palette = saved;
+        } catch (e) {}
+        var keys = document.querySelectorAll('[data-set-palette]');
+        function sync() {
+          var cur = root.dataset.palette || 'walnut';
+          keys.forEach(function (k) {
+            k.setAttribute('aria-pressed', String(k.dataset.setPalette === cur));
+          });
+        }
+        keys.forEach(function (k) {
+          k.addEventListener('click', function () {
+            root.dataset.palette = k.dataset.setPalette;
+            try {
+              localStorage.setItem('d06-palette', k.dataset.setPalette);
+            } catch (e) {}
+            sync();
+          });
+        });
+        sync();
+        var times = document.querySelectorAll('.time');
+        times.forEach(function (t) {
+          t.addEventListener('click', function () {
+            times.forEach(function (o) {
+              o.setAttribute('aria-pressed', String(o === t));
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1342 @@
+/* ============================================================
+   d08 FEEL: SHEET SET WITH KEYED DETAILS
+   Layout and interaction only. Every color, face, radius and duration
+   comes from a token. Every d08-prefixed token is read with a fallback
+   derived from the shared namespace, so a swapped style.css that has
+   never heard of line weights still produces the same structure.
+   ============================================================ */
+
+:root {
+  /* Local aliases so the fallback chain is written once.
+     Order of preference: this style's weight ladder, then a ladder scaled
+     from whatever --border-width the swapped style declares. Each one is
+     floored, because the weight ladder is this feel's structure, not its
+     decoration: a style file that sets --border-width: 0 is entitled to
+     take away my color and my type, but it may not take away the lines,
+     which would leave a drawing of nothing. */
+  --d08-fb-dim: max(1px, var(--d08-w-dim, var(--border-width, 1px)));
+  --d08-fb-obj: max(2px, var(--d08-w-object, calc(var(--border-width, 1px) * 2)));
+  --d08-fb-cut: max(3px, var(--d08-w-cut, calc(var(--border-width, 1px) * 3)));
+  --d08-fb-hatch: var(--d08-hatch, var(--border));
+  --d08-fb-tick: var(--d08-tick, 11px);
+  --d08-fb-hatch-img: repeating-linear-gradient(
+    45deg,
+    var(--d08-fb-hatch) 0 var(--d08-fb-dim),
+    transparent var(--d08-fb-dim) 6px
+  );
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Panels and controls take the style's corner. This style sets every radius
+   to 0 because a drafted corner is square, so nothing here rounds under d08.
+   Under a style that does round, they round. The sheet edge and the plan view
+   stay square in every style: those two are drawn geometry, and a curve at
+   the corner of a plan would put the grid out of true. */
+.act,
+.note,
+.det,
+.filter,
+.rk,
+.prog,
+.coach,
+.redline,
+.bay {
+  border-radius: var(--radius-md);
+}
+
+html {
+  background: var(--bg-subtle);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: var(--d08-fb-obj) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Lettering roles --------------------------------------- */
+/* Drawn things are set in caps. Human speech is not. That is the only
+   rule governing case anywhere in this feel. */
+.lbl {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.num {
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-normal);
+  font-variant-numeric: tabular-nums;
+}
+
+.ttl {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+.prose {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.prose strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+/* ============================================================
+   THE SHEET
+   ============================================================ */
+
+.sheet {
+  position: relative;
+  max-width: 1280px;
+  margin: var(--space-6) auto;
+  min-height: min(908px, calc(100vh - var(--space-12)));
+  background: var(--bg-page);
+  border: var(--d08-fb-cut) solid var(--border-strong);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 236px;
+}
+
+/* Registration marks, just inside the trim. */
+.reg {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border: 0 solid var(--border);
+  pointer-events: none;
+}
+.reg--tl { top: 7px; left: 7px; border-top-width: var(--d08-fb-dim); border-left-width: var(--d08-fb-dim); }
+.reg--tr { top: 7px; right: 7px; border-top-width: var(--d08-fb-dim); border-right-width: var(--d08-fb-dim); }
+.reg--bl { bottom: 7px; left: 7px; border-bottom-width: var(--d08-fb-dim); border-left-width: var(--d08-fb-dim); }
+.reg--br { bottom: 7px; right: 7px; border-bottom-width: var(--d08-fb-dim); border-right-width: var(--d08-fb-dim); }
+
+.plate {
+  min-width: 0;
+  padding: var(--space-8) var(--space-8) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---- Sheet header ----------------------------------------- */
+
+.hdr {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--d08-fb-obj) solid var(--border-strong);
+}
+
+/* The wordmark carries the same logic as the pieces on the board:
+   an outlined form is white, a solid form is black. */
+.mark {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-3xl);
+  line-height: 0.9;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.mark__o {
+  color: transparent;
+  -webkit-text-stroke: var(--d08-fb-dim) var(--text-primary);
+}
+
+.mark__f {
+  color: var(--text-primary);
+}
+
+.hdr__no {
+  text-align: right;
+  flex: none;
+}
+
+.hdr__no b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-normal);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+}
+
+.hdr__sub {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.hdr__sub .crumb { padding-bottom: var(--space-1); }
+
+/* ---- Column grid bubbles ---------------------------------- */
+/* These label the structural columns of the sheet below them. They are
+   positioned by the same grid the content uses, so they stay true. */
+
+.bubrow {
+  display: grid;
+  gap: var(--space-8);
+  margin-bottom: calc(var(--space-6) * -1);
+}
+
+.bubrow--hero { grid-template-columns: minmax(0, 430px) minmax(0, 1fr); }
+.bubrow--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.bub {
+  width: 22px;
+  height: 22px;
+  border: var(--d08-fb-dim) solid var(--border);
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+/* ============================================================
+   TITLE BLOCK  (the navigation, on the right edge, always visible)
+   ============================================================ */
+
+.block {
+  border-left: var(--d08-fb-obj) solid var(--border-strong);
+  display: flex;
+  flex-direction: column;
+}
+
+.block__sec {
+  padding: var(--space-4) var(--space-4);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+}
+
+.block__sec--grow { flex: 1 1 auto; }
+
+.block__sec:last-child { border-bottom: 0; }
+
+.block__hd {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+/* A revision table is what a game log is. Empty, it says what fills it. */
+.block__empty {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* ---- Sheet index = primary nav ---------------------------- */
+
+.idx {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.idx__a {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-2);
+  border-left: var(--d08-fb-cut) solid transparent;
+  transition: border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.idx__a:hover {
+  border-left-color: var(--border);
+  background: var(--surface);
+}
+
+.idx__no {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+.idx__t {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-base);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-secondary);
+}
+
+/* The active sheet is drawn at cut weight. Nothing is filled to say it. */
+.idx__a[aria-current='page'] {
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
+}
+.idx__a[aria-current='page'] .idx__t { color: var(--text-primary); }
+.idx__a[aria-current='page'] .idx__no { color: var(--accent); }
+
+/* ---- Account field ---------------------------------------- */
+
+.who__name {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-lg);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  display: block;
+}
+
+.who__tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  display: block;
+}
+
+/* ---- Stamp fields ---------------------------------------- */
+
+.fields {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  align-items: baseline;
+}
+
+.fields dt {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fields dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* ============================================================
+   SIGNATURE: THE DIMENSION STRING
+   Extension lines, slash ticks, and the value sitting in a gap in the
+   line. Used for every measured fact in the product, because a rating,
+   a lesson count and a board are all extents.
+   ============================================================ */
+
+.dim {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.dim__ext {
+  flex: none;
+  width: 0;
+  align-self: stretch;
+  min-height: 20px;
+  border-left: var(--d08-fb-dim) solid var(--border-strong);
+}
+
+.dim__seg {
+  flex: 1 1 auto;
+  height: 0;
+  min-width: 10px;
+  border-top: var(--d08-fb-dim) solid var(--border-strong);
+  position: relative;
+}
+
+.dim__seg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: var(--d08-fb-tick);
+  height: 0;
+  border-top: var(--d08-fb-dim) solid var(--border-strong);
+}
+
+.dim__seg:first-of-type::after {
+  left: 0;
+  transform-origin: left center;
+  transform: rotate(-45deg);
+}
+
+.dim__seg:last-of-type::after {
+  right: 0;
+  transform-origin: right center;
+  transform: rotate(-45deg);
+}
+
+.dim__val {
+  flex: none;
+  padding: 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.dim--sm .dim__val { font-size: var(--text-sm); }
+.dim--sm .dim__ext { min-height: 13px; }
+.dim--faint .dim__ext,
+.dim--faint .dim__seg,
+.dim--faint .dim__seg::after { border-color: var(--border); }
+.dim--faint .dim__val { color: var(--text-secondary); }
+
+/* A measured fact: caption, dimension, and a note when the number is
+   not trustworthy yet. */
+.fact {
+  padding: var(--space-3) 0;
+  border-top: var(--d08-fb-dim) solid var(--border);
+}
+
+.fact__note {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.facts {
+  display: grid;
+  gap: 0;
+}
+
+.facts--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--space-8);
+}
+
+/* ---- Bays: a dimensioned run, used for progress ------------ */
+
+.bays {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.bay {
+  flex: 1 1 0;
+  height: 14px;
+  border: var(--d08-fb-dim) solid var(--border);
+}
+
+.bay--done {
+  border-color: var(--border-strong);
+  background-color: var(--surface-2);
+  background-image: var(--d08-fb-hatch-img);
+}
+
+.bay--now {
+  border-color: var(--accent);
+  border-width: var(--d08-fb-obj);
+}
+
+/* ============================================================
+   PLAN VIEW: THE BOARD
+   Squares are not filled, they are poched and hatched, the way a cut
+   region is indicated on a plan. The frame is the cut line.
+   ============================================================ */
+
+.plan {
+  max-width: 560px;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.plan__files {
+  grid-column: 2;
+  padding: 0 var(--d08-fb-cut);
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  justify-items: center;
+}
+
+.plan__ranks {
+  grid-column: 1;
+  grid-row: 2;
+  padding: var(--d08-fb-cut) 0;
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  align-self: stretch;
+  justify-items: center;
+  align-items: center;
+}
+
+.plan__ranks span,
+.plan__files span {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+.board {
+  grid-column: 2;
+  grid-row: 2;
+  position: relative;
+  border: var(--d08-fb-cut) solid var(--border-strong);
+  aspect-ratio: 1;
+  container-type: inline-size;
+}
+
+.board__grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  height: 100%;
+}
+
+.sq {
+  position: relative;
+  border-right: var(--d08-fb-dim) solid var(--border);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+  display: grid;
+  place-items: center;
+}
+
+.sq:nth-child(8n) { border-right: 0; }
+.sq:nth-child(n + 57) { border-bottom: 0; }
+
+.sq--po {
+  background-color: var(--surface-2);
+  background-image: var(--d08-fb-hatch-img);
+}
+
+/* Center bay of the board, called out on the plan the way a structural
+   bay is. Only used where the lesson is about the center. */
+.sq--key {
+  box-shadow: inset 0 0 0 var(--d08-fb-obj) var(--accent);
+}
+
+/* THE PIECES ARE DRAWN, NOT FILLED.
+   Both armies use the same solid glyph and both are hollowed out, so a piece
+   is a line drawing of a piece. Two things separate the sides, and they are
+   the same two a drawing uses to separate materials: line weight and line
+   value. White is the near-white line at dimension weight with nothing
+   inside it. Black is the greyer line at object weight with a tone inside
+   it. The brighter, thinner form reads as white on sight, which is the way
+   round a player already expects, and neither side is ever a flat fill.
+
+   Guarded, because color: transparent with no stroke support would erase the
+   board entirely. */
+.pc {
+  font-size: 28px;
+  font-size: 9.6cqw;
+  line-height: 1;
+  color: var(--text-primary);
+  user-select: none;
+}
+
+@supports (-webkit-text-stroke: 1px currentColor) {
+  .pc {
+    color: transparent;
+    -webkit-text-stroke: var(--d08-fb-dim) var(--text-primary);
+  }
+
+  /* White is the element beyond the cut: thin bright line, nothing inside. */
+  .pc--w {
+    color: transparent;
+    -webkit-text-stroke-width: var(--d08-fb-dim);
+    -webkit-text-stroke-color: var(--text-primary);
+  }
+
+  /* Black is the element the section passes through: object-weight outline
+     dropped one value step, with poche inside it. Same two moves a plan uses
+     to say "this is cut material". */
+  .pc--b {
+    color: var(--border);
+    -webkit-text-stroke-width: var(--d08-fb-obj);
+    -webkit-text-stroke-color: var(--text-secondary);
+  }
+}
+
+/* Annotation overlay: leader lines and arrows, drawn over the plan. */
+.board__anno {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Two pens on the overlay: a solid leader for the move to make, a hidden
+   line for the diagonal it opens. Both are drafting conventions. */
+.anno--go { color: var(--accent); }
+.anno--hid { color: var(--accent-active); }
+
+/* ---- Orientation mark and scale bar ----------------------- */
+
+.plan__foot {
+  grid-column: 2;
+  grid-row: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding-top: var(--space-3);
+}
+
+.orient {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+}
+
+.scale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.scale__bar {
+  display: flex;
+  width: 96px;
+  height: 8px;
+  border: var(--d08-fb-dim) solid var(--border);
+}
+
+.scale__bar i {
+  flex: 1;
+  border-right: var(--d08-fb-dim) solid var(--border);
+}
+.scale__bar i:last-child { border-right: 0; }
+.scale__bar i:nth-child(odd) {
+  background-color: var(--surface-2);
+  background-image: var(--d08-fb-hatch-img);
+}
+
+/* ============================================================
+   ACTIONS
+   Importance is border weight. There is exactly one cut-weight action
+   per screen and it is the thing to do first.
+   ============================================================ */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 430px) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.act {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--d08-fb-dim) solid var(--border);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.act--cut {
+  border-width: var(--d08-fb-cut);
+  border-color: var(--border-strong);
+  padding: var(--space-6) var(--space-4);
+}
+
+.act--obj {
+  border-width: var(--d08-fb-obj);
+  border-color: var(--border);
+}
+
+.act:hover {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 var(--d08-fb-dim) var(--accent);
+}
+
+.act__k {
+  width: 26px;
+  height: 26px;
+  border: var(--d08-fb-dim) solid var(--border-strong);
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+
+.act__t {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-lg);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  display: block;
+  line-height: var(--leading-tight);
+}
+
+.act--cut .act__t { font-size: var(--text-2xl); }
+
+.act__s {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.act__i { color: var(--text-secondary); display: grid; }
+
+/* ---- Notes: the drafting note block ----------------------- */
+
+.note {
+  border: var(--d08-fb-dim) solid var(--border);
+  padding: var(--space-4);
+}
+
+.note__hd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+}
+
+.note ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-3);
+  counter-reset: n;
+}
+
+.note ol li {
+  counter-increment: n;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.note ol li::before {
+  content: counter(n) '.';
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.note p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   KEYED DETAILS
+   A callout bubble is a link that opens a detail in place instead of
+   navigating away. Learn the bubble once and the whole product opens.
+   ============================================================ */
+
+.det {
+  border: var(--d08-fb-obj) solid var(--border);
+}
+
+.det > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  cursor: pointer;
+  list-style: none;
+}
+
+.det > summary::-webkit-details-marker { display: none; }
+
+.det > summary:hover { background: var(--surface); }
+
+/* The chevron sits on the right margin, on the same line the arrows on the
+   actions above it sit on. */
+.det > summary > .act__i { margin-left: auto; }
+.det[open] > summary > .act__i { transform: scaleY(-1); }
+
+.det[open] { border-color: var(--border-strong); }
+
+.cal {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: var(--d08-fb-obj) solid var(--border-strong);
+  border-radius: var(--radius-full);
+  display: grid;
+  place-items: center;
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  color: var(--text-primary);
+}
+
+/* The horizontal rule through a detail bubble, as on a real callout. */
+.cal::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  border-top: var(--d08-fb-dim) solid var(--border-strong);
+}
+
+.cal b,
+.cal i {
+  position: relative;
+  display: block;
+  line-height: 1.05;
+  font-style: normal;
+  font-weight: var(--weight-normal);
+}
+
+.cal i { color: var(--text-muted); font-size: var(--text-xs); }
+
+.det__body {
+  padding: 0 var(--space-4) var(--space-4) calc(var(--space-4) * 2 + 40px);
+}
+
+/* ============================================================
+   GAMES: THE SCHEDULE
+   Twenty two boards is a schedule, and every row carries a plan of its
+   own geometry at small scale. You recognise Go from Xiangqi from Hex
+   before you read either name.
+   ============================================================ */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+}
+
+.filter {
+  padding: var(--space-2) var(--space-3);
+  border: var(--d08-fb-dim) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: pointer;
+  background: transparent;
+  transition: border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.filter:hover { border-color: var(--accent); color: var(--text-primary); }
+
+.filters > .lbl { margin-left: auto; }
+
+.filter[aria-pressed='true'] {
+  border-width: var(--d08-fb-obj);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.fam { min-width: 0; }
+.fam + .fam { margin-top: var(--space-8); }
+
+.fam__hd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--d08-fb-obj) solid var(--border-strong);
+  margin-bottom: var(--space-1);
+}
+
+.fam__hd .ttl { font-size: var(--text-base); }
+
+.fam__ct {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.gm {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-2);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+  transition: box-shadow var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.gm:hover {
+  background: var(--surface);
+  box-shadow: inset var(--d08-fb-obj) 0 0 0 var(--accent);
+}
+
+.mini {
+  width: 42px;
+  height: 42px;
+  display: block;
+  color: var(--border-strong);
+}
+
+/* Three weights inside a 42px drawing: the board edge is the cut, the
+   internal ruling is the light line, and the poche is a tone. */
+.mini__o { stroke-width: 1.3; }
+.mini__i { stroke-width: 0.5; color: var(--border); }
+.mini__p { fill: var(--border); stroke: none; opacity: 0.55; }
+.mini__f { fill: var(--border-strong); stroke: none; }
+.mini__hi { color: var(--accent); stroke-width: 0.9; }
+.mini__f2 { fill: var(--accent); stroke: none; }
+
+/* ---- A rack of other boards, at drawing scale -------------- */
+
+.rack {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.rk {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-2);
+  border: var(--d08-fb-dim) solid var(--border);
+  transition: border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.rk:hover { border-color: var(--accent); background: var(--surface); }
+
+.rk .mini { width: 46px; height: 46px; }
+
+.rk__n {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.gm__l1 {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.gm__tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex: none;
+  letter-spacing: 0;
+}
+
+.gm__n {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-base);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gm__l2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.gm__geo {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex: none;
+  letter-spacing: 0;
+}
+
+.modes { display: flex; }
+
+/* Three ways to play is three cells, ruled apart. Without the rule the row
+   reads as one phrase, "local bot online", instead of three choices. */
+.mode {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0 var(--space-3);
+  border-bottom: var(--d08-fb-dim) solid transparent;
+}
+
+.mode:first-child { padding-left: 0; }
+.mode:last-child { padding-right: 0; }
+.mode + .mode { border-left: var(--d08-fb-dim) solid var(--border); }
+
+.mode:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================================
+   SCHOOL
+   ============================================================ */
+
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 364px);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.lesson__plan { min-width: 0; }
+
+/* A second band under the drawing, on the same column grid, so the move
+   record sits under the board and the progress under the coach. */
+.lesson__foot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 364px);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.record { min-width: 0; max-width: 560px; }
+
+/* In a 364px column the cut-weight title needs one step down to hold a
+   single line more often than not. */
+.coach .act--cut .act__t { font-size: var(--text-xl); }
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.coach {
+  border: var(--d08-fb-obj) solid var(--border-strong);
+}
+
+.coach__hd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+}
+
+.coach__who {
+  display: flex;
+  flex-direction: column;
+}
+
+.coach__body {
+  padding: var(--space-4);
+  display: grid;
+  gap: var(--space-4);
+}
+
+.coach__body .prose { line-height: var(--leading-normal); }
+
+.said {
+  font-size: var(--text-lg);
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ---- The markup pen: a redline correction ------------------ */
+
+.redline {
+  border: var(--d08-fb-dim) solid var(--danger);
+  border-left-width: var(--d08-fb-cut);
+  padding: var(--space-3) var(--space-4);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.redline .lbl { color: var(--danger); }
+.redline p { margin: 0; font-size: var(--text-sm); color: var(--text-secondary); }
+
+.delta {
+  display: inline-grid;
+  place-items: center;
+  color: var(--danger);
+  vertical-align: middle;
+}
+
+.cloud { display: inline-block; vertical-align: middle; color: var(--danger); }
+
+/* ---- Move record ------------------------------------------ */
+
+.moves {
+  display: grid;
+  grid-template-columns: 28px repeat(2, minmax(0, 1fr));
+  border: var(--d08-fb-dim) solid var(--border);
+}
+
+.moves > * {
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+  color: var(--text-secondary);
+}
+
+.moves > *:nth-child(3n + 1) { color: var(--text-muted); background: var(--surface); }
+.moves > *:nth-last-child(-n + 3) { border-bottom: 0; }
+
+.moves .mv--flag {
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.moves .mv--live { color: var(--text-primary); }
+
+/* ---- Progress panel --------------------------------------- */
+
+.prog {
+  display: grid;
+  gap: var(--space-4);
+  border: var(--d08-fb-dim) solid var(--border);
+  padding: var(--space-4);
+}
+
+/* ============================================================
+   PAGE LOAD: THE DRAWING BEING DRAFTED
+   Rules sweep from their origin, then lettering settles. One
+   orchestrated moment on load, nothing ambient after it.
+   ============================================================ */
+
+@keyframes d08-rule {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes d08-set {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.hdr,
+.fam__hd,
+.filters {
+  transform-origin: left center;
+  animation: d08-rule var(--motion-slow) var(--ease-out) both;
+}
+
+.plate > *:nth-child(2) { animation: d08-set var(--motion-base) var(--ease-out) 120ms both; }
+.plate > *:nth-child(3) { animation: d08-set var(--motion-base) var(--ease-out) 180ms both; }
+.plate > *:nth-child(4) { animation: d08-set var(--motion-base) var(--ease-out) 240ms both; }
+.block__sec:nth-child(1) { animation: d08-set var(--motion-base) var(--ease-out) 60ms both; }
+.block__sec:nth-child(2) { animation: d08-set var(--motion-base) var(--ease-out) 120ms both; }
+.block__sec:nth-child(3) { animation: d08-set var(--motion-base) var(--ease-out) 180ms both; }
+
+/* ============================================================
+   MOBILE
+   The right-edge title block becomes a bottom edge of sheet tabs, and
+   the block's stamp fields fold into one line under the header. The
+   plan view keeps its dimensions and coordinates: it is the same
+   drawing at a different scale, not a cropped one.
+   ============================================================ */
+
+.sheet--m {
+  display: block;
+  margin: var(--space-3);
+  min-height: 0;
+  border-width: var(--d08-fb-obj);
+  padding-bottom: 96px;
+}
+
+.sheet--m .plate {
+  padding: var(--space-6) var(--space-4) var(--space-4);
+  gap: var(--space-6);
+}
+
+.sheet--m .mark { font-size: var(--text-2xl); }
+.sheet--m .hdr__no b { font-size: var(--text-lg); }
+
+.strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) 0;
+  border-bottom: var(--d08-fb-dim) solid var(--border);
+}
+
+.strip__sep {
+  flex: none;
+  width: var(--d08-fb-dim);
+  height: 12px;
+  background: var(--border);
+}
+
+.tabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--bg-page);
+  border-top: var(--d08-fb-cut) solid var(--border-strong);
+}
+
+.tab {
+  min-height: 68px;
+  padding: var(--space-3) var(--space-1) var(--space-4);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--space-1);
+  border-top: var(--d08-fb-cut) solid transparent;
+  border-right: var(--d08-fb-dim) solid var(--border);
+  color: var(--text-secondary);
+}
+
+.tab:last-child { border-right: 0; }
+
+.tab__no {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
+.tab__t {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+}
+
+.tab[aria-current='page'] {
+  border-top-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+.tab[aria-current='page'] .tab__no { color: var(--accent); }
+
+/* Touch targets on a phone are drawn tall, not shrunk. */
+.sheet--m .act { padding: var(--space-6) var(--space-4); }
+.sheet--m .act--cut { padding: var(--space-8) var(--space-4); }
+.sheet--m .act__t { font-size: var(--text-xl); }
+.sheet--m .act--cut .act__t { font-size: var(--text-2xl); }
+
+/* ---- Narrow desktop pages degrade to the same shape -------- */
+
+@media (max-width: 1020px) {
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+  .block {
+    border-left: 0;
+    border-top: var(--d08-fb-obj) solid var(--border-strong);
+    order: 2;
+  }
+  .hero,
+  .lesson,
+  .lesson__foot { grid-template-columns: minmax(0, 1fr); }
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .bubrow { display: none; }
+  .rack { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .plate { padding: var(--space-6) var(--space-4); }
+  .mark { font-size: var(--text-2xl); }
+  .rack { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}

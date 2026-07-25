@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en" data-style="03">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess · play</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="band idbar">
+        <a class="brand" href="home.html">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="2" y="2" width="10" height="10" fill="currentColor" />
+            <rect x="12" y="12" width="10" height="10" fill="currentColor" />
+          </svg>
+          <span class="brand-word">nodechess</span>
+        </a>
+        <div class="kv">
+          <span class="kv-k">Player</span>
+          <span class="kv-v">mercer#K4T9P</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Rating</span>
+          <span class="kv-v kv-v--accent">1500?</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Games</span>
+          <span class="kv-v">0</span>
+        </div>
+        <span class="spacer"></span>
+        <label class="find">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M15 15 L21 21" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          <input type="search" placeholder="Find a game, opening or lesson" aria-label="Find a game, opening or lesson" />
+          <kbd>/</kbd>
+        </label>
+        <a class="iconbtn" href="#" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" />
+            <rect x="14" y="3" width="4" height="6" fill="currentColor" />
+            <rect x="6" y="9" width="4" height="6" fill="currentColor" />
+            <rect x="14" y="15" width="4" height="6" fill="currentColor" />
+          </svg>
+        </a>
+        <a class="iconbtn" href="#" aria-label="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M4 21 v-2 a8 8 0 0 1 16 0 v2" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </header>
+
+      <nav class="band dest" aria-label="Sections">
+        <a class="dest-link" href="home.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor" /></svg>
+          Play
+        </a>
+        <a class="dest-link" href="games.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" fill="currentColor" />
+            <rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="14" y="14" width="7" height="7" fill="currentColor" />
+          </svg>
+          Games
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M3 15 L9 15 L9 9 L15 9 L15 3" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Puzzles
+        </a>
+        <a class="dest-link" href="school.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 5 h8 v14 H3 z M13 5 h8 v14 h-8 z" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          School
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="12" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M12 17 v4 M8 21 h8" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          Watch
+        </a>
+        <span class="spacer"></span>
+        <div class="dest-note">
+          <span>8,412 playing</span>
+          <span>19:04 UTC</span>
+        </div>
+      </nav>
+
+      <div class="band ctx">
+        <span class="ctx-path">Play <b>/</b> open seats</span>
+        <div class="ctx-facts">
+          <span>RA rapid</span>
+          <span>BL blitz</span>
+          <span>BU bullet</span>
+          <span>CL classical</span>
+        </div>
+      </div>
+
+      <main class="sheet">
+        <div class="col span-8">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Take a seat</h2>
+              <span class="note">matched in about 5 seconds</span>
+            </div>
+            <div class="tbl tbl--depart">
+              <div class="tbl-head">
+                <span class="f f--idx">No</span>
+                <span class="f">Line</span>
+                <span class="f f--num">Clock</span>
+                <span class="f">Takes</span>
+                <span class="f f--num">Waiting</span>
+                <span class="f f--act">Start</span>
+              </div>
+              <div class="rec rec--act rec--primary">
+                <span class="f f--idx">01</span>
+                <span class="f f--line"><span class="badge badge--a">RA</span></span>
+                <span class="f f--num">10+0</span>
+                <span class="f">about 22 minutes, the one most people start with</span>
+                <span class="f f--num">214</span>
+                <span class="f f--act"><a class="btn btn--primary" href="#">Play 10+0</a></span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">02</span>
+                <span class="f f--line"><span class="badge badge--a">RA</span></span>
+                <span class="f f--num">15+10</span>
+                <span class="f">about 34 minutes</span>
+                <span class="f f--num">86</span>
+                <span class="f f--act"><a class="btn" href="#">Play</a></span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">03</span>
+                <span class="f f--line"><span class="badge badge--b">BL</span></span>
+                <span class="f f--num">5+0</span>
+                <span class="f">about 9 minutes</span>
+                <span class="f f--num">431</span>
+                <span class="f f--act"><a class="btn" href="#">Play</a></span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">04</span>
+                <span class="f f--line"><span class="badge badge--b">BL</span></span>
+                <span class="f f--num">3+2</span>
+                <span class="f">about 7 minutes</span>
+                <span class="f f--num">177</span>
+                <span class="f f--act"><a class="btn" href="#">Play</a></span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">05</span>
+                <span class="f f--line"><span class="badge badge--c">BU</span></span>
+                <span class="f f--num">1+0</span>
+                <span class="f">about 2 minutes</span>
+                <span class="f f--num">308</span>
+                <span class="f f--act"><a class="btn" href="#">Play</a></span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">06</span>
+                <span class="f f--line"><span class="badge badge--e">CL</span></span>
+                <span class="f f--num">30+20</span>
+                <span class="f">about 78 minutes</span>
+                <span class="f f--num">12</span>
+                <span class="f f--act"><a class="btn" href="#">Play</a></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Set it up yourself</h2>
+            </div>
+            <div class="tbl tbl--nav">
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" />
+                    <rect x="14" y="3" width="4" height="6" fill="currentColor" />
+                    <rect x="6" y="9" width="4" height="6" fill="currentColor" />
+                  </svg>
+                </span>
+                <span class="f f--name">Custom game</span>
+                <span class="f f--meta">any clock, any variant</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2" />
+                    <circle cx="17" cy="9" r="2.5" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M3 20 v-1.5 a6 6 0 0 1 12 0 V20" fill="none" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="f f--name">Play a friend</span>
+                <span class="f f--meta">send a link, they join</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="8" width="16" height="12" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M12 4 v4" stroke="currentColor" stroke-width="2" fill="none" />
+                    <rect x="8" y="12" width="3" height="3" fill="currentColor" />
+                    <rect x="13" y="12" width="3" height="3" fill="currentColor" />
+                  </svg>
+                </span>
+                <span class="f f--name">Play a bot</span>
+                <span class="f f--meta">8 levels, Viktor sets one</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" />
+                    <rect x="3" y="3" width="6" height="6" fill="currentColor" />
+                    <rect x="15" y="15" width="6" height="6" fill="currentColor" />
+                  </svg>
+                </span>
+                <span class="f f--name">One board, two players</span>
+                <span class="f f--meta">no account needed</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel panel--fill">
+            <div class="panel-head">
+              <h2>Your games</h2>
+              <span class="note">0 recorded</span>
+            </div>
+            <div class="empty">
+              <h3>Nothing to resume</h3>
+              <p>Finished games land here with their moves, the clock, and Viktor's read on where it turned.</p>
+              <a class="btn btn--primary btn--tall" href="#">Play 10+0</a>
+            </div>
+          </section>
+        </div>
+
+        <div class="col span-4">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Account</h2>
+              <span class="note">joined today</span>
+            </div>
+            <div class="tbl tbl--kv">
+              <div class="rec">
+                <span class="f">Handle</span>
+                <span class="f f--num">mercer#K4T9P</span>
+              </div>
+              <div class="rec">
+                <span class="f">Rating</span>
+                <span class="f f--num">1500?</span>
+              </div>
+              <div class="rec">
+                <span class="f">Settles after</span>
+                <span class="f f--num">5 games</span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f">Handle, board, sound</span>
+                <span class="f f--act"><a class="btn btn--ghost" href="#">Open account</a></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Puzzles</h2>
+              <span class="note">3 min a day</span>
+            </div>
+            <div class="tbl tbl--nav">
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" />
+                    <path d="M3 15 L9 15 L9 9 L15 9 L15 3" fill="none" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="f f--name">Today's puzzle</span>
+                <span class="f f--meta">unsolved</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 20 V10 M10 20 V4 M16 20 V13 M22 20 H2" stroke="currentColor" stroke-width="2" fill="none" />
+                  </svg>
+                </span>
+                <span class="f f--name">Rush</span>
+                <span class="f f--meta">5 minutes, no hints</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="4" fill="currentColor" />
+                    <rect x="3" y="11" width="18" height="4" fill="none" stroke="currentColor" stroke-width="2" />
+                    <rect x="3" y="18" width="18" height="3" fill="none" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </span>
+                <span class="f f--name">By theme</span>
+                <span class="f f--meta">62 sets</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel panel--fill">
+            <div class="panel-head">
+              <h2>School</h2>
+              <span class="note">chapter 7 of 40</span>
+            </div>
+            <div class="tbl tbl--kv">
+              <div class="rec">
+                <span class="f f--name">The Italian Game</span>
+                <span class="f f--num">chapter 07</span>
+              </div>
+              <div class="rec">
+                <span class="f">Lessons</span>
+                <span class="f f--act">
+                  <span class="lessons">
+                    <span class="lesson-cell lesson-cell--done">1</span>
+                    <span class="lesson-cell lesson-cell--done">2</span>
+                    <span class="lesson-cell lesson-cell--now">3</span>
+                    <span class="lesson-cell">4</span>
+                    <span class="lesson-cell">5</span>
+                  </span>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f">You stopped mid lesson</span>
+                <span class="f f--act"><a class="btn btn--primary" href="school.html">Resume lesson 3</a></span>
+              </div>
+            </div>
+            <div class="ticks" aria-label="Chapters 1 to 40, you are on 7">
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--now"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

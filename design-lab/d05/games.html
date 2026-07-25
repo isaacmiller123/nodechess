@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-style="05" data-palette="ink">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nodechess: games</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="feel.css">
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="tb-name">nodechess</span>
+  <span class="tb-path">~/games</span>
+  <span class="tb-right">
+    <span class="tb-id">mercer#K4T9P</span>
+    <span class="tb-rating">1500?</span>
+    <span class="pal-switch">
+      <button class="pal is-on" data-pal="ink">ink</button>
+      <button class="pal" data-pal="warm">warm</button>
+      <button class="pal" data-pal="cold">cold</button>
+      <button class="pal" data-pal="hard">hard</button>
+    </span>
+  </span>
+</div>
+
+<main class="main main--flush">
+  <div class="games">
+
+    <div class="gleft">
+      <div class="filterbar">
+        <span class="prompt">find</span>
+        <input class="filter-in" id="filter" type="text" autocomplete="off" spellcheck="false" placeholder="start typing a name" aria-label="filter boards">
+        <span class="counter" id="counter">22 boards</span>
+      </div>
+
+      <div class="glist" id="glist">
+        <div class="ghead" data-group="chess">Chess and variants</div>
+        <button class="gitem is-sel" data-group="chess" data-slug="chess" data-size="8x8" data-modes="LBO" data-desc="The standard game. Everything else here is a reply to it."><span class="gnum">01</span><span class="gname">Chess</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="chess960" data-size="8x8" data-modes="LBO" data-desc="Back rank shuffled at random. 960 starts, and your theory is no help in any of them."><span class="gnum">02</span><span class="gname">Chess960</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="crazyhouse" data-size="8x8" data-modes="LBO" data-desc="Captured pieces change sides. Drop them back on almost any empty square."><span class="gnum">03</span><span class="gname">Crazyhouse</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="atomic" data-size="8x8" data-modes="LBO" data-desc="Captures explode. The captured square and everything touching it comes off."><span class="gnum">04</span><span class="gname">Atomic</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="antichess" data-size="8x8" data-modes="LBO" data-desc="Lose every piece to win. Captures are forced, so the trap is the plan."><span class="gnum">05</span><span class="gname">Antichess</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="kingofthehill" data-size="8x8" data-modes="LBO" data-desc="Walk your king to one of the middle four squares and the game ends there."><span class="gnum">06</span><span class="gname">King of the Hill</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="threecheck" data-size="8x8" data-modes="LBO" data-desc="Check three times and it is over. Sound sacrifices stop being the point."><span class="gnum">07</span><span class="gname">Three-Check</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="chess" data-slug="horde" data-size="8x8" data-modes="LB&#183;" data-desc="Thirty-six pawns against a full army. White has no king to lose."><span class="gnum">08</span><span class="gname">Horde</span><span class="gsize">8x8</span><span class="gmodes">LB&#183;</span></button>
+        <button class="gitem" data-group="chess" data-slug="racingkings" data-size="8x8" data-modes="LBO" data-desc="First king to the eighth rank. Neither side may give check on the way."><span class="gnum">09</span><span class="gname">Racing Kings</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+
+        <div class="ghead" data-group="regional">Regional chess</div>
+        <button class="gitem" data-group="regional" data-slug="xiangqi" data-size="9x10" data-modes="LBO" data-desc="China. A river across the middle, a palace at each end, cannons that need a screen to capture."><span class="gnum">10</span><span class="gname">Xiangqi</span><span class="gsize">9x10</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="regional" data-slug="shogi" data-size="9x9" data-modes="LBO" data-desc="Japan. Promote in the far three ranks, and drop what you take back into play."><span class="gnum">11</span><span class="gname">Shogi</span><span class="gsize">9x9</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="regional" data-slug="janggi" data-size="9x10" data-modes="LB&#183;" data-desc="Korea. Xiangqi's neighbour. The palace has diagonals and passing is legal."><span class="gnum">12</span><span class="gname">Janggi</span><span class="gsize">9x10</span><span class="gmodes">LB&#183;</span></button>
+        <button class="gitem" data-group="regional" data-slug="makruk" data-size="8x8" data-modes="LB&#183;" data-desc="Thailand. Short pieces, pawns start on the third rank, endings decide it."><span class="gnum">13</span><span class="gname">Makruk</span><span class="gsize">8x8</span><span class="gmodes">LB&#183;</span></button>
+
+        <div class="ghead" data-group="draughts">Draughts</div>
+        <button class="gitem" data-group="draughts" data-slug="checkers" data-size="8x8" data-modes="LBO" data-desc="Kings move backwards, captures are forced, and the shortest line is rarely best."><span class="gnum">14</span><span class="gname">Checkers</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="draughts" data-slug="international" data-size="10x10" data-modes="LBO" data-desc="Ten by ten with flying kings. Chains of six captures are normal here."><span class="gnum">15</span><span class="gname">International Draughts</span><span class="gsize">10x10</span><span class="gmodes">LBO</span></button>
+
+        <div class="ghead" data-group="territory">Territory</div>
+        <button class="gitem" data-group="territory" data-slug="go" data-size="19x19" data-modes="LBO" data-desc="Surround empty space and keep it. Also on 13x13 and 9x9 if 19 is too much room."><span class="gnum">16</span><span class="gname">Go</span><span class="gsize">19x19</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="territory" data-slug="gomoku" data-size="15x15" data-modes="LBO" data-desc="Five in a row on the intersections. Simple to hold in your head, hard to hold on the board."><span class="gnum">17</span><span class="gname">Gomoku</span><span class="gsize">15x15</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="territory" data-slug="hex" data-size="11x11" data-modes="LB&#183;" data-desc="Join your two sides of the board. A draw is not possible, so someone is always winning."><span class="gnum">18</span><span class="gname">Hex</span><span class="gsize">11x11</span><span class="gmodes">LB&#183;</span></button>
+
+        <div class="ghead" data-group="classics">Classics</div>
+        <button class="gitem" data-group="classics" data-slug="othello" data-size="8x8" data-modes="LBO" data-desc="Flip the line you bracket. Corners cannot be flipped back, so corners decide it."><span class="gnum">19</span><span class="gname">Othello</span><span class="gsize">8x8</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="classics" data-slug="connectfour" data-size="7x6" data-modes="LBO" data-desc="Drop, do not place. Four in a row, and gravity is the whole difficulty."><span class="gnum">20</span><span class="gname">Connect Four</span><span class="gsize">7x6</span><span class="gmodes">LBO</span></button>
+        <button class="gitem" data-group="classics" data-slug="ninemensmorris" data-size="24 pts" data-modes="LB&#183;" data-desc="Make a mill of three, take one of theirs. Then the board starts to open up."><span class="gnum">21</span><span class="gname">Nine Men's Morris</span><span class="gsize">24 pts</span><span class="gmodes">LB&#183;</span></button>
+        <button class="gitem" data-group="classics" data-slug="tictactoe" data-size="3x3" data-modes="LB&#183;" data-desc="Solved, and still worth the ninety seconds it takes to teach someone."><span class="gnum">22</span><span class="gname">Tic-Tac-Toe</span><span class="gsize">3x3</span><span class="gmodes">LB&#183;</span></button>
+
+        <div class="gempty" id="gempty">
+          <p>No board by that name.</p>
+          <p class="ident-meta">Press esc to clear the filter, or try a piece of the name: cra, xia, dra.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail">
+      <h1 class="dname" id="d-name">Chess</h1>
+      <p class="dmeta"><span id="d-size">8x8</span> &nbsp;/&nbsp; <span id="d-group">chess and variants</span></p>
+      <p class="dbody" id="d-desc">The standard game. Everything else here is a reply to it.</p>
+
+      <div class="sect-head">Ways to play</div>
+      <div class="modes" id="d-modes">
+        <button class="mode" data-mode="local">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="0" y="0" width="6" height="6"/><rect x="12" y="0" width="6" height="6"/><rect x="6" y="6" width="6" height="6"/><rect x="18" y="6" width="6" height="6"/><rect x="0" y="12" width="6" height="6"/><rect x="12" y="12" width="6" height="6"/><rect x="6" y="18" width="6" height="6"/><rect x="18" y="18" width="6" height="6"/></svg>
+          <span>Two players, one screen</span>
+          <span class="mode-cmd" id="c-local">play chess</span>
+        </button>
+        <button class="mode" data-mode="bot">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="11" y="2" width="2" height="4"/><rect x="4" y="6" width="16" height="2"/><rect x="4" y="18" width="16" height="2"/><rect x="4" y="6" width="2" height="14"/><rect x="18" y="6" width="2" height="14"/><rect x="8" y="11" width="3" height="3"/><rect x="13" y="11" width="3" height="3"/></svg>
+          <span>Against a bot</span>
+          <span class="mode-cmd" id="c-bot">play chess --bot</span>
+        </button>
+        <button class="mode" data-mode="online">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="6"/><rect x="2" y="16" width="6" height="6"/><rect x="16" y="16" width="6" height="6"/><rect x="11" y="8" width="2" height="6"/><rect x="4" y="14" width="16" height="2"/><rect x="4" y="14" width="2" height="3"/><rect x="18" y="14" width="2" height="3"/></svg>
+          <span>Online, matched on strength</span>
+          <span class="mode-cmd" id="c-online">play chess --online</span>
+        </button>
+      </div>
+      <p class="item-line" id="d-note">Enter starts the local game. Tab reaches the other two.</p>
+    </div>
+
+  </div>
+</main>
+
+<div class="dock">
+  <div class="palette" id="palette">
+    <div class="pal-head"><span id="pal-count">13 commands</span><span>up and down to move, enter to run, esc to close</span></div>
+    <div class="pal-list" id="pal-list">
+      <button class="pitem is-sel" data-cmd="play"><span class="pitem-name">play</span><span class="pitem-desc">start a game, any board, any opponent</span><span class="pitem-key">p</span></button>
+      <button class="pitem" data-cmd="resume"><span class="pitem-name">resume</span><span class="pitem-desc">nothing open</span><span class="pitem-key">r</span></button>
+      <button class="pitem" data-cmd="games"><span class="pitem-name">games</span><span class="pitem-desc">22 boards, local, bot or online</span><span class="pitem-key">g</span></button>
+      <button class="pitem" data-cmd="school"><span class="pitem-name">school</span><span class="pitem-desc">40 chapters, you are on 7</span><span class="pitem-key">s</span></button>
+      <button class="pitem" data-cmd="puzzles"><span class="pitem-name">puzzles</span><span class="pitem-desc">today's puzzle, unsolved</span><span class="pitem-key">u</span></button>
+      <button class="pitem" data-cmd="openings"><span class="pitem-name">openings</span><span class="pitem-desc">walk the book line by line</span><span class="pitem-key">o</span></button>
+      <button class="pitem" data-cmd="analysis"><span class="pitem-name">analysis</span><span class="pitem-desc">step through a finished game</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="progress"><span class="pitem-name">progress</span><span class="pitem-desc">what has stuck and what has not</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="library"><span class="pitem-name">library</span><span class="pitem-desc">saved games and studies</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="account"><span class="pitem-name">account</span><span class="pitem-desc">mercer#K4T9P</span><span class="pitem-key">a</span></button>
+      <button class="pitem" data-cmd="settings"><span class="pitem-name">settings</span><span class="pitem-desc">board, pieces, clocks, sound</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="palette"><span class="pitem-name">palette</span><span class="pitem-desc">ink, warm, cold, hard</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="home"><span class="pitem-name">home</span><span class="pitem-desc">back to the start</span><span class="pitem-key">h</span></button>
+    </div>
+  </div>
+  <div class="cmd-out" id="out"></div>
+  <div class="legend">
+    <span class="lg">type to filter</span>
+    <span class="lg"><b>up down</b> move</span>
+    <span class="lg"><b>enter</b> start local</span>
+    <span class="lg"><b>esc</b> clear</span>
+    <span class="lg"><b>/</b> commands</span>
+  </div>
+  <div class="cmdline is-empty" id="cmdline">
+    <span class="prompt">mercer@nodechess <b>~/games</b> $</span>
+    <span class="cursor" aria-hidden="true"></span>
+    <input class="cmd-in" id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="command line">
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  var PALS = ['ink', 'warm', 'cold', 'hard'];
+  function setPal(p) {
+    root.setAttribute('data-palette', p);
+    [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+      b.className = 'pal' + (b.getAttribute('data-pal') === p ? ' is-on' : '');
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+    b.addEventListener('click', function () { setPal(b.getAttribute('data-pal')); });
+  });
+  function cyclePal() {
+    var i = PALS.indexOf(root.getAttribute('data-palette'));
+    setPal(PALS[(i + 1) % PALS.length]);
+    return root.getAttribute('data-palette');
+  }
+
+  var box = document.getElementById('palette');
+  var list = document.getElementById('pal-list');
+  var count = document.getElementById('pal-count');
+  var out = document.getElementById('out');
+  var cmd = document.getElementById('cmd');
+  var cmdline = document.getElementById('cmdline');
+  var GO = { home: 'home.html', games: 'games.html', school: 'school.html' };
+
+  function say(t, bad) { out.textContent = t || ''; out.className = 'cmd-out' + (bad ? ' is-bad' : ''); }
+  function items() { return [].filter.call(list.querySelectorAll('.pitem'), function (i) { return !/is-hidden/.test(i.className); }); }
+  function sel(el) {
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) { i.className = i.className.replace(' is-sel', ''); });
+    if (el) { el.className += ' is-sel'; el.scrollIntoView({ block: 'nearest' }); }
+  }
+  function isOpen() { return /is-open/.test(box.className); }
+  function mark() { cmdline.className = 'cmdline' + (cmd.value ? '' : ' is-empty'); }
+  function open() { box.className = 'palette is-open'; cmd.value = ''; refilter(); cmd.focus(); }
+  function close() { box.className = 'palette'; cmd.value = ''; mark(); }
+
+  function refilter() {
+    var q = cmd.value.trim().toLowerCase(), shown = 0;
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) {
+      var hit = !q || i.getAttribute('data-cmd').indexOf(q) > -1;
+      i.className = 'pitem' + (hit ? '' : ' is-hidden');
+      if (hit) shown++;
+    });
+    count.textContent = q ? shown + ' of 13 commands' : '13 commands';
+    /* A prefix match beats a match in the middle of the word, so typing s
+       lands on school rather than on resume. */
+    var vis = items(), pre = null;
+    for (var j = 0; j < vis.length; j++) {
+      if (vis[j].getAttribute('data-cmd').indexOf(q) === 0) { pre = vis[j]; break; }
+    }
+    sel(pre || vis[0]);
+  }
+
+  function run(name) {
+    if (!name) return;
+    if (GO[name]) { location.href = GO[name]; return; }
+    close();
+    if (name === 'palette') { say('palette is now ' + cyclePal() + '.'); return; }
+    if (name === 'resume') { say('resume: nothing open. type play to start one.'); return; }
+    say(name + ': no screen for this in the preview yet.');
+  }
+
+  /* ---- the games list ---- */
+  var glist = document.getElementById('glist');
+  var filter = document.getElementById('filter');
+  var counter = document.getElementById('counter');
+  var gempty = document.getElementById('gempty');
+  var GROUPS = { chess: 'chess and variants', regional: 'regional chess', draughts: 'draughts', territory: 'territory', classics: 'classics' };
+  var MODE_NAMES = { L: 'local', B: 'bot', O: 'online' };
+
+  function rows() { return [].slice.call(glist.querySelectorAll('.gitem')); }
+  function shownRows() { return rows().filter(function (r) { return !/is-hidden/.test(r.className); }); }
+
+  function paint(row) {
+    if (!row) return;
+    rows().forEach(function (r) { r.className = r.className.replace(' is-sel', ''); });
+    row.className += ' is-sel';
+    row.scrollIntoView({ block: 'nearest' });
+    var slug = row.getAttribute('data-slug');
+    document.getElementById('d-name').textContent = row.querySelector('.gname').textContent;
+    document.getElementById('d-size').textContent = row.getAttribute('data-size');
+    document.getElementById('d-group').textContent = GROUPS[row.getAttribute('data-group')];
+    document.getElementById('d-desc').textContent = row.getAttribute('data-desc');
+    document.getElementById('c-local').textContent = 'play ' + slug;
+    document.getElementById('c-bot').textContent = 'play ' + slug + ' --bot';
+    var modes = row.getAttribute('data-modes');
+    var online = modes.charAt(2) === 'O';
+    var onlineRow = document.querySelector('.mode[data-mode="online"]');
+    document.getElementById('c-online').textContent = online ? 'play ' + slug + ' --online' : 'not open yet';
+    onlineRow.disabled = !online;
+    onlineRow.className = 'mode' + (online ? '' : ' is-off');
+    onlineRow.querySelector('span:not(.mode-cmd)').textContent = online ? 'Online, matched on strength' : 'Online, not open yet';
+  }
+
+  function gfilter() {
+    var q = filter.value.trim().toLowerCase(), shown = 0;
+    rows().forEach(function (r) {
+      var hit = !q || r.getAttribute('data-slug').indexOf(q) > -1 ||
+        r.querySelector('.gname').textContent.toLowerCase().indexOf(q) > -1;
+      r.className = 'gitem' + (hit ? '' : ' is-hidden');
+      if (hit) shown++;
+    });
+    [].forEach.call(glist.querySelectorAll('.ghead'), function (h) {
+      var g = h.getAttribute('data-group');
+      var any = shownRows().some(function (r) { return r.getAttribute('data-group') === g; });
+      h.className = 'ghead' + (any ? '' : ' is-hidden');
+    });
+    counter.textContent = q ? shown + ' of 22 boards' : '22 boards';
+    gempty.className = 'gempty' + (shown ? '' : ' is-on');
+    paint(shownRows()[0]);
+  }
+
+  filter.addEventListener('input', gfilter);
+  rows().forEach(function (r) {
+    r.addEventListener('click', function () { paint(r); say('play ' + r.getAttribute('data-slug') + ': no board in the preview yet.'); });
+  });
+  [].forEach.call(document.querySelectorAll('.mode'), function (m) {
+    m.addEventListener('click', function () {
+      var sl = glist.querySelector('.gitem.is-sel');
+      say('play ' + sl.getAttribute('data-slug') + ' as ' + m.getAttribute('data-mode') + ': no board in the preview yet.');
+    });
+  });
+
+  filter.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { filter.value = ''; gfilter(); e.preventDefault(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      var l = shownRows(), i = l.indexOf(glist.querySelector('.gitem.is-sel'));
+      paint(l[(i + (e.key === 'ArrowDown' ? 1 : l.length - 1) + l.length) % l.length]);
+      e.preventDefault(); return;
+    }
+    if (e.key === 'Enter') {
+      var s = glist.querySelector('.gitem.is-sel');
+      if (s) say('play ' + s.getAttribute('data-slug') + ': no board in the preview yet.');
+      else say('nothing selected. clear the filter with esc.', true);
+      e.preventDefault();
+    }
+  });
+
+  cmd.addEventListener('input', function () { mark(); if (isOpen()) refilter(); });
+  cmd.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { close(); filter.focus(); e.preventDefault(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!isOpen()) { open(); return; }
+      var l = items(), i = l.indexOf(list.querySelector('.is-sel'));
+      sel(l[(i + (e.key === 'ArrowDown' ? 1 : l.length - 1) + l.length) % l.length]);
+      e.preventDefault(); return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isOpen()) {
+        var s = list.querySelector('.is-sel');
+        if (s) run(s.getAttribute('data-cmd'));
+        else { say('no command matches "' + cmd.value.trim() + '".', true); close(); }
+      } else if (cmd.value.trim()) {
+        var typed = cmd.value.trim().toLowerCase().split(' ')[0];
+        var found = list.querySelector('.pitem[data-cmd="' + typed + '"]');
+        if (found) run(typed); else { say(typed + ': not a command. press / to see the list.', true); cmd.value = ''; mark(); }
+      }
+    }
+  });
+
+  [].forEach.call(document.querySelectorAll('.pitem'), function (b) {
+    b.addEventListener('click', function () { run(b.getAttribute('data-cmd')); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if (t === cmd || t === filter) return;
+    if (e.metaKey || e.ctrlKey) { if (e.key === 'k') { open(); e.preventDefault(); } return; }
+    if (e.key === '/' || e.key === '?') { open(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { close(); filter.focus(); return; }
+    if (e.key.length === 1) { filter.focus(); }
+  });
+
+  paint(rows()[0]);
+  filter.focus();
+})();
+</script>
+</body>
+</html>

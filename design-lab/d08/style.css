@@ -1,0 +1,131 @@
+/* ============================================================
+   d08 STYLE: DIAZO NEGATIVE DRAFT
+   Tokens only. No layout, no selectors targeting page structure.
+
+   Thesis: on a drawing, hierarchy is carried by LINE WEIGHT, not by
+   fill or by color. So this style ships four codified weights and a
+   near-white "drawn line", and it spends almost no color at all. The
+   ground is a dark diazo film, the ink is warm chalk, and the single
+   chromatic accent sits in the same hue family as the ground so that
+   the loudest thing on any screen is a thick line, not a bright one.
+
+   FONT FILES (constraint 5). Nothing is fetched at runtime. The faces
+   below are the exact files this style would ship, self-hosted as woff2
+   under /assets/fonts/. Until they are in the tree, each stack falls
+   back to a face that is genuinely present on macOS and Windows, so the
+   drafted character survives rather than silently collapsing to
+   system-ui the way the current app does.
+     display : ArchivoNarrow-Bold.woff2, ArchivoNarrow-SemiBold.woff2  (OFL)
+     body    : Archivo-Regular.woff2, Archivo-Medium.woff2            (OFL)
+     mono    : ShareTechMono-Regular.woff2                            (OFL)
+   ============================================================ */
+
+[data-style="08"] {
+  /* ---- Ground and sheet ------------------------------------ */
+  /* Almost nothing is filled. bg-subtle is the drafting table the
+     sheet lies on; surface-2 is poche, the one sanctioned fill. */
+  --bg-page: #12232c;
+  --bg-subtle: #0a1519;
+  --surface: #162a34;
+  --surface-2: #1c333e;
+
+  /* ---- The line ------------------------------------------- */
+  /* border is the light line: dimensions, extensions, hatch, rules.
+     border-strong is the drawn line, the cut, and it is nearly white
+     on purpose. Weight and value move together. */
+  --border: #3c5a66;
+  --border-strong: #b9cbc9;
+
+  /* ---- Lettering ------------------------------------------ */
+  --text-primary: #eae6d9;
+  --text-secondary: #a0b6ba;
+  --text-muted: #6d8892;
+  --text-inverse: #0a1519;
+
+  /* ---- Accent: printed cyan ------------------------------- */
+  /* A diazo print is monochrome by process, so the accent lives inside
+     the process instead of arriving from outside it. */
+  --accent: #5fc4dd;
+  --accent-hover: #86d8ec;
+  --accent-active: #46a9c2;
+  --accent-soft: #17323c;
+  --on-accent: #08202a;
+
+  /* ---- Semantic: the second pen --------------------------- */
+  /* Red is the markup pen. It appears only where something is being
+     corrected, which is why danger is the most saturated hue here. */
+  --success: #7fbf93;
+  --danger: #de6650;
+  --warning: #dfa84a;
+  --info: #5fc4dd;
+  --focus-ring: #86d8ec;
+
+  /* ---- Type ----------------------------------------------- */
+  --font-display: 'Archivo Narrow', 'Arial Narrow', 'Avenir Next Condensed', 'Roboto Condensed', system-ui, sans-serif;
+  --font-sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Share Tech Mono', ui-monospace, 'SF Mono', Menlo, 'Cascadia Mono', monospace;
+
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 17px;
+  --text-xl: 22px;
+  --text-2xl: 30px;
+  --text-3xl: 42px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.14;
+  --leading-normal: 1.56;
+
+  /* Drafted lettering is tracked open. normal is deliberately positive
+     so that any feel setting plain labels gets title-block spacing. */
+  --tracking-tight: 0em;
+  --tracking-normal: 0.02em;
+  --tracking-wide: 0.16em;
+
+  /* ---- Spacing rhythm ------------------------------------- */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 56px;
+
+  /* ---- Radii ---------------------------------------------- */
+  /* A drafted corner is square. The one curve in the system is the
+     circle: column bubbles and detail callouts. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-full: 999px;
+
+  /* ---- "Shadows" ------------------------------------------ */
+  /* There is no light source on a drawing, so elevation is drawn.
+     Every shadow here is an outline, not a blur. */
+  --shadow-sm: 0 0 0 1px #3c5a66;
+  --shadow-md: 0 0 0 1px #6d8892;
+  --shadow-lg: 0 0 0 2px #b9cbc9;
+
+  --border-width: 1px;
+
+  /* ---- Motion --------------------------------------------- */
+  /* A pen plotter accelerates once and stops. No overshoot. */
+  --motion-fast: 90ms;
+  --motion-base: 160ms;
+  --motion-slow: 340ms;
+  --ease-out: cubic-bezier(0.35, 0, 0.15, 1);
+
+  /* ---- d08 extensions: the codified weights --------------- */
+  /* The whole visual language is these four. A feel that does not know
+     about them derives the same ramp from --border-width. */
+  --d08-w-dim: 1px;    /* dimension, extension, hatch, table rule   */
+  --d08-w-object: 2px; /* container, subdivision, group heading     */
+  --d08-w-cut: 3px;    /* sheet edge, active sheet, primary action  */
+  --d08-w-heavy: 5px;  /* reserved: the one cut per screen          */
+  --d08-hatch: #3c5a66;
+  --d08-tick: 11px;    /* length of an architectural slash tick     */
+}

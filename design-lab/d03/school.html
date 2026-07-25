@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en" data-style="03">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess · school</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="band idbar">
+        <a class="brand" href="home.html">
+          <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="2" y="2" width="10" height="10" fill="currentColor" />
+            <rect x="12" y="12" width="10" height="10" fill="currentColor" />
+          </svg>
+          <span class="brand-word">nodechess</span>
+        </a>
+        <div class="kv">
+          <span class="kv-k">Player</span>
+          <span class="kv-v">mercer#K4T9P</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Chapter</span>
+          <span class="kv-v kv-v--accent">07 / 40</span>
+        </div>
+        <div class="kv">
+          <span class="kv-k">Lesson</span>
+          <span class="kv-v">3 / 5</span>
+        </div>
+        <span class="spacer"></span>
+        <label class="find">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M15 15 L21 21" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          <input type="search" placeholder="Find a chapter" aria-label="Find a chapter" />
+          <kbd>/</kbd>
+        </label>
+        <a class="iconbtn" href="#" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" fill="none" />
+            <rect x="14" y="3" width="4" height="6" fill="currentColor" />
+            <rect x="6" y="9" width="4" height="6" fill="currentColor" />
+            <rect x="14" y="15" width="4" height="6" fill="currentColor" />
+          </svg>
+        </a>
+        <a class="iconbtn" href="#" aria-label="Account">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M4 21 v-2 a8 8 0 0 1 16 0 v2" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+        </a>
+      </header>
+
+      <nav class="band dest" aria-label="Sections">
+        <a class="dest-link" href="home.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 L20 12 L7 20 Z" fill="currentColor" /></svg>
+          Play
+        </a>
+        <a class="dest-link" href="games.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" fill="currentColor" />
+            <rect x="14" y="3" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="3" y="14" width="7" height="7" fill="none" stroke="currentColor" stroke-width="2" />
+            <rect x="14" y="14" width="7" height="7" fill="currentColor" />
+          </svg>
+          Games
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M3 15 L9 15 L9 9 L15 9 L15 3" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          Puzzles
+        </a>
+        <a class="dest-link" href="school.html" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 5 h8 v14 H3 z M13 5 h8 v14 h-8 z" fill="none" stroke="currentColor" stroke-width="2" />
+          </svg>
+          School
+        </a>
+        <a class="dest-link" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="2" y="5" width="20" height="12" fill="none" stroke="currentColor" stroke-width="2" />
+            <path d="M12 17 v4 M8 21 h8" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          Watch
+        </a>
+        <span class="spacer"></span>
+        <div class="dest-note">
+          <span>8,412 playing</span>
+          <span>19:04 UTC</span>
+        </div>
+      </nav>
+
+      <div class="band ctx">
+        <span class="ctx-path">School <b>/</b> Chapter 07 The Italian Game <b>/</b> Lesson 3</span>
+        <div class="ctx-facts">
+          <span>lessons 1 and 2 cleared</span>
+          <span>4 minutes left here</span>
+        </div>
+      </div>
+
+      <main class="sheet">
+        <div class="col span-7">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Your board</h2>
+              <span class="note">you are white · black to move</span>
+            </div>
+            <div class="board-wrap">
+              <div class="ranks" aria-hidden="true">
+                <span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span>
+              </div>
+              <div class="board" role="img" aria-label="Italian Game after bishop to c4, black to move">
+                <span class="sq sq--l p-d">&#9820;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-d">&#9821;</span>
+                <span class="sq sq--d p-d">&#9819;</span>
+                <span class="sq sq--l p-d">&#9818;</span>
+                <span class="sq sq--d p-d">&#9821;</span>
+                <span class="sq sq--l p-d">&#9822;</span>
+                <span class="sq sq--d p-d">&#9820;</span>
+
+                <span class="sq sq--d p-d">&#9823;</span>
+                <span class="sq sq--l p-d">&#9823;</span>
+                <span class="sq sq--d p-d">&#9823;</span>
+                <span class="sq sq--l p-d">&#9823;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-d">&#9823;</span>
+                <span class="sq sq--d p-d">&#9823;</span>
+                <span class="sq sq--l p-d">&#9823;</span>
+
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-d">&#9822;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d p-d">&#9823;</span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l sq--mark p-l">&#9821;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-l">&#9823;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-l">&#9822;</span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l"></span>
+
+                <span class="sq sq--l p-l">&#9823;</span>
+                <span class="sq sq--d p-l">&#9823;</span>
+                <span class="sq sq--l p-l">&#9823;</span>
+                <span class="sq sq--d p-l">&#9823;</span>
+                <span class="sq sq--l"></span>
+                <span class="sq sq--d p-l">&#9823;</span>
+                <span class="sq sq--l p-l">&#9823;</span>
+                <span class="sq sq--d p-l">&#9823;</span>
+
+                <span class="sq sq--d p-l">&#9820;</span>
+                <span class="sq sq--l p-l">&#9822;</span>
+                <span class="sq sq--d p-l">&#9821;</span>
+                <span class="sq sq--l p-l">&#9819;</span>
+                <span class="sq sq--d p-l">&#9818;</span>
+                <span class="sq sq--l sq--mark"></span>
+                <span class="sq sq--d"></span>
+                <span class="sq sq--l p-l">&#9820;</span>
+              </div>
+              <div class="files" aria-hidden="true">
+                <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Chapter 07, in order</h2>
+              <span class="note">5 lessons</span>
+            </div>
+            <div class="tbl tbl--nav">
+              <div class="rec rec--act">
+                <span class="f f--idx">1</span>
+                <span class="f f--name">Why both sides take the centre</span>
+                <span class="f f--meta">cleared</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f f--idx">2</span>
+                <span class="f f--name">Knights before bishops</span>
+                <span class="f f--meta">cleared</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </div>
+              <div class="rec rec--primary">
+                <span class="f f--idx">3</span>
+                <span class="f f--name">The bishop's diagonal</span>
+                <span class="f f--meta">you are here</span>
+                <span class="f f--chev"></span>
+              </div>
+              <div class="rec">
+                <span class="f f--idx">4</span>
+                <span class="f f--name">The fried liver</span>
+                <span class="f f--meta">next</span>
+                <span class="f f--chev"></span>
+              </div>
+              <div class="rec">
+                <span class="f f--idx">5</span>
+                <span class="f f--name">When Black answers d5</span>
+                <span class="f f--meta">after that</span>
+                <span class="f f--chev"></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel panel--foot">
+            <div class="panel-head">
+              <h2>Moves so far</h2>
+              <span class="note">3 played, yours in amber</span>
+            </div>
+            <div class="moves">
+              <div class="mv"><span class="mv-no">1</span><span>e4</span><span>e5</span></div>
+              <div class="mv"><span class="mv-no">2</span><span>Nf3</span><span>Nc6</span></div>
+              <div class="mv"><span class="mv-no">3</span><span class="now">Bc4</span><span></span></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="col span-5">
+          <section class="panel">
+            <div class="coach">
+              <span class="coach-mark">V</span>
+              <span class="coach-name">Viktor</span>
+              <span class="coach-role">your coach, chapters 1 to 40</span>
+            </div>
+            <p class="said">
+              Bc4. Good. That bishop did not come out for the air. It is looking down a long diagonal at the one
+              square Black's king can barely defend.
+            </p>
+            <div class="ask">Name the square it is looking at</div>
+            <div class="tbl tbl--ans">
+              <button class="rec rec--act rec--ans" type="button">
+                <span class="f f--icon"><span class="ans-key">1</span></span>
+                <span class="f f--name">d5</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </button>
+              <button class="rec rec--act rec--ans" type="button">
+                <span class="f f--icon"><span class="ans-key">2</span></span>
+                <span class="f f--name">f7</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </button>
+              <button class="rec rec--act rec--ans" type="button">
+                <span class="f f--icon"><span class="ans-key">3</span></span>
+                <span class="f f--name">b5</span>
+                <span class="f f--chev">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5 L16 12 L9 19" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+                </span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>What Viktor showed you here</h2>
+            </div>
+            <div class="panel-body">
+              <p>
+                Both sides took the centre with a pawn and brought a knight out. White's bishop then went to the
+                square where it does the most work, and it will keep doing that work for the next thirty moves.
+              </p>
+              <p>
+                Play this against anyone who has not seen it and you will win games long before you learn a single
+                endgame.
+              </p>
+            </div>
+          </section>
+
+          <section class="panel panel--fill">
+            <div class="panel-head">
+              <h2>Chapter 07 · The Italian Game</h2>
+              <span class="note">chapters 1 to 40 below</span>
+            </div>
+            <div class="tbl tbl--kv">
+              <div class="rec">
+                <span class="f">Lessons</span>
+                <span class="f f--act">
+                  <span class="lessons">
+                    <span class="lesson-cell lesson-cell--done">1</span>
+                    <span class="lesson-cell lesson-cell--done">2</span>
+                    <span class="lesson-cell lesson-cell--now">3</span>
+                    <span class="lesson-cell">4</span>
+                    <span class="lesson-cell">5</span>
+                  </span>
+                </span>
+              </div>
+              <div class="rec rec--act">
+                <span class="f">Stuck on this one</span>
+                <span class="f f--act"><button class="btn btn--ghost" type="button">Ask Viktor</button></span>
+              </div>
+              <div class="rec">
+                <span class="f f--name">Next, lesson 4: the fried liver</span>
+                <span class="f f--act"><span class="f--meta">answer to open it</span></span>
+              </div>
+            </div>
+            <div class="ticks" aria-label="Chapters 1 to 40, you are on 7">
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--done"></span>
+              <span class="tick tick--now"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+              <span class="tick"></span>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

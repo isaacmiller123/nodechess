@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" data-style="09">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="stage">
+      <div class="ambient" aria-hidden="true"></div>
+
+      <div class="shell">
+        <div class="mark">
+          <span class="mark__word">nodechess</span>
+          <span class="mark__where">Home</span>
+        </div>
+
+        <div class="stack">
+          <section class="station station--wide is-lit" id="play" aria-labelledby="play-t">
+            <h1 class="station__title" id="play-t">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 20 12 7 19.5Z" /></svg>
+              Play
+            </h1>
+            <div class="station__body">
+              <p class="lede">Pick a clock.</p>
+              <div class="picks">
+                <button class="pick" type="button" aria-pressed="false"><span class="pick__time">3 + 0</span></button>
+                <button class="pick" type="button" aria-pressed="true"><span class="pick__time">5 + 2</span></button>
+                <button class="pick" type="button" aria-pressed="false"><span class="pick__time">10 + 0</span></button>
+                <button class="pick" type="button" aria-pressed="false"><span class="pick__time">15 + 10</span></button>
+                <button class="pick" type="button" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="2" /><path d="M12 4v4" /><path d="M9 14h.01" /><path d="M15 14h.01" /></svg>
+                  Against a bot
+                </button>
+                <button class="pick" type="button" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2" /><path d="M3.5 19c0-2.6 2.5-4.5 5.5-4.5s5.5 1.9 5.5 4.5" /><path d="M16.5 6.2a3.2 3.2 0 0 1 0 6.1" /><path d="M18 14.9c2 .7 3.5 2.2 3.5 4.1" /></svg>
+                  Two players, one screen
+                </button>
+              </div>
+              <button class="go" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 20 12 7 19.5Z" /></svg>
+                Start 5 + 2
+              </button>
+              <p class="note">Your rating stays provisional until five games are done.</p>
+            </div>
+          </section>
+
+          <section class="station" id="resume" aria-labelledby="resume-t">
+            <h2 class="station__title" id="resume-t">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 4v4h4" /><path d="M12 8v4.5l3 1.8" /></svg>
+              Resume
+            </h2>
+            <div class="station__body">
+              <p class="note">Nothing in progress. Walk away from a game and it waits right here, clock and all.</p>
+              <a class="rowlink" href="#play">
+                Start one
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+              </a>
+            </div>
+          </section>
+
+          <section class="station" id="puzzles" aria-labelledby="puzzles-t">
+            <h2 class="station__title" id="puzzles-t">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1" fill="currentColor" /></svg>
+              Puzzles
+            </h2>
+            <div class="station__body">
+              <p class="note">You have not tried one yet. Mates in one are the short way in, and they work with no connection.</p>
+              <a class="rowlink" href="#puzzles">
+                Start with mates in one
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+              </a>
+            </div>
+          </section>
+
+          <section class="station" id="school" aria-labelledby="school-t">
+            <h2 class="station__title" id="school-t">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 9 12 4.3 21.5 9 12 13.7Z" /><path d="M6.5 11.2V16c0 1.7 2.5 3 5.5 3s5.5-1.3 5.5-3v-4.8" /></svg>
+              School
+            </h2>
+            <div class="station__body">
+              <p class="note">Chapter 7, The Italian Game. You stopped in the middle of lesson 3.</p>
+              <div class="steps" aria-label="Lesson 3 of 5">
+                <span class="step step--done"></span>
+                <span class="step step--done"></span>
+                <span class="step step--now"></span>
+                <span class="step"></span>
+                <span class="step"></span>
+              </div>
+              <a class="rowlink" href="school.html">
+                Pick up lesson 3
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+              </a>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <nav class="cluster" aria-label="Where you are">
+        <div class="who">
+          <span class="who__id">mercer#K4T9P</span>
+          <span class="who__rating"><strong>1500</strong> provisional</span>
+        </div>
+        <div class="lamps">
+          <a class="lamp" href="home.html" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 20 12 7 19.5Z" /></svg>
+            Play
+          </a>
+          <a class="lamp" href="games.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1" /><rect x="13.5" y="3.5" width="7" height="7" rx="1" /><rect x="3.5" y="13.5" width="7" height="7" rx="1" /><rect x="13.5" y="13.5" width="7" height="7" rx="1" /></svg>
+            Games
+          </a>
+          <a class="lamp" href="#puzzles">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1" fill="currentColor" /></svg>
+            Puzzles
+          </a>
+          <a class="lamp" href="school.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 9 12 4.3 21.5 9 12 13.7Z" /><path d="M6.5 11.2V16c0 1.7 2.5 3 5.5 3s5.5-1.3 5.5-3v-4.8" /></svg>
+            School
+          </a>
+        </div>
+        <div class="cluster__end">
+          <span class="live"><span class="live__dot" aria-hidden="true"></span> Viktor is holding lesson 3</span>
+          <a class="avatar" href="#account" aria-label="Your account">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20c0-3.4 3.4-5.8 7.5-5.8s7.5 2.4 7.5 5.8" /></svg>
+          </a>
+        </div>
+      </nav>
+
+      <nav class="thumb" aria-label="Sections">
+        <a class="lamp" href="home.html" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4.5 20 12 7 19.5Z" /></svg>
+          Play
+        </a>
+        <a class="lamp" href="games.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1" /><rect x="13.5" y="3.5" width="7" height="7" rx="1" /><rect x="3.5" y="13.5" width="7" height="7" rx="1" /><rect x="13.5" y="13.5" width="7" height="7" rx="1" /></svg>
+          Games
+        </a>
+        <a class="lamp" href="#puzzles">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="1" fill="currentColor" /></svg>
+          Puzzles
+        </a>
+        <a class="lamp" href="school.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 9 12 4.3 21.5 9 12 13.7Z" /><path d="M6.5 11.2V16c0 1.7 2.5 3 5.5 3s5.5-1.3 5.5-3v-4.8" /></svg>
+          School
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

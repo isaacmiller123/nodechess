@@ -1,0 +1,107 @@
+/* d09 STYLE: Sodium and Petrol Night
+   Tokens only. No layout, no structural selectors, no component rules.
+
+   The idea: a night road. Depth is carried by a ramp that shifts hue as it
+   lifts, cold petrol far away, indigo mid, violet where a surface comes
+   close to the light. Two light temperatures do all the signalling: sodium
+   amber is the structural accent (the lamp over the thing you are using),
+   cool instrument cyan is focus and system state. Nothing here is
+   near-black, and nothing here is acid.
+
+   Fonts: I would ship woff2 subsets of Overpass (OFL, drawn from US highway
+   signage) for display and IBM Plex Sans / Plex Mono (OFL) for body and
+   data. There are no font files in this lab, so each stack below names the
+   intended face first and then a faithful metric-adjacent fallback that is
+   present on macOS and Windows. See README. */
+
+[data-style='09'] {
+  /* Backgrounds and surfaces: cold far, warm near. */
+  --bg-page: #08101d;
+  --bg-subtle: #0e1728;
+  --surface: #16203a;
+  --surface-2: #232746;
+  --border: #2d3457;
+  --border-strong: #4a5080;
+
+  /* Text: headlight white, cooled slightly so amber stays the warm thing. */
+  --text-primary: #e8ebf5;
+  --text-secondary: #9ba5c4;
+  --text-muted: #7c85a5;
+  --text-inverse: #0b1120;
+
+  /* Accent: sodium vapour. The lamp, not a neon. */
+  --accent: #f0a13d;
+  --accent-hover: #ffb35a;
+  --accent-active: #ffc47c;
+  --accent-soft: #2c2013;
+  --on-accent: #170e02;
+
+  /* Semantic: instrument-cluster hues, all readable at low luminance. */
+  --success: #4fc79b;
+  --danger: #f4574c;
+  --warning: #e6cd57;
+  --info: #6ea6ff;
+  --focus-ring: #7fd0ff;
+
+  /* Type */
+  --font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-display: 'Overpass', 'Helvetica Neue', Arial, system-ui, sans-serif;
+
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 23px;
+  --text-2xl: 31px;
+  --text-3xl: 44px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.14;
+  --leading-normal: 1.55;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.15em;
+
+  /* Spacing: 4px base, opens up fast so dark space can breathe. */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 56px;
+
+  /* Radius: instrument-panel small. Nothing pillowy except pills. */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 11px;
+  --radius-full: 999px;
+
+  /* Shadow: night shadows are almost black and they spread. */
+  --shadow-sm: 0 1px 2px rgba(2, 5, 12, 0.6);
+  --shadow-md: 0 6px 18px -6px rgba(2, 5, 12, 0.75);
+  --shadow-lg: 0 26px 60px -22px rgba(2, 5, 12, 0.9);
+
+  --border-width: 1px;
+
+  /* Motion: quick to light, slow to fade, like eyes adjusting. */
+  --motion-fast: 110ms;
+  --motion-base: 220ms;
+  --motion-slow: 640ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* d09 extras. Every one of these has a token-built fallback in feel.css,
+     so the layout survives a style swap that does not define them. */
+  --d09-sq-light: #67739a;
+  --d09-sq-dark: #29314f;
+  --d09-glow-warm: 0 0 0 1px rgba(240, 161, 61, 0.28), 0 18px 60px -24px rgba(240, 161, 61, 0.5);
+  --d09-glow-cool: 0 0 0 1px rgba(127, 208, 255, 0.35), 0 14px 40px -20px rgba(127, 208, 255, 0.4);
+  --d09-pool: radial-gradient(120% 140% at 20% -10%, rgba(240, 161, 61, 0.22), rgba(240, 161, 61, 0.05) 44%, transparent 74%);
+  --d09-far: radial-gradient(132% 80% at 50% 104%, #3a4177 0%, #1e2650 30%, #101832 54%, #08101d 84%);
+  --d09-dim: 0.55;
+}

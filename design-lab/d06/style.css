@@ -1,0 +1,306 @@
+/* d06 STYLE: Walnut, Felt and Brass
+   Tokens only. No layout, no component rules, no page selectors.
+
+   Material rule that governs every value here: one light source, high and to
+   the left. Every surface therefore gets a lighter token for its top edge
+   (--d06-edge-hi) and a darker one for the edge that falls away
+   (--d06-edge-lo). Shadows are tinted with the palette's own darkest material,
+   never neutral black, which is what makes wood read as wood and slate as
+   slate without a single texture image.
+
+   Four complete dark palettes, same property names:
+     walnut (default) | slate | oxblood | birch
+   Fonts: see the @font-face note at the bottom of this file.
+*/
+
+/* ---------------------------------------------------------------- non-color
+   Shared across all four palettes. Nothing in this block carries a color. */
+[data-style='06'] {
+  /* Type. Display is a slab: board game lids are printed, not screen native.
+     Body is a humanist sans that holds up at 13px on a dark ground. Mono
+     carries notation and clocks and shares the slab's squared terminals. */
+  --font-display: 'Zilla Slab', Rockwell, 'Bookman Old Style', Georgia, serif;
+  --font-sans: 'Source Sans 3', 'Source Sans Pro', 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Menlo', 'Consolas', ui-monospace, monospace;
+
+  --text-xs: 11.5px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 30px;
+  --text-3xl: 42px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+  --d06-weight-display: 600;
+
+  --leading-tight: 1.12;
+  --leading-normal: 1.55;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.11em;
+
+  /* Spacing. 2px base, wider steps than a screen-native scale because
+     physical objects need air around them to read as separate objects. */
+  --space-1: 3px;
+  --space-2: 6px;
+  --space-3: 10px;
+  --space-4: 14px;
+  --space-6: 22px;
+  --space-8: 32px;
+  --space-12: 52px;
+
+  /* Radius. Card stock and lacquered wood take a small, crisp corner.
+     Nothing here is a rounded app tile. */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 11px;
+  --radius-full: 999px;
+
+  --border-width: 1px;
+
+  /* Motion. Objects lift and settle. They never slide sideways. */
+  --motion-fast: 110ms;
+  --motion-base: 190ms;
+  --motion-slow: 340ms;
+  --ease-out: cubic-bezier(0.2, 0.9, 0.25, 1);
+  --d06-ease-settle: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Material geometry, still colorless: how proud an object sits. */
+  --d06-lift: 5px;
+  --d06-lid-step: 11px;
+  --d06-plank: 7px;
+}
+
+/* ------------------------------------------------------------------ WALNUT
+   Default. Dark walnut plank, bottle green felt, brass hardware. */
+[data-style='06'],
+[data-style='06'][data-palette='walnut'] {
+  --bg-page: #1a130e;
+  --bg-subtle: #221a13;
+  --surface: #30241b;
+  --surface-2: #3c2d22;
+  --border: #4e3b2c;
+  --border-strong: #6b523d;
+
+  --text-primary: #f2e7d8;
+  --text-secondary: #c0ac94;
+  --text-muted: #8e7a64;
+  --text-inverse: #1a130e;
+
+  --accent: #d2a24c;
+  --accent-hover: #e0b562;
+  --accent-active: #b98836;
+  --accent-soft: #3a2c1b;
+  --on-accent: #1a130e;
+
+  --success: #7fa85a;
+  --danger: #c4553f;
+  --warning: #e0a03c;
+  --info: #7fa0c4;
+  --focus-ring: #e0b562;
+
+  --shadow-sm: 0 1px 2px rgba(12, 7, 3, 0.5);
+  --shadow-md: 0 3px 6px rgba(12, 7, 3, 0.46), 0 8px 18px rgba(12, 7, 3, 0.34);
+  --shadow-lg: 0 6px 12px rgba(12, 7, 3, 0.5), 0 22px 44px rgba(12, 7, 3, 0.44);
+
+  --d06-edge-hi: rgba(255, 236, 205, 0.14);
+  --d06-edge-lo: rgba(9, 5, 2, 0.62);
+  --d06-felt: #2c4436;
+  --d06-felt-edge: #1d2e24;
+  --d06-slot: rgba(9, 5, 2, 0.44);
+  --d06-board-light: #c9b193;
+  --d06-board-dark: #6f513a;
+  --d06-piece-light: #f6ecdd;
+  --d06-piece-dark: #221812;
+
+  --d06-fam-chess: #b98836;
+  --d06-fam-regional: #a8453c;
+  --d06-fam-draughts: #4f6e8c;
+  --d06-fam-territory: #56795c;
+  --d06-fam-classics: #8a6b9e;
+
+  --d06-pv-walnut: #7b5738;
+  --d06-pv-slate: #4a545a;
+  --d06-pv-oxblood: #6b2f38;
+  --d06-pv-birch: #3d5878;
+}
+
+/* ------------------------------------------------------------------- SLATE
+   Cool slate board, charcoal felt, oxidized copper hardware. */
+[data-style='06'][data-palette='slate'] {
+  --bg-page: #101315;
+  --bg-subtle: #171b1e;
+  --surface: #22272b;
+  --surface-2: #2c3237;
+  --border: #3a4147;
+  --border-strong: #525c63;
+
+  --text-primary: #e6eaec;
+  --text-secondary: #a9b3b9;
+  --text-muted: #78838a;
+  --text-inverse: #101315;
+
+  --accent: #c4714a;
+  --accent-hover: #d5855d;
+  --accent-active: #a85c3a;
+  --accent-soft: #2a211c;
+  --on-accent: #12100f;
+
+  --success: #6f9e76;
+  --danger: #c9524c;
+  --warning: #d69a48;
+  --info: #6e96be;
+  --focus-ring: #d5855d;
+
+  --shadow-sm: 0 1px 2px rgba(4, 6, 8, 0.58);
+  --shadow-md: 0 3px 6px rgba(4, 6, 8, 0.52), 0 8px 18px rgba(4, 6, 8, 0.4);
+  --shadow-lg: 0 6px 12px rgba(4, 6, 8, 0.56), 0 22px 44px rgba(4, 6, 8, 0.48);
+
+  --d06-edge-hi: rgba(226, 240, 248, 0.13);
+  --d06-edge-lo: rgba(3, 5, 6, 0.66);
+  --d06-felt: #23343a;
+  --d06-felt-edge: #172327;
+  --d06-slot: rgba(3, 5, 6, 0.46);
+  --d06-board-light: #9aa7ac;
+  --d06-board-dark: #4d585e;
+  --d06-piece-light: #eef3f5;
+  --d06-piece-dark: #191d20;
+
+  --d06-fam-chess: #c4714a;
+  --d06-fam-regional: #b4544e;
+  --d06-fam-draughts: #5b7ea0;
+  --d06-fam-territory: #5c8a72;
+  --d06-fam-classics: #8d7bb0;
+
+  --d06-pv-walnut: #7b5738;
+  --d06-pv-slate: #4a545a;
+  --d06-pv-oxblood: #6b2f38;
+  --d06-pv-birch: #3d5878;
+}
+
+/* ----------------------------------------------------------------- OXBLOOD
+   Oxblood lacquer box, bone inlay, gilt edges. The accent is bone rather
+   than a hue, so the wood carries all the color. */
+[data-style='06'][data-palette='oxblood'] {
+  --bg-page: #150e10;
+  --bg-subtle: #1d1417;
+  --surface: #2a1c20;
+  --surface-2: #35242a;
+  --border: #4a3138;
+  --border-strong: #66444c;
+
+  --text-primary: #ede0ce;
+  --text-secondary: #c4ac9f;
+  --text-muted: #927a72;
+  --text-inverse: #150e10;
+
+  --accent: #e3d2b4;
+  --accent-hover: #f2e4cb;
+  --accent-active: #c9b695;
+  --accent-soft: #35242a;
+  --on-accent: #150e10;
+
+  --success: #8aa46b;
+  --danger: #cf5b4c;
+  --warning: #dda45a;
+  --info: #9aa8c8;
+  --focus-ring: #f2e4cb;
+
+  --shadow-sm: 0 1px 2px rgba(10, 4, 6, 0.58);
+  --shadow-md: 0 3px 6px rgba(10, 4, 6, 0.5), 0 8px 18px rgba(10, 4, 6, 0.38);
+  --shadow-lg: 0 6px 12px rgba(10, 4, 6, 0.54), 0 22px 44px rgba(10, 4, 6, 0.46);
+
+  --d06-edge-hi: rgba(255, 232, 214, 0.15);
+  --d06-edge-lo: rgba(8, 3, 4, 0.64);
+  --d06-felt: #2e1c22;
+  --d06-felt-edge: #1f1216;
+  --d06-slot: rgba(8, 3, 4, 0.46);
+  --d06-board-light: #cbb79c;
+  --d06-board-dark: #6d4147;
+  --d06-piece-light: #f6ead7;
+  --d06-piece-dark: #1d1214;
+
+  --d06-fam-chess: #c9a227;
+  --d06-fam-regional: #b24a44;
+  --d06-fam-draughts: #6e7fa8;
+  --d06-fam-territory: #6c9a79;
+  --d06-fam-classics: #a9799c;
+
+  --d06-pv-walnut: #7b5738;
+  --d06-pv-slate: #4a545a;
+  --d06-pv-oxblood: #6b2f38;
+  --d06-pv-birch: #3d5878;
+}
+
+/* ------------------------------------------------------------------- BIRCH
+   Cold birch ply stained dark, wool felt, cobalt printing. */
+[data-style='06'][data-palette='birch'] {
+  --bg-page: #0f1319;
+  --bg-subtle: #161b23;
+  --surface: #202834;
+  --surface-2: #29323f;
+  --border: #38434f;
+  --border-strong: #4e5c6b;
+
+  --text-primary: #e4eaf2;
+  --text-secondary: #a6b2c0;
+  --text-muted: #74808e;
+  --text-inverse: #0f1319;
+
+  --accent: #6c9ad6;
+  --accent-hover: #83aee4;
+  --accent-active: #5683bc;
+  --accent-soft: #1c2635;
+  --on-accent: #0b0f14;
+
+  --success: #6ba184;
+  --danger: #cb5a5a;
+  --warning: #d9a34f;
+  --info: #6c9ad6;
+  --focus-ring: #83aee4;
+
+  --shadow-sm: 0 1px 2px rgba(3, 6, 10, 0.6);
+  --shadow-md: 0 3px 6px rgba(3, 6, 10, 0.54), 0 8px 18px rgba(3, 6, 10, 0.42);
+  --shadow-lg: 0 6px 12px rgba(3, 6, 10, 0.58), 0 22px 44px rgba(3, 6, 10, 0.5);
+
+  --d06-edge-hi: rgba(224, 238, 255, 0.13);
+  --d06-edge-lo: rgba(2, 4, 8, 0.66);
+  --d06-felt: #1b2a33;
+  --d06-felt-edge: #121d24;
+  --d06-slot: rgba(2, 4, 8, 0.48);
+  --d06-board-light: #a3b0bd;
+  --d06-board-dark: #4b5a6b;
+  --d06-piece-light: #eef2f8;
+  --d06-piece-dark: #151b22;
+
+  --d06-fam-chess: #6c9ad6;
+  --d06-fam-regional: #c06b62;
+  --d06-fam-draughts: #7e8fa6;
+  --d06-fam-territory: #63a08a;
+  --d06-fam-classics: #a88bc4;
+
+  --d06-pv-walnut: #7b5738;
+  --d06-pv-slate: #4a545a;
+  --d06-pv-oxblood: #6b2f38;
+  --d06-pv-birch: #3d5878;
+}
+
+/* -------------------------------------------------------------------- fonts
+   No network requests are allowed here, so no @font-face rule is live in this
+   file. If this direction ships, these three files go into
+   src/renderer/assets/fonts/ and get @font-face blocks with font-display:swap:
+
+     ZillaSlab-SemiBold.woff2   (SIL OFL 1.1)
+     ZillaSlab-Regular.woff2    (SIL OFL 1.1)
+     SourceSans3-VariableFont_wght.woff2  (SIL OFL 1.1)
+     IBMPlexMono-Regular.woff2  (SIL OFL 1.1)
+     IBMPlexMono-SemiBold.woff2 (SIL OFL 1.1)
+
+   Until then the stacks above degrade on purpose, not by accident: Rockwell
+   then Bookman then Georgia keeps the slab-to-serif weight for the display
+   face, and Segoe UI then Helvetica Neue keeps the humanist body. Both hold
+   the layout at the same measure. */

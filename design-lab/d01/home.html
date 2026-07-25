@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" data-style="01" data-feel="01">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark"></span>nodechess</div>
+        <nav class="nav" aria-label="Main">
+          <a class="nav-link" href="home.html" aria-current="page">Home</a>
+          <a class="nav-link" href="#">Play</a>
+          <a class="nav-link" href="games.html">Games</a>
+          <a class="nav-link" href="#">Puzzles</a>
+          <a class="nav-link" href="school.html">School</a>
+          <a class="nav-link" href="#">Analysis</a>
+        </nav>
+        <a class="who" href="#"><span class="who-dot"></span>mercer#K4T9P</a>
+      </header>
+
+      <!-- The readout strip. Same four slots on every screen. -->
+      <div class="readout">
+        <div class="rd-field">
+          <span class="lbl">Player</span>
+          <span class="rd-value">mercer#K4T9P</span>
+        </div>
+        <div class="rd-field">
+          <span class="lbl">Rating</span>
+          <span class="rd-value">1500</span>
+          <span class="rd-value is-quiet">provisional</span>
+        </div>
+        <div class="rd-field">
+          <span class="lbl">Games</span>
+          <span class="rd-value">0</span>
+        </div>
+        <div class="rd-field is-next">
+          <span class="lbl">Next</span>
+          <span class="rd-next-text">Play your first game</span>
+        </div>
+        <div class="trace is-0" aria-hidden="true"></div>
+      </div>
+
+      <main class="main">
+        <div class="home">
+          <div class="home-col">
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Start a game</h2>
+                <span class="sec-count">3 ways</span>
+              </div>
+
+              <div class="startrow is-first">
+                <div>
+                  <div class="startrow-name">Play online <span class="tag">start here</span></div>
+                  <div class="startrow-spec">Matched against someone near your strength.</div>
+                </div>
+                <button class="btn is-primary" type="button">Play online</button>
+              </div>
+
+              <div class="startrow">
+                <div>
+                  <div class="startrow-name">Play a bot</div>
+                  <div class="startrow-spec">Eight levels. It waits as long as you need.</div>
+                </div>
+                <button class="btn" type="button">Choose a level</button>
+              </div>
+
+              <div class="startrow">
+                <div>
+                  <div class="startrow-name">Local board</div>
+                  <div class="startrow-spec">Two players, one screen. Clock optional.</div>
+                </div>
+                <button class="btn" type="button">Open board</button>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Resume</h2>
+              </div>
+              <div class="well">
+                <div class="empty-head">
+                  <span class="lbl">Opponent</span>
+                  <span class="lbl">Result</span>
+                  <span class="lbl">Moves</span>
+                  <span class="lbl">When</span>
+                </div>
+                <div class="empty">
+                  <p class="empty-line">Nothing to resume yet.</p>
+                  <p class="empty-line">Finished games land here, newest first.</p>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <aside class="side">
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Account</h2>
+              </div>
+              <div class="panel">
+                <div class="facts">
+                  <div class="fact">
+                    <span class="lbl">Player</span>
+                    <span class="fact-value">mercer#K4T9P</span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Rating</span>
+                    <span class="fact-value">1500 <span class="fact-note">provisional</span></span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Games</span>
+                    <span class="fact-value">0</span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Keys</span>
+                    <span class="fact-value">On this device</span>
+                  </div>
+                </div>
+                <div class="panel-foot">
+                  <button class="btn is-quiet" type="button">Manage account</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Practice</h2>
+              </div>
+              <div class="panel golist">
+                <a class="go" href="#">
+                  <span>
+                    <span class="go-name">Puzzles</span>
+                    <span class="go-sub">4.7M positions, by theme</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+                <a class="go" href="school.html">
+                  <span>
+                    <span class="go-name">School</span>
+                    <span class="go-sub">CH 07, LESSON 3 OF 5</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+                <a class="go" href="#">
+                  <span>
+                    <span class="go-name">Analysis</span>
+                    <span class="go-sub">Paste a game or set up a position</span>
+                  </span>
+                  <svg class="icon go-arrow" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                    <path
+                      d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5"
+                      stroke="currentColor"
+                      stroke-width="1.1"
+                      stroke-linecap="square"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

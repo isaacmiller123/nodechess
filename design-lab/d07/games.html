@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en" data-style="07">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Games, nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <header class="bug">
+      <div class="bug__bar"></div>
+      <div class="bug__row">
+        <a class="mark" href="home.html">node<b>chess</b></a>
+        <p class="onair"><span class="livepip"></span>1,204 games in play</p>
+        <div class="bug__spacer"></div>
+        <div class="me">
+          <a class="me__id" href="#account">
+            <span class="me__handle">mercer</span>
+            <span class="me__tag">#K4T9P</span>
+          </a>
+          <span class="chip" title="Provisional until 5 rated games">1500 <q>?</q></span>
+        </div>
+      </div>
+      <nav class="channels" aria-label="Sections">
+        <a class="channel" href="home.html">Play</a>
+        <a class="channel is-on" href="games.html">Games <span class="channel__n">22</span></a>
+        <a class="channel" href="school.html">School</a>
+        <a class="channel" href="#puzzles">Puzzles</a>
+        <a class="channel" href="#account">Account</a>
+      </nav>
+    </header>
+
+    <main class="stage">
+      <div class="masthead rise">
+        <p class="eyebrow">Games</p>
+        <h1 class="h1">The lineup</h1>
+        <p class="lede">
+          Every one of these plays on this device, against a bot, or online. Green means someone
+          is playing it right now.
+        </p>
+      </div>
+
+      <div class="lineupwrap rise">
+        <div class="filters">
+          <input type="radio" name="cat" id="f-all" checked />
+          <label for="f-all">All <small>22</small></label>
+          <input type="radio" name="cat" id="f-chess" />
+          <label for="f-chess">Chess <small>9</small></label>
+          <input type="radio" name="cat" id="f-regional" />
+          <label for="f-regional">Regional <small>4</small></label>
+          <input type="radio" name="cat" id="f-draughts" />
+          <label for="f-draughts">Draughts <small>2</small></label>
+          <input type="radio" name="cat" id="f-territory" />
+          <label for="f-territory">Territory <small>3</small></label>
+          <input type="radio" name="cat" id="f-classics" />
+          <label for="f-classics">Classics <small>4</small></label>
+        </div>
+
+        <div class="guide">
+          <section class="lineup" data-cat="chess">
+            <h2 class="lineup__head"><span>Chess and variants</span><span>9 games</span></h2>
+            <div class="grow">
+              <span class="lane">01</span>
+              <span class="gname"><b>Chess</b><span>The standard game</span></span>
+              <span class="inplay"><i></i>1,061 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">02</span>
+              <span class="gname"><b>Chess960</b><span>Back rank shuffled at random</span></span>
+              <span class="inplay"><i></i>54 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">03</span>
+              <span class="gname"
+                ><b>Crazyhouse</b><span>Captured pieces come back on your side</span></span
+              >
+              <span class="inplay"><i></i>31 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">04</span>
+              <span class="gname"
+                ><b>Atomic</b><span>A capture takes the neighbours with it</span></span
+              >
+              <span class="inplay"><i></i>22 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">05</span>
+              <span class="gname"><b>Antichess</b><span>Lose every piece to win</span></span>
+              <span class="inplay"><i></i>18 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">06</span>
+              <span class="gname"
+                ><b>King of the Hill</b><span>Walk your king to the centre</span></span
+              >
+              <span class="inplay"><i></i>9 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">07</span>
+              <span class="gname"><b>Three-Check</b><span>Check three times and it ends</span></span>
+              <span class="inplay"><i></i>14 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">08</span>
+              <span class="gname"><b>Horde</b><span>An army of pawns against a full set</span></span>
+              <span class="inplay inplay--cold"><i></i>none in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">09</span>
+              <span class="gname"
+                ><b>Racing Kings</b><span>Both kings race for the eighth rank</span></span
+              >
+              <span class="inplay"><i></i>41 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+          </section>
+
+          <section class="lineup" data-cat="regional">
+            <h2 class="lineup__head"><span>Regional chess</span><span>4 games</span></h2>
+            <div class="grow">
+              <span class="lane">10</span>
+              <span class="gname"><b>Xiangqi</b><span>Chinese chess, a river and cannons</span></span>
+              <span class="inplay"><i></i>76 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">11</span>
+              <span class="gname"
+                ><b>Shogi</b><span>Japanese chess, captures change side</span></span
+              >
+              <span class="inplay"><i></i>48 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">12</span>
+              <span class="gname"><b>Janggi</b><span>Korean chess, a wider palace</span></span>
+              <span class="inplay"><i></i>7 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">13</span>
+              <span class="gname"><b>Makruk</b><span>Thai chess, short range and fast</span></span>
+              <span class="inplay inplay--cold"><i></i>none in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+          </section>
+
+          <section class="lineup" data-cat="draughts">
+            <h2 class="lineup__head"><span>Draughts</span><span>2 games</span></h2>
+            <div class="grow">
+              <span class="lane">14</span>
+              <span class="gname"><b>Checkers</b><span>Eight by eight, jump to capture</span></span>
+              <span class="inplay"><i></i>63 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">15</span>
+              <span class="gname"
+                ><b>International draughts</b><span>Ten by ten, kings fly</span></span
+              >
+              <span class="inplay"><i></i>11 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+          </section>
+
+          <section class="lineup" data-cat="territory">
+            <h2 class="lineup__head"><span>Territory</span><span>3 games</span></h2>
+            <div class="grow">
+              <span class="lane">16</span>
+              <span class="gname"><b>Go</b><span>Surround empty space to own it</span></span>
+              <span class="inplay"><i></i>129 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">17</span>
+              <span class="gname"><b>Gomoku</b><span>Five in a row on the crossings</span></span>
+              <span class="inplay"><i></i>26 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">18</span>
+              <span class="gname"><b>Hex</b><span>Connect your two sides first</span></span>
+              <span class="inplay"><i></i>5 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+          </section>
+
+          <section class="lineup" data-cat="classics">
+            <h2 class="lineup__head"><span>Classics</span><span>4 games</span></h2>
+            <div class="grow">
+              <span class="lane">19</span>
+              <span class="gname"><b>Othello</b><span>Trap a line and it flips</span></span>
+              <span class="inplay"><i></i>34 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">20</span>
+              <span class="gname"><b>Connect Four</b><span>Drop discs, four in a line</span></span>
+              <span class="inplay"><i></i>58 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">21</span>
+              <span class="gname"
+                ><b>Nine Men's Morris</b><span>Line up three, take one of theirs</span></span
+              >
+              <span class="inplay"><i></i>8 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+            <div class="grow">
+              <span class="lane">22</span>
+              <span class="gname"><b>Tic-Tac-Toe</b><span>Three in a row</span></span>
+              <span class="inplay"><i></i>13 in play</span>
+              <span class="plays">
+                <button class="btn btn--sm btn--quiet">Local</button>
+                <button class="btn btn--sm btn--quiet">Bot</button>
+                <button class="btn btn--sm btn--quiet">Online</button>
+              </span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <div class="ticker">
+      <span class="ticker__label"><span class="livepip"></span>Live</span>
+      <div class="ticker__win">
+        <div class="ticker__track">
+          <a class="ticker__item" href="#arena">Hourly blitz, 18 min left, <b>318 entered</b></a>
+          <a class="ticker__item" href="#watch">avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b>, 3+2</a>
+          <a class="ticker__item" href="games.html">Janggi now plays online</a>
+          <a class="ticker__item" href="#watch">tessel#D9V1 drew quill#M4R7, <b>&frac12;-&frac12;</b>, 10+0</a>
+          <a class="ticker__item" href="games.html">Racing Kings, <b>41 in play</b></a>
+          <a class="ticker__item" href="school.html">Chapter 7 test opens after lesson 5</a>
+          <a class="ticker__item" href="#arena" aria-hidden="true" tabindex="-1"
+            >Hourly blitz, 18 min left, <b>318 entered</b></a
+          >
+          <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+            >avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b>, 3+2</a
+          >
+          <a class="ticker__item" href="games.html" aria-hidden="true" tabindex="-1"
+            >Janggi now plays online</a
+          >
+          <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+            >tessel#D9V1 drew quill#M4R7, <b>&frac12;-&frac12;</b>, 10+0</a
+          >
+          <a class="ticker__item" href="games.html" aria-hidden="true" tabindex="-1"
+            >Racing Kings, <b>41 in play</b></a
+          >
+          <a class="ticker__item" href="school.html" aria-hidden="true" tabindex="-1"
+            >Chapter 7 test opens after lesson 5</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

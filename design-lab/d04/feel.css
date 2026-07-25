@@ -1,0 +1,1166 @@
+/* ==========================================================================
+   d04 FEEL: Fixed Control Panel
+   Layout and interaction only. Every colour, face, radius and duration is a
+   var() from style.css. No literal colour appears in this file.
+
+   The architecture: a lit marquee at the top carries identity and the score
+   readout. A fixed control panel at the bottom carries all six destinations,
+   always, on desktop and on a phone alike. Nothing hovers to reveal itself,
+   nothing collapses, there is no dropdown and no overflow menu. If it is a
+   place you can go, it is a button you can see, and it never moves.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-page);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   1. THE CABINET SHELL
+   -------------------------------------------------------------------------- */
+
+.cab {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* --- Marquee: the only lit surface above the glass. --- */
+.marquee {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: 0 var(--space-8);
+  height: 64px;
+  background: var(--d04-marquee, var(--surface));
+  border-bottom: 3px solid var(--d04-marquee-light, var(--accent));
+  box-shadow: 0 10px 26px -10px
+    color-mix(in srgb, var(--d04-marquee-light, var(--accent)) 45%, transparent);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.wordmark em {
+  font-style: normal;
+  color: var(--d04-marquee-light, var(--accent));
+}
+
+.marquee-spacer {
+  flex: 1 1 auto;
+}
+
+/* --- Livery switcher: the cabinet's own colour, so it lives on the sign. --- */
+.livery {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.livery-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--d04-screenprint, var(--text-muted));
+}
+.livery-row {
+  display: flex;
+  gap: var(--space-2);
+}
+.livery-cap {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-full);
+  background: var(--d04-cap, var(--accent));
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out);
+}
+.livery-cap:hover {
+  transform: translateY(-1px);
+}
+.livery-cap[aria-pressed='true'] {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px var(--d04-marquee, var(--surface)),
+    0 0 0 5px color-mix(in srgb, var(--d04-cap, var(--accent)) 70%, transparent);
+}
+
+/* On a phone the livery gets its own strip under the sign rather than being
+   crushed into it. Still above the fold, still four labelled buttons. */
+.liverybar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width) solid var(--border);
+  overflow-x: auto;
+}
+.liverybar .livery-label {
+  flex: 0 0 auto;
+}
+.liverybar .key {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+/* --- Player pod and the score readout. --- */
+.pod {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.handle {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 2px 6px var(--d04-housing-edge, var(--border-strong));
+}
+.readout-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+.readout-flag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --- Stage: everything between the sign and the panel. --- */
+.stage {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-8) 140px;
+}
+
+.stage--center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* A lesson is read, not scanned, so the stage narrows until the board column
+   is exactly as wide as the board. Any slack here opens a gutter between the
+   board and Viktor, and a gutter reads as a mistake. */
+.stage--lesson {
+  max-width: 1000px;
+}
+
+.stage-head {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.stage-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+.stage-count {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  padding-bottom: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   2. THE CONTROL PANEL. Fixed, six holes, never rearranged.
+   -------------------------------------------------------------------------- */
+
+.panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  background: var(--d04-housing, var(--bg-subtle));
+  border-top: var(--border-width) solid var(--border-strong);
+  box-shadow: 0 -14px 30px -14px var(--d04-housing-edge, var(--border-strong));
+  padding: var(--space-3) var(--space-6)
+    calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+}
+.panel-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.pkey {
+  --d04-cap: var(--d04-cap-f, var(--text-primary));
+  flex: 0 1 92px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.pkey[data-cap='a'] { --d04-cap: var(--d04-cap-a, var(--accent)); }
+.pkey[data-cap='b'] { --d04-cap: var(--d04-cap-b, var(--info)); }
+.pkey[data-cap='c'] { --d04-cap: var(--d04-cap-c, var(--danger)); }
+.pkey[data-cap='d'] { --d04-cap: var(--d04-cap-d, var(--success)); }
+.pkey[data-cap='e'] { --d04-cap: var(--d04-cap-e, var(--warning)); }
+.pkey[data-cap='f'] { --d04-cap: var(--d04-cap-f, var(--text-primary)); }
+
+.pkey-cap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 42px;
+  background: var(--d04-key-face, var(--surface-2));
+  color: var(--d04-screenprint, var(--text-muted));
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--d04-key-edge, var(--border-strong));
+  transition: transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+.pkey-cap svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.pkey-legend {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--d04-screenprint, var(--text-muted));
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.pkey:hover .pkey-cap {
+  background: var(--d04-key-face-hi, var(--border));
+  border-color: var(--d04-cap, var(--accent));
+  color: var(--d04-cap, var(--accent));
+}
+.pkey:hover .pkey-legend {
+  color: var(--text-primary);
+}
+.pkey:active .pkey-cap {
+  transform: translateY(var(--d04-key-travel, 4px));
+  box-shadow: 0 0 0 var(--d04-key-edge, var(--border-strong));
+}
+
+/* Lit: this is where you are. The LED is on, the cap is pressed in. */
+.pkey[aria-current='page'] .pkey-cap {
+  background: var(--d04-cap, var(--accent));
+  color: var(--d04-housing, var(--bg-subtle));
+  border-color: var(--d04-cap, var(--accent));
+  transform: translateY(var(--d04-key-travel, 4px));
+  box-shadow: 0 0 0 var(--d04-key-edge, var(--border-strong)),
+    0 0 18px color-mix(in srgb, var(--d04-cap, var(--accent)) 60%, transparent);
+}
+.pkey[aria-current='page'] .pkey-legend {
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   3. THE KEY. The signature: a cap with a side wall and real travel.
+   -------------------------------------------------------------------------- */
+
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: var(--d04-key-face, var(--surface-2));
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--d04-key-edge, var(--border-strong));
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+.key svg {
+  width: 18px;
+  height: 18px;
+}
+.key:hover {
+  background: var(--d04-key-face-hi, var(--border));
+}
+.key:active {
+  transform: translateY(var(--d04-key-travel, 4px));
+  box-shadow: 0 0 0 var(--d04-key-edge, var(--border-strong));
+}
+.key[disabled] {
+  color: var(--text-muted);
+  border-color: var(--border);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--d04-key-edge, var(--border-strong));
+  cursor: not-allowed;
+}
+.key[disabled]:active {
+  transform: none;
+}
+
+/* The lit key. Used once per screen, for the thing to do next. */
+.key--go {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent-active);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--accent-active),
+    0 0 22px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+.key--go:hover {
+  background: var(--accent-hover);
+}
+.key--go:active {
+  transform: translateY(var(--d04-key-travel, 4px));
+  box-shadow: 0 0 0 var(--accent-active);
+}
+
+.key--go[disabled],
+.key--go[disabled]:hover {
+  background: var(--d04-key-face, var(--surface-2));
+  color: var(--text-muted);
+  border-color: var(--border);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--d04-key-edge, var(--border-strong));
+}
+
+.key--big {
+  font-size: var(--text-2xl);
+  padding: var(--space-6) var(--space-12);
+  min-height: 84px;
+  --d04-key-travel: 8px;
+}
+
+.key--wide {
+  width: 100%;
+}
+
+.key--slim {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  min-height: 34px;
+  padding: var(--space-2) var(--space-4);
+  --d04-key-travel: 3px;
+}
+
+.keyrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* --------------------------------------------------------------------------
+   4. BAY. A bezel plate bolted to the housing.
+   -------------------------------------------------------------------------- */
+
+.bay {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+}
+.bay--flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.bay-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--d04-screenprint, var(--text-muted));
+}
+.bay-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+.bay-body {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+.bay-body + .bay-body {
+  margin-top: var(--space-3);
+}
+.bay-body + .keyrow,
+.bay-body + .key,
+.bay > .lamps + .key {
+  margin-top: var(--space-4);
+}
+.bay > .lamps {
+  margin-top: var(--space-4);
+}
+.bay > .key--wide:last-child {
+  margin-top: auto;
+  min-height: 48px;
+}
+
+/* --------------------------------------------------------------------------
+   5. LAMPS, CHIPS, READOUT STRIPS
+   -------------------------------------------------------------------------- */
+
+.lamps {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.lamp {
+  width: 26px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--d04-lamp-off, var(--border));
+}
+.lamp[data-on='1'] {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.lamp[data-on='now'] {
+  background: var(--text-primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--text-primary) 55%, transparent);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  min-height: 34px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--d04-lamp-off, var(--border));
+}
+.chip[data-live='1']::before {
+  background: var(--success);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--success) 70%, transparent);
+}
+.chiprow {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.tally {
+  display: flex;
+  gap: var(--space-3);
+}
+.tally-cell {
+  flex: 1 1 0;
+  text-align: center;
+  padding: var(--space-3) var(--space-2);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 2px 6px var(--d04-housing-edge, var(--border-strong));
+}
+.tally-num {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.tally-key {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   6. HOME
+   -------------------------------------------------------------------------- */
+
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 336px;
+  gap: var(--space-6);
+  align-items: start;
+}
+.home-main {
+  display: grid;
+  gap: var(--space-6);
+}
+.home-rail {
+  display: grid;
+  gap: var(--space-6);
+}
+.home-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+/* Attract: the hero bay wears the board pattern, faint, behind the start key. */
+.attract {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  overflow: hidden;
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+  background-color: var(--surface);
+  background-image: repeating-conic-gradient(
+    color-mix(in srgb, var(--d04-board-dark, var(--surface-2)) 34%, transparent) 0% 25%,
+    transparent 0% 50%
+  );
+  background-size: 88px 88px;
+  background-position: center;
+}
+.attract-inner {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+.attract-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--d04-screenprint, var(--text-muted));
+}
+.attract-sub {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+/* The one thing that moves on its own, because on a cabinet it always does. */
+@keyframes d04-lamp {
+  0%,
+  100% {
+    box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--accent-active),
+      0 0 14px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  50% {
+    box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--accent-active),
+      0 0 40px color-mix(in srgb, var(--accent) 72%, transparent);
+  }
+}
+.key--pulse {
+  animation: d04-lamp 2.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .key--pulse {
+    animation: none;
+  }
+  * {
+    transition-duration: 1ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. GAMES: a row of cabinets you walk past.
+   -------------------------------------------------------------------------- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+.key--on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.family {
+  margin-bottom: var(--space-8);
+}
+.family-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.family-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.family-rule {
+  flex: 1 1 auto;
+  height: var(--border-width);
+  background: var(--border);
+}
+.family-n {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.rack {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  gap: var(--space-4);
+}
+
+/* Each game is a small cabinet: lit marquee strip, dark bezel, glyph. */
+.mini {
+  --d04-cap: var(--d04-cap-f, var(--text-primary));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 var(--d04-key-travel, 4px) 0 var(--d04-key-edge, var(--border-strong));
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+.mini[data-cap='a'] { --d04-cap: var(--d04-cap-a, var(--accent)); }
+.mini[data-cap='b'] { --d04-cap: var(--d04-cap-b, var(--info)); }
+.mini[data-cap='c'] { --d04-cap: var(--d04-cap-c, var(--danger)); }
+.mini[data-cap='d'] { --d04-cap: var(--d04-cap-d, var(--success)); }
+.mini[data-cap='e'] { --d04-cap: var(--d04-cap-e, var(--warning)); }
+.mini-marquee {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  text-align: center;
+  padding: var(--space-2) var(--space-3);
+  background: var(--d04-cap, var(--accent));
+  color: var(--d04-housing, var(--bg-subtle));
+  font-family: var(--font-display);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  line-height: var(--leading-tight);
+}
+.mini-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 82px;
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width) solid var(--border);
+  box-shadow: inset 0 3px 10px var(--d04-housing-edge, var(--border-strong));
+}
+.mini-glyph {
+  font-size: var(--text-3xl);
+  line-height: 1;
+  color: var(--text-secondary);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+.mini-foot {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+.mini-mode {
+  flex: 1 1 0;
+  text-align: center;
+  padding: var(--space-1) 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-normal);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+}
+.mini:hover {
+  transform: translateY(-3px);
+  border-color: var(--d04-cap, var(--accent));
+  box-shadow: 0 calc(var(--d04-key-travel, 4px) + 3px) 0 var(--d04-key-edge, var(--border-strong));
+}
+.mini:hover .mini-glyph {
+  color: var(--d04-cap, var(--accent));
+}
+.mini:active {
+  transform: translateY(var(--d04-key-travel, 4px));
+  box-shadow: 0 0 0 var(--d04-key-edge, var(--border-strong));
+}
+
+/* --------------------------------------------------------------------------
+   8. BOARD
+   -------------------------------------------------------------------------- */
+
+.board {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  aspect-ratio: 1;
+  width: 100%;
+  border: 3px solid var(--d04-board-edge, var(--bg-page));
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.sq {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Under a foreign style the d04 board tokens are absent, so the squares fall
+   back to a pair that is guaranteed to be far apart in any dark palette: the
+   secondary text colour against the raised surface. */
+.sq[data-shade='l'] {
+  background: var(--d04-board-light, var(--text-secondary));
+}
+.sq[data-shade='d'] {
+  background: var(--d04-board-dark, var(--surface-2));
+}
+.sq[data-mark='1']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--d04-board-mark, var(--accent)) 42%, transparent);
+}
+.sq[data-mark='dot']::after {
+  content: '';
+  position: absolute;
+  width: 26%;
+  height: 26%;
+  border-radius: var(--radius-full);
+  background: var(--d04-board-mark, var(--accent));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--d04-board-mark, var(--accent)) 70%, transparent);
+}
+/* Coordinates are real elements, not pseudo-elements, because the marked
+   squares already own ::after. Viktor names squares out loud, so the board
+   has to answer without the student counting files. */
+.co {
+  position: absolute;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 3.1cqi;
+  line-height: 1;
+  color: var(--d04-board-edge, var(--bg-page));
+  opacity: 0.6;
+}
+.co--file {
+  bottom: 5%;
+  right: 8%;
+}
+.co--rank {
+  top: 5%;
+  left: 8%;
+}
+.sq[data-shade='d'] .co {
+  color: var(--d04-board-light, var(--text-muted));
+}
+.board--mini .co {
+  display: none;
+}
+
+.pc {
+  position: relative;
+  z-index: 1;
+  font-size: 9.4cqi;
+  line-height: 1;
+  user-select: none;
+}
+/* A halo, not a stroke. A centred 1px stroke is half the width of a glyph stem
+   at mini-board size, so it ate the fill and flipped the piece colours: the
+   black king came out white. A shadow only adds outside the shape, so a piece
+   separates from its square at 27px and at 67px with the same rule. */
+.pc[data-side='w'] {
+  color: var(--d04-piece-white, var(--text-primary));
+  text-shadow: 0 0 2px var(--d04-piece-black, var(--bg-page)),
+    0 0 4px var(--d04-piece-black, var(--bg-page));
+}
+.pc[data-side='b'] {
+  color: var(--d04-piece-black, var(--bg-page));
+  text-shadow: 0 0 2px var(--d04-piece-white, var(--text-primary)),
+    0 0 4px var(--d04-piece-white, var(--text-primary));
+}
+.board--mini .pc {
+  font-size: 8.6cqi;
+}
+
+/* --------------------------------------------------------------------------
+   9. SCHOOL
+   -------------------------------------------------------------------------- */
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4) var(--space-6);
+  background: var(--d04-marquee, var(--surface));
+  border: var(--border-width) solid var(--border);
+  border-left: 6px solid var(--accent);
+  border-radius: var(--radius-md);
+}
+.banner-stage {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.banner-name {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+.banner-progress {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+.banner-progress span {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--space-6);
+  align-items: start;
+}
+.lesson-board {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: start;
+}
+.lesson-board .board {
+  max-width: 540px;
+}
+.lesson-side {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.coach {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.coach-face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  font-size: var(--text-2xl);
+  line-height: 1;
+  color: var(--text-primary);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 2px 8px var(--d04-housing-edge, var(--border-strong));
+}
+.coach-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+.coach-role {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.coach-line {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-base);
+  color: var(--text-primary);
+}
+.coach-line + .coach-line {
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.movelist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+.movelist span {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+}
+.movelist span[data-now='1'] {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+.footbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.footbar .key:last-child {
+  margin-left: auto;
+}
+
+/* --------------------------------------------------------------------------
+   10. PHONE. Same architecture, thumb sized. The panel does not change job.
+   -------------------------------------------------------------------------- */
+
+.cab--phone .marquee {
+  height: 56px;
+  min-width: 0;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+}
+.cab--phone .wordmark {
+  font-size: var(--text-base);
+}
+.cab--phone .marquee .livery-label {
+  display: none;
+}
+.cab--phone .liverybar .livery-label {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+.cab--phone .liverybar .key {
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+.cab--phone .livery-cap {
+  width: 18px;
+  height: 18px;
+}
+/* The phone sign has room the narrow desktop breakpoint does not, so the
+   player tag stays on it. Who you are signed in as is not a hover away. */
+.cab--phone .marquee .handle {
+  display: inline;
+  font-size: var(--text-xs);
+}
+.cab--phone .readout {
+  padding: var(--space-1) var(--space-2);
+}
+.cab--phone .readout-value {
+  font-size: var(--text-base);
+}
+.cab--phone .stage {
+  padding: var(--space-6) var(--space-4) 132px;
+}
+.cab--phone .home,
+.cab--phone .home-pair,
+.cab--phone .lesson {
+  grid-template-columns: minmax(0, 1fr);
+}
+.cab--phone .attract {
+  padding: var(--space-8) var(--space-4);
+}
+.cab--phone .key--big {
+  font-size: var(--text-xl);
+  padding: var(--space-6) var(--space-6);
+  width: 100%;
+}
+.cab--phone .panel {
+  padding: var(--space-3) var(--space-2)
+    calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+}
+.cab--phone .panel-row {
+  gap: var(--space-1);
+}
+.cab--phone .pkey {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.cab--phone .pkey-cap {
+  height: 46px;
+}
+.cab--phone .pkey-legend {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+.cab--phone .rack {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Desktop pages narrowing down. The panel is already the mobile answer. */
+@media (max-width: 900px) {
+  .home,
+  .lesson {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .marquee {
+    padding: 0 var(--space-4);
+    gap: var(--space-4);
+  }
+  .livery-label {
+    display: none;
+  }
+  /* The sign must never grow a second row. Identity already has its own key on
+     the panel, so the handle yields its space to the livery buttons. */
+  .marquee .handle {
+    display: none;
+  }
+  .marquee .keyrow {
+    flex-wrap: nowrap;
+  }
+  .marquee .livery .key {
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+  .stage {
+    padding: var(--space-6) var(--space-4) 132px;
+  }
+  .pkey {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .panel-row {
+    gap: var(--space-2);
+  }
+  .pkey-legend {
+    font-size: 9px;
+    letter-spacing: 0.06em;
+  }
+  .key--big {
+    font-size: var(--text-xl);
+    width: 100%;
+  }
+}
+@media (max-width: 620px) {
+  .home-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .banner {
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+  .banner-progress {
+    margin-left: 0;
+    align-items: flex-start;
+  }
+}
+
+/* Screen readers only, for the legends the eye reads as pictograms. */
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

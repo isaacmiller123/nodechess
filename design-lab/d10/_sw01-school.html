@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" data-style="01">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nodechess · school</title>
+<link rel="stylesheet" href="../d01/style.css">
+<link rel="stylesheet" href="feel.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.6 12 3.6l9 7V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9.4 21v-6.2h5.2V21"/></symbol>
+  <symbol id="i-games" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3"/></symbol>
+  <symbol id="i-school" viewBox="0 0 24 24"><path d="M12 7C10 5.5 7 5 4 5.5V19c3-.5 6 0 8 1.6 2-1.6 5-2.1 8-1.6V5.5C17 5 14 5.5 12 7Z"/><path d="M12 7v13.6"/></symbol>
+  <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M13.5 3.6A2.6 2.6 0 0 1 16.1 6.2V8h2.4A1.5 1.5 0 0 1 20 9.5v3.1h-1.6a2.5 2.5 0 1 0 0 5H20v1.9a1.5 1.5 0 0 1-1.5 1.5h-3.1V19a2.5 2.5 0 1 0-5 0v1.9h-3A1.5 1.5 0 0 1 5.9 19.4v-4h1.6a2.5 2.5 0 1 0 0-5H5.9v-4A1.5 1.5 0 0 1 7.4 5h3.5V6.2A2.6 2.6 0 0 1 13.5 3.6Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.6 20.6c1.5-3.4 4.2-5 7.4-5s5.9 1.6 7.4 5"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="12" rx="3"/><path d="M12 7.5V4.6M9.6 12.6v1.6M14.4 12.6v1.6M9.8 16.6h4.4M4 12H2.4M20 12h1.6"/><circle cx="12" cy="3.4" r="1"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4c3 3 3 14.2 0 17.2M12 3.4c-3 3-3 14.2 0 17.2M3.7 9.4h16.6M3.7 14.6h16.6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20.6 20.6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.2 19 12 8 18.8Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M13.4 6.4 19.6 12l-6.2 5.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.4 2.1"/></symbol>
+</defs></svg>
+<div class="book">
+  <div class="page">
+    <span class="rail-id">Section 03 &nbsp;/&nbsp; School</span>
+    <div class="sheet sheet--wide">
+
+      <div class="head">
+        <p class="eyebrow">School &nbsp;/&nbsp; chapter 7 of 40</p>
+        <h1 class="uline">The Italian Game<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C22 2 50 8 99 3"/><path pathLength="100" d="M3 8.4C30 5.6 60 9.6 97 6"/></svg></h1>
+        <div class="row">
+          <p class="lede">Lesson 3 of 5. The bishop already stares at f7. Find the second attacker.</p>
+          <ol class="ticks" aria-label="Lessons in this chapter">
+            <li data-state="done">1</li><li data-state="done">2</li>
+            <li data-state="now">3</li><li>4</li><li>5</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="lesson">
+        <div class="stack">
+          <div class="hang">
+            <p class="note">viktor drew this</p>
+            <div class="board-wrap">
+              <div class="board">
+            <div class="sq sq--l"><span class="co co--r">8</span><span class="pc pc--b" role="img" aria-label="Black rook on a8">♜</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black bishop on c8">♝</span></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black queen on d8">♛</span></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black king on e8">♚</span></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black bishop on f8">♝</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black rook on h8">♜</span></div>
+            <div class="sq sq--d"><span class="co co--r">7</span><span class="pc pc--b" role="img" aria-label="Black pawn on a7">♟</span></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black pawn on b7">♟</span></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black pawn on c7">♟</span></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black pawn on d7">♟</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black pawn on f7">♟</span></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black pawn on g7">♟</span></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black pawn on h7">♟</span></div>
+            <div class="sq sq--l"><span class="co co--r">6</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--b" role="img" aria-label="Black knight on c6">♞</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black knight on f6">♞</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--d"><span class="co co--r">5</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"><span class="pc pc--b" role="img" aria-label="Black pawn on e5">♟</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--l"><span class="co co--r">4</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--w" role="img" aria-label="White bishop on c4">♝</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--w" role="img" aria-label="White pawn on e4">♟</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--d"><span class="co co--r">3</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"><span class="pc pc--w" role="img" aria-label="White knight on f3">♞</span></div>
+            <div class="sq sq--d"></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--l"><span class="co co--r">2</span><span class="pc pc--w" role="img" aria-label="White pawn on a2">♟</span></div>
+            <div class="sq sq--d"><span class="pc pc--w" role="img" aria-label="White pawn on b2">♟</span></div>
+            <div class="sq sq--l"><span class="pc pc--w" role="img" aria-label="White pawn on c2">♟</span></div>
+            <div class="sq sq--d"><span class="pc pc--w" role="img" aria-label="White pawn on d2">♟</span></div>
+            <div class="sq sq--l"></div>
+            <div class="sq sq--d"><span class="pc pc--w" role="img" aria-label="White pawn on f2">♟</span></div>
+            <div class="sq sq--l"><span class="pc pc--w" role="img" aria-label="White pawn on g2">♟</span></div>
+            <div class="sq sq--d"><span class="pc pc--w" role="img" aria-label="White pawn on h2">♟</span></div>
+            <div class="sq sq--d"><span class="co co--r">1</span><span class="co co--f">a</span><span class="pc pc--w" role="img" aria-label="White rook on a1">♜</span></div>
+            <div class="sq sq--l"><span class="co co--f">b</span><span class="pc pc--w" role="img" aria-label="White knight on b1">♞</span></div>
+            <div class="sq sq--d"><span class="co co--f">c</span><span class="pc pc--w" role="img" aria-label="White bishop on c1">♝</span></div>
+            <div class="sq sq--l"><span class="co co--f">d</span><span class="pc pc--w" role="img" aria-label="White queen on d1">♛</span></div>
+            <div class="sq sq--d"><span class="co co--f">e</span><span class="pc pc--w" role="img" aria-label="White king on e1">♚</span></div>
+            <div class="sq sq--l"><span class="co co--f">f</span></div>
+            <div class="sq sq--d"><span class="co co--f">g</span></div>
+            <div class="sq sq--l"><span class="co co--f">h</span><span class="pc pc--w" role="img" aria-label="White rook on h1">♜</span></div>
+              </div>
+              <svg class="board-ink" viewBox="0 0 8 8" aria-hidden="true"><path d="M2.62 4.4C3.55 3.7 4.4 2.85 5.22 2.02"/><path d="M5.22 2.02l-.39.14M5.22 2.02l-.18.38"/><path class="ring" pathLength="100" d="M5.1 1.16c.16-.2.7-.2.86.04.12.2.02.64-.3.72-.32.08-.62-.1-.62-.42 0-.16.1-.3.26-.4"/></svg>
+            </div>
+          </div>
+          <p class="task">Your move. Put a second attacker on f7.<svg class="ink" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M14 30C14 12 60 5 100 5c48 0 90 8 90 26 0 18-44 25-92 25C52 56 12 49 12 32c0-10 10-18 28-23"/></svg></p>
+        </div>
+
+        <div class="stack">
+          <div class="viktor">
+            <svg class="brace" viewBox="0 0 14 120" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M11 2C4 6 6.4 30 5 58c1.4 28-2 54 6 60"/></svg>
+            <p class="viktor__who"><b>Viktor</b><span>your coach</span></p>
+            <p class="viktor__said">Good. The bishop stands on c4 and stares at f7. That square is defended by the king and by nothing else. One defender is not a wall.</p>
+          </div>
+
+          <div class="prose">
+            <p>f7 is the only square in Black&rsquo;s camp that his king has to guard alone. The Italian Game is built to point at it: knight to f3, bishop to c4, and the king still the only guard.</p>
+            <p>Two attackers against one defender is not a trick. It is arithmetic, and it is why he just moved a knight in front of that pawn instead of defending it.</p>
+          </div>
+
+          <div>
+            <p class="panel__t">This lesson so far</p>
+            <div class="moves">
+              <span class="n">1.</span><span class="m">e4</span><span class="m">e5</span>
+              <span class="n">2.</span><span class="m">Nf3</span><span class="m">Nc6</span>
+              <span class="n">3.</span><span class="m">Bc4 <svg class="tickmark" viewBox="0 0 22 20" aria-label="Viktor approved this move"><path d="M2 11c2 1 4 4 6 6C12 11 16 6 20 2"/></svg></span><span class="m">Nf6</span>
+            </div>
+            <p class="tried"><span class="struck">3. Ng5<svg class="ink ink--fine" viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C26 1.6 54 6.6 99 2.6"/></svg></span> too early, he said. One attacker, one defender.</p>
+          </div>
+
+          <div class="nextrow">
+            <a class="btn" href="#hint">Ask Viktor<svg class="ic"><use href="#i-arrow"/></svg></a>
+            <span class="sub">Lesson 4 opens when you play this move</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+<nav class="tabs" aria-label="Sections">
+  <a class="tab" href="home.html"><svg class="ic"><use href="#i-home"/></svg>Home</a>
+  <a class="tab" href="games.html"><svg class="ic"><use href="#i-games"/></svg>Games</a>
+  <a class="tab" href="school.html" aria-current="page"><svg class="ic"><use href="#i-school"/></svg>School</a>
+  <a class="tab" href="#"><svg class="ic"><use href="#i-puzzle"/></svg>Puzzles</a>
+  <a class="tab" href="#"><svg class="ic"><use href="#i-user"/></svg>Account</a>
+</nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en" data-style="01" data-feel="01">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Games</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark"></span>nodechess</div>
+        <nav class="nav" aria-label="Main">
+          <a class="nav-link" href="home.html">Home</a>
+          <a class="nav-link" href="#">Play</a>
+          <a class="nav-link" href="games.html" aria-current="page">Games</a>
+          <a class="nav-link" href="#">Puzzles</a>
+          <a class="nav-link" href="school.html">School</a>
+          <a class="nav-link" href="#">Analysis</a>
+        </nav>
+        <a class="who" href="#"><span class="who-dot"></span>mercer#K4T9P</a>
+      </header>
+
+      <div class="readout">
+        <div class="rd-field">
+          <span class="lbl">Catalogue</span>
+          <span class="rd-value">22 games</span>
+        </div>
+        <div class="rd-field">
+          <span class="lbl">Showing</span>
+          <span class="rd-value is-live">22</span>
+        </div>
+        <div class="rd-field">
+          <span class="lbl">Families</span>
+          <span class="rd-value is-quiet">5</span>
+        </div>
+        <div class="rd-field is-next">
+          <span class="lbl">Offline</span>
+          <span class="rd-next-text">All 22 play with no connection</span>
+        </div>
+        <div class="trace is-100" aria-hidden="true"></div>
+      </div>
+
+      <main class="main">
+        <div class="filterbar">
+          <input
+            class="filter-input"
+            type="search"
+            autofocus
+            aria-label="Filter games by name"
+            placeholder="Filter by name"
+          />
+          <div class="segmented" role="group" aria-label="Family">
+            <button class="seg" type="button" aria-pressed="true">All</button>
+            <button class="seg" type="button" aria-pressed="false">Chess</button>
+            <button class="seg" type="button" aria-pressed="false">Regional</button>
+            <button class="seg" type="button" aria-pressed="false">Draughts</button>
+            <button class="seg" type="button" aria-pressed="false">Territory</button>
+            <button class="seg" type="button" aria-pressed="false">Classics</button>
+          </div>
+        </div>
+
+        <table class="gtable">
+          <colgroup>
+            <col class="col-name" />
+            <col class="col-note" />
+            <col class="col-board" />
+            <col class="col-pieces" />
+            <col class="col-modes" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="lbl" scope="col">Game</th>
+              <th class="lbl col-note" scope="col">What changes</th>
+              <th class="lbl" scope="col">Board</th>
+              <th class="lbl" scope="col">Pieces</th>
+              <th class="lbl" scope="col">Play</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="ghead">
+              <th colspan="5" scope="colgroup">
+                <span class="ghead-inner">
+                  <span class="lbl">Chess and variants</span>
+                  <span class="ghead-count">9</span>
+                </span>
+              </th>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Chess</span></td>
+              <td class="col-note-cell"><span class="g-note">The standard game.</span></td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Chess960</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Back rank shuffled. Same rules, no book.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Crazyhouse</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Captured pieces change sides and drop back in.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Atomic</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Every capture takes the neighbours with it.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Antichess</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Losing everything wins. Captures are forced.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">King of the Hill</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Walk your king to the middle four squares.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Three-Check</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Check three times and the game is yours.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Horde</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Black has an army. White has a wall of pawns.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">asym</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Racing Kings</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">First king to the eighth rank. No checks allowed.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            <tr class="ghead">
+              <th colspan="5" scope="colgroup">
+                <span class="ghead-inner">
+                  <span class="lbl">Regional chess</span>
+                  <span class="ghead-count">4</span>
+                </span>
+              </th>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Xiangqi</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Chinese chess. A river, a palace, and cannons.</span>
+              </td>
+              <td class="num-cell">9x10</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Shogi</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Japanese chess. Nothing you capture is gone.</span>
+              </td>
+              <td class="num-cell">9x9</td>
+              <td class="num-cell">20</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Janggi</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Korean chess. Xiangqi with a bolder king.</span>
+              </td>
+              <td class="num-cell">9x10</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Makruk</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Thai chess. Short range pieces, long endgames.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">16</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            <tr class="ghead">
+              <th colspan="5" scope="colgroup">
+                <span class="ghead-inner">
+                  <span class="lbl">Draughts</span>
+                  <span class="ghead-count">2</span>
+                </span>
+              </th>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Checkers</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Forced captures, crowned kings, sharp traps.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">12</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">International</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Bigger board, flying kings, longer captures.</span>
+              </td>
+              <td class="num-cell">10x10</td>
+              <td class="num-cell">20</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            <tr class="ghead">
+              <th colspan="5" scope="colgroup">
+                <span class="ghead-inner">
+                  <span class="lbl">Territory</span>
+                  <span class="ghead-count">3</span>
+                </span>
+              </th>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Go</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Surround space. The deepest game in here.</span>
+              </td>
+              <td class="num-cell">19x19</td>
+              <td class="num-cell">0</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Gomoku</span></td>
+              <td class="col-note-cell"><span class="g-note">Five in a row, nothing else.</span></td>
+              <td class="num-cell">15x15</td>
+              <td class="num-cell">0</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Hex</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Connect your two sides. Draws cannot happen.</span>
+              </td>
+              <td class="num-cell">11x11</td>
+              <td class="num-cell">0</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+
+          <tbody>
+            <tr class="ghead">
+              <th colspan="5" scope="colgroup">
+                <span class="ghead-inner">
+                  <span class="lbl">Classics</span>
+                  <span class="ghead-count">4</span>
+                </span>
+              </th>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Othello</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Flip the line. Hold the corners.</span>
+              </td>
+              <td class="num-cell">8x8</td>
+              <td class="num-cell">2</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Connect Four</span></td>
+              <td class="col-note-cell"><span class="g-note">Gravity does half the work.</span></td>
+              <td class="num-cell">7x6</td>
+              <td class="num-cell">21</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Nine Men's Morris</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Place, then slide, then break their mills.</span>
+              </td>
+              <td class="num-cell">24 pts</td>
+              <td class="num-cell">9</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+            <tr class="grow">
+              <td><span class="g-name">Tic-Tac-Toe</span></td>
+              <td class="col-note-cell">
+                <span class="g-note">Solved, and still a fine ten seconds.</span>
+              </td>
+              <td class="num-cell">3x3</td>
+              <td class="num-cell">0</td>
+              <td>
+                <span class="modes">
+                  <button class="key" type="button">Local</button>
+                  <button class="key" type="button">Bot</button>
+                  <button class="key" type="button">Online</button>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+    </div>
+  </body>
+</html>

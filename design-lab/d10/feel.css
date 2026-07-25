@@ -1,0 +1,1143 @@
+/* ============================================================
+   d10 FEEL: Binder tabs and margin
+   Layout and interaction only. Every colour, face, radius and
+   duration arrives through var(). d10-prefixed variables always
+   carry a fallback to a contract token.
+
+   Architecture: the app is a ring binder. Five section dividers
+   stand on the RIGHT edge, permanently labelled, never hidden
+   behind a hover or a menu. The current divider is pulled out and
+   its paper is continuous with the page. The page keeps a printed
+   left margin: a red vertical rule, with marginalia hanging in the
+   gutter beside the thing they point at.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sprite {
+  display: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.ic {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+.ic--lg {
+  width: 20px;
+  height: 20px;
+}
+
+:where(a):focus-visible,
+:where(button):focus-visible,
+:where(input):focus-visible,
+:where(summary):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ============================================================
+   1. THE BINDER
+   ============================================================ */
+
+.book {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 54px;
+  height: 100dvh;
+  position: relative;
+}
+
+.page {
+  position: relative;
+  overflow-y: auto;
+  background-color: var(--surface);
+  /* Faint horizontal ruling, plus the printed red margin rule at
+     156px. background-attachment:local so the ruling scrolls with
+     what is written on it. */
+  background-image: repeating-linear-gradient(
+      to bottom,
+      var(--d10-rule, color-mix(in srgb, var(--border) 55%, transparent)) 0 1px,
+      transparent 1px var(--d10-baseline, 28px)
+    ),
+    linear-gradient(
+      to right,
+      transparent 0 155px,
+      var(--d10-margin-line, color-mix(in srgb, var(--danger) 62%, var(--border-strong))) 155px 156px,
+      transparent 156px
+    );
+  background-attachment: local, local;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  padding: var(--space-8) var(--space-8) var(--space-12) 172px;
+}
+
+/* Capped so the sheet never outruns the paper between the margin rule and
+   the divider tabs. Wider than this and the page scrolls sideways. */
+.sheet {
+  max-width: 1000px;
+}
+.sheet--wide {
+  max-width: 1180px;
+}
+
+/* Fixed margin furniture: the vertical section id, left of the rule. Fixed,
+   not absolute: absolute would centre it on the whole scrolling sheet and
+   send it off screen on a long page like the games index. */
+.rail-id {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ---- Divider tabs ---------------------------------------------------- */
+
+.tabs {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2);
+  padding-top: var(--space-8);
+}
+
+.tab {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  height: 132px;
+  margin-right: 9px;
+  padding: var(--space-3) var(--space-2);
+  border: var(--border-width) solid var(--border);
+  border-left: none;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    margin-right var(--motion-base) var(--ease-out),
+    background var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+.tab .ic {
+  rotate: 180deg;
+  width: 14px;
+  height: 14px;
+}
+.tab:hover {
+  margin-right: 4px;
+  color: var(--text-primary);
+}
+/* The pulled divider. It protrudes furthest and its paper is the
+   page's paper, so tab and page read as one sheet. */
+.tab[aria-current='page'] {
+  margin-right: 0;
+  background: var(--surface);
+  border-color: transparent;
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   2. MARGINALIA AND INK
+   The signature. Hand-drawn strokes that draw themselves once,
+   hanging in the printed margin and pointing into the page.
+   ============================================================ */
+
+.hang {
+  position: relative;
+}
+
+.note {
+  position: absolute;
+  right: calc(100% + var(--space-4));
+  top: 2px;
+  width: 112px;
+  text-align: right;
+  rotate: var(--d10-tilt, 0deg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  color: var(--d10-ink, var(--danger));
+  pointer-events: none;
+}
+.note--low {
+  top: 34px;
+}
+.note--alt {
+  rotate: var(--d10-tilt-2, 0deg);
+  color: var(--d10-ink-2, var(--info));
+}
+.note .arrow {
+  display: block;
+  width: 62px;
+  height: 22px;
+  margin: 3px 0 0 auto;
+  margin-right: -6px;
+}
+
+/* Both dimensions are always stated. An absolutely positioned SVG with
+   auto width or height sizes itself from the viewBox ratio and quietly
+   ignores the opposite inset, which stretches the ink out of shape. */
+.ink {
+  position: absolute;
+  inset: -9px -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 18px);
+  pointer-events: none;
+  overflow: visible;
+}
+.ink path {
+  fill: none;
+  stroke: var(--d10-ink, var(--danger));
+  stroke-width: var(--d10-ink-width, 2px);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.ink--blue path {
+  stroke: var(--d10-ink-2, var(--info));
+}
+.ink--fine path {
+  stroke-width: var(--d10-ink-width-fine, 1.5px);
+}
+
+/* Ink arrives as a wipe across the stroke rather than a dash offset.
+   Dash offsets fight non-scaling-stroke: the dash length is measured in
+   screen pixels while the path length is measured in the viewBox, so any
+   ink stretched over a wide box comes out as a dotted line. A wipe is
+   independent of both, and reads the same way: left to right, like a pen. */
+.ink,
+.board-ink,
+.viktor .brace {
+  clip-path: inset(-40% 100% -40% -40%);
+  animation: d10-wipe var(--motion-slow) var(--ease-out) forwards;
+}
+.board-ink {
+  animation-duration: 620ms;
+  animation-delay: 220ms;
+}
+
+@keyframes d10-wipe {
+  to {
+    clip-path: inset(-40% -40% -40% -40%);
+  }
+}
+
+/* A hand-drawn underline that sits under a heading. */
+.uline {
+  position: relative;
+  display: inline-block;
+}
+.uline .ink {
+  inset: auto -6px -10px -4px;
+  width: calc(100% + 10px);
+  height: 10px;
+}
+
+/* Struck-out text: the ink does the striking, not text-decoration. */
+.struck {
+  position: relative;
+  display: inline-block;
+}
+.struck .ink {
+  inset: 42% -3px auto -3px;
+  width: calc(100% + 6px);
+  height: 8px;
+}
+
+.tickmark {
+  width: 16px;
+  height: 15px;
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 2;
+  stroke-linecap: round;
+  flex: none;
+}
+
+/* ============================================================
+   3. TYPE AND STRUCTURE
+   ============================================================ */
+
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+h1,
+.h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+h2,
+.h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+h3,
+.h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+}
+
+.lede {
+  margin: var(--space-3) 0 0;
+  max-width: 56ch;
+  color: var(--text-secondary);
+}
+.prose {
+  margin: var(--space-3) 0 0;
+  max-width: 62ch;
+}
+.prose p {
+  margin: 0 0 var(--space-3);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.head {
+  margin-bottom: var(--space-8);
+}
+
+/* ---- The front label, where the account lives ------------------------- */
+
+.label-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-8);
+  align-items: flex-end;
+  padding: var(--space-3) 0 var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-8);
+}
+.field {
+  display: grid;
+  gap: 3px;
+}
+.field__k {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.field__v {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.field__v small {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: var(--tracking-normal);
+}
+.field--push {
+  margin-left: auto;
+}
+
+/* ============================================================
+   4. PANELS, CONTROLS
+   ============================================================ */
+
+.panel {
+  padding: var(--space-6);
+  background: var(--surface-2);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.panel--slot {
+  background: none;
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
+.panel__t {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+.stack {
+  display: grid;
+  align-content: start;
+  gap: var(--space-6);
+}
+.stack--tight {
+  gap: var(--space-3);
+}
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.fieldset {
+  display: grid;
+  gap: var(--space-2);
+  margin: var(--space-6) 0 var(--space-4);
+  padding: 0;
+  border: 0;
+}
+.fieldset + .fieldset {
+  margin-top: 0;
+}
+.fieldset > legend {
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.chip {
+  padding: 7px var(--space-3);
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
+}
+.chip:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.chip[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.btn {
+  position: relative; /* so the ink ring can wrap the primary action */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 42px;
+  padding: 0 var(--space-6);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    translate var(--motion-fast) var(--ease-out);
+}
+.btn:hover {
+  border-color: var(--text-muted);
+  background: var(--surface-2);
+}
+.btn--primary {
+  min-height: 48px;
+  padding: 0 var(--space-8);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: var(--weight-bold);
+  font-size: var(--text-base);
+}
+.btn--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  translate: 0 -1px;
+}
+.btn--primary:active {
+  background: var(--accent-active);
+  translate: 0 0;
+}
+.btn--wide {
+  width: 100%;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 340px;
+  padding: 0 var(--space-3);
+  min-height: 40px;
+  background: var(--surface-2);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) 0;
+  background: none;
+  border: 0;
+  outline-offset: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+.search input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   5. THE INDEX (games library)
+   A table of contents, because that is what a list of 22 games
+   in a notebook is. Dotted leaders run from the name to the three
+   ways you can play it.
+   ============================================================ */
+
+/* Said once, at the top, so the three marks on 22 rows need no hover. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-4) 0 var(--space-8);
+  padding-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.idx-sec {
+  margin-bottom: var(--space-8);
+}
+.idx-sec__h {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border-strong);
+  margin-bottom: var(--space-1);
+}
+.idx-sec__n {
+  width: 2.6em;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-wide);
+  color: var(--d10-ink, var(--danger));
+}
+.idx-sec__c {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.idx-row {
+  display: grid;
+  grid-template-columns: minmax(120px, max-content) minmax(0, auto) minmax(24px, 1fr) max-content;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 42px;
+}
+.idx-name {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.idx-name .ink {
+  inset: auto -4px -7px -3px;
+  width: calc(100% + 7px);
+  height: 8px;
+  animation: none;
+  clip-path: none;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-out);
+}
+.idx-row:hover .idx-name .ink,
+.idx-name:focus-visible .ink {
+  opacity: 1;
+}
+.idx-note {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.idx-lead {
+  height: 0;
+  border-bottom: var(--border-width) dotted var(--text-muted);
+}
+.idx-modes {
+  display: flex;
+  gap: 2px;
+}
+.mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-full);
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+.mode__t {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width var(--motion-base) var(--ease-out);
+}
+.idx-row:hover .mode__t,
+.mode:focus-visible .mode__t {
+  max-width: 60px;
+}
+.mode:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   6. BOARD
+   ============================================================ */
+
+.board-wrap {
+  position: relative;
+  width: 100%;
+}
+.board-wrap--sm {
+  max-width: 212px;
+}
+
+/* Diagram left, what you are being asked right. */
+.puzzle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.puzzle > .board-wrap--sm {
+  flex: none;
+  width: 212px;
+}
+.puzzle__ask {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+.puzzle__ask .lede {
+  margin-top: 0;
+}
+.lesson .board-wrap {
+  max-width: 540px;
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.sq {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+/* Fallbacks are mixed, not borrowed. Under another designer's style.css the
+   plain surface tokens sit too close together and the board turns to mush,
+   so the light square is pulled towards that style's text colour instead. */
+.sq--l {
+  background: var(--d10-sq-light, color-mix(in srgb, var(--text-primary) 62%, var(--surface-2)));
+}
+.sq--d {
+  background: var(--d10-sq-dark, color-mix(in srgb, var(--text-secondary) 26%, var(--bg-subtle)));
+}
+.pc {
+  font-family: var(--d10-font-figurine, var(--font-sans));
+  font-size: 76cqw;
+  line-height: 1;
+  user-select: none;
+}
+.sq {
+  container-type: size;
+}
+.pc--w {
+  color: var(--d10-piece-light, var(--text-primary));
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+.pc--b {
+  color: var(--d10-piece-dark, var(--text-inverse));
+}
+.co {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--d10-piece-dark, var(--text-inverse));
+  opacity: 0.5;
+}
+.co--f {
+  bottom: 1px;
+  right: 3px;
+}
+.co--r {
+  top: 1px;
+  left: 3px;
+}
+
+/* Coach ink, drawn straight onto the board. This is the hero of the
+   school screen: the arrow and the circled square are exactly what a
+   master scrawls on a diagram. */
+.board-ink {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.board-ink path {
+  fill: none;
+  stroke: var(--d10-ink, var(--danger));
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.board-ink .ring {
+  stroke: var(--d10-ink-2, var(--info));
+  stroke-width: 2.8;
+}
+
+/* ============================================================
+   7. SCHOOL
+   ============================================================ */
+
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(300px, 400px);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.ticks {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ticks li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 30px;
+  border-bottom: 2px solid var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.ticks li[data-state='done'] {
+  border-bottom-color: var(--success);
+  color: var(--text-secondary);
+}
+.ticks li[data-state='now'] {
+  border-bottom-color: var(--accent);
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+}
+
+.viktor {
+  position: relative;
+  padding-left: var(--space-6);
+}
+.viktor .brace {
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 13px;
+  height: calc(100% - 4px);
+}
+.viktor .brace path {
+  fill: none;
+  stroke: var(--d10-ink, var(--danger));
+  stroke-width: var(--d10-ink-width, 2px);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.viktor__who {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.viktor__who b {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+.viktor__who span {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.viktor__said {
+  margin: 0;
+  font-size: var(--text-lg);
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.moves {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+.moves > * {
+  padding: 5px 0;
+  border-bottom: var(--border-width) solid var(--d10-rule, var(--border));
+}
+.moves .n {
+  color: var(--text-muted);
+}
+.moves .m {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-primary);
+}
+.moves .m--bad {
+  color: var(--text-muted);
+}
+
+.task {
+  position: relative;
+  display: inline-block;
+  justify-self: start;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+/* The line you got wrong, still on the page with a pencil through it. */
+.tried {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.tried .struck {
+  color: var(--text-secondary);
+}
+
+.nextrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  padding-top: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+}
+.nextrow .sub {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   8. NARROW DESKTOP
+   ============================================================ */
+
+@media (max-width: 1080px) {
+  .lesson,
+  .cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .idx-note {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    padding-left: var(--space-8);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--d10-rule, color-mix(in srgb, var(--border) 55%, transparent)) 0 1px,
+      transparent 1px var(--d10-baseline, 28px)
+    );
+  }
+  .rail-id {
+    display: none;
+  }
+  .note {
+    position: static;
+    width: auto;
+    text-align: left;
+    margin-bottom: var(--space-2);
+  }
+  .note .arrow {
+    display: none;
+  }
+}
+
+/* ============================================================
+   9. PHONE
+   The binder is still a binder: the five dividers move to the
+   bottom edge and stand up as index-card tabs, so the current
+   section's paper runs down into the tab under your thumb.
+   ============================================================ */
+
+.phone {
+  min-height: 100dvh;
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 92px;
+  background-color: var(--surface);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--d10-rule, color-mix(in srgb, var(--border) 55%, transparent)) 0 1px,
+    transparent 1px var(--d10-baseline, 28px)
+  );
+  background-attachment: local;
+  position: relative;
+}
+/* The printed margin rule survives at phone width, just narrower. */
+.phone__inner {
+  padding: var(--space-6) var(--space-4) var(--space-8) var(--space-6);
+  border-left: 2px solid var(--d10-margin-line, color-mix(in srgb, var(--danger) 62%, var(--border-strong)));
+  margin-left: 14px;
+}
+
+.ptabs {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 0 var(--space-2);
+  background: var(--bg-page);
+}
+.ptab {
+  display: grid;
+  place-items: center;
+  gap: 3px;
+  padding: var(--space-2) 2px calc(var(--space-3) + env(safe-area-inset-bottom));
+  min-height: 60px;
+  margin-top: 8px;
+  border: var(--border-width) solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.ptab[aria-current='page'] {
+  margin-top: 0;
+  min-height: 68px;
+  background: var(--surface);
+  border-color: transparent;
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+}
+.ptab .ic {
+  width: 19px;
+  height: 19px;
+}
+
+.p-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-6);
+}
+
+.p-note {
+  rotate: var(--d10-tilt, 0deg);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--d10-ink, var(--danger));
+  margin: 0 0 var(--space-2);
+}
+
+/* Phone touch targets. Nothing shrinks to fit a phone here, it grows. */
+.phone .chip {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-base);
+}
+.phone .btn {
+  min-height: 50px;
+}
+.phone .btn--primary {
+  min-height: 56px;
+  font-size: var(--text-lg);
+}
+.phone .ticks li {
+  width: 44px;
+  height: 40px;
+}
+.phone h1,
+.phone .h1 {
+  font-size: var(--text-2xl);
+}
+.phone .stack {
+  margin-top: var(--space-8);
+}
+.phone .fieldset {
+  margin-bottom: var(--space-6);
+}
+.phone .board-wrap {
+  margin-bottom: var(--space-3);
+}
+
+@media (max-width: 400px) {
+  .phone__inner {
+    padding-right: var(--space-3);
+  }
+}
+
+/* ============================================================
+   10. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+  }
+  .ink,
+  .board-ink,
+  .viktor .brace {
+    clip-path: none;
+  }
+}

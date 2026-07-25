@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en" data-style="10">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nodechess · games</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="feel.css">
+</head>
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.6 12 3.6l9 7V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Z"/><path d="M9.4 21v-6.2h5.2V21"/></symbol>
+  <symbol id="i-games" viewBox="0 0 24 24"><rect x="3" y="8" width="13" height="13" rx="2"/><path d="M8 8V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-3"/></symbol>
+  <symbol id="i-school" viewBox="0 0 24 24"><path d="M12 7C10 5.5 7 5 4 5.5V19c3-.5 6 0 8 1.6 2-1.6 5-2.1 8-1.6V5.5C17 5 14 5.5 12 7Z"/><path d="M12 7v13.6"/></symbol>
+  <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M13.5 3.6A2.6 2.6 0 0 1 16.1 6.2V8h2.4A1.5 1.5 0 0 1 20 9.5v3.1h-1.6a2.5 2.5 0 1 0 0 5H20v1.9a1.5 1.5 0 0 1-1.5 1.5h-3.1V19a2.5 2.5 0 1 0-5 0v1.9h-3A1.5 1.5 0 0 1 5.9 19.4v-4h1.6a2.5 2.5 0 1 0 0-5H5.9v-4A1.5 1.5 0 0 1 7.4 5h3.5V6.2A2.6 2.6 0 0 1 13.5 3.6Z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.6 20.6c1.5-3.4 4.2-5 7.4-5s5.9 1.6 7.4 5"/></symbol>
+  <symbol id="i-board" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="12" rx="3"/><path d="M12 7.5V4.6M9.6 12.6v1.6M14.4 12.6v1.6M9.8 16.6h4.4M4 12H2.4M20 12h1.6"/><circle cx="12" cy="3.4" r="1"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 3.4c3 3 3 14.2 0 17.2M12 3.4c-3 3-3 14.2 0 17.2M3.7 9.4h16.6M3.7 14.6h16.6"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 20.6 20.6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.2 19 12 8 18.8Z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M13.4 6.4 19.6 12l-6.2 5.6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.4V12l3.4 2.1"/></symbol>
+</defs></svg>
+<div class="book">
+  <div class="page">
+    <span class="rail-id">Section 02 &nbsp;/&nbsp; Games</span>
+    <div class="sheet sheet--wide">
+
+      <div class="hang head">
+        <h1 class="uline">Pick a game<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C22 2 50 8 99 3"/><path pathLength="100" d="M3 8.4C30 5.6 60 9.6 97 6"/></svg></h1>
+        <p class="lede">22 games, grouped by family. Chess is the first line.</p>
+        <div class="hang">
+          <p class="note">or just type it<svg class="arrow" viewBox="0 0 72 26" aria-hidden="true"><path pathLength="100" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" vector-effect="non-scaling-stroke" d="M2 20C18 22 36 16 64 9"/><path pathLength="100" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" vector-effect="non-scaling-stroke" d="M64 9 53 7.4M64 9l-6.4 8"/></svg></p>
+          <p><label class="search"><svg class="ic"><use href="#i-search"/></svg>
+            <input id="q" type="search" placeholder="Type a name" autocomplete="off" aria-label="Find a game"></label></p>
+        </div>
+        <p class="legend">
+          <span><svg class="ic"><use href="#i-board"/></svg>On this device</span>
+          <span><svg class="ic"><use href="#i-bot"/></svg>Against a bot</span>
+          <span><svg class="ic"><use href="#i-globe"/></svg>Against a person</span>
+        </p>
+      </div>
+
+      <section class="idx-sec">
+        <h2 class="idx-sec__h"><span class="idx-sec__n">I</span>Chess and variants<span class="idx-sec__c">9</span></h2>
+        <div class="idx-row" data-name="chess">
+          <a class="idx-name" href="#chess">Chess<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">the game everything else argues with</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Chess on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Chess against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Chess online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="chess960">
+          <a class="idx-name" href="#chess960">Chess960<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">back rank shuffled, 960 ways</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Chess960 on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Chess960 against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Chess960 online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="crazyhouse">
+          <a class="idx-name" href="#crazyhouse">Crazyhouse<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">captures come back in your hand</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Crazyhouse on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Crazyhouse against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Crazyhouse online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="atomic">
+          <a class="idx-name" href="#atomic">Atomic<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">every capture takes the neighbours</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Atomic on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Atomic against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Atomic online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="antichess">
+          <a class="idx-name" href="#antichess">Antichess<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">lose all your pieces to win</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Antichess on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Antichess against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Antichess online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="king of the hill">
+          <a class="idx-name" href="#king-of-the-hill">King of the Hill<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">walk your king to the centre</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play King of the Hill on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play King of the Hill against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play King of the Hill online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="three-check">
+          <a class="idx-name" href="#three-check">Three-Check<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">check three times and it is over</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Three-Check on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Three-Check against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Three-Check online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="horde">
+          <a class="idx-name" href="#horde">Horde<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">one army against thirty-six pawns</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Horde on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Horde against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Horde online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="racing kings">
+          <a class="idx-name" href="#racing-kings">Racing Kings<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">first king to the eighth rank</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Racing Kings on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Racing Kings against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Racing Kings online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+      </section>
+      <section class="idx-sec">
+        <h2 class="idx-sec__h"><span class="idx-sec__n">II</span>Regional chess<span class="idx-sec__c">4</span></h2>
+        <div class="idx-row" data-name="xiangqi">
+          <a class="idx-name" href="#xiangqi">Xiangqi<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">river, palace, and cannons that jump</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Xiangqi on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Xiangqi against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Xiangqi online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="shogi">
+          <a class="idx-name" href="#shogi">Shogi<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">captured pieces change sides</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Shogi on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Shogi against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Shogi online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="janggi">
+          <a class="idx-name" href="#janggi">Janggi<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">the Korean board, wider palace</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Janggi on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Janggi against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Janggi online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="makruk">
+          <a class="idx-name" href="#makruk">Makruk<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">Thai chess, everything fights close</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Makruk on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Makruk against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Makruk online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+      </section>
+      <section class="idx-sec">
+        <h2 class="idx-sec__h"><span class="idx-sec__n">III</span>Draughts<span class="idx-sec__c">2</span></h2>
+        <div class="idx-row" data-name="checkers">
+          <a class="idx-name" href="#checkers">Checkers<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">eight by eight, captures are forced</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Checkers on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Checkers against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Checkers online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="international draughts">
+          <a class="idx-name" href="#international-draughts">International Draughts<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">ten by ten, kings fly</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play International Draughts on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play International Draughts against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play International Draughts online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+      </section>
+      <section class="idx-sec">
+        <h2 class="idx-sec__h"><span class="idx-sec__n">IV</span>Territory<span class="idx-sec__c">3</span></h2>
+        <div class="idx-row" data-name="go">
+          <a class="idx-name" href="#go">Go<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">nineteen lines, surround to hold</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Go on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Go against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Go online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="gomoku">
+          <a class="idx-name" href="#gomoku">Gomoku<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">five in a row on the lines</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Gomoku on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Gomoku against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Gomoku online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="hex">
+          <a class="idx-name" href="#hex">Hex<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">link your two edges, no draws</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Hex on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Hex against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Hex online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+      </section>
+      <section class="idx-sec">
+        <h2 class="idx-sec__h"><span class="idx-sec__n">V</span>Classics<span class="idx-sec__c">4</span></h2>
+        <div class="idx-row" data-name="othello">
+          <a class="idx-name" href="#othello">Othello<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">flip every disc in the line</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Othello on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Othello against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Othello online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="connect four">
+          <a class="idx-name" href="#connect-four">Connect Four<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">four in a row, gravity decides</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Connect Four on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Connect Four against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Connect Four online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="nine men’s morris">
+          <a class="idx-name" href="#nine-men’s-morris">Nine Men’s Morris<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">build mills, take his men</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Nine Men’s Morris on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Nine Men’s Morris against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Nine Men’s Morris online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+        <div class="idx-row" data-name="tic-tac-toe">
+          <a class="idx-name" href="#tic-tac-toe">Tic-Tac-Toe<svg class="ink ink--fine" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path pathLength="100" d="M1 5C24 2 52 8.4 99 3.4"/></svg></a>
+          <span class="idx-note">three in a row, five seconds</span>
+          <span class="idx-lead"></span>
+          <span class="idx-modes"><button class="mode" type="button" title="Play Tic-Tac-Toe on this device"><svg class="ic"><use href="#i-board"/></svg><span class="mode__t">Here</span></button><button class="mode" type="button" title="Play Tic-Tac-Toe against a bot"><svg class="ic"><use href="#i-bot"/></svg><span class="mode__t">Bot</span></button><button class="mode" type="button" title="Play Tic-Tac-Toe online"><svg class="ic"><use href="#i-globe"/></svg><span class="mode__t">Online</span></button></span>
+        </div>
+      </section>
+
+      <p class="mono" id="none" hidden>Nothing by that name. Clear the box to see all 22.</p>
+
+    </div>
+  </div>
+<nav class="tabs" aria-label="Sections">
+  <a class="tab" href="home.html"><svg class="ic"><use href="#i-home"/></svg>Home</a>
+  <a class="tab" href="games.html" aria-current="page"><svg class="ic"><use href="#i-games"/></svg>Games</a>
+  <a class="tab" href="school.html"><svg class="ic"><use href="#i-school"/></svg>School</a>
+  <a class="tab" href="#"><svg class="ic"><use href="#i-puzzle"/></svg>Puzzles</a>
+  <a class="tab" href="#"><svg class="ic"><use href="#i-user"/></svg>Account</a>
+</nav>
+</div>
+<script>
+  var q = document.getElementById('q'), none = document.getElementById('none');
+  q.addEventListener('input', function () {
+    var t = q.value.trim().toLowerCase(), hits = 0;
+    document.querySelectorAll('.idx-row').forEach(function (r) {
+      var ok = r.dataset.name.indexOf(t) > -1;
+      r.hidden = !ok; if (ok) hits++;
+    });
+    document.querySelectorAll('.idx-sec').forEach(function (s) {
+      s.hidden = !s.querySelector('.idx-row:not([hidden])');
+    });
+    none.hidden = hits > 0;
+  });
+</script>
+</body>
+</html>

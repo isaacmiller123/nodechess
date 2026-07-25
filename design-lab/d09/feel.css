@@ -1,0 +1,1343 @@
+/* d09 FEEL: Dimmed Stack, Lit Focus
+   Layout and interaction. Reads tokens only. No literal colors, no literal
+   font families, no literal radii. Where a d09 extra is used it carries a
+   fallback composed from shared tokens, so another designer's style.css
+   recolors this file without moving anything.
+
+   Architecture: there is no header nav, no sidebar and no menu. Every
+   destination is on the stage at once. The one you are attending to is lit;
+   the rest stay legible but unlit. A fixed instrument cluster along the
+   bottom edge holds who you are and what is live. Attention is the
+   navigation. */
+
+/* ---------------------------------------------------------------- reset */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Icons default to a size tied to the text beside them. An unsized inline SVG
+   otherwise falls back to 300x150 and wrecks whatever contains it. */
+svg {
+  display: block;
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  stroke: currentColor;
+}
+
+/* ------------------------------------------------------- the stage + air */
+
+/* The far end of the road. A ramp built from the palette itself, so any
+   style produces its own depth here rather than a flat field. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    var(
+      --d09-far,
+      radial-gradient(140% 90% at 50% 108%, var(--surface-2) 0%, var(--bg-subtle) 46%, var(--bg-page) 78%)
+    );
+}
+
+/* Two temperatures in the air itself: the warm light you are driving into,
+   low and centre, and a cool one high up behind you. */
+.ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      44% 54% at 50% 101%,
+      color-mix(in oklab, var(--accent) 22%, transparent),
+      color-mix(in oklab, var(--accent) 6%, transparent) 46%,
+      transparent 76%
+    ),
+    radial-gradient(
+      100% 46% at 50% -10%,
+      color-mix(in oklab, var(--info) 11%, transparent),
+      transparent 70%
+    );
+}
+
+/* The stage is the size container, so the phone layout is driven by the
+   column it lives in rather than by the window. That lets the mobile page be
+   reviewed at any window size without lying about its width. */
+.stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  container: stage / inline-size;
+}
+
+.stage--phone {
+  max-width: 390px;
+  margin-inline: auto;
+  border-inline: var(--border-width) solid var(--border);
+}
+
+.shell {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-8) var(--space-12);
+  flex: 1;
+}
+
+/* An index is one lane, not a wide table. */
+.shell--narrow {
+  max-width: 940px;
+}
+
+/* ------------------------------------------------------------- wordmark */
+
+.mark {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
+.mark__word {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-secondary);
+}
+
+.mark__where {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------ station stack */
+
+.stack {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-6);
+}
+
+.station {
+  position: relative;
+  grid-column: span 4;
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    170deg,
+    color-mix(in oklab, var(--surface) 88%, transparent),
+    color-mix(in oklab, var(--bg-subtle) 92%, transparent)
+  );
+  box-shadow: var(--shadow-md);
+  transition:
+    border-color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+.station--wide {
+  grid-column: span 12;
+}
+
+.station--half {
+  grid-column: span 6;
+}
+
+/* The pool of light. Off by default, faded up when the station is live. */
+.station::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  background: var(
+    --d09-pool,
+    radial-gradient(
+      120% 130% at 22% 0%,
+      color-mix(in oklab, var(--accent) 14%, transparent),
+      transparent 72%
+    )
+  );
+  transition: opacity var(--motion-slow) var(--ease-out);
+}
+
+.station__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-secondary);
+  transition: color var(--motion-base) var(--ease-out);
+}
+
+.station__title svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  color: var(--text-muted);
+  transition: color var(--motion-base) var(--ease-out);
+}
+
+/* Unlit bodies drop back. Titles never do, so the stack stays readable and
+   nothing is hidden: this is dimming, not concealment. */
+.station__body {
+  position: relative;
+  opacity: var(--d09-dim, 0.55);
+  margin-top: var(--space-4);
+  transition: opacity var(--motion-base) var(--ease-out);
+}
+
+.station.is-lit,
+.station:hover,
+.station:focus-within,
+.station:target {
+  border-color: var(--border-strong);
+  box-shadow:
+    var(--shadow-lg),
+    var(--d09-glow-warm, 0 0 0 var(--border-width) color-mix(in oklab, var(--accent) 26%, transparent));
+  transform: translateY(-1px);
+}
+
+.station.is-lit::before,
+.station:hover::before,
+.station:focus-within::before,
+.station:target::before {
+  opacity: 1;
+}
+
+.station.is-lit .station__body,
+.station:hover .station__body,
+.station:focus-within .station__body,
+.station:target .station__body {
+  opacity: 1;
+}
+
+.station.is-lit .station__title,
+.station:hover .station__title,
+.station:focus-within .station__title,
+.station:target .station__title {
+  color: var(--text-primary);
+}
+
+.station.is-lit .station__title svg,
+.station:hover .station__title svg,
+.station:focus-within .station__title svg,
+.station:target .station__title svg {
+  color: var(--accent);
+}
+
+/* The moment anything else is attended to, the default-lit station steps
+   back. There is only ever one pool of light on the stage. */
+body:has(.station:is(:target, :hover, :focus-within)) .station.is-lit:not(:target):not(:hover):not(:focus-within) {
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+  transform: none;
+}
+
+body:has(.station:is(:target, :hover, :focus-within)) .station.is-lit:not(:target):not(:hover):not(:focus-within)::before {
+  opacity: 0;
+}
+
+body:has(.station:is(:target, :hover, :focus-within)) .station.is-lit:not(:target):not(:hover):not(:focus-within) .station__body {
+  opacity: var(--d09-dim, 0.55);
+}
+
+body:has(.station:is(:target, :hover, :focus-within)) .station.is-lit:not(:target):not(:hover):not(:focus-within) .station__title {
+  color: var(--text-secondary);
+}
+
+body:has(.station:is(:target, :hover, :focus-within)) .station.is-lit:not(:target):not(:hover):not(:focus-within) .station__title svg {
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------- copy */
+
+.lede {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  max-width: 46ch;
+}
+
+/* Unlit copy is recessed by opacity, not by colour, so one knob controls how
+   far back the whole stack sits. It stays readable: this is a dimmer, not a
+   lock. */
+.note {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  max-width: 52ch;
+}
+
+.go + .note {
+  margin-top: var(--space-4);
+}
+
+.rowlink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--accent);
+}
+
+.rowlink svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.rowlink:hover svg {
+  transform: translateX(3px);
+}
+
+/* ------------------------------------------------------------- controls */
+
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* A phone gets the clocks as a swipeable rail rather than a wrapped block,
+   so the board above it keeps its height. */
+.picks--rail {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: var(--space-1);
+}
+
+.picks--rail::-webkit-scrollbar {
+  display: none;
+}
+
+.pick {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
+}
+
+.pick svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  color: var(--text-muted);
+}
+
+.pick:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+.pick[aria-pressed='true'] {
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+  color: var(--text-primary);
+  background: var(--accent-soft);
+}
+
+.pick__time {
+  font-family: var(--font-mono);
+}
+
+.go {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  margin-top: var(--space-6);
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+  box-shadow: 0 14px 34px -16px color-mix(in oklab, var(--accent) 80%, transparent);
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out);
+}
+
+.go svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.go:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 18px 44px -14px color-mix(in oklab, var(--accent) 90%, transparent);
+}
+
+.go:active {
+  background: var(--accent-active);
+}
+
+.go--full {
+  width: 100%;
+  justify-content: center;
+  min-height: 58px;
+}
+
+.quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--border);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.quiet svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+}
+
+.quiet:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+/* --------------------------------------------------- instrument cluster */
+
+.cluster {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-8);
+  border-top: var(--border-width) solid var(--border);
+  /* Opaque, not translucent. A list scrolling under this bar must not read
+     through it. */
+  background: linear-gradient(
+    to top,
+    var(--bg-page) 8%,
+    color-mix(in oklab, var(--surface) 82%, var(--bg-page))
+  );
+  box-shadow: 0 -22px 50px -30px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+/* A short run-off above the bar, so a row leaving the screen goes dark instead
+   of being sliced in half. */
+.cluster::before,
+.thumb::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: var(--space-8);
+  pointer-events: none;
+  background: linear-gradient(to top, var(--bg-page), transparent);
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.who__id {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.who__rating {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: color-mix(in oklab, var(--info) 16%, transparent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--info);
+  white-space: nowrap;
+}
+
+.lamps {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-1);
+}
+
+.lamp {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
+}
+
+.lamp svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+/* The filament: a hairline above the lamp that lights on hover and stays
+   lit for the page you are on. */
+.lamp::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: var(--space-4);
+  right: var(--space-4);
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  opacity: 0;
+  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 70%, transparent);
+  transition: opacity var(--motion-fast) var(--ease-out);
+}
+
+.lamp:hover {
+  color: var(--text-primary);
+  background: color-mix(in oklab, var(--surface-2) 60%, transparent);
+}
+
+.lamp:hover::before {
+  opacity: 0.55;
+}
+
+.lamp[aria-current='page'] {
+  color: var(--text-primary);
+}
+
+.lamp[aria-current='page']::before {
+  opacity: 1;
+}
+
+.cluster__end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-width) solid color-mix(in oklab, var(--accent) 30%, var(--border));
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.live__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  animation: d09-pulse 2.8s var(--ease-out) infinite;
+}
+
+@keyframes d09-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: var(--border-width) solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+
+.avatar svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.avatar:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+/* ------------------------------------------------------------- the board */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  /* The board is the lit object: it throws a warm halo into the dark around
+     it instead of sitting on a decorated panel. */
+  box-shadow:
+    var(--shadow-lg),
+    0 0 80px -14px color-mix(in oklab, var(--accent) 42%, transparent);
+}
+
+.sq {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* Sized off the stage container, not the window, so the phone page is honest
+     about its width when it is reviewed inside a desktop browser. */
+  font-size: min(7.4cqw, 46px);
+  line-height: 1;
+  user-select: none;
+}
+
+.sq--l {
+  background: var(--d09-sq-light, color-mix(in oklab, var(--text-muted) 62%, var(--surface-2)));
+}
+
+.sq--d {
+  background: var(--d09-sq-dark, color-mix(in oklab, var(--surface-2) 74%, var(--bg-page)));
+}
+
+/* Both sides carry a rim in the opposite value, the way a real piece set does,
+   because a dark board needs the silhouette to survive on both square colours.
+   The rims are deliberately unequal: white keeps a heavy one, black keeps a
+   whisper, because a bright rim on a dark piece sitting on a light square makes
+   the piece read as the wrong colour. That was the first version and it was
+   wrong. */
+.pc--w {
+  color: color-mix(in oklab, var(--text-primary) 94%, var(--accent));
+  -webkit-text-stroke: 0.7px color-mix(in oklab, var(--bg-page) 80%, transparent);
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--bg-page) 70%, transparent);
+}
+
+.pc--b {
+  color: color-mix(in oklab, var(--bg-page) 92%, var(--text-muted));
+  -webkit-text-stroke: 0.4px color-mix(in oklab, var(--text-primary) 22%, transparent);
+  text-shadow: 0 1px 2px color-mix(in oklab, var(--bg-page) 55%, transparent);
+}
+
+/* The one square under the lamp. This is where the glow earns its keep. */
+.sq--focus::after {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--accent);
+  box-shadow:
+    0 0 18px color-mix(in oklab, var(--accent) 60%, transparent),
+    inset 0 0 22px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.sq--from,
+.sq--to {
+  box-shadow: inset 0 0 0 99px color-mix(in oklab, var(--info) 22%, transparent);
+}
+
+/* A board is furniture with a real size. It never grows to fill the column, and
+   it never runs off the bottom either: on a short laptop it gives up width so
+   the whole eighth rank stays above the cluster. */
+.boardwrap {
+  position: relative;
+  display: grid;
+  gap: var(--space-3);
+  max-width: min(560px, calc(100vh - 320px));
+  margin-top: var(--space-6);
+}
+
+.filerow {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ---------------------------------------------------------- games index */
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.header__title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.family__count {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.finder {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: 380px;
+  padding: 0 var(--space-4);
+  min-height: 48px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  color: var(--text-muted);
+}
+
+.finder:focus-within {
+  border-color: var(--focus-ring);
+  box-shadow: var(--d09-glow-cool, 0 0 0 var(--border-width) var(--focus-ring));
+}
+
+.finder svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+}
+
+.finder input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  outline: none;
+}
+
+.family {
+  margin-top: var(--space-6);
+}
+
+.family__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.family__name::after {
+  content: '';
+  flex: 1;
+  height: var(--border-width);
+  background: linear-gradient(to right, var(--border), transparent);
+}
+
+.index {
+  margin-top: var(--space-3);
+}
+
+/* 22 rows have to fit the eye, so the row is a line and not a card: name in
+   a fixed column, the one thing that makes it different beside it, and the
+   three ways to play in a slot that is always reserved. Nothing moves when a
+   row lights up. */
+.game {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr) 226px;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid transparent;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.game__name {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.game__what {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  opacity: var(--d09-dim, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity var(--motion-fast) var(--ease-out);
+}
+
+.game__modes {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-out);
+}
+
+.mode {
+  min-height: 32px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid var(--border);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
+.mode:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--accent-soft);
+}
+
+.game:hover,
+.game:focus-within {
+  background: linear-gradient(
+    to right,
+    color-mix(in oklab, var(--accent) 9%, transparent),
+    color-mix(in oklab, var(--surface) 60%, transparent) 55%,
+    transparent
+  );
+  border-color: color-mix(in oklab, var(--accent) 22%, var(--border));
+}
+
+.game:hover .game__name,
+.game:focus-within .game__name {
+  color: var(--text-primary);
+}
+
+.game:hover .game__what,
+.game:focus-within .game__what {
+  opacity: 1;
+}
+
+.game:hover .game__modes,
+.game:focus-within .game__modes {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------- school */
+
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+.lesson__main {
+  max-width: 560px;
+}
+
+/* Viktor gets a monogram, not a stock silhouette. */
+.portrait {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: var(--border-width) solid color-mix(in oklab, var(--accent) 45%, var(--border));
+  background: var(--accent-soft);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--accent);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.eyebrow strong {
+  color: var(--accent);
+  font-weight: var(--weight-medium);
+}
+
+.lesson__title {
+  margin-top: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.steps {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.step {
+  height: 3px;
+  width: 34px;
+  border-radius: var(--radius-full);
+  background: var(--border);
+}
+
+.step--done {
+  background: color-mix(in oklab, var(--success) 70%, var(--border));
+}
+
+.step--now {
+  background: var(--accent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+
+.coach {
+  position: relative;
+  padding: var(--space-6);
+  border: var(--border-width) solid color-mix(in oklab, var(--accent) 26%, var(--border));
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    170deg,
+    color-mix(in oklab, var(--surface) 92%, transparent),
+    color-mix(in oklab, var(--bg-subtle) 94%, transparent)
+  );
+  box-shadow: var(--shadow-lg);
+}
+
+.coach::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(
+    --d09-pool,
+    radial-gradient(
+      120% 130% at 22% 0%,
+      color-mix(in oklab, var(--accent) 14%, transparent),
+      transparent 72%
+    )
+  );
+}
+
+.coach__who {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.coach__name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.coach__role {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.coach__say {
+  position: relative;
+  margin-top: var(--space-4);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+}
+
+.coach__say + .coach__say {
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+}
+
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.moves__n {
+  color: var(--text-muted);
+}
+
+.moves__m--live {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.aside {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.panel {
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface) 60%, transparent);
+}
+
+.panel__head {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel__body {
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* Buttons keep their own size and wrap to a new line rather than being
+   crushed by a narrow column. */
+.actions .go,
+.actions .quiet {
+  flex: none;
+  margin-top: 0;
+}
+
+.lessons {
+  display: grid;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+}
+
+.lessons a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
+}
+
+.lessons a:hover {
+  color: var(--text-primary);
+  background: color-mix(in oklab, var(--surface-2) 70%, transparent);
+}
+
+.lessons__n {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.lessons a[aria-current='true'] {
+  color: var(--text-primary);
+  background: var(--accent-soft);
+}
+
+.lessons a[aria-current='true'] .lessons__n {
+  color: var(--accent);
+}
+
+.lessons a[data-done='true'] .lessons__n {
+  color: var(--success);
+}
+
+/* --------------------------------------------------------------- mobile */
+
+.thumb {
+  display: none;
+}
+
+@container stage (max-width: 900px) {
+  .shell {
+    padding: var(--space-6) var(--space-4) var(--space-8);
+  }
+
+  .stack {
+    gap: var(--space-4);
+  }
+
+  .station,
+  .station--wide,
+  .station--half {
+    grid-column: span 12;
+  }
+
+  .lesson {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .game {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .game__modes {
+    opacity: 1;
+  }
+
+  .game__what {
+    opacity: 1;
+  }
+
+  /* On a phone the bottom edge belongs to the thumb, so the desktop cluster
+     splits in two: identity and live state ride up to the top as a sticky
+     strip, and the lamps become a real tab bar down where the thumb is. */
+  .cluster {
+    order: -1;
+    top: 0;
+    bottom: auto;
+    grid-template-columns: 1fr auto;
+    padding: var(--space-3) var(--space-4);
+    border-top: 0;
+    border-bottom: var(--border-width) solid var(--border);
+    /* Nearly opaque: content scrolling under the identity strip must not
+       show through it. */
+    background: linear-gradient(to bottom, var(--bg-page), var(--bg-subtle));
+    box-shadow: 0 18px 34px -24px color-mix(in oklab, var(--bg-page) 95%, transparent);
+  }
+
+  /* The run-off belongs under whichever bar the thumb uses, and up here the
+     identity strip is already opaque, so drop it. */
+  .cluster::before {
+    display: none;
+  }
+
+  .cluster .lamps {
+    display: none;
+  }
+
+  .thumb {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    border-top: var(--border-width) solid var(--border);
+    background: linear-gradient(to top, var(--bg-page) 20%, color-mix(in oklab, var(--surface) 88%, var(--bg-page)));
+    box-shadow: 0 -26px 60px -34px color-mix(in oklab, var(--accent) 60%, transparent);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .thumb .lamp {
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-1);
+    min-height: 60px;
+    padding: var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .thumb .lamp svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .thumb .lamp::before {
+    left: 28%;
+    right: 28%;
+  }
+
+  .sq {
+    font-size: min(9.2cqw, 44px);
+  }
+}
+
+/* ------------------------------------------------------- load sequence */
+
+/* One orchestrated moment: the light comes up and settles. Nothing else in
+   this design animates on its own. */
+@media (prefers-reduced-motion: no-preference) {
+  .ambient,
+  .station,
+  .cluster,
+  .thumb,
+  .boardwrap {
+    animation: d09-arrive var(--motion-slow) var(--ease-out) both;
+  }
+
+  .station:nth-of-type(2) {
+    animation-delay: 60ms;
+  }
+
+  .station:nth-of-type(3) {
+    animation-delay: 110ms;
+  }
+
+  .station:nth-of-type(4) {
+    animation-delay: 150ms;
+  }
+
+  .cluster,
+  .thumb {
+    animation-delay: 200ms;
+  }
+}
+
+/* Entry moves with `translate`, not `transform`, on purpose. This animation is
+   filled forwards, and a filled animation outranks a hover rule, so animating
+   `transform` here would permanently cancel the lift a lit station gets. */
+@keyframes d09-arrive {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}

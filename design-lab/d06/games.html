@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en" data-style="06" data-palette="walnut">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Games, nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="i-pawn" viewBox="0 0 24 24">
+        <path d="M12 3a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 12 3Z" />
+        <path d="M9.2 9.6h5.6c.9 1 1.4 2.3 1.5 3.6H7.7c.1-1.3.6-2.6 1.5-3.6Z" />
+        <path d="M6.4 14.4h11.2L19.4 20H4.6Z" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <path d="M3 4.5h8v6.2H3zM13 4.5h8v6.2h-8zM3 13.3h8v6.2H3zM13 13.3h8v6.2h-8z" />
+      </symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24">
+        <path d="M12 3.6 22.4 8.6 12 13.6 1.6 8.6Z" />
+        <path d="M5.8 11.1v4.6c0 1.9 2.8 3.3 6.2 3.3s6.2-1.4 6.2-3.3v-4.6L12 14.2Z" />
+      </symbol>
+      <symbol id="i-puzzle" viewBox="0 0 24 24">
+        <path d="M4 4h6.2v1.1a1.9 1.9 0 1 0 3.6 0V4H20v6.2h-1.1a1.9 1.9 0 1 1 0 3.6H20V20H4Z" />
+      </symbol>
+      <symbol id="i-bot" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M11 2h2v3h3a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h3V2Zm-1 8a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 10 10Zm4 0a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 14 10Zm-4.4 6.4h4.8v1.4H9.6Z"
+        />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <path d="M9 3a3.6 3.6 0 1 1 0 7.2A3.6 3.6 0 0 1 9 3Zm0 8.6c3.9 0 7 1.9 7 4.3V20H2v-4.1c0-2.4 3.1-4.3 7-4.3Z" />
+        <path d="M16.8 4.4a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Zm.2 7.4c2.9.1 5 1.8 5 3.7V20h-4.2v-4.1c0-1.6-.7-2.9-1.9-3.9.4-.1.7-.2 1.1-.2Z" />
+      </symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M12 2.6a9.4 9.4 0 1 1 0 18.8 9.4 9.4 0 0 1 0-18.8Zm-8.6 8.2h17.2v1.5H3.4Zm1.4 4.2h14.4V16H4.8Zm6.4-11.6h1.6v16.2h-1.6Z"
+        />
+      </symbol>
+      <symbol id="i-caret" viewBox="0 0 24 24">
+        <path d="M9.3 4.8 16.5 12l-7.2 7.2-1.7-1.7L13.1 12 7.6 6.5Z" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M10.5 3a7.5 7.5 0 1 0 4.4 13.6l4.2 4.2 1.7-1.7-4.2-4.2A7.5 7.5 0 0 0 10.5 3Zm0 2.4a5.1 5.1 0 1 1 0 10.2 5.1 5.1 0 0 1 0-10.2Z"
+        />
+      </symbol>
+    </svg>
+    <div class="app">
+      <header class="topbar">
+        <a class="wordmark" href="home.html">node<b>chess</b></a>
+        <div class="topbar-right">
+          <div class="palettes" role="group" aria-label="Palette">
+            <span class="palettes-label">Palette</span>
+            <button class="pal" type="button" data-set-palette="walnut" aria-pressed="true" title="Walnut and brass">
+              <span></span><span class="sr">Walnut</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="slate" aria-pressed="false" title="Slate and copper">
+              <span></span><span class="sr">Slate</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="oxblood" aria-pressed="false" title="Oxblood and bone">
+              <span></span><span class="sr">Oxblood</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="birch" aria-pressed="false" title="Birch and cobalt">
+              <span></span><span class="sr">Birch</span>
+            </button>
+          </div>
+          <a class="account" href="#account">
+            <span class="account-mark">M</span>
+            <span class="account-id">mercer<i>#K4T9P</i></span>
+            <span class="account-rating">1500 provisional</span>
+          </a>
+        </div>
+      </header>
+
+      <nav class="stack" aria-label="Sections">
+        <a class="lid" data-depth="3" href="#">
+          <span class="lid-name">Puzzles</span>
+          <span class="lid-note">8 today</span>
+        </a>
+        <a class="lid" data-depth="2" href="school.html">
+          <span class="lid-name">School</span>
+          <span class="lid-note">chapter 7 of 40</span>
+        </a>
+        <a class="lid" data-depth="1" href="home.html">
+          <span class="lid-name">Home</span>
+          <span class="lid-note">nothing in progress</span>
+        </a>
+
+        <main class="sheet" aria-current="page">
+          <div class="sheet-head">
+            <div>
+              <h1 class="sheet-title">Games</h1>
+              <p class="sheet-sub">Every box plays three ways: two players on this screen, versus a bot, or online.</p>
+            </div>
+            <div class="sheet-aside">22 titles<br />5 shelves</div>
+          </div>
+
+          <div class="tools">
+            <label class="field">
+              <svg class="icon" aria-hidden="true"><use href="#i-search" /></svg>
+              <span class="sr">Find a game</span>
+              <input type="search" placeholder="Find a game" />
+            </label>
+            <div class="filters" role="group" aria-label="Show titles that play">
+              <button class="btn btn-sm" type="button" aria-pressed="true">All</button>
+              <button class="btn btn-sm" type="button" aria-pressed="false">Here</button>
+              <button class="btn btn-sm" type="button" aria-pressed="false">Bot</button>
+              <button class="btn btn-sm" type="button" aria-pressed="false">Online</button>
+            </div>
+          </div>
+
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2 class="shelf-name">Chess and variants</h2>
+        <span class="shelf-count">9</span>
+      </div>
+      <div class="rack">
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♞</span>
+        <h3 class="box-name">Chess</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Chess, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Chess, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Chess, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♜</span>
+        <h3 class="box-name">Chess960</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Chess960, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Chess960, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Chess960, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♛</span>
+        <h3 class="box-name">Crazyhouse</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Crazyhouse, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Crazyhouse, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Crazyhouse, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">◉</span>
+        <h3 class="box-name">Atomic</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Atomic, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Atomic, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Atomic, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♟</span>
+        <h3 class="box-name">Antichess</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Antichess, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Antichess, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Antichess, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♚</span>
+        <h3 class="box-name">King of the Hill</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="King of the Hill, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="King of the Hill, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="King of the Hill, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">✓</span>
+        <h3 class="box-name">Three-Check</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Three-Check, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Three-Check, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Three-Check, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♟♟</span>
+        <h3 class="box-name">Horde</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Horde, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Horde, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Horde, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-chess">
+        <span class="box-mark" aria-hidden="true">♚</span>
+        <h3 class="box-name">Racing Kings</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Racing Kings, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Racing Kings, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Racing Kings, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2 class="shelf-name">Regional chess</h2>
+        <span class="shelf-count">4</span>
+      </div>
+      <div class="rack">
+      <article class="box fam-regional">
+        <span class="box-mark" aria-hidden="true">象</span>
+        <h3 class="box-name">Xiangqi</h3>
+        <p class="box-meta">9&#215;10</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Xiangqi, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Xiangqi, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Xiangqi, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-regional">
+        <span class="box-mark" aria-hidden="true">王</span>
+        <h3 class="box-name">Shogi</h3>
+        <p class="box-meta">9&#215;9</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Shogi, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Shogi, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Shogi, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-regional">
+        <span class="box-mark" aria-hidden="true">漢</span>
+        <h3 class="box-name">Janggi</h3>
+        <p class="box-meta">9&#215;10</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Janggi, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Janggi, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Janggi, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-regional">
+        <span class="box-mark" aria-hidden="true">♝</span>
+        <h3 class="box-name">Makruk</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Makruk, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Makruk, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Makruk, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2 class="shelf-name">Draughts</h2>
+        <span class="shelf-count">2</span>
+      </div>
+      <div class="rack">
+      <article class="box fam-draughts">
+        <span class="box-mark" aria-hidden="true">●</span>
+        <h3 class="box-name">Checkers</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Checkers, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Checkers, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Checkers, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-draughts">
+        <span class="box-mark" aria-hidden="true">○</span>
+        <h3 class="box-name">International</h3>
+        <p class="box-meta">10&#215;10</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="International, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="International, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="International, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2 class="shelf-name">Territory</h2>
+        <span class="shelf-count">3</span>
+      </div>
+      <div class="rack">
+      <article class="box fam-territory">
+        <span class="box-mark" aria-hidden="true">●</span>
+        <h3 class="box-name">Go</h3>
+        <p class="box-meta">19&#215;19</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Go, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Go, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Go, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-territory">
+        <span class="box-mark" aria-hidden="true">✕</span>
+        <h3 class="box-name">Gomoku</h3>
+        <p class="box-meta">15&#215;15</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Gomoku, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Gomoku, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Gomoku, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-territory">
+        <span class="box-mark" aria-hidden="true">⬢</span>
+        <h3 class="box-name">Hex</h3>
+        <p class="box-meta">11&#215;11</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Hex, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Hex, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Hex, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+    <section class="shelf">
+      <div class="shelf-head">
+        <h2 class="shelf-name">Classics</h2>
+        <span class="shelf-count">4</span>
+      </div>
+      <div class="rack">
+      <article class="box fam-classics">
+        <span class="box-mark" aria-hidden="true">◑</span>
+        <h3 class="box-name">Othello</h3>
+        <p class="box-meta">8&#215;8</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Othello, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Othello, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Othello, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-classics">
+        <span class="box-mark" aria-hidden="true">●</span>
+        <h3 class="box-name">Connect Four</h3>
+        <p class="box-meta">7&#215;6</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Connect Four, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Connect Four, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Connect Four, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-classics">
+        <span class="box-mark" aria-hidden="true">◇</span>
+        <h3 class="box-name">Nine Men&#39;s Morris</h3>
+        <p class="box-meta">24 pts</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Nine Men&#39;s Morris, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Nine Men&#39;s Morris, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Nine Men&#39;s Morris, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      <article class="box fam-classics">
+        <span class="box-mark" aria-hidden="true">✕</span>
+        <h3 class="box-name">Tic-Tac-Toe</h3>
+        <p class="box-meta">3&#215;3</p>
+        <div class="box-modes">
+        <button class="mode" type="button" aria-label="Tic-Tac-Toe, two players here" title="two players here"><svg class="icon" aria-hidden="true"><use href="#i-users" /></svg></button>
+        <button class="mode" type="button" aria-label="Tic-Tac-Toe, versus a bot" title="versus a bot"><svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg></button>
+        <button class="mode" type="button" aria-label="Tic-Tac-Toe, online" title="online"><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg></button>
+        </div>
+      </article>
+      </div>
+      <div class="plank" aria-hidden="true"></div>
+    </section>
+
+        </main>
+      </nav>
+    </div>
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var saved = localStorage.getItem('d06-palette');
+          if (saved) root.dataset.palette = saved;
+        } catch (e) {}
+        var keys = document.querySelectorAll('[data-set-palette]');
+        function sync() {
+          var cur = root.dataset.palette || 'walnut';
+          keys.forEach(function (k) {
+            k.setAttribute('aria-pressed', String(k.dataset.setPalette === cur));
+          });
+        }
+        keys.forEach(function (k) {
+          k.addEventListener('click', function () {
+            root.dataset.palette = k.dataset.setPalette;
+            try {
+              localStorage.setItem('d06-palette', k.dataset.setPalette);
+            } catch (e) {}
+            sync();
+          });
+        });
+        sync();
+        var times = document.querySelectorAll('.time');
+        times.forEach(function (t) {
+          t.addEventListener('click', function () {
+            times.forEach(function (o) {
+              o.setAttribute('aria-pressed', String(o === t));
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

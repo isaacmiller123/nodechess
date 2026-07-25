@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en" data-style="07">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chapter 7, lesson 3, nodechess school</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <header class="bug">
+      <div class="bug__bar"></div>
+      <div class="bug__row">
+        <a class="mark" href="home.html">node<b>chess</b></a>
+        <p class="onair"><span class="livepip"></span>1,204 games in play</p>
+        <div class="bug__spacer"></div>
+        <div class="me">
+          <a class="me__id" href="#account">
+            <span class="me__handle">mercer</span>
+            <span class="me__tag">#K4T9P</span>
+          </a>
+          <span class="chip" title="Provisional until 5 rated games">1500 <q>?</q></span>
+        </div>
+      </div>
+      <nav class="channels" aria-label="Sections">
+        <a class="channel" href="home.html">Play</a>
+        <a class="channel" href="games.html">Games <span class="channel__n">22</span></a>
+        <a class="channel is-on" href="school.html">School</a>
+        <a class="channel" href="#puzzles">Puzzles</a>
+        <a class="channel" href="#account">Account</a>
+      </nav>
+    </header>
+
+    <main class="stage">
+      <div class="panel rise">
+        <div class="panel__head">
+          <p class="eyebrow">Chapter 7, The Italian Game</p>
+          <span class="trail">Lesson 3 of 5</span>
+        </div>
+        <div class="panel__body panel__body--tight">
+          <div class="rail">
+            <span class="segs">
+              <span class="seg seg--done"></span>
+              <span class="seg seg--done"></span>
+              <span class="seg seg--now"></span>
+              <span class="seg"></span>
+              <span class="seg"></span>
+            </span>
+            <span class="trail">Chapter test opens after lesson 5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="split rise">
+        <div class="col">
+          <section class="panel">
+            <div class="panel__head">
+              <p class="eyebrow">Building before you push</p>
+              <span class="trail">White to move</span>
+            </div>
+            <div class="panel__body">
+              <div class="board board--main">
+                <span class="pc pc--b fa r8">&#9820;</span>
+                <span class="pc pc--b fc r8">&#9821;</span>
+                <span class="pc pc--b fd r8">&#9819;</span>
+                <span class="pc pc--b fe r8">&#9818;</span>
+                <span class="pc pc--b fg r8">&#9822;</span>
+                <span class="pc pc--b fh r8">&#9820;</span>
+                <span class="pc pc--b fa r7">&#9823;</span>
+                <span class="pc pc--b fb r7">&#9823;</span>
+                <span class="pc pc--b fc r7">&#9823;</span>
+                <span class="pc pc--b fd r7">&#9823;</span>
+                <span class="pc pc--b ff r7">&#9823;</span>
+                <span class="pc pc--b fg r7">&#9823;</span>
+                <span class="pc pc--b fh r7">&#9823;</span>
+                <span class="pc pc--b fc r6">&#9822;</span>
+                <span class="pc pc--b fc r5">&#9821;</span>
+                <span class="pc pc--b fe r5">&#9823;</span>
+                <span class="pc pc--w fc r4">&#9821;</span>
+                <span class="pc pc--w fe r4">&#9823;</span>
+                <span class="pc pc--w ff r3">&#9822;</span>
+                <span class="pc pc--w fa r2">&#9823;</span>
+                <span class="pc pc--w fb r2">&#9823;</span>
+                <span class="pc pc--w fc r2">&#9823;</span>
+                <span class="pc pc--w fd r2">&#9823;</span>
+                <span class="pc pc--w ff r2">&#9823;</span>
+                <span class="pc pc--w fg r2">&#9823;</span>
+                <span class="pc pc--w fh r2">&#9823;</span>
+                <span class="pc pc--w fa r1">&#9820;</span>
+                <span class="pc pc--w fb r1">&#9822;</span>
+                <span class="pc pc--w fc r1">&#9821;</span>
+                <span class="pc pc--w fd r1">&#9819;</span>
+                <span class="pc pc--w fe r1">&#9818;</span>
+                <span class="pc pc--w fh r1">&#9820;</span>
+
+                <!-- telestrator: the square this lesson is about -->
+                <svg class="telestrator" viewBox="0 0 8 8" aria-hidden="true">
+                  <circle cx="3.5" cy="4.5" r="0.42" />
+                  <line x1="3.5" y1="6.35" x2="3.5" y2="4.98" />
+                  <polygon points="3.5,4.5 3.26,5.02 3.74,5.02" />
+                </svg>
+              </div>
+              <ol class="coords">
+                <li>a</li>
+                <li>b</li>
+                <li>c</li>
+                <li>d</li>
+                <li>e</li>
+                <li>f</li>
+                <li>g</li>
+                <li>h</li>
+              </ol>
+            </div>
+            <div class="nextup">
+              <span class="nextup__text">
+                <span class="nextup__label">Marked square</span>
+                <span class="nextup__title">d4. That is where this lesson is going.</span>
+              </span>
+              <span class="btnrow">
+                <button class="btn btn--sm btn--quiet">
+                  <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
+                  Reset position
+                </button>
+                <button class="btn btn--sm btn--quiet">
+                  <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 18h6M10 22h4" />
+                    <path d="M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2Z" />
+                  </svg>
+                  Ask Viktor
+                </button>
+              </span>
+            </div>
+          </section>
+        </div>
+
+        <div class="col">
+          <section class="viktor">
+            <div class="viktor__plate">
+              <span class="viktor__name">Viktor</span>
+              <span class="viktor__role">Coach</span>
+            </div>
+            <p class="viktor__line">
+              Bc5 copies you. Do not be flattered by it, and do not chase f7 with the knight. That
+              is the move of a player in a hurry.
+            </p>
+            <p class="viktor__line">
+              You want the centre. You cannot take it yet, because d4 falls to the bishop and the
+              knight the moment you play it. So make it safe first, with a pawn, quietly.
+            </p>
+            <div class="task">
+              <span class="task__label">Your move</span>
+              <p>Play the pawn move that lets d4 come next, and defends it when it does.</p>
+            </div>
+            <div class="nextup">
+              <span class="nextup__text">
+                <span class="nextup__label">After this</span>
+                <span class="nextup__title">Lesson 4, when Black answers with d5</span>
+              </span>
+              <span class="chip">Locked</span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel__head">
+              <p class="eyebrow">Moves so far</p>
+              <span class="trail">Italian Game, C50</span>
+            </div>
+            <div class="panel__body">
+              <dl class="moves">
+                <dt>1</dt>
+                <dd>e4</dd>
+                <dd>e5</dd>
+                <dt>2</dt>
+                <dd>Nf3</dd>
+                <dd>Nc6</dd>
+                <dt>3</dt>
+                <dd>Bc4</dd>
+                <dd class="is-last">Bc5</dd>
+                <dt>4</dt>
+                <dd class="is-turn">your move</dd>
+                <dd></dd>
+              </dl>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel__head">
+              <p class="eyebrow">Chapter 7</p>
+              <span class="trail">2 done</span>
+            </div>
+            <a class="sidecard" href="#l1">
+              <span class="lane">01</span>
+              <span class="sidecard__text">
+                <span class="sidecard__title">Why the bishop goes to c4</span>
+                <span class="sidecard__meta">Done, 4 of 4 correct</span>
+              </span>
+              <span class="btn btn--sm btn--quiet">Replay</span>
+            </a>
+            <a class="sidecard" href="#l2">
+              <span class="lane">02</span>
+              <span class="sidecard__text">
+                <span class="sidecard__title">The f7 square</span>
+                <span class="sidecard__meta">Done, 3 of 4 correct</span>
+              </span>
+              <span class="btn btn--sm btn--quiet">Replay</span>
+            </a>
+            <a class="sidecard is-now" href="#l3">
+              <span class="lane">03</span>
+              <span class="sidecard__text">
+                <span class="sidecard__title">Building before you push</span>
+                <span class="sidecard__meta">On screen now</span>
+              </span>
+            </a>
+            <span class="sidecard is-locked">
+              <span class="lane">04</span>
+              <span class="sidecard__text">
+                <span class="sidecard__title">When Black answers with d5</span>
+                <span class="sidecard__meta">Finish lesson 3 to open this</span>
+              </span>
+            </span>
+            <span class="sidecard is-locked">
+              <span class="lane">05</span>
+              <span class="sidecard__text">
+                <span class="sidecard__title">The Italian at speed</span>
+                <span class="sidecard__meta">Finish lesson 4 to open this</span>
+              </span>
+            </span>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <div class="ticker">
+      <span class="ticker__label"><span class="livepip"></span>Live</span>
+      <div class="ticker__win">
+        <div class="ticker__track">
+          <a class="ticker__item" href="#arena">Hourly blitz, 18 min left, <b>318 entered</b></a>
+          <a class="ticker__item" href="#watch">avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b>, 3+2</a>
+          <a class="ticker__item" href="games.html">Janggi now plays online</a>
+          <a class="ticker__item" href="#watch">tessel#D9V1 drew quill#M4R7, <b>&frac12;-&frac12;</b>, 10+0</a>
+          <a class="ticker__item" href="games.html">Racing Kings, <b>41 in play</b></a>
+          <a class="ticker__item" href="school.html">Chapter 7 test opens after lesson 5</a>
+          <a class="ticker__item" href="#arena" aria-hidden="true" tabindex="-1"
+            >Hourly blitz, 18 min left, <b>318 entered</b></a
+          >
+          <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+            >avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b>, 3+2</a
+          >
+          <a class="ticker__item" href="games.html" aria-hidden="true" tabindex="-1"
+            >Janggi now plays online</a
+          >
+          <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+            >tessel#D9V1 drew quill#M4R7, <b>&frac12;-&frac12;</b>, 10+0</a
+          >
+          <a class="ticker__item" href="games.html" aria-hidden="true" tabindex="-1"
+            >Racing Kings, <b>41 in play</b></a
+          >
+          <a class="ticker__item" href="school.html" aria-hidden="true" tabindex="-1"
+            >Chapter 7 test opens after lesson 5</a
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,291 @@
+/* ==========================================================================
+   d04 STYLE: Cabinet Livery
+   Tokens only. No layout, no structural selectors, no component rules.
+
+   Four dark liveries for one arcade cabinet: graphite housing, matte dark
+   button caps, and colour that arrives as light rather than as paint. The
+   base block is the "marquee" livery; three alternates override the same
+   property names. Every colour in this direction lives inside these blocks.
+
+   Fonts: nothing is loaded over the network. The display role is
+   "Archivo Black" (SIL OFL 1.1) and the body role is "Archivo" (SIL OFL
+   1.1); the exact files I would ship are ArchivoBlack-Regular.woff2 and
+   Archivo-Variable.woff2, self-hosted, plus JetBrainsMono-Regular.woff2
+   (SIL OFL 1.1) for readouts. Until those ship, the stacks below fall back
+   to Arial Black and the system UI face, which are metrically close enough
+   that the layout does not shift when the real files land.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   LIVERY 1 (default): MARQUEE. Graphite housing, amber marquee light.
+   ------------------------------------------------------------------------- */
+[data-style='04'],
+[data-style='04'][data-palette='marquee'] {
+  --bg-page: #15171e;
+  --bg-subtle: #0f1117;
+  --surface: #1d212b;
+  --surface-2: #262b38;
+  --border: #333a4a;
+  --border-strong: #4c556c;
+
+  --text-primary: #f3f5fa;
+  --text-secondary: #aab3c6;
+  --text-muted: #717b93;
+  --text-inverse: #12141a;
+
+  --accent: #ffb020;
+  --accent-hover: #ffc447;
+  --accent-active: #e08c00;
+  --accent-soft: #3b2a08;
+  --on-accent: #1a1204;
+
+  --success: #37d484;
+  --danger: #ff4f5a;
+  --warning: #ffb020;
+  --info: #45b8ff;
+  --focus-ring: #7fd4ff;
+
+  --font-display: 'Archivo Black', 'Arial Black', 'Helvetica Neue Black',
+    'Arial Bold', Impact, sans-serif;
+  --font-sans: 'Archivo', 'Helvetica Neue', system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas,
+    monospace;
+
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 34px;
+  --text-3xl: 52px;
+
+  --weight-normal: 400;
+  --weight-medium: 600;
+  --weight-bold: 800;
+
+  --leading-tight: 1.05;
+  --leading-normal: 1.5;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.14em;
+
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 52px;
+
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 2px 0 #0a0c11;
+  --shadow-md: 0 4px 0 #0a0c11, 0 10px 20px #0a0c1159;
+  --shadow-lg: 0 8px 0 #0a0c11, 0 20px 44px #0a0c1173;
+
+  --border-width: 2px;
+
+  --motion-fast: 70ms;
+  --motion-base: 120ms;
+  --motion-slow: 220ms;
+  --ease-out: cubic-bezier(0.2, 0.9, 0.25, 1);
+
+  /* --- d04 extensions: the cabinet itself --- */
+  --d04-housing: #0b0d12; /* the deck the control panel is cut into */
+  --d04-housing-edge: #05070a;
+  --d04-key-face: #232833; /* unlit translucent cap */
+  --d04-key-face-hi: #2d3441;
+  --d04-key-edge: #090b10; /* the solid keycap side wall */
+  --d04-key-travel: 5px;
+  --d04-lamp-off: #2b3140;
+  --d04-marquee: #191d26;
+  --d04-marquee-light: #ffb020;
+  --d04-screenprint: #8b95ac; /* legend ink under the caps */
+  --d04-board-light: #cbd2e0;
+  --d04-board-dark: #4d5772;
+  --d04-board-mark: #ffb020;
+  --d04-board-edge: #0b0d12;
+  --d04-piece-white: #f7f9ff;
+  --d04-piece-black: #0a0c11;
+
+  /* Six button caps, one livery. Caps read dark until lit. */
+  --d04-cap-a: #ffb020;
+  --d04-cap-b: #45b8ff;
+  --d04-cap-c: #ff5c8a;
+  --d04-cap-d: #37d484;
+  --d04-cap-e: #b98cff;
+  --d04-cap-f: #f3f5fa;
+}
+
+/* -------------------------------------------------------------------------
+   LIVERY 2: COBALT. Navy housing, cold white-blue light. The clean cabinet.
+   ------------------------------------------------------------------------- */
+[data-style='04'][data-palette='cobalt'] {
+  --bg-page: #0f1626;
+  --bg-subtle: #0a1020;
+  --surface: #162034;
+  --surface-2: #1d2942;
+  --border: #2a3a5b;
+  --border-strong: #40567f;
+
+  --text-primary: #eef4ff;
+  --text-secondary: #a3b4d2;
+  --text-muted: #6b7da0;
+  --text-inverse: #0b1120;
+
+  --accent: #3f8cff;
+  --accent-hover: #64a4ff;
+  --accent-active: #2670e0;
+  --accent-soft: #12244a;
+  --on-accent: #05101f;
+
+  --success: #2fd6b0;
+  --danger: #ff5f7a;
+  --warning: #ffc247;
+  --info: #3f8cff;
+  --focus-ring: #9ecbff;
+
+  --shadow-sm: 0 2px 0 #050a15;
+  --shadow-md: 0 4px 0 #050a15, 0 10px 20px #050a1559;
+  --shadow-lg: 0 8px 0 #050a15, 0 20px 44px #050a1573;
+
+  --d04-housing: #070c18;
+  --d04-housing-edge: #03060d;
+  --d04-key-face: #1b263d;
+  --d04-key-face-hi: #24324e;
+  --d04-key-edge: #060a14;
+  --d04-lamp-off: #23314e;
+  --d04-marquee: #131c2f;
+  --d04-marquee-light: #3f8cff;
+  --d04-screenprint: #8496ba;
+  --d04-board-light: #c6d4ec;
+  --d04-board-dark: #425680;
+  --d04-board-mark: #3f8cff;
+  --d04-board-edge: #070c18;
+  --d04-piece-white: #f2f7ff;
+  --d04-piece-black: #060a14;
+
+  --d04-cap-a: #3f8cff;
+  --d04-cap-b: #2fd6b0;
+  --d04-cap-c: #ffc247;
+  --d04-cap-d: #8fb7ff;
+  --d04-cap-e: #ff5f7a;
+  --d04-cap-f: #eef4ff;
+}
+
+/* -------------------------------------------------------------------------
+   LIVERY 3: CRIMSON. Oxblood housing, hot red light. The loud cabinet.
+   ------------------------------------------------------------------------- */
+[data-style='04'][data-palette='crimson'] {
+  --bg-page: #1c1218;
+  --bg-subtle: #150d12;
+  --surface: #261821;
+  --surface-2: #31202b;
+  --border: #452b39;
+  --border-strong: #654053;
+
+  --text-primary: #fdf1f4;
+  --text-secondary: #c7a8b3;
+  --text-muted: #94747f;
+  --text-inverse: #170e13;
+
+  --accent: #ff3d5f;
+  --accent-hover: #ff6379;
+  --accent-active: #db2145;
+  --accent-soft: #47121f;
+  --on-accent: #1c0308;
+
+  --success: #6bd46a;
+  --danger: #ff3d5f;
+  --warning: #ffa53d;
+  --info: #7fb6ff;
+  --focus-ring: #ffa9b8;
+
+  --shadow-sm: 0 2px 0 #0e070b;
+  --shadow-md: 0 4px 0 #0e070b, 0 10px 20px #0e070b59;
+  --shadow-lg: 0 8px 0 #0e070b, 0 20px 44px #0e070b73;
+
+  --d04-housing: #120a0e;
+  --d04-housing-edge: #0a0507;
+  --d04-key-face: #2c1c26;
+  --d04-key-face-hi: #38242f;
+  --d04-key-edge: #0d0709;
+  --d04-lamp-off: #3b2530;
+  --d04-marquee: #20141b;
+  --d04-marquee-light: #ff3d5f;
+  --d04-screenprint: #a8858f;
+  --d04-board-light: #e4d0d6;
+  --d04-board-dark: #6f4a58;
+  --d04-board-mark: #ffa53d;
+  --d04-board-edge: #120a0e;
+  --d04-piece-white: #fff4f6;
+  --d04-piece-black: #150b0f;
+
+  --d04-cap-a: #ff3d5f;
+  --d04-cap-b: #ffa53d;
+  --d04-cap-c: #ffe066;
+  --d04-cap-d: #6bd46a;
+  --d04-cap-e: #7fb6ff;
+  --d04-cap-f: #fdf1f4;
+}
+
+/* -------------------------------------------------------------------------
+   LIVERY 4: LAGOON. Deep teal housing, aqua light. The quiet cabinet.
+   ------------------------------------------------------------------------- */
+[data-style='04'][data-palette='lagoon'] {
+  --bg-page: #0f1c1f;
+  --bg-subtle: #0a1517;
+  --surface: #16282b;
+  --surface-2: #1d3337;
+  --border: #2b464b;
+  --border-strong: #3f6469;
+
+  --text-primary: #ecf7f6;
+  --text-secondary: #9fbcb9;
+  --text-muted: #6a8a88;
+  --text-inverse: #0b1618;
+
+  --accent: #2ee0b8;
+  --accent-hover: #5aebc9;
+  --accent-active: #17bd98;
+  --accent-soft: #0d3a33;
+  --on-accent: #04211b;
+
+  --success: #2ee0b8;
+  --danger: #ff6a5c;
+  --warning: #ffce4d;
+  --info: #63c9ff;
+  --focus-ring: #9af0dd;
+
+  --shadow-sm: 0 2px 0 #060f11;
+  --shadow-md: 0 4px 0 #060f11, 0 10px 20px #060f1159;
+  --shadow-lg: 0 8px 0 #060f11, 0 20px 44px #060f1173;
+
+  --d04-housing: #081315;
+  --d04-housing-edge: #040b0c;
+  --d04-key-face: #1a2e31;
+  --d04-key-face-hi: #223c40;
+  --d04-key-edge: #061012;
+  --d04-lamp-off: #24403f;
+  --d04-marquee: #122225;
+  --d04-marquee-light: #2ee0b8;
+  --d04-screenprint: #85a8a5;
+  --d04-board-light: #cfe3df;
+  --d04-board-dark: #47706c;
+  --d04-board-mark: #ffce4d;
+  --d04-board-edge: #081315;
+  --d04-piece-white: #f2fbf9;
+  --d04-piece-black: #07100f;
+
+  --d04-cap-a: #2ee0b8;
+  --d04-cap-b: #63c9ff;
+  --d04-cap-c: #ffce4d;
+  --d04-cap-d: #ff6a5c;
+  --d04-cap-e: #a8e05c;
+  --d04-cap-f: #ecf7f6;
+}

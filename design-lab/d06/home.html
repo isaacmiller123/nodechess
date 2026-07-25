@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-style="06" data-palette="walnut">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body>
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg">
+      <symbol id="i-pawn" viewBox="0 0 24 24">
+        <path d="M12 3a3.2 3.2 0 1 1 0 6.4A3.2 3.2 0 0 1 12 3Z" />
+        <path d="M9.2 9.6h5.6c.9 1 1.4 2.3 1.5 3.6H7.7c.1-1.3.6-2.6 1.5-3.6Z" />
+        <path d="M6.4 14.4h11.2L19.4 20H4.6Z" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <path d="M3 4.5h8v6.2H3zM13 4.5h8v6.2h-8zM3 13.3h8v6.2H3zM13 13.3h8v6.2h-8z" />
+      </symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24">
+        <path d="M12 3.6 22.4 8.6 12 13.6 1.6 8.6Z" />
+        <path d="M5.8 11.1v4.6c0 1.9 2.8 3.3 6.2 3.3s6.2-1.4 6.2-3.3v-4.6L12 14.2Z" />
+      </symbol>
+      <symbol id="i-puzzle" viewBox="0 0 24 24">
+        <path d="M4 4h6.2v1.1a1.9 1.9 0 1 0 3.6 0V4H20v6.2h-1.1a1.9 1.9 0 1 1 0 3.6H20V20H4Z" />
+      </symbol>
+      <symbol id="i-bot" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M11 2h2v3h3a3 3 0 0 1 3 3v9a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3h3V2Zm-1 8a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 10 10Zm4 0a1.6 1.6 0 1 0 0 3.2A1.6 1.6 0 0 0 14 10Zm-4.4 6.4h4.8v1.4H9.6Z"
+        />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <path d="M9 3a3.6 3.6 0 1 1 0 7.2A3.6 3.6 0 0 1 9 3Zm0 8.6c3.9 0 7 1.9 7 4.3V20H2v-4.1c0-2.4 3.1-4.3 7-4.3Z" />
+        <path d="M16.8 4.4a3.3 3.3 0 1 1 0 6.6 3.3 3.3 0 0 1 0-6.6Zm.2 7.4c2.9.1 5 1.8 5 3.7V20h-4.2v-4.1c0-1.6-.7-2.9-1.9-3.9.4-.1.7-.2 1.1-.2Z" />
+      </symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M12 2.6a9.4 9.4 0 1 1 0 18.8 9.4 9.4 0 0 1 0-18.8Zm-8.6 8.2h17.2v1.5H3.4Zm1.4 4.2h14.4V16H4.8Zm6.4-11.6h1.6v16.2h-1.6Z"
+        />
+      </symbol>
+      <symbol id="i-caret" viewBox="0 0 24 24">
+        <path d="M9.3 4.8 16.5 12l-7.2 7.2-1.7-1.7L13.1 12 7.6 6.5Z" />
+      </symbol>
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <path
+          fill-rule="evenodd"
+          d="M10.5 3a7.5 7.5 0 1 0 4.4 13.6l4.2 4.2 1.7-1.7-4.2-4.2A7.5 7.5 0 0 0 10.5 3Zm0 2.4a5.1 5.1 0 1 1 0 10.2 5.1 5.1 0 0 1 0-10.2Z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <header class="topbar">
+        <a class="wordmark" href="home.html">node<b>chess</b></a>
+        <div class="topbar-right">
+          <div class="palettes" role="group" aria-label="Palette">
+            <span class="palettes-label">Palette</span>
+            <button class="pal" type="button" data-set-palette="walnut" aria-pressed="true" title="Walnut and brass">
+              <span></span><span class="sr">Walnut</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="slate" aria-pressed="false" title="Slate and copper">
+              <span></span><span class="sr">Slate</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="oxblood" aria-pressed="false" title="Oxblood and bone">
+              <span></span><span class="sr">Oxblood</span>
+            </button>
+            <button class="pal" type="button" data-set-palette="birch" aria-pressed="false" title="Birch and cobalt">
+              <span></span><span class="sr">Birch</span>
+            </button>
+          </div>
+          <a class="account" href="#account">
+            <span class="account-mark">M</span>
+            <span class="account-id">mercer<i>#K4T9P</i></span>
+            <span class="account-rating">1500 provisional</span>
+          </a>
+        </div>
+      </header>
+
+      <nav class="stack" aria-label="Sections">
+        <a class="lid" data-depth="3" href="#puzzles">
+          <span class="lid-name">Puzzles</span>
+          <span class="lid-note">8 today</span>
+        </a>
+        <a class="lid" data-depth="2" href="school.html">
+          <span class="lid-name">School</span>
+          <span class="lid-note">chapter 7 of 40</span>
+        </a>
+        <a class="lid" data-depth="1" href="games.html">
+          <span class="lid-name">Games</span>
+          <span class="lid-note">22 titles</span>
+        </a>
+
+        <main class="sheet" aria-current="page">
+          <div class="sheet-head">
+            <div>
+              <h1 class="sheet-title">Home</h1>
+              <p class="sheet-sub">Signed in as mercer#K4T9P</p>
+            </div>
+            <div class="sheet-aside">no games played yet<br />rating settles after 5</div>
+          </div>
+
+          <p class="eyebrow" id="start">Start here</p>
+          <div class="hero">
+            <div class="mat">
+              <div class="board" aria-hidden="true"><div class="sq sq-l"><span class="pb">♜</span></div><div class="sq sq-d"><span class="pb">♞</span></div><div class="sq sq-l"><span class="pb">♝</span></div><div class="sq sq-d"><span class="pb">♛</span></div><div class="sq sq-l"><span class="pb">♚</span></div><div class="sq sq-d"><span class="pb">♝</span></div><div class="sq sq-l"><span class="pb">♞</span></div><div class="sq sq-d"><span class="pb">♜</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-d"><span class="pb">♟</span></div><div class="sq sq-l"><span class="pb">♟</span></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-d"></div><div class="sq sq-l"></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-l"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♟</span></div><div class="sq sq-d"><span class="pw">♜</span></div><div class="sq sq-l"><span class="pw">♞</span></div><div class="sq sq-d"><span class="pw">♝</span></div><div class="sq sq-l"><span class="pw">♛</span></div><div class="sq sq-d"><span class="pw">♚</span></div><div class="sq sq-l"><span class="pw">♝</span></div><div class="sq sq-d"><span class="pw">♞</span></div><div class="sq sq-l"><span class="pw">♜</span></div></div>
+            </div>
+            <div class="hero-copy">
+              <h2>Play chess</h2>
+              <p>Pick a clock. You can change it before every game, and the last one you used comes back next time.</p>
+              <div class="times" role="group" aria-label="Clock">
+                <button class="time" type="button" aria-pressed="false">3 + 0</button>
+                <button class="time" type="button" aria-pressed="false">5 + 3</button>
+                <button class="time" type="button" aria-pressed="true">10 + 0</button>
+                <button class="time" type="button" aria-pressed="false">15 + 10</button>
+                <button class="time" type="button" aria-pressed="false">Daily</button>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-primary" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#i-pawn" /></svg>
+                  Play 10 + 0
+                </button>
+                <button class="btn" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#i-bot" /></svg>
+                  Play a bot
+                </button>
+                <button class="btn" type="button">
+                  <svg class="icon" aria-hidden="true"><use href="#i-users" /></svg>
+                  Two players, one screen
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="eyebrow">In progress</p>
+          <div class="slot">
+            <p>
+              <strong>This slot is empty</strong>
+              Leave a game part way and it waits here, clock and all. Finished games move to your history.
+            </p>
+            <a class="btn btn-sm" href="#start">Start a game</a>
+          </div>
+
+          <p class="eyebrow" id="puzzles">Also on the shelf</p>
+          <div class="trio">
+            <a class="card" href="#puzzles">
+              <span class="card-ico"><svg class="icon" aria-hidden="true"><use href="#i-puzzle" /></svg></span>
+              <h3>Puzzles</h3>
+              <p>Eight new positions each morning, easiest first. Nothing is timed.</p>
+              <span class="card-go">Solve today's set</span>
+            </a>
+            <a class="card" href="school.html">
+              <span class="card-ico"><svg class="icon" aria-hidden="true"><use href="#i-cap" /></svg></span>
+              <h3>School</h3>
+              <p>Forty chapters. You are on chapter 7, The Italian Game, lesson 3 of 5.</p>
+              <span class="card-go">Back to Viktor</span>
+            </a>
+            <a class="card" href="games.html">
+              <span class="card-ico"><svg class="icon" aria-hidden="true"><use href="#i-grid" /></svg></span>
+              <h3>Games</h3>
+              <p>Twenty two titles besides chess: Xiangqi, Shogi, Go, Hex, Othello and the rest.</p>
+              <span class="card-go">Open the shelf</span>
+            </a>
+          </div>
+        </main>
+      </nav>
+    </div>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          var saved = localStorage.getItem('d06-palette');
+          if (saved) root.dataset.palette = saved;
+        } catch (e) {}
+        var keys = document.querySelectorAll('[data-set-palette]');
+        function sync() {
+          var cur = root.dataset.palette || 'walnut';
+          keys.forEach(function (k) {
+            k.setAttribute('aria-pressed', String(k.dataset.setPalette === cur));
+          });
+        }
+        keys.forEach(function (k) {
+          k.addEventListener('click', function () {
+            root.dataset.palette = k.dataset.setPalette;
+            try {
+              localStorage.setItem('d06-palette', k.dataset.setPalette);
+            } catch (e) {}
+            sync();
+          });
+        });
+        sync();
+        var times = document.querySelectorAll('.time');
+        times.forEach(function (t) {
+          t.addEventListener('click', function () {
+            times.forEach(function (o) {
+              o.setAttribute('aria-pressed', String(o === t));
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

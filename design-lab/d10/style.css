@@ -1,0 +1,137 @@
+/* ============================================================
+   d10 STYLE: Graphite field notebook
+   TOKENS ONLY. No selectors targeting page structure, no layout,
+   no component rules. Dark only.
+
+   The idea: a waterproof field book. Graphite board cover, a
+   bone-white pencil line, the cover's field yellow as the only
+   thing worth pressing, and two pencil inks (red and blue) for
+   everything a person would scribble in a margin.
+
+   Fonts: I would ship three files, all permissively licensed:
+     Roboto Slab   (Apache 2.0)  display
+     IBM Plex Sans (OFL 1.1)     body
+     IBM Plex Mono (OFL 1.1)     notation, labels, counts
+   Until those are self-hosted, each stack below falls back to a
+   face with the same skeleton, so nothing silently lands on
+   system-ui the way the app does today.
+   ============================================================ */
+
+[data-style='10'] {
+  /* ---- Surfaces: cover board, then the sheet on top of it ---- */
+  --bg-page: #1c1e19;
+  --bg-subtle: #171913;
+  --surface: #2a2d26;
+  --surface-2: #333730;
+  --border: #414539;
+  --border-strong: #585d4e;
+
+  /* ---- Text: pencil on toned paper ---- */
+  --text-primary: #e4e1d4;
+  --text-secondary: #a9a89a;
+  --text-muted: #7e7f73;
+  --text-inverse: #1c1e19;
+
+  /* ---- Accent: the field book cover yellow ---- */
+  --accent: #e0b52e;
+  --accent-hover: #eec543;
+  --accent-active: #f5d05c;
+  --accent-soft: #322b14;
+  --on-accent: #1e1f19;
+
+  /* ---- Semantic ---- */
+  --success: #9bb545;
+  --danger: #e0665c;
+  --warning: #e0a03c;
+  --info: #7ea6d4;
+  --focus-ring: #eec543;
+
+  /* ---- Type ---- */
+  --font-display: 'Roboto Slab', 'Superclarendon', 'Rockwell', 'Bookman Old Style', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-base: 15px;
+  --text-lg: 17px;
+  --text-xl: 21px;
+  --text-2xl: 27px;
+  --text-3xl: 36px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  --leading-tight: 1.16;
+  --leading-normal: 1.55;
+
+  --tracking-tight: -0.012em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.14em;
+
+  /* ---- Spacing: 4px base, ruled rhythm ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* ---- Radius: index-card corners, not brutalist zero ---- */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 14px;
+  --radius-full: 999px;
+
+  /* ---- Shadow: a sheet lying on board, not a floating card ---- */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.36);
+  --shadow-md: 0 2px 10px rgba(0, 0, 0, 0.42);
+  --shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.52);
+
+  --border-width: 1px;
+
+  /* ---- Motion: paper is quick and then still ---- */
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-slow: 320ms;
+  --ease-out: cubic-bezier(0.2, 0.9, 0.25, 1);
+
+  /* ============================================================
+     d10 extensions. Every one of these is read in feel.css with a
+     fallback to a contract token, so another designer's style.css
+     can replace this file and nothing disappears structurally.
+     ============================================================ */
+
+  /* The two pencils. Red is the annotation ink, blue is the second pass. */
+  --d10-ink: #e0665c;
+  --d10-ink-2: #7ea6d4;
+  --d10-ink-width: 2.1px;
+  --d10-ink-width-fine: 1.6px;
+
+  /* The vertical red rule a notebook is printed with, and the faint
+     horizontal ruling. Ruling is deliberately alpha: if this file is
+     swapped out the texture vanishes rather than turning into a
+     stack of hard lines. */
+  --d10-margin-line: #b0554d;
+  --d10-rule: rgba(126, 166, 212, 0.14);
+  --d10-baseline: 28px;
+
+  /* Marginalia sit slightly off square. This is the whole
+     handwriting gesture: no fake script face, just a hand that
+     did not line the note up with the printing. */
+  --d10-tilt: -1.6deg;
+  --d10-tilt-2: 1.1deg;
+
+  /* Board: bone and field green, pencil-toned rather than saturated. */
+  --d10-sq-light: #cbc4ac;
+  --d10-sq-dark: #5f6656;
+  --d10-piece-light: #f4f1e6;
+  --d10-piece-dark: #17190f;
+  --d10-sq-mark: #d9c14a;
+
+  /* Unicode chess figurines. Solid glyphs for both colours, tinted,
+     because hollow glyphs render inconsistently across platforms. */
+  --d10-font-figurine: 'Apple Symbols', 'Segoe UI Symbol', 'DejaVu Sans', 'Noto Sans Symbols 2', sans-serif;
+}

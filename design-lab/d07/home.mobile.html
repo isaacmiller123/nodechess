@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en" data-style="07">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess, phone</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="feel.css" />
+  </head>
+  <body class="viewport-mobile">
+    <div class="phone">
+      <!-- The bug survives the phone. Channels move to the thumb. -->
+      <header class="bug">
+        <div class="bug__bar"></div>
+        <div class="bug__row">
+          <a class="mark" href="home.mobile.html">node<b>chess</b></a>
+          <div class="bug__spacer"></div>
+          <div class="me">
+            <a class="me__id" href="#account">
+              <span class="me__handle">mercer</span>
+            </a>
+            <span class="chip" title="Provisional until 5 rated games">1500 <q>?</q></span>
+          </div>
+        </div>
+      </header>
+
+      <div class="ticker">
+        <span class="ticker__label"><span class="livepip"></span>Live</span>
+        <div class="ticker__win">
+          <div class="ticker__track">
+            <a class="ticker__item" href="#watch"><b>1,204</b> games in play</a>
+            <a class="ticker__item" href="#arena">Hourly blitz, 18 min left, <b>318 entered</b></a>
+            <a class="ticker__item" href="#watch">avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b></a>
+            <a class="ticker__item" href="#games">Racing Kings, <b>41 in play</b></a>
+            <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+              ><b>1,204</b> games in play</a
+            >
+            <a class="ticker__item" href="#arena" aria-hidden="true" tabindex="-1"
+              >Hourly blitz, 18 min left, <b>318 entered</b></a
+            >
+            <a class="ticker__item" href="#watch" aria-hidden="true" tabindex="-1"
+              >avalanche#R2M8 beat kestrel#T8W3, <b>1-0</b></a
+            >
+            <a class="ticker__item" href="#games" aria-hidden="true" tabindex="-1"
+              >Racing Kings, <b>41 in play</b></a
+            >
+          </div>
+        </div>
+      </div>
+
+      <main class="stage">
+        <div class="masthead">
+          <p class="eyebrow">Play</p>
+          <h1 class="h1">Pick a clock</h1>
+          <p class="lede">Nothing finished yet. Five rated games and 1500 becomes a real number.</p>
+        </div>
+
+        <div class="stack">
+          <div class="clocks">
+            <button class="clockcard">
+              <span class="clockcard__name">Bullet</span>
+              <span class="clockcard__time">1+0</span>
+              <span class="clockcard__queue">96 waiting</span>
+            </button>
+            <button class="clockcard is-on">
+              <span class="clockcard__name">Blitz</span>
+              <span class="clockcard__time">3+2</span>
+              <span class="clockcard__queue">241 waiting</span>
+            </button>
+            <button class="clockcard">
+              <span class="clockcard__name">Rapid</span>
+              <span class="clockcard__time">10+0</span>
+              <span class="clockcard__queue">88 waiting</span>
+            </button>
+            <button class="clockcard">
+              <span class="clockcard__name">Classical</span>
+              <span class="clockcard__time">30+0</span>
+              <span class="clockcard__queue">12 waiting</span>
+            </button>
+          </div>
+
+          <button class="btn btn--primary">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <polygon points="6 3 20 12 6 21" />
+            </svg>
+            Play online, 3+2
+          </button>
+          <div class="btnrow">
+            <button class="btn">Play a bot</button>
+            <button class="btn">Pass and play</button>
+          </div>
+        </div>
+
+        <div class="empty">
+          <div class="empty__text">
+            <span class="empty__title">Nothing to resume</span>
+            <p>Leave a game halfway and it waits here, on the move you left it.</p>
+          </div>
+          <button class="btn btn--sm btn--quiet">View finished games</button>
+        </div>
+
+        <section class="stack--tight stack">
+          <p class="eyebrow"><span class="livepip"></span>On now</p>
+          <div class="reel">
+            <a class="reelcard" href="#watch">
+              <div class="board board--mini">
+                <span class="pc pc--w fg r1">&#9818;</span>
+                <span class="pc pc--w ff r1">&#9820;</span>
+                <span class="pc pc--w fe r4">&#9823;</span>
+                <span class="pc pc--w fc r3">&#9822;</span>
+                <span class="pc pc--b fg r8">&#9818;</span>
+                <span class="pc pc--b ff r8">&#9820;</span>
+                <span class="pc pc--b fd r5">&#9823;</span>
+                <span class="pc pc--b ff r6">&#9822;</span>
+              </div>
+              <div class="matchline matchline--turn">
+                <span class="matchline__who">avalanche#R2M8</span>
+                <span class="matchline__clock">1:47</span>
+              </div>
+              <div class="matchline">
+                <span class="matchline__who">kestrel#T8W3</span>
+                <span class="matchline__clock">2:12</span>
+              </div>
+              <div class="pressure pressure--w1"><div class="pressure__fill"></div></div>
+              <p class="pressure__note">White a pawn up, move 24</p>
+            </a>
+            <a class="reelcard" href="#watch">
+              <div class="board board--mini">
+                <span class="pc pc--w fe r1">&#9818;</span>
+                <span class="pc pc--w fd r1">&#9819;</span>
+                <span class="pc pc--w fd r4">&#9823;</span>
+                <span class="pc pc--w ff r3">&#9822;</span>
+                <span class="pc pc--b fe r8">&#9818;</span>
+                <span class="pc pc--b fd r8">&#9819;</span>
+                <span class="pc pc--b fe r5">&#9823;</span>
+                <span class="pc pc--b fc r6">&#9822;</span>
+              </div>
+              <div class="matchline">
+                <span class="matchline__who">tessel#D9V1</span>
+                <span class="matchline__clock">7:03</span>
+              </div>
+              <div class="matchline matchline--turn">
+                <span class="matchline__who">quill#M4R7</span>
+                <span class="matchline__clock">6:41</span>
+              </div>
+              <div class="pressure pressure--w2"><div class="pressure__fill"></div></div>
+              <p class="pressure__note">Level, move 11</p>
+            </a>
+            <a class="reelcard" href="#watch">
+              <div class="board board--mini">
+                <span class="pc pc--w fh r1">&#9818;</span>
+                <span class="pc pc--w fa r7">&#9820;</span>
+                <span class="pc pc--w fg r2">&#9823;</span>
+                <span class="pc pc--w fb r5">&#9821;</span>
+                <span class="pc pc--b fb r8">&#9818;</span>
+                <span class="pc pc--b fh r6">&#9820;</span>
+                <span class="pc pc--b fc r7">&#9823;</span>
+                <span class="pc pc--b fe r4">&#9822;</span>
+              </div>
+              <div class="matchline matchline--turn">
+                <span class="matchline__who">brandt#P3F6</span>
+                <span class="matchline__clock">0:19</span>
+              </div>
+              <div class="matchline">
+                <span class="matchline__who">osier#Z5N2</span>
+                <span class="matchline__clock">0:44</span>
+              </div>
+              <div class="pressure pressure--w3"><div class="pressure__fill"></div></div>
+              <p class="pressure__note">White winning, move 41</p>
+            </a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <p class="eyebrow">Where you left off</p>
+          </div>
+          <a class="sidecard" href="school.html">
+            <span class="sidecard__text">
+              <span class="sidecard__title">Chapter 7, lesson 3</span>
+              <span class="sidecard__meta">The Italian Game. Viktor is waiting.</span>
+            </span>
+            <span class="btn btn--sm">Continue</span>
+          </a>
+          <a class="sidecard" href="#puzzles">
+            <span class="sidecard__text">
+              <span class="sidecard__title">Puzzle of the day</span>
+              <span class="sidecard__meta">Black to move, mate in three.</span>
+            </span>
+            <span class="btn btn--sm">Solve</span>
+          </a>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <p class="eyebrow">Hourly blitz</p>
+            <span class="trail num">18 min left</span>
+          </div>
+          <ol class="standings">
+            <li>
+              <span class="standings__pos">1</span>
+              <span class="standings__who">avalanche#R2M8</span>
+              <span class="standings__score">31</span>
+            </li>
+            <li>
+              <span class="standings__pos">2</span>
+              <span class="standings__who">brandt#P3F6</span>
+              <span class="standings__score">28</span>
+            </li>
+            <li>
+              <span class="standings__pos">3</span>
+              <span class="standings__who">quill#M4R7</span>
+              <span class="standings__score">26</span>
+            </li>
+            <li class="is-me">
+              <span class="standings__pos">&ndash;</span>
+              <span class="standings__who">mercer#K4T9P</span>
+              <span class="standings__score">0</span>
+            </li>
+          </ol>
+          <div class="nextup">
+            <span class="nextup__text">
+              <span class="nextup__label">Entries open</span>
+              <span class="nextup__title">318 in.</span>
+            </span>
+            <button class="btn btn--sm btn--primary">Join</button>
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Sections">
+        <a class="tab is-on" href="home.mobile.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <polygon points="6 3 20 12 6 21" />
+          </svg>
+          Play
+        </a>
+        <a class="tab" href="games.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          Games
+        </a>
+        <a class="tab" href="school.html">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M22 10 12 5 2 10l10 5 10-5Z" />
+            <path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5" />
+          </svg>
+          School
+        </a>
+        <a class="tab" href="#puzzles">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <circle cx="12" cy="12" r="6" />
+            <circle cx="12" cy="12" r="2" />
+          </svg>
+          Puzzles
+        </a>
+        <a class="tab" href="#account">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" />
+          </svg>
+          You
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

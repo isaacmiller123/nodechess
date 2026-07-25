@@ -1,0 +1,972 @@
+/* d02 FEEL: Standing table of contents
+   ---------------------------------------------------------------------------
+   Layout and interaction only. Every colour, face, radius and rhythm comes
+   through var(). Where a --d02-* extension is read, a shared-namespace fallback
+   follows it, so swapping in another style recolours and retypes this file
+   without moving anything.
+
+   Architecture: a contents column that is permanently open. It never collapses,
+   never expands on hover, and holds no icons. Everything the app can do is a
+   word you can already read. Position is marked by a rule in the left margin,
+   the same rule that marks a hovered row and the current lesson.
+   --------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--d02-rule, 2px) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* --- shared micro-typography ------------------------------------------------
+   The uppercase, wide-tracked, monospaced label is this feel's working voice:
+   running heads, section heads, action labels, play modes. It is small
+   everywhere. Prose is the only thing allowed to be big. */
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.lede {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 var(--space-3);
+  max-width: 30ch;
+}
+
+.prose {
+  max-width: var(--d02-measure, 62ch);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.prose + .prose {
+  margin-top: var(--space-3);
+}
+
+.prose strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-bold);
+}
+
+.figurine,
+.san {
+  font-family: var(--font-mono);
+  font-size: 0.94em;
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* --- desktop shell ---------------------------------------------------------- */
+
+.room {
+  display: grid;
+  grid-template-columns: var(--d02-nav, 272px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+}
+
+/* Running head. A book tells you where you are at the top of every page, so the
+   app does too: product, then section, then who is holding it. */
+.head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-page);
+}
+
+.head-mark {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.head-sep {
+  color: var(--border-strong);
+}
+
+.head-where {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.head-folio {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+}
+
+/* Contents column. Static width, static contents, no disclosure of any kind. */
+.contents {
+  display: flex;
+  flex-direction: column;
+  border-right: var(--border-width) solid var(--border);
+  padding-top: var(--space-6);
+  overflow-y: auto;
+}
+
+.contents-label {
+  padding: 0 var(--space-6) var(--space-4);
+}
+
+.toc {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc > li > a {
+  position: relative;
+  display: block;
+  padding: var(--space-2) var(--space-6);
+  font-size: var(--text-lg);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+/* The signature: a rule in the left margin. Present on the current entry in
+   gilt, drawn faintly on hover, never a filled block. */
+.toc > li > a::before,
+.entry::before,
+.door::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.42em;
+  bottom: 0.42em;
+  width: var(--d02-rule, 2px);
+  background: transparent;
+  transition: background var(--motion-base) var(--ease-out);
+}
+
+.toc > li > a:hover::before {
+  background: var(--border-strong);
+}
+
+.toc > li > a:hover {
+  color: var(--text-primary);
+}
+
+.toc > li > a.is-here {
+  color: var(--text-primary);
+}
+
+.toc > li > a.is-here::before {
+  background: var(--accent);
+}
+
+/* Sub-entries appear only under the section you are in, the way a contents page
+   opens up the chapter you are reading. Nothing is hidden that hovering would
+   reveal: this is the same list, annotated by position. */
+.toc-sub {
+  list-style: none;
+  margin: var(--space-1) 0 var(--space-3);
+  padding: 0 var(--space-6) 0 calc(var(--space-6) + var(--space-3));
+  border-left: var(--border-width) solid var(--border);
+  margin-left: var(--space-6);
+}
+
+.toc-sub a {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.toc-sub a:hover {
+  color: var(--text-secondary);
+}
+
+.toc-sub a.is-here {
+  color: var(--text-primary);
+}
+
+.toc-sub .n {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  min-width: 1.4em;
+}
+
+/* Bookplate. The account lives at the foot of the contents, pasted inside the
+   front cover, not floating in a corner as an avatar. */
+.bookplate {
+  margin-top: auto;
+  padding: var(--space-4) var(--space-6);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.bookplate .who {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+.bookplate .stat {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+.bookplate a {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: var(--border-width) solid var(--border-strong);
+}
+
+.bookplate a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* --- main ------------------------------------------------------------------- */
+
+.main {
+  overflow-y: auto;
+  padding: var(--space-12) var(--space-8);
+}
+
+.sheet {
+  max-width: var(--d02-sheet, 900px);
+  margin-inline: auto;
+}
+
+.block + .block {
+  margin-top: var(--space-12);
+}
+
+.block-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.block-head .note {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* Actions. Rules and text, one filled control per screen at most. */
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.act {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-6);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    background var(--motion-fast) var(--ease-out);
+}
+
+.act:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.act--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.act--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--on-accent);
+}
+
+.act--quiet {
+  border-color: transparent;
+  padding-inline: 0;
+  color: var(--text-secondary);
+}
+
+.act--quiet:hover {
+  border-color: transparent;
+  color: var(--accent);
+}
+
+.act svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Empty and waiting states: a marginal note, not a dialog. */
+.aside-note {
+  border-left: var(--d02-rule, 2px) solid var(--border-strong);
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+  color: var(--text-secondary);
+  max-width: var(--d02-measure, 62ch);
+}
+
+.aside-note .then {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Doors: three ways out of home. Rules across the top, no cards, no shadows. */
+.doors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-8);
+}
+
+.door {
+  position: relative;
+  display: block;
+  padding: var(--space-3) 0 0 var(--space-4);
+  border-top: var(--border-width) solid var(--border-strong);
+  text-decoration: none;
+}
+
+.door::before {
+  top: 0;
+  bottom: auto;
+  height: var(--d02-rule, 2px);
+  width: var(--space-8);
+}
+
+.door:hover::before {
+  background: var(--accent);
+}
+
+.door .name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+}
+
+.door .said {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Epigraph: one line from the record, because the record is what this app is
+   for. Quiet, small, sits at the foot of home like a citation. */
+/* No rule of its own: the section head above it already drew one, and two
+   parallel rules a few pixels apart is a stutter, not a structure. */
+.epigraph {
+  padding-top: var(--space-1);
+}
+
+.epigraph .moves {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  line-height: 1.9;
+  margin: 0 0 var(--space-2);
+  max-width: 54ch;
+}
+
+/* A move pair is one unit. It never breaks across a line, the way a tournament
+   book never breaks one either. */
+.epigraph .mv {
+  display: inline-block;
+  white-space: nowrap;
+  margin-right: var(--space-4);
+}
+
+.epigraph .cite {
+  font-style: normal;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* --- games library ---------------------------------------------------------- */
+
+.find {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  padding: 0 var(--space-4);
+  max-width: 34ch;
+}
+
+.find:focus-within {
+  border-color: var(--accent);
+}
+
+.find svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  flex: none;
+}
+
+.find input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+}
+
+.find input::placeholder {
+  color: var(--text-muted);
+}
+
+.find input:focus {
+  outline: none;
+}
+
+.group + .group {
+  margin-top: var(--space-8);
+}
+
+/* Deliberately not sticky. A sticky head passing over a row hides the row's
+   name and leaves a description with nothing above it, and the five families are
+   already standing in the contents column while you scroll. */
+.group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) 0 var(--space-2);
+  margin-bottom: var(--space-1);
+  background: var(--bg-page);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.group-head .count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.entries {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-8);
+  padding: var(--space-3) 0 var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.entry:hover::before {
+  background: var(--accent);
+}
+
+.entry .name {
+  font-size: var(--text-lg);
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.entry .said {
+  grid-column: 1;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 56ch;
+  margin-top: var(--space-1);
+}
+
+.modes {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.modes a {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: var(--border-width) solid transparent;
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+
+.modes a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* --- school ----------------------------------------------------------------- */
+
+.study {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 36ch);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.board-wrap {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  aspect-ratio: 1;
+  width: 100%;
+  /* The board is sized to the window, not to a fixed number, so a study screen
+     never asks you to scroll to see the position you are being asked about. */
+  max-width: min(520px, 52vh);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.sq {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(20px, 4.2vw, 44px);
+  line-height: 1;
+  user-select: none;
+}
+
+.sq--l {
+  background: var(--d02-sq-light, var(--surface-2));
+}
+
+.sq--d {
+  background: var(--d02-sq-dark, var(--border-strong));
+}
+
+.sq .w {
+  color: var(--d02-piece-w, var(--text-primary));
+  text-shadow: 0 1px 1px var(--d02-piece-edge, transparent);
+}
+
+.sq .b {
+  color: var(--d02-piece-b, var(--text-inverse));
+  text-shadow: 0 1px 1px var(--d02-piece-edge-b, transparent);
+}
+
+/* The square Viktor is pointing at. A ring, not a fill, so the position stays
+   readable underneath it. */
+.sq--asked {
+  box-shadow: inset 0 0 0 var(--d02-rule, 2px) var(--accent);
+}
+
+.board-foot {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  max-width: 520px;
+}
+
+.board-foot .turn {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.board-foot .score {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.board-foot .score .mark {
+  color: var(--d02-rubric, var(--danger));
+}
+
+/* Coach column. Viktor gets the gilt margin rule: he is where you are. */
+.coach {
+  border-left: var(--d02-rule, 2px) solid var(--accent);
+  padding-left: var(--space-4);
+}
+
+.coach .who {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.coach .says {
+  margin: var(--space-3) 0 0;
+  color: var(--text-primary);
+  max-width: 44ch;
+}
+
+.coach .says + .says {
+  margin-top: var(--space-3);
+  color: var(--text-secondary);
+}
+
+.asked {
+  margin-top: var(--space-6);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+}
+
+/* Lesson progress: five rules, one gilt. Same vocabulary as the nav marker. */
+.lessons {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  max-width: 420px;
+}
+
+.lessons span {
+  flex: 1;
+  height: var(--d02-rule, 2px);
+  background: var(--border);
+}
+
+.lessons .done {
+  background: var(--text-muted);
+}
+
+.lessons .now {
+  background: var(--accent);
+}
+
+.lessons-said {
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* Move record, set the way a tournament book sets it. */
+.record {
+  display: grid;
+  grid-template-columns: 2.4em 1fr 1fr;
+  gap: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  margin: 0;
+  max-width: 24ch;
+}
+
+.record dt {
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.record dd {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.record dd.dim {
+  color: var(--text-muted);
+}
+
+/* --- phone ------------------------------------------------------------------
+   The standing contents column cannot stand on a phone, so it lies down: the
+   five words move to a bottom bar, still words, still all visible, and the full
+   contents list becomes the first thing on the home screen. Same architecture,
+   different posture. */
+
+.frame {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  max-width: 390px;
+  margin-inline: auto;
+  border-inline: var(--border-width) solid var(--border);
+}
+
+.frame .main {
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+/* A phone is not a wall. The rhythm stays generous but comes down a step. */
+.frame .block + .block {
+  margin-top: var(--space-8);
+}
+
+.frame .lede {
+  font-size: var(--text-2xl);
+}
+
+.frame .doors {
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.frame .acts .act {
+  flex: 1;
+  justify-content: center;
+  min-height: 52px;
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rows a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding: var(--space-2) var(--space-1) var(--space-2) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  text-decoration: none;
+}
+
+.rows a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: var(--space-3);
+  bottom: var(--space-3);
+  width: var(--d02-rule, 2px);
+  background: transparent;
+}
+
+.rows a:active::before {
+  background: var(--accent);
+}
+
+.rows .name {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+}
+
+.rows .said {
+  display: block;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.rows .after {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.spine {
+  display: flex;
+  border-top: var(--border-width) solid var(--border);
+  background: var(--bg-page);
+}
+
+.spine a {
+  position: relative;
+  flex: 1;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.spine a.is-here {
+  color: var(--text-primary);
+}
+
+.spine a.is-here::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-3);
+  right: var(--space-3);
+  height: var(--d02-rule, 2px);
+  background: var(--accent);
+}
+
+/* --- narrow desktop --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .room {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contents {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+    border-right: 0;
+    border-bottom: var(--border-width) solid var(--border);
+    padding: 0 var(--space-4);
+    overflow-x: auto;
+  }
+
+  .contents-label,
+  .toc-sub,
+  .bookplate .stat {
+    display: none;
+  }
+
+  .toc {
+    display: flex;
+  }
+
+  .toc > li > a {
+    padding: var(--space-3) var(--space-3);
+    font-size: var(--text-base);
+    white-space: nowrap;
+  }
+
+  .toc > li > a::before {
+    left: var(--space-3);
+    right: var(--space-3);
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: var(--d02-rule, 2px);
+  }
+
+  .bookplate {
+    margin: 0 0 0 auto;
+    border: 0;
+    padding-inline: var(--space-3);
+    white-space: nowrap;
+  }
+
+  .main {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .study,
+  .doors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}

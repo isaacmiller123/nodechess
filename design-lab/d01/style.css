@@ -1,0 +1,139 @@
+/* d01 STYLE: "Graphite instrument, amber signal"
+   Tokens only. No layout, no structural selectors, no component rules.
+
+   The read: anodized dark aluminium, etched labels, one lit indicator.
+   Surfaces get LIGHTER as they come forward and DARKER as they recess, so a
+   container reads as a milled well rather than a floating card. Hue is rationed:
+   the only saturated colour on a screen is the amber that marks the current
+   thing and the single primary action. Everything else is grey and legible.
+
+   FONTS (constraint 5). Nothing here relies on a font that is not installed
+   without a stated plan. In production ship, self-hosted, woff2, no CDN:
+     Inter 4.x variable        InterVariable.woff2          (SIL OFL 1.1)
+     JetBrains Mono 2.x var    JetBrainsMono[wght].woff2    (SIL OFL 1.1)
+   Neither is installed on this machine, so the stacks below fall through to
+   the platform UI face and SF Mono, which are the closest faithful stand-ins
+   for Inter and JetBrains Mono respectively. Verified: that is what these
+   pages are rendering right now, and they were designed against it, so the
+   real fonts will tighten the type rather than reflow it. */
+
+[data-style='01'] {
+  /* Backgrounds and surfaces. bg-subtle is DARKER than bg-page on purpose:
+     it is the recessed well, not a tinted band. */
+  --bg-page: #1a1c1e;
+  --bg-subtle: #131517;
+  --surface: #212426;
+  --surface-2: #2a2e31;
+  --border: #34383c;
+  --border-strong: #474c51;
+
+  /* Text. Primary sits near-white because an instrument is read at a glance
+     and at an angle. Muted is the etched-label grey. */
+  --text-primary: #e4e7e9;
+  --text-secondary: #a4abb0;
+  --text-muted: #757c81;
+  --text-inverse: #16191b;
+
+  /* Accent: brass, the colour of a lit indicator. Deliberately desaturated so
+     it can sit next to grey without vibrating. It cannot carry white text, so
+     on-accent is ink. */
+  --accent: #cfa257;
+  --accent-hover: #dcb26a;
+  --accent-active: #e6c07f;
+  --accent-soft: #26221a;
+  --on-accent: #1b1610;
+
+  /* Semantic. Note: warning is pushed well toward orange because the accent is
+     already amber. In a screen with both, warning is the redder one. */
+  --success: #7fa54e;
+  --danger: #cf6459;
+  --warning: #dd7f3c;
+  --info: #6f96b0;
+  --focus-ring: #dcb26a;
+
+  /* Type. Two faces, and --font-display is the sans on purpose: a third voice
+     would be costume. Mono is structural here, for labels, identifiers and
+     numbers, never for prose. */
+  --font-sans:
+    'InterVariable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text',
+    'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'JetBrainsMono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+    'Liberation Mono', monospace;
+  --font-display:
+    'InterVariable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text',
+    'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+
+  /* Scale, compressed at the top end. This style has no display sizes. 23px is
+     the ceiling; hierarchy is carried by weight, rule work and colour. */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 19px;
+  --text-2xl: 23px;
+  --text-3xl: 28px;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-bold: 650;
+
+  --leading-tight: 1.22;
+  --leading-normal: 1.5;
+
+  /* Inter wants a touch of negative tracking at text sizes. tracking-wide is
+     sized for small uppercase mono labels, which is its only job here. */
+  --tracking-tight: -0.011em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.085em;
+
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-6: 20px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Radii are machined fillets, not softness. Nothing here is pill shaped
+     except things that genuinely are round. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 5px;
+  --radius-full: 999px;
+
+  /* Depth comes from borders. Shadows exist for things that truly float, and
+     they are tight and colourless. */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
+
+  --border-width: 1px;
+
+  /* Motion is mechanical: short, and it decelerates hard rather than easing in
+     and out like a slideshow. */
+  --motion-fast: 90ms;
+  --motion-base: 140ms;
+  --motion-slow: 220ms;
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* --- d01 extensions. Prefixed, per the contract. --- */
+
+  /* Board. Cool machined greys, not wood: this board belongs to the same
+     instrument as the chrome around it. */
+  --d01-sq-light: #a8b0b6;
+  --d01-sq-dark: #5e676e;
+  --d01-piece-white: #f7f8f8;
+  --d01-piece-black: #16191b;
+  --d01-sq-mark: rgba(207, 162, 87, 0.3);
+
+  /* Figurine stack for the Unicode chess glyphs. Browsers fall back per glyph,
+     so this is a preference rather than a dependency. */
+  --d01-font-figurine: 'Noto Sans Symbols 2', 'Apple Symbols', 'Segoe UI Symbol', serif;
+
+  /* Chrome heights, so the readout strip can be pinned without magic numbers
+     leaking into the feel as raw pixels. */
+  --d01-topbar-h: 44px;
+  --d01-readout-h: 30px;
+  --d01-tabbar-h: 60px;
+}

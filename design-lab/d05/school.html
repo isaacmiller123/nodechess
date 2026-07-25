@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-style="05" data-palette="ink">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nodechess: school</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="feel.css">
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="tb-name">nodechess</span>
+  <span class="tb-path">~/school/ch07-italian-game/lesson-3</span>
+  <span class="tb-right">
+    <span class="tb-id">mercer#K4T9P</span>
+    <span class="pal-switch">
+      <button class="pal is-on" data-pal="ink">ink</button>
+      <button class="pal" data-pal="warm">warm</button>
+      <button class="pal" data-pal="cold">cold</button>
+      <button class="pal" data-pal="hard">hard</button>
+    </span>
+  </span>
+</div>
+
+<main class="main">
+  <div class="wrap">
+
+    <div class="chap">
+      <span class="chap-n">chapter 7 of 40</span>
+      <span class="chap-t">The Italian Game</span>
+      <span class="chap-p">
+        lesson 3 of 5
+        <span class="cells"><span class="cell is-on"></span><span class="cell is-on"></span><span class="cell is-on"></span><span class="cell"></span><span class="cell"></span></span>
+      </span>
+    </div>
+
+    <div class="lesson">
+
+      <div class="board-wrap">
+        <div class="ranks"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+        <div class="board" id="board" data-fen="r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R" data-last="f8 c5"></div>
+        <div class="files"><span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span></div>
+      </div>
+
+      <div>
+        <div class="sect">
+          <div class="sect-head">Viktor</div>
+          <div class="vlog" id="vlog">
+            <p class="vline"><span class="vwho">viktor</span> &nbsp;You played <strong>Bc4</strong>. Good. Now say out loud what it is aimed at.</p>
+            <p class="vline"><span class="vwho">viktor</span> &nbsp;<strong>f7</strong>. Held by the king and by nothing else. Every idea in this chapter comes back to that one square.</p>
+            <p class="vline"><span class="vwho">viktor</span> &nbsp;Black answered <strong>Bc5</strong>. Symmetry. Do not admire it. Break it.</p>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="task" id="task">
+            <span class="task-lab" id="task-lab">Your move</span>
+            <p class="task-body" id="task-body">Support the push to d4, and do not hand over the e-pawn to do it. Click the square you want.</p>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">Moves</div>
+          <div class="moves" id="moves">
+            <span class="mno">1</span><span class="mply">e4</span><span class="mply">e5</span>
+            <span class="mno">2</span><span class="mply">Nf3</span><span class="mply">Nc6</span>
+            <span class="mno">3</span><span class="mply">Bc4</span><span class="mply is-last">Bc5</span>
+          </div>
+        </div>
+
+        <div class="sect">
+          <div class="sect-head">Next</div>
+          <div class="roster">
+            <button class="rrow" data-cmd="next">
+              <span class="rkey">n</span>
+              <span class="rname">next</span>
+              <span class="rdesc">lesson 4, the fried liver</span>
+            </button>
+            <button class="rrow" data-cmd="hint">
+              <span class="rkey">h</span>
+              <span class="rname">hint</span>
+              <span class="rdesc">ask Viktor for less than the answer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div class="dock">
+  <div class="palette" id="palette">
+    <div class="pal-head"><span id="pal-count">13 commands</span><span>up and down to move, enter to run, esc to close</span></div>
+    <div class="pal-list" id="pal-list">
+      <button class="pitem is-sel" data-cmd="play"><span class="pitem-name">play</span><span class="pitem-desc">start a game, any board, any opponent</span><span class="pitem-key">p</span></button>
+      <button class="pitem" data-cmd="resume"><span class="pitem-name">resume</span><span class="pitem-desc">nothing open</span><span class="pitem-key">r</span></button>
+      <button class="pitem" data-cmd="games"><span class="pitem-name">games</span><span class="pitem-desc">22 boards, local, bot or online</span><span class="pitem-key">g</span></button>
+      <button class="pitem" data-cmd="school"><span class="pitem-name">school</span><span class="pitem-desc">40 chapters, you are on 7</span><span class="pitem-key">s</span></button>
+      <button class="pitem" data-cmd="puzzles"><span class="pitem-name">puzzles</span><span class="pitem-desc">today's puzzle, unsolved</span><span class="pitem-key">u</span></button>
+      <button class="pitem" data-cmd="openings"><span class="pitem-name">openings</span><span class="pitem-desc">walk the book line by line</span><span class="pitem-key">o</span></button>
+      <button class="pitem" data-cmd="analysis"><span class="pitem-name">analysis</span><span class="pitem-desc">step through a finished game</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="progress"><span class="pitem-name">progress</span><span class="pitem-desc">what has stuck and what has not</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="library"><span class="pitem-name">library</span><span class="pitem-desc">saved games and studies</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="account"><span class="pitem-name">account</span><span class="pitem-desc">mercer#K4T9P</span><span class="pitem-key">a</span></button>
+      <button class="pitem" data-cmd="settings"><span class="pitem-name">settings</span><span class="pitem-desc">board, pieces, clocks, sound</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="palette"><span class="pitem-name">palette</span><span class="pitem-desc">ink, warm, cold, hard</span><span class="pitem-key"></span></button>
+      <button class="pitem" data-cmd="home"><span class="pitem-name">home</span><span class="pitem-desc">back to the start</span><span class="pitem-key">h</span></button>
+    </div>
+  </div>
+  <div class="cmd-out" id="out"></div>
+  <div class="legend">
+    <span class="lg"><b>click</b> play a move</span>
+    <span class="lg"><b>h</b> hint</span>
+    <span class="lg"><b>n</b> next lesson</span>
+    <span class="lg"><b>,</b> previous</span>
+    <span class="lg"><b>/</b> commands</span>
+  </div>
+  <div class="cmdline is-empty" id="cmdline">
+    <span class="prompt">mercer@nodechess <b>~/school/ch07/l3</b> $</span>
+    <span class="cursor" aria-hidden="true"></span>
+    <input class="cmd-in" id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="command line">
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙',
+                k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+  var FILES = 'abcdefgh';
+
+  [].forEach.call(document.querySelectorAll('[data-fen]'), function (el) {
+    var rows = el.getAttribute('data-fen').split('/');
+    var last = (el.getAttribute('data-last') || '').split(' ');
+    function cell(r, f, p) {
+      var name = FILES.charAt(f) + (8 - r);
+      var cls = 'sq sq--' + ((r + f) % 2 === 0 ? 'l' : 'd') + (last.indexOf(name) > -1 ? ' is-last' : '');
+      return '<div class="' + cls + '" data-sq="' + name + '">' + (p ? '<span class="pc">' + GLYPH[p] + '</span>' : '') + '</div>';
+    }
+    var html = '';
+    for (var r = 0; r < 8; r++) {
+      var row = rows[r], f = 0;
+      for (var i = 0; i < row.length; i++) {
+        var c = row.charAt(i);
+        if (c >= '1' && c <= '9') { var n = +c; while (n--) { html += cell(r, f++, ''); } }
+        else { html += cell(r, f++, c); }
+      }
+    }
+    el.innerHTML = html;
+  });
+
+  var PALS = ['ink', 'warm', 'cold', 'hard'];
+  function setPal(p) {
+    root.setAttribute('data-palette', p);
+    [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+      b.className = 'pal' + (b.getAttribute('data-pal') === p ? ' is-on' : '');
+    });
+  }
+  [].forEach.call(document.querySelectorAll('.pal'), function (b) {
+    b.addEventListener('click', function () { setPal(b.getAttribute('data-pal')); });
+  });
+  function cyclePal() {
+    var i = PALS.indexOf(root.getAttribute('data-palette'));
+    setPal(PALS[(i + 1) % PALS.length]);
+    return root.getAttribute('data-palette');
+  }
+
+  var box = document.getElementById('palette');
+  var list = document.getElementById('pal-list');
+  var count = document.getElementById('pal-count');
+  var out = document.getElementById('out');
+  var cmd = document.getElementById('cmd');
+  var cmdline = document.getElementById('cmdline');
+  var vlog = document.getElementById('vlog');
+  var board = document.getElementById('board');
+  var moves = document.getElementById('moves');
+  var GO = { home: 'home.html', games: 'games.html', school: 'school.html' };
+  var KEYS = { p: 'play', g: 'games', s: 'school', u: 'puzzles', a: 'account', h: 'hint', n: 'next', ',': 'previous' };
+  var solved = false;
+
+  function say(t, bad) { out.textContent = t || ''; out.className = 'cmd-out' + (bad ? ' is-bad' : ''); }
+  function items() { return [].filter.call(list.querySelectorAll('.pitem'), function (i) { return !/is-hidden/.test(i.className); }); }
+  function sel(el) {
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) { i.className = i.className.replace(' is-sel', ''); });
+    if (el) { el.className += ' is-sel'; el.scrollIntoView({ block: 'nearest' }); }
+  }
+  function isOpen() { return /is-open/.test(box.className); }
+  function mark() { cmdline.className = 'cmdline' + (cmd.value ? '' : ' is-empty'); }
+  function open() { box.className = 'palette is-open'; cmd.value = ''; refilter(); cmd.focus(); }
+  function close() { box.className = 'palette'; cmd.value = ''; mark(); }
+
+  function refilter() {
+    var q = cmd.value.trim().toLowerCase(), shown = 0;
+    [].forEach.call(list.querySelectorAll('.pitem'), function (i) {
+      var hit = !q || i.getAttribute('data-cmd').indexOf(q) > -1;
+      i.className = 'pitem' + (hit ? '' : ' is-hidden');
+      if (hit) shown++;
+    });
+    count.textContent = q ? shown + ' of 13 commands' : '13 commands';
+    /* A prefix match beats a match in the middle of the word, so typing s
+       lands on school rather than on resume. */
+    var vis = items(), pre = null;
+    for (var j = 0; j < vis.length; j++) {
+      if (vis[j].getAttribute('data-cmd').indexOf(q) === 0) { pre = vis[j]; break; }
+    }
+    sel(pre || vis[0]);
+  }
+
+  function viktor(html) {
+    var p = document.createElement('p');
+    p.className = 'vline';
+    p.innerHTML = '<span class="vwho">viktor</span> &nbsp;' + html;
+    vlog.appendChild(p);
+  }
+
+  function play(sq) {
+    if (solved) return;
+    if (sq !== 'c3') {
+      viktor('No. ' + sq + ' does nothing for d4. Look for a pawn, not a piece.');
+      say(sq + ': rejected.', true);
+      return;
+    }
+    solved = true;
+    var from = board.querySelector('[data-sq="c2"]');
+    var to = board.querySelector('[data-sq="c3"]');
+    to.innerHTML = from.innerHTML;
+    from.innerHTML = '';
+    [].forEach.call(board.querySelectorAll('.is-last'), function (s) { s.className = s.className.replace(' is-last', ''); });
+    from.className += ' is-last';
+    to.className += ' is-last';
+    moves.insertAdjacentHTML('beforeend', '<span class="mno">4</span><span class="mply is-last">c3</span><span class="mply">&#183;&#183;&#183;</span>');
+    viktor('<strong>c3</strong>. Yes. Now d4 is a threat instead of a wish, and the e-pawn is still yours.');
+    document.getElementById('task-lab').textContent = 'Done';
+    document.getElementById('task-body').textContent = 'Lesson 4 is open. Press n.';
+    say('c3 accepted. lesson 3 of 5 complete.');
+  }
+
+  [].forEach.call(board.querySelectorAll('.sq'), function (s) {
+    s.addEventListener('click', function () { play(s.getAttribute('data-sq')); });
+  });
+
+  function run(name) {
+    if (!name) return;
+    if (GO[name]) { location.href = GO[name]; return; }
+    close();
+    if (name === 'palette') { say('palette is now ' + cyclePal() + '.'); return; }
+    if (name === 'hint') { viktor('A pawn, not a piece. It should defend the square you want to push to.'); say('hint given.'); return; }
+    if (name === 'next') {
+      if (solved) { say('lesson 4, the fried liver: not wired in this preview.'); }
+      else { say('lesson 4 opens once this move is played.'); }
+      return;
+    }
+    if (name === 'previous') { say('lesson 2, why the bishop goes to c4: not wired in this preview.'); return; }
+    if (name === 'resume') { say('resume: nothing open. type play to start one.'); return; }
+    say(name + ': no screen for this in the preview yet.');
+  }
+
+  cmd.addEventListener('input', function () { mark(); if (isOpen()) refilter(); });
+  cmd.addEventListener('focus', function () { if (!isOpen() && !cmd.value) open(); });
+  cmd.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { close(); cmd.blur(); e.preventDefault(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!isOpen()) { open(); return; }
+      var l = items(), i = l.indexOf(list.querySelector('.is-sel'));
+      sel(l[(i + (e.key === 'ArrowDown' ? 1 : l.length - 1) + l.length) % l.length]);
+      e.preventDefault(); return;
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (isOpen()) {
+        var s = list.querySelector('.is-sel');
+        if (s) run(s.getAttribute('data-cmd'));
+        else { say('no command matches "' + cmd.value.trim() + '".', true); close(); }
+      } else if (cmd.value.trim()) {
+        var typed = cmd.value.trim().toLowerCase().split(' ')[0];
+        if (typed === 'c3') { close(); play('c3'); return; }
+        var found = list.querySelector('.pitem[data-cmd="' + typed + '"]');
+        if (found) run(typed); else { say(typed + ': not a command. press / to see the list.', true); cmd.value = ''; mark(); }
+      }
+    }
+  });
+
+  [].forEach.call(document.querySelectorAll('[data-cmd]'), function (b) {
+    if (b.tagName !== 'BUTTON') return;
+    b.addEventListener('click', function () { run(b.getAttribute('data-cmd')); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.target === cmd) return;
+    if (e.metaKey || e.ctrlKey) { if (e.key === 'k') { open(); e.preventDefault(); } return; }
+    if (e.key === '/' || e.key === '?') { open(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { close(); return; }
+    var k = KEYS[e.key];
+    if (k) { run(k); e.preventDefault(); return; }
+    if (e.key.length === 1) { cmd.focus(); }
+  });
+})();
+</script>
+</body>
+</html>
