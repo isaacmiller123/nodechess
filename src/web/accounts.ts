@@ -14,9 +14,12 @@ import {
   KEY_PURPOSE,
   Keyring,
   StorageLikeKeyStore,
+  appendEvent,
   appendPersonal,
+  certSetFrom,
   createAccountChain,
   deriveChild,
+  makeCertEvent,
   deriveIdentity,
   ed25519,
   eventId,
@@ -126,6 +129,117 @@ export interface CreateAccountOpts {
   rememberSeed?: boolean
 }
 
+// ---------------------------------------------------------------------------
+// Cross-device restore seam (§5 the network IS the storage, §10 sign in anywhere)
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolve an account's own chain from the overlay, given the freshly derived
+ * identity. Registered by the renderer's account-net layer (which owns the
+ * peer/overlay) — this module must not import it, so the dependency is injected,
+ * exactly like setPinRootSignerProvider.
+ *
+ * Takes the whole identity, not just the root, because the peer that performs
+ * the lookup has to run AS this account: sign-in is what starts the peer, so a
+ * restore that needed an already-signed-in peer would deadlock.
+ *
+ * Contract: resolve the subject's chain, verify it, and return it — or null when
+ * the network has nothing (offline, or an account that never replicated). MUST
+ * NOT throw; a restore failure is an honest "not found", never a broken sign-in.
+ */
+export type ChainRestoreProvider = (identity: Identity) => Promise<Chain | null>
+
+let chainRestoreProvider: ChainRestoreProvider | null = null
+
+/** Register the cross-device chain-restore provider (the account-net layer calls
+ *  this once at boot). Until it is set, sign-in is local-only — the pre-network
+ *  behavior, unchanged. */
+export function setChainRestoreProvider(fn: ChainRestoreProvider | null): void {
+  chainRestoreProvider = fn
+}
+
+/** Ask the network for `identity`'s chain. Verified here so a hostile or partial
+ *  reconstruction can never become a local account. Null on anything short of a
+ *  fully-verifying chain for the right root. */
+async function restoreChainFor(identity: Identity): Promise<Chain | null> {
+  if (!chainRestoreProvider) return null
+  const rootPub = toB64u(identity.rootPub)
+  let chain: Chain | null
+  try {
+    chain = await chainRestoreProvider(identity)
+  } catch {
+    return null // an unreachable overlay is "not found", not a sign-in failure
+  }
+  if (!chain || chain.root !== rootPub) return null
+  return verifyChain(chain).ok ? chain : null
+}
+
+/**
+ * Adopt a network-resolved chain onto THIS device: enroll a fresh device key as
+ * a root-signed personal-lane cert (spec §1 "enrollment is a personal-lane
+ * root-signed certificate — valid offline"), persist chain + record, and open
+ * the session. Returns null when the network had nothing, so the caller can fall
+ * through to its honest error.
+ *
+ * The new device takes the next free device index, so it never collides with the
+ * original machine's key and both remain independently revocable.
+ */
+async function adoptFromNetwork(identity: Identity): Promise<AccountsState | null> {
+  const restored = await restoreChainFor(identity)
+  if (!restored) return null
+
+  const rootPub = toB64u(identity.rootPub)
+  const index = nextDeviceIndex(rootPub, restored)
+  const device = deriveChild(identity.seed, KEY_PURPOSE.device, index)
+  const devicePub = toB64u(device.pub)
+  const certEv = makeCertEvent(identity.rootPriv, rootPub, restored, {
+    childPub: devicePub,
+    purpose: KEY_PURPOSE.device,
+    index,
+    label: deviceLabel(),
+    ts: Date.now(),
+  })
+  const chain = appendEvent(restored, certEv)
+  const vr = verifyChain(chain)
+  if (!vr.ok) throw new Error(`device enrollment broke the restored chain: ${vr.errors[0]?.code}`)
+
+  const account: StoredAccount = {
+    v: 1,
+    foldedName: identity.foldedName,
+    displayName: identity.displayName,
+    tag: identity.tag,
+    rootPub,
+    device: { index, pub: devicePub, certEvent: eventId(certEv.body) },
+  }
+  // Chain first, record second — the same ordering (and the same reasoning) as
+  // createAccount: a half-adopted account must never brick the name.
+  await keyring().saveChain(chain.root, chain)
+  try {
+    await keyring().saveAccount(account)
+  } catch (e) {
+    try {
+      await keyring().removeChain(chain.root)
+    } catch {
+      /* best-effort rollback */
+    }
+    throw e
+  }
+  session = { identity, account }
+  return getState()
+}
+
+/** The lowest device index not already certified in the chain. */
+function nextDeviceIndex(rootPub: string, chain: Chain): number {
+  const used = new Set(
+    certSetFrom(rootPub, chain.events)
+      .filter((c) => c.purpose === KEY_PURPOSE.device)
+      .map((c) => c.index),
+  )
+  let i = 0
+  while (used.has(i)) i++
+  return i
+}
+
 /**
  * Create an account fully offline: derive → genesis + device-0 cert →
  * persist chain THEN record → signed in. Refuses an existing (foldedName,
@@ -214,19 +328,36 @@ export async function signIn(
   const identity = await deriveIdentity(name, password)
   let account = await keyring().getAccount(identity.foldedName, identity.tag)
   if (!account) {
+    // CROSS-DEVICE (§10 "sign in anywhere"): this machine has never seen the
+    // account, but the identity is fully derived — the keys ARE the account. Ask
+    // the network for the chain and enroll this device against it. Only when
+    // that finds nothing is "not on this device" the honest answer.
+    const adopted = await adoptFromNetwork(identity)
+    if (adopted) return adopted
     const sameName = (await keyring().listAccounts()).some(
       (a) => a.foldedName === identity.foldedName,
     )
     throw new Error(
       sameName
         ? 'no account with this name and password on this device'
-        : `no account named '${identity.foldedName}' on this device — create it explicitly`,
+        : chainRestoreProvider === null
+          ? `no account named '${identity.foldedName}' on this device — create it explicitly`
+          : `could not find '${identity.foldedName}' on this device or the network — check the name and password, or restore from your recovery phrase`,
     )
   }
   // Tag is a 25-bit prefix — keep the full-rootPub check as defense in depth.
   if (toB64u(identity.rootPub) !== account.rootPub)
     throw new Error('wrong password (derived key does not match this account)')
-  const chain = await keyring().loadChain(account.rootPub)
+  let chain = await keyring().loadChain(account.rootPub)
+  if (!chain) {
+    // A record with no chain: recoverable the same way — the chain lives on the
+    // network by design (§5), so refuse only once the network has nothing.
+    const restored = await restoreChainFor(identity)
+    if (restored) {
+      await keyring().saveChain(restored.root, restored)
+      chain = restored
+    }
+  }
   if (!chain) throw new Error('account record exists but its chain is missing — cannot sign in')
   if (chain.root !== account.rootPub) throw new Error('stored chain belongs to a different root')
   const vr = verifyChain(chain)

@@ -3,8 +3,9 @@
 // distinct grantors from the account's canonical witness set each signed it,
 // its granted time sits within the clock window of the grantors' median, its
 // epoch advances monotonically, no unexpired fuse bans the root, and — for a
-// takeover by a DIFFERENT device — it carries a PIN-gated session that verifies
-// against the account's active pinPub.
+// takeover by a DIFFERENT device — it carries a session authorizing exactly
+// that device at exactly that epoch: PIN-signed when the account has an active
+// PIN record, root-signed when it does not (see verifyTakeover's two lanes).
 //
 // GENERATION (buildLeaseBody/signGrant/grantLease) mints records; VERIFICATION
 // (verifyLease/verifyGrantSig) is a pure function of its inputs — same bytes →
@@ -17,7 +18,7 @@ import { ed25519, toB64u, verifySigB64u as verifySig } from '../hash'
 import type { B64u } from '../types'
 import { nodeIdOf } from './distance'
 import { canonicalWitnessSet, type ChainSummary, type EligibilityParams } from './eligibility'
-import { isFuseActive, verifyPinSession } from './pin'
+import { isFuseActive, verifyPinSession, verifyRootSession } from './pin'
 import type {
   FuseRecord,
   Lease,
@@ -26,7 +27,10 @@ import type {
   NodeDirectory,
   NodeId,
   PinSession,
+  PinSessionBody,
+  RootSession,
   SubjectSummary,
+  TakeoverAuth,
 } from './types'
 import { medianInt } from './wtime'
 
@@ -101,6 +105,23 @@ export function pinSessionId(session: PinSession): B64u {
   return toB64u(canonicalHash(session.body))
 }
 
+/** The takeover reference id of a root session — same body, same hash rule, so
+ * LeaseBody.takeover is lane-agnostic and buildLeaseBody needs no change. */
+export function rootSessionId(session: RootSession): B64u {
+  return toB64u(canonicalHash(session.body))
+}
+
+/** LeaseBody.takeover for either lane. Both sessions carry the same body type
+ * and hash the same way, so this is a discriminant-free hash by construction. */
+export function takeoverAuthId(auth: TakeoverAuth): B64u {
+  return toB64u(canonicalHash(auth.session.body))
+}
+
+/** Spread the lane-appropriate field into a VerifyLeaseCtx. */
+export function takeoverAuthCtx(auth: TakeoverAuth): Pick<VerifyLeaseCtx, 'session' | 'rootSession'> {
+  return auth.kind === 'pin' ? { session: auth.session } : { rootSession: auth.session }
+}
+
 // ---------------------------------------------------------------------------
 // Verification
 // ---------------------------------------------------------------------------
@@ -123,10 +144,17 @@ export interface VerifyLeaseCtx {
   /** The previously observed lease for this root, if any — fences epoch and
    * decides whether a takeover gate is required. */
   prior?: { epoch: number; device: B64u } | null
-  /** pinPub from the account's active PIN record — required to check a takeover. */
+  /**
+   * pinPub from the account's active PIN record. PRESENT ⇒ the takeover gate
+   * runs the PIN lane and a PinSession is mandatory. ABSENT ⇒ the account has
+   * no PIN record and the root lane applies. Derived by the verifier from the
+   * subject's own signed records, so the claimant cannot pick the lane.
+   */
   pinPub?: B64u
   /** The PIN session a takeover lease references (must hash to body.takeover). */
   session?: PinSession
+  /** The root session a takeover references when the account has no PIN. */
+  rootSession?: RootSession
 }
 
 export interface LeaseVerify {
@@ -229,29 +257,69 @@ export function verifyLease(lease: Lease, ctx: VerifyLeaseCtx): LeaseVerify {
   return { ok: errors.length === 0, errors, witnessSet, validGrantors }
 }
 
-/** Takeover-gate checks (§4): a valid PIN session authorizing this device. */
+/**
+ * Takeover-gate checks (§4): a valid session authorizing exactly this device at
+ * exactly this epoch.
+ *
+ * TWO LANES, chosen by the SUBJECT'S signed state — never by the claimant:
+ *  - `ctx.pinPub` known (the account carries an active PIN record) ⇒ the PIN
+ *    lane, unchanged and mandatory. A password thief cannot downgrade a
+ *    PIN-protected account by withholding a session; the root lane is refused
+ *    outright whenever a pinPub exists.
+ *  - `ctx.pinPub` absent (no PIN record on the account) ⇒ the ROOT lane: the
+ *    account root key signs the same body. Without this an account with no PIN
+ *    can NEVER move to a second device — and a PIN cannot be provisioned
+ *    without a live committee, so the two conditions deadlocked each other and
+ *    cross-device play was impossible.
+ *
+ * The root lane is one factor, not two: whoever holds the password holds the
+ * account, which is exactly what §1 Recovery and the sign-in copy already
+ * state. Enabling PINs later strictly upgrades this — an account that appends a
+ * PIN record moves to the PIN lane automatically, with no migration.
+ */
 function verifyTakeover(body: LeaseBody, ctx: VerifyLeaseCtx): string[] {
   const errors: string[] = []
   if (body.takeover === undefined) {
-    errors.push('takeover: different device but no PIN session referenced')
+    errors.push('takeover: different device but no session referenced')
     return errors
   }
-  if (ctx.pinPub === undefined) {
-    errors.push('takeover: no active pinPub to verify the session against')
+
+  // --- PIN lane: an active PIN record exists, so a PIN session is required.
+  if (ctx.pinPub !== undefined) {
+    const session = ctx.session
+    if (!session) {
+      errors.push('takeover: referenced PIN session not presented')
+      return errors
+    }
+    if (pinSessionId(session) !== body.takeover) errors.push('takeover: session id != lease.takeover reference')
+    for (const e of takeoverBodyErrors(session.body, body)) errors.push(e)
+    if (!verifyPinSession(session, ctx.pinPub))
+      errors.push('takeover: session signature does not verify under pinPub')
     return errors
   }
-  const session = ctx.session
-  if (!session) {
-    errors.push('takeover: referenced PIN session not presented')
+
+  // --- Root lane: no PIN record on this account.
+  const rootSession = ctx.rootSession
+  if (!rootSession) {
+    errors.push('takeover: referenced root session not presented')
     return errors
   }
-  if (pinSessionId(session) !== body.takeover) errors.push('takeover: session id != lease.takeover reference')
-  if (session.body.purpose !== 'lease-takeover') errors.push('takeover: session purpose is not lease-takeover')
-  if (session.body.root !== body.root) errors.push('takeover: session root != lease root')
-  if (session.body.device !== body.device) errors.push('takeover: session authorizes a different device')
+  if (rootSessionId(rootSession) !== body.takeover)
+    errors.push('takeover: session id != lease.takeover reference')
+  for (const e of takeoverBodyErrors(rootSession.body, body)) errors.push(e)
+  if (!verifyRootSession(rootSession, body.root))
+    errors.push('takeover: session signature does not verify under root')
+  return errors
+}
+
+/** The session-body checks both lanes share: purpose, root, device, epoch-bind. */
+function takeoverBodyErrors(sb: PinSessionBody, body: LeaseBody): string[] {
+  const errors: string[] = []
+  if (sb.purpose !== 'lease-takeover') errors.push('takeover: session purpose is not lease-takeover')
+  if (sb.root !== body.root) errors.push('takeover: session root != lease root')
+  if (sb.device !== body.device) errors.push('takeover: session authorizes a different device')
   // Epoch-bind: the session must authorize THIS lease's epoch, so a takeover
   // session captured at one epoch cannot be replayed to authorize a later one.
-  if (session.body.epoch !== body.epoch) errors.push('takeover: session epoch != lease epoch')
-  if (!verifyPinSession(session, ctx.pinPub)) errors.push('takeover: session signature does not verify under pinPub')
+  if (sb.epoch !== body.epoch) errors.push('takeover: session epoch != lease epoch')
   return errors
 }

@@ -31,6 +31,7 @@ import type {
   FuseRecord,
   PinSessionBody,
   PinSession,
+  RootSession,
 } from './types'
 
 const MS_PER_DAY = 86_400_000
@@ -419,6 +420,37 @@ export function verifyPinSession(session: PinSession, pinPub: B64u): boolean {
   const parsed = zPinSessionBody.safeParse(session.body)
   if (!parsed.success) return false
   return verifySig(session.pinSig, canonicalBytes(session.body), pinPub)
+}
+
+/**
+ * Root-signed authorization for an account with NO active PIN record. Same body
+ * and same replay-binding as makePinSession; the root key signs instead of the
+ * pinKey. Mirrors buildPinRecord's rootPriv/root agreement check so a caller can
+ * never mint a session under a key the account does not own.
+ */
+export function makeRootSession(
+  body: PinSessionBody,
+  rootPriv: Uint8Array,
+  root: B64u,
+): RootSession {
+  const parsed = zPinSessionBody.safeParse(body)
+  if (!parsed.success) throw new Error(`makeRootSession: invalid body: ${parsed.error.issues[0]?.code}`)
+  if (toB64u(ed25519.getPublicKey(rootPriv)) !== root)
+    throw new Error('makeRootSession: rootPriv does not match root')
+  if (body.root !== root) throw new Error('makeRootSession: body.root does not match root')
+  return { body, rootSig: toB64u(ed25519.sign(canonicalBytes(body), rootPriv)) }
+}
+
+/**
+ * Verify a root session against the account root pubkey. The root IS the
+ * account identifier (LeaseBody.root / PresenceBody.root), so this needs no
+ * lookup — the caller passes the same root the record binds to.
+ */
+export function verifyRootSession(session: RootSession, root: B64u): boolean {
+  const parsed = zPinSessionBody.safeParse(session.body)
+  if (!parsed.success) return false
+  if (session.body.root !== root) return false
+  return verifySig(session.rootSig, canonicalBytes(session.body), root)
 }
 
 // ===========================================================================

@@ -196,7 +196,7 @@ async function run(M) {
   const bodyTakeNoSess = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 2 })
   const grantsTakeNo = witnesses.slice(0, 9).map((w) => lease.signGrant(bodyTakeNoSess, w.nodeId, w.device.pubB, w.device.priv, NOW))
   const takeNo = lease.verifyLease(lease.grantLease(bodyTakeNoSess, grantsTakeNo), { ...ctx, prior: { epoch: 1, device: deviceA.pubB }, pinPub })
-  ok(!takeNo.ok && takeNo.errors.some((e) => e.includes('no PIN session referenced')), 'a takeover by a different device WITHOUT a PIN session is rejected')
+  ok(!takeNo.ok && takeNo.errors.some((e) => e.includes('no session referenced')), 'a takeover by a different device WITHOUT any session is rejected')
 
   // takeover WITH a valid session → accepted
   const session = mkSession(deviceB.pubB)
@@ -213,6 +213,40 @@ async function run(M) {
   const bodyBadP = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 2, takeover: lease.pinSessionId(badPurpose) })
   const grantsBadP = witnesses.slice(0, 9).map((w) => lease.signGrant(bodyBadP, w.nodeId, w.device.pubB, w.device.priv, NOW))
   ok(lease.verifyLease(lease.grantLease(bodyBadP, grantsBadP), { ...ctx, prior: { epoch: 1, device: deviceA.pubB }, pinPub, session: badPurpose }).errors.some((e) => e.includes('purpose is not lease-takeover')), 'a takeover session with the wrong purpose is rejected')
+
+  // -- ROOT LANE: accounts with NO PIN record (ctx.pinPub absent).
+  // Without this lane a PIN-less account can never reach a second device, and a
+  // PIN cannot be provisioned without a live committee — the two deadlocked.
+  const takeoverCtx = { ...ctx, prior: { epoch: 1, device: deviceA.pubB } }
+  const mkRootSession = (device, epoch = 2, root = subjectRoot, priv = subjKp.priv) =>
+    pin.makeRootSession({ v: 1, root, device, purpose: 'lease-takeover', evalNonce: kp(4321).pubB, wts: NOW, epoch }, priv, root)
+
+  const rootSession = mkRootSession(deviceB.pubB)
+  const bodyRootTake = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 2, takeover: lease.rootSessionId(rootSession) })
+  const grantsRootTake = witnesses.slice(0, 9).map((w) => lease.signGrant(bodyRootTake, w.nodeId, w.device.pubB, w.device.priv, NOW))
+  const rootTake = lease.verifyLease(lease.grantLease(bodyRootTake, grantsRootTake), { ...takeoverCtx, rootSession })
+  ok(rootTake.ok, 'no-PIN account: a takeover WITH a valid root session is accepted')
+
+  // The lane is chosen by the SUBJECT's signed state, not the claimant: an
+  // account that HAS a pinPub cannot be downgraded by presenting a root session.
+  const downgrade = lease.verifyLease(lease.grantLease(bodyRootTake, grantsRootTake), { ...takeoverCtx, pinPub, rootSession })
+  ok(!downgrade.ok && downgrade.errors.some((e) => e.includes('referenced PIN session not presented')), 'a PIN-anchored account cannot be downgraded to the root lane')
+
+  // An attacker's own valid root session cannot authorize the subject's lease:
+  // it is signed under the attacker's root, so it fails both the root-match and
+  // the signature check. (makeRootSession refuses to mint a session whose body
+  // root disagrees with the signing key, so a forgery must come from elsewhere.)
+  const attacker = kp(999)
+  const attackerSession = mkRootSession(deviceB.pubB, 2, attacker.pubB, attacker.priv)
+  const bodyForged = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 2, takeover: lease.rootSessionId(attackerSession) })
+  const grantsForged = witnesses.slice(0, 9).map((w) => lease.signGrant(bodyForged, w.nodeId, w.device.pubB, w.device.priv, NOW))
+  const forged = lease.verifyLease(lease.grantLease(bodyForged, grantsForged), { ...takeoverCtx, rootSession: attackerSession })
+  ok(!forged.ok && forged.errors.some((e) => e.includes('session root != lease root')), "another account's root session cannot authorize this lease")
+
+  // Epoch-replay binding holds on the root lane too.
+  const bodyRootReplay = lease.buildLeaseBody({ ...bodyOpts(subjectRoot, deviceB.pubB), epoch: 3, takeover: lease.rootSessionId(rootSession) })
+  const grantsRootReplay = witnesses.slice(0, 9).map((w) => lease.signGrant(bodyRootReplay, w.nodeId, w.device.pubB, w.device.priv, NOW))
+  ok(lease.verifyLease(lease.grantLease(bodyRootReplay, grantsRootReplay), { ...ctx, prior: { epoch: 2, device: deviceA.pubB }, rootSession }).errors.some((e) => e.includes('session epoch != lease epoch')), 'root-lane session bound to epoch 2 cannot be replayed at epoch 3')
 
   // ==========================================================================
   console.log('\n· 5. lease: fuse block + small-population floor …')

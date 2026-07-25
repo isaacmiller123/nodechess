@@ -282,6 +282,35 @@ export interface PinSession {
   pinSig: B64u
 }
 
+/**
+ * Root-signed authorization, used for accounts that carry NO active PIN record
+ * (spec §1: the PIN gates the witnessed zone, and provisioning one needs a live
+ * committee — so until a PIN exists the password alone is the account, exactly
+ * as the sign-in copy states). Same body as a PIN session so the epoch/device/
+ * purpose replay-binding is identical; the only difference is which key signs.
+ *
+ * A verifier chooses the lane from the SUBJECT'S OWN signed state, never from
+ * the claimant: an account with an active PIN record must present a PinSession
+ * (verifyTakeover refuses this lane whenever pinPub is known), so a password
+ * thief cannot downgrade a PIN-protected account by omitting the session.
+ */
+export interface RootSession {
+  body: PinSessionBody
+  /** ed25519 by the account ROOT key over canonicalBytes(body). */
+  rootSig: B64u
+}
+
+/**
+ * The session authorizing a different-device lease takeover. Which lane applies
+ * is fixed by the account's own signed state, not by the caller: 'pin' for an
+ * account carrying an active PIN record, 'root' for one that does not. Both
+ * hash to LeaseBody.takeover under the same rule, so the lease body is
+ * lane-agnostic (see lease.takeoverAuthId / lease.verifyTakeover).
+ */
+export type TakeoverAuth =
+  | { kind: 'pin'; session: PinSession }
+  | { kind: 'root'; session: RootSession }
+
 // ---------------------------------------------------------------------------
 // Slashing & adjudication (§4)
 // ---------------------------------------------------------------------------

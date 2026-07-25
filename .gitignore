@@ -76,6 +76,8 @@ Thumbs.db
 desktop.ini
 /dist-web/
 /dist-server/
+/dist-seed/
+/out-seed/
 
 # local web-server state (accounts + per-user DBs) — never commit
 .webdata/

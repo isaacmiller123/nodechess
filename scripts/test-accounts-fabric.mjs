@@ -246,7 +246,7 @@ async function run(M) {
     subject, summaries, params: PARAMS_A2, nowMs: NOW,
   })
   const noSessVerify = W.verifyLease(noSessRes.lease, { ...leaseCtx, prior: { epoch: 1, device: alice.device.pubB }, pinPub: committee.pinPub })
-  ok(noSessRes.ok && !noSessVerify.ok && noSessVerify.errors.some((e) => e.includes('no PIN session')), 'a device-B takeover WITHOUT a PIN session fails verifyLease')
+  ok(noSessRes.ok && !noSessVerify.ok && noSessVerify.errors.some((e) => e.includes('no session referenced')), 'a device-B takeover WITHOUT any session fails verifyLease')
 
   // Derive the pinKey through the committee, mint the takeover session.
   const pv = await W.pinVerifyFlow({ fabric: alice.ep, root: alice.root.pubB, pin: '4271', committee, wts: NOW, rng: seededRng('pin-eval-good'), checkDleq: true })

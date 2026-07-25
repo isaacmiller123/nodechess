@@ -1,7 +1,7 @@
 {
   "name": "chess-sharp",
   "version": "1.3.0",
-  "description": "Chess# — offline, local-first chess analysis & teaching desktop app powered by Stockfish, with bundled Lichess content and local coaching.",
+  "description": "Chess# \u2014 offline, local-first chess analysis & teaching desktop app powered by Stockfish, with bundled Lichess content and local coaching.",
   "author": "Isaac Miller",
   "license": "GPL-3.0-or-later",
   "private": true,
@@ -95,7 +95,12 @@
     "dist:exe": "electron-vite build && electron-builder --dir",
     "package": "electron-vite build && electron-builder",
     "art:chess3d": "node scripts/prep-chess3d.mjs",
-    "smoke:chess3d": "node scripts/smoke-chess3d.mjs"
+    "smoke:chess3d": "node scripts/smoke-chess3d.mjs",
+    "dev:seed": "vite --config vite.seed.config.ts",
+    "build:seed": "vite build --config vite.seed.config.ts",
+    "dev:seed:desktop": "electron-vite dev --config electron.seed.config.ts",
+    "build:seed:desktop": "electron-vite build --config electron.seed.config.ts",
+    "test:accounts-receipts": "node scripts/test-accounts-receipts.mjs"
   },
   "dependencies": {
     "@jortvl/draughts": "^0.4.2",

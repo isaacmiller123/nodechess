@@ -211,7 +211,7 @@ async function run(M) {
   // A PIN-gated takeover advances the epoch and is admitted (expiry frees takeover).
   const pin = kp(1234)
   const session = W.makePinSession({ v: 1, root: host.root.pubB, device: deviceB.pubB, purpose: 'lease-takeover', evalNonce: kp(4321).pubB, wts: NOW, epoch: 2 }, pin.priv)
-  const acqBTake = await runnerB.acquire({ takeover: { session } })
+  const acqBTake = await runnerB.acquire({ takeover: { kind: 'pin', session } })
   ok(acqBTake.ok, 'device B acquires via a PIN-gated takeover')
   eq(acqBTake.ok && acqBTake.epoch, 2, 'the takeover advances the epoch (strictly higher, the fencing rule)')
   eq(acqBTake.ok && acqBTake.takeover, true, 'the acquire is flagged as a takeover')
@@ -225,6 +225,42 @@ async function run(M) {
     ctxFor(host.root.pubB, host.nodeId, { prior: { epoch: 2, device: host.signing.key }, pinPub: pin.pubB, session }),
   )
   ok(vReplay.errors.some((e) => e.includes('session epoch != lease epoch')), 'a takeover session bound to epoch 2 cannot be replayed at epoch 3')
+
+  // -- ROOT-LANE AUTO-TAKEOVER: signing in on a second device.
+  // An account with NO PIN cannot mint a PIN session, so without this lane the
+  // second device is refused forever and cross-device play is impossible. The
+  // runner mints a root-signed session itself, but ONLY once the holder's lease
+  // is plainly dead (headTs older than a full TTL) — a LIVE holder is a real
+  // concurrent session and must still be refused.
+  const rootMint = async (epoch) => ({
+    kind: 'root',
+    session: W.makeRootSession(
+      { v: 1, root: host.root.pubB, device: deviceB.pubB, purpose: 'lease-takeover', evalNonce: kp(4321).pubB, wts: NOW, epoch },
+      host.root.priv,
+      host.root.pubB,
+    ),
+  })
+  const runnerBAuto = (nowAt) =>
+    lease.createLeaseRunner({
+      fabric: host.ep,
+      identity: { root: host.root.pubB, key: deviceB.pubB, priv: deviceB.priv },
+      chain: () => host.chain,
+      summaries: () => summaries,
+      subject: () => subjectFor(host.root.pubB, host.nodeId),
+      now: () => nowAt,
+      heartbeatMs: 0,
+      mintTakeover: rootMint,
+    })
+
+  // (a) holder still LIVE ⇒ refused, no auto-mint.
+  const acqLive = await runnerBAuto(NOW).acquire()
+  eq(acqLive.ok === false && acqLive.reason, 'playing-elsewhere', 'a LIVE holder is still refused — auto-takeover never races a real session')
+
+  // (b) holder's lease DEAD (past a full TTL) ⇒ auto-mints and takes the lane.
+  const acqStale = await runnerBAuto(NOW + PARAMS_A2.leaseTtlMs + 1).acquire()
+  ok(acqStale.ok, 'a second device auto-takes a DEAD lease with a root-signed session (no PIN needed)')
+  eq(acqStale.ok && acqStale.takeover, true, 'the auto-acquire is flagged as a takeover')
+  ok(acqStale.ok && acqStale.epoch > 1, 'and it advances the epoch past the dead holder')
 
   // ==========================================================================
   console.log('\n· 3. a forced same-epoch double-write is slashable (witness/slash.ts) …')

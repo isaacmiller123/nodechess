@@ -48,8 +48,8 @@ import type {
   Lease,
   LeaseParams,
   NodeId,
-  PinSession,
   SubjectSummary,
+  TakeoverAuth,
 } from '@shared/accounts/witness'
 
 // ---------------------------------------------------------------------------
@@ -95,6 +95,18 @@ export interface LeaseRunnerDeps {
   /** Heartbeat-renew interval ms. Default PARAMS_A2.leaseHeartbeatMs. `<= 0`
    *  disables the internal timer — a headless suite drives `heartbeat()`. */
   heartbeatMs?: number
+  /**
+   * Mint a takeover session authorizing THIS device at `epoch`. Supplied by the
+   * account layer, which knows the lane: a PIN-anchored account needs the user's
+   * PIN (so this returns null and the UI prompts); an account with no PIN record
+   * signs with the root key it already holds from sign-in.
+   *
+   * This is what makes SIGNING IN ON A SECOND DEVICE work. Without it acquire()
+   * refuses forever with 'playing-elsewhere' — the first device holds the lane
+   * and nothing can ever take it, so the second device can never append.
+   * Returns null when no session can be minted unattended (the honest refusal).
+   */
+  mintTakeover?: (epoch: number) => Promise<TakeoverAuth | null>
   /** Diagnostics sink. */
   log?: (msg: string) => void
 }
@@ -125,10 +137,12 @@ export type AcquireResult =
 export type AcquireFailReason = 'playing-elsewhere' | 'insufficient-witnesses' | string
 
 export interface AcquireOpts {
-  /** A PIN-gated takeover of a dead / other-device lease (spec §4): advances the
-   *  epoch and carries the pinKey-signed session (purpose 'lease-takeover',
-   *  epoch-bound). Without it, a different-device holder is refused. */
-  takeover?: { session: PinSession }
+  /** A gated takeover of a dead / other-device lease (spec §4): advances the
+   *  epoch and carries a session authorizing this device at that epoch (purpose
+   *  'lease-takeover', epoch-bound). PIN-signed for accounts with an active PIN
+   *  record, root-signed for those without. Without it, a different-device
+   *  holder is refused. */
+  takeover?: TakeoverAuth
   /** ADVERSARIAL ONLY (suites): bypass the playing-elsewhere guard and gather a
    *  lease at exactly this epoch/device, to prove a forced same-epoch double-grant
    *  is slashable. An honest client NEVER sets this. */
@@ -192,7 +206,7 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
   let lease: Lease | null = null
   let witnessSet: NodeId[] | null = null
   let heldEpoch = 0 // monotonic high-water mark (survives release, never regresses)
-  let takeoverSession: PinSession | null = null // carried while a takeover epoch is held
+  let takeoverAuth: TakeoverAuth | null = null // carried while a takeover epoch is held
   let timer: ReturnType<typeof setInterval> | null = null
 
   const expired = (l: Lease): boolean => now() >= l.body.grantedWts + l.body.ttlMs
@@ -250,7 +264,7 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
     return { epoch, writer, headTs }
   }
 
-  async function gather(epoch: number, takeover?: { session: PinSession }): Promise<AcquireResult> {
+  async function gather(epoch: number, takeover?: TakeoverAuth): Promise<AcquireResult> {
     const res = await clientRequestLease({
       fabric: deps.fabric,
       root,
@@ -264,21 +278,28 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
       summaries: summariesOf(),
       params,
       nowMs: now(),
-      ...(takeover ? { takeover: { session: takeover.session } } : {}),
+      ...(takeover ? { takeover } : {}),
     })
     if (!res.ok) return { ok: false, reason: res.reason } // 'insufficient-witnesses' (C-10)
     lease = res.lease
     witnessSet = res.witnessSet
     heldEpoch = Math.max(heldEpoch, epoch)
-    takeoverSession = takeover?.session ?? null
+    takeoverAuth = takeover ?? null
     startTimer()
     return { ok: true, lease: res.lease, witnessSet: res.witnessSet, epoch, takeover: takeover !== undefined }
+  }
+
+  /** A foreign holder whose witnessed head predates a full lease TTL cannot still
+   *  hold a valid lease (verifyLease would call it expired), so takeover is free.
+   *  headTs unknown ⇒ NOT stale: never guess a live holder dead. */
+  function staleHolder(state: LeaseStateView): boolean {
+    return state.headTs !== null && now() - state.headTs > ttlMs
   }
 
   async function acquire(opts?: AcquireOpts): Promise<AcquireResult> {
     // Idempotent: a live lease is reused (the "held at one epoch" steady state).
     if (lease && !expired(lease) && opts?.forceEpoch === undefined) {
-      return { ok: true, lease, witnessSet: witnessSet ?? [], epoch: lease.body.epoch, takeover: takeoverSession !== null }
+      return { ok: true, lease, witnessSet: witnessSet ?? [], epoch: lease.body.epoch, takeover: takeoverAuth !== null }
     }
 
     // Adversarial force path (suites): gather at an exact epoch, no honest guard.
@@ -293,17 +314,28 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
     // same-epoch double-grant is slashable; the honest client waits.
     const foreignHolder = state.writer !== null && state.writer !== myKey
     if (foreignHolder) {
-      if (!opts?.takeover) {
+      const nextEpoch = Math.max(state.epoch ?? 0, heldEpoch) + 1
+      let auth = opts?.takeover ?? null
+
+      // "Expiry frees takeover" (§4). When the holder's lease is plainly DEAD —
+      // its head is older than a full TTL — a second device may claim the lane
+      // unattended, which is exactly the sign-in-elsewhere case. A LIVE holder is
+      // still refused below: that is a real concurrent session, not a handoff.
+      if (!auth && deps.mintTakeover && staleHolder(state)) {
+        auth = await deps.mintTakeover(nextEpoch)
+        if (auth) log(`lease takeover: holder's lease is stale, minting a ${auth.kind}-signed session`)
+      }
+
+      if (!auth) {
         log(`lease acquire refused: playing elsewhere (device ${state.writer!.slice(0, 8)}… holds epoch ${state.epoch})`)
         return { ok: false, reason: 'playing-elsewhere', heldBy: state.writer!, ...(state.epoch !== null ? { observedEpoch: state.epoch } : {}) }
       }
-      // PIN-gated takeover: advance to the next epoch and carry the session so
-      // verifyLease admits it (strictly higher epoch + a session authorizing this
-      // device at THIS epoch). "Expiry frees takeover" is the honest precondition
-      // the UI checks; the epoch fence + PIN session are the enforcement.
-      const nextEpoch = Math.max(state.epoch ?? 0, heldEpoch) + 1
-      log(`lease takeover: advancing to epoch ${nextEpoch} with a PIN-gated session`)
-      return gather(nextEpoch, opts.takeover)
+
+      // Advance to the next epoch and carry the session so verifyLease admits it
+      // (strictly higher epoch + a session authorizing this device at THIS
+      // epoch). The epoch fence + the session are the enforcement.
+      log(`lease takeover: advancing to epoch ${nextEpoch} with a ${auth.kind}-signed session`)
+      return gather(nextEpoch, auth)
     }
 
     // The canonical set reports an epoch my SYNCED chain does not show a head for
@@ -348,7 +380,7 @@ export function createLeaseRunner(deps: LeaseRunnerDeps): LeaseRunner {
       stopTimer()
       lease = null
       witnessSet = null
-      takeoverSession = null
+      takeoverAuth = null
     },
   }
 }

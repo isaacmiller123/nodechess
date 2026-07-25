@@ -21,10 +21,12 @@
       "@shared/*": ["./src/shared/*"]
     }
   },
+  "exclude": ["src/seed/electron-main.ts"],
   "include": [
     "src/renderer/**/*",
     "src/shared/**/*",
     "src/web/**/*",
+    "src/seed/**/*",
     "src/main/rating/glicko2.ts",
     "src/main/analysis/accuracy.ts",
     "src/main/analysis/estElo.ts"

@@ -93,7 +93,7 @@ jobs:
                    test-accounts-judge-runner test-accounts-verdict-client \
                    test-accounts-social test-accounts-mailbox \
                    test-accounts-social-transport test-accounts-a7-roundb test-accounts-verdict-transport \
-                   test-accounts-embed test-a4-ui test-web-accounts-wiring \
+                   test-accounts-embed test-accounts-receipts test-a4-ui test-web-accounts-wiring \
                    test-afinal-flag \
                    test-judge-fit test-judge-node; do
             echo "== $t =="; node scripts/$t.mjs

@@ -63,10 +63,10 @@
 // social surface an honest wait), never a crash. src/shared/accounts stays pure —
 // all hosting lives here.
 
-import { clientAppendWitnessed, nodeIdOf } from '@shared/accounts/witness'
-import type { FuseRecord, NodeId, SignedPinRecord } from '@shared/accounts/witness'
-import { appendWitnessed, certsProving } from '@shared/accounts'
-import type { B64u, CanonicalObject, Chain, FriendPayload, SignedEvent } from '@shared/accounts'
+import { clientAppendWitnessed, makeRootSession, nodeIdOf } from '@shared/accounts/witness'
+import type { FuseRecord, NodeId, SignedPinRecord, TakeoverAuth } from '@shared/accounts/witness'
+import { KEY_PURPOSE, appendWitnessed, certsProving, deriveChild } from '@shared/accounts'
+import type { B64u, CanonicalObject, Chain, FriendPayload, Identity, SignedEvent } from '@shared/accounts'
 import { sha256, toB64u, utf8 } from '@shared/accounts/hash'
 import { a4Fold, ladderId, ladderInit } from '@shared/accounts/ratings'
 import { PARAMS_A5 } from '@shared/accounts/judge'
@@ -78,6 +78,7 @@ import {
   keyring,
   loadOwnChain,
   rootSigningKey,
+  setChainRestoreProvider,
   getState as webGetState,
 } from '../../../../../web/accounts'
 import { accountsUiStore } from '../mock/store'
@@ -98,6 +99,7 @@ import {
   defaultCapsFor,
   detectPlatform,
   getAccountPeer,
+  startAccountPeer,
   startAccountPeerSingleton,
   stopAccountPeerSingleton,
   type AccountPeer,
@@ -119,6 +121,8 @@ import {
   type StorageDutyGate,
 } from './shardDuty'
 import {
+  getPinClientState,
+  secureRng,
   setPinRootSignerProvider,
   startPinClientFromProvider,
   stopPinClientSingleton,
@@ -128,7 +132,8 @@ import {
   startSocialClientFromProvider,
   stopSocialClientSingleton,
 } from './socialClient'
-import { viewAccountForPeer } from './viewerClient'
+import { resolveAccountView, viewAccountForPeer } from './viewerClient'
+import { summarizeNetStatus } from './accountNetStatus'
 import { requestPreGameSnapshot } from './preGame'
 import { startWitnessing } from './witnessController'
 import type { WitnessRunnerGameInit, WitnessRunnerHandle } from './witnessRunner'
@@ -189,6 +194,117 @@ onlineStore.setSigningKeyProvider(mpSigningKey)
 // once the peer is up). Registered once; the accessor reads the live session.
 setPinRootSignerProvider(rootSigningKey)
 setSocialRootSignerProvider(rootSigningKey)
+
+/** How long a cross-device restore waits for the overlay to find anyone before
+ *  giving up. A new device has to join relays and fill a bucket from cold, so
+ *  this is deliberately patient — but bounded, because the honest answer when
+ *  nothing answers is "not found", not a hung sign-in. */
+const RESTORE_REACHABILITY_TIMEOUT_MS = 20_000
+const RESTORE_POLL_MS = 500
+
+/**
+ * CROSS-DEVICE SIGN-IN (§5 the network is the storage, §10 sign in anywhere).
+ *
+ * Resolve the account's own chain from the overlay on a machine that has never
+ * seen it. Runs BEFORE any session exists, so it stands up its own short-lived
+ * peer and tears it down again; reconcilePeer starts the real one moments later
+ * once sign-in completes.
+ *
+ * The transient peer runs as device index 0, whose key is DERIVED from the seed
+ * and is therefore already ours on every machine that can derive the identity —
+ * and whose cert is already inside the very chain we are fetching, so a verifier
+ * that resolves us reaches the same conclusion. The freshly enrolled per-machine
+ * device key (accounts.adoptFromNetwork) is a separate, higher index.
+ *
+ * Never throws: any failure is an honest null, which surfaces as "not found".
+ */
+setChainRestoreProvider(async (identity: Identity): Promise<Chain | null> => {
+  const root = toB64u(identity.rootPub)
+  const device = deriveChild(identity.seed, KEY_PURPOSE.device, 0)
+  let peer: AccountPeer | null = null
+  let kv: KvStore | null = null
+  try {
+    const platform = detectPlatform()
+    kv = await openKvStore({ budgetBytes: budgetBytesForPlatform(platform), requestPersist: false })
+    const fabric = createBrowserFabric({ nodeId: nodeIdOf(root) })
+    peer = await startAccountPeer({
+      identity: { root, key: toB64u(device.pub), priv: device.priv },
+      fabric,
+      kv,
+      announceIntervalMs: PRESENCE_HEARTBEAT_MS,
+    })
+
+    // A cold overlay knows nobody yet; resolving against an empty directory just
+    // returns the empty floor. Wait for at least one reachable node first.
+    const deadline = Date.now() + RESTORE_REACHABILITY_TIMEOUT_MS
+    while (Date.now() < deadline) {
+      if (summarizeNetStatus(peer, Date.now()).peersReachable > 0) break
+      await new Promise((r) => setTimeout(r, RESTORE_POLL_MS))
+    }
+
+    const live = peer
+    const view = await resolveAccountView(live.overlay, root, {
+      directory: live.fabric.directory(),
+      nowMs: Date.now(),
+    })
+    // Only a FULL reconstruction is adoptable. The 'floor' path is a union of
+    // surviving segments — real data, but not a verified chain, and adopting it
+    // would silently truncate history on the new device.
+    return view.status === 'expected' && view.chain ? view.chain : null
+  } catch {
+    return null
+  } finally {
+    try {
+      await peer?.stop()
+    } catch {
+      /* teardown is best-effort — the restore verdict already stands */
+    }
+    try {
+      await kv?.close?.()
+    } catch {
+      /* ditto */
+    }
+  }
+})
+
+/**
+ * Mint the session that authorizes THIS device to take the write lease at
+ * `epoch` — the step that lets an account move to a second machine.
+ *
+ * Lane, per spec §1 / lease.verifyTakeover:
+ *  - PIN provisioned ('set' | 'banned') ⇒ null. The PIN key is only recoverable
+ *    through a committee evaluation of the user's actual PIN, so an unattended
+ *    mint is impossible by construction; the UI prompts instead.
+ *  - No PIN record ⇒ sign with the account root, which sign-in already derived.
+ *    One factor, matching what the sign-in copy promises: whoever holds the
+ *    password holds the account.
+ */
+async function mintTakeoverSession(deviceKey: B64u, epoch: number): Promise<TakeoverAuth | null> {
+  const signer = rootSigningKey()
+  if (!signer) return null
+  const phase = getPinClientState().phase
+  if (phase === 'set' || phase === 'banned') return null
+  try {
+    const session = makeRootSession(
+      {
+        v: 1,
+        root: signer.root,
+        device: deviceKey,
+        purpose: 'lease-takeover',
+        evalNonce: toB64u(secureRng()(32)),
+        wts: Date.now(),
+        epoch,
+      },
+      signer.rootPriv,
+      signer.root,
+    )
+    return { kind: 'root', session }
+  } catch {
+    // A malformed body or a signer/root disagreement is an honest refusal, not a
+    // crash: acquire() falls back to 'playing-elsewhere'.
+    return null
+  }
+}
 
 /** The signed-in account's own chain, kept in memory so the pre-game snapshot
  *  provider can read the current head SYNCHRONOUSLY (servePreGame answers inline)
@@ -430,6 +546,7 @@ async function reconcilePeer(): Promise<void> {
     fabric: peer.fabric,
     identity: { root: signing.root, key: signing.key, priv: signing.priv },
     chain: () => chainHolder.get(),
+    mintTakeover: (epoch) => mintTakeoverSession(signing.key, epoch),
   })
 
   peerRoot = signing.root

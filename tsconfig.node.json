@@ -23,6 +23,8 @@
     "src/main/**/*",
     "src/preload/**/*",
     "src/shared/**/*",
-    "electron.vite.config.ts"
+    "src/seed/electron-main.ts",
+    "electron.vite.config.ts",
+    "electron.seed.config.ts"
   ]
 }

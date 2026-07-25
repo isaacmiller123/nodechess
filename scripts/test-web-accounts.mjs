@@ -389,6 +389,59 @@ async function run(outdir) {
     eq(fakeLS._map.size, keysBefore, 'failed signIn persisted NOTHING (no create-if-absent)')
   }
 
+  console.log('\n· cross-device signIn: adopt an account this machine has never seen …')
+  {
+    // Stand up a SECOND, empty device (fresh storage + a fresh module instance)
+    // and prove the account can be signed into there from nothing but name +
+    // password + the network. Before the restore seam existed this was flatly
+    // impossible: signIn threw "create it explicitly" with no network path.
+    const deviceA = fakeLS
+    const acctA = await G.keyring().getAccount('testuser')
+    const chainA = await G.keyring().loadChain(acctA.rootPub)
+
+    const deviceB = makeFakeStorage()
+    globalThis.localStorage = deviceB
+    const H = await import(pathToFileURL(glueOut).href + '?device=b')
+
+    // (a) with NO provider registered, behavior is exactly as before.
+    const noNet = await throwsAsync(() => H.signIn('TestUser', 'correct horse battery staple'), 'device B without a restore provider still refuses')
+    ok(noNet && /create it explicitly/.test(String(noNet.message)), 'and keeps the original local-only message')
+    eq(deviceB._map.size, 0, 'a refused cross-device signIn persisted NOTHING')
+
+    // (b) a provider that finds nothing ⇒ honest not-found, still no writes.
+    H.setChainRestoreProvider(async () => null)
+    const missing = await throwsAsync(() => H.signIn('TestUser', 'correct horse battery staple'), 'a provider that finds nothing still refuses')
+    ok(missing && /or the network/.test(String(missing.message)), 'the message now names the network too')
+    eq(deviceB._map.size, 0, 'still persisted nothing')
+
+    // (c) a chain for a DIFFERENT root is refused, never adopted.
+    const strangerRoot = L.deriveChild(new Uint8Array(32).fill(7), 0, 0)
+    const stranger = L.createAccountChain({
+      rootPriv: strangerRoot.priv, rootPub: strangerRoot.pub, displayName: 'Stranger',
+      ts: 1_700_000_000_000, device: { pub: L.toB64u(strangerRoot.pub), index: 0, label: 'X' },
+    })
+    H.setChainRestoreProvider(async () => stranger)
+    const wrongRoot = await throwsAsync(() => H.signIn('TestUser', 'correct horse battery staple'), 'a restored chain for a DIFFERENT root is refused')
+    ok(wrongRoot, 'the root-binding check rejects it')
+    eq(deviceB._map.size, 0, 'and nothing was written')
+
+    // (d) the real thing: the account's own chain resolves ⇒ signed in.
+    H.setChainRestoreProvider(async () => chainA)
+    const st = await H.signIn('TestUser', 'correct horse battery staple')
+    eq(st.signedIn, true, 'device B signs in from name + password alone')
+    eq(st.tag, GOLDENS.tag, 'it derives the SAME identity as device A')
+    eq((await H.verifyOwnChain()).ok, true, 'the adopted chain verifies on device B')
+
+    const acctB = await H.keyring().getAccount('testuser')
+    ok(acctB && acctB.device.index > 0, 'device B enrolled at a NEW device index (no key collision with A)')
+    ok(acctB.device.pub !== acctA.device.pub, "and device B's key differs from device A's")
+    const chainB = await H.keyring().loadChain(acctB.rootPub)
+    eq(chainB.events.length, chainA.events.length + 1, "exactly one event was added: device B's cert")
+    ok(chainB.events.some((e) => e.body.type === 'cert' && e.body.payload.pub === acctB.device.pub), "and it certifies device B's own key")
+
+    globalThis.localStorage = deviceA
+  }
+
   console.log('\n· rememberSeed opt-in …')
   {
     const st = await G.createAccount('SecondUser', 'hunter2hunter2', { rememberSeed: true })

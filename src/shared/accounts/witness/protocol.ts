@@ -23,8 +23,8 @@ import {
   buildLeaseBody,
   grantLease,
   leaseBodyHash,
-  pinSessionId,
   signGrant,
+  takeoverAuthId,
   verifyGrantSig,
   type LeaseParams,
 } from './lease'
@@ -80,6 +80,7 @@ import type {
   PinAttemptReport,
   PinSession,
   SubjectSummary,
+  TakeoverAuth,
   WitnessStore,
 } from './types'
 
@@ -829,8 +830,10 @@ export interface RequestLeaseOpts {
   summaries: ReadonlyMap<NodeId, ChainSummary>
   params: LeaseParams
   nowMs: number
-  /** Takeover session reference (different device); pass to embed body.takeover. */
-  takeover?: { session: PinSession }
+  /** Takeover session reference (different device); pass to embed body.takeover.
+   *  PIN lane for accounts with an active PIN record, root lane for those
+   *  without — the account's own state decides, not the caller. */
+  takeover?: TakeoverAuth
 }
 
 export type RequestLeaseResult =
@@ -871,7 +874,7 @@ export async function clientRequestLease(opts: RequestLeaseOpts): Promise<Reques
     grantedWts: opts.grantedWts,
     ttlMs: opts.ttlMs,
     params: opts.paramsDigest,
-    ...(opts.takeover ? { takeover: pinSessionId(opts.takeover.session) } : {}),
+    ...(opts.takeover ? { takeover: takeoverAuthId(opts.takeover) } : {}),
   })
   const bodyHash = leaseBodyHash(body)
 
