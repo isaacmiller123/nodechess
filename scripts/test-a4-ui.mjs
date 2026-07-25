@@ -18,11 +18,8 @@
 //          curve differs at every interior test point.
 //   A4-25  the meter renders NO numeric trust/width oracle (no "T = …",
 //          no "±N") in any build — §7 widening is invisible.
-//   A4-26  the RatedLobby "Pairing found" demo satisfies the shared
-//          pairingLegal on the EXACT PairViews the surface builds.
-//   A4-27  the "Preview the pairing as" ranked view is guarded on a ladder
-//          where the signed-in account is not ranked — no spillover bracket
-//          ever renders on a provisional player's client.
+//   (A4-26 / A4-27 were pinned against the old RatedLobby, which was deleted
+//    when rated play moved into Play. See the note where they used to run.)
 //   A4-28  every fixture UiLadder.display IS displayState(state, key) — the
 //          shared §6 authority (PARAMS_A4 reveal thresholds 120/100/80/40).
 //   A4-29  the degradation carriers (reconstruction.path='floor',
@@ -135,7 +132,6 @@ async function run(outdir) {
       `export { ProfilePage, projectionFor } from '${ACCT_UI}/profile/ProfilePage.tsx'`,
       `export { ReconstructionCard } from '${ACCT_UI}/profile/ReconstructionCard.tsx'`,
       `export { TrustWidthMeter, widthBand, WIDTH_FLOOR, WIDTH_CEIL } from '${ACCT_UI}/rated/TrustWidthMeter.tsx'`,
-      `export { RatedLobby, demoPairViews, DEMO_PAIRING_WTS } from '${ACCT_UI}/rated/RatedLobby.tsx'`,
       `export { OWN_ACCOUNT, PROFILES, MOCK_NOW } from '${ACCT_UI}/mock/fixtures.ts'`,
       `export { accountsUiStore } from '${ACCT_UI}/mock/store.ts'`,
       `export { displayState, pairViewOf } from '@shared/accounts/ratings/display'`,
@@ -162,9 +158,8 @@ async function run(outdir) {
     absWorkingDir: ROOT,
     jsx: 'automatic',
     loader: { '.css': 'empty' },
-    // DEV=true ARMS the dev-only invariants (RatedLobby's module-scope
-    // pairingLegal check throws on import if the demo pairing regresses) and
-    // proves no dev-only numeric oracle renders (A4-25).
+    // DEV=true ARMS the dev-only module-scope invariants and proves no
+    // dev-only numeric oracle renders (A4-25).
     define: {
       'import.meta.env.DEV': 'true',
       'import.meta.env.PROD': 'false',
@@ -184,9 +179,6 @@ async function run(outdir) {
     widthBand,
     WIDTH_FLOOR,
     WIDTH_CEIL,
-    RatedLobby,
-    demoPairViews,
-    DEMO_PAIRING_WTS,
     OWN_ACCOUNT,
     PROFILES,
     MOCK_NOW,
@@ -203,7 +195,7 @@ async function run(outdir) {
     spectatorOpponentInfo,
   } = M
   const render = (el) => renderToStaticMarkup(el)
-  ok(true, 'bundle imported — RatedLobby module-scope pairingLegal invariant held (DEV armed)')
+  ok(true, 'bundle imported — account UI module-scope invariants held (DEV armed)')
 
   const mira = PROFILES['mira#T8FQ2']
   const adrift = PROFILES['adrift#P9GH3']
@@ -484,85 +476,15 @@ async function run(outdir) {
     'projectionFor(hidden viewer) is unranked-pool on every ladder'
   )
 
-  // ==========================================================================
-  // A4-26 — the "Pairing found" demo is legal under the shared pairingLegal
-  // ==========================================================================
-  console.log('\n[A4-26] RatedLobby demo pairing satisfies mm/pairing.pairingLegal …')
-  for (const key of ['Bullet', 'Blitz', 'Rapid', 'Classical']) {
-    const pv = demoPairViews(key)
-    ok(pv !== null, `${key}: demo PairViews exist for both sides`)
-    deepEq(
-      pairingLegal(pv.own, pv.opp, DEMO_PAIRING_WTS),
-      { legal: true },
-      `${key}: the demo pairing is LEGAL on the exact PairViews the surface builds`
-    )
-    deepEq(
-      pairingLegal(pv.opp, pv.own, DEMO_PAIRING_WTS),
-      pairingLegal(pv.own, pv.opp, DEMO_PAIRING_WTS),
-      `${key}: legality is symmetric`
-    )
-  }
-  const blitzPv = demoPairViews('Blitz')
-  eq(blitzPv.own.display.state, 'ranked', 'Blitz demo: own side is ranked (a true spillover)')
-  ok(blitzPv.opp.display.state !== 'ranked', 'Blitz demo: opponent side is hidden')
-  eq(
-    bracketOf(eloOf(blitzPv.own.ratingMicro)).lo,
-    bracketOf(eloOf(blitzPv.opp.ratingMicro)).lo,
-    'Blitz demo: both sides sit on the same §7 spillover rail'
-  )
-  // Derived (not hardcoded) so a fixture retune cannot rot the pins below.
-  const demoOppElo = eloOf(blitzPv.opp.ratingMicro)
-  const demoBr = bracketOf(demoOppElo)
-  const demoBrStr = `${demoBr.lo}–${demoBr.hi}`
-  eq(demoOppElo, 1493, 'demo opponent hidden Blitz display-Elo golden')
-  eq(demoBrStr, '800–1600', 'demo spillover bracket golden')
-  const foundRanked = render(
-    h(RatedLobby, { initial: { ladder: 'Blitz', phase: 'found', view: 'ranked' } })
-  )
-  const foundRankedText = textOf(foundRanked)
-  ok(foundRanked.includes('Pairing found'), 'found card renders (Blitz, ranked view)')
-  ok(foundRanked.includes(demoBrStr), 'found card shows the opponent BRACKET (shared projection)')
-  ok(
-    !new RegExp(`\\b${demoOppElo}\\b`).test(foundRankedText),
-    'found card never shows the opponent’s precise hidden rating'
-  )
-  ok(
-    foundRanked.includes('Pairing legality verified by both clients'),
-    'found card names the both-clients pairingLegal proof'
-  )
-
-  // ==========================================================================
-  // A4-27 — ranked "Preview the pairing as" view is guarded for hidden ladders
-  // ==========================================================================
-  console.log('\n[A4-27] no spillover bracket on a provisional player’s client …')
-  for (const key of ['Bullet', 'Classical']) {
-    const markup = render(
-      h(RatedLobby, { initial: { ladder: key, phase: 'found', view: 'ranked' } })
-    )
-    const text = textOf(markup)
-    ok(
-      /<button[^>]*\bdisabled\b[^>]*>Ranked view/.test(markup),
-      `${key} (hidden ladder): the Ranked view toggle is DISABLED`
-    )
-    ok(
-      markup.includes('Unranked opponent pool'),
-      `${key}: the pool card renders despite view='ranked' (effective view is forced)`
-    )
-    ok(!markup.includes(demoBrStr), `${key}: no spillover bracket renders`)
-    ok(!new RegExp(`\\b${demoOppElo}\\b`).test(text), `${key}: no opponent rating renders`)
-    ok(markup.includes('Ranked view disabled'), `${key}: the guard explains itself (§6)`)
-    ok(
-      /<button[^>]*aria-pressed="true"[^>]*>Provisional view/.test(markup),
-      `${key}: the provisional view is the pressed segment`
-    )
-  }
-  const foundRankedButtons = render(
-    h(RatedLobby, { initial: { ladder: 'Blitz', phase: 'found', view: 'ranked' } })
-  )
-  ok(
-    !/<button[^>]*\bdisabled\b[^>]*>Ranked view/.test(foundRankedButtons),
-    'Blitz (own ranked ladder): the Ranked view toggle is enabled'
-  )
+  // A4-26 / A4-27 — REMOVED WITH THE OLD RATED LOBBY.
+  //
+  // Both asserted §6 information rules against features/account/rated/RatedLobby
+  // (demo pairings satisfy mm/pairing.pairingLegal; a provisional player's client
+  // renders no spillover bracket and no opponent rating). The lobby was deleted
+  // when rated play moved into Play — the RULES still hold and still matter, so
+  // these must be re-pointed at the new rated flow rather than dropped. The
+  // shared authorities they check (pairingLegal, displayState, widthBand) are
+  // still covered by A4-28, A4-17, A4-18 and A4-25 above.
 
   // ==========================================================================
   // A4-29 — C-12 degradation carriers render as a VISIBLE degraded state

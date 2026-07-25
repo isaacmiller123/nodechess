@@ -149,8 +149,7 @@ export function ProfileTab(): JSX.Element {
             <Eye size={14} aria-hidden /> As others see you
           </span>
           <p className="aprof-card-sub muted small">
-            Rendered from your public chain the way any client derives it — nothing here is
-            asserted.
+            This is your public profile.
           </p>
         </header>
         <div className="aprof-card-body">
@@ -176,7 +175,7 @@ export function ProfileTab(): JSX.Element {
                 <Clock size={12} aria-hidden />{' '}
                 {lastWitnessedWts !== null
                   ? `Last witnessed activity: ${relativeWts(lastWitnessedWts, Date.now())}`
-                  : 'No witnessed activity on record yet — witness attestations arrive with network transport.'}
+                  : 'No games played yet.'}
               </span>
             </div>
           </div>
@@ -185,8 +184,7 @@ export function ProfileTab(): JSX.Element {
           <div className="aprof-sect">
             <span className="aprof-sect-title">Ratings</span>
             <span className="aprof-sect-sub muted small">
-              Placement and provisional ladders show no number — not even to you. Every client
-              derives the same display states from public data.
+              Play 10 games in a time control to get a rating.
             </span>
           </div>
           <RatingLadders ladders={account.ladders} />
@@ -194,8 +192,7 @@ export function ProfileTab(): JSX.Element {
           <div className="aprof-sect">
             <span className="aprof-sect-title">Reputation</span>
             <span className="aprof-sect-sub muted small">
-              Public conduct standing, recomputed from witnessed conduct events — visible from
-              game 1.
+              How other players have found you to play against.
             </span>
           </div>
           <ReputationPanel reputation={account.reputation} />
@@ -209,7 +206,7 @@ export function ProfileTab(): JSX.Element {
             <UserRound size={14} aria-hidden /> Edit profile
           </span>
           <p className="aprof-card-sub muted small">
-            Changes apply as you type — there is nothing to save.
+            Changes save as you type.
           </p>
         </header>
         <div className="aprof-card-body">
@@ -239,7 +236,7 @@ export function ProfileTab(): JSX.Element {
                 onChange={onAvatarPick}
               />
               <span className="aprof-field-hint muted small">
-                PNG or JPEG, 32 KB max — stored as base64 inside your chain.
+                PNG or JPEG, 32 KB max.
               </span>
             </div>
             {avatarError && (
@@ -329,8 +326,7 @@ export function ProfileTab(): JSX.Element {
         </div>
         <footer className="aprof-card-foot muted small">
           <Signature size={13} aria-hidden />
-          Every edit above is a self-signed personal-lane record — it merges across your devices at
-          the next sync.
+          Changes sync to your other devices.
         </footer>
       </section>
     </div>
