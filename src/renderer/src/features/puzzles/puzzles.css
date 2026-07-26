@@ -1,280 +1,291 @@
-/* Puzzles trainer: local styles. Tokens only; reuses shared classes
-   (.board-area .board-stage .board-wrap .board-controls .panel .pad .btn
-   .icon-btn .eval-chip .num .muted .small .analysis-sidebar). */
+/* PUZZLES, page local CSS.
 
-/* ---- Mode shell (Train / Custom / Rush / Daily switcher) ---- */
-.puzzles-shell {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-.puzzle-modebar {
-  display: inline-flex;
-  align-self: flex-start;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-}
-.puzzle-modetab {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-}
-.puzzle-modetab:hover {
-  color: var(--text-primary);
-}
-.puzzle-modetab.is-active {
-  background: var(--surface);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-sm);
+   The block below is design-lab/v1/puzzles.html's own <style> element,
+   transcribed. Everything in it is prefixed .puz- because shell.css is frozen.
+   Four things genuinely have no shell class: the theme chip, the collapsible
+   theme group, the provisional rating band, and the run of marks.
+
+   .puz-trace-20 is kept as transcribed even though nothing emits it: the trace
+   width is now supplied by Layout from a real proportion (useReadoutSlot). */
+
+/* The trace reports the one ratio this screen is about: how far the
+   provisional puzzle rating is from being a real number. 4 of 20. */
+.puz-trace-20 {
+  --trace-w: 20%;
 }
 
-/* ---- Mode stub (placeholder until a slice is built) ---- */
-.puzzle-mode-stub {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  text-align: center;
-  min-height: 320px;
-  padding: var(--space-8) var(--space-6);
-  color: var(--text-muted);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-lg);
-}
-.puzzle-mode-stub h2 {
-  margin: 0;
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.puzzle-mode-stub p {
-  margin: 0;
-  max-width: 36ch;
-  font-size: var(--fs-sm);
+/* Mode panes. Only one is in the document flow at a time. */
+.puz-pane[hidden] {
+  display: none;
 }
 
-.puzzles-view {
+/* shell.css sets .empty to display:flex, which outranks the hidden
+   attribute, so the empty state needs saying twice. */
+#pane-custom .empty[hidden] {
+  display: none;
+}
+
+/* The builder: same two column shape as .lesson, its own breakpoint
+   because the left side is a chip field rather than a board. */
+.puz-build {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 344px;
-  gap: var(--space-7);
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-8);
   align-items: start;
 }
 
-/* ---- Prompt ---- */
-.puzzle-prompt {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-.puzzle-prompt .prompt-title {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.puzzle-prompt .prompt-subtitle {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.puzzle-prompt.is-solved {
-  background: var(--success-soft);
-  border-color: transparent;
-}
-.puzzle-prompt.is-solved .prompt-title {
-  color: var(--success);
-}
-.puzzle-prompt.is-failed {
-  background: var(--danger-soft);
-  border-color: transparent;
-}
-.puzzle-prompt.is-failed .prompt-title {
-  color: var(--danger);
-}
-/* Retry-on-wrong: fail recorded, learner still solving (matches Custom mode). */
-.puzzle-prompt.is-keeptrying {
-  background: var(--warning-soft);
-  border-color: transparent;
-}
-.puzzle-prompt.is-keeptrying .prompt-title {
-  color: var(--warning);
+/* One theme. Mono, because a theme name is an identifier. */
+/* The theme chips are .chips and .chip in shell.css, including the on
+   state. This page had its own copy with an --accent-soft fill, which is
+   the old on state the shell replaced with a solid fill: a chosen theme
+   here did not look like a chosen anything anywhere else. Only the taller
+   height is page local, because these chips carry a count. */
+
+/* A group of themes, shut until asked for. 63 names in nine drawers
+   instead of 63 checkboxes in one column. */
+.puz-group {
+  border-bottom: var(--border-width) solid var(--border);
 }
 
-/* ---- Rating + streak row ---- */
-.puzzle-meta {
+.puz-group summary {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--space-4);
-}
-.rating-panel {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-.rating-label {
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-}
-.rating-row {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
-}
-.rating-num {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  line-height: var(--lh-tight);
-}
-.rating-band {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-.delta-chip {
-  animation: delta-pop var(--dur-slow) var(--ease-out);
-}
-@keyframes delta-pop {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* ---- Streak badge ---- */
-.streak-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  align-self: center;
-  flex: none;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  padding: var(--space-2) var(--space-4);
-}
-.streak-flame {
-  display: inline-flex;
-  color: var(--text-muted);
-}
-.streak-flame.is-active {
-  color: var(--warning);
-}
-.streak-main {
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-md);
-  color: var(--text-primary);
-}
-.streak-best {
-  font-size: var(--fs-xs);
-}
-
-/* ---- Hint row + actions ---- */
-.hint-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.hint-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
-}
-.hint-reveal {
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-}
-.hint-actions {
-  display: flex;
-  gap: var(--space-3);
-}
-.hint-actions .btn {
-  flex: 1;
-}
-
-/* ---- Empty / error ---- */
-.puzzle-empty {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: flex-start;
-}
-
-/* ---- Theme picker ---- */
-.theme-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2);
-  max-height: 280px;
-  overflow: auto;
-  padding: var(--space-3) var(--space-4);
-}
-.theme-chip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  border-radius: var(--radius-sm);
-  padding: var(--space-2) var(--space-3);
-  font: inherit;
-  font-size: var(--fs-sm);
-  text-align: left;
+  padding: var(--space-4) 0;
   cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
+  list-style: none;
 }
-.theme-chip:hover {
-  background: var(--surface-2);
+
+.puz-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.puz-group summary:hover .puz-gname {
   color: var(--text-primary);
 }
-.theme-chip.is-active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
+
+.puz-gname {
+  flex: none;
+  transition: color var(--motion-fast) var(--ease-out);
 }
-.theme-name {
+
+/* Closed, a group still says what is inside it. */
+.puz-gprev {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.theme-count {
-  flex: none;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-.theme-chip.is-active .theme-count {
-  color: var(--accent);
+
+.puz-group[open] .puz-gprev {
+  opacity: 0;
 }
 
-/* ---- Hint overlay (SVG on the board) ---- */
+.puz-caret {
+  margin-left: auto;
+  flex: none;
+  color: var(--text-muted);
+  transform: rotate(180deg);
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+.puz-group[open] .puz-caret {
+  transform: rotate(270deg);
+}
+
+.puz-gbody {
+  padding: 0 0 var(--space-5);
+}
+
+/* The provisional band. There is no tick, because there is no number:
+   the whole point is that the reading is a width, not a value. */
+.puz-bandwrap {
+  padding: var(--space-3) 0 var(--space-2);
+}
+
+.puz-band {
+  position: relative;
+  height: 6px;
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.puz-band-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  width: 31.25%;
+  background: var(--surface-2);
+  border-left: var(--border-width) solid var(--border-strong);
+  border-right: var(--border-width) solid var(--border-strong);
+}
+
+.puz-band-fill.is-set {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.puz-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Today's attempts, oldest first, the one in play last. */
+.puz-run {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6) var(--space-2);
+}
+
+.puz-mark {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.puz-mark.is-solved {
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+
+.puz-mark.is-missed {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.puz-mark.is-now {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Seven days, none of them solved. */
+.puz-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+}
+
+.puz-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.puz-day-dot {
+  width: 100%;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.puz-day.is-today .puz-day-dot {
+  border-color: var(--accent);
+}
+
+.puz-selected {
+  display: flex;
+  flex-direction: column;
+}
+
+.puz-selrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-normal);
+}
+
+.puz-selrow-drop {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.puz-selrow-drop:hover {
+  color: var(--danger);
+}
+
+.puz-extremes {
+  display: flex;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+}
+
+.puz-extremes .lbl {
+  margin-right: var(--space-2);
+}
+
+@media (max-width: 1080px) {
+  .puz-build {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .puz-run,
+  .puz-week {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  /* Thumb sized: the chips, the drop control and the start button. */
+  .puz-selrow {
+    min-height: 44px;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .chips .chip {
+    height: 32px;
+  }
+
+  #pane-custom .panel-foot .btn {
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puz-caret {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   ADDITIONS. Surfaces v1 never drew, in v1's own terms.
+   ============================================================ */
+
+/* The hint overlay: the ring and arrow the three stage hint draws on the
+   board. v1 has one flat Hint button and no overlay. Board colours only, never
+   a chrome token. */
 .hint-overlay {
   position: absolute;
   inset: 0;
@@ -284,128 +295,214 @@
   z-index: var(--z-board-overlay);
 }
 
-/* ---- Loading skeleton ---- */
-.puzzle-skeleton {
-  position: absolute;
-  inset: 0;
-  z-index: var(--z-board-overlay);
-  background: linear-gradient(
-    100deg,
-    var(--surface-2) 30%,
-    var(--surface) 50%,
-    var(--surface-2) 70%
-  );
-  background-size: 200% 100%;
-  animation: puzzle-shimmer 1.1s var(--ease-in-out) infinite;
+/* A solved or missed day in the week strip. v1's week is seven blank days, so
+   it never drew either state; these are .puz-mark's two states applied to the
+   taller day cell so the calendar and the run of marks read the same. */
+.puz-day-dot.is-solved {
+  background: var(--success-soft);
+  border-color: var(--success);
 }
-@keyframes puzzle-shimmer {
-  from {
-    background-position: 200% 0;
-  }
-  to {
-    background-position: -200% 0;
-  }
+
+.puz-day-dot.is-missed {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+/* A day with no puzzle yet (later this week) is dimmer than a day you skipped. */
+.puz-day.is-ahead .puz-day-dot {
+  opacity: 0.45;
+}
+
+/* One finished run. v1 drew the runs well empty, so it has the four column
+   heads (.empty-head) and no row to match them: same grid, same padding. */
+.puz-runrow {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 90px 70px 110px;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+}
+
+.puz-runrow:last-child {
+  border-bottom: 0;
+}
+
+.puz-runrow-when {
+  color: var(--text-muted);
+}
+
+/* The clock in a rush, once it is nearly gone. */
+.puz-low {
+  color: var(--danger);
+}
+
+/* A run answers every puzzle the same way and then moves on, so the score has
+   to say which way it just went. Held for the same beat the session holds the
+   flash, then faded out. */
+.puz-flash {
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+  transition: background-color var(--motion-base) var(--ease-out);
+}
+
+.puz-flash.is-solve {
+  background: var(--success-soft);
+}
+
+.puz-flash.is-miss {
+  background: var(--danger-soft);
+}
+
+/* Attempts per day over the window the store keeps. One column per day, height
+   by how many, colour by how they went: a day is not a number worth a row. */
+.puz-spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 56px;
+  padding: var(--space-5) var(--space-6) var(--space-2);
+  box-sizing: content-box;
+}
+
+.puz-sparkcol {
+  flex: 1 1 0;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+
+.puz-sparkbar {
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.puz-sparkbar.is-good {
+  background: var(--success-soft);
+  border-color: var(--success);
+}
+
+.puz-sparkbar.is-poor {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.puz-sparkbar.is-idle {
+  border-color: var(--border);
+}
+
+/* A page at a time through the attempt log. v1 has no list long enough to
+   page, so the row of two is page local. */
+.puz-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+/* Black to move. v1's boardbar only ever showed white, so the chip has one
+   colour there. Board colours, not chrome. */
+.turn-chip.is-black {
+  background: var(--piece-black);
+}
+
+/* One choice, made from a row of chips under its label. v1 picks a single
+   value with .segmented, but four segments do not fit a 320px side column and
+   .chips wrap. Same on state, same mono, one line less shouting. */
+.puz-pick {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.puz-pick:last-child {
+  border-bottom: 0;
+}
+
+.puz-pick .lbl {
+  display: block;
+  margin-bottom: var(--space-3);
 }
 
 /* ============================================================
-   Coach (on-demand): shared CoachHint component styles.
-   Namespaced .coachhint-* (mirrors play.css; identical rules so
-   loading both stylesheets is harmless). shared app.css untouched.
-   ============================================================ */
-.coachhint-panel {
-  overflow: hidden;
-}
-.coachhint-toggle {
-  width: 100%;
-  border: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.coachhint-toggle .panel-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.coachhint-chevron {
-  color: var(--text-muted);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.coachhint-chevron.is-open {
-  transform: rotate(180deg);
-}
-.coachhint-panel-body {
-  padding: var(--space-4);
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.coachhint-lede {
-  margin: 0;
-}
-.coachhint {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.coachhint-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.coachhint-btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.coachhint-result {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-}
-.coachhint-verdict {
-  align-self: flex-start;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--accent);
-}
-.coachhint-text {
-  margin: 0;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  color: var(--text-primary);
-}
-.coachhint-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.coachhint-tag {
-  font-size: var(--fs-xs);
-  padding: 2px var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-}
-.coachhint-empty {
-  margin: 0;
-}
+   PHONE. Every rule below is inside the 720px query, which is the breakpoint
+   shell.css already uses to swap the rail for the tab bar. Nothing here exists
+   above it and no value outside it was touched, so a desktop window renders
+   exactly what it rendered before.
 
-/* Responsive: stack panel under the board on narrow widths. */
-@media (max-width: 1100px) {
-  .puzzles-view {
-    grid-template-columns: minmax(0, 1fr);
+   It sits at the end of the file rather than in the query further up because
+   one of the rules it corrects, .puz-runrow, is declared BELOW that query, and
+   a rule a later rule outranks is a rule that does nothing.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  /* ---------- the board and the verdict share one screen ----------
+
+     THE FAULT, measured on Train at 360x740 and confirmed on Custom, Daily and
+     a Rush run. .side is the desktop right hand column and the shell stacks it
+     under the board below 1080. The first thing in it is .task, the one line
+     that says what to play and then whether you played it, and the board was
+     separated from it by 126px of furniture: 12px board gap, 12px bar margin,
+     32px board bar, 24px grid gap, a 26px section head and the task's own 20px
+     top margin. The board ended at 571, the tab bar starts at 680, and the task
+     ran 697 to 742. Solving a puzzle you cannot see the verdict for is the one
+     thing this screen must not do.
+
+     The task is hoisted to the top of its own section and the three gaps
+     between board and verdict come down to one step each: 126px of furniture
+     becomes 56, and the task now runs 619 to 656 with the bar still at 680.
+
+     THE BOARD MEASURE IS NOT TOUCHED. min(78vh, 100%) resolves to 100% of the
+     column on a phone, so the WIDTH is the binding term and shrinking the vh
+     one would have changed nothing. The furniture was the problem. */
+
+  .puz-pane .board-area {
+    gap: var(--space-3);
+  }
+
+  .puz-pane .boardbar {
+    margin-top: var(--space-3);
+  }
+
+  .puz-pane .lesson {
+    gap: var(--space-3);
+  }
+
+  /* Only the section that actually carries the task: Train, Custom and Daily
+     put it under "This puzzle", a Rush run under "This run". */
+  .puz-pane .side > .sec:has(> .task) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .puz-pane .side > .sec:has(> .task) > .task {
+    order: -1;
+    margin-top: 0;
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* ---------- a finished run keeps its name ----------
+
+     shell.css folds .empty-head to two columns on a phone and the row under it
+     did not follow, so 90 + 70 + 110 of fixed columns plus three gaps took 318
+     of the 334 available and the first column, which is the run's NAME, was
+     left with 0px. Measured at 360 wide: "Storm" and "Survival" rendered at
+     zero width, so a list of runs said nothing about which run each was.
+
+     Same two columns as the head above it, so the name sits under Clock and the
+     score under Score, and the second pair wraps to the next line exactly as
+     the head already does. */
+  .puz-runrow {
+    grid-template-columns: minmax(0, 1fr) 90px;
+    gap: var(--space-2) var(--space-4);
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
   }
 }

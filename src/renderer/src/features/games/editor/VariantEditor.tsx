@@ -262,7 +262,7 @@ export function VariantEditor({
       </header>
 
       <div className="vl-editor-grid">
-        <section className="vl-editor-board" aria-label="Start position">
+        <section aria-label="Start position">
           {model ? (
             <PositionPainter
               files={files}

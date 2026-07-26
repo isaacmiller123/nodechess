@@ -58,7 +58,7 @@ export function ReconstructionCard({
   }, [recon])
 
   return (
-    <section className="card aprof-card aprof-rail aprof-recon" aria-busy>
+    <section className="panel aprof-card aprof-rail" aria-busy>
       <header className="aprof-card-head">
         <span className="aprof-eyebrow">
           <Loader2 size={14} className="aprof-spin" aria-hidden /> Loading{' '}

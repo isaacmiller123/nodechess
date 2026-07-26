@@ -42,7 +42,16 @@ export interface PuzzleSession {
   nonce: number
   // Prompt / feedback
   correctSan: string | null
+  /** The rating window the puzzle on the board was drawn from. Null until one
+   *  has been served. The trainer picks a band around your rating and widens it
+   *  once when the first query comes back empty, so this is the band that
+   *  actually produced this position, not the nominal one. */
+  queryBand: { lo: number; hi: number } | null
   // Rating
+  /** False until the stored puzzle rating has actually been read. The two
+   *  numbers below start at Glicko's defaults, and a default is not a reading:
+   *  nothing may print them as your rating while this is false. */
+  ratingKnown: boolean
   puzzleRating: number
   puzzleRd: number
   delta: number | null
@@ -115,7 +124,9 @@ export function usePuzzleSession(): PuzzleSession {
   const [lastMove, setLastMove] = useState<[Key, Key] | undefined>(undefined)
   const [nonce, setNonce] = useState(0)
   const [correctSan, setCorrectSan] = useState<string | null>(null)
+  const [queryBand, setQueryBand] = useState<{ lo: number; hi: number } | null>(null)
 
+  const [ratingKnown, setRatingKnown] = useState(false)
   const [puzzleRating, setPuzzleRating] = useState(1500)
   const [puzzleRd, setPuzzleRd] = useState(350)
   const [delta, setDelta] = useState<number | null>(null)
@@ -198,6 +209,7 @@ export function usePuzzleSession(): PuzzleSession {
           setRatingAfter(res.ratingAfter)
           setPuzzleRating(res.ratingAfter)
           setPuzzleRd(res.rd)
+          setRatingKnown(true)
           ratingRef.current = res.ratingAfter
         })
         .catch(() => {
@@ -276,13 +288,19 @@ export function usePuzzleSession(): PuzzleSession {
     }
 
     const base = ratingRef.current
-    const query = (lo: number, hi: number): Promise<{ puzzle: Puzzle | null }> =>
-      api.next({
+    // The band that produced the puzzle is reported to the sidebar, so the
+    // widened retry below has to overwrite it rather than leave the first one on
+    // screen.
+    const query = (lo: number, hi: number): Promise<{ puzzle: Puzzle | null }> => {
+      const bounded = { lo: Math.max(RATING_FLOOR, Math.round(lo)), hi: Math.round(hi) }
+      setQueryBand(bounded)
+      return api.next({
         theme: themeRef.current ?? undefined,
-        ratingLo: Math.max(RATING_FLOOR, Math.round(lo)),
-        ratingHi: Math.round(hi),
+        ratingLo: bounded.lo,
+        ratingHi: bounded.hi,
         exclude: excludeRef.current
       })
+    }
 
     void query(base - RATING_BAND_LO, base + RATING_BAND_HI)
       .then((r) => {
@@ -295,6 +313,7 @@ export function usePuzzleSession(): PuzzleSession {
         const next = r.puzzle
         if (!next) {
           setPuzzle(null)
+          setQueryBand(null)
           setFen(INITIAL_FEN)
           setOrientation('white')
           setLastMove(undefined)
@@ -339,6 +358,7 @@ export function usePuzzleSession(): PuzzleSession {
           if (cancelled || !r) return
           setPuzzleRating(r.rating)
           setPuzzleRd(r.rd)
+          setRatingKnown(true)
           ratingRef.current = r.rating
         })
         .catch(() => {
@@ -530,6 +550,8 @@ export function usePuzzleSession(): PuzzleSession {
     lastMove,
     nonce,
     correctSan,
+    queryBand,
+    ratingKnown,
     puzzleRating,
     puzzleRd,
     delta,

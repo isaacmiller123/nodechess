@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (this.state.error) {
       return (
         <div className="app-error" role="alert" aria-labelledby="app-error-title">
-          <div className="card">
+          <div className="panel">
             <h2 id="app-error-title">Something went wrong</h2>
             <p className="muted">A screen hit an unexpected error. Your data is safe.</p>
             <pre className="app-error-detail">{this.state.error.message}</pre>

@@ -2,7 +2,7 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import type { TreeNode } from '../state/gameTree'
 import { displaySan } from '../chess/notation'
 import { OpeningTag, type OpeningTrace } from '../chess/openingTrace'
-import { badgeMeta, isEmphasisBadge, type BadgeMap } from '../features/analysis/badges'
+import { badgeMeta, markClass, type BadgeMap } from '../features/analysis/badges'
 
 export interface MoveListProps {
   root: TreeNode
@@ -88,10 +88,10 @@ function buildItems(root: TreeNode): ListItem[] {
 /* Component                                                                  */
 /* ------------------------------------------------------------------------- */
 
-/** Classic two-column notation table (chess.com-style). Serves Play, Analysis
- *  and Review: without `badges` it is a plain table; with a review every move
- *  carries its classification chip; analysis variations render as indented
- *  inline blocks between rows. */
+/** The app's one move list, in v1's vocabulary: a `.moves` grid of `.mv-no`
+ *  and `.mv`, with `.mv.is-next` on the move the board is showing. Without
+ *  `badges` it is a plain table; with a review every move carries its
+ *  classification mark; branches render as indented blocks between rows. */
 export function MoveList({ root, currentId, figurineMode, onSelect, badges, trace }: MoveListProps) {
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -99,13 +99,13 @@ export function MoveList({ root, currentId, figurineMode, onSelect, badges, trac
   // scrollIntoView walks up and scrolls EVERY ancestor scroll container, so in
   // Analysis it also yanked the sidebar/page down on each move (the user had to
   // scroll back up after every move). Instead we scroll ONLY this list's own
-  // overflow:auto box (.move-list, ref below), and only when the current token
-  // is actually outside its visible range, and never when the list isn't
+  // overflow:auto box (.moves.is-scroll, ref below), and only when the current
+  // token is actually outside its visible range, and never when the list isn't
   // overflowing (nothing to scroll).
   useEffect(() => {
     const scroller = listRef.current
     if (!scroller) return
-    const el = scroller.querySelector<HTMLElement>('.is-current')
+    const el = scroller.querySelector<HTMLElement>('.is-next')
     if (!el) return
     // No overflow → nothing to scroll (and no reason to touch scrollTop).
     if (scroller.scrollHeight <= scroller.clientHeight) return
@@ -134,8 +134,9 @@ export function MoveList({ root, currentId, figurineMode, onSelect, badges, trac
     return (
       <>
         {header}
-        <div className="move-list empty muted small" role="status">
-          No moves yet. Play on the board to start a line.
+        <div className="empty" role="status">
+          <p className="empty-line">No moves yet.</p>
+          <p className="empty-line">Play a move on the board to start a line.</p>
         </div>
       </>
     )
@@ -146,34 +147,38 @@ export function MoveList({ root, currentId, figurineMode, onSelect, badges, trac
   return (
     <>
       {header}
-      <div className="move-list" role="group" aria-label="Move list" ref={listRef}>
+      <div className="moves is-scroll" role="group" aria-label="Move list" ref={listRef}>
         {items.map((item) =>
-          item.kind === 'row' ? (
-            <div key={item.key} className={`ml-row${item.row.num % 2 === 0 ? ' ml-row-alt' : ''}`}>
-              <span className="ml-num num" aria-hidden>
-                {item.row.num}.
-              </span>
-              <MoveCell
-                node={item.row.white}
-                ellipsis={item.row.white === null}
-                currentId={currentId}
-                figurineMode={figurineMode}
-                onSelect={onSelect}
-                badges={badges}
-              />
-              <MoveCell
-                node={item.row.black}
-                ellipsis={item.row.blackEllipsis}
-                currentId={currentId}
-                figurineMode={figurineMode}
-                onSelect={onSelect}
-                badges={badges}
-              />
-            </div>
-          ) : (
-            <div key={item.key} className="ml-vars">
-              {item.vars.map((v) => (
-                <div key={v.id} className="ml-var">
+          // A row is three cells laid straight into the grid, not a wrapper
+          // around them: .moves is the three column grid and every cell in it
+          // is a direct child, which is what keeps the columns aligned across
+          // the branch blocks that interrupt them.
+          item.kind === 'row'
+            ? [
+                <span className="mv-no" key={`n${item.key}`} aria-hidden>
+                  {item.row.num}
+                </span>,
+                <MoveCell
+                  key={`w${item.key}`}
+                  node={item.row.white}
+                  ellipsis={item.row.white === null}
+                  currentId={currentId}
+                  figurineMode={figurineMode}
+                  onSelect={onSelect}
+                  badges={badges}
+                />,
+                <MoveCell
+                  key={`b${item.key}`}
+                  node={item.row.black}
+                  ellipsis={item.row.blackEllipsis}
+                  currentId={currentId}
+                  figurineMode={figurineMode}
+                  onSelect={onSelect}
+                  badges={badges}
+                />
+              ]
+            : item.vars.map((v) => (
+                <div key={`${item.key}-${v.id}`} className="mv-var">
                   {'( '}
                   <VarToken
                     node={v}
@@ -190,17 +195,15 @@ export function MoveList({ root, currentId, figurineMode, onSelect, badges, trac
                   />
                   {' )'}
                 </div>
-              ))}
-            </div>
-          )
+              ))
         )}
       </div>
     </>
   )
 }
 
-/** A mainline table cell: the move button with inline classification chip, or
- *  an inert "…"/blank placeholder when the row has no move on that side. */
+/** A mainline cell: the move button with its classification mark, or an inert
+ *  "…"/blank placeholder when the row has no move on that side. */
 function MoveCell({
   node,
   ellipsis,
@@ -218,7 +221,7 @@ function MoveCell({
 }) {
   if (!node) {
     return (
-      <span className="ml-cell ml-gap" aria-hidden>
+      <span className="mv is-gap" aria-hidden>
         {ellipsis ? '…' : ''}
       </span>
     )
@@ -227,11 +230,11 @@ function MoveCell({
   const num = Math.ceil(node.ply / 2)
   const rawSan = node.move?.san ?? ''
   const san = displaySan(rawSan, figurineMode)
-  // Once a review exists, EVERY reviewed move carries its classification chip
-  // (chess.com-style): no notable-only filtering.
+  // Once a review exists, EVERY reviewed move carries its classification mark
+  // (chess.com-style): no notable-only filtering. The mark is coloured and the
+  // move text is not, which is the answer the Analysis list already gives.
   const badge = badges?.get(node.ply)
   const meta = badge ? badgeMeta(badge) : undefined
-  const emphasis = badge && meta && isEmphasisBadge(badge) ? ` tone-${meta.tone}` : ''
   const current = node.id === currentId
   // Spoken label uses the plain SAN (never the figurine glyph) plus move number
   // and side, and appends the classification word so it is not color-only.
@@ -239,14 +242,14 @@ function MoveCell({
   return (
     <button
       type="button"
-      className={`ml-cell ml-move${current ? ' is-current' : ''}${emphasis}`}
+      className={`mv${current ? ' is-next' : ''}`}
       aria-current={current ? 'true' : undefined}
       aria-label={label}
       onClick={() => onSelect(node.id)}
     >
-      <span className="ml-san num">{san}</span>
-      {meta && (
-        <span className={`ml-chip bchip bchip-${meta.tone}`} title={meta.label} aria-hidden>
+      <span className="mv-san">{san}</span>
+      {badge && meta && (
+        <span className={`mv-mk ${markClass(badge)}`} title={meta.label} aria-hidden>
           {meta.glyph}
         </span>
       )}
@@ -285,7 +288,7 @@ function VarTail({
     if (cur.children.length > 1) {
       for (const v of cur.children.slice(1)) {
         out.push(
-          <span className="ml-subvar" key={`v${v.id}`}>
+          <span className="mv-subvar" key={`v${v.id}`}>
             {'( '}
             <VarToken
               node={v}
@@ -333,17 +336,13 @@ function VarToken({
   return (
     <button
       type="button"
-      className={`ml-var-move${current ? ' is-current' : ''}`}
+      className={`mv-varmove${current ? ' is-next' : ''}`}
       aria-current={current ? 'true' : undefined}
       aria-label={label}
       onClick={() => onSelect(node.id)}
     >
-      {prefix && (
-        <span className="ml-var-num num" aria-hidden>
-          {prefix}
-        </span>
-      )}
-      <span className="num">{san}</span>
+      {prefix ? `${prefix} ` : ''}
+      {san}
     </button>
   )
 }

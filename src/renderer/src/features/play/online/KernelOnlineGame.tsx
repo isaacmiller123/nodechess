@@ -191,7 +191,7 @@ export function KernelOnlineGame({
               onRematch={state.peerLeft ? undefined : () => void onlineStore.offerRematch()}
             />
           ) : (
-            <div className="board-controls play-controls">
+            <div className="boardbar play-controls">
               <div
                 className={`play-controls-group${resignArmed ? ' is-confirm' : ''}`}
                 role="group"

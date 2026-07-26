@@ -1,14 +1,16 @@
-import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type CSSProperties, type JSX } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type JSX } from 'react'
 import { Clapperboard, RotateCcw, Repeat, StepForward } from 'lucide-react'
 import { pieceSetClass } from '../../board/pieceSets'
 import { useSettings } from '../../state/settings'
 import type { CatalogEntry } from './catalog'
+import type { SurfaceSetup } from './setup'
 import { getGame, isRegisteredGame } from '../../games/registry'
 import type { GameKind } from '../../games/kernel'
 import { replayOptionsOf } from '../../games/archive'
 import { useBoardSound } from '../../games/boards/useBoardSound'
 import { ReplayTheater, buildTheaterInput, type TheaterInput } from '../library/ReplayTheater'
 import { Board3DHost, BoardModeToggle, useBoardMode } from './boardMode'
+import { SurfaceClockPair, useSurfaceClock } from './otbClock'
 import { useOtbOrientation } from './useOtbOrientation'
 import { useSaveFinishedGame } from './useSaveFinishedGame'
 
@@ -44,18 +46,47 @@ function turnOf(state: unknown): 'white' | 'black' {
 
 const PASS_RE = /^([a-i](?:10|[1-9]))\1$/
 
-export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
+export function VariantOtb({
+  entry,
+  setup
+}: {
+  entry: CatalogEntry
+  /** What the setup screen chose: a start position, mostly. */
+  setup?: SurfaceSetup
+}): JSX.Element {
   const { settings } = useSettings()
   const kind = (isRegisteredGame(entry.kind) ? entry.kind : 'chess') as GameKind
   const game = getGame(kind)
   if (!game) throw new Error(`unregistered game kind: ${entry.kind}`)
   const spec = game.spec
 
+  /* A pasted position the rules refuse throws out of spec.init, and a throw
+     here is a blank screen instead of a board. The setup screen already tried
+     this for every kind whose rules load synchronously; the ffish kinds could
+     not be judged until now, so this is where THEY report it. Either way the
+     game opens on its standard start and says which position it is playing. */
+  const initOptions = setup?.initOptions
+  const rejected = useRef(false)
+  const makeState = useCallback((): unknown => {
+    try {
+      return spec.init(initOptions)
+    } catch {
+      rejected.current = true
+      return spec.init()
+    }
+  }, [spec, initOptions])
+
   const [ready, setReady] = useState(!game.requiresPreload)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const [state, setState] = useState<unknown>(() => (game.requiresPreload ? null : spec.init()))
+  const [state, setState] = useState<unknown>(() => (game.requiresPreload ? null : makeState()))
+  const [posRejected, setPosRejected] = useState(false)
   const [moveCount, setMoveCount] = useState(0)
   const [autoFlip, setAutoFlip] = useState(true)
+  // A side ran out of time. A terminal state the SPEC cannot know about, so it
+  // lives beside the outcome and freezes the board the same way.
+  const [timeLoss, setTimeLoss] = useState<'white' | 'black' | null>(null)
+  // Bumped on every fresh game so the clock goes back to its base time.
+  const [gameKey, setGameKey] = useState(0)
   const { is3d } = useBoardMode(kind)
 
   // ffish WASM preload: the board renders behind a shimmer until resolved.
@@ -66,7 +97,8 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
       .preload()
       .then(() => {
         if (cancelled) return
-        setState(spec.init())
+        setState(makeState())
+        setPosRejected(rejected.current)
         setReady(true)
       })
       .catch((err: unknown) => {
@@ -75,7 +107,7 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
     return () => {
       cancelled = true
     }
-  }, [ready, spec])
+  }, [ready, spec, makeState])
 
   const Board = useMemo(() => lazy(game.loadRenderer), [game])
 
@@ -83,6 +115,18 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
 
   const outcome = ready && state !== null ? spec.result(state) : null
   const turn = turnOf(state)
+  const over = outcome !== null || timeLoss !== null
+
+  // The clock the setup screen chose. Unlimited draws nothing and runs nothing.
+  const clock = useSurfaceClock({
+    tcId: setup?.tcId,
+    gameKey,
+    turn,
+    moves: moveCount,
+    live: ready && state !== null && !over,
+    over,
+    onFlag: setTimeLoss
+  })
 
   const legal = useMemo<readonly string[]>(() => {
     if (!ready || state === null || outcome) return []
@@ -112,13 +156,16 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
 
   const reset = useCallback(() => {
     if (!ready) return
-    setState(spec.init())
+    setState(makeState())
     setMoveCount(0)
-  }, [ready, spec])
+    setTimeLoss(null)
+    setGameKey((k) => k + 1)
+  }, [ready, makeState])
 
   const rotates = spec.flipPolicy === 'rotate'
   // Chess-OTB timing: flip a beat AFTER the committed move, instant repaint.
-  const orientation = useOtbOrientation(turn, rotates && autoFlip)
+  // The setup screen's "Play as" is the side the board opens facing.
+  const orientation = useOtbOrientation(turn, rotates && autoFlip, setup?.color ?? 'white')
   const sides = SIDE_NAMES[kind] ?? ['White', 'Black']
   const sideName = (color: 'white' | 'black'): string => (color === 'white' ? sides[0] : sides[1])
 
@@ -132,29 +179,30 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
     opponentLabel: 'Over the board'
   })
 
-  const resultLabel =
-    outcome &&
-    (outcome.winner === null
-      ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
-      : `${sideName(outcome.winner)} wins: ${outcome.reason.replace(/-/g, ' ')}`)
+  const resultLabel = timeLoss
+    ? `${sideName(timeLoss === 'white' ? 'black' : 'white')} wins on time`
+    : outcome &&
+      (outcome.winner === null
+        ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
+        : `${sideName(outcome.winner)} wins: ${outcome.reason.replace(/-/g, ' ')}`)
 
   // Post-game Replay Theater (cinematic 3D/2D re-run of the finished game).
   const [theater, setTheater] = useState<TheaterInput | null>(null)
   const openTheater = useCallback(() => {
-    if (state === null || !outcome) return
+    if (state === null || (!outcome && !timeLoss)) return
     setTheater(
       buildTheaterInput({
         entry: game,
         moves: ((state as CfState).moves ?? []) as readonly string[],
         options: replayOptionsOf(spec, state),
-        result: outcome.score,
-        reason: outcome.reason,
+        result: outcome?.score ?? (timeLoss === 'white' ? '0-1' : '1-0'),
+        reason: outcome?.reason ?? 'time',
         white: sides[0],
         black: sides[1],
         event: 'Over the board'
       })
     )
-  }, [state, outcome, game, spec, sides])
+  }, [state, outcome, timeLoss, game, spec, sides])
 
   const shimmer = (
     <div
@@ -168,30 +216,35 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   return (
     <div className="votb">
       <div className="votb-stage">
-        <div className={`votb-cfb board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}>
-          {!ready || state === null ? (
-            shimmer
-          ) : is3d ? (
-            <Board3DHost
-              kind={kind}
-              state={state}
-              orientation={orientation}
-              interactive={!outcome}
-              onMove={onMove}
-            />
-          ) : (
-            <Suspense fallback={shimmer}>
-              <Board
+        {/* shell.css owns the measure: .board-stage centres, .board-wrap sizes. */}
+        <div className="board-stage">
+          <div
+            className={`board-wrap votb-cfb board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
+          >
+            {!ready || state === null ? (
+              shimmer
+            ) : is3d ? (
+              <Board3DHost
                 kind={kind}
                 state={state}
                 orientation={orientation}
-                interactive={!outcome}
+                interactive={!over}
                 onMove={onMove}
               />
-            </Suspense>
-          )}
+            ) : (
+              <Suspense fallback={shimmer}>
+                <Board
+                  kind={kind}
+                  state={state}
+                  orientation={orientation}
+                  interactive={!over}
+                  onMove={onMove}
+                />
+              </Suspense>
+            )}
+          </div>
         </div>
-        {outcome && (
+        {over && (
           <div className="votb-banner" role="status">
             <strong>{resultLabel}</strong>
             <button type="button" className="votb-btn" onClick={openTheater}>
@@ -205,9 +258,15 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         {theater && <ReplayTheater data={theater} onExit={() => setTheater(null)} />}
       </div>
       <aside className="votb-side">
+        <SurfaceClockPair
+          clock={clock}
+          turn={turn}
+          labels={{ white: sides[0], black: sides[1] }}
+          over={over}
+        />
         <div className="votb-turn">
           <span className={`votb-turn-dot is-${turn}`} aria-hidden />
-          {outcome ? 'Game over' : `${sideName(turn)} to move`}
+          {over ? 'Game over' : `${sideName(turn)} to move`}
           <span className="votb-movecount">{moveCount === 1 ? '1 move' : `${moveCount} moves`}</span>
         </div>
         <BoardModeToggle kind={kind} />
@@ -218,7 +277,7 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
             Auto-flip board to the side to move
           </label>
         )}
-        {passMove && !outcome && (
+        {passMove && !over && (
           <button type="button" className="votb-btn" onClick={() => onMove(passMove)}>
             <StepForward size={14} aria-hidden /> Pass turn
           </button>
@@ -226,6 +285,11 @@ export function VariantOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         <button type="button" className="votb-btn" onClick={reset} disabled={!ready}>
           <RotateCcw size={14} aria-hidden /> {kind === 'chess960' ? 'New position' : 'Restart game'}
         </button>
+        {posRejected && (
+          <p className="votb-note">
+            That position is not legal here. The standard start is on the board.
+          </p>
+        )}
         <p className="votb-note">Over-the-board: two players, one machine. Pass it between moves.</p>
       </aside>
     </div>

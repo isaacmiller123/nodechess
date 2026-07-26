@@ -131,13 +131,18 @@ export function PlayCustom({
   return (
     <div className="vl-play">
       <div className="vl-play-stage">
-        <CustomBoard
-          kind={spec.kind}
-          state={game}
-          orientation={orientation}
-          interactive={!result}
-          onMove={onMove}
-        />
+        {/* shell.css owns the measure: .board-stage centres, .board-wrap sizes. */}
+        <div className="board-stage">
+          <div className="board-wrap">
+            <CustomBoard
+              kind={spec.kind}
+              state={game}
+              orientation={orientation}
+              interactive={!result}
+              onMove={onMove}
+            />
+          </div>
+        </div>
         {result && (
           <div className="vl-banner" role="status">
             <Trophy size={16} aria-hidden />

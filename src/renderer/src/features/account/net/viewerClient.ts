@@ -48,7 +48,6 @@ import {
   type VerifyShardOpts,
 } from '@shared/accounts/storage'
 import { tableSize } from '@shared/accounts/overlay'
-import { displayState } from '@shared/accounts/ratings/display'
 import { timeCategory } from '@shared/accounts/ratings/ladders'
 import type { A4FoldState } from '@shared/accounts/ratings/fold'
 import type { CanonicalObject, CanonicalValue } from '@shared/accounts/codec'
@@ -64,10 +63,8 @@ import {
 import type {
   LadderKey,
   UiGameRow,
-  UiLadder,
   UiProfile,
   UiReconstruction,
-  UiReputation,
   UiStanding,
 } from '../mock/types'
 import type { AccountPeer } from './peerService'
@@ -92,7 +89,6 @@ export const VIEWER_CKPT_PREFIX_DIVERSITY_MIN = 3
 export const VIEWER_GAMES_PREVIEW = 24
 
 const EMPTY_HISTORIES: ChainDerived['histories'] = { Bullet: [], Blitz: [], Rapid: [], Classical: [] }
-const LADDER_ICON_KEYS: readonly LadderKey[] = ['Bullet', 'Blitz', 'Rapid', 'Classical']
 
 // ---------------------------------------------------------------------------
 // Target identity
@@ -416,27 +412,6 @@ export function checkpointFromView(view: ResolvedProfile): UiProfile['checkpoint
   }
 }
 
-/** A minimal honest reputation card when no fold surface survived (floor path,
- * no chain and no A4 checkpoint). States the unavailability, invents nothing. */
-function unavailableReputation(): UiReputation {
-  return {
-    score: 0,
-    tier: 'Mixed',
-    components: [{ label: 'Reputation', value: 'unavailable until the chain reconstructs', positive: false }],
-    commendations: 0,
-  }
-}
-
-/** Seed ladders (§6: 1200 / RD 350) shown when no fold surface survived, the
- * honest "nothing rated recovered yet" state, matching a fresh account. The
- * display state comes from the SHARED displayState() so it can never drift. */
-function seedLadders(): UiLadder[] {
-  return LADDER_ICON_KEYS.map((key) => {
-    const state = { n: 0, r: 1_200_000_000, rd: 350_000_000 }
-    return { key, state, display: displayState(state, key), games: 0 }
-  })
-}
-
 export interface ViewToUiOpts {
   /** Evaluation instant for ban rendering (§9). Default Date.now. */
   atWts?: number
@@ -462,8 +437,13 @@ export function viewToUiProfile(view: ResolvedProfile, opts: ViewToUiOpts = {}):
   const tag = view.root.slice(0, 5)
   const surface = foldSurfaceOf(view)
 
-  const ladders = surface ? deriveLadders(surface, atWts) : seedLadders()
-  const reputation = surface ? deriveReputation(surface.fold) : unavailableReputation()
+  // No fold surface (no chain, no A4 checkpoint) means nothing about this
+  // account's play was recovered. That is NOT the same as a fresh account, so
+  // it does not render as one: no ladders, no reputation, and the page says the
+  // part it could not load. Seeding 1200 / RD 350 / 0 games here would put four
+  // invented measurements on screen.
+  const ladders = surface ? deriveLadders(surface, atWts) : []
+  const reputation = surface ? deriveReputation(surface.fold) : null
   const standing: UiStanding = surface ? deriveStanding(surface.fold, atWts) : { state: 'good' }
   // Profile fields: the reconstructed chain's shared fold when present (matches
   // verifyChain's own merge, incl. revoked-key exclusion), else the floor fold
@@ -487,8 +467,9 @@ export function viewToUiProfile(view: ResolvedProfile, opts: ViewToUiOpts = {}):
     reputation,
     standing,
     // Friend edges are the social lane (M4); this reconstruction does not count
-    // them. Honest 0 rather than a fabricated total.
-    friendsCount: 0,
+    // them. Unknown, which the page renders as nothing: a 0 here would read as
+    // "this player has no friends", which nobody measured.
+    friendsCount: null,
     games: gamesFromView(view, opts.gamesLimit ?? VIEWER_GAMES_PREVIEW),
     reconstruction: reconstructionFromView(view, opts.hops ?? 0),
     checkpoint: checkpointFromView(view),

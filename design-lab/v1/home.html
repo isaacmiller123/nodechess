@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <!-- The mark. Candidate 1 from logos.html: the rook seen from above,
+           which is also a cell with a port on each side. -->
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" aria-current="page" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <!-- Phone only: the rail is gone, so the brand needs a home. -->
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <!-- THE READOUT. Same four slots on every screen, now the header of the
+             content column rather than a band under a top bar. -->
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Play your first game</span>
+          </div>
+          <div class="trace is-0" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <div class="home">
+            <div class="home-col">
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Start a game</h2>
+                  <span class="sec-count">3 ways</span>
+                </div>
+
+                <div class="startrow is-first">
+                  <div>
+                    <div class="startrow-name">Play online <span class="tag">start here</span></div>
+                    <div class="startrow-spec">Matched against someone near your strength.</div>
+                  </div>
+                  <button class="btn is-primary" type="button">Play online</button>
+                </div>
+
+                <div class="startrow">
+                  <div>
+                    <div class="startrow-name">Play a bot</div>
+                    <div class="startrow-spec">Eight levels. It waits as long as you need.</div>
+                  </div>
+                  <button class="btn" type="button">Choose a level</button>
+                </div>
+
+                <div class="startrow">
+                  <div>
+                    <div class="startrow-name">Local board</div>
+                    <div class="startrow-spec">Two players, one screen. Clock optional.</div>
+                  </div>
+                  <button class="btn" type="button">Open board</button>
+                </div>
+              </section>
+
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Resume</h2>
+                </div>
+                <div class="well">
+                  <div class="empty-head">
+                    <span class="lbl">Opponent</span>
+                    <span class="lbl">Result</span>
+                    <span class="lbl">Moves</span>
+                    <span class="lbl">When</span>
+                  </div>
+                  <div class="empty">
+                    <p class="empty-line">Nothing to resume yet.</p>
+                    <p class="empty-line">Finished games land here, newest first.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <aside class="side">
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Practice</h2>
+                </div>
+                <div class="panel golist">
+                  <a class="go" href="#">
+                    <span>
+                      <span class="go-name">Puzzles</span>
+                      <span class="go-sub">4.7M positions, by theme</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="go" href="school.html">
+                    <span>
+                      <span class="go-name">School</span>
+                      <span class="go-sub">CH 07, LESSON 3 OF 5</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="go" href="#">
+                    <span>
+                      <span class="go-name">Analysis</span>
+                      <span class="go-sub">Paste a game or set up a position</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                </div>
+              </section>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION =================
+         Four permanent tabs at 60px plus a sheet for the other five. -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script src="shell.js" defer></script>
+  </body>
+</html>

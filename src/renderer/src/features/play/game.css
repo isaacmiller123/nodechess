@@ -1,0 +1,965 @@
+/* ============================================================
+   THE GAME PHASE. Board, player cards, clocks, controls, result
+   banner, assist and coach panels.
+
+   design-lab/v1/play.html draws the SETUP screen only, so none of
+   these surfaces have a v1 counterpart; they keep the styling they
+   already had. Moved here out of play.css when that file became
+   v1's page stylesheet, so a v1 class and an in-game class can
+   never collide in one selector list again.
+
+   Only tokens.css variables and shared classes are used.
+   ============================================================ */
+
+/* ---- Game phase: layout clones .analysis-view ---- */
+.play-view {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 344px;
+  gap: var(--space-7);
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  /* A square board that always fits without page scroll: bounded by the column
+     width, a sensible max, and the viewport height minus the player cards,
+     controls/banner row and content padding stacked above & below it. */
+  /* The board's own size is shell.css's (min(78vh, 100%), capped 760px) and
+     is never restated here. This mirror exists so the player cards above and
+     below the board end up exactly as wide as it is. */
+  --play-board: min(78vh, 100%, 760px);
+}
+.play-board-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+.play-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The Moves box is the sidebar's elastic one: Assistance and Coach are as tall
+   as their contents and this takes the rest, so the list inside it (.moves
+   .is-scroll) has a height to scroll within and no page has to name one. */
+.move-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 120px;
+}
+
+/* ---- Player cards (chess.com-style bars hugging the board) ----
+   Avatar | name + sub / style line / captured pieces | thinking dots | clock.
+   The card carries the active-turn glow; the docked clock echoes it. */
+.player-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: var(--play-board, min(72vh, 720px));
+  min-height: 60px;
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+/* Active-turn glow: accent ring, same non-color signal as .profile-chip. */
+.player-chip.is-active {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    var(--shadow-sm);
+}
+/* Portraits read better squared on the play cards; scoped so avatars stay
+   circular everywhere else in the app. */
+.player-chip .avatar {
+  border-radius: var(--radius-md);
+}
+.chip-photo {
+  object-fit: cover;
+  background: var(--surface-2);
+}
+.chip-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.chip-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.chip-name {
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-chip .chip-sub {
+  flex: none;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: var(--lh-tight);
+}
+.chip-style {
+  font-size: var(--fs-xs);
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: var(--lh-tight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Captured pieces + material-lead badge. min-height keeps the card from
+   jumping when the first capture lands. */
+.chip-captured {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 16px;
+  line-height: 1;
+}
+.chip-material {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* Thinking indicator: three staggered dots beside the opponent's name. */
+.chip-thinking {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  align-self: center;
+}
+.chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  animation: play-think 1s var(--ease-in-out) infinite;
+}
+.chip-dot:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.chip-dot:nth-child(3) {
+  animation-delay: 0.32s;
+}
+@keyframes play-think {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.7);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---- Countdown clock: digit block docked to the card's right edge ---- */
+.play-clock {
+  flex: none;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  padding: 0 var(--space-4);
+  /* Bleed over the card's padding so the block owns the full right edge. */
+  margin: calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) 0;
+  background: var(--surface-2);
+  border-left: 1px solid var(--border);
+  border-radius: 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0;
+  color: var(--text-secondary);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.play-clock-time {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: var(--num-feature);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+  line-height: var(--lh-tight);
+}
+/* Ticking side: accent fill + an inset accent edge as the non-color cue. */
+.play-clock.is-active {
+  background: var(--accent-soft);
+  border-left-color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
+  color: var(--text-primary);
+}
+/* Low on time: urgent danger tint; the digits blink only while ticking. */
+.play-clock.is-low {
+  color: var(--danger);
+}
+.play-clock.is-low.is-active {
+  background: var(--danger-soft);
+  border-left-color: var(--danger);
+  box-shadow: inset 2px 0 0 var(--danger);
+  color: var(--danger);
+}
+.play-clock.is-low.is-active .play-clock-time {
+  animation: play-clock-blink 1s var(--ease-in-out) infinite;
+}
+/* Byo-yomi (go): the periods-left badge beside the digits. A consumed period
+   re-mounts the badge (React key), retriggering the one-beat flash. */
+.play-clock.is-byo {
+  gap: var(--space-1);
+}
+.play-clock-periods {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  /* --text-tertiary never existed in tokens.css; --text-muted is the quiet
+     step the rest of the app spells this with. */
+  color: var(--text-muted);
+  padding: 1px var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  animation: play-clock-period-flash 700ms var(--ease-out);
+}
+.play-clock.is-active .play-clock-periods {
+  color: var(--text-secondary);
+}
+.play-clock.is-low .play-clock-periods {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+@keyframes play-clock-period-flash {
+  0% {
+    background: var(--danger-soft);
+    border-color: var(--danger);
+    color: var(--danger);
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Flagged: frozen danger fill, no blink (the game is over). */
+.play-clock.is-flagged {
+  background: var(--danger-soft);
+  border-left-color: var(--danger);
+  color: var(--danger);
+}
+.play-clock.is-flagged .play-clock-time {
+  animation: none;
+}
+@keyframes play-clock-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .play-clock.is-low.is-active .play-clock-time,
+  .play-clock-periods,
+  .chip-dot {
+    animation: none;
+  }
+}
+
+/* ---- Board controls: one grouped pill (flip | resign · new game) ----
+   The row is v1's .boardbar: flex, its gap, and the step off the board. This
+   only gives it the board's measure and centres the group in it, because the
+   whole pill is one object and belongs under the middle of the board rather
+   than against its left edge. Buttons go flat inside the group. */
+.play-controls {
+  width: 100%;
+  max-width: var(--play-board, min(72vh, 720px));
+  justify-content: center;
+}
+.play-controls-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.play-controls-group .icon-btn {
+  background: transparent;
+}
+.play-controls-group .btn.ghost {
+  border-color: transparent;
+  padding-block: var(--space-2);
+}
+.play-controls-group .btn.ghost:hover:not(:disabled) {
+  background: var(--surface);
+}
+.play-controls-sep {
+  width: 1px;
+  align-self: stretch;
+  margin-block: var(--space-2);
+  background: var(--border-strong);
+}
+
+/* Resign button (ghost + danger tint). */
+.btn-resign {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--danger);
+}
+.btn-resign:hover:not(:disabled),
+.play-controls-group .btn.ghost.btn-resign:hover:not(:disabled) {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.play-newgame {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Inline two-step resign confirm (settings.confirmResign): the whole group
+   turns danger-tinted while armed; commit is a solid danger button. */
+.play-controls-group.is-confirm {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.resign-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.resign-confirm-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--danger);
+  padding-inline: var(--space-3) var(--space-2);
+}
+.play-resign-commit {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--surface);
+  padding-block: var(--space-2);
+}
+.play-resign-commit:hover:not(:disabled) {
+  background: var(--danger);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Result banner (game-over card under the board) ----
+   Medal | headline + reason | stat chips (rating delta, accuracy slot) |
+   actions. Entrance animation is local; the global reduced-motion kill-switch
+   in global.css zeroes it, and the explicit block below documents intent. */
+.result-banner {
+  width: 100%;
+  max-width: var(--play-board, min(72vh, 720px));
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  animation: play-banner-in var(--dur-slow) var(--ease-out) both;
+}
+@keyframes play-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.banner-medal {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  animation: chip-pop var(--dur-base) var(--ease-out) both;
+  animation-delay: var(--dur-instant);
+}
+.result-banner.is-win .banner-medal {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.result-banner.is-loss .banner-medal {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.banner-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+}
+.result-banner.is-win .banner-title {
+  color: var(--success);
+}
+.result-banner.is-loss .banner-title {
+  color: var(--danger);
+}
+.banner-reason {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-tight);
+}
+.banner-score {
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+}
+
+/* The number on a stat chip. It is a measurement, so it takes v1's mono and
+   the ground under it says which way it went without needing a sign read. */
+.eval-chip {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-normal);
+}
+.eval-chip.pos {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.eval-chip.neg {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* Stat chips: rating delta now; accuracy joins when a review provides it. */
+.banner-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+.banner-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.banner-stat-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: var(--lh-tight);
+}
+.banner-accuracy {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Actions: Analyze / Rematch (ghost) + New game (primary). */
+.banner-actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.banner-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .result-banner,
+  .banner-medal {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   Assistance panel (Play vs a bot). Hint ladder + live helper
+   toggles. Namespaced .assist-*; tokens only. The dot colors
+   deliberately reuse the board-annotation brush tokens so each
+   readout matches the arrow it describes on the board.
+   ============================================================ */
+.assist-panel {
+  overflow: hidden;
+}
+/* Same bargain as the Coach head: .panel-head draws the strip, this only says
+   the strip is pressable. */
+.assist-head {
+  color: inherit;
+}
+.assist-head:hover {
+  background: var(--surface-2);
+}
+.assist-head .lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.assist-chevron {
+  color: var(--text-muted);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.assist-chevron.is-open {
+  transform: rotate(180deg);
+}
+.assist-body {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Hint ladder button: label left, 3 progress pips right. */
+.assist-hint-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.assist-hint-label {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.assist-hint-steps {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.assist-step {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+}
+.assist-step.is-on {
+  background: var(--brush-yellow);
+  border-color: var(--brush-yellow);
+}
+
+/* Toggle rows: label + pill switch. */
+.assist-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+.assist-row-label {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+.assist-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: none;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  position: relative;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.assist-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--text-muted);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.assist-switch:checked {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.assist-switch:checked::after {
+  transform: translateX(14px);
+  background: var(--accent);
+}
+.assist-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Live readouts (best move / expected reply / loose pieces). */
+.assist-readouts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+.assist-readout {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+}
+.assist-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+}
+.assist-dot.is-best {
+  background: var(--brush-green);
+}
+.assist-dot.is-threat {
+  background: var(--brush-red);
+}
+.assist-readout-label {
+  flex: 1;
+  color: var(--text-secondary);
+}
+.assist-readout-value {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--num-feature);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.assist-readout-value.is-quiet {
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+.assist-loose {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.assist-loose-chip {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-tight);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+.assist-note {
+  margin: 0;
+}
+
+/* ============================================================
+   Coach (on-demand): shared CoachHint component styles.
+   Namespaced .coachhint-* so they never collide with shared or
+   other-feature CSS. Mirrored in puzzles.css (component is used
+   in both features and shared app.css must not be edited).
+   ============================================================ */
+.coachhint-panel {
+  overflow: hidden;
+}
+/* The head IS the control here, so the layout and the hairline come from
+   .panel-head (components.css) and this only says the button is a button. */
+.coachhint-toggle {
+  color: inherit;
+}
+.coachhint-toggle:hover {
+  background: var(--surface-2);
+}
+.coachhint-toggle .lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.coachhint-chevron {
+  color: var(--text-muted);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.coachhint-chevron.is-open {
+  transform: rotate(180deg);
+}
+.coachhint-panel-body {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.coachhint-lede {
+  margin: 0;
+}
+.coachhint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.coachhint-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.coachhint-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.coachhint-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+}
+.coachhint-verdict {
+  align-self: flex-start;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+}
+.coachhint-text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+.coachhint-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.coachhint-tag {
+  font-size: var(--fs-xs);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.coachhint-empty {
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   Bot time manager (GameView-owned, additive: see PlayView/botTime.ts).
+   Deep think: when the bot allocates a long think (>= ~8s), .play-view gains
+   .is-deepthink and the opponent's thinking dots slow down and warm up, a calm
+   "settling in for a big think" read instead of the usual quick pulse, and the
+   chip itself (PlayerChip `deepThink` prop) adds a quiet "thinking deeply…"
+   caption beside them.
+   ---------------------------------------------------------------------------- */
+.play-view.is-deepthink .chip-thinking .chip-dot {
+  background: var(--warning);
+  animation-duration: 2.4s;
+}
+.chip-thinking .chip-think-label {
+  margin-left: var(--space-1);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  color: var(--text-muted);
+  white-space: nowrap;
+  animation: play-deepthink-label-in var(--dur-slow) var(--ease-out) both;
+}
+@keyframes play-deepthink-label-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chip-thinking .chip-think-label {
+    animation: none;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   PHONE: THE GAME IS ONE COLUMN, AND THE BOARD IS IN IT.
+
+   DESKTOP IS UNTOUCHED. Every rule below is inside the 720px query, the same
+   breakpoint shell.css uses to swap the rail for the tab bar. Nothing here
+   exists above it, and no shared value is changed.
+
+   THE FAULT, measured at 375x812 on a 24 move local game. .play-view is
+   `grid-template-columns: minmax(0, 1fr) 344px` with a --space-7 gutter. That
+   is right on a desktop: the board takes the fluid column and the move list
+   stands beside it. On a 375 phone the view is 351 wide, the sidebar still
+   claims its 344 and the gutter still claims 24, so the fluid column resolved
+   to ZERO and the board went with it:
+
+     .play-board-area   0 x 709
+     .board-stage       0 x 0
+     .board-wrap        0 x 0        <- there was no board on the screen
+     .player-chip       22 wide at x=1, "Black" ellipsed to nothing (36 > 0)
+     .play-controls-group  327 wide at x=-151   <- resign, takeback, new game
+                                                   off the left edge entirely
+
+   and because .play-view is also `height: 100%; overflow: hidden`, all of that
+   was CLIPPED rather than merely pushed: the controls could not be scrolled
+   to, because there was nowhere for them to be scrolled from.
+
+   The fix is the fold the layout already implies. One column: the board and
+   the two player cards that carry the clocks first, the move list under them.
+   The board is not resized to make this work, and --board-measure is not
+   touched: shell.css's min(78vh, 100%) resolves to 100% of the column on a
+   phone, so the WIDTH is the binding term and the board becomes 351 the moment
+   the column is real. Board plus both clock cards plus the controls row is
+   about 555, which clears the tab bar with room to spare, so the thing you
+   play against and the thing you play on are on screen together.
+
+   The move list keeps a bounded height rather than an unbounded one. A long
+   game would otherwise make the page as tall as the game is long and push the
+   Coach panel below anything a thumb will reach; capped, the list scrolls
+   inside its own panel exactly as it does on the desktop.
+   ---------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .play-view {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+    /* The pinned-shell height and the clip that went with it are what made the
+       overflow unreachable. On a phone the view is as tall as it needs to be
+       and .content, the one scroller, does the rest. */
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Centring vertically only makes sense in a column with spare height. Here
+     the column is exactly its contents, so the board starts at the top. */
+  .play-board-area {
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  .play-sidebar {
+    min-height: 0;
+  }
+
+  /* Bounded, so the list scrolls inside the panel instead of growing the page.
+     42vh leaves the Coach panel under it reachable in one thumb scroll. */
+  .move-panel {
+    flex: 0 0 auto;
+    max-height: 42vh;
+  }
+
+  /* Resign, takeback, flip and new game are the controls you need WHILE the
+     clock runs, so they get a real touch target and are allowed to wrap rather
+     than run off the edge of a narrow screen. */
+  .play-controls-group {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .play-controls-group .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .play-controls-group .btn {
+    min-height: 44px;
+  }
+
+  /* The armed resign state is a sentence and two buttons in one row. It wraps
+     for the same reason the group does. */
+  .resign-confirm {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* The banner's actions are the whole point of the banner: full width, and
+     the same 44px as everything else you press with a thumb. */
+  .banner-actions {
+    flex-wrap: wrap;
+  }
+
+  .banner-actions .btn {
+    min-height: 44px;
+  }
+
+  /* THE OPPONENT'S NAME WAS THE THING THAT GOT CUT.
+
+     .chip-name-row is name + sub, and .player-chip .chip-sub is `flex: none`
+     while .chip-name ellipses. On a 702px desktop card both fit and nothing
+     is decided; on a 351px phone card the row is 273 wide, the sub took the
+     211 it wanted and the name was left 54, so a Stockfish game announced its
+     opponent as "Stockfi...". The name is who you are playing. It keeps its
+     width here and the sub, which is a qualifier, takes the next line whole
+     rather than truncating a rating mid-number. */
+  .chip-name-row {
+    flex-wrap: wrap;
+  }
+
+  .player-chip .chip-name {
+    flex: none;
+  }
+
+  /* Assistance and Coach are collapsed panels you open by tapping their head,
+     and the two switches inside are 20px labels. All four are thumb controls
+     at this width. The switch itself keeps its drawn size; the <label> row
+     around it is what grows, which is the element the tap actually lands on. */
+  .assist-head,
+  .coachhint-toggle,
+  .assist-hint-btn,
+  .assist-row {
+    min-height: 44px;
+  }
+}

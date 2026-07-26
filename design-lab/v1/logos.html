@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marks, nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <style>
+      /* Spec sheet only. None of this is product CSS, which is why it lives
+         here and not in shell.css. */
+      .sheetpage {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: var(--space-8) var(--space-6) var(--space-11);
+      }
+
+      .sheet-head {
+        margin-bottom: var(--space-9);
+        padding-bottom: var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .sheet-title {
+        font-size: var(--fs-xl);
+        font-weight: var(--fw-bold);
+        letter-spacing: var(--tracking-tight);
+      }
+
+      .sheet-sub {
+        margin-top: var(--space-2);
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+        max-width: 72ch;
+      }
+
+      .cand {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: var(--space-8);
+        align-items: start;
+        padding: var(--space-7) 0;
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .cand-id {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+      }
+
+      .cand-no {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        color: var(--accent);
+      }
+
+      .cand-name {
+        font-size: var(--fs-md);
+        font-weight: var(--fw-medium);
+      }
+
+      .cand-why {
+        margin-top: var(--space-3);
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+      }
+
+      .cand-demo {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-6);
+        align-items: stretch;
+      }
+
+      .sizes {
+        display: flex;
+        align-items: flex-end;
+        gap: var(--space-7);
+        padding: var(--space-6);
+        background: var(--bg-page);
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-md);
+      }
+
+      .size {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-3);
+        color: var(--text-primary);
+      }
+
+      .size .lbl {
+        font-size: 10px;
+      }
+
+      .lockups {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+        justify-content: center;
+        padding: var(--space-6);
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-md);
+      }
+
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+      }
+
+      .lockup svg {
+        color: var(--accent);
+      }
+
+      .lockup-word {
+        font-size: var(--fs-lg);
+        font-weight: var(--fw-bold);
+        letter-spacing: -0.02em;
+        color: var(--text-primary);
+      }
+
+      .lockup.is-small .lockup-word {
+        font-size: var(--fs-base);
+      }
+
+      .lockup.is-small svg {
+        color: var(--text-primary);
+      }
+
+      @media (max-width: 720px) {
+        .cand {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--space-5);
+        }
+        .sizes,
+        .lockups {
+          flex: 1 1 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <!-- All six are one flat shape in one colour, drawn on a 24 grid with a
+           3 unit margin, so 16px is the smallest honest size and none of them
+           needs a second colour, a gradient or a stroke weight to read. -->
+      <symbol id="m1" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="evenodd" d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z" />
+      </symbol>
+      <symbol id="m2" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M4 3h6v10h10v6H4z" />
+      </symbol>
+      <symbol id="m3" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M3 3h7v7H3zM8.5 8.5h7v7h-7zM14 14h7v7h-7z" />
+      </symbol>
+      <symbol id="m4" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M12 3a4.5 4.5 0 1 0 0 9 4.5 4.5 0 1 0 0-9zM9.6 11.4h4.8l4.2 9.6H5.4z" />
+      </symbol>
+      <symbol id="m5" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="evenodd" d="M3 3h18v18H3zM9 10h6v11H9z" />
+      </symbol>
+      <symbol id="m6" viewBox="0 0 24 24">
+        <path fill="currentColor" fill-rule="evenodd" d="M3 3h12v12H3zM9 9h12v12H9z" />
+      </symbol>
+    </svg>
+
+    <main class="sheetpage">
+      <div class="sheet-head">
+        <h1 class="sheet-title">Six marks for nodechess</h1>
+        <p class="sheet-sub">
+          Each is a single flat shape in one colour, shown at 16, 24 and 48px on the page background
+          and on a recessed well, with a lockup. No knight silhouette, no hexagon, no circuit trace,
+          and nothing that needs a second colour. 16px is the favicon test, so it is shown first.
+        </p>
+      </div>
+
+      <!-- 1 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M1</span>
+            <span class="cand-name">Four ports</span>
+          </div>
+          <p class="cand-why">
+            The rook read from above, which is also a board cell with a way in on every side.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m1" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m1" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m1" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m1" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m1" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M2</span>
+            <span class="cand-name">The hop</span>
+          </div>
+          <p class="cand-why">
+            The knight's move drawn as its path, two then one, so you get the only piece that jumps
+            without drawing the horse.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m2" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m2" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m2" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m2" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m2" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M3</span>
+            <span class="cand-name">Diagonal</span>
+          </div>
+          <p class="cand-why">
+            Three cells stepping corner to corner: a bishop's line, and three accounts passing the
+            same game along.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m3" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m3" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m3" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m3" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m3" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M4</span>
+            <span class="cand-name">Pawn node</span>
+          </div>
+          <p class="cand-why">
+            The simplest piece on the board is already a filled circle standing on a base, which is
+            also how a node is drawn.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m4" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m4" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m4" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m4" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m4" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M5</span>
+            <span class="cand-name">Cut n</span>
+          </div>
+          <p class="cand-why">
+            A board cell with a slot cut up from its base, which leaves the lowercase n the name
+            always starts with.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m5" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m5" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m5" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m5" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m5" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="cand">
+        <div>
+          <div class="cand-id">
+            <span class="cand-no">M6</span>
+            <span class="cand-name">Two cells, one square</span>
+          </div>
+          <p class="cand-why">
+            Two offset cells with the shared part knocked out: two players, one position, and the
+            hole is the game they both hold.
+          </p>
+        </div>
+        <div class="cand-demo">
+          <div class="sizes">
+            <div class="size">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m6" /></svg>
+              <span class="lbl">16</span>
+            </div>
+            <div class="size">
+              <svg width="24" height="24" aria-hidden="true"><use href="#m6" /></svg>
+              <span class="lbl">24</span>
+            </div>
+            <div class="size">
+              <svg width="48" height="48" aria-hidden="true"><use href="#m6" /></svg>
+              <span class="lbl">48</span>
+            </div>
+          </div>
+          <div class="lockups">
+            <div class="lockup">
+              <svg width="22" height="22" aria-hidden="true"><use href="#m6" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+            <div class="lockup is-small">
+              <svg width="16" height="16" aria-hidden="true"><use href="#m6" /></svg>
+              <span class="lockup-word">nodechess</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -463,9 +463,14 @@ async function run(outdir) {
     'and the banned ladder is unpairable under the shared pairingLegal'
   )
 
-  // (e) ProfilePage end-to-end: SPECTATOR first (store boots signed out)
+  // (e) ProfilePage end-to-end: SPECTATOR first (store boots signed out).
+  // The page has NO fixture path: the app resolves every profile it shows over
+  // the network, so this suite hands the resolved profile in on the `profile`
+  // prop. That is the only way these accounts reach a render, here or anywhere.
   eq(accountsUiStore.getState().signedIn, false, 'store boots signed OUT (spectator viewer)')
-  const spectatorPage = render(h(ProfilePage, { handle: 'mira#T8FQ2', onBack: () => {} }))
+  const spectatorPage = render(
+    h(ProfilePage, { handle: mira.handle, profile: mira, onBack: () => {} })
+  )
   const spectatorText = textOf(spectatorPage)
   ok(
     spectatorText.includes(String(miraElo.Bullet)) && spectatorText.includes(String(miraElo.Blitz)),
@@ -494,7 +499,7 @@ async function run(outdir) {
     st.viewerDisplay && ['Bullet', 'Blitz', 'Rapid', 'Classical'].every((k) => st.viewerDisplay[k]),
     'store derives viewerDisplay for all four ladders (shared displayState)'
   )
-  const provPage = render(h(ProfilePage, { handle: 'mira#T8FQ2', onBack: () => {} }))
+  const provPage = render(h(ProfilePage, { handle: mira.handle, profile: mira, onBack: () => {} }))
   const provPageText = textOf(provPage)
   eq(count(provPage, 'Unranked pool'), 4, 'hidden viewer ProfilePage: all 4 mira ladders are Unranked pool')
   ok(!MIRA_NUMBERS.test(provPageText), 'hidden viewer ProfilePage: no mira rating renders anywhere')
@@ -669,7 +674,12 @@ async function run(outdir) {
   eq(adrift.reconstruction.revocationContested, true, 'fixture carries revocationContested (C-12)')
   eq(adrift.checkpoint.mOfN, false, 'fixture carries the below-threshold checkpoint (mOfN:false)')
   const degradedPage = render(
-    h(ProfilePage, { handle: 'adrift#P9GH3', onBack: () => {}, initialRevealed: true })
+    h(ProfilePage, {
+      handle: adrift.handle,
+      profile: adrift,
+      onBack: () => {},
+      initialRevealed: true,
+    })
   )
   // C-12 is now ONE sentence instead of three mechanism chips. Every degradation
   // the resolve can report (floor path, contested revocation, checkpoint under
@@ -689,14 +699,19 @@ async function run(outdir) {
   // The healthy counterpart: a complete view must NOT show the incomplete notice,
   // otherwise the signal means nothing.
   const healthyPage = render(
-    h(ProfilePage, { handle: 'mira#T8FQ2', onBack: () => {}, initialRevealed: true })
+    h(ProfilePage, {
+      handle: mira.handle,
+      profile: mira,
+      onBack: () => {},
+      initialRevealed: true,
+    })
   )
   ok(
     !healthyPage.includes('Some of this profile could not be loaded'),
     'healthy profile: no incomplete notice renders'
   )
 
-  const gate = render(h(ProfilePage, { handle: 'adrift#P9GH3', onBack: () => {} }))
+  const gate = render(h(ProfilePage, { handle: adrift.handle, profile: adrift, onBack: () => {} }))
   ok(gate.includes('Loading'), 'owner-offline profile opens with the loading stage')
 
   // ReconstructionCard is now purely the waiting state. Naming the floor path was

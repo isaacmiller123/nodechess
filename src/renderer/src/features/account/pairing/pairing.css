@@ -1,0 +1,183 @@
+/* Pairing: two surfaces v1 never drew, built from v1's own vocabulary.
+
+   Everything structural here is already the account page's: .sec, .panel,
+   .acct-field, .acct-where, .acct-hint, .acct-alert, .panel-foot, .btn. What is
+   left is the handful of things that vocabulary genuinely has no member for: a
+   square of black and white that must not be themed, a live camera frame, and
+   two characters-you-compare readouts that have to be read across a room.
+
+   The .pair- prefix continues account.css's .acct- convention rather than
+   inventing a second namespace on the same page. Tokens only, except the two
+   fixed colours on the code itself, which are explained where they are set. */
+
+/* ---- the code ----
+   A square that stays a square. It is capped rather than stretched: a QR the
+   width of a desktop panel is no easier to scan than one at 240px, and the eye
+   has to find it next to its instructions. */
+.pair-code {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.pair-qr {
+  flex: none;
+  width: 240px;
+  height: 240px;
+  /* The white plate is the quiet zone and part of the symbol, so the border is
+     hairline and outside it: a dark page running straight into white modules is
+     what makes some readers hunt for the finder patterns. */
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.pair-code-side {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Three short steps, numbered because they are done in order on two devices. */
+.pair-steps {
+  margin: 0;
+  padding-left: var(--space-6);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-body);
+}
+
+.pair-steps li + li {
+  margin-top: var(--space-1);
+}
+
+/* The code as text, for a device with no camera. Mono and wrapping: it is
+   selected and copied, never read. */
+.pair-text {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  min-height: 64px;
+  overflow-wrap: anywhere;
+}
+
+/* ---- the two things a human compares ----
+   Eight characters read off one screen and checked against another, so they get
+   size, mono, and letter spacing. This is the security step; it should not look
+   like a caption. */
+.pair-fp {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+}
+
+.pair-ask-device {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+/* The decision itself. Yes is the primary, No is a real button beside it and
+   not a quiet link: a person who wants to refuse should not have to look for
+   the refusal. */
+.pair-decide {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.pair-no {
+  border-color: var(--border-strong);
+}
+
+/* ---- the viewfinder ----
+   The element is mounted for the life of the panel (some engines will not play
+   into a detached video), so it collapses to nothing until the camera is live
+   rather than leaving a black box on an idle screen. */
+.pair-view {
+  padding-top: 0;
+  padding-bottom: 0;
+  border-top: 0;
+}
+
+.pair-view:not(.is-live) {
+  display: none;
+}
+
+.pair-view.is-live {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.pair-video {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #000000;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+}
+
+/* ==========================================================================
+   PHONE. Inside the same breakpoint account.css uses, and nothing here is read
+   at any other width, so the desktop page is untouched.
+
+   The tab bar and its safe-area inset are NOT paid again here: components.css
+   already reserves both on .main, and the account page's own 44px targets come
+   from account.css's `.acct .btn` rule, which these buttons are inside.
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  /* The code and its instructions stack, and the code takes the column so it
+     is scannable from another device held a foot away. Capped at 76vw so it
+     still fits beside the panel inset on a 320px screen. */
+  .acct .pair-code {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .acct .pair-qr {
+    width: min(280px, 76vw);
+    height: min(280px, 76vw);
+    align-self: center;
+  }
+
+  /* THE VIEWFINDER MUST FIT THE SCREEN. The panel inset plus the shell's own
+     gutters take about 48px, and the page below the video still has to show
+     what to do, so the frame is bounded by the viewport rather than by its own
+     aspect ratio. 52vh leaves the instruction line and Cancel on screen at
+     568px tall, which is the shortest phone this app supports. */
+  .acct .pair-video {
+    max-width: none;
+    max-height: 52vh;
+    aspect-ratio: 3 / 4;
+  }
+
+  /* The decision buttons are the only place in the app where a mis-tap signs
+     someone else in, so they are full width, stacked, and Yes is not adjacent
+     to No under a moving thumb. The 44px minimum comes from account.css. */
+  .acct .pair-decide {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* The gap between them is account.css's own `.acct .panel-foot .btn + .btn`
+     rule, which this element is already inside. Restating it would double it. */
+  .acct .pair-decide .btn {
+    width: 100%;
+  }
+
+  /* Eight characters at --fs-xl with wide tracking overflow a 320px column. */
+  .acct .pair-fp {
+    font-size: var(--fs-lg);
+    overflow-wrap: anywhere;
+  }
+}

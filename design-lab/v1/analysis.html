@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+    <style>
+      /* ANALYSIS. Page local, all of it prefixed .an-, all of it tokens.
+
+         THE BOARD IS NOT ON THIS PAGE. .lesson, .board-area, .board-stage,
+         .board-wrap, .cg-wrap, cg-board, piece, coords, .shapes and .rank-1..3
+         all come from shell.css, which transcribes them from the shipping app
+         and from chessground. This file sets no board width, no square colour,
+         no piece and no brush. It adds one thing beside the board, the eval
+         bar, because that is what analysis is.
+
+         SHAPE. Two columns, which is what the shipped AnalysisView is: a
+         centred board on the left and ONE sidebar stack on the right. The
+         version this replaces cut the sidebar into a second and third column,
+         and that is why it made you hunt. The grid is .lesson, the same shape
+         school and puzzles use, so a board page is a board page.
+
+         HIERARCHY. Every section in the sidebar opens with the same object, a
+         .sec-head: mono label on the left, one hairline, one count on the
+         right. Nine instruments, one repeated rule, so the eye learns the page
+         once and then reads down it. Nothing is behind a disclosure except the
+         second tab of the game library, which is two lists of the same thing.
+
+         The three strips in the board column, the eval line above the board and
+         the controls and FEN below it, land on the board's exact left and right
+         edges. See .an-strip: they are given the eval bar's column as a spacer
+         and then the board's own width rule, so they shrink with the board
+         instead of restating its measure. */
+
+      /* ---------- strips that share the board's edges ----------
+
+         .board-stage is a flex row holding the eval bar and the board, and the
+         board is the only item allowed to shrink, so the board is exactly the
+         column minus the bar minus the gutter. A strip repeats that flex row
+         with an empty spacer where the bar stands, which lands its content on
+         the board's two edges without this file writing the measure down. The
+         alternative was subtracting the bar from min(78vh, 100%) here, and a
+         page restating the board rule is the defect this shell just removed. */
+
+      .an-strip {
+        display: flex;
+        gap: var(--space-3);
+        width: 100%;
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      .an-strip::before {
+        content: '';
+        flex: none;
+        width: var(--evalbar-w);
+      }
+
+      .an-strip > * {
+        flex: 0 1 auto;
+        width: var(--board-measure, min(78vh, 100%));
+        max-width: 760px;
+        min-width: 0;
+      }
+
+      /* .board-area already spaces its children, so the bar's own margin would
+         be a second gap. */
+      .an-strip .boardbar {
+        margin-top: 0;
+      }
+
+      /* ---------- the eval line above the board ---------- */
+
+      .an-plate {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+        padding-bottom: var(--space-3);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .an-eval {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xl);
+        font-weight: var(--fw-medium);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        line-height: 1;
+        color: var(--text-primary);
+      }
+
+      .an-src {
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      /* ---------- the eval bar ----------
+
+         A flex sibling inside .board-stage, the way EvalBar.tsx is a sibling of
+         .board-wrap, so the stage centres the bar and the board as a pair. It
+         does not shrink: the board takes the whole adjustment, which is what
+         lets the strips above and below match the board exactly.
+
+         The fill is white's win expectancy, not the score. +0.86 is 57.9% of
+         the bar, from winPercent() in src/renderer/src/chess/scores.ts, not 86%
+         and not half. */
+
+      .an-evalbar {
+        position: relative;
+        flex: none;
+        width: var(--evalbar-w);
+        align-self: stretch;
+        background: var(--eval-black);
+        border-radius: var(--radius-board);
+        overflow: hidden;
+      }
+
+      .an-evalfill {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: var(--an-fill, 50%);
+        background: var(--eval-white);
+        transition: height var(--motion-slow) var(--ease-out);
+      }
+
+      .an-evalfill.is-58 {
+        --an-fill: 57.9%;
+      }
+
+      .an-evalmid {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 1px;
+        background: var(--eval-mid);
+      }
+
+      /* ---------- engine arrows ----------
+
+         Geometry only. Colour, opacity and stroke width are .rank-1, .rank-2
+         and .rank-3 in shell.css, which are chessground's green, paleBlue and
+         paleGrey in the order AnalysisView.tsx ranks them:
+
+           const brushByRank = ['green', 'paleBlue', 'paleGrey']
+
+         so the best line is green at full opacity and only the third line is
+         grey. The overlay is .shapes, viewBox 0 0 8 8, one unit per square, so
+         a square centre is (file + 0.5, 8 - rank + 0.5).
+
+         Each arrow is chessground's own arithmetic and none of it is guessed.
+         The line stops 10/64 of a square short of the destination centre
+         (arrowMargin in chessground/dist/svg.js) and the head is that marker
+         drawn out as a triangle: three stroke widths long, four across, with
+         the tip 0.95 stroke widths past the line's end, which is what refX 2.05
+         on a markerWidth 4 marker means. .rank-N sets fill AND stroke, so the
+         head turns its stroke off and takes the fill. */
+
+      .an-arrowhead {
+        stroke: none;
+      }
+
+      /* ---------- board bar ---------- */
+
+      .an-nav {
+        display: flex;
+        gap: var(--space-2);
+      }
+
+      .an-nav .key {
+        min-width: 34px;
+      }
+
+      /* ---------- under the board ----------
+
+         Getting a position onto the board is one job, so its two halves stand
+         together under the board rather than eight sections apart down a
+         sidebar: paste a FEN or a PGN on the left, open a game you already have
+         on the right. It also means the sidebar holds only what is being said
+         ABOUT the position, which is what makes that column readable. */
+
+      .an-under {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-7);
+        align-items: start;
+      }
+
+      .an-under > .sec {
+        margin-bottom: 0;
+      }
+
+      .an-fen {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-md);
+      }
+
+      .an-fen-text {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+        line-height: var(--lh-body);
+        overflow-wrap: anywhere;
+      }
+
+      .an-load {
+        display: flex;
+        gap: var(--space-3);
+        margin-top: var(--space-3);
+      }
+
+      .an-load .filter-input {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      /* ---------- engine ---------- */
+
+      .an-readout {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+        padding: var(--space-4) var(--space-4) var(--space-3);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-muted);
+      }
+
+      .an-readout b {
+        font-weight: var(--fw-medium);
+        color: var(--text-primary);
+      }
+
+      /* Stop belongs to the search that is running, so it sits at the end of the
+         control row rather than floating in the readout above it. */
+      .an-stop {
+        margin-left: auto;
+      }
+
+      .an-depthbar {
+        position: relative;
+        height: 1px;
+        margin: 0 var(--space-4) var(--space-4);
+        background: var(--border);
+      }
+
+      .an-depthbar::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: var(--an-w, 0);
+        background: var(--accent);
+        transition: width var(--motion-slow) var(--ease-out);
+      }
+
+      .an-depthbar.is-68::after {
+        --an-w: 68%;
+      }
+
+      .an-controls {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+        padding: var(--space-3) var(--space-4);
+        border-top: var(--border-width) solid var(--border);
+        border-bottom: var(--border-width) solid var(--border);
+        background: var(--bg-subtle);
+      }
+
+      /* ---------- the three lines ----------
+
+         Swatch, score, moves. The swatch is the arrow's brush painted on a
+         light square, which is where you are actually looking at it, so line
+         two reads as the pale blue arrow on the board and line three as the
+         pale grey one and nobody has to be told. */
+
+      .an-pv {
+        display: grid;
+        grid-template-columns: 10px 48px minmax(0, 1fr);
+        gap: var(--space-3);
+        align-items: center;
+        width: 100%;
+        text-align: left;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+        transition: background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .an-pv:last-child {
+        border-bottom: 0;
+      }
+
+      .an-pv:hover {
+        background: var(--surface-2);
+      }
+
+      .an-pv.is-best {
+        background: var(--surface-2);
+      }
+
+      .an-brush {
+        position: relative;
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-sm);
+        background: var(--sq-light);
+        overflow: hidden;
+      }
+
+      .an-brush::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--an-brush);
+        opacity: var(--an-brush-op, 1);
+      }
+
+      /* The same three brushes shell.css gives .rank-1..3, so a swatch cannot
+         drift from the arrow it is standing for. */
+      .an-brush.is-1 {
+        --an-brush: #15781b;
+        --an-brush-op: 1;
+      }
+
+      .an-brush.is-2 {
+        --an-brush: #003088;
+        --an-brush-op: 0.4;
+      }
+
+      .an-brush.is-3 {
+        --an-brush: #4a4a4a;
+        --an-brush-op: 0.35;
+      }
+
+      .an-score {
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+      }
+
+      .an-pvline {
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .an-pv.is-best .an-pvline {
+        color: var(--text-primary);
+      }
+
+      /* ---------- review ----------
+
+         White on the left, black on the right, the label between them. That is
+         ReviewPanel.tsx's own table and the symmetry is the whole trick: two
+         players are being compared, so every number has its opposite number on
+         the same baseline and the eye reads across a row instead of hunting
+         down two lists. */
+
+      .an-rv {
+        display: grid;
+        grid-template-columns: 74px minmax(0, 1fr) 74px;
+        align-items: baseline;
+      }
+
+      .an-rv > * {
+        min-width: 0;
+        padding: var(--space-2);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .an-rv-side,
+      .an-rv-mid {
+        text-align: center;
+      }
+
+      .an-rv-head {
+        background: var(--bg-subtle);
+      }
+
+      .an-rv-mid {
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+      }
+
+      .an-rv-side {
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+      }
+
+      .an-acc {
+        font-size: var(--fs-lg);
+        font-weight: var(--fw-medium);
+      }
+
+      .an-est {
+        display: block;
+        font-size: var(--fs-xs);
+        color: var(--text-muted);
+      }
+
+      /* A class nobody hit keeps its row and goes quiet, so the table is the
+         same shape after every game and Blunder is always in the same place. */
+      .an-rv-zero {
+        color: var(--text-muted);
+      }
+
+      .an-rv-mid .an-mk {
+        margin-right: var(--space-2);
+      }
+
+      /* ---------- eval graph ----------
+
+         The eval bar beside the board, unrolled along the game. Same encoding
+         in both, white's share of the height, so the graph needs no key. */
+
+      .an-graph {
+        padding: var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .an-graph-svg {
+        display: block;
+        width: 100%;
+        height: 64px;
+        background: var(--eval-black);
+        border-radius: var(--radius-sm);
+      }
+
+      .an-graph-fill {
+        fill: var(--eval-white);
+      }
+
+      .an-graph-mid {
+        stroke: var(--eval-mid);
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .an-graph-cursor {
+        stroke: var(--accent);
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .an-graph-foot {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-3);
+        margin-top: var(--space-3);
+      }
+
+      /* ---------- this move ---------- */
+
+      .an-note {
+        padding: var(--space-4);
+      }
+
+      .an-note-head {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        margin-bottom: var(--space-3);
+      }
+
+      .an-note-move {
+        font-family: var(--font-mono);
+        font-size: var(--fs-md);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+      }
+
+      .an-note-class {
+        font-size: var(--fs-sm);
+        font-weight: var(--fw-medium);
+      }
+
+      .an-note-class.is-inacc {
+        color: var(--class-inaccuracy);
+      }
+
+      .an-note-text {
+        font-size: var(--fs-base);
+        line-height: var(--lh-body);
+        color: var(--text-secondary);
+      }
+
+      .an-note-best {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        margin-top: var(--space-4);
+        padding-top: var(--space-3);
+        border-top: var(--border-width) solid var(--border);
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+      }
+
+      .an-note-best .an-ev {
+        margin-left: auto;
+      }
+
+      /* ---------- classification mark ----------
+
+         One glyph vocabulary for the page. The same object appears in the
+         review table, in the move list and in the note, so a ?! never has to be
+         explained twice. The glyphs are badges.ts's own. */
+
+      .an-mk {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-weight: var(--fw-medium);
+        letter-spacing: var(--tracking-normal);
+        text-align: center;
+        color: var(--text-muted);
+      }
+
+      .an-mk.is-brilliant {
+        color: var(--class-brilliant);
+      }
+      .an-mk.is-great {
+        color: var(--class-best);
+      }
+      .an-mk.is-good {
+        color: var(--class-good);
+      }
+      .an-mk.is-book {
+        color: var(--class-book);
+      }
+      .an-mk.is-inacc {
+        color: var(--class-inaccuracy);
+      }
+      .an-mk.is-mistake {
+        color: var(--class-mistake);
+      }
+      .an-mk.is-blunder {
+        color: var(--class-blunder);
+      }
+      /* tokens.css has no --class-miss, so Miss borrows the danger red. */
+      .an-mk.is-miss {
+        color: var(--danger);
+      }
+
+      /* ---------- move list ---------- */
+
+      .an-moves {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr);
+        max-height: 420px;
+        overflow-y: auto;
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+      }
+
+      .an-moves > * {
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .an-moves .mv-no {
+        display: flex;
+        align-items: center;
+        padding: var(--space-2) var(--space-2);
+      }
+
+      /* san, mark, eval. The third column is why a move row is worth its width:
+         it turns the slack into a straight numeric edge, so the move list is
+         also the eval history and you can find the swing without a graph. */
+      .an-cell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 16px 42px;
+        gap: var(--space-2);
+        align-items: baseline;
+        width: 100%;
+        text-align: left;
+        padding: var(--space-2);
+        color: var(--text-primary);
+        transition: background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .an-cell:hover {
+        background: var(--surface-2);
+      }
+
+      .an-cell.is-cursor {
+        background: var(--accent-soft);
+        box-shadow: inset 3px 0 0 var(--accent);
+      }
+
+      .an-cell.is-cursor .an-san {
+        color: var(--accent-active);
+        font-weight: var(--fw-medium);
+      }
+
+      .an-san {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .an-ev {
+        font-size: var(--fs-xs);
+        text-align: right;
+        color: var(--text-muted);
+      }
+
+      .an-result {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        grid-column: 1 / -1;
+        padding: var(--space-3);
+        border-bottom: 0;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      /* ---------- game library ---------- */
+
+      .an-libhead {
+        padding: var(--space-3) var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+        background: var(--bg-subtle);
+      }
+
+      .an-lib {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--space-3);
+        width: 100%;
+        text-align: left;
+        padding: var(--space-3) var(--space-4);
+        border-bottom: var(--border-width) solid var(--border);
+        transition: background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .an-lib:last-child {
+        border-bottom: 0;
+      }
+
+      .an-lib:hover {
+        background: var(--surface-2);
+      }
+
+      .an-lib-name {
+        display: block;
+        font-size: var(--fs-sm);
+        font-weight: var(--fw-medium);
+        color: var(--text-primary);
+      }
+
+      .an-lib-sub {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .an-lib-res {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+      }
+
+      /* ---------- narrow ----------
+
+         The shell folds .lesson to one column at 1080 and gives .side the
+         board's own measure there, so nothing on this page has to say anything
+         about that fold except one thing, and the one thing is the eval bar.
+
+         At the fold the shell centres .side in the column, and .board-stage
+         centres the bar and the board together, so the board's centre lands
+         half the bar's column to the right of the column's centre and the panel
+         under it would sit 15px to the left of the position it is describing.
+         Both rules below are about the BAR: leave its column free, and move by
+         half of it. Neither restates min(78vh, 100%), which is the shell's to
+         own. The result is that the sidebar and the board share both edges.
+
+         Below 720 the board column is under 400px and the board bar carries
+         five controls and a sentence, which is one line too many. */
+
+      @media (max-width: 1080px) {
+        .lesson > .side {
+          max-width: calc(100% - var(--evalbar-w) - var(--space-3));
+          transform: translateX(calc((var(--evalbar-w) + var(--space-3)) / 2));
+        }
+      }
+
+      @media (max-width: 720px) {
+        .an-under {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--space-8);
+        }
+
+        .an-plate {
+          gap: var(--space-3);
+        }
+
+        .an-src {
+          flex: 1 0 100%;
+          margin-left: 0;
+        }
+
+        /* Five controls and a sentence do not fit on one 358px line, so the
+           sentence takes its own. */
+        .an-strip .boardbar {
+          flex-wrap: wrap;
+          row-gap: var(--space-3);
+        }
+
+        .an-strip .turn {
+          flex: 1 0 100%;
+          margin-right: 0;
+        }
+
+        .an-nav {
+          flex: 1 1 auto;
+        }
+
+        .an-nav .key {
+          flex: 1 1 auto;
+          height: 34px;
+        }
+
+        .an-moves {
+          max-height: 320px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <!-- The mark. Candidate 1 from logos.html: the rook seen from above,
+           which is also a cell with a port on each side. -->
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" aria-current="page" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control, the same eight on every page. Each
+               swatch previews the palette it offers; none of them touches the
+               board. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Play your first game</span>
+          </div>
+          <div class="trace is-0" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <div class="lesson">
+            <!-- ============ THE BOARD ============ -->
+            <div class="lesson-main">
+              <div class="board-area">
+                <!-- The one number this column exists to produce, on the
+                     board's own left edge. -->
+                <div class="an-strip">
+                  <div class="an-plate">
+                    <span class="lbl">Eval</span>
+                    <span class="an-eval">+0.86</span>
+                    <span class="tag">white</span>
+                    <span class="an-src">Move 12 of 28 &middot; reviewed</span>
+                  </div>
+                </div>
+
+                <div class="board-stage">
+                  <div class="an-evalbar" role="img" aria-label="Evaluation, White +0.86">
+                    <div class="an-evalfill is-58"></div>
+                    <div class="an-evalmid"></div>
+                  </div>
+
+                  <div
+                    class="board-wrap board-brown"
+                    role="img"
+                    aria-label="Sicilian Najdorf, position after Black's eleventh move b5. White to move. The engine's three best moves are drawn as arrows: g4 to g5 in green, c1 to b1 in pale blue, h2 to h4 in pale grey."
+                  >
+                    <div class="cg-wrap orientation-white">
+                      <cg-container>
+                        <cg-board>
+                          <!-- last move, b7 to b5 -->
+                          <square class="last-move" style="transform: translate(100%, 100%)"></square>
+                          <square class="last-move" style="transform: translate(100%, 300%)"></square>
+                          <!-- r2q1rk1/3nbppp/p2pbn2/1p2p3/4P1P1/1NN1BP2/PPPQ3P/2KR1B1R w - - 0 12
+                               cburnett, one square each, placed by whole-square translate -->
+                          <piece class="pc br" style="transform: translate(0%, 0%)"></piece>
+                          <piece class="pc bq" style="transform: translate(300%, 0%)"></piece>
+                          <piece class="pc br" style="transform: translate(500%, 0%)"></piece>
+                          <piece class="pc bk" style="transform: translate(600%, 0%)"></piece>
+                          <piece class="pc bn" style="transform: translate(300%, 100%)"></piece>
+                          <piece class="pc bb" style="transform: translate(400%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(500%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(600%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(700%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(0%, 200%)"></piece>
+                          <piece class="pc bp" style="transform: translate(300%, 200%)"></piece>
+                          <piece class="pc bb" style="transform: translate(400%, 200%)"></piece>
+                          <piece class="pc bn" style="transform: translate(500%, 200%)"></piece>
+                          <piece class="pc bp" style="transform: translate(100%, 300%)"></piece>
+                          <piece class="pc bp" style="transform: translate(400%, 300%)"></piece>
+                          <piece class="pc wp" style="transform: translate(400%, 400%)"></piece>
+                          <piece class="pc wp" style="transform: translate(600%, 400%)"></piece>
+                          <piece class="pc wn" style="transform: translate(100%, 500%)"></piece>
+                          <piece class="pc wn" style="transform: translate(200%, 500%)"></piece>
+                          <piece class="pc wb" style="transform: translate(400%, 500%)"></piece>
+                          <piece class="pc wp" style="transform: translate(500%, 500%)"></piece>
+                          <piece class="pc wp" style="transform: translate(0%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(100%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(200%, 600%)"></piece>
+                          <piece class="pc wq" style="transform: translate(300%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(700%, 600%)"></piece>
+                          <piece class="pc wk" style="transform: translate(200%, 700%)"></piece>
+                          <piece class="pc wr" style="transform: translate(300%, 700%)"></piece>
+                          <piece class="pc wb" style="transform: translate(500%, 700%)"></piece>
+                          <piece class="pc wr" style="transform: translate(700%, 700%)"></piece>
+                        </cg-board>
+
+                        <!-- Engine arrows, ranked green then pale blue then
+                             pale grey. One unit is one square. -->
+                        <svg class="shapes" viewBox="0 0 8 8" aria-hidden="true">
+                          <g class="rank-3">
+                            <line x1="7.5" y1="6.5" x2="7.5" y2="4.65625" />
+                            <polygon class="an-arrowhead" points="7.5,4.43359 7.96875,5.13672 7.03125,5.13672" />
+                          </g>
+                          <g class="rank-2">
+                            <line x1="2.5" y1="7.5" x2="1.65625" y2="7.5" />
+                            <polygon class="an-arrowhead" points="1.43359,7.5 2.13672,7.03125 2.13672,7.96875" />
+                          </g>
+                          <g class="rank-1">
+                            <line x1="6.5" y1="4.5" x2="6.5" y2="3.65625" />
+                            <polygon class="an-arrowhead" points="6.5,3.50781 6.8125,3.97656 6.1875,3.97656" />
+                          </g>
+                        </svg>
+
+                        <coords class="ranks">
+                          <coord>1</coord><coord>2</coord><coord>3</coord><coord>4</coord><coord>5</coord><coord>6</coord><coord>7</coord><coord>8</coord>
+                        </coords>
+                        <coords class="files">
+                          <coord>a</coord><coord>b</coord><coord>c</coord><coord>d</coord><coord>e</coord><coord>f</coord><coord>g</coord><coord>h</coord>
+                        </coords>
+                      </cg-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="an-strip">
+                  <div class="boardbar">
+                    <span class="turn">
+                      <span class="turn-chip"></span>
+                      White to move
+                    </span>
+                    <span class="an-nav">
+                      <button class="key" type="button" title="Start">&#124;&lt;</button>
+                      <button class="key" type="button" title="Back">&lt;</button>
+                      <button class="key" type="button" title="Forward">&gt;</button>
+                      <button class="key" type="button" title="End">&gt;&#124;</button>
+                    </span>
+                    <span class="chips" data-chips>
+                      <button class="chip" type="button" aria-pressed="false">Flip</button>
+                      <button class="chip" type="button" aria-pressed="true">Engine</button>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="an-strip">
+                  <div class="an-under">
+                    <section class="sec">
+                      <div class="sec-head">
+                        <h2 class="lbl">Position</h2>
+                        <span class="sec-count">FEN</span>
+                      </div>
+                      <div class="an-fen">
+                        <span class="an-fen-text"
+                          >r2q1rk1/3nbppp/p2pbn2/1p2p3/4P1P1/1NN1BP2/PPPQ3P/2KR1B1R w - - 0 12</span
+                        >
+                        <button class="btn is-quiet" type="button">Copy</button>
+                      </div>
+                      <div class="an-load">
+                        <input
+                          class="filter-input"
+                          type="text"
+                          aria-label="Paste a FEN or a PGN"
+                          placeholder="Paste a FEN or a PGN"
+                        />
+                        <button class="btn" type="button">Load</button>
+                      </div>
+                    </section>
+
+                    <section class="sec">
+                      <div class="sec-head">
+                        <h2 class="lbl">Game library</h2>
+                        <span class="sec-count">Open one on the board</span>
+                      </div>
+
+                      <div class="panel">
+                        <div class="an-libhead">
+                          <div class="segmented" id="lib-tabs" data-segs role="group" aria-label="Game library source">
+                            <button class="seg" type="button" data-value="mine" aria-pressed="true">Your games</button>
+                            <button class="seg" type="button" data-value="famous" aria-pressed="false">Famous</button>
+                          </div>
+                        </div>
+
+                        <div class="is-only-on is-on" data-lib-pane="mine">
+                          <div class="empty">
+                            <p class="empty-line">You have not saved a game yet.</p>
+                            <p class="empty-line">Finish a game and it lands here, ready to review.</p>
+                          </div>
+                        </div>
+
+                        <div class="is-only-on" data-lib-pane="famous">
+                          <button class="an-lib" type="button">
+                            <span>
+                              <span class="an-lib-name">Kasparov &ndash; Topalov</span>
+                              <span class="an-lib-sub">Wijk aan Zee 1999</span>
+                            </span>
+                            <span class="an-lib-res">1&ndash;0</span>
+                          </button>
+                          <button class="an-lib" type="button">
+                            <span>
+                              <span class="an-lib-name">Byrne &ndash; Fischer</span>
+                              <span class="an-lib-sub">New York 1956</span>
+                            </span>
+                            <span class="an-lib-res">0&ndash;1</span>
+                          </button>
+                          <button class="an-lib" type="button">
+                            <span>
+                              <span class="an-lib-name">Anderssen &ndash; Kieseritzky</span>
+                              <span class="an-lib-sub">London 1851</span>
+                            </span>
+                            <span class="an-lib-res">1&ndash;0</span>
+                          </button>
+                          <button class="an-lib" type="button">
+                            <span>
+                              <span class="an-lib-name">Karpov &ndash; Kasparov</span>
+                              <span class="an-lib-sub">Moscow 1985, game 16</span>
+                            </span>
+                            <span class="an-lib-res">0&ndash;1</span>
+                          </button>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ============ ENGINE, REVIEW, MOVES ============ -->
+            <aside class="side">
+              <!-- ---------------- engine ---------------- -->
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Engine</h2>
+                  <span class="sec-count">Stockfish 17</span>
+                </div>
+
+                <div class="panel">
+                  <div class="an-readout">
+                    depth <b>26</b>/<b>38</b> &nbsp; <b>18.4M</b> nodes &nbsp; <b>1.42</b> Mn/s
+                  </div>
+                  <div class="an-depthbar is-68"></div>
+
+                  <div class="an-controls">
+                    <span class="lbl">Depth</span>
+                    <span class="chips" data-chips data-single>
+                      <button class="chip" type="button" aria-pressed="false">18</button>
+                      <button class="chip" type="button" aria-pressed="false">22</button>
+                      <button class="chip" type="button" aria-pressed="true">26</button>
+                      <button class="chip" type="button" aria-pressed="false">30</button>
+                      <button class="chip" type="button" aria-pressed="false">&#8734;</button>
+                    </span>
+                    <span class="lbl">Lines</span>
+                    <span class="chips" data-chips data-single>
+                      <button class="chip" type="button" aria-pressed="false">1</button>
+                      <button class="chip" type="button" aria-pressed="true">3</button>
+                      <button class="chip" type="button" aria-pressed="false">5</button>
+                    </span>
+                    <span class="chips" data-chips>
+                      <button class="chip" type="button" aria-pressed="true">Arrows</button>
+                    </span>
+                    <button class="chip an-stop" type="button" aria-pressed="false">Stop</button>
+                  </div>
+
+                  <button class="an-pv is-best" type="button">
+                    <span class="an-brush is-1" aria-hidden="true"></span>
+                    <span class="an-score">+0.86</span>
+                    <span class="an-pvline">12. g5 Nh5 13. Nd5 Bxd5 14. exd5 Nf4 15. Bxf4 exf4 16. Qxf4</span>
+                  </button>
+
+                  <button class="an-pv" type="button">
+                    <span class="an-brush is-2" aria-hidden="true"></span>
+                    <span class="an-score">+0.52</span>
+                    <span class="an-pvline">12. Kb1 b4 13. Nd5 Nxd5 14. exd5 Bf5 15. Bd3 Bxd3 16. Qxd3</span>
+                  </button>
+
+                  <button class="an-pv" type="button">
+                    <span class="an-brush is-3" aria-hidden="true"></span>
+                    <span class="an-score">+0.31</span>
+                    <span class="an-pvline">12. h4 Rc8 13. Kb1 b4 14. Nd5 Nxd5 15. exd5 Bxb3 16. axb3</span>
+                  </button>
+                </div>
+              </section>
+
+              <!-- ---------------- review ---------------- -->
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Game review</h2>
+                  <span class="sec-count">28 moves &middot; depth 18</span>
+                </div>
+
+                <div class="panel">
+                  <div class="an-rv">
+                    <span class="lbl an-rv-side an-rv-head">White</span>
+                    <span class="lbl an-rv-mid an-rv-head">&nbsp;</span>
+                    <span class="lbl an-rv-side an-rv-head">Black</span>
+
+                    <span class="an-rv-side an-acc">94.1</span>
+                    <span class="an-rv-mid">Accuracy</span>
+                    <span class="an-rv-side an-acc">71.8</span>
+
+                    <span class="an-rv-side">~2210<span class="an-est">2120&ndash;2300</span></span>
+                    <span class="an-rv-mid">Est. performance</span>
+                    <span class="an-rv-side">~1780<span class="an-est">1690&ndash;1870</span></span>
+
+                    <span class="an-rv-side">9</span>
+                    <span class="an-rv-mid">Avg. centipawn loss</span>
+                    <span class="an-rv-side">62</span>
+
+                    <span class="an-rv-side an-rv-zero">0</span>
+                    <span class="an-rv-mid"><span class="an-mk is-brilliant">!!</span>Brilliant</span>
+                    <span class="an-rv-side">1</span>
+
+                    <span class="an-rv-side">3</span>
+                    <span class="an-rv-mid"><span class="an-mk is-great">!</span>Great</span>
+                    <span class="an-rv-side an-rv-zero">0</span>
+
+                    <span class="an-rv-side">16</span>
+                    <span class="an-rv-mid"><span class="an-mk is-good">&#10003;</span>Good</span>
+                    <span class="an-rv-side">11</span>
+
+                    <span class="an-rv-side">9</span>
+                    <span class="an-rv-mid"><span class="an-mk is-book">B</span>Book</span>
+                    <span class="an-rv-side">9</span>
+
+                    <span class="an-rv-side an-rv-zero">0</span>
+                    <span class="an-rv-mid"><span class="an-mk is-inacc">?!</span>Inaccuracy</span>
+                    <span class="an-rv-side">2</span>
+
+                    <span class="an-rv-side an-rv-zero">0</span>
+                    <span class="an-rv-mid"><span class="an-mk is-mistake">?</span>Mistake</span>
+                    <span class="an-rv-side">2</span>
+
+                    <span class="an-rv-side an-rv-zero">0</span>
+                    <span class="an-rv-mid"><span class="an-mk is-miss">&#10007;</span>Miss</span>
+                    <span class="an-rv-side">1</span>
+
+                    <span class="an-rv-side an-rv-zero">0</span>
+                    <span class="an-rv-mid"><span class="an-mk is-blunder">??</span>Blunder</span>
+                    <span class="an-rv-side">1</span>
+                  </div>
+
+                  <div class="an-graph">
+                    <svg
+                      class="an-graph-svg"
+                      viewBox="0 0 560 72"
+                      preserveAspectRatio="none"
+                      role="img"
+                      aria-label="Evaluation across the game. White edges ahead from move 12 and is winning from move 19."
+                    >
+                      <path class="an-graph-fill" d="M0,72 L0,34.68 L10.37,34.34 L20.74,34.15 L31.11,34.54 L41.48,34.01 L51.85,34.28 L62.22,33.88 L72.59,34.15 L82.96,34.01 L93.33,34.34 L103.7,33.75 L114.07,34.01 L124.44,33.62 L134.81,34.01 L145.19,33.49 L155.56,33.88 L165.93,33.35 L176.3,33.75 L186.67,33.62 L197.04,34.01 L207.41,33.75 L217.78,30.35 L228.15,30.09 L238.52,27.92 L248.89,27.42 L259.26,27.54 L269.63,27.67 L280,23.02 L290.37,23.31 L300.74,23.43 L311.11,23.55 L321.48,29.96 L331.85,29.45 L342.22,29.19 L352.59,28.68 L362.96,24.49 L373.33,24.61 L383.7,15.92 L394.07,16.01 L404.44,16.47 L414.81,15.78 L425.19,15.47 L435.56,15.11 L445.93,15.2 L456.3,14.59 L466.67,14.25 L477.04,13.63 L487.41,9.25 L497.78,9.01 L508.15,8.67 L518.52,8.34 L528.89,8.13 L539.26,5.08 L549.63,5.08 L560,2.53 L560,72 Z" />
+                      <line class="an-graph-mid" x1="0" y1="36" x2="560" y2="36" />
+                      <line class="an-graph-cursor" x1="217.78" y1="0" x2="217.78" y2="72" />
+                    </svg>
+                    <div class="an-graph-foot">
+                      <span class="lbl">Move 1</span>
+                      <span class="lbl">Move 28</span>
+                    </div>
+                  </div>
+
+                  <div class="panel-foot">
+                    <button class="btn is-primary" type="button">
+                      Go to the next mistake
+                      <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ---------------- this move ---------------- -->
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">This move</h2>
+                  <span class="sec-count">+0.34 &rarr; +0.86</span>
+                </div>
+
+                <div class="panel">
+                  <div class="an-note">
+                    <div class="an-note-head">
+                      <span class="an-note-move">11&hellip; b5</span>
+                      <span class="an-mk is-inacc">?!</span>
+                      <span class="an-note-class is-inacc">Inaccuracy</span>
+                    </div>
+                    <p class="an-note-text">
+                      b5 takes queenside space, but the pawn is loose there and White gets to hit
+                      it with a4. The kingside attack arrives first.
+                    </p>
+                    <div class="an-note-best">
+                      <span class="lbl">Better</span>
+                      11&hellip; Rc8
+                      <span class="an-ev">+0.34</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- ---------------- moves ---------------- -->
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Moves</h2>
+                  <span class="sec-count">B90 Najdorf</span>
+                </div>
+
+                <div class="well">
+                  <div class="an-moves">
+                      <span class="mv-no">1</span>
+                      <button class="an-cell" type="button"><span class="an-san">e4</span><span class="an-mk is-book">B</span><span class="an-ev">+0.20</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">c5</span><span class="an-mk is-book">B</span><span class="an-ev">+0.25</span></button>
+                      <span class="mv-no">2</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nf3</span><span class="an-mk is-book">B</span><span class="an-ev">+0.28</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">d6</span><span class="an-mk is-book">B</span><span class="an-ev">+0.22</span></button>
+                      <span class="mv-no">3</span>
+                      <button class="an-cell" type="button"><span class="an-san">d4</span><span class="an-mk is-book">B</span><span class="an-ev">+0.30</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">cxd4</span><span class="an-mk is-book">B</span><span class="an-ev">+0.26</span></button>
+                      <span class="mv-no">4</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nxd4</span><span class="an-mk is-book">B</span><span class="an-ev">+0.32</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Nf6</span><span class="an-mk is-book">B</span><span class="an-ev">+0.28</span></button>
+                      <span class="mv-no">5</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nc3</span><span class="an-mk is-book">B</span><span class="an-ev">+0.30</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">a6</span><span class="an-mk is-book">B</span><span class="an-ev">+0.25</span></button>
+                      <span class="mv-no">6</span>
+                      <button class="an-cell" type="button"><span class="an-san">Be3</span><span class="an-mk is-book">B</span><span class="an-ev">+0.34</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">e5</span><span class="an-mk is-book">B</span><span class="an-ev">+0.30</span></button>
+                      <span class="mv-no">7</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nb3</span><span class="an-mk is-book">B</span><span class="an-ev">+0.36</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Be7</span><span class="an-mk is-book">B</span><span class="an-ev">+0.30</span></button>
+                      <span class="mv-no">8</span>
+                      <button class="an-cell" type="button"><span class="an-san">Qd2</span><span class="an-mk is-book">B</span><span class="an-ev">+0.38</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">O-O</span><span class="an-mk is-book">B</span><span class="an-ev">+0.32</span></button>
+                      <span class="mv-no">9</span>
+                      <button class="an-cell" type="button"><span class="an-san">O-O-O</span><span class="an-mk is-book">B</span><span class="an-ev">+0.40</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Be6</span><span class="an-mk is-book">B</span><span class="an-ev">+0.34</span></button>
+                      <span class="mv-no">10</span>
+                      <button class="an-cell" type="button"><span class="an-san">f3</span><span class="an-mk is-good">✓</span><span class="an-ev">+0.36</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Nbd7</span><span class="an-mk is-good">✓</span><span class="an-ev">+0.30</span></button>
+                      <span class="mv-no">11</span>
+                      <button class="an-cell" type="button"><span class="an-san">g4</span><span class="an-mk is-good">✓</span><span class="an-ev">+0.34</span></button>
+                      <button class="an-cell is-cursor" type="button" aria-current="true"><span class="an-san">b5</span><span class="an-mk is-inacc">?!</span><span class="an-ev">+0.86</span></button>
+                      <span class="mv-no">12</span>
+                      <button class="an-cell" type="button"><span class="an-san">g5</span><span class="an-mk is-good">✓</span><span class="an-ev">+0.90</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Nh5</span><span class="an-mk is-inacc">?!</span><span class="an-ev">+1.24</span></button>
+                      <span class="mv-no">13</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nd5</span><span class="an-mk is-great">!</span><span class="an-ev">+1.32</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Bxd5</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.30</span></button>
+                      <span class="mv-no">14</span>
+                      <button class="an-cell" type="button"><span class="an-san">exd5</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.28</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Nf4</span><span class="an-mk is-mistake">?</span><span class="an-ev">+2.05</span></button>
+                      <span class="mv-no">15</span>
+                      <button class="an-cell" type="button"><span class="an-san">Bxf4</span><span class="an-mk is-good">✓</span><span class="an-ev">+2.00</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">exf4</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.98</span></button>
+                      <span class="mv-no">16</span>
+                      <button class="an-cell" type="button"><span class="an-san">Qxf4</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.96</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Bxg5</span><span class="an-mk is-brilliant">!!</span><span class="an-ev">+0.92</span></button>
+                      <span class="mv-no">17</span>
+                      <button class="an-cell" type="button"><span class="an-san">Qg3</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.00</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Bf6</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.04</span></button>
+                      <span class="mv-no">18</span>
+                      <button class="an-cell" type="button"><span class="an-san">h4</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.12</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Qc7</span><span class="an-mk is-miss">✗</span><span class="an-ev">+1.80</span></button>
+                      <span class="mv-no">19</span>
+                      <button class="an-cell" type="button"><span class="an-san">Bd3</span><span class="an-mk is-good">✓</span><span class="an-ev">+1.78</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Rae8</span><span class="an-mk is-blunder">??</span><span class="an-ev">+3.42</span></button>
+                      <span class="mv-no">20</span>
+                      <button class="an-cell" type="button"><span class="an-san">Bxb5</span><span class="an-mk is-great">!</span><span class="an-ev">+3.40</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">axb5</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.30</span></button>
+                      <span class="mv-no">21</span>
+                      <button class="an-cell" type="button"><span class="an-san">Nc5</span><span class="an-mk is-great">!</span><span class="an-ev">+3.45</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">dxc5</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.52</span></button>
+                      <span class="mv-no">22</span>
+                      <button class="an-cell" type="button"><span class="an-san">d6</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.60</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Qb6</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.58</span></button>
+                      <span class="mv-no">23</span>
+                      <button class="an-cell" type="button"><span class="an-san">dxe7</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.72</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Rxe7</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.80</span></button>
+                      <span class="mv-no">24</span>
+                      <button class="an-cell" type="button"><span class="an-san">Qd6</span><span class="an-mk is-good">✓</span><span class="an-ev">+3.95</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Rfe8</span><span class="an-mk is-mistake">?</span><span class="an-ev">+5.20</span></button>
+                      <span class="mv-no">25</span>
+                      <button class="an-cell" type="button"><span class="an-san">Rhe1</span><span class="an-mk is-good">✓</span><span class="an-ev">+5.28</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Nf6</span><span class="an-mk is-good">✓</span><span class="an-ev">+5.40</span></button>
+                      <span class="mv-no">26</span>
+                      <button class="an-cell" type="button"><span class="an-san">Rxe7</span><span class="an-mk is-good">✓</span><span class="an-ev">+5.52</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Rxe7</span><span class="an-mk is-good">✓</span><span class="an-ev">+5.60</span></button>
+                      <span class="mv-no">27</span>
+                      <button class="an-cell" type="button"><span class="an-san">Qd8+</span><span class="an-mk is-good">✓</span><span class="an-ev">+7.00</span></button>
+                      <button class="an-cell" type="button"><span class="an-san">Ne8</span><span class="an-mk is-good">✓</span><span class="an-ev">+7.00</span></button>
+                      <span class="mv-no">28</span>
+                      <button class="an-cell" type="button"><span class="an-san">Rd7</span><span class="an-mk is-good">✓</span><span class="an-ev">+9.00</span></button>
+                      <span class="an-cell is-empty"></span>
+                    <span class="an-result">White wins &middot; 1&ndash;0</span>
+                  </div>
+                </div>
+              </section>
+
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION ================= -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script src="shell.js" defer></script>
+    <script>
+      /* Page local chrome, and only chrome: the two tabs on the game library.
+         shell.js already paints the segmented control and fires nc:seg with the
+         chosen value; this swaps which list is on. Nothing here plays chess. */
+      document.addEventListener('nc:seg', function (e) {
+        if (!e.target || e.target.id !== 'lib-tabs') return;
+        var panes = document.querySelectorAll('[data-lib-pane]');
+        for (var i = 0; i < panes.length; i++) {
+          panes[i].classList.toggle('is-on', panes[i].getAttribute('data-lib-pane') === e.detail.value);
+        }
+      });
+    </script>
+  </body>
+</html>

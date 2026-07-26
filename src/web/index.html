@@ -1,9 +1,56 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      /* Same pre-paint snippet as src/renderer/index.html. See the comment
+         there. It is duplicated rather than shared because it must be inline
+         to beat the first paint, and the two targets have separate documents. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min')
+        var ncStored = localStorage.getItem('oct.settings.v1')
+        var ncPal = ncStored ? JSON.parse(ncStored).palette : null
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal)
+      } catch (e) {}
+    </script>
+    <!-- viewport-fit=cover lets the shell paint under a notch and a home
+         indicator; the tab bar and the content column pay the difference back
+         with env(safe-area-inset-*), so nothing lands under either one. No
+         maximum-scale and no user-scalable=no: pinch zoom stays available. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>nodechess</title>
+    <!-- Installable, and the two hints a phone home screen reads before the
+         app has painted anything. The manifest and its icons live in
+         src/web/public, so they land at the deploy root untouched; the offline
+         layer that makes an installed copy worth having is src/web/sw.ts. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#1a1b1d" />
+    <link rel="icon" href="/icons/icon-192.v2.png" sizes="192x192" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.v2.png" />
+    <!-- The two faces every screen needs, fetched in parallel with the
+         stylesheet instead of after it. Without these the browser cannot learn
+         a font exists until the CSS has parsed, so a cold load paints once in
+         the fallback and reflows when Inter arrives. WEB ONLY: the desktop
+         renderer reads the same files off disk, where there is nothing to
+         preload and Chromium would only warn about it. The bundler rewrites
+         these hrefs to the hashed asset it emits, so they cannot drift from
+         what fonts.css asks for. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="../../resources/fonts/inter-latin-wght-normal.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="../../resources/fonts/jetbrains-mono-latin-wght-normal.woff2"
+    />
   </head>
   <body>
     <div id="root"></div>

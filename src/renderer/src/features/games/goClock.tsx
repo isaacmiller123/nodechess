@@ -1,7 +1,7 @@
 // Local go clocks (KernelOtb / KernelBot). Japanese byo-yomi over the same
 // pure math the online session rules by (features/play/byoyomi.ts), owned
 // entirely in the renderer: no host, no wire, one authoritative SideClock per
-// color committed on every move, projected live by the shared <Clock>.
+// color committed on every move, projected live by the shared clock face.
 //
 // The hook is the authority: it watches the game's `turn`, debits the side
 // that just moved (crossing the main→byo-yomi boundary and any lapsed periods
@@ -10,12 +10,13 @@
 // fires `onFlag` when the last period lapses. Period entry/consumption plays
 // the lowTime tick so heads-down players hear the boundary.
 //
-// The row component renders 'MAIN 12:34' while a side is on main time, then
-// 'BY 3×30s' with the current-period countdown (the ×N badge inside <Clock>
-// carries the live periods-left count and the period-consumed flash).
+// The row tags MAIN while a side is on main time and 'BY 3×30s' once the
+// periods start; the ×N badge on the plate carries the live periods-left count
+// and the period-consumed flash. The face itself is clockFace.tsx.
 
 import { useCallback, useEffect, useMemo, useRef, useState, type JSX } from 'react'
-import { Clock, type ClockInterp } from '../play/Clock'
+import { ClockGroup, ClockRow } from './clockFace'
+import type { ClockInterp } from '../play/Clock'
 import {
   afterMoveCredit,
   byoyomiLabel,
@@ -248,7 +249,7 @@ export function useLocalGoClock(
   }, [enabled, cfg?.mainMs, byo, flagged, running, liveByo])
 }
 
-/** One side's clock row: color dot + name, MAIN/BY tag, ticking digits. */
+/** One side's clock row: stone + name, MAIN/BY tag, ticking digit plate. */
 export function GoClockRow({
   side,
   label,
@@ -268,14 +269,20 @@ export function GoClockRow({
   const inByo = clock.inByo(side)
   const byoSpec = interp?.byoSpec
   return (
-    <div className={`goclock-row${active && !over ? ' is-active' : ''}`}>
-      <span className={`votb-turn-dot is-${side}`} aria-hidden />
-      <span className="goclock-name">{label}</span>
-      <span className={`goclock-tag${inByo ? ' is-byo' : ''}`}>
-        {inByo && byoSpec ? `BY ${byoyomiLabel(byoSpec)}` : 'MAIN'}
-      </span>
-      <Clock ms={clock.ms(side)} active={active} over={over} label={label} interp={interp} />
-    </div>
+    <ClockRow
+      side={side}
+      name={label}
+      ms={clock.ms(side)}
+      interp={interp}
+      active={active}
+      over={over}
+      tag={{
+        // Cased here rather than by text-transform: '3×30s' must keep its
+        // lowercase unit, and an etched label is uppercase everywhere else.
+        text: inByo && byoSpec ? `BY ${byoyomiLabel(byoSpec)}` : 'MAIN',
+        byo: inByo
+      }}
+    />
   )
 }
 
@@ -292,7 +299,7 @@ export function GoClockPair({
   over: boolean
 }): JSX.Element {
   return (
-    <div className="goclock" role="group" aria-label="Game clocks">
+    <ClockGroup>
       {(['black', 'white'] as const).map((side) => (
         <GoClockRow
           key={side}
@@ -303,6 +310,6 @@ export function GoClockPair({
           over={over || clock.flagged !== null}
         />
       ))}
-    </div>
+    </ClockGroup>
   )
 }

@@ -45,6 +45,7 @@ export const api: Api = {
     next: (req) => ipcRenderer.invoke('puzzles:next', req),
     get: (puzzleId) => ipcRenderer.invoke('puzzles:get', { puzzleId }),
     themes: () => ipcRenderer.invoke('puzzles:themes', {}),
+    count: () => ipcRenderer.invoke('puzzles:count', {}),
     attempt: (req) => ipcRenderer.invoke('puzzles:attempt', req),
     // Slice A/B: bulk fetch.
     batch: (req) => ipcRenderer.invoke('puzzles:batch', req),

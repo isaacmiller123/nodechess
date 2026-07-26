@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import type { CustomVariantRow } from '@shared/types'
 import type { CustomVariantDef } from '../../../games/customVariants'
-import { displayFenOfIni, parentDef, PARENTS, type EditorModel } from './model'
+import { displayFenOfIni, parentDef, PARENTS, resizeBoard, type EditorModel } from './model'
 import { TEMPLATES, type VariantTemplate } from './templates'
 import { MiniBoard } from './MiniBoard'
 import { VariantEditor, type EditorSeed } from './VariantEditor'
@@ -25,6 +25,30 @@ type Mode =
 
 function cloneModel(model: EditorModel): EditorModel {
   return { ...model, board: model.board.slice(), promotion: [...model.promotion] }
+}
+
+/** A template as the builder's seed. Shared by the picker and the deep link
+ *  from the library's setup screen ("Start from" and "Board").
+ *
+ *  A board given here is the setup screen's answer and outranks the template's
+ *  own size: the pieces move with it, exactly as the builder's Files and Ranks
+ *  sliders move them. A parent that defines its own start keeps it. */
+function seedOf(tpl: VariantTemplate, board?: { files: number; ranks: number }): EditorSeed {
+  const model = cloneModel(tpl.model)
+  if (board && parentDef(model.parent).lockBoard !== true) {
+    if (board.files !== model.files || board.ranks !== model.ranks) {
+      model.board = resizeBoard(model.board, model.files, model.ranks, board.files, board.ranks)
+      model.files = board.files
+      model.ranks = board.ranks
+    }
+  }
+  return {
+    name: model.name,
+    description: model.description,
+    model,
+    boardFiles: model.files,
+    boardRanks: model.ranks
+  }
 }
 
 function rowToDef(row: CustomVariantRow): CustomVariantDef {
@@ -43,8 +67,23 @@ function rowToDef(row: CustomVariantRow): CustomVariantDef {
  * new ones, the builder, and local OTB play. Everything a user needs to invent
  * a chess variant and play it thirty seconds later.
  */
-export default function EditorView({ onExit }: { onExit(): void }): JSX.Element {
-  const [mode, setMode] = useState<Mode>({ t: 'gallery' })
+export default function EditorView({
+  onExit,
+  initialTemplateId,
+  initialBoard
+}: {
+  onExit(): void
+  /** Open straight into the builder on this template. The library's setup
+   *  screen names the seven by title, so arriving here on the gallery would
+   *  throw away the answer the user already gave. */
+  initialTemplateId?: string
+  /** The board that screen's "Board" row chose, for the same reason. */
+  initialBoard?: { files: number; ranks: number }
+}): JSX.Element {
+  const [mode, setMode] = useState<Mode>(() => {
+    const tpl = initialTemplateId ? TEMPLATES.find((t) => t.id === initialTemplateId) : undefined
+    return tpl ? { t: 'edit', seed: seedOf(tpl, initialBoard) } : { t: 'gallery' }
+  })
   const [rows, setRows] = useState<CustomVariantRow[] | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
 
@@ -62,17 +101,7 @@ export default function EditorView({ onExit }: { onExit(): void }): JSX.Element 
   }, [refresh])
 
   const openTemplate = (tpl: VariantTemplate): void => {
-    const model = cloneModel(tpl.model)
-    setMode({
-      t: 'edit',
-      seed: {
-        name: model.name,
-        description: model.description,
-        model,
-        boardFiles: model.files,
-        boardRanks: model.ranks
-      }
-    })
+    setMode({ t: 'edit', seed: seedOf(tpl) })
   }
 
   const openSaved = (row: CustomVariantRow): void => {

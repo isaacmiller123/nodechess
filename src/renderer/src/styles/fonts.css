@@ -1,0 +1,134 @@
+/* Self-hosted faces. Imported by tokens.css, which is the first stylesheet
+   main.tsx loads, so these are declared before any rule that uses them.
+
+   WHY THIS FILE EXISTS. tokens.css named 'Inter' and 'JetBrains Mono' at the
+   head of its stacks but nothing ever shipped them, so every name in both
+   stacks fell through: macOS drew the whole product in SF Pro and Windows in
+   Segoe UI Variable. Two platforms, two different products, and every measured
+   text width differed. The faces below are bundled, so the same bytes render
+   the UI on macOS, on Windows and in a browser.
+
+   NO NETWORK. These are local files, resolved by the bundler into the app's own
+   asset directory. Nothing here reaches a CDN: main/security.ts pins
+   font-src 'self', and the offline build depends on every byte being local.
+
+   VARIABLE, NOT A WEIGHT STACK. One wght-axis file per family instead of four
+   static cuts. It is smaller (Inter latin: 48 KB for the whole 100-900 axis
+   against roughly 80 KB for four static weights) and it renders 550 and 650
+   exactly, which the app asks for in two places and no static set can answer
+   without rounding.
+
+   SUBSETS. latin and latin-ext only, at Google's standard unicode-range cuts,
+   which is what this UI writes: latin-ext carries the accented opening and
+   player names (Réti, Grünfeld, Bogoljubov). The other subsets Google publishes
+   (cyrillic, greek, vietnamese) are not bundled, so a character outside these
+   ranges falls to the next family in the stack and is drawn by the platform, as
+   it was before. unicode-range also means latin-ext is only fetched by a page
+   that actually shows one of those characters.
+
+   Licenses: all three are SIL Open Font License 1.1, which permits bundling.
+   The full texts sit next to the files in resources/fonts/ and the entries are
+   in THIRD-PARTY-NOTICES.md. */
+
+/* ---- Inter: everything you read ---------------------------------------- */
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../../../../resources/fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../../../../resources/fonts/inter-latin-ext-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
+    U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* The drawn italic, so the seven italic rules in the feature stylesheets get a
+   real italic rather than a browser-synthesised slant, which is one more thing
+   that would otherwise be computed differently by each engine. latin only: an
+   accented character inside an italic caption is rare enough that carrying a
+   second 90 KB file for it is not worth the installer weight. */
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../../../../resources/fonts/inter-latin-wght-italic.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---- JetBrains Mono: clocks, evals, keys, hashes ------------------------ */
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('../../../../resources/fonts/jetbrains-mono-latin-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url('../../../../resources/fonts/jetbrains-mono-latin-ext-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
+    U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ---- The fifteen symbols this UI prints --------------------------------- */
+
+/* Inter's latin and latin-ext subsets do not carry symbol characters, so these
+   were being drawn by whatever the platform had: Apple Symbols on macOS, Segoe
+   UI Symbol on Windows, nothing dependable on Linux. They differ in weight, in
+   width and in whether the shape is filled. Fixing the two text families and
+   leaving these to the platform would have left the most-looked-at glyphs in
+   the app platform-specific.
+
+     U+2654-265F  the twelve chess figurines. Figurine notation puts a piece
+                  glyph inside ordinary running text, so this covers figurine
+                  mode, the move list and the player badges.
+     U+2605 U+2713 U+2717   the star, check and cross that mark every classified
+                  move in analysis (features/analysis/badges.ts).
+
+   Noto Sans Symbols 2, subset to exactly those fifteen: 3,252 bytes, down from
+   the 382 KB the symbols subset ships as. The range is declared to exactly what
+   the file contains, so a character it does not have still falls through to the
+   next family rather than drawing a missing-glyph box.
+
+   Listed FIRST in --font-sans and --font-mono as well as --font-figurine. The
+   unicode-range confines it to those fifteen characters, so it can never take a
+   letter or a digit off Inter. */
+@font-face {
+  font-family: 'nodechess Symbols';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  /* ?no-inline is LOAD-BEARING, not decoration. This file is 3,252 bytes, under
+     Vite's 4,096-byte inline threshold, so without it the bundler turns it into
+     a data: URI, and the packaged desktop CSP is font-src 'self' with no data:
+     (src/main/security.ts). The symbols would then be blocked in the packaged
+     app only, fall back to the platform symbol font, and reintroduce exactly the
+     difference this file exists to remove, in the one build nobody runs from
+     source. Keep it emitted as a real file. */
+  src: url('../../../../resources/fonts/noto-sans-symbols-2-ui.woff2?no-inline') format('woff2');
+  unicode-range: U+2605, U+2654-265F, U+2713, U+2717;
+}

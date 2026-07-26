@@ -2,8 +2,9 @@
    Play → Online (internet): lobby cards + live-game chrome.
    Owned by the multiplayer builder. Tokens (tokens.css) only;
    every class is namespaced under .online- so nothing collides
-   with play.css / setup.css / shared styles. GameView keeps its
-   own .play-view layout; we only frame it.
+   with play.css (which is design-lab/v1's page stylesheet) or the
+   shared styles. GameView keeps its own .play-view layout, in
+   game.css; we only frame it.
    ============================================================ */
 
 /* Local spinner (school.css owns a `.spin`; we keep our own so there's no
@@ -997,3 +998,47 @@
   white-space: nowrap;
 }
 
+
+/* ---------- PHONE: the live game's status strip ----------
+
+   DESKTOP IS UNTOUCHED. Everything below is inside the 720px query, the same
+   breakpoint shell.css uses to swap the rail for the tab bar.
+
+   The strip is one nowrap row: a LIVE tag, a sentence, then Offer draw and
+   Leave pushed to the right edge by margin-inline-start: auto. Measured at
+   375x812 with the strip rebuilt around a live board (no second peer to pair
+   with, so the frame was reconstructed from its own classes): the sentence
+   was squeezed to a 145px box and ellipsed mid-phrase, and the two buttons
+   came out 32px tall at the far right. Leave is how you get out of a game, so
+   32px is the wrong size for it.
+
+   Wrapping gives the actions their own line at 44px and gives the sentence
+   286px instead of 145, which is the whole of it. It is allowed to run onto a
+   second line rather than be cut, because half a sentence about fair play is
+   worse than two lines of it. .online-game's own `height: 100%` was measured
+   and left alone:
+   .main is `flex: 1 0 auto` on a phone, so that percentage resolves to auto
+   already and the frame grows with the game without any help from here. */
+@media (max-width: 720px) {
+  .online-statusbar {
+    flex-wrap: wrap;
+  }
+
+  .online-statusbar-msg {
+    flex: 1 1 auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .online-statusbar-actions {
+    margin-inline-start: 0;
+  }
+
+  .online-statusbar-actions .btn,
+  .online-away-actions .btn,
+  .online-rematch-actions .btn,
+  .online-leave-actions .btn {
+    min-height: 44px;
+  }
+}

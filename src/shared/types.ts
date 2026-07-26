@@ -1300,6 +1300,8 @@ export interface Api {
     }): Promise<{ puzzle: Puzzle | null }>
     get(puzzleId: string): Promise<{ puzzle: Puzzle | null }>
     themes(): Promise<{ themes: ThemeCount[] }>
+    /** How many positions the installed puzzle set holds; 0 when it is absent. */
+    count(): Promise<{ puzzles: number }>
     attempt(req: {
       puzzleId: string
       puzzleRating: number

@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en" data-style="01" data-palette="cold-iron-bone">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>d01 palettes - eight alternates</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <style>
+      /* Page furniture only. Every colour below comes from the palette in scope,
+         so each sample paints itself. */
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: var(--space-8) var(--space-6) var(--space-11);
+        background: var(--bg-subtle);
+        color: var(--text-primary);
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        letter-spacing: var(--tracking-tight);
+      }
+      .wrap { max-width: 1180px; margin: 0 auto; }
+      .page-head { border-bottom: var(--border-width) solid var(--border); padding-bottom: var(--space-6); margin-bottom: var(--space-8); }
+      .page-head h1 { font-size: var(--text-2xl); font-weight: var(--weight-bold); margin: 0 0 var(--space-3); }
+      .page-head p { margin: 0; color: var(--text-secondary); max-width: 68ch; }
+      .kicker { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--text-muted); text-transform: uppercase; margin: 0 0 var(--space-3); }
+
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: var(--space-8); }
+      .pal { background: var(--bg-page); border: var(--border-width) solid var(--border); border-radius: var(--radius-lg); padding: var(--space-6); color: var(--text-primary); }
+      .pal-head h2 { font-size: var(--text-lg); font-weight: var(--weight-bold); margin: 0; }
+      .pal-line { margin: var(--space-2) 0 var(--space-4); color: var(--text-muted); font-size: var(--text-sm); }
+      .swatches { display: flex; gap: 2px; list-style: none; margin: 0 0 var(--space-6); padding: 0; }
+      .swatches li { width: 100%; height: 16px; border-radius: var(--radius-sm); border: var(--border-width) solid var(--border); }
+
+      .card { background: var(--surface); border: var(--border-width) solid var(--border); border-radius: var(--radius-md); padding: var(--space-6); box-shadow: var(--shadow-sm); }
+      .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
+      .tag { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--accent); background: var(--accent-soft); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); padding: 1px var(--space-3); }
+      .stamp { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); }
+      .card h3 { font-size: var(--text-xl); font-weight: var(--weight-bold); margin: 0 0 var(--space-3); line-height: var(--leading-tight); }
+      .card p { margin: 0 0 var(--space-6); color: var(--text-secondary); }
+
+      .data { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin: 0 0 var(--space-4); padding: var(--space-4) 0; border-top: var(--border-width) solid var(--border); border-bottom: var(--border-width) solid var(--border); }
+      .data dt { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--text-muted); }
+      .data dd { font-family: var(--font-mono); font-size: var(--text-lg); margin: var(--space-1) 0 0; color: var(--text-primary); }
+      .data dd.up { color: var(--success); }
+
+      .row-strong { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); background: var(--surface-2); border: var(--border-width) solid var(--border-strong); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-6); }
+      .mono-label { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--text-secondary); }
+
+      .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+      button { font-family: var(--font-sans); font-size: var(--text-base); font-weight: var(--weight-medium); letter-spacing: var(--tracking-tight); border-radius: var(--radius-md); padding: var(--space-3) var(--space-6); border: var(--border-width) solid transparent; cursor: pointer; transition: background var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out), color var(--motion-fast) var(--ease-out); }
+      .btn-primary { background: var(--accent); color: var(--on-accent); }
+      .btn-primary:hover { background: var(--accent-hover); }
+      .btn-primary:active { background: var(--accent-active); }
+      .btn-secondary { background: transparent; color: var(--text-primary); border-color: var(--border-strong); }
+      .btn-secondary:hover { background: var(--surface-2); }
+      button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+      button[disabled] { background: var(--bg-subtle); color: var(--text-muted); border-color: var(--border); cursor: not-allowed; }
+
+      .mini { display: flex; align-items: center; gap: var(--space-6); margin-top: var(--space-6); }
+      .board { display: grid; grid-template-columns: repeat(4, 26px); grid-template-rows: repeat(4, 26px); border-radius: var(--radius-sm); overflow: hidden; flex: none; }
+      /* THE POINT OF THIS ROW. Every mini board below sits inside a different
+         [data-palette] block, and every one of them is the same board: the
+         squares read --sq-light and --sq-dark, which are declared once in
+         tokens.css and which no palette redeclares. Scroll the eight cards and
+         the chrome changes on all of them while these 16 squares do not move a
+         pixel. That is the contract. */
+      .sq { display: grid; place-items: center; }
+      .sq.lt { background: var(--sq-light); }
+      .sq.dk { background: var(--sq-dark); }
+      .sq.mk { box-shadow: inset 0 0 0 26px var(--sq-mark); }
+      .sq .pc { display: block; width: 100%; height: 100%; background-repeat: no-repeat; background-position: center; background-size: contain; }
+      .states { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+      .pill { font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: var(--tracking-wide); text-transform: uppercase; padding: 1px var(--space-3); border-radius: var(--radius-sm); border: var(--border-width) solid currentColor; }
+      .s-success { color: var(--success); }
+      .s-danger { color: var(--danger); }
+      .s-warning { color: var(--warning); }
+      .s-info { color: var(--info); }
+
+      .measured { margin-top: var(--space-11); }
+      .measured h2 { font-size: var(--text-xl); font-weight: var(--weight-bold); margin: 0 0 var(--space-3); }
+      .measured > p { margin: 0 0 var(--space-6); color: var(--text-secondary); max-width: 82ch; }
+      .scroll { overflow-x: auto; border: var(--border-width) solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+      table { border-collapse: collapse; width: 100%; font-family: var(--font-mono); font-size: var(--text-sm); }
+      thead th { text-align: right; font-size: var(--text-xs); letter-spacing: var(--tracking-wide); color: var(--text-muted); font-weight: var(--weight-normal); padding: var(--space-3); border-bottom: var(--border-width) solid var(--border-strong); white-space: nowrap; }
+      thead tr:last-child th:first-child { text-align: left; }
+      thead .grp th { text-align: center; color: var(--text-secondary); border-bottom: var(--border-width) solid var(--border); padding-top: var(--space-4); }
+      thead .grp th + th { border-left: var(--border-width) solid var(--border); }
+      thead .grp td { border-bottom: var(--border-width) solid var(--border); }
+      tbody th, tbody td { padding: var(--space-3); border-bottom: var(--border-width) solid var(--border); text-align: right; }
+      tbody th { text-align: left; font-family: var(--font-sans); font-weight: var(--weight-medium); white-space: nowrap; }
+      tbody td { color: var(--text-secondary); }
+      tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+      .ok { color: var(--success); }
+      .bad { color: var(--danger); }
+      .thresholds { margin-top: var(--space-4); color: var(--text-muted); font-size: var(--text-sm); }
+      @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page-head">
+        <p class="kicker">d01 / colour options</p>
+        <h1>Eight alternate dark palettes</h1>
+        <p>Same content in every panel, so the only variable is colour. Each palette varies the accent
+          hue and the neutral temperature together, because a cold grey with a warm accent is a
+          different object from a warm grey with a cold accent. Type, scale, spacing and radii are
+          d01's, unchanged. Ratios below are computed, not estimated.</p>
+      </header>
+
+      <div class="grid">
+
+      <section class="pal" data-palette="cold-graphite-oxblood">
+        <header class="pal-head">
+          <h2>cold graphite, oxblood</h2>
+          <p class="pal-line">neutrals cold blue-grey (hue 210), accent deep wine red (hue 354)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="warm-ash-slate-blue">
+        <header class="pal-head">
+          <h2>warm ash, slate blue</h2>
+          <p class="pal-line">neutrals warm grey (hue 32), accent dusty slate blue (hue 215)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="cool-steel-deep-teal">
+        <header class="pal-head">
+          <h2>cool steel, deep teal</h2>
+          <p class="pal-line">neutrals cold steel blue (hue 214, higher chroma), accent teal (hue 178)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="warm-umber-sage">
+        <header class="pal-head">
+          <h2>warm umber, sage green</h2>
+          <p class="pal-line">neutrals genuinely warm brown (hue 28, chroma 15), accent muted sage green (hue 82)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="cold-iron-bone">
+        <header class="pal-head">
+          <h2>cold iron, bone</h2>
+          <p class="pal-line">neutrals cold near-neutral grey (hue 220, chroma 4), accent barely chromatic bone (hue 40, chroma 12) - the near-monochrome option</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="green-slate-plum">
+        <header class="pal-head">
+          <h2>green slate, plum</h2>
+          <p class="pal-line">neutrals green-tinted grey (hue 155), accent desaturated plum (hue 298)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="blue-ink-straw">
+        <header class="pal-head">
+          <h2>blue ink, straw</h2>
+          <p class="pal-line">neutrals indigo-tinted (hue 245, chroma 17), accent pale straw yellow (hue 48)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pal" data-palette="warm-putty-dusty-rose">
+        <header class="pal-head">
+          <h2>warm putty, dusty rose</h2>
+          <p class="pal-line">neutrals warm putty grey (hue 20, chroma 7), accent light dusty rose (hue 350)</p>
+          <ul class="swatches" aria-hidden="true">
+            <li style="background: var(--bg-page)" title="--bg-page"></li>
+            <li style="background: var(--surface)" title="--surface"></li>
+            <li style="background: var(--surface-2)" title="--surface-2"></li>
+            <li style="background: var(--border-strong)" title="--border-strong"></li>
+            <li style="background: var(--text-secondary)" title="--text-secondary"></li>
+            <li style="background: var(--text-primary)" title="--text-primary"></li>
+            <li style="background: var(--accent)" title="--accent"></li>
+            <li style="background: var(--success)" title="--success"></li>
+            <li style="background: var(--danger)" title="--danger"></li>
+            <li style="background: var(--warning)" title="--warning"></li>
+            <li style="background: var(--info)" title="--info"></li>
+          </ul>
+        </header>
+
+        <div class="card">
+          <div class="card-top">
+            <span class="tag">RATED</span>
+            <span class="stamp">14 Aug 22:41</span>
+          </div>
+          <h3>Queen's Gambit Declined</h3>
+          <p>You held the centre until move 22, then traded into a rook endgame a pawn down. The
+            engine prefers keeping the bishop pair.</p>
+
+          <dl class="data">
+            <div><dt>ACCURACY</dt><dd>91.4%</dd></div>
+            <div><dt>MOVES</dt><dd>48</dd></div>
+            <div><dt>ELO SHIFT</dt><dd class="up">+12</dd></div>
+            <div><dt>TIME</dt><dd>09:58</dd></div>
+          </dl>
+
+          <div class="row-strong">
+            <span class="mono-label">NEXT LESSON</span>
+            <span>Minority attack</span>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn-primary">Play again</button>
+            <button type="button" class="btn-secondary">Review moves</button>
+            <button type="button" class="btn-secondary" disabled>Rematch offered</button>
+          </div>
+        </div>
+
+        <div class="mini">
+          <div class="board" aria-hidden="true">
+            <span class="sq lt"></span>
+            <span class="sq dk"><span class="pc wr"></span></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk mk"></span>
+            <span class="sq lt"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"><span class="pc br"></span></span>
+            <span class="sq dk"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+            <span class="sq dk"></span>
+            <span class="sq lt"></span>
+          </div>
+          <div class="states">
+            <span class="pill s-success">won</span>
+            <span class="pill s-danger">resigned</span>
+            <span class="pill s-warning">low time</span>
+            <span class="pill s-info">offline</span>
+          </div>
+        </div>
+      </section>
+      </div>
+
+      <section class="measured">
+        <h2>Measured contrast</h2>
+        <p>WCAG 2.1 relative luminance ratios. Body text targets 4.5:1, boundaries 3:1. surface-2 is
+          the lightest background in the ramp, so it is the hardest case and it is included even
+          though only bg-page and surface were required.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr class="grp">
+                <td></td>
+                <th scope="colgroup" colspan="2">text-primary</th>
+                <th scope="colgroup" colspan="3">text-secondary</th>
+                <th scope="colgroup" colspan="3">border-strong</th>
+                <th scope="colgroup">button label</th>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="col">palette</th>
+                <th scope="col">page</th>
+                <th scope="col">surf</th>
+                <th scope="col">page</th>
+                <th scope="col">surf</th>
+                <th scope="col">surf-2</th>
+                <th scope="col">page</th>
+                <th scope="col">surf</th>
+                <th scope="col">surf-2</th>
+                <th scope="col">on accent</th>
+                <th scope="col">verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+          <tr>
+            <th scope="row">cold graphite, oxblood</th>
+            <td>13.83</td>
+            <td>12.72</td>
+            <td>7.16</td>
+            <td>6.58</td>
+            <td>5.96</td>
+            <td>3.90</td>
+            <td>3.58</td>
+            <td>3.25</td>
+            <td>5.29</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">warm ash, slate blue</th>
+            <td>13.76</td>
+            <td>12.53</td>
+            <td>7.26</td>
+            <td>6.61</td>
+            <td>6.01</td>
+            <td>3.95</td>
+            <td>3.59</td>
+            <td>3.27</td>
+            <td>6.14</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">cool steel, deep teal</th>
+            <td>13.93</td>
+            <td>12.73</td>
+            <td>7.14</td>
+            <td>6.53</td>
+            <td>5.98</td>
+            <td>3.87</td>
+            <td>3.54</td>
+            <td>3.24</td>
+            <td>6.83</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">warm umber, sage green</th>
+            <td>13.84</td>
+            <td>12.58</td>
+            <td>7.28</td>
+            <td>6.62</td>
+            <td>6.02</td>
+            <td>4.00</td>
+            <td>3.63</td>
+            <td>3.31</td>
+            <td>7.19</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">cold iron, bone</th>
+            <td>13.91</td>
+            <td>12.69</td>
+            <td>7.22</td>
+            <td>6.59</td>
+            <td>6.02</td>
+            <td>3.91</td>
+            <td>3.57</td>
+            <td>3.25</td>
+            <td>10.98</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">green slate, plum</th>
+            <td>13.72</td>
+            <td>12.48</td>
+            <td>7.28</td>
+            <td>6.62</td>
+            <td>5.99</td>
+            <td>4.03</td>
+            <td>3.66</td>
+            <td>3.31</td>
+            <td>5.78</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">blue ink, straw</th>
+            <td>14.14</td>
+            <td>13.24</td>
+            <td>6.86</td>
+            <td>6.42</td>
+            <td>5.89</td>
+            <td>3.64</td>
+            <td>3.41</td>
+            <td>3.13</td>
+            <td>10.31</td>
+            <td class="ok">pass</td>
+          </tr>
+          <tr>
+            <th scope="row">warm putty, dusty rose</th>
+            <td>13.80</td>
+            <td>12.56</td>
+            <td>7.21</td>
+            <td>6.56</td>
+            <td>5.97</td>
+            <td>3.93</td>
+            <td>3.58</td>
+            <td>3.26</td>
+            <td>6.20</td>
+            <td class="ok">pass</td>
+          </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="thresholds">Thresholds applied: 4.5:1 for text-primary and text-secondary on
+          bg-page and on surface, 3:1 for border-strong, and 4.5:1 for a primary button's label on
+          its own accent. The lightness ramp is shared, so the text columns are near identical across
+          palettes by construction; the accent column is where they diverge.</p>
+      </section>
+    </div>
+  </body>
+</html>

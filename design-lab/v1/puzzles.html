@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+
+    <!-- Page local additions. Everything here is prefixed .puz- because
+         shell.css is frozen. Four things genuinely have no shell class: the
+         theme chip, the collapsible theme group, the provisional rating band,
+         and the run of marks. -->
+    <style>
+      /* The trace reports the one ratio this screen is about: how far the
+         provisional puzzle rating is from being a real number. 4 of 20. */
+      .puz-trace-20 {
+        --trace-w: 20%;
+      }
+
+      /* Mode panes. Only one is in the document flow at a time. */
+      .puz-pane[hidden] {
+        display: none;
+      }
+
+      /* shell.css sets .empty to display:flex, which outranks the hidden
+         attribute, so the empty state needs saying twice. */
+      #pane-custom .empty[hidden] {
+        display: none;
+      }
+
+      /* The builder: same two column shape as .lesson, its own breakpoint
+         because the left side is a chip field rather than a board. */
+      .puz-build {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: var(--space-8);
+        align-items: start;
+      }
+
+      /* One theme. Mono, because a theme name is an identifier. */
+      /* The theme chips are .chips and .chip in shell.css, including the on
+         state. This page had its own copy with an --accent-soft fill, which is
+         the old on state the shell replaced with a solid fill: a chosen theme
+         here did not look like a chosen anything anywhere else. Only the taller
+         height is page local, because these chips carry a count. */
+
+      /* A group of themes, shut until asked for. 63 names in nine drawers
+         instead of 63 checkboxes in one column. */
+      .puz-group {
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .puz-group summary {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-4) 0;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .puz-group summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .puz-group summary:hover .puz-gname {
+        color: var(--text-primary);
+      }
+
+      .puz-gname {
+        flex: none;
+        transition: color var(--motion-fast) var(--ease-out);
+      }
+
+      /* Closed, a group still says what is inside it. */
+      .puz-gprev {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .puz-group[open] .puz-gprev {
+        opacity: 0;
+      }
+
+      .puz-caret {
+        margin-left: auto;
+        flex: none;
+        color: var(--text-muted);
+        transform: rotate(180deg);
+        transition: transform var(--motion-base) var(--ease-out);
+      }
+
+      .puz-group[open] .puz-caret {
+        transform: rotate(270deg);
+      }
+
+      .puz-gbody {
+        padding: 0 0 var(--space-5);
+      }
+
+      /* The provisional band. There is no tick, because there is no number:
+         the whole point is that the reading is a width, not a value. */
+      .puz-bandwrap {
+        padding: var(--space-3) 0 var(--space-2);
+      }
+
+      .puz-band {
+        position: relative;
+        height: 6px;
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+
+      .puz-band-fill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 25%;
+        width: 31.25%;
+        background: var(--surface-2);
+        border-left: var(--border-width) solid var(--border-strong);
+        border-right: var(--border-width) solid var(--border-strong);
+      }
+
+      .puz-band-fill.is-set {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+      }
+
+      .puz-scale {
+        display: flex;
+        justify-content: space-between;
+        margin-top: var(--space-2);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+        color: var(--text-muted);
+      }
+
+      /* Today's attempts, oldest first, the one in play last. */
+      .puz-run {
+        display: flex;
+        gap: var(--space-2);
+        padding: var(--space-5) var(--space-6) var(--space-2);
+      }
+
+      .puz-mark {
+        width: 18px;
+        height: 18px;
+        border-radius: var(--radius-sm);
+        border: var(--border-width) solid var(--border);
+        background: var(--bg-subtle);
+      }
+
+      .puz-mark.is-solved {
+        background: var(--success-soft);
+        border-color: var(--success);
+      }
+
+      .puz-mark.is-missed {
+        background: var(--danger-soft);
+        border-color: var(--danger);
+      }
+
+      .puz-mark.is-now {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      /* Seven days, none of them solved. */
+      .puz-week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: var(--space-2);
+        padding: var(--space-5) var(--space-6);
+      }
+
+      .puz-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .puz-day-dot {
+        width: 100%;
+        height: 22px;
+        border-radius: var(--radius-sm);
+        border: var(--border-width) solid var(--border);
+        background: var(--bg-subtle);
+      }
+
+      .puz-day.is-today .puz-day-dot {
+        border-color: var(--accent);
+      }
+
+      .puz-selected {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .puz-selrow {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        letter-spacing: var(--tracking-normal);
+      }
+
+      .puz-selrow-drop {
+        margin-left: auto;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-muted);
+        transition: color var(--motion-fast) var(--ease-out);
+      }
+
+      .puz-selrow-drop:hover {
+        color: var(--danger);
+      }
+
+      .puz-extremes {
+        display: flex;
+        gap: var(--space-6);
+        flex-wrap: wrap;
+        margin-bottom: var(--space-4);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+      }
+
+      .puz-extremes .lbl {
+        margin-right: var(--space-2);
+      }
+
+      @media (max-width: 1080px) {
+        .puz-build {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .puz-run,
+        .puz-week {
+          padding-left: var(--space-4);
+          padding-right: var(--space-4);
+        }
+
+        /* Thumb sized: the chips, the drop control and the start button. */
+        .puz-selrow {
+          min-height: 44px;
+          padding-left: var(--space-4);
+          padding-right: var(--space-4);
+        }
+
+        .chips .chip {
+          height: 32px;
+        }
+
+        #pane-custom .panel-foot .btn {
+          height: 48px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .puz-caret {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <!-- The mark. Candidate 1 from logos.html: the rook seen from above,
+           which is also a cell with a port on each side. -->
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" aria-current="page" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <!-- Phone only: the rail is gone, so the brand needs a home. -->
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <!-- THE READOUT. Same four slots as every other screen. Rating is the
+             game rating, unchanged from home; the puzzle rating is a different
+             number and it lives on the page, not in the chrome. -->
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Solve 16 more to set your puzzle rating</span>
+          </div>
+          <div class="trace puz-trace-20" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <!-- The four modes. One control, four words, and the pane below it is
+               the mode: Train and Daily hand you a position, Custom is a
+               chooser, Rush is a start line. -->
+          <div class="filterbar">
+            <div class="segmented" role="group" aria-label="Puzzle mode">
+              <button class="seg" type="button" aria-pressed="true" data-mode="train">Train</button>
+              <button class="seg" type="button" aria-pressed="false" data-mode="custom">Custom</button>
+              <button class="seg" type="button" aria-pressed="false" data-mode="rush">Rush</button>
+              <button class="seg" type="button" aria-pressed="false" data-mode="daily">Daily</button>
+            </div>
+            <span class="sec-count num">4,762,884 positions</span>
+          </div>
+
+          <!-- ================= TRAIN ================= -->
+          <section class="puz-pane" id="pane-train">
+            <div class="lesson">
+              <div class="lesson-main">
+                <div class="board-area">
+                  <div class="board-stage">
+                    <div class="board-wrap board-brown">
+                      <div class="cg-wrap orientation-white">
+                        <cg-container>
+                          <cg-board>
+                            <!-- last move -->
+                            <square class="last-move" style="transform: translate(600%, 0%)"></square>
+                            <square class="last-move" style="transform: translate(700%, 0%)"></square>
+                            <!-- pieces: cburnett, one square each, placed by whole-square translate -->
+                            <piece class="pc br" style="transform: translate(0%, 0%)"></piece>
+                            <piece class="pc bq" style="transform: translate(300%, 0%)"></piece>
+                            <piece class="pc br" style="transform: translate(500%, 0%)"></piece>
+                            <piece class="pc bk" style="transform: translate(700%, 0%)"></piece>
+                            <piece class="pc bp" style="transform: translate(0%, 100%)"></piece>
+                            <piece class="pc bp" style="transform: translate(100%, 100%)"></piece>
+                            <piece class="pc bp" style="transform: translate(600%, 100%)"></piece>
+                            <piece class="pc bp" style="transform: translate(700%, 100%)"></piece>
+                            <piece class="pc bn" style="transform: translate(200%, 200%)"></piece>
+                            <piece class="pc bp" style="transform: translate(400%, 200%)"></piece>
+                            <piece class="pc bp" style="transform: translate(300%, 300%)"></piece>
+                            <piece class="pc wn" style="transform: translate(600%, 300%)"></piece>
+                            <piece class="pc wp" style="transform: translate(300%, 400%)"></piece>
+                            <piece class="pc wp" style="transform: translate(0%, 600%)"></piece>
+                            <piece class="pc wp" style="transform: translate(100%, 600%)"></piece>
+                            <piece class="pc wp" style="transform: translate(200%, 600%)"></piece>
+                            <piece class="pc wp" style="transform: translate(500%, 600%)"></piece>
+                            <piece class="pc wp" style="transform: translate(600%, 600%)"></piece>
+                            <piece class="pc wp" style="transform: translate(700%, 600%)"></piece>
+                            <piece class="pc wr" style="transform: translate(0%, 700%)"></piece>
+                            <piece class="pc wq" style="transform: translate(300%, 700%)"></piece>
+                            <piece class="pc wr" style="transform: translate(500%, 700%)"></piece>
+                            <piece class="pc wk" style="transform: translate(600%, 700%)"></piece>
+                          </cg-board>
+                          <coords class="ranks">
+                            <coord>1</coord><coord>2</coord><coord>3</coord><coord>4</coord><coord>5</coord><coord>6</coord><coord>7</coord><coord>8</coord>
+                          </coords>
+                          <coords class="files">
+                            <coord>a</coord><coord>b</coord><coord>c</coord><coord>d</coord><coord>e</coord><coord>f</coord><coord>g</coord><coord>h</coord>
+                          </coords>
+                        </cg-container>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="boardbar">
+                    <div class="turn">
+                      <span class="turn-chip"></span>
+                      White to move
+                    </div>
+                    <button class="btn is-quiet" type="button">Hint</button>
+                    <button class="btn is-quiet" type="button">Skip</button>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="side">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">This puzzle</h2>
+                    <span class="sec-count">OZq2m</span>
+                  </div>
+
+                  <div class="task">
+                    <p class="task-text">Play the move White would play. One try.</p>
+                  </div>
+
+                  <div class="panel">
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Band</span>
+                        <span class="fact-value">1400 to 1600</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Themes</span>
+                        <span class="fact-value">shown after you solve it</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">From</span>
+                        <span class="fact-value">
+                          Lichess blitz
+                          <span class="fact-note">two players near 1500</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Your puzzle rating</h2>
+                  </div>
+                  <div class="panel">
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Rating</span>
+                        <span class="fact-value">
+                          provisional
+                          <span class="fact-note">somewhere in 1200 to 1700</span>
+                        </span>
+                      </div>
+                      <div class="puz-bandwrap">
+                        <div class="puz-band"><span class="puz-band-fill"></span></div>
+                        <div class="puz-scale">
+                          <span>800</span>
+                          <span>2400</span>
+                        </div>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Solved</span>
+                        <span class="fact-value">
+                          4 of 20
+                          <span class="fact-note">a number replaces the band at 20</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Today</h2>
+                    <span class="sec-count">5th attempt</span>
+                  </div>
+                  <div class="panel">
+                    <div class="puz-run" aria-label="Today's attempts">
+                      <span class="puz-mark is-solved" title="Solved"></span>
+                      <span class="puz-mark is-solved" title="Solved"></span>
+                      <span class="puz-mark is-missed" title="Missed"></span>
+                      <span class="puz-mark is-solved" title="Solved"></span>
+                      <span class="puz-mark is-now" title="On the board now"></span>
+                    </div>
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Solved</span>
+                        <span class="fact-value">3</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Missed</span>
+                        <span class="fact-value">1</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Best run</span>
+                        <span class="fact-value">2</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ================= CUSTOM =================
+               73 themes, and the answer to picking among them is three doors of
+               different width: a search box, twelve one tap chips covering what
+               almost everybody wants, and nine drawers holding the rest by
+               kind. Nothing is a checkbox and nothing is a wall. -->
+          <section class="puz-pane" id="pane-custom" hidden>
+            <div class="puz-build">
+              <div>
+                <div class="filterbar">
+                  <input class="filter-input" type="search" placeholder="Filter 73 themes" aria-label="Filter themes" />
+                  <div class="segmented" role="group" aria-label="Difficulty">
+                    <button class="seg" type="button" aria-pressed="false">Easier</button>
+                    <button class="seg" type="button" aria-pressed="true">My level</button>
+                    <button class="seg" type="button" aria-pressed="false">Harder</button>
+                  </div>
+                </div>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Most used</h2>
+                    <span class="sec-count">12 of 73</span>
+                  </div>
+                  <div class="puz-extremes">
+                    <span><span class="lbl">Largest</span> short 2.36M</span>
+                    <span><span class="lbl">Smallest</span> underPromotion 1.1K</span>
+                  </div>
+                  <div class="chips">
+                    <button class="chip" type="button" aria-pressed="false" data-theme="short">
+                      short <span class="chip-n">2.36M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="endgame">
+                      endgame <span class="chip-n">2.33M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="middlegame">
+                      middlegame <span class="chip-n">2.13M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="crushing">
+                      crushing <span class="chip-n">1.83M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="mate">
+                      mate <span class="chip-n">1.45M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="advantage">
+                      advantage <span class="chip-n">1.38M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="long">
+                      long <span class="chip-n">1.28M</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="master">
+                      master <span class="chip-n">655K</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="mateIn1">
+                      mateIn1 <span class="chip-n">649K</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="true" data-theme="fork">
+                      fork <span class="chip-n">617K</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="false" data-theme="mateIn2">
+                      mateIn2 <span class="chip-n">612K</span>
+                    </button>
+                    <button class="chip" type="button" aria-pressed="true" data-theme="pin">
+                      pin <span class="chip-n">292K</span>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">All themes</h2>
+                    <span class="sec-count">9 groups</span>
+                  </div>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Tactic</span>
+                      <span class="puz-gprev">fork, pin, skewer, deflection, zugzwang</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="true" data-theme="fork">fork</button>
+                        <button class="chip" type="button" aria-pressed="true" data-theme="pin">pin</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="skewer">skewer</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="discoveredAttack">discoveredAttack</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="doubleCheck">doubleCheck</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="deflection">deflection</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="attraction">attraction</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="clearance">clearance</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="interference">interference</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="intermezzo">intermezzo</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="sacrifice">sacrifice</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="quietMove">quietMove</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="defensiveMove">defensiveMove</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="capturingDefender">capturingDefender</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="hangingPiece">hangingPiece</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="trappedPiece">trappedPiece</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="xRayAttack">xRayAttack</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="zugzwang">zugzwang</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Mate</span>
+                      <span class="puz-gprev">mate, mateIn1, backRankMate, smotheredMate</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mate">mate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mateIn1">mateIn1</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mateIn2">mateIn2</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mateIn3">mateIn3</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mateIn4">mateIn4</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="mateIn5">mateIn5</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="backRankMate">
+                          backRankMate <span class="chip-n">131K</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="smotheredMate">smotheredMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="anastasiaMate">anastasiaMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="arabianMate">arabianMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="bodenMate">bodenMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="dovetailMate">dovetailMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="doubleBishopMate">doubleBishopMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="hookMate">hookMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="killBoxMate">killBoxMate</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="vukovicMate">vukovicMate</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Attack</span>
+                      <span class="puz-gprev">kingsideAttack, exposedKing, advancedPawn</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="kingsideAttack">kingsideAttack</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="queensideAttack">queensideAttack</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="exposedKing">exposedKing</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="attackingF2F7">attackingF2F7</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="advancedPawn">advancedPawn</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Length</span>
+                      <span class="puz-gprev">oneMove, short, long, veryLong, healthyMix</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="oneMove">oneMove</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="short">
+                          short <span class="chip-n">2.36M</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="long">
+                          long <span class="chip-n">1.28M</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="veryLong">veryLong</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="healthyMix">healthyMix</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Phase</span>
+                      <span class="puz-gprev">opening, middlegame, endgame</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="opening">opening</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="middlegame">
+                          middlegame <span class="chip-n">2.13M</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="endgame">
+                          endgame <span class="chip-n">2.33M</span>
+                        </button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Endgame type</span>
+                      <span class="puz-gprev">rookEndgame, pawnEndgame, queenEndgame</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="rookEndgame">rookEndgame</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="pawnEndgame">pawnEndgame</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="knightEndgame">knightEndgame</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="bishopEndgame">bishopEndgame</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="queenEndgame">queenEndgame</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="queenRookEndgame">queenRookEndgame</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Outcome</span>
+                      <span class="puz-gprev">crushing, advantage, equality</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="crushing">
+                          crushing <span class="chip-n">1.83M</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="advantage">
+                          advantage <span class="chip-n">1.38M</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="equality">equality</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Special move</span>
+                      <span class="puz-gprev">promotion, underPromotion, enPassant, castling</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="promotion">promotion</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="underPromotion">
+                          underPromotion <span class="chip-n">1.1K</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="enPassant">enPassant</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="castling">castling</button>
+                      </div>
+                    </div>
+                  </details>
+
+                  <details class="puz-group">
+                    <summary>
+                      <span class="lbl puz-gname">Source</span>
+                      <span class="puz-gprev">master, masterVsMaster, superGM</span>
+                      <svg class="icon puz-caret" aria-hidden="true"><use href="#i-chev" /></svg>
+                    </summary>
+                    <div class="puz-gbody">
+                      <div class="chips">
+                        <button class="chip" type="button" aria-pressed="false" data-theme="master">
+                          master <span class="chip-n">655K</span>
+                        </button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="masterVsMaster">masterVsMaster</button>
+                        <button class="chip" type="button" aria-pressed="false" data-theme="superGM">superGM</button>
+                      </div>
+                    </div>
+                  </details>
+                </section>
+              </div>
+
+              <aside class="side">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Picked</h2>
+                    <span class="sec-count" data-sel-count>2</span>
+                  </div>
+                  <div class="panel">
+                    <div class="puz-selected" data-sel-list></div>
+                    <div class="empty" data-sel-empty hidden>
+                      <p class="empty-line">No theme picked.</p>
+                      <p class="empty-line">Start anyway and you get the whole set.</p>
+                    </div>
+                    <div class="panel-foot">
+                      <button class="btn is-primary" type="button">Start custom run</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Difficulty</h2>
+                  </div>
+                  <div class="panel">
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Serving</span>
+                        <span class="fact-value">1200 to 1700</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Width</span>
+                        <span class="fact-value">
+                          wide
+                          <span class="fact-note">narrows as your rating settles</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ================= RUSH ================= -->
+          <section class="puz-pane" id="pane-rush" hidden>
+            <div class="lesson">
+              <div class="lesson-main">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Pick a clock</h2>
+                    <span class="sec-count">2 lengths</span>
+                  </div>
+
+                  <div class="startrow is-first">
+                    <div>
+                      <div class="startrow-name">3 minutes <span class="tag">usual</span></div>
+                      <div class="startrow-spec">As many as you can. Each one solved is harder than the last.</div>
+                    </div>
+                    <button class="btn is-primary" type="button">Start 3:00</button>
+                  </div>
+
+                  <div class="startrow">
+                    <div>
+                      <div class="startrow-name">5 minutes</div>
+                      <div class="startrow-spec">Longer clock, same run.</div>
+                    </div>
+                    <button class="btn" type="button">Start 5:00</button>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Your runs</h2>
+                  </div>
+                  <div class="well">
+                    <div class="empty-head">
+                      <span class="lbl">Clock</span>
+                      <span class="lbl">Score</span>
+                      <span class="lbl">Streak</span>
+                      <span class="lbl">When</span>
+                    </div>
+                    <div class="empty">
+                      <p class="empty-line">No run yet.</p>
+                      <p class="empty-line">Finished runs land here, best first.</p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="side">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">The run</h2>
+                  </div>
+                  <div class="panel">
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Clock hits zero</span>
+                        <span class="fact-value">run over</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">A miss costs</span>
+                        <span class="fact-value">10 seconds</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">A solve adds</span>
+                        <span class="fact-value">2 seconds</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Starting band</span>
+                        <span class="fact-value">
+                          1200
+                          <span class="fact-note">rises with every solve</span>
+                        </span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Your rating</span>
+                        <span class="fact-value">
+                          untouched
+                          <span class="fact-note">a run is scored, not rated</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </section>
+
+          <!-- ================= DAILY ================= -->
+          <section class="puz-pane" id="pane-daily" hidden>
+            <div class="lesson">
+              <div class="lesson-main">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Today</h2>
+                    <span class="sec-count">Sat 25 Jul 2026</span>
+                  </div>
+
+                  <div class="startrow is-first">
+                    <div>
+                      <div class="startrow-name">One puzzle <span class="tag">not started</span></div>
+                      <div class="startrow-spec">The same position everybody gets today. One try, no clock.</div>
+                    </div>
+                    <button class="btn is-primary" type="button">Open it</button>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">This week</h2>
+                    <span class="sec-count">streak 0</span>
+                  </div>
+                  <div class="panel">
+                    <div class="puz-week">
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">M</span>
+                      </div>
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">T</span>
+                      </div>
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">W</span>
+                      </div>
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">T</span>
+                      </div>
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">F</span>
+                      </div>
+                      <div class="puz-day is-today">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">S</span>
+                      </div>
+                      <div class="puz-day">
+                        <span class="puz-day-dot"></span>
+                        <span class="coord">S</span>
+                      </div>
+                    </div>
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Solved this week</span>
+                        <span class="fact-value">0 of 7</span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <aside class="side">
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Today's puzzle</h2>
+                  </div>
+                  <div class="panel">
+                    <div class="facts">
+                      <div class="fact">
+                        <span class="lbl">Band</span>
+                        <span class="fact-value">1500</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Themes</span>
+                        <span class="fact-value">shown after you solve it</span>
+                      </div>
+                      <div class="fact">
+                        <span class="lbl">Solved by</span>
+                        <span class="fact-value">
+                          not counted
+                          <span class="fact-note">no network, so no global tally</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="sec">
+                  <div class="sec-head">
+                    <h2 class="lbl">Missed days</h2>
+                  </div>
+                  <div class="well">
+                    <div class="empty">
+                      <p class="empty-line">Nothing missed yet.</p>
+                      <p class="empty-line">Old dailies stay open, so a skipped day is still there.</p>
+                    </div>
+                  </div>
+                </section>
+              </aside>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION =================
+         Four permanent tabs at 60px plus a sheet for the other five. -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script>
+      /* Shell behaviours, identical to home.html. */
+      (function () {
+        var root = document.documentElement;
+
+
+      })();
+
+      /* Page behaviours. Two, and both of them ARE the design rather than a
+         simulation of one: which mode you are looking at, and which themes are
+         picked. No count is computed, because the number of puzzles matching a
+         set of themes is not something this file knows. */
+      (function () {
+        var segs = document.querySelectorAll('[data-mode]');
+        var panes = {
+          train: document.getElementById('pane-train'),
+          custom: document.getElementById('pane-custom'),
+          rush: document.getElementById('pane-rush'),
+          daily: document.getElementById('pane-daily')
+        };
+
+        segs.forEach(function (seg) {
+          seg.addEventListener('click', function () {
+            segs.forEach(function (s) {
+              s.setAttribute('aria-pressed', s === seg ? 'true' : 'false');
+            });
+            Object.keys(panes).forEach(function (k) {
+              panes[k].hidden = k !== seg.dataset.mode;
+            });
+          });
+        });
+
+        /* Difficulty is a plain segmented control with nothing behind it. */
+        document.querySelectorAll('.puz-build .seg').forEach(function (seg) {
+          seg.addEventListener('click', function () {
+            seg.parentNode.querySelectorAll('.seg').forEach(function (s) {
+              s.setAttribute('aria-pressed', s === seg ? 'true' : 'false');
+            });
+          });
+        });
+
+        /* A theme appears in twelve chips at the top and once more in its
+           drawer, so every chip for the same theme moves together. */
+        var chips = document.querySelectorAll('[data-theme]');
+        var list = document.querySelector('[data-sel-list]');
+        var empty = document.querySelector('[data-sel-empty]');
+        var count = document.querySelector('[data-sel-count]');
+
+        function press(name, on) {
+          chips.forEach(function (c) {
+            if (c.dataset.theme === name) c.setAttribute('aria-pressed', on ? 'true' : 'false');
+          });
+        }
+
+        function paint() {
+          var seen = [];
+          chips.forEach(function (c) {
+            if (c.getAttribute('aria-pressed') === 'true' && seen.indexOf(c.dataset.theme) < 0)
+              seen.push(c.dataset.theme);
+          });
+          list.textContent = '';
+          seen.forEach(function (name) {
+            var row = document.createElement('div');
+            row.className = 'puz-selrow';
+            var label = document.createElement('span');
+            label.textContent = name;
+            var drop = document.createElement('button');
+            drop.type = 'button';
+            drop.className = 'puz-selrow-drop';
+            drop.textContent = 'drop';
+            drop.addEventListener('click', function () {
+              press(name, false);
+              paint();
+            });
+            row.appendChild(label);
+            row.appendChild(drop);
+            list.appendChild(row);
+          });
+          empty.hidden = seen.length > 0;
+          count.textContent = String(seen.length);
+        }
+
+        chips.forEach(function (chip) {
+          chip.addEventListener('click', function () {
+            press(chip.dataset.theme, chip.getAttribute('aria-pressed') !== 'true');
+            paint();
+          });
+        });
+
+        paint();
+      })();
+    </script>
+    <script src="shell.js" defer></script>
+  </body>
+</html>

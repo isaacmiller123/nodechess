@@ -16,7 +16,9 @@ import react from '@vitejs/plugin-react'
 // so the browser page and the installed app are the same program.
 export default defineConfig({
   root: resolve(__dirname, 'src/seed'),
-  publicDir: false,
+  // src/seed/public carries _headers, which Cloudflare Pages reads from the
+  // deploy root. Was false, which is why the seed shipped with no headers.
+  publicDir: resolve(__dirname, "src/seed/public"),
   server: { port: 5200 },
   preview: { port: 5200 },
   resolve: {

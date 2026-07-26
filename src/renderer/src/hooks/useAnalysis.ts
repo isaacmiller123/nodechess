@@ -9,6 +9,17 @@ export interface PvLine {
   pv: string[]
 }
 
+/** What the search itself is doing, as opposed to what it found. Stockfish
+ *  reports these on every info line and the IPC channel has always forwarded
+ *  them; they stopped here because no surface asked for them. The Engine
+ *  readout does. Fields are optional because a line may omit any of them. */
+export interface SearchStats {
+  depth: number
+  seldepth?: number
+  nodes?: number
+  nps?: number
+}
+
 // Live infinite analysis of `fen` while `enabled`. Streams MultiPV lines from the
 // main-process Stockfish via the engine IPC push channel.
 //
@@ -17,11 +28,15 @@ export interface PvLine {
 // instant `fen` changes, so the eval bar and on-board arrows never show the
 // previous position for a frame (the prior bug: the clear ran in a post-render
 // effect, one frame late).
-export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
-  const [state, setState] = useState<{ fen: string; lines: PvLine[]; depth: number }>({
+// `depthCap` bounds the search: null runs the infinite analysis this hook has
+// always run, a number stops Stockfish at that depth (GoLimit already carries
+// {kind:'depth'} and the main process already accepts it). A cap is also the
+// only thing that gives the depth readout a denominator.
+export function useAnalysis(fen: string, enabled: boolean, multipv = 3, depthCap: number | null = null) {
+  const [state, setState] = useState<{ fen: string; lines: PvLine[]; stats: SearchStats }>({
     fen,
     lines: [],
-    depth: 0
+    stats: { depth: 0 }
   })
   // Set when engine:analyze rejects (fresh install without the engine dataset,
   // spawn failure, crash). Consumers surface it instead of "analyzing… depth 0"
@@ -36,7 +51,7 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
   if (state.fen !== fen) {
     linesRef.current = new Map()
     fenRef.current = fen
-    setState({ fen, lines: [], depth: 0 })
+    setState({ fen, lines: [], stats: { depth: 0 } })
   }
 
   useEffect(() => {
@@ -51,7 +66,11 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
         pv: l.pv
       })
       const lines = Array.from(linesRef.current.values()).sort((a, b) => a.multipv - b.multipv)
-      setState({ fen: fenRef.current, lines, depth: l.depth ?? 0 })
+      setState({
+        fen: fenRef.current,
+        lines,
+        stats: { depth: l.depth ?? 0, seldepth: l.seldepth, nodes: l.nodes, nps: l.nps }
+      })
     })
     return off
   }, [])
@@ -75,7 +94,11 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
     if (enabled) {
       setError(null)
       engine
-        .analyze({ fen, multipv, limit: { kind: 'infinite' } })
+        .analyze({
+          fen,
+          multipv,
+          limit: depthCap === null ? { kind: 'infinite' } : { kind: 'depth', value: depthCap }
+        })
         .then(({ handleId }) => {
           if (cancelled) engine.stop(handleId).catch(() => undefined)
           else handleRef.current = handleId
@@ -91,10 +114,10 @@ export function useAnalysis(fen: string, enabled: boolean, multipv = 3) {
       cancelled = true
       stopCurrent()
     }
-  }, [fen, enabled, multipv])
+  }, [fen, enabled, multipv, depthCap])
 
   // Only surface lines that belong to the current fen.
   const lines = state.fen === fen ? state.lines : []
-  const depth = state.fen === fen ? state.depth : 0
-  return { lines, depth, error }
+  const stats = state.fen === fen ? state.stats : { depth: 0 }
+  return { lines, depth: stats.depth, stats, error }
 }

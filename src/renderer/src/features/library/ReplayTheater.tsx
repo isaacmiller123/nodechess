@@ -468,7 +468,7 @@ export function ReplayTheater({
         <div className="theater-transport">
           <button
             type="button"
-            className="icon-btn theater-playbtn"
+            className="icon-btn"
             onClick={togglePlay}
             disabled={exporting || total === 0}
             title={finale ? 'Watch again' : playing ? 'Pause (space)' : 'Play (space)'}
@@ -505,7 +505,7 @@ export function ReplayTheater({
           {canExport && (
             <button
               type="button"
-              className="icon-btn theater-export"
+              className="icon-btn"
               onClick={startExport}
               disabled={exporting || total === 0}
               title="Export replay (.webm)"

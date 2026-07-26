@@ -24,16 +24,15 @@
 //     move explanations (src/main/coach; pure chessops, no engine, shared
 //     verbatim with desktop) and the opening table (the same EPD-keyed JSON).
 //
-//   LOCAL STATE (src/web/localData, src/web/reviewStore):
+//   LOCAL STATE (src/web/localData, src/web/reviewStore, src/web/schoolProgress):
 //     games, ratings, settings, custom variants, puzzle attempts/daily/rush,
-//     stored reviews. This browser IS the database. There is no account to
-//     sync to and no server that could hold it.
+//     stored reviews, and School progress (placement, lessons, chapter tests,
+//     concept mastery, study days). This browser IS the database. There is no
+//     account to sync to and no server that could hold it.
 //
 // Two things are honestly missing rather than moved, both in School:
-//   - PROGRESS (mastery, tests, SRS, placement, streaks) has no browser-side
-//     store. It was account-only on the web, and the accounts it belonged to
-//     are gone, so reads answer empty and writes say they aren't kept. Every
-//     chapter therefore reads locked-behind-placement.
+//   - SPACED REPETITION keeps no schedule here, so nothing is ever reported due
+//     and grading a review is refused rather than silently dropped.
 //   - Viktor's school:narrate/debrief: his voice layer
 //     (src/main/coach/viktor.ts) constructs a native engine pool at module
 //     scope and cannot be bundled for a browser.
@@ -42,7 +41,6 @@ import { parseFen, makeFen } from 'chessops/fen'
 import type {
   Api,
   CustomVariantRow,
-  DailyStreak,
   DatasetStatus,
   OpeningInfo,
   UpdateStatus
@@ -77,7 +75,23 @@ import {
 } from './localData'
 import { clearLocalReviews, reviewStore } from './reviewStore'
 import { puzzleDatasetInfo, puzzleReader } from './puzzles'
-import { chapterMetas, getChapter, NO_SCHOOL_PROGRESS } from './content/school'
+import { chapterMetas, getChapter } from './content/school'
+import {
+  completeChapter,
+  getDaily,
+  getMastery,
+  getPlacementState,
+  getStreak,
+  getTestState,
+  progressView,
+  recordConcept,
+  recordDaily,
+  recordLesson,
+  recordPlacementGame,
+  recordSegment,
+  recordTest,
+  resetPlacement
+} from './schoolProgress'
 import { getFamous, listFamous } from './content/famous'
 import { listPersonas } from './content/personas'
 import { createEngineApi, createPerfApi, createPersonaMove, createReviewApi } from './engines'
@@ -112,10 +126,9 @@ function comingOnline(what: string): Promise<never> {
   )
 }
 
-/** School PROGRESS (mastery, tests, SRS, placement, streaks) is the one part of
- *  the desktop app with no browser-side store yet: it was account-only on the
- *  web, and the accounts it belonged to are gone. Reads answer empty (below);
- *  writes say plainly that nothing is being kept. */
+/** School progress is kept locally (src/web/schoolProgress.ts). The one part of
+ *  it with no store is the spaced-repetition schedule, so grading a review says
+ *  plainly that nothing is being kept rather than dropping the grade. */
 function schoolProgressUnavailable(what: string): Promise<never> {
   return Promise.reject(
     new Error(`${what} isn't saved yet. The nodechess web app has nowhere to keep School progress.`)
@@ -188,8 +201,6 @@ const perfLayer = lazy<Api['perf']>(() => createPerfApi(reviewStore))
 const personaMoveLayer = lazy<Api['personas']['move']>(() => createPersonaMove())
 
 // ---- Empty/default read results ----------------------------------------------
-
-const ZERO_STREAK: DailyStreak = { current: 0, best: 0, todaySolved: false, recent: [] }
 
 /** Local YYYY-MM-DD (school streaks are LOCAL-day, like the puzzle daily). */
 const localYmd = todayYmd
@@ -341,6 +352,14 @@ export const webApi: Api = {
     next: (req) => staticRead('puzzles:next', () => puzzleReader().next(req), () => ({ puzzle: null })),
     get: (id) => staticRead('puzzles:get', () => puzzleReader().get(id), () => ({ puzzle: null })),
     themes: () => staticRead('puzzles:themes', () => puzzleReader().themes(), () => ({ themes: [] })),
+    // The artifact's manifest already carries the row count, so the corpus size
+    // costs one small fetch rather than a scan.
+    count: () =>
+      staticRead(
+        'puzzles:count',
+        async () => ({ puzzles: (await puzzleReader().info()).puzzleCount }),
+        () => ({ puzzles: 0 })
+      ),
     batch: (req) => staticRead('puzzles:batch', () => puzzleReader().batch(req), () => ({ puzzles: [] })),
     // Local Glicko-2. The exact desktop applyPuzzleResult math + mode rules.
     attempt: async (req) => recordLocalPuzzleAttempt(req),
@@ -495,31 +514,45 @@ export const webApi: Api = {
     get: (id) => staticRead('famous:get', async () => ({ game: await getFamous(id) }), () => ({ game: null }))
   },
 
-  // Curriculum CONTENT is static and complete. PROGRESS is not stored anywhere
-  // in the web build: reads answer empty (an unplaced, unstudied learner, which
-  // is exactly what this browser knows) and writes reject with copy that says
-  // so. Every chapter therefore reports locked:'placement'. The honest state,
-  // not a bug in the content pipeline.
+  // Curriculum CONTENT is static. PROGRESS lives in schoolProgress.ts, the
+  // browser's copy of the desktop's school tables: placement, per-lesson
+  // completion, chapter-test verdicts, concept mastery and the local-day study
+  // log. Everything a learner does is kept, so placement can complete and the
+  // chapters it opens stay open. The two channels that genuinely cannot run
+  // here (Viktor's narrate/debrief) still say so.
   school: {
     chapters: () =>
       staticRead(
         'school:chapters',
-        async () => ({ chapters: await chapterMetas(NO_SCHOOL_PROGRESS) }),
+        async () => ({ chapters: await chapterMetas(progressView()) }),
         () => ({ chapters: [] })
       ),
     chapter: (id) =>
       staticRead('school:chapter', async () => ({ chapter: await getChapter(id) }), () => ({ chapter: null })),
-    mastery: async () => ({ concepts: [], chapters: [], lessons: [] }),
-    recordConcept: () => schoolProgressUnavailable('Concept progress'),
-    recordSegment: () => schoolProgressUnavailable('Lesson progress'),
-    completeChapter: () => schoolProgressUnavailable('Chapter completion'),
-    recordLesson: () => schoolProgressUnavailable('Lesson progress'),
-    recordTest: () => schoolProgressUnavailable('Chapter test results'),
-    testState: async () => ({ attempts: 0, passed: false, bestPct: 0 }),
+    mastery: async () => getMastery(),
+    recordConcept: async ({ conceptId, correct }) => recordConcept(conceptId, correct),
+    recordSegment: async ({ chapterId, segmentsDone }) => {
+      recordSegment(chapterId, segmentsDone)
+      return { ok: true as const }
+    },
+    completeChapter: async ({ chapterId, bossWon }) => {
+      completeChapter(chapterId, bossWon)
+      return { ok: true as const }
+    },
+    recordLesson: async ({ chapterId, lessonId }) => {
+      recordLesson(chapterId, lessonId)
+      return { ok: true as const }
+    },
+    // Pass/fail, the attempt count and the forced retake are decided HERE, from
+    // the chapter's own threshold: the renderer sends a raw score and nothing else.
+    recordTest: ({ chapterId, scorePct }) => recordTest(chapterId, scorePct),
+    testState: async ({ chapterId }) => getTestState(chapterId),
     recommend: async () => ({ recommended: null }),
+    // Spaced repetition keeps no schedule in this build, so nothing is ever
+    // claimed to be due. An empty queue is the truth, not a placeholder.
     dueReviews: async () => ({ due: [] }),
     reviewConcept: () => schoolProgressUnavailable('Concept reviews'),
-    daily: async () => ({
+    daily: () => staticRead('school:daily', () => getDaily(), () => ({
       ymd: localYmd(),
       chapterId: null,
       chapterTitle: null,
@@ -527,14 +560,16 @@ export const webApi: Api = {
       lessonTitle: null,
       doneToday: false,
       reviewsDue: 0
-    }),
-    recordDaily: () => schoolProgressUnavailable('School streaks'),
-    streak: async () => ({ streak: ZERO_STREAK }),
-    placementState: async () => ({ placed: false, estimatedElo: null, band: null, games: [] }),
-    recordPlacementGame: () => schoolProgressUnavailable('Placement games'),
-    resetPlacement: async () => ({ placed: false, estimatedElo: null, band: null, games: [] }),
-    // Desktop's fixed placement level (school/placement.ts). Same constant.
-    placementConfig: async () => ({ engineElo: 1350 }),
+    })),
+    recordDaily: async ({ ymd }) => recordDaily(ymd),
+    streak: async () => getStreak(),
+    placementState: async () => getPlacementState(),
+    recordPlacementGame: ({ engineElo, accuracy, moveCount }) =>
+      recordPlacementGame(engineElo, accuracy, moveCount),
+    resetPlacement: async () => resetPlacement(),
+    // Desktop's fixed placement level (school/placement.repo.ts
+    // PLACEMENT_ENGINE_ELO). Same constant.
+    placementConfig: async () => ({ engineElo: 1500 }),
     // Viktor's voice layer (src/main/coach/viktor.ts) constructs a native
     // StockfishPool at module scope, so it cannot be bundled for the browser.
     // Narrate and debrief are the only two channels this build cannot answer,

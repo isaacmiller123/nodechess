@@ -55,6 +55,18 @@ export function listThemes(): { key: string; count: number }[] {
   return themesCache
 }
 
+let countCache: number | null = null
+
+/** How many positions the installed set actually holds. Same reasoning as the
+ *  theme cache: the DB is read-only, so the scan happens once per process. */
+export function countPuzzles(): number {
+  if (countCache === null) {
+    const r = getPuzzlesDb().prepare('SELECT COUNT(*) AS n FROM puzzles').get() as { n: number }
+    countCache = r?.n ?? 0
+  }
+  return countCache
+}
+
 // Fast, indexed, randomized selection (no ORDER BY RANDOM): seek a small window
 // near a random target rating and pick one, skipping recently-seen ids.
 export function nextPuzzle(opts: {

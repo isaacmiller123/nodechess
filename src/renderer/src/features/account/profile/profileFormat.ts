@@ -1,12 +1,16 @@
 // Pure formatting helpers for the profile surfaces.
 //
-// Relative times take the evaluation instant EXPLICITLY (complete-3): a
-// surface rendering REAL chain data passes Date.now() at render; fixture-only
-// surfaces pass MOCK_NOW (mock/fixtures) so preview copy stays stable across
-// sessions and test runs. No default: every caller states its clock.
+// Relative times take the evaluation instant EXPLICITLY (complete-3): the
+// caller states its clock, so nothing here reads an ambient one and the whole
+// module runs the same headless as it does in the browser.
 
 export const HOUR = 3_600_000
 export const DAY = 86_400_000
+
+/** Shorten an account id for display: first 8 characters and an ellipsis. */
+export function shortB64u(v: string): string {
+  return `${v.slice(0, 8)}…`
+}
 
 /** Wordy staleness for "last witnessed activity" (§10). Years for the long-gone. */
 export function relativeWts(ts: number, nowMs: number): string {

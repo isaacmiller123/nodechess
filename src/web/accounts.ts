@@ -26,6 +26,7 @@ import {
   formatHandle,
   fromB64u,
   makeKeyfile,
+  mnemonicToSeed,
   normalizeUsername,
   seedToMnemonic,
   slip10Master,
@@ -373,6 +374,168 @@ export async function signIn(
   return getState()
 }
 
+// ---------------------------------------------------------------------------
+// Recovery sign-in (C-5: the lifeline, coming BACK)
+//
+// exportMnemonic has always been able to write the 24 words down. Nothing took
+// them back, which made the export a promise the app could not keep and every
+// account single-device in practice. These two are the return path.
+//
+// The seed is post-KDF material, so there is no argon2id here and no password:
+// the phrase IS the key. The NAME is not in the seed, so it is read off the
+// chain's SIGNED genesis (the same rule resumeSession follows), never off a
+// mutable stored record and never asked for.
+// ---------------------------------------------------------------------------
+
+/** The genesis-signed display name of a chain, or null when it has none. */
+function genesisNameOf(chain: Chain): string | null {
+  const g = chain.events.find((e) => e.body.lane === 'w' && e.body.type === 'genesis')
+  const n = g ? (g.body.payload as { name?: unknown }).name : undefined
+  return typeof n === 'string' ? n : null
+}
+
+export interface RecoverySignInOpts {
+  /** Same explicit "keep me signed in on this device" as SignInOpts. */
+  rememberSeed?: boolean
+}
+
+/**
+ * Sign in from a 32-byte recovery seed. Resolution order, all fail-closed:
+ *   1. a chain already stored on this device for the derived root,
+ *   2. the network (§5 the network IS the storage), verified before adoption,
+ *   3. nothing: an honest "not here and not findable", never a fabricated account.
+ *
+ * When the device has no record for the root (the whole point: a NEW device),
+ * a fresh device key is enrolled as a root-signed personal-lane certificate,
+ * exactly as adoptFromNetwork does for the password path.
+ *
+ * NEVER creates an account from a phrase alone. A phrase with no chain anywhere
+ * is a lost account, and inventing a genesis for it would silently fork the
+ * identity into a second, empty history.
+ */
+export async function signInWithSeed(
+  seed: Uint8Array,
+  opts?: RecoverySignInOpts,
+): Promise<AccountsState> {
+  if (seed.length !== 32) throw new Error('recovery seed must be 32 bytes')
+  const master = slip10Master(seed)
+  const rootPriv = master.priv
+  const rootPub = ed25519.getPublicKey(rootPriv)
+  const root = toB64u(rootPub)
+  const tag = tagOf(rootPub)
+
+  let stored: StoredAccount[]
+  try {
+    stored = await keyring().listAccounts()
+  } catch {
+    stored = []
+  }
+  const record = stored.find((a) => a.rootPub === root) ?? null
+
+  let chain = await keyring().loadChain(root)
+  if (!chain) {
+    // The restore provider reads rootPub + seed only; the names it does not
+    // read come off the restored genesis below.
+    chain = await restoreChainFor({
+      seed,
+      rootPriv,
+      rootPub,
+      tag,
+      foldedName: record?.foldedName ?? '',
+      displayName: record?.displayName ?? '',
+    })
+    if (chain) await keyring().saveChain(chain.root, chain)
+  }
+  if (!chain)
+    throw new Error(
+      'that phrase is a valid recovery phrase, but its account is not on this device and could not be found. Connect and try again',
+    )
+  if (chain.root !== root) throw new Error('stored chain belongs to a different account')
+  const vr = verifyChain(chain)
+  if (!vr.ok)
+    throw new Error(`stored chain failed verification (${vr.errors[0]?.code}). Refusing to sign in`)
+
+  const signedName = genesisNameOf(chain)
+  if (signedName === null) throw new Error('this account has no genesis record: cannot sign in')
+  const norm = normalizeUsername(signedName)
+  const identity: Identity = {
+    seed,
+    rootPriv,
+    rootPub,
+    tag,
+    foldedName: norm.folded,
+    displayName: norm.display,
+  }
+
+  // Fail-closed, the same rule resumeSession applies: the session identity comes
+  // from the signed genesis, so a stored record that disagrees with it is not
+  // one to open a session against.
+  let account = record
+  if (
+    account &&
+    (account.displayName !== signedName ||
+      account.foldedName !== norm.folded ||
+      account.tag !== tag)
+  )
+    throw new Error('the account record on this device does not match its signed history')
+
+  if (!account) {
+    const index = nextDeviceIndex(root, chain)
+    const device = deriveChild(seed, KEY_PURPOSE.device, index)
+    const devicePub = toB64u(device.pub)
+    const certEv = makeCertEvent(rootPriv, root, chain, {
+      childPub: devicePub,
+      purpose: KEY_PURPOSE.device,
+      index,
+      label: deviceLabel(),
+      ts: Date.now(),
+    })
+    const next = appendEvent(chain, certEv)
+    const nvr = verifyChain(next)
+    if (!nvr.ok) throw new Error(`device enrollment broke the chain: ${nvr.errors[0]?.code}`)
+    chain = next
+    account = {
+      v: 1,
+      foldedName: norm.folded,
+      displayName: norm.display,
+      tag,
+      rootPub: root,
+      device: { index, pub: devicePub, certEvent: eventId(certEv.body) },
+    }
+    // Chain first, record second, same ordering and same reasoning as create.
+    await keyring().saveChain(chain.root, chain)
+    try {
+      await keyring().saveAccount(account)
+    } catch (e) {
+      try {
+        await keyring().removeChain(chain.root)
+      } catch {
+        /* best-effort rollback: the original failure is what matters */
+      }
+      throw e
+    }
+  }
+
+  if (opts?.rememberSeed && account.seedB64u === undefined) {
+    account = { ...account, seedB64u: toB64u(seed) }
+    await keyring().saveAccount(account)
+  }
+  session = { identity, account }
+  return getState()
+}
+
+/**
+ * Sign in from the 24 words themselves. Throws before touching any storage when
+ * the phrase is not a valid BIP39 mnemonic (wordlist + checksum), so a mistyped
+ * phrase costs nothing and changes nothing.
+ */
+export async function signInWithMnemonic(
+  words: string,
+  opts?: RecoverySignInOpts,
+): Promise<AccountsState> {
+  return signInWithSeed(mnemonicToSeed(words.trim().split(/\s+/).join(' ')), opts)
+}
+
 /** Clears the in-memory identity ONLY. The chain + account record stay.
  *  Sign-out never destroys the self-carried file. */
 export function signOut(): void {
@@ -611,6 +774,7 @@ export async function updateProfile(patch: ProfileFieldPatch): Promise<Chain> {
 const surface = {
   createAccount,
   signIn,
+  signInWithMnemonic,
   signOut,
   exportMnemonic,
   exportKeyfile,

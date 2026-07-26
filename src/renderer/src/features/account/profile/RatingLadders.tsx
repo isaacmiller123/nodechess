@@ -1,7 +1,7 @@
 // Rating display states: the ONE renderer every account surface reuses.
 // Hiding is a rendering rule (C-4). Placement and provisional ladders never show
 // a number, on any surface, for anyone; every client derives the same state from
-// public data (the shared displayState(); fixtures carry its output verbatim).
+// public data (the shared displayState(), never a state anyone authored).
 // For OTHER accounts' ladders, pass `projection`, the shared visibility
 // projection (mm/pairing visibleOpponentInfo / spectatorOpponentInfo): a
 // placement/provisional viewer gets NOTHING rating-shaped ('Unranked pool'); a
@@ -244,7 +244,7 @@ export function RatingLadders({
             )}
 
             {info === undefined && d.state === 'provisional' && (
-              <div className="aprof-ladder-state is-provisional">
+              <div className="aprof-ladder-state">
                 <span className="aprof-state-pill">Provisional</span>
                 <span className="aprof-reveal">
                   <span
@@ -268,7 +268,7 @@ export function RatingLadders({
             )}
 
             {info === undefined && d.state === 'placement' && (
-              <div className="aprof-ladder-state is-placement">
+              <div className="aprof-ladder-state">
                 <span className="aprof-state-pill">Placement</span>
                 <span
                   className="aprof-pips"

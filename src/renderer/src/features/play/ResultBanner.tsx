@@ -88,16 +88,16 @@ export function ResultBanner({
 
       <div className="banner-actions">
         {onAnalyze && (
-          <button className="btn ghost banner-analyze" onClick={onAnalyze}>
+          <button className="btn ghost" onClick={onAnalyze}>
             <Search size={14} /> Analyze
           </button>
         )}
         {onRematch && (
-          <button className="btn ghost banner-rematch" onClick={onRematch}>
+          <button className="btn ghost" onClick={onRematch}>
             <Repeat size={14} /> Rematch
           </button>
         )}
-        <button className="btn banner-new" onClick={onNewGame}>
+        <button className="btn" onClick={onNewGame}>
           <RotateCcw size={14} /> New game
         </button>
       </div>

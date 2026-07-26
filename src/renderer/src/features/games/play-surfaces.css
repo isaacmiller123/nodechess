@@ -1,0 +1,1111 @@
+/* ============================================================
+   Surfaces the design lab never drew.
+
+   design-lab/v1/games.html is the library and its setup screen, and it stops
+   there: "Nothing on this page plays a game." Everything below is what
+   happens after Start, plus the illustrated manual, and none of it has a v1
+   counterpart to copy. It stays on the feature's own classes and reads only
+   tokens.css, so a palette switch carries it along with the rest of the app.
+   ============================================================ */
+
+/* The setup screen's one failure: a pasted FEN or a Scharnagl number the
+   rules refuse. v1 never drew it, because in the mock Start does nothing and
+   so cannot fail. It sits under the last row, in the dialog's own rhythm. */
+.gm-err {
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--danger);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+}
+
+/* ArtThumb's motif, used both on the library cards (inside v1's .gm-art) and
+   by the manual. Same box as .gm-svg: the picture fills its frame. */
+.art-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* ---- Game page ---- */
+
+.game-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 1180px;
+}
+
+/* In-play the page mirrors the chess Play experience: no 1180px cap, the
+   column fills the content viewport and the stage row takes everything the
+   slim playbar leaves behind. min-height (not height) keeps tall setup
+   screens (online host/join, bot picker) scrollable instead of clipped. */
+.game-page.is-playing {
+  max-width: none;
+  min-height: 100%;
+  gap: var(--space-5);
+}
+.game-page.is-playing > .game-online,
+.game-page.is-playing > .vbot-setup {
+  flex: 1;
+  min-height: 0;
+}
+.game-page.is-playing > .vbot-setup .vbot-setup-card {
+  /* auto margins center the card both ways without clipping on short windows */
+  margin: auto;
+}
+
+/* Slim in-play strip: back + title + mode tag (the PlayView-header analogue). */
+.game-playbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 0;
+}
+.game-playbar .game-back {
+  flex: none;
+}
+.game-playbar-title {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight, 1.2);
+}
+.game-playbar-mode {
+  padding: 1px var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.04em;
+}
+
+.game-back {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  padding: var(--space-2) 0;
+}
+.game-back:hover {
+  color: var(--accent);
+}
+
+/* ---- Local OTB ---- */
+
+/* In-play layout clones the chess Play experience (play.css .play-view):
+   the board is the hero in the left column, with a compact side rail on the
+   right.
+
+   THIS FILE DECLARES NO BOARD SIZE. The frame is shell.css's .board-wrap,
+   centred by shell.css's .board-stage: aspect-ratio 1/1, width
+   min(78vh, 100%), capped at 760px, the same one line every page draws its
+   board with. Every rule below sizes a game's board as a fraction of THAT
+   frame, so there is no page token and no media query to keep in step. */
+.votb {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--space-7);
+  align-items: stretch;
+  flex: 1;
+  min-height: 0;
+}
+.votb-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+}
+/* The frame's MEASURE is untouched; only its decoration is. Each game here
+   draws its own edge (the goban's wood, the connect4 slab, the chess board
+   tile), so a second rounded shadow around it would be a box inside a box. */
+.votb-stage .board-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
+}
+/* The boards that are not a plain square fit INSIDE that square rather than
+   asking the page for a budget of their own. The frame is square, so 100%
+   here is its side in both directions: a 7:6.6 connect4 slab and a 1.55:1 hex
+   rhombus take the full width and come up short of the height, and the kinds
+   that carry a readout strip under the board (go captures, othello count,
+   morris and tic-tac-toe hints) hand that strip's height back first. */
+.votb-stage .goboard,
+.votb-stage .gboard.is-othello,
+.votb-stage .gboard.is-morris,
+.votb-stage .gboard.is-tictactoe {
+  width: calc(100% - 34px);
+}
+.votb-stage .ckboard,
+.votb-stage .b3d-stage,
+.votb-stage .kotb-loading,
+.votb-stage .gboard.is-connect4,
+.votb-stage .gboard.is-hex {
+  width: 100%;
+}
+/* ChessFamilyBoard: the component owns its own aspect ratio (9x10 xiangqi and
+   janggi, pockets stacked above and below), so the wrap takes the frame's
+   height through that ratio and ends up narrower than the frame on a tall
+   board. .votb-cfb IS the .board-wrap: it carries the board-theme and
+   piece-set classes the way every other page's board frame does. */
+.votb-cfb .cfb-wrap,
+.votb-cfb .cfb-loading {
+  width: min(100%, calc(100% * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
+}
+/* Pocket kinds (crazyhouse, shogi) stack trays above and below the board.
+   Give the trays their height back so the whole column still fits the frame:
+   a tray is a 64px square plus 4px of padding either side, and .cfb-wrap puts
+   a 6px gap on each side of the board (chess-family-board.css). */
+.votb-cfb:has(.cfb-pocket) .cfb-wrap {
+  width: min(100%, calc((100% - 156px) * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
+}
+.votb-banner {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-5);
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - var(--space-5) * 2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: rgba(20, 22, 26, 0.88);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(6px);
+}
+/* Secondary banner actions (Watch replay) restated for the dark chip. */
+.votb-banner .votb-btn:not(.is-primary) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+.votb-banner .votb-btn:not(.is-primary):hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.votb-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  align-self: start;
+  min-width: 0;
+}
+
+/* Narrow windows: side rail collapses under the board (GameView pattern).
+   The board is not resized here: .board-wrap's own min(78vh, 100%) already
+   answers a narrow window, and a second answer would be a second measure. */
+@media (max-width: 1200px) {
+  .votb {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .votb-stage {
+    width: 100%;
+  }
+  .votb-side {
+    width: min(100%, 620px);
+    align-self: center;
+  }
+}
+.votb-turn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: var(--fw-semibold);
+}
+.votb-turn-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+}
+.votb-turn-dot.is-white {
+  background: #f5f5f5;
+}
+.votb-turn-dot.is-black {
+  background: #26282c;
+  /* stays visible on dark app themes. The dark disc needs a light ring */
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.votb-movecount {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+}
+.votb-flip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.votb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.votb-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.votb-btn.is-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.votb-note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ---- vs Bot (VariantBot) ---- */
+
+.vbot-setup {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-6) 0;
+}
+.vbot-setup-card {
+  width: min(560px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-7);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.vbot-setup-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+/* The bot's mark on the setup card. A square of accent-soft with the accent
+   on it, the same two tokens .avatar-engine uses for the engine's face, so an
+   opponent looks like an opponent whichever screen introduces it. */
+.mode-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.vbot-setup-head h3 {
+  margin: 0;
+  font-size: var(--fs-lg);
+}
+.vbot-setup-head p {
+  margin: 2px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+.vbot-levels {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+}
+.vbot-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.vbot-level:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.vbot-level.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--text-primary);
+}
+.vbot-level-num {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1.1;
+}
+.vbot-level-name {
+  font-size: var(--fs-xs);
+}
+.vbot-level-hint {
+  margin: calc(-1 * var(--space-3)) 0 0;
+  min-height: 1.2em;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+.vbot-colors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+.vbot-color {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+.vbot-color:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.vbot-color.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+}
+.vbot-colors.is-three {
+  grid-template-columns: repeat(3, 1fr);
+}
+.vbot-start {
+  align-self: stretch;
+  padding: var(--space-4);
+  font-size: var(--fs-md);
+}
+/* Inline engine-install prompt (go: KataGo not downloaded yet). Replaces the
+   Start button with an actionable card instead of a dead toast. */
+.vbot-install {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+.vbot-install p {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.vbot-opponent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+.vbot-opponent.is-thinking {
+  color: var(--text-primary);
+}
+.vbot-dots {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: auto;
+}
+.vbot-dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: vbot-dot 1s ease-in-out infinite;
+}
+.vbot-dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.vbot-dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+@keyframes vbot-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---- Manual ---- */
+
+.manual-body {
+  max-width: 68ch;
+  padding: var(--space-7);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  line-height: 1.65;
+}
+.manual-body h2 {
+  margin: 0 0 var(--space-5);
+  font-size: var(--fs-xl);
+}
+.manual-body h3 {
+  margin: var(--space-7) 0 var(--space-3);
+  font-size: var(--fs-lg);
+}
+.manual-body h4 {
+  margin: var(--space-6) 0 var(--space-2);
+  font-size: var(--fs-base);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+.manual-body p {
+  margin: 0 0 var(--space-4);
+  color: var(--text-primary);
+}
+.manual-body ul,
+.manual-body ol {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-7);
+}
+.manual-body li {
+  margin-bottom: var(--space-2);
+}
+.manual-body blockquote {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.manual-body blockquote p {
+  margin: 0;
+}
+.manual-body code {
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.9em;
+}
+.manual-body pre {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  overflow-x: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+.manual-body pre code {
+  padding: 0;
+  background: transparent;
+}
+
+/* ---- Manual board diagrams (```position fences) ---- */
+
+.manual-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-6) auto;
+}
+.manual-figure .manual-diagram {
+  display: block;
+  width: min(300px, 100%);
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+.manual-figure figcaption {
+  font-size: var(--fs-xs);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+.manual-cfb {
+  width: min(320px, 100%);
+}
+.manual-cfb .cfb-board {
+  box-shadow: var(--shadow-md);
+}
+.manual-diagram-loading {
+  width: min(320px, 100%);
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.manual-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 48ch;
+  padding: var(--space-7);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--text-secondary);
+}
+.manual-empty p {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+/* ---- Toast ---- */
+
+.games-toast {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-pill);
+  background: rgba(20, 22, 26, 0.92);
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  box-shadow: var(--shadow-lg);
+  z-index: 60;
+  animation: games-toast-in 160ms ease;
+}
+@keyframes games-toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ---- Kernel OTB (non-chess boards) ---- */
+
+.kotb-loading {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-board);
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.kotb-sizes {
+  display: flex;
+  gap: var(--space-2);
+}
+.kotb-chip {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+.kotb-chip:hover {
+  border-color: var(--border-strong);
+}
+.kotb-chip.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+/* Labeled chip rows (go handicap / main time / byo-yomi). Denser than the
+   size row: a fixed-width name column + compact mini chips. */
+.kotb-opt-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.kotb-opt-name {
+  flex: none;
+  width: 72px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.kotb-chip.is-mini {
+  flex: none;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  min-width: 30px;
+}
+
+/* ---- The clock face (clockFace.tsx) ---------------------------------------
+   Every timed surface in this feature draws the same instrument: a go byo-yomi
+   pair (MAIN → BY n×30s) and a base-plus-increment pair are the same object
+   with and without a state tag. It owns itself completely and borrows nothing
+   from features/play, whose .play-clock is shaped to dock into a player card
+   and only loads with that view.
+
+   THE SIDE TO MOVE IS THE FILL. tokens.css is near monochrome by design, so
+   importance cannot be carried by hue: the burning side gets a solid bone
+   plate, which is the brightest area in the rail, and the idle side stays a
+   quiet recessed one. Under the emergency threshold the plate turns danger AND
+   the digits switch to tenths AND the number blinks, so the warning survives
+   without colour. */
+.gclk {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+/* The control the player picked, e.g. '5+3'. Go pairs caption themselves per
+   side (MAIN / BY) and pass none. */
+.gclk-cap {
+  padding-left: var(--space-1);
+}
+.gclk-row {
+  display: flex;
+  align-items: stretch;
+  min-height: 40px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  /* The plate is flush to the row's inner edge, so the row clips it to the
+     corner radius instead of the plate bleeding over the border. */
+  overflow: hidden;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+/* Forward, not just outlined: tokens.css says surfaces come forward as they
+   lighten, and the rail itself is --surface. */
+.gclk-row.is-active {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.gclk-row .votb-turn-dot {
+  flex: none;
+  align-self: center;
+  margin-left: var(--space-4);
+}
+.gclk-name {
+  flex: 1 1 auto;
+  align-self: center;
+  min-width: 0;
+  margin-left: var(--space-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+}
+.gclk-row.is-active .gclk-name {
+  color: var(--text-primary);
+}
+/* State tag, the .lbl idiom. Byo-yomi is the ordinary end of a go game, not an
+   error, so it stays etched: urgency belongs to the countdown, not to the tag. */
+.gclk-tag {
+  flex: none;
+  align-self: center;
+  margin: 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.gclk-row.is-active .gclk-tag,
+.gclk-tag.is-byo {
+  color: var(--text-secondary);
+}
+
+/* The digit plate. Fixed measure so both sides' digits line up, and stretched
+   to the row so it reads as one instrument rather than a chip dropped in. */
+.gclk-plate {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 96px;
+  margin-left: auto;
+  padding: 0 var(--space-4);
+  border-left: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.gclk-time {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: var(--num-feature);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--lh-tight);
+}
+/* Burning: the bone plate. */
+.gclk-row.is-active .gclk-plate {
+  background: var(--accent);
+  border-left-color: var(--accent);
+  color: var(--on-accent);
+}
+/* Emergency: the danger plate, and the digits blink while they run.
+   The ink is --bg-subtle rather than --on-accent: --on-accent is paired with
+   this palette's accent, which in the crimson theme is light, and light ink on
+   a mid red is unreadable. Every palette's --bg-subtle is a near black. */
+.gclk-row.is-low.is-active .gclk-plate {
+  background: var(--danger);
+  border-left-color: var(--danger);
+  color: var(--bg-subtle);
+}
+.gclk-row.is-low.is-active .gclk-time {
+  animation: gclk-blink 1s var(--ease-in-out) infinite;
+}
+/* A side that is low but not on the move states it quietly: no plate, just the
+   danger ink, so only one clock on screen is ever shouting. */
+.gclk-row.is-low:not(.is-active) .gclk-plate {
+  color: var(--danger);
+}
+/* Flagged: frozen danger plate, no blink. The game is over. */
+.gclk-row.is-flagged .gclk-plate {
+  background: var(--danger);
+  border-left-color: var(--danger);
+  color: var(--bg-subtle);
+}
+.gclk-row.is-flagged .gclk-time {
+  animation: none;
+}
+
+/* Byo-yomi periods left. A consumed period re-mounts the badge (React key), so
+   the flash retriggers on the boundary the authority just ruled. */
+.gclk-periods {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-normal);
+  opacity: 0.75;
+  animation: gclk-period-flash 700ms var(--ease-out);
+}
+
+@keyframes gclk-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes gclk-period-flash {
+  0% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gclk-row.is-low.is-active .gclk-time,
+  .gclk-periods {
+    animation: none;
+  }
+}
+
+/* ---- Territory estimate (territory.tsx: toggle + KataGo score strip) ------- */
+.territory {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.territory-toggle.is-on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.territory-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+.territory-bar {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #f2f2f0; /* white's share. Literal stone tones, both themes */
+  border: 1px solid var(--border);
+}
+.territory-bar-black {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: #26282c;
+  transition: width 400ms var(--ease-out);
+}
+.territory-label {
+  white-space: nowrap;
+  font-weight: var(--fw-medium);
+}
+.territory-pending {
+  color: var(--text-muted);
+}
+.territory-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: territory-pulse 1.2s var(--ease-in-out) infinite;
+}
+@keyframes territory-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .territory-dot {
+    animation: none;
+  }
+}
+
+/* ---- 2D/3D board mode (boardMode.tsx) --------------------------------------
+   Segmented control in the OTB/Bot side panels + the online controls strip,
+   and the lazy 3D stage the Tabletop3D canvas mounts into. */
+.bmode {
+  display: inline-flex;
+  align-self: stretch;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken, var(--surface));
+  gap: 3px;
+}
+.bmode-btn {
+  flex: 1;
+  min-width: 52px;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: calc(var(--radius-md) - 3px);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold, 600);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+.bmode-btn:hover {
+  color: var(--text-primary);
+}
+.bmode-btn.is-active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+/* Compact fit inside the online play-controls strip. */
+.play-controls .bmode {
+  align-self: center;
+  margin-right: var(--space-2);
+}
+.play-controls .bmode-btn {
+  min-width: 40px;
+  padding: var(--space-1) var(--space-2);
+}
+
+.b3d-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-board);
+  overflow: hidden;
+  /* Dim tabletop room behind the canvas (also the shimmer backdrop). */
+  background: radial-gradient(120% 90% at 50% 8%, #262219 0%, #171410 58%, #0d0c09 100%);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+.b3d-wrap {
+  position: absolute;
+  inset: 0;
+}
+/* R3F's container div (className via Tabletop3D) fills the wrap. */
+.b3d-canvas {
+  width: 100%;
+  height: 100%;
+}
+.b3d-shimmer {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg, transparent 30%, rgba(255, 244, 214, 0.07) 50%, transparent 70%),
+    radial-gradient(120% 90% at 50% 8%, #262219 0%, #171410 58%, #0d0c09 100%);
+  background-size: 220% 100%, 100% 100%;
+  animation: b3d-sheen 1.4s ease-in-out infinite;
+}
+@keyframes b3d-sheen {
+  from {
+    background-position: 120% 0, 0 0;
+  }
+  to {
+    background-position: -120% 0, 0 0;
+  }
+}
+.b3d-scoring {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-4);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  background: rgba(16, 14, 11, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ece5d4;
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  backdrop-filter: blur(6px);
+}
+.b3d-scoring-btn {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold, 600);
+  cursor: pointer;
+}
+
+/* ---------- PHONE: the board and its clock share one screen ----------
+
+   DESKTOP IS UNTOUCHED. Everything below is inside the 720px query, which is
+   the same breakpoint shell.css uses to swap the rail for the tab bar. Nothing
+   here exists above it.
+
+   THE FAULT, measured at 375x812 on a xiangqi table. .votb-side is a 300px
+   COLUMN on desktop, which is right there: the board takes the width and the
+   rail stands beside it. Under 1200px it stacks below the board, and it is
+   still a column, so it was 320px tall: clock 105, turn 21, auto-flip 19,
+   restart 36, note 33, plus gaps. Board 351 plus rail 320 is 671, and a 812
+   phone has about 648 left after the readout and the tab bar. So the clock,
+   which is the one thing you must see WHILE you play, was pushed off the
+   bottom and you had to scroll away from the board to read it.
+
+   The rail becomes a row that wraps. The clock keeps a line to itself because
+   two plates and a caption need it; everything after it is a control rather
+   than a readout, so it wraps into whatever is left. That takes the rail from
+   320 to about 110, and board plus rail then fits without scrolling.
+
+   The board measure is NOT overridden. shell.css's min(78vh, 100%) already
+   resolves to 100% of the column on a phone, which is 351px here: the width is
+   the binding constraint, not the 78vh, so shrinking the vh term would change
+   nothing. The rail was the problem and the rail is what changed. */
+@media (max-width: 720px) {
+  .votb-side {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    padding: var(--space-4);
+  }
+
+  /* The clock is the readout you play against. It keeps its own full row. */
+  .votb-side .gclk {
+    flex: 1 0 100%;
+  }
+
+  /* The two sides side by side rather than stacked: half the height, and they
+     read as a pair, which is what a clock is. The caption ("10+0", or MAIN and
+     BY on a go clock) keeps the line above them. */
+  .votb-side .gclk {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+  .votb-side .gclk-cap {
+    flex: 1 0 100%;
+  }
+  .votb-side .gclk-row {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Controls and notes share the leftover width instead of each taking a line. */
+  .votb-side .votb-turn,
+  .votb-side .votb-flip,
+  .votb-side .votb-btn {
+    flex: 0 1 auto;
+    margin: 0;
+  }
+  .votb-side .votb-note {
+    flex: 1 0 100%;
+    margin: 0;
+  }
+}

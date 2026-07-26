@@ -1,0 +1,19 @@
+# Cloudflare Pages response headers for the seed node.
+#
+# The seed is a volunteer's page: they open it, press start, and it runs real
+# nodechess peers in the tab. It is NOT the app, so it deliberately does not ask
+# for cross-origin isolation: nothing here touches SharedArrayBuffer, because
+# the engine and the puzzle reader are the app's problem, not the seed's.
+# Asking for isolation it does not need would only give it a way to break.
+#
+# What it does need is the floor every public page should have. Before this file
+# existed the seed shipped with none of it.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  X-Frame-Options: DENY
+
+# Vite fingerprints these, so a byte change is a new URL and they can be held
+# forever. Same rule the app uses.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

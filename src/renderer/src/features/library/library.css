@@ -1,8 +1,8 @@
 /* Library (saved-game archive) + game replay viewer.
    Reuses the games-page layout system (.votb grid, .game-playbar strip,
-   .votb-side rail: games.css) and the global eval-bar/board-controls
-   (app.css); this file only adds the list, chips, move list and replay
-   chrome. */
+   .votb-side rail: play-surfaces.css), v1's .boardbar for the transport row
+   and the shared .eval-bar (components.css); this file only adds the list,
+   chips, move list and replay chrome. */
 
 /* ---- Library list ---------------------------------------------------------- */
 
@@ -239,8 +239,21 @@
 .replay-stage-row .votb-cfb {
   flex: 1;
 }
+/* The transport row is v1's .boardbar, which supplies the flex, the gap and
+   the step off the board. It carries more controls than a mock ever had to,
+   so it centres under the board and wraps rather than pushing the stage
+   wider. */
 .replay-controls {
-  margin-top: var(--space-4);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* First / previous / next / last read as one control, so they sit closer to
+   each other than the boardbar's gap puts them. */
+.replay-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 /* Go winrate readout: a slim horizontal bar above the board. Black fills from
@@ -309,6 +322,34 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* The score between the two names. The library list says whether YOU won and
+   tints itself accordingly (.lib-chip-result); an archive header says which
+   SIDE won, so its tones are the two sides and it borrows the eval bar's two
+   colours to say so without a hue either player has to interpret. */
+.replay-result {
+  flex: none;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}
+.replay-result.is-white {
+  background: var(--eval-white);
+  border-color: var(--eval-white);
+  color: var(--eval-black);
+}
+.replay-result.is-black {
+  background: var(--eval-black);
+  border-color: var(--eval-black);
+  color: var(--eval-white);
+}
+.replay-result.is-open {
+  color: var(--text-muted);
+}
+
 .replay-meta {
   display: flex;
   gap: var(--space-3);
@@ -335,6 +376,11 @@
   overflow-y: auto;
   min-height: 0;
   padding: var(--space-2) 0;
+}
+/* An archive with no legal moves in it. It stands where the rows would be, so
+   it takes their inset rather than sitting flush against the box. */
+.replay-empty {
+  padding: var(--space-2) var(--space-3);
 }
 .replay-move-row {
   display: grid;

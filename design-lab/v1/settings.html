@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <!-- Loaded after shell.css so each swatch below can carry a real
+         [data-palette] block instead of a hand copied hex. -->
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+    <style>
+      /* SETTINGS page styles. Everything prefixed .set- so it cannot collide
+         with a sibling page. Every value is a token. shell.css untouched.
+
+         Two things are worth saying about the controls. The switch reads its
+         state from aria-checked, so the markup and the picture cannot drift
+         apart. And amber appears on exactly one thing per control: the knob of
+         a setting that is on, and the cell of a value that is selected. Grey
+         is off, amber is live, and nothing else on the page is amber. */
+
+      /* Measure and centering come from .col-single in shell.css, which play
+         also uses, so the two single column pages sit on the same two edges. */
+
+      .set-page > .sec:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Settings is a tool, not a destination, so the rail foot marks it
+         instead of a nav row taking the page marker. */
+      .set-tool-on {
+        color: var(--text-primary);
+        background: var(--surface);
+      }
+
+      .set-tool-on .icon {
+        color: var(--accent);
+      }
+
+      /* ---- one setting per row ---- */
+
+      .set-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--space-5);
+        padding: var(--space-4) var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .set-row:last-child {
+        border-bottom: 0;
+      }
+
+      .set-row.is-stack {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .set-name {
+        display: block;
+        font-size: var(--fs-base);
+        font-weight: var(--fw-medium);
+      }
+
+      .set-sub {
+        display: block;
+        margin-top: var(--space-1);
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+        max-width: 54ch;
+      }
+
+      .set-credit {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-muted);
+      }
+
+      /* ---- the switch ---- */
+
+      .set-switch {
+        position: relative;
+        flex: none;
+        width: 38px;
+        height: 20px;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-pill);
+        background: var(--bg-subtle);
+        transition:
+          background-color var(--motion-fast) var(--ease-out),
+          border-color var(--motion-fast) var(--ease-out);
+      }
+
+      .set-knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 12px;
+        height: 12px;
+        border-radius: var(--radius-pill);
+        background: var(--text-muted);
+        transition:
+          transform var(--motion-base) var(--ease-out),
+          background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .set-switch[aria-checked='true'] {
+        background: var(--surface-2);
+        border-color: var(--border-strong);
+      }
+
+      .set-switch[aria-checked='true'] .set-knob {
+        transform: translateX(18px);
+        background: var(--accent);
+      }
+
+      /* ---- the slider, drawn rather than an <input type=range> because this
+             page is a picture and a real range control brings the platform's
+             own colours with it ---- */
+
+      .set-range {
+        grid-column: 1 / -1;
+      }
+
+      .set-num {
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .set-track {
+        position: relative;
+        height: 4px;
+        margin: var(--space-5) 0 var(--space-4);
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+
+      .set-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        background: var(--border-strong);
+      }
+
+      .set-thumb {
+        position: absolute;
+        top: 50%;
+        width: 13px;
+        height: 13px;
+        margin: -7px 0 0 -6px;
+        border-radius: var(--radius-pill);
+        background: var(--accent);
+        border: var(--border-width) solid var(--bg-page);
+      }
+
+      /* No inline styles, so a position is a class. Two sliders, two values. */
+      .set-track.is-17 .set-fill {
+        width: 17%;
+      }
+      .set-track.is-17 .set-thumb {
+        left: 17%;
+      }
+      .set-track.is-46 .set-fill {
+        width: 46%;
+      }
+      .set-track.is-46 .set-thumb {
+        left: 46%;
+      }
+
+      /* The scale end labels are .ticks in shell.css and the words are .lbl. */
+
+      /* ---- palette swatches ---- */
+
+      .set-pals {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+        gap: var(--space-3);
+        margin-top: var(--space-4);
+      }
+
+      .set-sw {
+        display: block;
+        padding: var(--space-3);
+        text-align: left;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg-subtle);
+        transition:
+          border-color var(--motion-fast) var(--ease-out),
+          background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .set-sw:hover {
+        border-color: var(--border-strong);
+      }
+
+      /* Chosen. A bone hairline is not enough on its own now that the accent
+         is a near white, so the chosen swatch also gets the raised ground, a
+         3px rule down its left edge and its name at full weight. */
+      .set-sw[aria-pressed='true'] {
+        border-color: var(--accent);
+        border-left: 3px solid var(--accent);
+        padding-left: calc(var(--space-3) - 2px);
+        background: var(--surface-2);
+      }
+
+      /* The chip, not the button, carries data-palette: the picture is in that
+         palette and the name stays in the palette you are actually running. */
+      .set-chip {
+        position: relative;
+        display: block;
+        height: 46px;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg-page);
+        overflow: hidden;
+      }
+
+      .set-chip-bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        padding: 0 var(--space-2);
+        background: var(--surface);
+        border-top: var(--border-width) solid var(--border);
+      }
+
+      .set-chip-line {
+        height: 2px;
+        width: 72%;
+        background: var(--text-secondary);
+      }
+
+      .set-chip-line.is-short {
+        width: 42%;
+        background: var(--text-muted);
+      }
+
+      .set-chip-accent {
+        position: absolute;
+        top: var(--space-3);
+        left: var(--space-3);
+        width: 14px;
+        height: 14px;
+        border-radius: var(--radius-sm);
+        background: var(--accent);
+      }
+
+      .set-sw-name {
+        display: block;
+        margin-top: var(--space-3);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+      }
+
+      .set-sw[aria-pressed='true'] .set-sw-name {
+        color: var(--text-primary);
+        font-weight: var(--fw-bold);
+      }
+
+      /* One line saying what the set is for, because a 46px picture cannot say
+         "near monochrome, everything carried by value". */
+      .set-sw-note {
+        display: block;
+        margin-top: var(--space-1);
+        font-size: var(--fs-xs);
+        line-height: var(--lh-body);
+        color: var(--text-muted);
+      }
+
+      /* Five piece sets do not fit a phone, and wrapping a segmented control
+         breaks its hairlines, so it scrolls sideways instead. */
+      .set-scroll {
+        margin-top: var(--space-4);
+        overflow-x: auto;
+      }
+
+      .set-scroll .segmented {
+        width: max-content;
+        min-width: 100%;
+      }
+
+      @media (max-width: 720px) {
+        .set-row {
+          padding: var(--space-4);
+        }
+
+        .set-pals {
+          grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .set-knob {
+          transition-property: background-color;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" aria-current="page" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Play your first game</span>
+          </div>
+          <div class="trace is-0" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <div class="set-page col-single">
+            <!-- ================= APPEARANCE ================= -->
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Appearance</h2>
+                <span class="sec-count">cold iron and bone, cburnett</span>
+              </div>
+
+              <div class="panel">
+                <div class="set-row is-stack">
+                  <span>
+                    <span class="set-name">Palette</span>
+                    <span class="set-sub">Eight dark sets. Chrome colour only: the layout never moves and the board never changes.</span>
+                  </span>
+                  <div class="set-pals" role="group" aria-label="Palette">
+                    <button class="set-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false">
+                      <span class="set-chip" data-palette="cold-iron-bone" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Cold iron, bone</span>
+                      <span class="set-sw-note">Near monochrome. The default: everything is carried by value, and the only hue on screen is a status colour.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false">
+                      <span class="set-chip" data-palette="cold-graphite-oxblood" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Cold graphite, oxblood</span>
+                      <span class="set-sw-note">Cold blue grey neutrals under a deep wine accent.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false">
+                      <span class="set-chip" data-palette="warm-ash-slate-blue" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Warm ash, slate blue</span>
+                      <span class="set-sw-note">Warm grey neutrals under a cool dusty blue.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false">
+                      <span class="set-chip" data-palette="cool-steel-deep-teal" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Cool steel, deep teal</span>
+                      <span class="set-sw-note">Cold steel neutrals under a teal signal.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false">
+                      <span class="set-chip" data-palette="warm-umber-sage" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Warm umber, sage</span>
+                      <span class="set-sw-note">Genuinely warm brown under a muted sage green.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="green-slate-plum" aria-pressed="false">
+                      <span class="set-chip" data-palette="green-slate-plum" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Green slate, plum</span>
+                      <span class="set-sw-note">Green tinted grey under a desaturated plum.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false">
+                      <span class="set-chip" data-palette="blue-ink-straw" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Blue ink, straw</span>
+                      <span class="set-sw-note">Indigo tinted neutrals under a pale straw yellow.</span>
+                    </button>
+
+                    <button class="set-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false">
+                      <span class="set-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true">
+                        <span class="set-chip-accent"></span>
+                        <span class="set-chip-bar">
+                          <span class="set-chip-line"></span>
+                          <span class="set-chip-line is-short"></span>
+                        </span>
+                      </span>
+                      <span class="set-sw-name">Warm putty, dusty rose</span>
+                      <span class="set-sw-note">Warm putty grey under a light dusty rose.</span>
+                    </button>
+
+                  </div>
+                </div>
+
+                <div class="set-row is-stack">
+                  <span>
+                    <span class="set-name">Piece set</span>
+                    <span class="set-credit">Colin M.L. Burnett, GPLv2 or later</span>
+                  </span>
+                  <div class="set-scroll">
+                    <div class="segmented" role="group" aria-label="Piece set" data-segs>
+                      <button class="seg" type="button" aria-pressed="true">Cburnett</button>
+                      <button class="seg" type="button" aria-pressed="false">Merida</button>
+                      <button class="seg" type="button" aria-pressed="false">Chessnut</button>
+                      <button class="seg" type="button" aria-pressed="false">Fantasy</button>
+                      <button class="seg" type="button" aria-pressed="false">Pirouetti</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Board coordinates</span>
+                    <span class="set-sub">Files and ranks along the board edge.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Board coordinates">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Piece animation</span>
+                    <span class="set-sub">Pieces slide to the square. Off means they cut.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Piece animation">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- ================= GAMEPLAY ================= -->
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Gameplay</h2>
+              </div>
+
+              <div class="panel">
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Auto-queen</span>
+                    <span class="set-sub">Promote straight to a queen, no picker.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="false" aria-label="Auto-queen">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Confirm resign</span>
+                    <span class="set-sub">Ask before a game is given up.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Confirm resign">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Low-time warning</span>
+                    <span class="set-sub">A tick when the clock runs down in timed games.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Low-time warning">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row is-wrap">
+                  <span>
+                    <span class="set-name">Bot move time</span>
+                    <span class="set-sub">How long a bot takes over each move in casual play.</span>
+                  </span>
+                  <span class="set-num">600 ms</span>
+                  <div class="set-range">
+                    <div class="set-track is-17" role="img" aria-label="Bot move time: 600 milliseconds of 3000">
+                      <span class="set-fill"></span>
+                      <span class="set-thumb"></span>
+                    </div>
+                    <div class="ticks">
+                      <span class="lbl">100 ms</span>
+                      <span class="lbl">3000 ms</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ================= ASSISTANCE ================= -->
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Assistance</h2>
+              </div>
+
+              <div class="panel">
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Legal move dots</span>
+                    <span class="set-sub">Mark the squares a lifted piece can reach.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Legal move dots">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Hints</span>
+                    <span class="set-sub">Hint buttons in School, Puzzles and Play. Off for a harder ride.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Hints">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Engine arrows</span>
+                    <span class="set-sub">Draw the engine's suggestions on the analysis board.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="true" aria-label="Engine arrows">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+
+                <div class="set-row">
+                  <span>
+                    <span class="set-name">Evaluation bar</span>
+                    <span class="set-sub">The advantage bar beside analysis boards.</span>
+                  </span>
+                  <button class="set-switch" type="button" role="switch" aria-checked="false" aria-label="Evaluation bar">
+                    <span class="set-knob"></span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- ================= ENGINE AND ANALYSIS ================= -->
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Engine and analysis</h2>
+                <span class="sec-count">stockfish 16, bundled</span>
+              </div>
+
+              <div class="panel">
+                <div class="set-row is-wrap">
+                  <span>
+                    <span class="set-name">Candidate lines</span>
+                    <span class="set-sub">Alternatives shown beside the best move.</span>
+                  </span>
+                  <div class="segmented" role="group" aria-label="Candidate lines" data-segs>
+                    <button class="seg" type="button" aria-pressed="false">1</button>
+                    <button class="seg" type="button" aria-pressed="false">2</button>
+                    <button class="seg" type="button" aria-pressed="true">3</button>
+                    <button class="seg" type="button" aria-pressed="false">4</button>
+                    <button class="seg" type="button" aria-pressed="false">5</button>
+                  </div>
+                </div>
+
+                <div class="set-row is-wrap">
+                  <span>
+                    <span class="set-name">Depth</span>
+                    <span class="set-sub">Deeper is stronger and slower. Max runs to the engine's ceiling.</span>
+                  </span>
+                  <span class="set-num">24 ply</span>
+                  <div class="set-range">
+                    <div class="set-track is-46" role="img" aria-label="Depth: 24 ply of 30 plus max">
+                      <span class="set-fill"></span>
+                      <span class="set-thumb"></span>
+                    </div>
+                    <div class="ticks">
+                      <span class="lbl">18</span>
+                      <span class="lbl">Max</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION ================= -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script src="shell.js" defer></script>
+  </body>
+</html>

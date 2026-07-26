@@ -1,0 +1,179 @@
+/* ============================================================
+   TimeControlPicker.
+
+   design-lab/v1 never drew this control: its play page picks a
+   clock with .chip.is-stacked chips and two number fields. The
+   picker survives because the Games page's online host card still
+   uses it, so it keeps its own styles and now carries them itself
+   instead of leaning on a stylesheet another view happened to load.
+   ============================================================ */
+
+.tcp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.tcp-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: var(--space-2);
+}
+.tcp-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 38px;
+  padding: var(--space-2) var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    transform var(--dur-instant) var(--ease-out);
+}
+.tcp-chip:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+.tcp-chip:active {
+  transform: scale(0.97);
+}
+.tcp-chip.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.tcp-chip.is-unlimited,
+.tcp-chip-custom {
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.tcp-chip.is-unlimited.on,
+.tcp-chip-custom.on {
+  color: var(--accent);
+}
+.tcp-chip-custom {
+  grid-column: 1 / -1;
+}
+.tcp.is-dense .tcp-chips {
+  grid-template-columns: repeat(auto-fill, minmax(58px, 1fr));
+}
+.tcp.is-dense .tcp-chip {
+  min-height: 32px;
+  font-size: var(--fs-xs);
+}
+
+/* ---- Live category readout ("3+2 · Blitz") ---- */
+.tcp-foot,
+.tcp-custom-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.tcp-readout {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+.tcp-readout-icon {
+  color: var(--accent);
+}
+.tcp-readout-label {
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.tcp-readout-sep {
+  color: var(--text-muted);
+}
+.tcp-readout-cat {
+  font-weight: var(--fw-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: var(--fs-xs);
+  color: var(--accent);
+}
+
+/* ---- Custom sliders ---- */
+.tcp-custom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.tcp-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.tcp-slider-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.tcp-slider-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.tcp-slider-value {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+.tcp-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.tcp-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    to right,
+    var(--accent) var(--fill, 50%),
+    var(--surface-2) var(--fill, 50%)
+  );
+}
+.tcp-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--dur-instant) var(--ease-out);
+}
+.tcp-range:active::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+.tcp-custom-preview {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--text-secondary);
+}

@@ -1,0 +1,646 @@
+/* The landing page, web build only.
+
+   Everything here is prefixed lp- and scoped under .lp. The page borrows v1's
+   furniture (sec, sec-head, panel, facts, row, chip, btn, go) and adds only the
+   things v1 never had to draw: a masthead, and two figures.
+
+   ONE DELIBERATE DEPARTURE. v1 has no display type: 23px is its ceiling and
+   hierarchy is carried by weight and rule work. The wordmark at the top of this
+   page is bigger than that on purpose, because it is the wordmark and not a
+   heading, and because a landing page is the one surface whose job is to say
+   the name. Nothing else on the page goes above the scale.
+
+   The page owns its own scrolling. It is one tall column in a fixed height box,
+   so the window itself never scrolls whatever it is mounted inside. */
+
+.lp {
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+.lp-inner {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-9) var(--space-6) var(--space-11);
+}
+
+/* ---------- masthead ---------- */
+
+.lp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-9);
+  padding-bottom: var(--space-10);
+  margin-bottom: var(--space-9);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.lp-word {
+  font-size: clamp(52px, 9.5vw, 104px);
+  line-height: 1;
+  font-weight: var(--fw-regular);
+}
+
+.lp-lede {
+  margin-top: var(--space-6);
+  max-width: 48ch;
+  font-size: var(--fs-lg);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.lp-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-7);
+}
+
+.lp-hero-chips {
+  margin-top: var(--space-6);
+}
+
+/* The mark is the only thing on the page that is allowed to be large and to
+   move. Both motions are on, so it waves under the pointer and ripples from
+   wherever the pointer is. */
+.lp-hero-mark {
+  display: flex;
+  justify-content: center;
+}
+
+.lp-hero-mark .nc-mark {
+  width: min(300px, 32vw);
+  height: auto;
+  color: var(--accent);
+}
+
+/* ---------- the two figures ---------- */
+
+.lp-fig {
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.lp-lat,
+.lp-net {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lp-lat {
+  padding: var(--space-5) var(--space-4);
+  /* A drag on the lattice is a drag on the lattice, not a scroll of the page. */
+  touch-action: none;
+}
+
+.lp-fig-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  border-top: var(--border-width) solid var(--border);
+  background: var(--surface);
+}
+
+.lp-fig-read {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ---- the shared lattice idiom -------------------------------------------
+   A link is a line and a node is a circle, exactly as in the mark. --lit is
+   written per element by the frame loop and is the only thing that changes:
+   colour, weight and the swell of a node all read off it, so one number
+   carries the whole animation. */
+
+.lp-fig .nc-e {
+  stroke: color-mix(in srgb, var(--accent) calc(var(--lit, 0) * 80%), var(--border-strong));
+  stroke-width: calc(1px + var(--lit, 0) * 0.6px);
+  stroke-linecap: round;
+}
+
+.lp-fig .nc-n {
+  fill: color-mix(in srgb, var(--accent) calc(var(--lit, 0) * 100%), var(--text-muted));
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transform: scale(calc(1 + var(--lit, 0) * 0.3));
+}
+
+.lp-fig .lp-dust {
+  fill: var(--text-muted);
+  opacity: 0.4;
+  transform: none;
+}
+
+.lp-fig .lp-pulse {
+  fill: var(--accent);
+  opacity: 0;
+}
+
+.lp-fig .lp-gossip {
+  fill: var(--text-secondary);
+  opacity: 0;
+}
+
+.lp-tag {
+  font-family: var(--font-mono);
+  font-size: 4.4px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  fill: var(--text-muted);
+}
+
+/* ---- lattice: the interactive one ---------------------------------------
+   The figure is a construction, so the drawing keeps the lines it was built
+   from. Everything in this section is either the setting out, which is faint,
+   hairline and dead, or the live graph, which is the only thing that carries
+   colour. The two never use the same weight. */
+
+/* Setting out: the grid the nodes stand on, the rings they fall on, and one
+   cell of the tessellation called out in the margin. Hairlines at any size,
+   because a construction line is a construction line. */
+.lp-lat-set {
+  fill: none;
+  stroke: var(--border);
+}
+
+.lp-lat-grid,
+.lp-lat-ring,
+.lp-lat-cell,
+.lp-lat-ghost,
+.lp-lat-tether,
+.lp-lat-pick {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1;
+}
+
+.lp-lat-ring {
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 4;
+  opacity: 0.5;
+}
+
+.lp-lat-cell {
+  fill: color-mix(in srgb, var(--accent) 7%, transparent);
+  stroke: var(--border-strong);
+  opacity: 0.7;
+}
+
+/* The lattice reads as ruled, not sketched: butt ends, no rounding. */
+.lp-lat .lp-e {
+  stroke-linecap: butt;
+  pointer-events: none;
+}
+
+.lp-lat .lp-tag {
+  font-size: 4.6px;
+}
+
+/* A link into a node that is out has simply gone slack. */
+.lp-lat .lp-e.is-out {
+  stroke: var(--border);
+  stroke-dasharray: 2 3.4;
+  opacity: 0.55;
+}
+
+/* A link that was cut on purpose shows the cut. Every link on the figure is
+   exactly one cell long, so 12 on, 16 off, 12 on puts the gap dead centre. */
+.lp-lat .lp-e.is-cut {
+  stroke: var(--border-strong);
+  stroke-dasharray: 12 16;
+  opacity: 0.7;
+}
+
+/* What runs through the node under the pointer. */
+.lp-lat .lp-e.is-via {
+  stroke: color-mix(in srgb, var(--accent) calc(50% + var(--lit, 0) * 50%), var(--border-strong));
+  stroke-width: calc(1.5px + var(--lit, 0) * 0.6px);
+}
+
+/* The route a change is taking between the two nodes picked. */
+.lp-lat .lp-e.is-route {
+  stroke: var(--accent);
+  stroke-width: 1.9px;
+  opacity: 1;
+}
+
+.lp-lat-zone {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 11;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.lp-lat-link:hover .lp-e {
+  stroke: color-mix(in srgb, var(--accent) 60%, var(--border-strong));
+}
+
+/* Where a dragged node belongs, for as long as it is not there. */
+.lp-lat-ghost {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 2.5;
+}
+
+.lp-lat-tether {
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 3;
+  opacity: 0.8;
+}
+
+.lp-lat-pick {
+  fill: none;
+  stroke: var(--accent);
+}
+
+.lp-hit {
+  fill: transparent;
+  cursor: grab;
+}
+
+.lp-hit:active {
+  cursor: grabbing;
+}
+
+.lp-hit:focus-visible {
+  outline: none;
+  fill: color-mix(in srgb, var(--focus-ring) 14%, transparent);
+  stroke: var(--focus-ring);
+  stroke-width: 0.8;
+}
+
+/* A node that has been knocked out: an empty ring. Nothing red, nothing
+   shouted. It is simply not there any more. */
+.lp-node.is-out .nc-n {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1.1;
+  transform: none;
+}
+
+.lp-node.is-out .lp-tag {
+  fill: var(--border-strong);
+}
+
+.lp-lat .lp-node.is-route .nc-n,
+.lp-lat .lp-node.is-look .nc-n {
+  fill: var(--accent);
+}
+
+.lp-lat .lp-node.is-out.is-look .nc-n {
+  fill: none;
+  stroke: var(--accent);
+}
+
+/* ---- the foot of the lattice ---- */
+
+.lp-lat-lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.lp-lat-hint {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* The keyboard reading of the same figure, and it only appears once somebody
+   is actually on the keyboard. */
+.lp-lat-keys {
+  display: none;
+}
+
+.lp-lat-fig:has(.lp-hit:focus-visible) .lp-lat-mouse {
+  display: none;
+}
+
+.lp-lat-fig:has(.lp-hit:focus-visible) .lp-lat-keys {
+  display: inline;
+}
+
+.lp-lat-acts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  flex: none;
+}
+
+.lp-lat-acts .seg {
+  white-space: nowrap;
+}
+
+/* ---- offline: the one that loops ---- */
+
+.lp-off {
+  display: grid;
+  grid-template-columns: 178px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-7);
+  padding: var(--space-5);
+}
+
+.lp-off-game {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Four squares by four of the app's own board, with the app's own knight on
+   it. Its measure is set here and only here: it is a diagram, and it is not
+   .board-wrap, which owns the real board and is declared once in shell.css. */
+.lp-mini {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.lp-sq.is-light {
+  background: var(--sq-light);
+}
+
+.lp-sq.is-dark {
+  background: var(--sq-dark);
+}
+
+.lp-mini .pc {
+  width: 25%;
+  height: 25%;
+  transition: transform 260ms var(--ease-out);
+}
+
+.lp-tape {
+  display: flex;
+  gap: 3px;
+}
+
+.lp-slot {
+  flex: 1 1 0;
+  height: 12px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+}
+
+.lp-slot.is-sent {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* A move made while the link was down. It is not lost and it is not sent: it
+   is waiting, and it says so by breathing. */
+.lp-slot.is-held {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  animation: lp-hold 1.5s var(--ease-in-out) infinite;
+}
+
+@keyframes lp-hold {
+  50% {
+    background: color-mix(in srgb, var(--accent) 34%, transparent);
+  }
+}
+
+.lp-tape-lbl {
+  align-self: flex-start;
+}
+
+.lp-off .lp-dev {
+  fill: var(--accent);
+}
+
+.lp-halo {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.8;
+  stroke-dasharray: 3 4;
+  opacity: 0;
+  transition: opacity var(--motion-slow) var(--ease-out);
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.lp-off[data-phase='offline'] .lp-halo {
+  opacity: 0.8;
+  animation: lp-spin 9s linear infinite;
+}
+
+@keyframes lp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lp-off[data-phase='offline'] .lp-link {
+  stroke: var(--border-strong);
+  stroke-dasharray: 2 3.4;
+  opacity: 0.6;
+}
+
+/* ---------- how it differs ---------- */
+
+.lp-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.lp-diff {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.lp-diff:last-child {
+  border-bottom: 0;
+}
+
+.lp-diff-name {
+  display: block;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+}
+
+.lp-diff-line {
+  margin-top: var(--space-2);
+  max-width: 78ch;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* ---------- download ---------- */
+
+.lp-get {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-6);
+}
+
+.lp-get-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+}
+
+.lp-get-note {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.lp-more {
+  margin-top: var(--space-4);
+}
+
+.lp-all {
+  margin-top: var(--space-4);
+}
+
+/* ---------- foot ---------- */
+
+.lp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+  padding-top: var(--space-7);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.lp-foot .nc-lockup {
+  color: var(--text-secondary);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 900px) {
+  .lp-hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-7);
+  }
+
+  .lp-hero-mark {
+    justify-content: flex-start;
+  }
+
+  .lp-hero-mark .nc-mark {
+    width: min(220px, 50vw);
+  }
+
+  .lp-off {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lp-off-game {
+    max-width: 260px;
+  }
+}
+
+@media (max-width: 620px) {
+  .lp-inner {
+    padding: var(--space-7) var(--space-5) var(--space-10);
+  }
+
+  .lp-get,
+  .lp-foot,
+  .lp-fig-foot {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ==========================================================================
+   PHONE
+
+   This page REPLACES the shell, so it inherits none of the shell's phone work:
+   it is its own scroller (.lp, 100dvh) and there is no tab bar under it. What
+   it does inherit is src/web/index.html's viewport-fit=cover, which means the
+   bottom of that 100dvh box is UNDER the home indicator on a notched phone.
+   Nothing on this page reserved a pixel for it, so the last thing on the page,
+   which is the download call to action, ended up beneath a system control.
+
+   Everything below is inside the breakpoint shell.css uses to swap the rail
+   for the tab bar. Nothing here is read at any other width, so the desktop
+   page is untouched.
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  /* THE LATTICE MUST NOT EAT THE SCROLL.
+
+     `touch-action: none` on the whole figure was right for the drag and wrong
+     for everything else: the figure is most of a phone screen, so a swipe
+     anywhere on it, including the empty space between nodes, was swallowed and
+     the page simply refused to move under the thumb. The declaration belongs
+     on the thing that is actually dragged. Off the figure, a vertical swipe is
+     the page's and a pinch is the browser's; on a node, the drag is the node's,
+     in both axes, exactly as before. */
+  .lp-lat {
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .lp-hit {
+    touch-action: none;
+    /* The hit circle is invisible, so it can be enlarged without touching the
+       drawing. 19 user units is about 35px here, which is as far as it goes:
+       the nodes sit 37px apart at this width, so a 44px target would overlap
+       its neighbours and the lattice would stop being pickable at all. The
+       figure is a diagram, not a control panel, and it has a full keyboard
+       path beside it. See the report: this one does not reach 44. */
+    r: 19px;
+  }
+
+  /* Every action on the page, sized for a thumb. v1's .btn is 32px and .seg
+     34, both drawn for a cursor. */
+  .lp .btn,
+  .lp .seg {
+    min-height: 44px;
+  }
+
+  /* Two of these stack on one line and neither should end up a stub. */
+  .lp-acts .btn,
+  .lp-get .btn {
+    flex: 0 1 auto;
+  }
+
+  /* The page pays the home indicator at its own foot, because it has no tab
+     bar to pay it for them. The base measures are restated exactly so only the
+     inset is added, at each of the two widths that set one. */
+  .lp .lp-inner {
+    padding-bottom: calc(var(--space-11) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 620px) {
+  .lp .lp-inner {
+    padding-bottom: calc(var(--space-10) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-mini .pc,
+  .lp-slot.is-held,
+  .lp-halo {
+    transition: none;
+    animation: none;
+  }
+}

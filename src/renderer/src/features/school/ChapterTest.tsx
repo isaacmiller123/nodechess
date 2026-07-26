@@ -3,17 +3,6 @@ import type { JSX } from 'react'
 import type { Key } from 'chessground/types'
 import type { Role } from 'chessops/types'
 import {
-  AlertTriangle,
-  ArrowLeft,
-  CheckCircle2,
-  ChevronRight,
-  RotateCcw,
-  ShieldCheck,
-  ThumbsDown,
-  ThumbsUp,
-  XCircle
-} from 'lucide-react'
-import {
   MAX_ATTEMPTS,
   type ChapterTest,
   type TestQuestion,
@@ -29,9 +18,9 @@ import {
   uciToLastMove,
   type Color
 } from '../../chess/chess'
-import { ViktorPanel } from './ViktorPanel'
 import { annotationsToShapes, SCHOOL_BRUSHES } from './annotations'
-import { BoardFrame, EMPTY_DESTS, ROLE_FROM_CHAR, type BoardEnv } from './segments'
+import { Coach, LessonChromeProvider, Scene, Turn, pad, type BoardEnv } from './SchoolScene'
+import { EMPTY_DESTS, ROLE_FROM_CHAR } from './segments'
 
 // Default pass threshold when a chapter test doesn't set one. The attempt cap is
 // owned by the shared contract (@shared/types `MAX_ATTEMPTS`): the SERVER is
@@ -42,6 +31,7 @@ const PASS_FLOOR = 0.7
 export interface ChapterTestProps {
   chapterId: string
   chapterTitle: string
+  chapterOrder: number
   test: ChapterTest
   env: BoardEnv
   /** Prior attempts already taken (from window.api.school.testState). */
@@ -63,10 +53,14 @@ type Verdict =
   | { status: 'error' }
 
 /**
- * The chapter test: questions one at a time under the top progress bar. Score at
- * the end; pass at >= passThreshold. Two attempts total; on a failing attempt we
- * never reveal which answers were right; failing both attempts tells the learner
- * to retake the chapter. Each completed attempt is recorded via recordTest.
+ * The chapter test, on the same page shape as a lesson: the question is the head
+ * over the board, Viktor asks it from his own panel, and the answer is either a
+ * move on the board or a row in the aside.
+ *
+ * Score at the end; pass at >= passThreshold. Two attempts total; on a failing
+ * attempt we never reveal which answers were right; failing both attempts tells
+ * the learner to retake the chapter. Each completed attempt is recorded via
+ * recordTest.
  *
  * The SERVER is authoritative on pass/fail + retake: the client sends only the raw
  * scorePct (no `passed`), and the result screen renders from the returned
@@ -80,6 +74,7 @@ type Verdict =
 export function ChapterTestView({
   chapterId,
   chapterTitle,
+  chapterOrder,
   test,
   env,
   priorAttempts,
@@ -111,8 +106,6 @@ export function ChapterTestView({
 
   // Record the attempt exactly once when we reach the result screen and adopt the
   // SERVER verdict as the source of truth (the client no longer sends `passed`).
-  // Slice 4 renders result.passed / result.attempts / result.mustRetake /
-  // result.bestPct instead of any locally-derived pass/retake.
   useEffect(() => {
     if (phase !== 'result' || recordedRef.current) return
     recordedRef.current = true
@@ -154,16 +147,13 @@ export function ChapterTestView({
     setMarks((m) => [...m, correct])
   }, [])
 
+  // Side effects stay OUT of the setQIdx updater: StrictMode double-invokes
+  // updaters in dev, and a setPhase inside one runs twice. "Was that the last
+  // question" is derivable from state, so derive it here.
   const next = useCallback(() => {
-    setQIdx((i) => {
-      const n = i + 1
-      if (n >= questions.length) {
-        setPhase('result')
-        return i
-      }
-      return n
-    })
-  }, [questions.length])
+    if (qIdx + 1 >= questions.length) setPhase('result')
+    else setQIdx(qIdx + 1)
+  }, [qIdx, questions.length])
 
   const retakeTest = useCallback(() => {
     attemptNoRef.current = attemptNoRef.current + 1
@@ -174,57 +164,57 @@ export function ChapterTestView({
     setPhase('running')
   }, [])
 
-  const progress = phase === 'result' ? 1 : marks.length / Math.max(1, questions.length)
-
-  const topbar = (
-    <header className="lesson-top">
-      <button className="lesson-back" onClick={onBack}>
-        <ArrowLeft size={16} /> Chapter
-      </button>
-      <div
-        className="lesson-progress"
-        role="progressbar"
-        aria-valuenow={Math.round(progress * 100)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Chapter test progress"
-      >
-        <div className="lesson-progress-fill" style={{ width: `${Math.round(progress * 100)}%` }} />
-      </div>
-      <span className="lesson-top-label">{chapterTitle} · Test</span>
-    </header>
-  )
-
   // -------- RESULT --------
   if (phase === 'result') {
     return (
-      <div className="lesson-player">
-        {topbar}
-        <div className="school-stage school-stage-single">
-          <ResultCard
-            verdict={verdict}
-            scorePct={scorePct}
-            correctCount={correctCount}
-            totalQuestions={questions.length}
-            passThreshold={passThreshold}
-            alreadyPassed={alreadyPassed}
-            onRetake={retakeTest}
-            onRetryRecord={retryRecord}
-            onFinished={onFinished}
-          />
-        </div>
-      </div>
+      <ResultCard
+        chapterOrder={chapterOrder}
+        chapterTitle={chapterTitle}
+        verdict={verdict}
+        scorePct={scorePct}
+        correctCount={correctCount}
+        totalQuestions={questions.length}
+        passThreshold={passThreshold}
+        alreadyPassed={alreadyPassed}
+        onRetake={retakeTest}
+        onRetryRecord={retryRecord}
+        onFinished={onFinished}
+      />
     )
   }
 
   // -------- RUNNING: one question at a time --------
-  const q = questions[qIdx]
+  const chrome = {
+    head: (
+      <div className="sch-head board-under">
+        <div className="lbl">
+          {`Ch ${pad(chapterOrder)} · ${chapterTitle} · Question ${qIdx + 1} of ${questions.length}`}
+        </div>
+        <h1 className="sch-title">Chapter test</h1>
+        <p className="sec-note">
+          {Math.round(passThreshold * 100)}% to pass. Which ones you missed stays with Viktor until
+          the end.
+        </p>
+      </div>
+    ),
+    side: (
+      <div className="lesson-foot">
+        <p className="foot-note">
+          {marks.length} of {questions.length} answered
+        </p>
+        <button className="btn is-quiet" type="button" onClick={onBack}>
+          Leave the test
+        </button>
+      </div>
+    ),
+    trace: questions.length > 0 ? marks.length / questions.length : null
+  }
+
   return (
-    <div className="lesson-player">
-      {topbar}
+    <LessonChromeProvider chrome={chrome}>
       <QuestionView
         key={qIdx}
-        question={q}
+        question={questions[qIdx]}
         index={qIdx}
         total={questions.length}
         env={env}
@@ -232,19 +222,21 @@ export function ChapterTestView({
         onNext={next}
         isLast={qIdx >= questions.length - 1}
       />
-    </div>
+    </LessonChromeProvider>
   )
 }
 
 // ===========================================================================
-// RESULT CARD: renders the SERVER verdict (TestRecordResult). While the
-// round-trip is in flight we show a recording state; on failure we show a
-// neutral "not recorded" card (raw score + retry): never a pass/fail verdict
-// the server did not issue. result.passed / result.attempts / result.mustRetake
-// / result.bestPct are the source of truth.
+// RESULT: renders the SERVER verdict (TestRecordResult). While the round-trip is
+// in flight we show a recording state; on failure we show a neutral "not
+// recorded" screen (raw score + retry): never a pass/fail verdict the server did
+// not issue. result.passed / result.attempts / result.mustRetake / result.bestPct
+// are the source of truth.
 // ===========================================================================
 
 function ResultCard({
+  chapterOrder,
+  chapterTitle,
   verdict,
   scorePct,
   correctCount,
@@ -255,6 +247,8 @@ function ResultCard({
   onRetryRecord,
   onFinished
 }: {
+  chapterOrder: number
+  chapterTitle: string
   verdict: Verdict
   scorePct: number
   correctCount: number
@@ -265,47 +259,77 @@ function ResultCard({
   onRetryRecord: () => void
   onFinished: () => void
 }): JSX.Element {
-  // While recording, hold the result screen on a calm pending card. Never flash a
+  const head = (title: string, note?: string): JSX.Element => (
+    <div className="sch-head">
+      <div className="lbl">{`Ch ${pad(chapterOrder)} · ${chapterTitle} · Chapter test`}</div>
+      <h1 className="sch-title">{title}</h1>
+      {note && <p className="sec-note">{note}</p>}
+    </div>
+  )
+
+  const score = (best?: number): JSX.Element => (
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">Score</h2>
+        <span className="sec-count">{Math.round(scorePct * 100)}%</span>
+      </div>
+      <div className="panel">
+        <div className="facts">
+          <div className="fact">
+            <span>Correct</span>
+            <span className="fact-value num">
+              {correctCount} of {totalQuestions}
+            </span>
+          </div>
+          <div className="fact">
+            <span>To pass</span>
+            <span className="fact-value num">{Math.round(passThreshold * 100)}%</span>
+          </div>
+          {best != null && (
+            <div className="fact">
+              <span>Best so far</span>
+              <span className="fact-value num">{Math.round(best * 100)}%</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+
+  // While recording, hold the screen on a calm pending state. Never flash a
   // (wrong) locally-derived pass/fail before the server speaks.
   if (verdict.status === 'recording') {
     return (
-      <div className="test-result-card is-pending" aria-busy="true">
-        <span className="test-result-icon" aria-hidden>
-          <ShieldCheck size={34} />
-        </span>
-        <h2 className="test-result-title">Marking your test…</h2>
-        <p className="test-result-msg">Viktor is tallying your answers.</p>
+      <div className="col-single" aria-busy="true">
+        {head('Marking your test')}
+        <section className="sec">
+          <Coach said={['I am tallying your answers.']} />
+        </section>
       </div>
     )
   }
 
   // An IPC failure means NOTHING was recorded (no attempt counted, no unlock):
-  // never announce a verdict the server did not issue. Show the raw score on a
-  // neutral card and offer to send the recording again.
+  // never announce a verdict the server did not issue. Show the raw score and
+  // offer to send the recording again.
   if (verdict.status === 'error') {
     return (
-      <div className="test-result-card is-pending">
-        <span className="test-result-icon" aria-hidden>
-          <AlertTriangle size={34} />
-        </span>
-        <h2 className="test-result-title">Could not record this attempt</h2>
-        <div className="test-result-score">
-          <span className="test-result-pct num">{Math.round(scorePct * 100)}%</span>
-          <span className="test-result-frac">
-            {correctCount} of {totalQuestions} correct · {Math.round(passThreshold * 100)}% to
-            pass
-          </span>
-        </div>
-        <p className="test-result-msg">
-          Viktor could not reach the record book, so this attempt has not been marked yet. Try
-          recording it again, or return to the chapter and sit the test later.
-        </p>
-        <div className="test-result-actions">
-          <button className="btn school-primary" onClick={onRetryRecord}>
-            <RotateCcw size={16} /> Try recording again
-          </button>
-          <button className="btn ghost school-secondary" onClick={onFinished}>
+      <div className="col-single">
+        {head('Not marked yet')}
+        <section className="sec">
+          <Coach
+            said={[
+              'I could not reach the record book, so this attempt has not been marked. Send it again, or go back to the chapter and sit the test later.'
+            ]}
+          />
+        </section>
+        {score()}
+        <div className="lesson-foot">
+          <button className="btn is-quiet" type="button" onClick={onFinished}>
             Back to chapter
+          </button>
+          <button className="btn is-primary" type="button" onClick={onRetryRecord}>
+            Try recording again
           </button>
         </div>
       </div>
@@ -317,62 +341,47 @@ function ResultCard({
   const passed = result.passed
   const mustRetake = result.mustRetake
   const attempts = result.attempts
-  const bestPct = result.bestPct
   const attemptsLeft = Math.max(0, MAX_ATTEMPTS - attempts)
   // After a non-final fail the learner may sit the test again; the next attempt's
   // number is the server's recorded count + 1.
   const nextAttemptNo = attempts + 1
   // Show "best so far" only when it beats this sitting.
-  const showBest = bestPct > scorePct + 1e-9
+  const showBest = result.bestPct > scorePct + 1e-9
 
   return (
-    <div className={`test-result-card${passed ? ' is-pass' : ' is-fail'}`}>
-      <span className="test-result-icon" aria-hidden>
-        {passed ? <ShieldCheck size={34} /> : <XCircle size={34} />}
-      </span>
-      <h2 className="test-result-title">{passed ? 'Test passed' : 'Not passed'}</h2>
-
-      <div className="test-result-score">
-        <span className="test-result-pct num">{Math.round(scorePct * 100)}%</span>
-        <span className="test-result-frac">
-          {correctCount} of {totalQuestions} correct · {Math.round(passThreshold * 100)}% to pass
-        </span>
-        {showBest && (
-          <span className="test-result-best muted small">
-            Best so far: {Math.round(bestPct * 100)}%
-          </span>
-        )}
-      </div>
-
-      <p className="test-result-msg">
-        {passed
-          ? alreadyPassed
-            ? 'Cleanly done again. The chapter stays mastered.'
-            : 'Strong work. Viktor signs off on this chapter. You may move on.'
-          : alreadyPassed
-            ? 'Not your sharpest. You have already cleared this chapter, so it stays mastered. Go again whenever you like.'
-            : mustRetake
-              ? 'That was your final attempt. You must retake the chapter: work back through the lessons, then sit the test again.'
-              : `Not yet. You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left. I will not show you which you missed. Review the lessons and try once more.`}
-      </p>
-
-      <div className="test-result-actions">
-        {passed ? (
-          <button className="btn school-primary" onClick={onFinished}>
-            <CheckCircle2 size={16} /> Back to chapter
-          </button>
-        ) : mustRetake ? (
-          <button className="btn school-primary" onClick={onFinished}>
-            Back to lessons <ChevronRight size={16} />
+    <div className="col-single">
+      {head(passed ? 'Test passed' : 'Not passed')}
+      <section className="sec">
+        <Coach
+          said={[
+            passed
+              ? alreadyPassed
+                ? 'Cleanly done again. The chapter stays mastered.'
+                : 'Strong work. I sign off on this chapter. You may move on.'
+              : alreadyPassed
+                ? 'Not your sharpest. You have already cleared this chapter, so it stays mastered. Go again whenever you like.'
+                : mustRetake
+                  ? 'That was your final attempt. You must retake the chapter: work back through the lessons, then sit the test again.'
+                  : `Not yet. You have ${attemptsLeft} attempt${attemptsLeft === 1 ? '' : 's'} left. I will not show you which you missed. Review the lessons and try once more.`
+          ]}
+        />
+      </section>
+      {score(showBest ? result.bestPct : undefined)}
+      <div className="lesson-foot">
+        <p className="foot-note">
+          {attempts} of {MAX_ATTEMPTS} attempts used
+        </p>
+        {passed || mustRetake ? (
+          <button className="btn is-primary" type="button" onClick={onFinished}>
+            {passed ? 'Back to chapter' : 'Back to lessons'}
           </button>
         ) : (
           <>
-            <button className="btn school-primary" onClick={onRetake}>
-              <RotateCcw size={16} />{' '}
-              {alreadyPassed ? 'Try again' : `Take attempt ${nextAttemptNo}`}
-            </button>
-            <button className="btn ghost school-secondary" onClick={onFinished}>
+            <button className="btn is-quiet" type="button" onClick={onFinished}>
               Back to lessons first
+            </button>
+            <button className="btn is-primary" type="button" onClick={onRetake}>
+              {alreadyPassed ? 'Try again' : `Take attempt ${nextAttemptNo}`}
             </button>
           </>
         )}
@@ -384,7 +393,7 @@ function ResultCard({
 // ===========================================================================
 // One question. Renders by kind; reports correctness up, then offers Next.
 // During the test we never reveal correctness inline (answers hidden on fail),
-// so feedback is a neutral "Answer recorded" until the result screen.
+// so the only feedback is a neutral "answer recorded" until the result screen.
 // ===========================================================================
 
 type QPhase = 'answering' | 'answered'
@@ -578,83 +587,105 @@ function QuestionView({
 
   const onPlayMove = isMultiPly ? onMultiPlyMove : onSinglePlyMove
 
-  const counter = (
-    <span className="school-step-count">
-      Question {index + 1} / {total}
-    </span>
-  )
-
-  const nextBtn =
-    phase === 'answered' ? (
-      <button className="btn school-primary" onClick={onNext}>
-        {isLast ? 'Finish test' : 'Next question'} <ChevronRight size={16} />
-      </button>
-    ) : null
-
-  const answeredChip =
-    phase === 'answered' ? <span className="school-tag is-task">Answer recorded</span> : null
+  const answered = phase === 'answered'
+  const said = answered
+    ? [question.prompt, 'Answer recorded. Which ones you missed keeps until the end.']
+    : [question.prompt]
+  const nextBtn = answered ? (
+    <button className="btn is-primary" type="button" onClick={onNext}>
+      {isLast ? 'Finish test' : 'Next question'}
+    </button>
+  ) : null
+  const count = `Question ${index + 1} of ${total}`
 
   // -------- MULTIPLE CHOICE --------
   if (question.kind === 'mc') {
-    const showBoard = Boolean(question.fen)
+    const options = (
+      <section className="sec">
+        <div className="sec-head">
+          <h2 className="lbl">Answers</h2>
+          <span className="sec-count">{question.options.length}</span>
+        </div>
+        <div className="panel golist">
+          {question.options.map((opt, i) => (
+            <button
+              key={i}
+              type="button"
+              className={`go${selected === i ? ' row is-here' : ''}`}
+              disabled={answered}
+              onClick={() => {
+                setSelected(i)
+                commit(i === question.answerIndex)
+              }}
+            >
+              <span>
+                <span className="go-name">{opt}</span>
+              </span>
+              <span className="lbl">{String.fromCharCode(65 + i)}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    )
+
+    // A key-idea question may carry no position at all. Without a board there is
+    // no .lesson grid to draw, so the question stands in one column.
+    if (!question.fen) {
+      return (
+        <div className="col-single">
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Key idea</h2>
+              <span className="sec-count">{count}</span>
+            </div>
+            <Coach said={said} task={answered ? undefined : 'Choose one.'} />
+          </section>
+          {options}
+          {nextBtn && <div className="lesson-foot">{nextBtn}</div>}
+        </div>
+      )
+    }
+
     return (
-      <div className={`school-stage${showBoard ? '' : ' school-stage-single'}`}>
-        {showBoard && (
-          <BoardFrame env={env}>
-            <Board
-              fen={question.fen as string}
-              orientation={orientation}
-              turnColor={turn}
-              dests={EMPTY_DESTS}
-              viewOnly
-              check={check}
-              coordinates={env.coordinates}
-              animation={env.animation}
-            />
-          </BoardFrame>
-        )}
-        <ViktorPanel text={question.prompt} eyebrow={`Key idea (Q${index + 1})`}>
-          <div className="school-step-meta">{counter}</div>
-          <ul className="test-mc-options" role="listbox" aria-label="Answer choices">
-            {question.options.map((opt, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  role="option"
-                  aria-selected={selected === i}
-                  className={`test-mc-option${selected === i ? ' is-selected' : ''}`}
-                  disabled={phase === 'answered'}
-                  onClick={() => {
-                    setSelected(i)
-                    commit(i === question.answerIndex)
-                  }}
-                >
-                  <span className="test-mc-key">{String.fromCharCode(65 + i)}</span>
-                  <span className="test-mc-text">{opt}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          {answeredChip}
-          {nextBtn}
-        </ViktorPanel>
-      </div>
+      <Scene
+        env={env}
+        boardLabel={`Chess position, ${turn === 'white' ? 'White' : 'Black'} to move`}
+        board={
+          <Board
+            fen={question.fen}
+            orientation={orientation}
+            turnColor={turn}
+            dests={EMPTY_DESTS}
+            viewOnly
+            check={check}
+            coordinates={env.coordinates}
+            animation={env.animation}
+          />
+        }
+        turn={<Turn color={turn} />}
+        actions={nextBtn}
+        title="Key idea"
+        count={count}
+        said={said}
+        task={answered ? undefined : 'Choose one.'}
+        extras={options}
+      />
     )
   }
 
   // -------- PLAY --------
   if (question.kind === 'play') {
-    const eyebrow = isMultiPly ? `Play it out (Q${index + 1})` : `Play it (Q${index + 1})`
     return (
-      <div className="school-stage">
-        <BoardFrame env={env}>
+      <Scene
+        env={env}
+        board={
           <Board
             fen={boardFen}
             orientation={orientation}
             turnColor={turn}
             dests={dests}
             movableColor={orientation}
-            viewOnly={phase !== 'answering'}
+            viewOnly={answered}
             lastMove={lastMove}
             check={check}
             showDests={env.showDests}
@@ -663,30 +694,27 @@ function QuestionView({
             onMove={onPlayMove}
             syncNonce={nonce}
           />
-        </BoardFrame>
-        <ViktorPanel text={question.prompt} eyebrow={eyebrow}>
-          <div className="school-step-meta">
-            {counter}
-            {isMultiPly && line && phase === 'answering' && (
-              <span className="school-step-count">
-                Move {Math.min(stepIdx + 1, line.length)} / {line.length}
-              </span>
-            )}
-            {phase === 'answering' && (
-              <span className="school-tag is-task">{replying ? 'Reply…' : 'Your move'}</span>
-            )}
-            {answeredChip}
-          </div>
-          {nextBtn}
-        </ViktorPanel>
-      </div>
+        }
+        turn={<Turn color={turn} note={replying ? 'replying' : undefined} />}
+        actions={nextBtn}
+        title={isMultiPly ? 'Play it out' : 'Play it'}
+        count={
+          isMultiPly && line && !answered
+            ? `${count} · move ${Math.min(stepIdx + 1, line.length)} of ${line.length}`
+            : count
+        }
+        said={said}
+        task={answered ? undefined : 'Your move.'}
+      />
     )
   }
 
   // -------- JUDGE: was the highlighted move correct or a blunder? --------
   return (
-    <div className="school-stage">
-      <BoardFrame env={env}>
+    <Scene
+      env={env}
+      boardLabel={`Chess position, ${turn === 'white' ? 'White' : 'Black'} to move`}
+      board={
         <Board
           fen={question.fen}
           orientation={orientation}
@@ -700,34 +728,35 @@ function QuestionView({
           coordinates={env.coordinates}
           animation={env.animation}
         />
-      </BoardFrame>
-      <ViktorPanel text={question.prompt} eyebrow={`Judge it (Q${index + 1})`}>
-        <div className="school-step-meta">
-          {counter}
-          {answeredChip}
-        </div>
-        {phase === 'answering' ? (
-          <div className="test-judge-row">
+      }
+      turn={<Turn color={turn} />}
+      actions={
+        answered ? (
+          nextBtn
+        ) : (
+          <>
             <button
+              className="btn"
               type="button"
-              className="btn test-judge-btn is-correct"
               onClick={() => commit(question.verdict === 'correct')}
             >
-              <ThumbsUp size={16} /> Correct
+              Correct
             </button>
             <button
+              className="btn"
               type="button"
-              className="btn test-judge-btn is-blunder"
               onClick={() => commit(question.verdict === 'blunder')}
             >
-              <ThumbsDown size={16} /> Blunder
+              Blunder
             </button>
-          </div>
-        ) : (
-          nextBtn
-        )}
-      </ViktorPanel>
-    </div>
+          </>
+        )
+      }
+      title="Judge it"
+      count={count}
+      said={said}
+      task={answered ? undefined : 'Correct, or a blunder?'}
+    />
   )
 }
 

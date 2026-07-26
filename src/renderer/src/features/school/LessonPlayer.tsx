@@ -1,23 +1,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
-import { ArrowLeft, ChevronRight, GraduationCap } from 'lucide-react'
 import type { LessonSegment, SchoolLesson } from '@shared/types'
-import { ViktorPanel } from './ViktorPanel'
+import { CoachCard, Icon, LessonChromeProvider, pad, type BoardEnv } from './SchoolScene'
 import {
   BossSegment,
   GuidedSegment,
   ModelSegment,
   PuzzleSegment,
-  TeachSegment,
-  type BoardEnv
+  TeachSegment
 } from './segments'
 
 export interface LessonPlayerProps {
   chapterId: string
   lesson: SchoolLesson
   env: BoardEnv
-  /** Chapter title shown in the top bar. */
+  /** The chapter this lesson belongs to: its number, its name, its lessons. */
+  chapterOrder: number
   chapterTitle: string
+  lessons: SchoolLesson[]
+  /** Lesson ids already finished, for the chapter list and the trace. */
+  doneLessonIds: Set<string>
+  /** True when the chapter carries a test, which the foot note reports. */
+  hasTest: boolean
   /** Back to the chapter overview without recording completion. */
   onBack: () => void
   /** All segments finished: lesson recorded; return to the overview. */
@@ -27,9 +31,17 @@ export interface LessonPlayerProps {
 }
 
 /**
- * Walks one lesson's segments in order. Each segment calls its onDone when the
- * learner finishes it; we advance to the next. After the final segment we record
- * the lesson as complete and hand control back to the overview.
+ * One lesson, as design-lab/v1/school.html draws it.
+ *
+ * This component owns the two things on that page that belong to the LESSON
+ * rather than to the step you happen to be on: the head over the board (chapter
+ * number, chapter name, "Lesson 3 of 5", the lesson's name and its question),
+ * and the aside's foot (the chapter's lesson list and the way out). It hands
+ * both to the segment through LessonChrome and then gets out of the way, so the
+ * screen never changes shape between a teach step and a boss game.
+ *
+ * The readout's trace is the chapter's own proportion: how many of its lessons
+ * are behind you. That is the ratio v1 draws under the strip.
  *
  * All hooks run before any early return (React #300 guard).
  */
@@ -37,7 +49,11 @@ export function LessonPlayer({
   chapterId,
   lesson,
   env,
+  chapterOrder,
   chapterTitle,
+  lessons,
+  doneLessonIds,
+  hasTest,
   onBack,
   onComplete,
   onOpenSettings
@@ -46,10 +62,16 @@ export function LessonPlayer({
   const [segIdx, setSegIdx] = useState(0)
   const [finished, setFinished] = useState(false)
 
-  const total = Math.max(1, segments.length)
-  const progress = useMemo(
-    () => Math.min(1, Math.max(0, finished ? 1 : segIdx / total)),
-    [segIdx, total, finished]
+  const lessonIdx = useMemo(() => lessons.findIndex((l) => l.id === lesson.id), [lessons, lesson.id])
+  const doneCount = useMemo(
+    () => lessons.filter((l) => doneLessonIds.has(l.id)).length,
+    [lessons, doneLessonIds]
+  )
+  // Sequential unlock, exactly as the chapter overview derives it: everything
+  // after the first unfinished lesson is closed until the one before it is done.
+  const firstIncomplete = useMemo(
+    () => lessons.findIndex((l) => !doneLessonIds.has(l.id)),
+    [lessons, doneLessonIds]
   )
 
   const finishLesson = useCallback(() => {
@@ -70,69 +92,119 @@ export function LessonPlayer({
 
   const seg: LessonSegment | undefined = segments[segIdx]
 
-  // ---- Top bar (shared across all states) ----
-  const topbar = (
-    <header className="lesson-top">
-      <button className="lesson-back" onClick={onBack}>
-        <ArrowLeft size={16} /> Lessons
-      </button>
-      <div
-        className="lesson-progress"
-        role="progressbar"
-        aria-valuenow={Math.round(progress * 100)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={`${lesson.title} progress`}
-      >
-        <div
-          className="lesson-progress-fill"
-          style={{ width: `${Math.round(progress * 100)}%` }}
-        />
+  // ---- The head over the board: where you are, and what this lesson asks. ----
+  const head = (
+    <div className="sch-head board-under">
+      <div className="lbl">
+        {`Ch ${pad(chapterOrder)} · ${chapterTitle}`}
+        {lessonIdx >= 0 && ` · Lesson ${lessonIdx + 1} of ${lessons.length}`}
       </div>
-      <span className="lesson-top-label">{chapterTitle}</span>
-    </header>
+      <h1 className="sch-title">{lesson.title}</h1>
+      {lesson.summary && <p className="sec-note">{lesson.summary}</p>}
+    </div>
   )
 
-  // ---- Lesson finished: a clean completion card ----
+  // ---- The aside's foot: the chapter's lessons, and the way out. ----
+  const leave = (
+    <div className="lesson-foot">
+      {hasTest && <p className="foot-note">The chapter test is open at any time.</p>}
+      <button className="btn is-quiet" type="button" onClick={onBack}>
+        Leave lesson
+      </button>
+    </div>
+  )
+
+  const side = (
+    <>
+      {lessons.length > 0 && (
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">This chapter</h2>
+            <span className="sec-count">
+              {doneCount} of {lessons.length} done
+            </span>
+          </div>
+          <div className="panel lessons">
+            {lessons.map((l, i) => {
+              const done = doneLessonIds.has(l.id)
+              const current = l.id === lesson.id
+              const locked = !done && !current && firstIncomplete !== -1 && i > firstIncomplete
+              return (
+                <div
+                  key={l.id}
+                  className={`ls${current ? ' is-current' : ''}${locked ? ' is-locked' : ''}`}
+                  aria-current={current ? 'true' : undefined}
+                >
+                  <span className="ls-no">{pad(i + 1)}</span>
+                  <span>{l.title}</span>
+                  {current ? (
+                    <span className="lbl">Now</span>
+                  ) : done ? (
+                    <span className="ls-mark">
+                      <Icon id="i-check" />
+                      <span className="vh">Finished</span>
+                    </span>
+                  ) : locked ? (
+                    <span className="lbl">Locked</span>
+                  ) : (
+                    <span />
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
+      {leave}
+    </>
+  )
+
+  const chrome = {
+    head,
+    side,
+    trace: lessons.length > 0 ? doneCount / lessons.length : null
+  }
+
+  // ---- Lesson finished. v1 has no completion screen, so this is the coach
+  //      saying so, on the same column measure the board stood on. ----
   if (finished) {
     return (
-      <div className="lesson-player">
-        {topbar}
-        <div className="school-stage school-stage-single">
-          <div className="lesson-complete-card">
-            <span className="lesson-complete-icon" aria-hidden>
-              <GraduationCap size={28} />
-            </span>
-            <h2 className="lesson-complete-title">Lesson complete</h2>
-            <p className="lesson-complete-sub">
-              {lesson.title} is done. Viktor has noted your progress.
-            </p>
-            <button className="btn school-primary lesson-complete-btn" onClick={onComplete}>
-              Back to chapter <ChevronRight size={16} />
+      <CoachCard
+        title="Lesson complete"
+        said={[`${lesson.title} is done. I have noted your progress.`]}
+        foot={
+          <div className="lesson-foot">
+            {hasTest && <p className="foot-note">The chapter test is open at any time.</p>}
+            <button className="btn is-primary" type="button" onClick={onComplete}>
+              Back to chapter
             </button>
           </div>
-        </div>
-      </div>
+        }
+      />
     )
   }
 
   // ---- No segments (defensive): let the learner finish out. ----
   if (!seg) {
     return (
-      <div className="lesson-player">
-        {topbar}
-        <div className="school-stage school-stage-single">
-          <ViktorPanel text="This lesson has no content yet.">
-            <button className="btn school-primary" onClick={finishLesson}>
-              Mark complete <ChevronRight size={16} />
+      <CoachCard
+        title={lesson.title}
+        said={['This lesson has no content yet.']}
+        foot={
+          <div className="lesson-foot">
+            <button className="btn is-quiet" type="button" onClick={onBack}>
+              Leave lesson
             </button>
-          </ViktorPanel>
-        </div>
-      </div>
+            <button className="btn is-primary" type="button" onClick={finishLesson}>
+              Mark complete
+            </button>
+          </div>
+        }
+      />
     )
   }
 
-  // ---- Render the active segment by kind ----
+  // ---- The active segment, inside the lesson's chrome ----
   // key={segIdx} fully remounts each segment so its internal step/puzzle state resets.
   let body: JSX.Element
   switch (seg.kind) {
@@ -202,23 +274,7 @@ export function LessonPlayer({
       body = <SkipImmediately key={segIdx} onDone={onSegDone} />
   }
 
-  return (
-    <div className="lesson-player">
-      {topbar}
-      <div className="lesson-segment-rail" aria-hidden>
-        {segments.map((s, i) => (
-          <span
-            key={i}
-            className={`lesson-seg-dot${i < segIdx ? ' is-done' : ''}${
-              i === segIdx ? ' is-active' : ''
-            }`}
-            title={s.title}
-          />
-        ))}
-      </div>
-      {body}
-    </div>
-  )
+  return <LessonChromeProvider chrome={chrome}>{body}</LessonChromeProvider>
 }
 
 /** A model segment plays from its first move's implied start; if the line's first
@@ -243,7 +299,7 @@ function SkipImmediately({ onDone }: { onDone: () => void }): JSX.Element {
     onDone()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  return <div className="school-stage" aria-hidden />
+  return <div className="lesson" aria-hidden />
 }
 
 export default LessonPlayer

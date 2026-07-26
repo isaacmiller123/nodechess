@@ -774,23 +774,26 @@ button.vl-card:focus-visible {
 
 /* ---- Play view ---- */
 
-/* Board-hero layout, same pattern as games.css .votb / play.css .play-view:
-   the custom board fills the content column up to the viewport-height budget,
-   compact side rail on the right, collapsing below on narrow windows. */
+/* Board-hero layout, same pattern as play-surfaces.css .votb / play.css
+   .play-view: compact side rail on the right, collapsing below on narrow
+   windows.
+
+   THIS FILE DECLARES NO BOARD SIZE either. The frame is shell.css's
+   .board-wrap, centred by shell.css's .board-stage, and a custom variant's
+   board (6x6, 10x10, anything the builder allows) fits inside that square
+   through its own ratio. */
 .vl-play {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
   gap: var(--space-7);
   align-items: stretch;
   min-height: 100%;
-  --votb-h: calc(100vh - 168px);
 }
 @media (max-width: 1200px) {
   .vl-play {
     display: flex;
     flex-direction: column;
     align-items: center;
-    --votb-h: calc(100vh - 200px);
   }
   .vl-play-side {
     width: min(100%, 620px);
@@ -810,13 +813,24 @@ button.vl-card:focus-visible {
   flex-direction: column;
   gap: var(--space-3);
 }
-/* Width cap == height budget x aspect ratio, so board height always fits. */
-.vl-play .vl-play-board {
-  width: min(100%, calc(var(--votb-h) * var(--vl-files, 8) / var(--vl-ranks, 8)));
+/* The frame's MEASURE is untouched; only its decoration is, because the board
+   inside draws its own edge. */
+.vl-play-stage .board-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  border-radius: 0;
+  box-shadow: none;
 }
-/* Drop-variant trays stack above/below the board. Give their height back. */
+/* The frame is square, so 100% is its side in both directions: a board taller
+   than it is wide comes out narrower than the frame, never taller. */
+.vl-play .vl-play-board {
+  width: min(100%, calc(100% * var(--vl-files, 8) / var(--vl-ranks, 8)));
+}
+/* Drop-variant trays stack above and below the board. Give their height back. */
 .vl-play .vl-play-board:has(.vl-tray) {
-  width: min(100%, calc((var(--votb-h) - 112px) * var(--vl-files, 8) / var(--vl-ranks, 8)));
+  width: min(100%, calc((100% - 112px) * var(--vl-files, 8) / var(--vl-ranks, 8)));
 }
 .vl-banner {
   display: flex;

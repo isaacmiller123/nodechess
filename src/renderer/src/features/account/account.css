@@ -1,106 +1,335 @@
-/*
- * Accounts UI (A-UI): shell styles. Tokens only, no hard-coded values.
- * Class namespace: .account-* (shell). Sub-surfaces own their own prefixes:
- * .aauth-, .apin-, .ahub-, .adata-, .aprof-, .asoc-, .arate-, .agc-, .afair-.
- * (The interim web chip uses .acct- in src/web/account; do not reuse it.)
- */
+/* Account: the parts of this page design-lab/v1 never drew.
 
-:root {
-  --account-accent: var(--accent);
-  --account-accent-soft: var(--accent-soft);
-}
+   v1/account.html draws a signed-in page with three sections, and shell.css
+   already styles every class in it (.acct, .facts, .fact, .acct-where, .phrase,
+   .word, .saved, .panel-foot). None of that is restated here.
 
-.account-view {
+   What is here is the remainder the app genuinely has and the mock genuinely
+   does not: a signed-out state with a form in it, the profile fields, and the
+   list rows for devices, stored accounts and friends. All of it is built from
+   v1's own vocabulary (.sec, .panel, .row, .chip, .btn, .lbl, .empty) and only
+   needs the few declarations that vocabulary has no member for: a form row, a
+   text field that is not the games filter, a picture, and a wait. Tokens only.
+
+   The .acct- prefix is v1's own namespace on this page (.acct-where,
+   .acct-where-sub), continued rather than replaced. */
+
+/* ---- a form row inside a panel ----
+   Same inset as every other row in a panel (the shell's row convention), with
+   the fields stacked so a label sits over its control on a phone too. */
+.acct-field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  animation: fade-rise var(--dur-base) var(--ease-out) both;
-}
-
-/* Tab strip */
-.account-tabs {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.account-tab {
-  display: inline-flex;
-  align-items: center;
   gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.acct-where + .acct-field,
+.panel > .acct-field:first-child {
+  border-top: 0;
+}
+
+.acct-input {
+  flex: 1 1 auto;
+  max-width: 320px;
+}
+
+.acct-input.is-short {
+  max-width: 72px;
+  text-transform: uppercase;
+}
+
+/* The multi-line field. .filter-input is v1's text field and is a fixed height
+   bar, so a bio takes the same skin at its own size. */
+.acct-textarea {
+  width: 100%;
+  max-width: 58ch;
+  min-height: 76px;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   font: inherit;
   font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
+  line-height: var(--lh-body);
+  resize: vertical;
+  transition: border-color var(--motion-fast) var(--ease-out);
 }
 
-.account-tab:hover {
-  background: var(--surface-2);
-  color: var(--text-primary);
+.acct-textarea::placeholder {
+  color: var(--text-muted);
 }
 
-.account-tab.on {
-  background: var(--account-accent-soft);
-  border-color: var(--account-accent);
-  color: var(--text-primary);
+.acct-textarea:focus {
+  border-color: var(--accent);
+  outline: none;
 }
 
-/* Honest-preview pill: this UI runs on sample data until wiring lands. */
-.account-preview-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-left: auto;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--warning-soft);
-  color: var(--warning);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  white-space: nowrap;
-}
-
-/* Per-surface fixture badge (mock/FixturePreviewBadge.tsx): every component
-   that renders DEV_FIXTURE sample data on a signed-in surface mounts one. */
-.account-fixture-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  align-self: flex-start;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--warning-soft);
-  color: var(--warning);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  white-space: nowrap;
-}
-
-.account-tab-body {
+/* A control with something beside it: a field and its unit, a picture and its
+   button, a password and its reveal. */
+.acct-pw {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.acct-hint {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  max-width: 58ch;
+}
+
+.acct-alert {
+  font-size: var(--fs-sm);
+  color: var(--danger);
+  max-width: 58ch;
+}
+
+.acct-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+/* Key derivation is seconds-scale on a phone, so the wait is measured rather
+   than spun. One bar, the same 1px reading the shell's trace uses. */
+.acct-bar {
+  display: block;
+  height: 2px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.acct-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--motion-slow) var(--ease-out);
+}
+
+/* ---- list rows: devices, stored accounts, friends, requests ----
+   The inset and the hairline come from v1's .row; this is only the layout of
+   what sits in one. */
+.acct-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+  flex-wrap: wrap;
+}
+
+.acct-row-main {
+  flex: 1 1 240px;
   min-width: 0;
 }
 
-/* Shared bits several account surfaces use */
+.acct-row-name {
+  display: block;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  overflow-wrap: anywhere;
+}
+
+.acct-row-sub {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* Find a player: the field takes the room, the actions take what they need. */
+.acct-find {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ---- profile picture ---- */
+.acct-avatar {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: cover;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+
+.acct-avatar-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-figurine);
+  font-size: var(--fs-xl);
+  color: var(--text-secondary);
+}
+
+/* The flair picker: v1's chip, carrying a figurine instead of a word. */
+.acct-flair {
+  font-family: var(--font-figurine);
+  font-size: var(--fs-md);
+  min-width: 34px;
+  justify-content: center;
+}
+
+/* Shared by the profile surfaces that render account ids. */
 .account-handle-mono {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
 }
 
-.account-signedout-wrap {
-  display: flex;
-  justify-content: center;
-  padding-top: var(--space-9);
+/* ---- the recovery phrase, going BACK IN ----
+
+   A surface neither v1 nor this app had: the field that takes the twenty-four
+   words. It borrows .acct-textarea whole and adds the two things a phrase field
+   needs and a bio does not.
+
+   COVERED BY DEFAULT. Reading the screen over a shoulder is the entire attack
+   on this field, so the words are masked until asked for. -webkit-text-security
+   is the real mask and covers every engine this app ships on (both iOS engines
+   and Chrome/Edge/Safari on the desktop). The blur is the fallback for the one
+   engine that has no equivalent: unreadable is unreadable, and it matches how
+   the phrase is covered when it is DISPLAYED on the account page.
+
+   Mono, because the words are read one at a time against paper. */
+.acct-phrase {
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-normal);
+  min-height: 96px;
+}
+
+.acct-phrase.is-covered {
+  filter: blur(5px);
+}
+
+@supports (-webkit-text-security: disc) {
+  .acct-phrase.is-covered {
+    -webkit-text-security: disc;
+    filter: none;
+  }
+}
+
+/* What a covered field can still tell you, and the mistake people actually
+   make: too few words, or one pasted twice. */
+.acct-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* The way in from either password mode. A quiet button that is still a real
+   target, not a link buried in a paragraph. */
+.acct-door {
+  align-self: flex-start;
+}
+
+/* ==========================================================================
+   PHONE. Everything below this line is inside the breakpoint shell.css uses to
+   swap the rail for the tab bar, and nothing below it is read at any other
+   width. The desktop page is untouched.
+
+   The bottom reservation itself is NOT restated here: components.css already
+   pays the tab bar and its safe-area inset on .main, and duplicating that would
+   double the gap.
+   ========================================================================== */
+
+@media (max-width: 720px) {
+  /* Touch targets. The shell's .btn is 32px and .seg 34px, both drawn for a
+     cursor. Raised to 44 only on this page and only at this width, so no
+     shared value moves. */
+  .acct .btn,
+  .acct .seg {
+    min-height: 44px;
+  }
+
+  /* v1's text field is a 34px bar, which is a cursor's target. Only the fields
+     on this page move, and only here. */
+  .acct .filter-input {
+    min-height: 44px;
+  }
+
+  /* A 13px native checkbox is not a thumb target. The label is the target, so
+     the label is what gets the height, and the box comes up with it. */
+  .acct .acct-check {
+    min-height: 44px;
+    padding: var(--space-2) 0;
+  }
+
+  .acct .acct-check input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    flex: none;
+  }
+
+  .acct .panel-foot .btn + .btn {
+    margin-top: var(--space-3);
+  }
+
+  /* The picker is two words against two words, and uppercase mono at --fs-xs
+     runs out of room before 375px. Let the labels wrap inside their halves
+     rather than clipping one of them. */
+  .acct .seg {
+    flex: 1 1 0;
+    padding: 0 var(--space-3);
+    white-space: normal;
+    line-height: var(--lh-tight);
+  }
+
+  /* A field row is inset var(--space-6) each side on a 375px screen, which is
+     most of a word. The panel keeps its rule; only the inset comes in. */
+  .acct .acct-field {
+    padding: var(--space-4);
+  }
+
+  /* v1 caps the text fields at 320px so a name does not stretch across a
+     desktop panel. On a phone that cap is wider than the field, and the pair
+     of controls beside it then has nowhere to go. */
+  .acct .acct-input {
+    max-width: none;
+    width: 100%;
+  }
+
+  .acct .acct-pw {
+    width: 100%;
+  }
+
+  /* The reveal sits under its field rather than beside it: at 375px a 44px
+     button next to a full-width input squeezes the input to a stub. */
+  .acct .acct-pw .filter-input {
+    flex: 1 1 100%;
+  }
+
+  /* The phrase is four lines of mono on a narrow column. Give it the room it
+     needs so the whole phrase is visible at once when revealed. */
+  .acct .acct-phrase {
+    min-height: 132px;
+  }
+
+  .acct .acct-door {
+    align-self: stretch;
+  }
+
+  /* The flair picker is twelve figurines in a 39x26 chip. They wrap, so the
+     row can afford the height, and a figurine is a small thing to hit. */
+  .acct .acct-flair {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* is-short is a 72px cap drawn for a two-letter country code beside a wide
+     desktop field. It stays short; it just stops being shorter than a thumb. */
+  .acct .acct-input.is-short {
+    max-width: 88px;
+  }
 }

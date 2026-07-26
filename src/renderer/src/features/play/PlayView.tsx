@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Role } from 'chessops/types'
 import type { Key } from 'chessground/types'
-import type { FamousGameMeta, MaiaLevel, Persona } from '../../../../shared/types'
+import type { MaiaLevel, Persona } from '../../../../shared/types'
 import { useGameTree } from '../../state/gameTree'
 import { useSettings } from '../../state/settings'
 import { treeToPgn } from '../../state/pgn'
@@ -41,25 +41,18 @@ import {
   type ThinkPlan,
   type TimePersonality
 } from './botTime'
-import {
-  SetupCard,
-  type BotStyle,
-  type ColorChoice,
-  type LocalMode,
-  type OtbConfig,
-  type PlayTab
-} from './SetupCard'
-import type { OnlineStage } from './OnlineTab'
-import { onlineStore } from './online/onlineStore'
+import type { StartSpec } from './setupTypes'
+import { PlaySetup } from './PlaySetup'
+import OnlineTab from './OnlineTab'
 import { useOnlineGame } from './online/useOnlineGame'
 import { GameView, type GameViewBanner } from './GameView'
+import type { ViewKey } from '../../components/Layout'
 import { useEngineReady } from '../../hooks/useEngineReady'
 import { pieceSetClass } from '../../board/pieceSets'
 import { useSound } from '../../sound'
 import { useChessClock } from './useChessClock'
 import { DEFAULT_TIME_CONTROL_ID, timeControlById, type TimeControl } from './timeControl'
 import './play.css'
-import './setup.css'
 
 const ROLE_FROM_CHAR: Record<string, Role> = { q: 'queen', r: 'rook', b: 'bishop', n: 'knight' }
 
@@ -128,64 +121,31 @@ export interface PlayViewProps {
   onOpenFamousGame?: (famousId: string) => void
   /** Deep link to Settings → Datasets (the engine-required install CTA). */
   onOpenSettings?: () => void
+  /** Leave Play. "While you wait" needs it and has nowhere to go without it;
+   *  App.tsx does not pass it yet, so that row is simply not drawn. */
+  onNavigate?: (view: ViewKey) => void
 }
 
-export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: PlayViewProps = {}) {
+export function PlayView({
+  onAnalyzeGame,
+  onOpenFamousGame,
+  onOpenSettings,
+  onNavigate
+}: PlayViewProps = {}) {
   const { settings } = useSettings()
   const { play, playMove } = useSound()
 
-  // Setup form.
   const [phase, setPhase] = useState<Phase>('setup')
-  // Open on the Online tab when a live online session already exists (the user
-  // clicked the floating return chip / rail dot from another view. The store
-  // survives across views, so land them straight on the game). Otherwise Local.
-  const [tab, setTab] = useState<PlayTab>(() => {
-    const p = onlineStore.getState().phase
-    return p === 'game' || p === 'hosting' || p === 'connecting' ? 'online' : 'local'
-  })
-  const [localMode, setLocalMode] = useState<LocalMode>('engine')
-  const [elo, setElo] = useState(1500)
-  // Bot style: Classic (Stockfish, any Elo) vs Human (a maia net at nodes=1).
-  // The toggle only renders once engine:status confirms lc0 + weights on disk.
-  const [botStyle, setBotStyle] = useState<BotStyle>('classic')
-  const [maiaLevel, setMaiaLevel] = useState<MaiaLevel>(1500)
-  const [maiaReady, setMaiaReady] = useState(false)
-  const [colorChoice, setColorChoice] = useState<ColorChoice>('white')
-  // The shared selected time control (engine, OTB, and the Grandmasters row all
-  // read/write this one value via TimeControlPicker / the persona segmented row).
-  const [setupTc, setSetupTc] = useState<TimeControl>(() => timeControlById(DEFAULT_TIME_CONTROL_ID))
-  // Over-the-board config (both names editable; auto-flip default on).
-  const [otbConfig, setOtbConfig] = useState<OtbConfig>({
-    whiteName: 'Player 1',
-    blackName: 'Player 2',
-    autoFlip: true
-  })
-  // Online (internet) session stage, derived DIRECTLY from the app-lifetime
-  // online store (MP-V3-SPEC §4/§5: the session no longer lives in OnlineTab's
-  // component state, so PlayView reads it straight from the store). SetupCard
-  // uses this only to widen for a live game; it is no longer a data-loss guard
-  // (the store survives any unmount), so the onStage callback is a courtesy.
+  // The live online session. It outlives this component (the store is
+  // app-lifetime), so a running game is rendered straight from it rather than
+  // from any local phase of ours.
   const online = useOnlineGame()
-  const onlineStage: OnlineStage =
-    online.phase === 'game' ? 'game' : online.phase === 'idle' ? 'idle' : 'lobby'
-  const setOnlineStage = useCallback((_stage: OnlineStage) => {
-    // OnlineTab still reports its stage, but the store is the source of truth;
-    // this no-op keeps the existing prop wiring without a second state copy.
-  }, [])
-
-  // Persona gallery. selectedPersonaId doubles as "which detail pane is open":
-  // null shows the gallery. famousGames holds famous-game metadata by id so the
-  // detail pane can label each entry of persona.famousGameIds.
-  const [personas, setPersonas] = useState<Persona[]>([])
-  const [personasLoading, setPersonasLoading] = useState(false)
-  const [selectedPersonaId, setSelectedPersonaId] = useState<string | null>(null)
-  const [famousGames, setFamousGames] = useState<Record<string, FamousGameMeta>>({})
 
   // ---- Engine availability guard (fresh install: no Stockfish on disk) ----
-  // Probed on the setup card (and re-probed on every return to it, so finishing
-  // the Settings → Datasets download is picked up). When the engine is missing,
-  // SetupCard swaps the engine-dependent Start/Challenge affordances for the
-  // install CTA and startGame refuses to dead-end into a rejected spawn.
+  // Probed on the setup screen (and re-probed on every return to it, so
+  // finishing the Settings → Datasets download is picked up). When the engine
+  // is missing the Bot section swaps its commit row for the install CTA, and
+  // startGame refuses rather than dead-ending into a rejected spawn.
   const { ready: engineReady, recheck: recheckEngine } = useEngineReady(phase === 'setup')
   // Belt-and-braces: set when engine:newGame rejects at start despite the probe
   // (e.g. a corrupt/deleted binary). Same CTA, a re-download fixes it.
@@ -233,53 +193,10 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     probe: ProbeReading | null
   } | null>(null)
 
-  // ---- Load personas (+ famous-game labels) once on first entering the
-  // Grandmasters tab (lazy) ----
-  // Latched by a ref: an empty or failed personas:list must NOT re-arm the fetch
-  // (`personas.length` stays 0 while `personasLoading` flips true->false, which
-  // used to re-trigger the effect in an infinite IPC loop). One attempt per
-  // mount; on failure PersonaGallery shows its empty state.
-  // Late setState after unmount is a safe no-op in React 19, so no cancel flag.
-  // A result arriving after a mode toggle is simply kept for the next visit.
-  // ---- Maia ("Human" style) availability: lc0 + at least one weight on disk.
-  // One probe per mount; the toggle simply doesn't render until it confirms.
-  useEffect(() => {
-    let cancelled = false
-    window.api?.engine
-      .status()
-      .then((s) => {
-        if (!cancelled) setMaiaReady(s.lc0Ready)
-      })
-      .catch(() => undefined)
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  const personasAttempted = useRef(false)
-  useEffect(() => {
-    if (tab !== 'grandmasters' || personasAttempted.current) return
-    const api = window.api
-    if (!api?.personas) return
-    personasAttempted.current = true
-    setPersonasLoading(true)
-    api.personas
-      .list()
-      .then((r) => setPersonas(r.personas))
-      .catch(() => setPersonas([]))
-      .finally(() => setPersonasLoading(false))
-    // Famous-game labels for the detail pane. One list call covers every
-    // persona id ("<personaId>-gN"); on failure the rows just lose their
-    // titles/significance ("Famous game N"), so no retry machinery.
-    api.famous
-      .list()
-      .then((r) => {
-        const byId: Record<string, FamousGameMeta> = {}
-        for (const g of r.games) byId[g.id] = g
-        setFamousGames(byId)
-      })
-      .catch(() => setFamousGames({}))
-  }, [tab])
+  // The last thing that was started, so a rematch replays exactly it (a
+  // 'random' colour re-rolls, which is what a rematch means) instead of
+  // reading a form the sections own and may have changed since.
+  const [lastSpec, setLastSpec] = useState<StartSpec | null>(null)
 
   const fen = tree.currentFen
   const dests = useMemo(() => destsFor(fen), [fen])
@@ -721,50 +638,46 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     setNonce((n) => n + 1)
   }, [])
 
-  const startGame = useCallback(async () => {
+  const startGame = useCallback(
+    async (spec: StartSpec) => {
     // Resolve the opponent now so an in-progress game ignores later setup edits.
-    // Three shapes: Grandmasters challenge (persona), Local→OTB (human), or the
-    // default Local→vs-Stockfish (engine).
-    let resolved: Opponent
-    const otb = tab === 'local' && localMode === 'otb'
-    // Engine-dependent starts (vs Computer, Grandmasters) are blocked while the
-    // Stockfish dataset is missing. The setup card is already showing the
-    // install CTA in place of Start/Challenge, so just refuse to dead-end.
-    if (!otb && tab !== 'online' && engineMissing) return
-    if (tab === 'grandmasters') {
-      const persona = personas.find((p) => p.id === selectedPersonaId)
-      if (!persona) return // Challenge only exists inside an open detail pane, but stay safe
-      // Present (and rate) the persona at its honest modern strength when the
-      // catalog provides one; peakElo otherwise.
-      resolved = { kind: 'persona', persona, elo: persona.modernElo ?? persona.peakElo }
-    } else if (otb) {
-      resolved = {
-        kind: 'human',
-        whiteName: otbConfig.whiteName.trim() || 'White',
-        blackName: otbConfig.blackName.trim() || 'Black',
-        autoFlip: otbConfig.autoFlip
-      }
-    } else if (botStyle === 'human' && maiaReady) {
-      // Human style: the selected maia net; its nominal band doubles as the
-      // rating/display elo (measuredElo passes 'maia' through untouched).
-      resolved = { kind: 'maia', level: maiaLevel, elo: maiaLevel }
-    } else {
-      resolved = { kind: 'engine', elo }
-    }
+    const otb = spec.kind === 'otb'
+    // Every non-OTB opponent here runs on the main-process Stockfish. While the
+    // dataset is missing the Bot section is already showing the install CTA in
+    // place of Start, so just refuse to dead-end.
+    if (!otb && engineMissing) return
+    const resolved: Opponent =
+      spec.kind === 'otb'
+        ? {
+            kind: 'human',
+            whiteName: spec.whiteName.trim() || 'White',
+            blackName: spec.blackName.trim() || 'Black',
+            autoFlip: spec.autoFlip
+          }
+        : spec.kind === 'persona'
+          ? // Present (and rate) the persona at its honest modern strength when
+            // the catalog provides one; peakElo otherwise.
+            { kind: 'persona', persona: spec.persona, elo: spec.persona.modernElo ?? spec.persona.peakElo }
+          : spec.kind === 'maia'
+            ? // Human style: the selected maia net; its nominal band doubles as
+              // the rating/display elo (measuredElo passes 'maia' through).
+              { kind: 'maia', level: spec.level, elo: spec.level }
+            : { kind: 'engine', elo: spec.elo }
     setOpponent(resolved)
+    setLastSpec(spec)
 
     // Freeze the time control for this game so later setup edits don't apply.
-    setTimeControl(setupTc)
+    setTimeControl(spec.tc)
 
     // OTB always opens with White on move and the board White-side-up (auto-flip
     // then spins it per move); vs engine/persona uses the picked/rolled color.
     const c: Color = otb
       ? 'white'
-      : colorChoice === 'random'
+      : spec.color === 'random'
         ? Math.random() < 0.5
           ? 'white'
           : 'black'
-        : colorChoice
+        : (spec.color as Color)
     setUserColor(c)
     setOrientation(c)
     savedRef.current = false
@@ -795,7 +708,9 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     play('gameStart')
     // vs engine/persona: the fen effect fires; if the user is Black, the
     // opponent replies as White. OTB: the effect early-returns (no bot).
-  }, [tab, localMode, personas, selectedPersonaId, elo, botStyle, maiaLevel, maiaReady, colorChoice, setupTc, otbConfig, tree, play, engineMissing, recheckEngine])
+    },
+    [tree, play, engineMissing, recheckEngine]
+  )
 
   const onResign = useCallback(() => {
     if (over) return
@@ -862,40 +777,20 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
     setDeepThink(false)
   }, [])
 
+  // A live online game outranks everything: the store survives navigation, so
+  // returning to Play with a game running has to land on the board. The lobby
+  // half of OnlineTab is never reached from here; this page draws that.
+  if (online.phase === 'game') return <OnlineTab />
+
   if (phase === 'setup') {
     return (
-      <div className="play-view-shell">
-        <SetupCard
-          tab={tab}
-          localMode={localMode}
-          elo={elo}
-          botStyle={botStyle}
-          maiaLevel={maiaLevel}
-          maiaReady={maiaReady}
-          colorChoice={colorChoice}
-          timeControl={setupTc}
-          otb={otbConfig}
-          personas={personas}
-          personasLoading={personasLoading}
-          selectedPersonaId={selectedPersonaId}
-          famousGames={famousGames}
-          onlineStage={onlineStage}
-          onTab={setTab}
-          onLocalMode={setLocalMode}
-          onElo={setElo}
-          onBotStyle={setBotStyle}
-          onMaiaLevel={setMaiaLevel}
-          onColor={setColorChoice}
-          onTimeControl={setSetupTc}
-          onOtb={(patch) => setOtbConfig((c) => ({ ...c, ...patch }))}
-          onOnlineStage={setOnlineStage}
-          onSelectPersona={setSelectedPersonaId}
-          onStart={() => void startGame()}
-          onOpenFamousGame={onOpenFamousGame}
-          engineMissing={engineMissing}
-          onOpenSettings={onOpenSettings}
-        />
-      </div>
+      <PlaySetup
+        onStart={(spec) => void startGame(spec)}
+        engineMissing={engineMissing}
+        onOpenSettings={onOpenSettings}
+        onOpenFamousGame={onOpenFamousGame}
+        onNavigate={onNavigate}
+      />
     )
   }
 
@@ -1011,10 +906,10 @@ export function PlayView({ onAnalyzeGame, onOpenFamousGame, onOpenSettings }: Pl
       onResign={onResign}
       onNewGame={onNewGame}
       onFlip={onFlip}
-      // Rematch re-runs startGame with the still-frozen setup state: same
-      // opponent and time control; a 'random' color choice re-rolls (standard
-      // rematch semantics).
-      onRematch={() => void startGame()}
+      // Rematch replays the spec this game was started from: same opponent and
+      // time control; a 'random' colour choice re-rolls (standard rematch
+      // semantics).
+      onRematch={lastSpec ? () => void startGame(lastSpec) : undefined}
       onAnalyze={
         banner?.gameId != null && onAnalyzeGame
           ? () => onAnalyzeGame(banner.gameId as number)

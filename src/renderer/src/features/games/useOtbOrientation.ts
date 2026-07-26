@@ -15,19 +15,25 @@ export const OTB_FLIP_DELAY_MS = 450
 /**
  * @param turn   side to move (the orientation target while `active`)
  * @param active auto-flip enabled AND the game's flipPolicy is 'rotate'
+ * @param base   the side the board faces when it is not following the turn.
+ *               The setup screen's "Play as" chose it; White when nothing did.
  */
-export function useOtbOrientation(turn: PlayerColor, active: boolean): PlayerColor {
+export function useOtbOrientation(
+  turn: PlayerColor,
+  active: boolean,
+  base: PlayerColor = 'white'
+): PlayerColor {
   // Opening orientation faces the first player immediately (no start-up flip).
-  const [orientation, setOrientation] = useState<PlayerColor>(active ? turn : 'white')
+  const [orientation, setOrientation] = useState<PlayerColor>(active ? turn : base)
 
   useEffect(() => {
     if (!active) {
-      setOrientation('white')
+      setOrientation(base)
       return
     }
     const id = window.setTimeout(() => setOrientation(turn), OTB_FLIP_DELAY_MS)
     return () => window.clearTimeout(id)
-  }, [turn, active])
+  }, [turn, active, base])
 
-  return active ? orientation : 'white'
+  return active ? orientation : base
 }

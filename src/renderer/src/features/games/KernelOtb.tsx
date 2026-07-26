@@ -17,6 +17,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type JSX } f
 import type { ComponentType } from 'react'
 import { Clapperboard, RotateCcw, Repeat } from 'lucide-react'
 import type { CatalogEntry } from './catalog'
+import type { SurfaceSetup } from './setup'
 import { getGame, isRegisteredGame, type GameBoardProps } from '../../games/registry'
 import type { PlayerColor } from '../../games/kernel'
 import type { GoHandicap, GoSpec, GoState } from '../../games/go'
@@ -25,6 +26,7 @@ import { BYOYOMI_PRESETS, byoyomiPresetById } from '../play/byoyomi'
 import { ReplayTheater, buildTheaterInput, type TheaterInput } from '../library/ReplayTheater'
 import { Board3DHost, BoardModeToggle, useBoardMode } from './boardMode'
 import { GO_MAIN_PRESETS, GoClockPair, useLocalGoClock, type GoClockConfig } from './goClock'
+import { SurfaceClockPair, useSurfaceClock } from './otbClock'
 import { TerritoryControl, useTerritoryEstimate } from './territory'
 import { useOtbOrientation } from './useOtbOrientation'
 import { useSaveFinishedGame } from './useSaveFinishedGame'
@@ -63,24 +65,45 @@ interface StateWithMoves {
   moves: readonly string[]
 }
 
-export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
+export function KernelOtb({
+  entry,
+  setup
+}: {
+  entry: CatalogEntry
+  /** What the setup screen chose. Seeds only: the controls below still own
+   *  every game after this one. */
+  setup?: SurfaceSetup
+}): JSX.Element {
   const kind = entry.kind
   const game = isRegisteredGame(kind) ? getGame(kind) : undefined
   if (!game) throw new Error(`KernelOtb: unregistered kind ${kind}`)
   const spec = game.spec
 
-  const [goSize, setGoSize] = useState<9 | 13 | 19>(19)
-  const [goHandicap, setGoHandicap] = useState<GoHandicap>(0)
+  const [goSize, setGoSize] = useState<9 | 13 | 19>(setup?.goSize ?? 19)
+  const [goHandicap, setGoHandicap] = useState<GoHandicap>(setup?.goHandicap ?? 0)
   // Go clocks (QoL): main-time preset + Japanese byo-yomi preset; both 'off' =
   // no clock at all (the historical untimed OTB default stays the default).
-  const [goMainId, setGoMainId] = useState('off')
-  const [goByoId, setGoByoId] = useState('off')
+  const [goMainId, setGoMainId] = useState(setup?.goMainId ?? 'off')
+  const [goByoId, setGoByoId] = useState(setup?.goByoId ?? 'off')
+  // Komi and the scoring rule have no control on this screen, so they stay as
+  // the setup screen left them. Handicap stones ARE the compensation, so go.ts
+  // drops komi to 0.5 by itself the moment the size chips place any.
+  const goKomi = setup?.goKomi
+  const goScoringRule = setup?.goScoring
   const initOptions = useMemo(
     () =>
       kind === 'go'
-        ? { size: goSize, ...(goHandicap >= 2 ? { handicap: goHandicap } : {}) }
-        : undefined,
-    [kind, goSize, goHandicap]
+        ? {
+            size: goSize,
+            ...(goScoringRule ? { scoring: goScoringRule } : {}),
+            ...(goHandicap >= 2
+              ? { handicap: goHandicap }
+              : goKomi !== undefined
+                ? { komi: goKomi }
+                : {})
+          }
+        : setup?.initOptions,
+    [kind, goSize, goHandicap, goKomi, goScoringRule, setup]
   )
 
   const [ready, setReady] = useState(() => game.requiresPreload !== true)
@@ -99,7 +122,7 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
     let alive = true
     void spec.preload?.().then(() => {
       if (!alive) return
-      setState(spec.init())
+      setState(spec.init(initOptions))
       setReady(true)
     })
     return (): void => {
@@ -134,6 +157,19 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
   const clockRunning =
     state !== null && ready && !result && !goScoring && timeLoss === null && moves.length > 0
   const goClock = useLocalGoClock(goClockCfg, turn, clockRunning, clockEpoch, setTimeLoss)
+
+  // Every other kind runs v1's base-plus-increment control instead: same
+  // opener's grace, same flag, one clock model per game rather than per page.
+  const over = result !== null || timeLoss !== null
+  const fischer = useSurfaceClock({
+    tcId: kind === 'go' ? undefined : setup?.tcId,
+    gameKey: clockEpoch,
+    turn,
+    moves: moves.length,
+    live: state !== null && ready && !over,
+    over,
+    onFlag: setTimeLoss
+  })
 
   // Territory estimate (KataGo ownership overlay + score strip). Hidden
   // entirely unless the engine is installed; scoring phase has its own exact
@@ -204,7 +240,12 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
 
   const rotates = spec.flipPolicy === 'rotate'
   // Chess-OTB timing: flip a beat AFTER the committed move, instant repaint.
-  const orientation: PlayerColor = useOtbOrientation(turn, rotates && autoFlip)
+  // The setup screen's "Play as" is the side the board opens facing.
+  const orientation: PlayerColor = useOtbOrientation(
+    turn,
+    rotates && autoFlip,
+    setup?.color ?? 'white'
+  )
   const canPass = timeLoss === null && legal.includes('pass')
   const canSwap = timeLoss === null && legal.includes('swap')
 
@@ -215,7 +256,6 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
         ? `Draw: ${result.reason.replace(/-/g, ' ')}`
         : `${kernelColorLabel(kind, result.winner)} wins: ${result.reason.replace(/-/g, ' ')}`)
 
-  const over = result !== null || timeLoss !== null
   const dot = DOT_COLORS[kind]
   const turnLabel = goScoring
     ? 'Scoring: tap dead groups'
@@ -224,34 +264,39 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
       : `${kernelColorLabel(kind, turn)} to move`
 
   return (
-    <div className="votb kotb">
+    <div className="votb">
       <div className="votb-stage">
-        <Suspense fallback={<div className="kotb-loading">Setting up the board…</div>}>
-          {state !== null && ready ? (
-            is3d ? (
-              <Board3DHost
-                kind={kind as never}
-                state={state}
-                orientation={orientation}
-                interactive={!over}
-                onMove={onMove}
-                onAction={onAction}
-              />
-            ) : (
-              <Board
-                kind={kind as never}
-                state={state}
-                orientation={orientation}
-                interactive={!over}
-                onMove={onMove}
-                onAction={onAction}
-                territory={territoryOn && !goScoring ? territory.estimate?.ownership : undefined}
-              />
-            )
-          ) : (
-            <div className="kotb-loading">Loading rules engine…</div>
-          )}
-        </Suspense>
+        {/* shell.css owns the measure: .board-stage centres, .board-wrap sizes. */}
+        <div className="board-stage">
+          <div className="board-wrap">
+            <Suspense fallback={<div className="kotb-loading">Setting up the board…</div>}>
+              {state !== null && ready ? (
+                is3d ? (
+                  <Board3DHost
+                    kind={kind as never}
+                    state={state}
+                    orientation={orientation}
+                    interactive={!over}
+                    onMove={onMove}
+                    onAction={onAction}
+                  />
+                ) : (
+                  <Board
+                    kind={kind as never}
+                    state={state}
+                    orientation={orientation}
+                    interactive={!over}
+                    onMove={onMove}
+                    onAction={onAction}
+                    territory={territoryOn && !goScoring ? territory.estimate?.ownership : undefined}
+                  />
+                )
+              ) : (
+                <div className="kotb-loading">Loading rules engine…</div>
+              )}
+            </Suspense>
+          </div>
+        </div>
         {over && (
           <div className="votb-banner" role="status">
             <strong>{resultLabel}</strong>
@@ -272,6 +317,18 @@ export function KernelOtb({ entry }: { entry: CatalogEntry }): JSX.Element {
             turn={turn}
             labels={{ black: 'Black', white: 'White' }}
             over={over || goScoring}
+          />
+        )}
+        {kind !== 'go' && (
+          <SurfaceClockPair
+            clock={fischer}
+            turn={turn}
+            labels={{
+              white: kernelColorLabel(kind, 'white'),
+              black: kernelColorLabel(kind, 'black')
+            }}
+            order={spec.players}
+            over={over}
           />
         )}
         <div className="votb-turn">

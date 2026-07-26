@@ -362,6 +362,7 @@ export function installMock(): void {
           { key: 'backRankMate', count: 1 }
         ]
       }),
+      count: async () => ({ puzzles: MOCK_PUZZLES.length }),
       attempt: async () => ({ ratingAfter: 1010, rd: 80, delta: 10 }),
       batch: async () => ({ puzzles: MOCK_PUZZLES }),
       saveRush: async ({ score }) => ({ id: 1, best: score, isBest: true }),

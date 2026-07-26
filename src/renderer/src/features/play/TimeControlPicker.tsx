@@ -3,8 +3,9 @@
 // step curves (fine at the low end, big jumps up top) with a live
 // "3+2 · Blitz" category readout. Fully controlled: value in, onChange out.
 //
-// Used by Local (engine + OTB) and the Grandmasters challenge row, so it stays
-// self-contained: tokens + namespaced .tcp- classes only, no window.api.
+// design-lab/v1's play page picks a clock with chips and two number fields
+// instead, so Play no longer renders this. The Games page's online host card
+// still does, which is why it survives, and why it now imports its own styles.
 
 import { useEffect, useRef, useState, type CSSProperties, type JSX } from 'react'
 import { Flame, Infinity as InfinityIcon, Rabbit, Turtle, Zap, SlidersHorizontal } from 'lucide-react'
@@ -20,6 +21,7 @@ import {
   type TimeCategory,
   type TimeControl
 } from './timeControl'
+import './TimeControlPicker.css'
 
 export interface TimeControlPickerProps {
   value: TimeControl

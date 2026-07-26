@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import type {
+  DailyStreak,
+  DatasetStatus,
   GameRow,
   ProgressSummary,
-  RatingValue,
   SchoolChapterMeta,
   SchoolMastery
 } from '../../../../shared/types'
@@ -10,49 +11,37 @@ import type {
 export interface HomeData {
   summary: ProgressSummary | null
   games: GameRow[]
-  puzzleRating: RatingValue | null
-  vsBotRating: RatingValue | null
   chapters: SchoolChapterMeta[]
   mastery: SchoolMastery | null
+  /** What is actually on disk. Null until the probe answers, so a row stays
+   *  quiet rather than announcing an absence nobody has looked for yet. */
+  datasets: DatasetStatus | null
+  dailyStreak: DailyStreak | null
 }
 
 export interface UseHomeDataResult {
   data: HomeData
   loading: boolean
-  /**
-   * Baseline of solved puzzles captured the first time the app loaded the
-   * dashboard this run. `summary.puzzlesSolved - sessionBaseline` yields a
-   * best-effort "this session" count without a dedicated IPC channel.
-   */
-  sessionBaseline: number | null
 }
 
 const EMPTY: HomeData = {
   summary: null,
   games: [],
-  puzzleRating: null,
-  vsBotRating: null,
   chapters: [],
-  mastery: null
+  mastery: null,
+  datasets: null,
+  dailyStreak: null
 }
 
 /**
- * Module-scoped baseline of `puzzlesSolved`, captured once per app run (the
- * first dashboard load that yields a summary). Persists across HomeView
- * mount/unmount within the same session, reset only on full reload.
- */
-let sessionSolvedBaseline: number | null = null
-
-/**
- * Loads the dashboard payload (progress summary, recent games, both ratings,
- * curriculum tree) in parallel. Uses Promise.allSettled so one failing IPC
- * channel degrades only its own card. Tolerates window.api being undefined
- * (browser preview) and unmount.
+ * Everything Home reads, in one round of parallel calls: the progress summary,
+ * the newest games, the curriculum tree, what datasets are installed, and the
+ * daily-puzzle streak. Promise.allSettled so one unavailable channel costs its
+ * own line and nothing else. Tolerates window.api being undefined.
  */
 export function useHomeData(): UseHomeDataResult {
   const [data, setData] = useState<HomeData>(EMPTY)
   const [loading, setLoading] = useState(true)
-  const [sessionBaseline, setSessionBaseline] = useState<number | null>(sessionSolvedBaseline)
 
   useEffect(() => {
     let cancelled = false
@@ -63,34 +52,23 @@ export function useHomeData(): UseHomeDataResult {
     }
 
     void (async () => {
-      const [summaryR, gamesR, puzzleR, vsBotR, chaptersR, masteryR] = await Promise.allSettled([
+      const [summaryR, gamesR, chaptersR, masteryR, datasetsR, streakR] = await Promise.allSettled([
         api.progress.summary(),
         api.games.list({ limit: 5 }),
-        api.ratings.get('puzzle'),
-        api.ratings.get('vs-bot'),
         api.school?.chapters?.() ?? Promise.resolve({ chapters: [] }),
-        api.school?.mastery?.() ?? Promise.resolve(null)
+        api.school?.mastery?.() ?? Promise.resolve(null),
+        api.datasets?.status?.() ?? Promise.resolve(null),
+        api.puzzles?.dailyStreak?.() ?? Promise.resolve(null)
       ])
       if (cancelled) return
 
-      const summary = summaryR.status === 'fulfilled' ? summaryR.value : null
-
-      // Capture the per-run baseline exactly once, the first time we learn the
-      // total. Subsequent loads compare against this frozen value.
-      if (summary && sessionSolvedBaseline === null) {
-        sessionSolvedBaseline = Number.isFinite(summary.puzzlesSolved)
-          ? summary.puzzlesSolved
-          : 0
-        setSessionBaseline(sessionSolvedBaseline)
-      }
-
       setData({
-        summary,
+        summary: summaryR.status === 'fulfilled' ? summaryR.value : null,
         games: gamesR.status === 'fulfilled' ? (gamesR.value.games ?? []) : [],
-        puzzleRating: puzzleR.status === 'fulfilled' ? puzzleR.value : null,
-        vsBotRating: vsBotR.status === 'fulfilled' ? vsBotR.value : null,
         chapters: chaptersR.status === 'fulfilled' ? (chaptersR.value.chapters ?? []) : [],
-        mastery: masteryR.status === 'fulfilled' ? masteryR.value : null
+        mastery: masteryR.status === 'fulfilled' ? masteryR.value : null,
+        datasets: datasetsR.status === 'fulfilled' ? datasetsR.value : null,
+        dailyStreak: streakR.status === 'fulfilled' ? (streakR.value?.streak ?? null) : null
       })
       setLoading(false)
     })()
@@ -100,5 +78,5 @@ export function useHomeData(): UseHomeDataResult {
     }
   }, [])
 
-  return { data, loading, sessionBaseline }
+  return { data, loading }
 }

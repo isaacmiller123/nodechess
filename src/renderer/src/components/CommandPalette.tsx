@@ -1,14 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type JSX, type KeyboardEvent } from 'react'
-import {
-  Search,
-  Swords,
-  Puzzle,
-  Cpu,
-  Settings as SettingsIcon,
-  type LucideIcon,
-  CornerDownLeft
-} from 'lucide-react'
-import { NAV, type ViewKey } from './Layout'
+import { DESTINATIONS, type ViewKey } from './Layout'
 import { OverlayDialog } from './OverlayDialog'
 
 export interface CommandPaletteProps {
@@ -23,7 +14,9 @@ interface Command {
   label: string
   sub: string
   keywords: string
-  Icon: LucideIcon
+  /** A symbol id in the v1 sprite (IconSprite.tsx), not a component. The whole
+   *  shell draws from that one sheet, so the palette does too. */
+  icon: string
   kind: CommandKind
   run: () => void
 }
@@ -35,10 +28,10 @@ interface Command {
  * puzzle", and "Analyze position" route to Play / Puzzles / Analysis, which is
  * where each flow begins.
  */
-const ACTIONS: { id: string; label: string; sub: string; keywords: string; Icon: LucideIcon; view: ViewKey }[] = [
-  { id: 'action-new-game', label: 'New game', sub: 'Play', keywords: 'play new game start match bot stockfish', Icon: Swords, view: 'play' },
-  { id: 'action-random-puzzle', label: 'Random puzzle', sub: 'Puzzles', keywords: 'puzzle random train tactics', Icon: Puzzle, view: 'puzzles' },
-  { id: 'action-analyze', label: 'Analyze position', sub: 'Analysis', keywords: 'analyze analysis engine position evaluate fen', Icon: Cpu, view: 'analysis' }
+const ACTIONS: { id: string; label: string; sub: string; keywords: string; icon: string; view: ViewKey }[] = [
+  { id: 'action-new-game', label: 'New game', sub: 'Play', keywords: 'play new game start match bot stockfish', icon: 'i-play', view: 'play' },
+  { id: 'action-random-puzzle', label: 'Random puzzle', sub: 'Puzzles', keywords: 'puzzle random train tactics', icon: 'i-puzzles', view: 'puzzles' },
+  { id: 'action-analyze', label: 'Analyze position', sub: 'Analysis', keywords: 'analyze analysis engine position evaluate fen', icon: 'i-analysis', view: 'analysis' }
 ]
 
 export function CommandPalette({ onClose, onNavigate }: CommandPaletteProps): JSX.Element {
@@ -51,31 +44,23 @@ export function CommandPalette({ onClose, onNavigate }: CommandPaletteProps): JS
       onNavigate(view)
       onClose()
     }
-    const navCommands: Command[] = NAV.map(({ key, label, Icon }) => ({
+    // DESTINATIONS is all ten, Settings included, so there is nothing to append
+    // here and no second list to keep in step with the rail.
+    const navCommands: Command[] = DESTINATIONS.map(({ key, label, icon }) => ({
       id: `nav-${key}`,
       label,
       sub: 'Go to',
       keywords: `${label} ${key} go to navigate open view`,
-      Icon,
+      icon,
       kind: 'nav',
       run: go(key)
     }))
-    // Settings lives outside NAV but is reachable from the profile chip.
-    navCommands.push({
-      id: 'nav-settings',
-      label: 'Settings',
-      sub: 'Go to',
-      keywords: 'settings profile preferences theme account',
-      Icon: SettingsIcon,
-      kind: 'nav',
-      run: go('settings')
-    })
     const actionCommands: Command[] = ACTIONS.map((a) => ({
       id: a.id,
       label: a.label,
       sub: a.sub,
       keywords: a.keywords,
-      Icon: a.Icon,
+      icon: a.icon,
       kind: 'action',
       run: go(a.view)
     }))
@@ -128,7 +113,9 @@ export function CommandPalette({ onClose, onNavigate }: CommandPaletteProps): JS
   return (
     <OverlayDialog onClose={onClose} placement="top" className="cmdk" label="Command palette">
       <div className="cmdk-search">
-        <Search className="cmdk-search-icon" size={18} aria-hidden />
+        <svg className="icon cmdk-search-icon" aria-hidden focusable="false">
+          <use href="#i-more" />
+        </svg>
         <input
           className="cmdk-input"
           type="text"
@@ -177,11 +164,17 @@ export function CommandPalette({ onClose, onNavigate }: CommandPaletteProps): JS
                   onMouseMove={() => setActiveIndex(i)}
                 >
                   <span className="cmdk-option-icon">
-                    <c.Icon size={18} aria-hidden />
+                    <svg className="icon" aria-hidden focusable="false">
+                      <use href={`#${c.icon}`} />
+                    </svg>
                   </span>
                   <span className="cmdk-option-label">{c.label}</span>
                   <span className="cmdk-option-sub">{c.sub}</span>
-                  {active && <CornerDownLeft size={14} className="cmdk-option-sub" aria-hidden />}
+                  {active && (
+                    <svg className="icon cmdk-option-sub" aria-hidden focusable="false">
+                      <use href="#i-arrow" />
+                    </svg>
+                  )}
                 </button>
               </li>
             )

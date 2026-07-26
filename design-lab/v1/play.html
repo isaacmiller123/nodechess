@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+    <style>
+      /* PLAY. Everything here is prefixed .play- so it cannot collide with a
+         sibling page. Only colour, size, radius and duration tokens are used.
+
+         The three ways to play are peers, so they are three equal cards in one
+         row, and picking one changes only the panel below it. Rated versus
+         casual is a two segment control INSIDE Online, one line under it says
+         what each costs you, and that line is the only place either word is
+         explained.
+
+         Searching is a full state of this screen, not a spinner in a corner,
+         because waiting is most of what playing online feels like. */
+
+      /* Measure and centering come from .col-single in shell.css, which settings
+         also uses, so the two single column pages sit on the same two edges. */
+      .play {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+      }
+
+      /* The last section is the one that grows, so the space at the bottom of
+         the screen is a labelled measurement area and not dead margin. Same
+         trick the home column uses. */
+      .play > .sec:last-child {
+        margin-bottom: 0;
+      }
+
+      .play-resume {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 200px;
+      }
+
+      /* These two set a display, so they have to opt back out of [hidden]. */
+      .play-resume[hidden] {
+        display: none;
+      }
+
+      .play-resume > .well {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ---------- the three peers ---------- */
+
+      .play-modes {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-3);
+      }
+
+      .play-mode {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1);
+        text-align: left;
+        padding: var(--space-4) var(--space-6);
+        border: var(--border-width) solid var(--border);
+        border-left: 3px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+        transition:
+          border-color var(--motion-fast) var(--ease-out),
+          background-color var(--motion-fast) var(--ease-out);
+      }
+
+      .play-mode:hover {
+        border-color: var(--border-strong);
+      }
+
+      .play-mode[aria-pressed='true'] {
+        background: var(--surface-2);
+        border-color: var(--border-strong);
+        border-left-color: var(--accent);
+      }
+
+      .play-mode-name {
+        font-size: var(--fs-md);
+        font-weight: var(--fw-medium);
+        color: var(--text-primary);
+      }
+
+      .play-mode-spec {
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+      }
+
+      .play-mode-meta {
+        margin-top: var(--space-2);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .play-mode[aria-pressed='true'] .play-mode-meta {
+        color: var(--accent);
+      }
+
+      /* ---------- setup rows ---------- */
+
+      .play-field {
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: var(--space-5);
+        align-items: center;
+        padding: var(--space-4) var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .play-field:last-child {
+        border-bottom: 0;
+      }
+
+      .play-field > .lbl {
+        align-self: center;
+      }
+
+      /* A two or three way control is as wide as its words, never as wide as
+         the row. */
+      .play-field .segmented {
+        width: max-content;
+        max-width: 100%;
+      }
+
+      .play-note {
+        margin-top: var(--space-3);
+        font-size: var(--fs-sm);
+        color: var(--text-secondary);
+        max-width: 58ch;
+      }
+
+      .play-note .play-em {
+        color: var(--text-primary);
+        font-weight: var(--fw-medium);
+      }
+
+      /* ---------- chips: time controls, bot levels ----------
+
+         The chip itself, its hover, its on state and its two lines are
+         .chip.is-stacked in shell.css. This page had its own copy with its own
+         on state, an --accent-soft fill under a hairline, so "chosen" on play
+         did not look like "chosen" anywhere else. Only the bot level width is
+         still page local, because only this page has bot levels. */
+
+      .play-lvl {
+        min-width: 52px;
+      }
+
+      /* Custom control. Two numbers, and it only exists once you ask for it. */
+      .play-custom {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+        margin-top: var(--space-3);
+        padding-top: var(--space-3);
+        border-top: var(--border-width) solid var(--border);
+      }
+
+      .play-custom[hidden] {
+        display: none;
+      }
+
+      .play-num {
+        width: 64px;
+        height: 32px;
+        padding: 0 var(--space-3);
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border-strong);
+        border-radius: var(--radius-md);
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        transition: border-color var(--motion-fast) var(--ease-out);
+      }
+
+      .play-num:focus {
+        border-color: var(--accent);
+        outline: none;
+      }
+
+      .play-name {
+        width: 148px;
+        height: 32px;
+        padding: 0 var(--space-3);
+        background: var(--bg-subtle);
+        border: var(--border-width) solid var(--border-strong);
+        border-radius: var(--radius-md);
+        font-size: var(--fs-sm);
+        transition: border-color var(--motion-fast) var(--ease-out);
+      }
+
+      .play-name::placeholder {
+        color: var(--text-muted);
+      }
+
+      .play-name:focus {
+        border-color: var(--accent);
+        outline: none;
+      }
+
+      .play-inputs {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+      }
+
+      /* ---------- the commit row ---------- */
+
+      .play-go {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-top: var(--space-5);
+      }
+
+      .play-go-note {
+        font-size: var(--fs-sm);
+        color: var(--text-muted);
+        margin-left: auto;
+        text-align: right;
+      }
+
+      /* ---------- searching ---------- */
+
+      .play-search-head {
+        display: grid;
+        grid-template-columns: 10px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .play-search-title {
+        font-size: var(--fs-lg);
+        font-weight: var(--fw-medium);
+      }
+
+      .play-search-sub {
+        margin-top: var(--space-1);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+
+      /* The one live thing on the screen. It breathes because a search that
+         looks frozen reads as a search that has failed. */
+      .play-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: var(--radius-pill);
+        background: var(--accent);
+        align-self: center;
+        animation: play-pulse 1400ms var(--ease-in-out) infinite;
+      }
+
+      @keyframes play-pulse {
+        0%,
+        100% {
+          opacity: 1;
+          box-shadow: 0 0 0 0 var(--accent-soft);
+        }
+        50% {
+          opacity: 0.35;
+          box-shadow: 0 0 0 5px var(--accent-soft);
+        }
+      }
+
+      .play-elapsed {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xl);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-primary);
+      }
+
+      .play-search-note {
+        padding: 0 var(--space-6) var(--space-6);
+        font-size: var(--fs-sm);
+        color: var(--text-muted);
+      }
+
+      /* The wait has room for one honest offer, and it sits below the search,
+         not inside it. */
+      .play-wait {
+        margin-top: var(--space-8);
+      }
+
+      /* ---------- phone ---------- */
+
+      @media (max-width: 720px) {
+        .play-modes {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .play-mode {
+          min-height: 72px;
+          padding: var(--space-4);
+        }
+
+        .play-field {
+          grid-template-columns: minmax(0, 1fr);
+          gap: var(--space-3);
+          padding: var(--space-4);
+        }
+
+        .chips .chip {
+          height: 44px;
+          flex: 1 0 auto;
+        }
+
+        .play-go {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .play-go .btn {
+          width: 100%;
+          height: 44px;
+        }
+
+        .play-go .btn.is-primary {
+          height: 48px;
+        }
+
+        .play-go-note {
+          margin-left: 0;
+          text-align: left;
+        }
+
+        .play-search-head {
+          padding: var(--space-5) var(--space-4);
+        }
+
+        .play-search-note {
+          padding: 0 var(--space-4) var(--space-5);
+        }
+
+        .play-name {
+          width: 100%;
+        }
+
+        .play-resume {
+          flex: 0 0 auto;
+          min-height: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .play-dot {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <!-- The mark. Candidate 1 from logos.html: the rook seen from above,
+           which is also a cell with a port on each side. -->
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" aria-current="page" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text" id="rd-next">Pick a way to play</span>
+          </div>
+          <div class="trace is-0" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <div class="play col-single">
+            <!-- THE THREE PEERS. Same size, same weight, same row. -->
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Play</h2>
+                <span class="sec-count">3 ways</span>
+              </div>
+
+              <div class="play-modes" role="group" aria-label="Ways to play" data-modes>
+                <button class="play-mode" type="button" aria-pressed="true" data-mode="online">
+                  <span class="play-mode-name">Online</span>
+                  <span class="play-mode-spec">Matched against a stranger near your strength.</span>
+                  <span class="play-mode-meta">Rated or casual</span>
+                </button>
+                <button class="play-mode" type="button" aria-pressed="false" data-mode="bot">
+                  <span class="play-mode-name">Bot</span>
+                  <span class="play-mode-spec">Eight levels. It waits as long as you need.</span>
+                  <span class="play-mode-meta">Works offline</span>
+                </button>
+                <button class="play-mode" type="button" aria-pressed="false" data-mode="local">
+                  <span class="play-mode-name">Local board</span>
+                  <span class="play-mode-spec">Two people taking turns on this screen.</span>
+                  <span class="play-mode-meta">One device</span>
+                </button>
+              </div>
+            </section>
+
+            <!-- ============ ONLINE, IDLE ============ -->
+            <section class="sec" id="s-online">
+              <div class="sec-head">
+                <h2 class="lbl">Online</h2>
+              </div>
+
+              <div class="panel">
+                <div class="play-field">
+                  <span class="lbl">Stakes</span>
+                  <div>
+                    <div class="segmented" role="group" aria-label="Stakes" data-pick>
+                      <button class="seg" type="button" aria-pressed="true" data-pool="Rated">Rated</button>
+                      <button class="seg" type="button" aria-pressed="false" data-pool="Casual">Casual</button>
+                    </div>
+                    <p class="play-note">
+                      <span class="play-em">Rated</span> moves your rating and needs an account.
+                      <span class="play-em">Casual</span> moves nothing and needs none. Same
+                      opponents, same board.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Clock</span>
+                  <div>
+                    <div
+                      class="chips"
+                      role="group"
+                      aria-label="Time control"
+                      data-pick
+                      data-custom-target="#tc-custom"
+                    >
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="1+0">
+                        <span class="chip-main">1+0</span>
+                        <span class="chip-sub">Bullet</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="3+2">
+                        <span class="chip-main">3+2</span>
+                        <span class="chip-sub">Blitz</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="5+0">
+                        <span class="chip-main">5+0</span>
+                        <span class="chip-sub">Blitz</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="true" data-tc="10+5">
+                        <span class="chip-main">10+5</span>
+                        <span class="chip-sub">Rapid</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="15+10">
+                        <span class="chip-main">15+10</span>
+                        <span class="chip-sub">Rapid</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="30+0">
+                        <span class="chip-main">30+0</span>
+                        <span class="chip-sub">Classical</span>
+                      </button>
+                      <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="Unlimited">
+                        <span class="chip-main">Unlimited</span>
+                        <span class="chip-sub">No clock</span>
+                      </button>
+                      <button
+                        class="chip is-stacked"
+                        type="button"
+                        aria-pressed="false"
+                        data-tc="Custom"
+                        data-custom
+                      >
+                        <span class="chip-main">Custom</span>
+                        <span class="chip-sub">Set it</span>
+                      </button>
+                    </div>
+                    <div class="play-custom" id="tc-custom" hidden>
+                      <span class="lbl">Minutes</span>
+                      <input class="play-num" type="text" inputmode="numeric" value="12" aria-label="Minutes" />
+                      <span class="lbl">Increment</span>
+                      <input class="play-num" type="text" inputmode="numeric" value="3" aria-label="Increment in seconds" />
+                      <span class="lbl">Seconds</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Side</span>
+                  <div class="segmented" role="group" aria-label="Side" data-pick>
+                    <button class="seg" type="button" aria-pressed="false" data-side="White">White</button>
+                    <button class="seg" type="button" aria-pressed="false" data-side="Black">Black</button>
+                    <button class="seg" type="button" aria-pressed="true" data-side="Random">Random</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="play-go">
+                <button class="btn is-primary" type="button" data-search-start>Find an opponent</button>
+                <button class="btn is-quiet" type="button">Invite by code</button>
+                <span class="play-go-note">A code plays someone you already know.</span>
+              </div>
+            </section>
+
+            <!-- ============ ONLINE, SEARCHING ============
+                 The whole screen becomes the wait, because that is where the
+                 time goes. What was asked for is echoed back as data. -->
+            <section class="sec" id="s-search" hidden>
+              <div class="sec-head">
+                <h2 class="lbl">Online</h2>
+                <span class="sec-count">Searching</span>
+              </div>
+
+              <div class="panel">
+                <div class="play-search-head">
+                  <span class="play-dot"></span>
+                  <div>
+                    <div class="play-search-title">Looking for an opponent</div>
+                    <div class="play-search-sub" id="search-sub">Rated, 10+5, random side</div>
+                  </div>
+                  <span class="play-elapsed">0:14</span>
+                </div>
+
+                <div class="facts">
+                  <div class="fact">
+                    <span class="lbl">Stakes</span>
+                    <span class="fact-value" id="fact-pool">Rated</span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Clock</span>
+                    <span class="fact-value" id="fact-tc">10+5</span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Side</span>
+                    <span class="fact-value" id="fact-side">Random</span>
+                  </div>
+                  <div class="fact">
+                    <span class="lbl">Opponent</span>
+                    <span class="fact-value">
+                      Any rating
+                      <span class="fact-note">while yours is provisional</span>
+                    </span>
+                  </div>
+                </div>
+
+                <p class="play-search-note">Leaving this screen does not stop the search.</p>
+
+                <div class="panel-foot">
+                  <button class="btn is-quiet" type="button" data-search-stop>Stop searching</button>
+                </div>
+              </div>
+
+              <section class="sec play-wait">
+                <div class="sec-head">
+                  <h2 class="lbl">While you wait</h2>
+                </div>
+                <div class="panel golist">
+                  <a class="go" href="#">
+                    <span>
+                      <span class="go-name">Puzzles</span>
+                      <span class="go-sub">4.7M positions, by theme</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                  <a class="go" href="school.html">
+                    <span>
+                      <span class="go-name">School</span>
+                      <span class="go-sub">CH 07, LESSON 3 OF 5</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                </div>
+              </section>
+            </section>
+
+            <!-- ============ BOT ============ -->
+            <section class="sec" id="s-bot" hidden>
+              <div class="sec-head">
+                <h2 class="lbl">Bot</h2>
+                <span class="sec-count">8 levels</span>
+              </div>
+
+              <div class="panel">
+                <div class="play-field">
+                  <span class="lbl">Level</span>
+                  <div>
+                    <div
+                      class="chips"
+                      role="group"
+                      aria-label="Bot level"
+                      data-pick
+                      data-note-target="#bot-note"
+                    >
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 1 moves almost at random and never takes a free piece."
+                      >
+                        <span class="chip-main">L1</span>
+                        <span class="chip-sub">800</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 2 takes what is handed to it and misses everything else."
+                      >
+                        <span class="chip-main">L2</span>
+                        <span class="chip-sub">1000</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="true"
+                        data-note="Level 3 takes any piece you leave loose and misses tactics two moves deep."
+                      >
+                        <span class="chip-main">L3</span>
+                        <span class="chip-sub">1200</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 4 punishes loose pieces and finds short forks."
+                      >
+                        <span class="chip-main">L4</span>
+                        <span class="chip-sub">1400</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 5 defends properly and will trade you down to a lost endgame."
+                      >
+                        <span class="chip-main">L5</span>
+                        <span class="chip-sub">1600</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 6 plays a real opening and does not give material back."
+                      >
+                        <span class="chip-main">L6</span>
+                        <span class="chip-sub">1800</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 7 grinds. One inaccuracy is usually the whole game."
+                      >
+                        <span class="chip-main">L7</span>
+                        <span class="chip-sub">2000</span>
+                      </button>
+                      <button
+                        class="chip is-stacked play-lvl"
+                        type="button"
+                        aria-pressed="false"
+                        data-note="Level 8 does not make mistakes. Beating it is a project."
+                      >
+                        <span class="chip-main">L8</span>
+                        <span class="chip-sub">2200</span>
+                      </button>
+                    </div>
+                    <p class="play-note" id="bot-note">
+                      Level 3 takes any piece you leave loose and misses tactics two moves deep.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Clock</span>
+                  <div class="chips" role="group" aria-label="Time control" data-pick>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="1+0">
+                      <span class="chip-main">1+0</span>
+                      <span class="chip-sub">Bullet</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="3+2">
+                      <span class="chip-main">3+2</span>
+                      <span class="chip-sub">Blitz</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="5+0">
+                      <span class="chip-main">5+0</span>
+                      <span class="chip-sub">Blitz</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="10+5">
+                      <span class="chip-main">10+5</span>
+                      <span class="chip-sub">Rapid</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="15+10">
+                      <span class="chip-main">15+10</span>
+                      <span class="chip-sub">Rapid</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="30+0">
+                      <span class="chip-main">30+0</span>
+                      <span class="chip-sub">Classical</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="true" data-tc="Unlimited">
+                      <span class="chip-main">Unlimited</span>
+                      <span class="chip-sub">No clock</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="Custom">
+                      <span class="chip-main">Custom</span>
+                      <span class="chip-sub">Set it</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Side</span>
+                  <div class="segmented" role="group" aria-label="Side" data-pick>
+                    <button class="seg" type="button" aria-pressed="true">White</button>
+                    <button class="seg" type="button" aria-pressed="false">Black</button>
+                    <button class="seg" type="button" aria-pressed="false">Random</button>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Help</span>
+                  <div class="segmented" role="group" aria-label="Help" data-pick>
+                    <button class="seg" type="button" aria-pressed="true">Hints on</button>
+                    <button class="seg" type="button" aria-pressed="false">Hints off</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="play-go">
+                <button class="btn is-primary" type="button">Start game</button>
+                <span class="play-go-note">Bot games never count toward your rating.</span>
+              </div>
+            </section>
+
+            <!-- ============ LOCAL ============ -->
+            <section class="sec" id="s-local" hidden>
+              <div class="sec-head">
+                <h2 class="lbl">Local board</h2>
+                <span class="sec-count">2 players</span>
+              </div>
+
+              <div class="panel">
+                <div class="play-field">
+                  <span class="lbl">Players</span>
+                  <div class="play-inputs">
+                    <input class="play-name" type="text" placeholder="White" aria-label="White player" />
+                    <input class="play-name" type="text" placeholder="Black" aria-label="Black player" />
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Clock</span>
+                  <div class="chips" role="group" aria-label="Time control" data-pick>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="1+0">
+                      <span class="chip-main">1+0</span>
+                      <span class="chip-sub">Bullet</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="3+2">
+                      <span class="chip-main">3+2</span>
+                      <span class="chip-sub">Blitz</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="5+0">
+                      <span class="chip-main">5+0</span>
+                      <span class="chip-sub">Blitz</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="10+5">
+                      <span class="chip-main">10+5</span>
+                      <span class="chip-sub">Rapid</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="15+10">
+                      <span class="chip-main">15+10</span>
+                      <span class="chip-sub">Rapid</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="30+0">
+                      <span class="chip-main">30+0</span>
+                      <span class="chip-sub">Classical</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="true" data-tc="Unlimited">
+                      <span class="chip-main">Unlimited</span>
+                      <span class="chip-sub">No clock</span>
+                    </button>
+                    <button class="chip is-stacked" type="button" aria-pressed="false" data-tc="Custom">
+                      <span class="chip-main">Custom</span>
+                      <span class="chip-sub">Set it</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="play-field">
+                  <span class="lbl">Board</span>
+                  <div>
+                    <div class="segmented" role="group" aria-label="Board" data-pick>
+                      <button class="seg" type="button" aria-pressed="true">White at foot</button>
+                      <button class="seg" type="button" aria-pressed="false">Flip each turn</button>
+                    </div>
+                    <p class="play-note">Flip each turn keeps the player to move at the foot of the board.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="play-go">
+                <button class="btn is-primary" type="button">Open board</button>
+                <span class="play-go-note">Nothing here needs an account.</span>
+              </div>
+            </section>
+
+            <!-- ============ UNFINISHED ============
+                 A game you walked out of is a fourth way to play, so it lives
+                 on this screen and not only on Home. -->
+            <section class="sec play-resume" id="s-resume">
+              <div class="sec-head">
+                <h2 class="lbl">Unfinished</h2>
+                <span class="sec-count">0</span>
+              </div>
+              <div class="well">
+                <div class="empty-head">
+                  <span class="lbl">Opponent</span>
+                  <span class="lbl">Clock</span>
+                  <span class="lbl">Moves</span>
+                  <span class="lbl">When</span>
+                </div>
+                <div class="empty">
+                  <p class="empty-line">No game is waiting for you.</p>
+                  <p class="empty-line">Leave one part way through and it sits here until you come back.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION ================= -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script>
+      /* Shell behaviours, copied from home.html so this page stands alone. */
+      (function () {
+        var root = document.documentElement;
+
+
+      })();
+
+      /* PLAY. Three switches and nothing else: which of the three peers is
+         showing, which chip in a group is picked, and idle versus searching.
+         No game, no clock, no opponent. A picture of the screen. */
+      (function () {
+        var sections = {
+          online: document.getElementById('s-online'),
+          search: document.getElementById('s-search'),
+          bot: document.getElementById('s-bot'),
+          local: document.getElementById('s-local')
+        };
+        var resume = document.getElementById('s-resume');
+        var next = document.getElementById('rd-next');
+
+        function nextSays(text) {
+          next.textContent = text;
+          next.classList.remove('is-updated');
+          void next.offsetWidth;
+          next.classList.add('is-updated');
+        }
+
+        function show(which) {
+          for (var k in sections) sections[k].hidden = k !== which;
+          // The wait owns the screen while it runs.
+          resume.hidden = which === 'search';
+        }
+
+        // 1. The three peers.
+        document.querySelectorAll('[data-modes] .play-mode').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            document.querySelectorAll('[data-modes] .play-mode').forEach(function (b) {
+              b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+            });
+            var mode = btn.getAttribute('data-mode');
+            show(mode);
+            nextSays(
+              mode === 'online'
+                ? 'Pick a clock and find someone'
+                : mode === 'bot'
+                  ? 'Pick a level'
+                  : 'Name the two players'
+            );
+          });
+        });
+
+        // 2. Pick one of a group. Some groups also drive a line of copy, and
+        //    the Custom chip is the only one that opens anything.
+        document.querySelectorAll('[data-pick]').forEach(function (group) {
+          group.addEventListener('click', function (e) {
+            var btn = e.target.closest('button');
+            if (!btn || !group.contains(btn)) return;
+            group.querySelectorAll('button').forEach(function (b) {
+              b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+            });
+            var noteSel = group.getAttribute('data-note-target');
+            if (noteSel && btn.hasAttribute('data-note')) {
+              document.querySelector(noteSel).textContent = btn.getAttribute('data-note');
+            }
+            var customSel = group.getAttribute('data-custom-target');
+            if (customSel) {
+              document.querySelector(customSel).hidden = !btn.hasAttribute('data-custom');
+            }
+          });
+        });
+
+        // 3. Idle versus searching. The search panel reads back exactly what
+        //    the form above it was set to, so the wait is not a black box.
+        function pressed(sel) {
+          var el = document.querySelector(sel + '[aria-pressed="true"]');
+          return el ? el.getAttribute(el.hasAttribute('data-pool') ? 'data-pool' : el.hasAttribute('data-side') ? 'data-side' : 'data-tc') : '';
+        }
+
+        document.querySelector('[data-search-start]').addEventListener('click', function () {
+          var pool = pressed('#s-online [data-pool]');
+          var tc = pressed('#s-online [data-tc]');
+          var side = pressed('#s-online [data-side]');
+          document.getElementById('fact-pool').textContent = pool;
+          document.getElementById('fact-tc').textContent = tc;
+          document.getElementById('fact-side').textContent = side;
+          document.getElementById('search-sub').textContent =
+            pool + ', ' + tc + ', ' + side.toLowerCase() + ' side';
+          show('search');
+          nextSays('Waiting for an opponent');
+          window.scrollTo({ top: 0 });
+        });
+
+        document.querySelector('[data-search-stop]').addEventListener('click', function () {
+          show('online');
+          nextSays('Pick a clock and find someone');
+        });
+      })();
+    </script>
+    <script src="shell.js" defer></script>
+  </body>
+</html>

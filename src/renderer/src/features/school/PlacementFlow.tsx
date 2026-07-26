@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
 import type { Key } from 'chessground/types'
 import type { Role } from 'chessops/types'
-import { ChevronRight, Flag, GraduationCap, Loader2 } from 'lucide-react'
 import { Board } from '../../board/Board'
 import { pieceSetClass } from '../../board/pieceSets'
 import { useSettings } from '../../state/settings'
@@ -19,14 +18,8 @@ import {
 import { chooseBotMove } from '../../chess/botStrength'
 import { useEngineReady } from '../../hooks/useEngineReady'
 import { EngineRequiredNotice } from '../../components/EngineRequiredNotice'
-import { ViktorPanel } from './ViktorPanel'
-import {
-  EMPTY_DESTS,
-  MoveStrip,
-  ROLE_FROM_CHAR,
-  isPromoMove,
-  type BoardEnv
-} from './segments'
+import { Coach, LessonChromeProvider, Scene, Turn, type BoardEnv } from './SchoolScene'
+import { EMPTY_DESTS, ROLE_FROM_CHAR, isPromoMove } from './segments'
 
 const START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
@@ -38,9 +31,9 @@ function isReviewBusyError(err: unknown): boolean {
   return msg.includes('already in progress')
 }
 
-/** How long to wait for the shared review engine before placing conservatively.
+/** How long to wait for the shared review engine before giving up on the score.
  *  A depth-16 full-game Analysis review can take minutes, so waiting beats
- *  silently misplacing the learner at the fallback accuracy. */
+ *  throwing a played game away and asking for another one. */
 const REVIEW_BUSY_WAIT_MS = 150_000
 const REVIEW_BUSY_POLL_MS = 5_000
 
@@ -56,9 +49,20 @@ interface MoveLog {
 /**
  * Placement game. The user plays ONE full game as White against a fixed
  * calibration engine level; when it ends, the game is reviewed for the user's
- * accuracy and that accuracy sets an INTERNAL estimated Elo (school:recordPlacementGame)
- * which unlocks chapters up to that band. The Elo number is NEVER shown. The
- * result screen is purely qualitative. A second game can be played to refine.
+ * accuracy and that accuracy sets an INTERNAL estimated Elo
+ * (school:recordPlacementGame) which unlocks chapters up to that band. The Elo
+ * number is NEVER shown. The result screen is purely qualitative. A second game
+ * can be played to refine.
+ *
+ * A game that cannot be reviewed produces NO placement. There is no fallback
+ * accuracy: an unmeasured number would still set the estimate and decide which
+ * chapters open, so the result screen says the game could not be scored and asks
+ * for another one.
+ *
+ * The game itself is the lesson page with no lesson around it: the same board,
+ * the same boardbar, the same Viktor. The three screens either side of it are a
+ * head, a coach panel and a foot, which is how every boardless School screen is
+ * built.
  *
  * All hooks run before any early return (React #300 guard).
  */
@@ -80,32 +84,40 @@ export function PlacementFlow({
       animation: settings.animation,
       showDests: settings.showLegal
     }),
-    [settings.boardTheme, settings.pieceSet, settings.coordinates, settings.animation, settings.showLegal]
+    [
+      settings.boardTheme,
+      settings.pieceSet,
+      settings.coordinates,
+      settings.animation,
+      settings.showLegal
+    ]
   )
 
   const userColor: Color = 'white'
 
   const [phase, setPhase] = useState<Phase>('intro')
   // Engine availability guard (fresh install: no Stockfish on disk). Probed on
-  // the intro screen: same pattern as Play/Analysis (v1.1.4). Without it the
-  // placement game dead-ends: the engine reply loop silently never answers, so
-  // the learner sits on "thinking…" forever with the whole School locked
-  // behind placement. Navigating to Settings and back remounts this flow, so
-  // finishing the download is picked up on return.
-  const { ready: engineReady } = useEngineReady(phase === 'intro')
+  // the intro screen and again on the result screen: same pattern as
+  // Play/Analysis (v1.1.4). Without it the placement game dead-ends: the engine
+  // reply loop silently never answers, so the learner sits on "thinking…"
+  // forever with the whole School locked behind placement. Navigating to
+  // Settings and back remounts this flow, so finishing the download is picked up
+  // on return; the result screen re-probes because a game that could not be
+  // scored has to say whether a missing engine is the reason.
+  const { ready: engineReady } = useEngineReady(phase === 'intro' || phase === 'done')
   const [fen, setFen] = useState(START_FEN)
   const [lastMove, setLastMove] = useState<[Key, Key] | undefined>(undefined)
   const [thinking, setThinking] = useState(false)
   const [nonce, setNonce] = useState(0)
   const [scoreNote, setScoreNote] = useState<string>('')
+  // Did the finished game actually set a starting point? A game we could not
+  // measure sets nothing, and the result screen says so instead of pretending.
+  const [placed, setPlaced] = useState(false)
 
   const movesRef = useRef<MoveLog[]>([])
   const finishedRef = useRef(false)
 
-  const dests = useMemo(
-    () => (phase === 'playing' ? destsFor(fen) : EMPTY_DESTS),
-    [phase, fen]
-  )
+  const dests = useMemo(() => (phase === 'playing' ? destsFor(fen) : EMPTY_DESTS), [phase, fen])
   const turn = useMemo(() => turnColor(fen), [fen])
   const check = useMemo(() => checkColor(fen), [fen])
 
@@ -138,8 +150,8 @@ export function PlacementFlow({
           const pgn = `[Event "Placement"]\n[White "You"]\n[Black "Viktor's champion"]\n[Result "${resultToken}"]\n\n${movetext} ${resultToken}\n`
           // review:run is single-flight and a full-game Analysis review can run for
           // minutes. While the engine is BUSY, keep waiting (and say so) rather than
-          // silently misplacing the learner at the conservative fallback; any other
-          // error falls through to the fallback immediately.
+          // dropping a played game; any other error gives up at once, and then the
+          // placement simply does not happen.
           let reviewed: Awaited<ReturnType<NonNullable<typeof api.review>['run']>> | null = null
           const busyDeadline = Date.now() + REVIEW_BUSY_WAIT_MS
           for (;;) {
@@ -150,7 +162,7 @@ export function PlacementFlow({
               if (!isReviewBusyError(err) || Date.now() + REVIEW_BUSY_POLL_MS > busyDeadline) {
                 break
               }
-              setScoreNote('Viktor is waiting for the analysis board to free up…')
+              setScoreNote('I am waiting for the analysis board to free up.')
               await new Promise((res) => setTimeout(res, REVIEW_BUSY_POLL_MS))
             }
           }
@@ -164,18 +176,34 @@ export function PlacementFlow({
         accuracy = null
       }
 
-      // Fallback: if the game couldn't be reviewed (no engine / too short), place
-      // conservatively so the foundation unlocks and the learner can test upward.
-      const acc = accuracy ?? 52
-      try {
-        await api?.school?.recordPlacementGame({ engineElo, accuracy: acc, moveCount })
+      // No accuracy means no measurement, and a placement is a measurement. An
+      // invented number here would set the internal Elo and therefore which
+      // chapters open, so nothing is recorded and the learner is told plainly.
+      if (accuracy == null) {
+        setPlaced(false)
         setScoreNote(
-          accuracy == null
-            ? 'Viktor has set a starting point. Pass a chapter test any time to move up.'
-            : 'Viktor has weighed your play and set where you begin.'
+          userMoves === 0
+            ? 'There was no game there to weigh. I set nothing on nothing.'
+            : 'I could not review that game, so I have set nothing.'
+        )
+        setPhase('done')
+        return
+      }
+
+      try {
+        // The state that comes back IS the proof it was recorded. Without it
+        // (no bridge, a rejected write) the placement did not happen, and the
+        // result screen must not say it did.
+        const saved = await api?.school?.recordPlacementGame({ engineElo, accuracy, moveCount })
+        setPlaced(Boolean(saved?.placed))
+        setScoreNote(
+          saved?.placed
+            ? 'I have weighed your play and set where you begin.'
+            : 'I weighed the game, but nothing was saved.'
         )
       } catch {
-        setScoreNote('Viktor has set a starting point.')
+        setPlaced(false)
+        setScoreNote('I weighed the game, but nothing was saved.')
       }
       setPhase('done')
     },
@@ -229,7 +257,9 @@ export function PlacementFlow({
     setThinking(true)
     ;(async () => {
       const before = fen
-      const uci = await chooseBotMove(before, engineElo, (req) => engine.play(req).catch(() => null))
+      const uci = await chooseBotMove(before, engineElo, (req) =>
+        engine.play(req).catch(() => null)
+      )
       if (cancelled) return
       setThinking(false)
       if (finishedRef.current || !uci) return
@@ -271,34 +301,48 @@ export function PlacementFlow({
     void scoreGame('0-1')
   }, [phase, scoreGame])
 
+  const head = (title: string, note: string): JSX.Element => (
+    <div className="sch-head">
+      <div className="lbl">Placement</div>
+      <h1 className="sch-title">{title}</h1>
+      <p className="sec-note">{note}</p>
+    </div>
+  )
+
   // -------- INTRO --------
   if (phase === 'intro') {
     return (
-      <div className="placement">
-        <div className="placement-hero">
-          <span className="placement-eyebrow">
-            <GraduationCap size={16} /> Placement
-          </span>
-          <h1 className="placement-title">First, a game with Viktor’s champion</h1>
-          <p className="placement-lede">
-            Play one game as White. Viktor watches how you handle it and sets where your studies
-            begin. There is no pass or fail, just an honest starting point. You can move up any
-            time by passing a chapter’s test.
-          </p>
-          {engineReady === false ? (
-            // Fresh install: no Stockfish on disk. Same install CTA as
-            // Play/Analysis instead of a game that dead-ends on "thinking…".
-            <EngineRequiredNotice context="placement" onOpenSettings={onOpenSettings} />
-          ) : (
+      <div className="col-single">
+        {head(
+          'First, a game with Viktor’s champion',
+          'Play one game as White. Viktor watches how you handle it and sets where your studies begin. There is no pass or fail, just an honest starting point. You can move up any time by passing a chapter’s test.'
+        )}
+        <section className="sec">
+          <Coach
+            said={[
+              'I do not want your rating from another site. I want to see you play. One game, and I will know where to start you.'
+            ]}
+          >
+            {engineReady === false && (
+              // Fresh install: no Stockfish on disk. Same install CTA as
+              // Play/Analysis instead of a game that dead-ends on "thinking…".
+              <EngineRequiredNotice context="placement" onOpenSettings={onOpenSettings} />
+            )}
+          </Coach>
+        </section>
+        {engineReady !== false && (
+          <div className="lesson-foot">
+            <p className="foot-note">One game. It takes as long as it takes.</p>
             <button
-              className="btn school-primary placement-cta"
+              className="btn is-primary"
+              type="button"
               onClick={startGame}
               disabled={engineReady === null}
             >
-              Begin the game <ChevronRight size={16} />
+              Begin the game
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     )
   }
@@ -306,15 +350,57 @@ export function PlacementFlow({
   // -------- SCORING --------
   if (phase === 'scoring') {
     return (
-      <div className="placement">
-        <div className="placement-hero">
-          <span className="placement-eyebrow">
-            <Loader2 size={16} className="spin" /> Assessing
-          </span>
-          <h1 className="placement-title">Viktor is reviewing your game…</h1>
-          <p className="placement-lede">Weighing each move against the best continuation.</p>
-          {scoreNote && <p className="muted small">{scoreNote}</p>}
-        </div>
+      <div className="col-single" aria-busy="true">
+        {head(
+          'Viktor is reviewing your game',
+          'Weighing each move against the best continuation.'
+        )}
+        <section className="sec">
+          <Coach said={scoreNote ? [scoreNote] : []} thinking={!scoreNote} />
+        </section>
+      </div>
+    )
+  }
+
+  // -------- DONE, BUT NOTHING WAS SET --------
+  // The game could not be measured, so no placement exists. Say that, say what
+  // to do about it, and offer no door into a school that is still locked.
+  if (phase === 'done' && !placed) {
+    return (
+      <div className="col-single">
+        {head(
+          'That game could not be scored',
+          'Placement sets where you begin by weighing your moves against the best ones. This game was never weighed, so nothing has been set.'
+        )}
+        <section className="sec">
+          <Coach
+            said={[
+              scoreNote,
+              'I will not guess a level for you. A guess starts you in the wrong chapters, and you would feel it in the first lesson.',
+              'Play one more game. That is all I need.'
+            ]}
+          >
+            {engineReady === false && (
+              <EngineRequiredNotice context="placement" onOpenSettings={onOpenSettings} />
+            )}
+          </Coach>
+        </section>
+        {engineReady !== false && (
+          <div className="lesson-foot">
+            <p className="foot-note">The school opens once one game has been scored.</p>
+            <button
+              className="btn is-primary"
+              type="button"
+              onClick={() => {
+                setScoreNote('')
+                startGame()
+              }}
+              disabled={engineReady === null}
+            >
+              Play the game again
+            </button>
+          </div>
+        )}
       </div>
     )
   }
@@ -322,37 +408,50 @@ export function PlacementFlow({
   // -------- DONE --------
   if (phase === 'done') {
     return (
-      <div className="placement">
-        <div className="placement-hero">
-          <span className="placement-eyebrow">
-            <GraduationCap size={16} /> Placement complete
-          </span>
-          <h1 className="placement-title">Your school is ready</h1>
-          <p className="placement-lede">{scoreNote}</p>
-          <div className="placement-actions">
-            <button className="btn school-primary placement-cta" onClick={onPlaced}>
-              Enter the school <ChevronRight size={16} />
-            </button>
-            <button
-              className="btn ghost"
-              onClick={() => {
-                setScoreNote('')
-                startGame()
-              }}
-            >
-              Play another to refine
-            </button>
-          </div>
+      <div className="col-single">
+        {head('Your school is ready', 'Placement is done, and it is only a starting point.')}
+        <section className="sec">
+          <Coach said={[scoreNote]} />
+        </section>
+        <div className="lesson-foot">
+          <button
+            className="btn is-quiet"
+            type="button"
+            onClick={() => {
+              setScoreNote('')
+              startGame()
+            }}
+          >
+            Play another to refine
+          </button>
+          <button className="btn is-primary" type="button" onClick={onPlaced}>
+            Enter the school
+          </button>
         </div>
       </div>
     )
   }
 
   // -------- PLAYING --------
+  const chrome = {
+    head: (
+      <div className="sch-head board-under">
+        <div className="lbl">Placement</div>
+        <h1 className="sch-title">One game, as White</h1>
+        <p className="sec-note">
+          Viktor is not scoring the result. He is watching how you choose your moves.
+        </p>
+      </div>
+    ),
+    side: null,
+    trace: null
+  }
+
   return (
-    <div className="school-stage">
-      <div className="school-board-col">
-        <div className={env.boardClass}>
+    <LessonChromeProvider chrome={chrome}>
+      <Scene
+        env={env}
+        board={
           <Board
             fen={fen}
             orientation={userColor}
@@ -367,26 +466,17 @@ export function PlacementFlow({
             onMove={onUserMove}
             syncNonce={nonce}
           />
-        </div>
-        <MoveStrip startFen={START_FEN} sans={movesRef.current.map((m) => m.san)} />
-        <div className="school-board-controls">
-          <button className="btn ghost" onClick={resign}>
-            <Flag size={16} /> Resign &amp; place me
+        }
+        turn={<Turn color={turn} note={thinking ? 'thinking' : undefined} />}
+        actions={
+          <button className="btn is-quiet" type="button" onClick={resign}>
+            Resign and place me
           </button>
-          {thinking && <span className="muted small">Viktor’s champion is thinking…</span>}
-        </div>
-      </div>
-
-      <ViktorPanel
-        text="Play your game. I am watching how you think. There is no wrong place to begin."
-        eyebrow="Placement"
-        silent={false}
-      >
-        <div className="school-boss-facts">
-          <span className="muted small">You play White</span>
-        </div>
-      </ViktorPanel>
-    </div>
+        }
+        said={['Play your game. I am watching how you think. There is no wrong place to begin.']}
+        moves={{ startFen: START_FEN, sans: movesRef.current.map((m) => m.san) }}
+      />
+    </LessonChromeProvider>
   )
 }
 

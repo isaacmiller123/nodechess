@@ -28,7 +28,7 @@ export function Placeholder({ view }: { view: ViewKey }) {
   const headingId = `placeholder-${view}`
   return (
     <div className="placeholder">
-      <section className="card" role="region" aria-labelledby={headingId}>
+      <section className="panel" role="region" aria-labelledby={headingId}>
         <h2 id={headingId}>{c.title}</h2>
         {c.body && <p className="muted">{c.body}</p>}
         <p className="muted small">

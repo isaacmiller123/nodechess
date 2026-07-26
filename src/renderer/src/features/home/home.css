@@ -1,527 +1,101 @@
-/* ============================================================
-   Home dashboard: feature-scoped styles. Tokens only (tokens.css).
-   ============================================================ */
+/* HOME. design-lab/v1/home.html carries no <style> block, because every class
+   on it is already in shell.css: .home, .home-col, .sec, .startrow, .tag,
+   .well, .empty-head, .empty, .side, .panel, .golist, .go. Nothing here
+   restates any of them.
 
-.home-view {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  max-width: 1100px;
+   What is here is the two things the mock could not show. It drew the resume
+   well EMPTY, so there is no filled row in the design to copy, and this app
+   has finished games and a live session to put in it. And it drew every
+   practice row as an <a href>, while navigation in the app is a click handler,
+   so the row is a <button> and a button centres its text unless told not to. */
+
+.home .golist .go {
+  width: 100%;
+  text-align: left;
 }
 
-/* The global .card caps width at 560px; lift it for the dashboard grid. */
-.home-view .home-card {
-  max-width: none;
-}
-
-.home-grid {
+/* A filled resume row. The columns are .empty-head's, to the pixel, so the
+   heads stay over the values they name whether the well is full or empty, and
+   the inset is the dense one the row convention gives a table row. */
+.hm-row {
   display: grid;
-  gap: var(--space-6);
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  align-items: start;
+  grid-template-columns: minmax(0, 2fr) 90px 70px 110px;
+  gap: var(--space-4);
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
 }
 
-/* ---- Card title primitives (mirror .panel-title look without coupling) ---- */
-.home-card .card-title {
-  margin: 0 0 var(--space-5);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-}
-.home-card .card-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-5);
-}
-.home-card .card-title-row .card-title {
-  margin: 0;
+.hm-row:last-child {
+  border-bottom: 0;
 }
 
-.link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  border: 0;
-  background: transparent;
-  color: var(--accent);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  padding: 0;
+.hm-row:hover {
+  background: var(--surface);
 }
-.link-btn:hover {
+
+.hm-row:hover .g-name {
   color: var(--accent-hover);
 }
 
-/* ============================================================
-   Insights strip
-   ============================================================ */
-.insights-card {
-  padding: var(--space-5) var(--space-6);
+.hm-row .g-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.insights-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-5);
+
+/* The current row, marked exactly the way .ls.is-current and .row.is-here mark
+   theirs: a 3px rule on the leading edge, and the same 3px given back out of
+   the inset so the text does not step sideways. */
+.hm-row.is-here {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-6) - 3px);
 }
-.insight-tile {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  min-width: 0;
-}
-/* Subtle dividers between tiles (skip the first). */
-.insight-tile + .insight-tile {
-  padding-left: var(--space-5);
-  border-left: 1px solid var(--border);
-}
-.insight-tile-icon {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.insight-tile-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-.insight-tile-label {
+
+/* The result word. Mono, uppercase, and coloured only by the outcome. */
+.hm-res {
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
   color: var(--text-secondary);
 }
-.insight-tile-value {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.insight-tile-hint {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 
-/* Suggested-next-lesson row */
-.insights-next {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  width: 100%;
-  margin-top: var(--space-5);
-  padding: var(--space-4) var(--space-5);
-  text-align: left;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-}
-.insights-next:hover {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
-}
-.insights-next-icon {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.insights-next-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-  flex: 1;
-}
-.insights-next-kicker {
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.insights-next-title {
-  font-weight: var(--fw-semibold);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.insights-next-arrow {
-  flex: none;
-  color: var(--text-muted);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.insights-next:hover .insights-next-arrow {
-  transform: translateX(3px);
-  color: var(--accent);
-}
-
-/* Empty state for a brand-new profile */
-.insights-empty {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-.insights-empty-icon {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.insights-empty-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  flex: 1;
-  min-width: 0;
-}
-.insights-empty-title {
-  margin: 0;
-  font-weight: var(--fw-semibold);
-}
-.insights-empty-body .small {
-  margin: 0;
-}
-.insights-empty .btn {
-  flex: none;
-}
-
-@media (max-width: 720px) {
-  .insights-stats {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
-  }
-  .insight-tile + .insight-tile {
-    padding-left: 0;
-    padding-top: var(--space-4);
-    border-left: 0;
-    border-top: 1px solid var(--border);
-  }
-  .insights-empty {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* ============================================================
-   Quick actions
-   ============================================================ */
-.quick-actions {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
-}
-.quick-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-6) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    border-color var(--dur-fast),
-    transform var(--dur-fast) var(--ease-out);
-}
-.quick-tile:hover {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
-}
-.quick-tile:active {
-  transform: translateY(1px);
-}
-.quick-tile-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.quick-tile-label {
-  font-size: var(--fs-base);
-}
-
-@media (max-width: 720px) {
-  .quick-actions {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-}
-
-/* ============================================================
-   Strength card
-   ============================================================ */
-.strength-rows {
-  display: flex;
-  flex-direction: column;
-}
-.strength-row {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-5) 0;
-  border-top: 1px solid var(--border);
-}
-.strength-row:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-.strength-row:last-child {
-  padding-bottom: 0;
-}
-.strength-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--text-secondary);
-}
-.strength-label {
-  font-size: var(--fs-sm);
-}
-.strength-num {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.strength-num.muted {
-  color: var(--text-muted);
-  font-weight: var(--fw-medium);
-}
-.strength-band {
-  color: var(--text-secondary);
-  font-feature-settings: var(--num-feature);
-}
-.strength-prov {
-  font-style: italic;
-}
-.rd-bar {
-  height: 4px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.rd-fill {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  border-radius: var(--radius-pill);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
-/* ============================================================
-   Continue card
-   ============================================================ */
-.continue-sub {
-  margin: 0 0 var(--space-5);
-}
-.continue-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.continue-primary,
-.continue-secondary .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-.continue-primary {
-  width: 100%;
-}
-.continue-secondary {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-.continue-secondary .btn {
-  flex: 1;
-  min-width: 130px;
-}
-
-/* ============================================================
-   Recent games card
-   ============================================================ */
-.recent-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-.game-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-.game-row {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  align-items: center;
-  gap: var(--space-3);
-  text-align: left;
-  border: 0;
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  padding: var(--space-3);
-  margin: 0 calc(-1 * var(--space-3));
-  width: calc(100% + 2 * var(--space-3));
-  box-sizing: border-box;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-}
-.game-row:hover {
-  background: var(--surface-2);
-}
-.game-opp {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: var(--fw-medium);
-}
-.game-date {
-  flex: none;
-  font-feature-settings: var(--num-feature);
-}
-/* Chevron affordance: hidden until row hover/focus, slides in. */
-.game-go {
-  flex: none;
-  display: inline-flex;
-  color: var(--text-muted);
-  opacity: 0;
-  transform: translateX(-4px);
-  transition:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-.game-row:hover .game-go,
-.game-row:focus-visible .game-go {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* Result chip: its own semantics (not .eval-chip) */
-.result-chip {
-  flex: none;
-  min-width: 48px;
-  text-align: center;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-sm);
-}
-.result-chip.win {
-  background: var(--success-soft);
+.hm-res.is-win {
   color: var(--success);
 }
-.result-chip.loss {
-  background: var(--danger-soft);
+
+.hm-res.is-loss {
   color: var(--danger);
 }
-.result-chip.draw,
-.result-chip.unknown {
-  background: var(--surface-2);
+
+.hm-res.is-live {
+  color: var(--accent);
+}
+
+.hm-num {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
   color: var(--text-secondary);
 }
 
-/* ============================================================
-   Daily puzzle card
-   ============================================================ */
-.daily-body {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-.daily-board {
-  flex: none;
-  width: 120px;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-board);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-}
-.daily-board .cg-wrap {
-  width: 100%;
-  height: 100%;
-}
-/* Flat 2-color themes (same technique as the analysis board) */
-.daily-board[class*='board-'] cg-board {
-  background-color: var(--sq-light);
-  background-image:
-    linear-gradient(45deg, var(--sq-dark) 25%, transparent 0, transparent 75%, var(--sq-dark) 0),
-    linear-gradient(45deg, var(--sq-dark) 25%, transparent 0, transparent 75%, var(--sq-dark) 0);
-  background-size: 25% 25%;
-  background-position: 0 0, 12.5% 12.5%;
-}
-.daily-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  min-width: 0;
-}
-.daily-rating {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-.daily-rating-num {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.daily-theme {
-  font-style: italic;
-}
-.daily-solve {
-  margin-top: var(--space-2);
+/* Phone: .empty-head drops to two columns, so the rows under it do too, or the
+   heads stop naming the values. Four cells in a two track grid wrap onto a
+   second line, which is exactly what the heads themselves do at this width:
+   OPPONENT / RESULT over MOVES / WHEN, and each value under its own head. */
+@media (max-width: 720px) {
+  .hm-row {
+    grid-template-columns: minmax(0, 1fr) 90px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .hm-row.is-here {
+    padding-left: calc(var(--space-4) - 3px);
+  }
 }

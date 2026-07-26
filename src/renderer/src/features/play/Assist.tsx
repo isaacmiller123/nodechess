@@ -414,7 +414,7 @@ export function AssistPanel({ assist }: { assist: AssistState }): JSX.Element {
         onClick={toggleOpen}
         aria-expanded={open}
       >
-        <span className="panel-title">
+        <span className="lbl">
           <Wand2 size={15} /> Assistance
         </span>
         <ChevronDown size={16} className={`assist-chevron${open ? ' is-open' : ''}`} />

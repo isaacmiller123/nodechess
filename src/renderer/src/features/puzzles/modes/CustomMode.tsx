@@ -1,427 +1,374 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { JSX } from 'react'
-import {
-  SlidersHorizontal,
-  Search,
-  Flame,
-  Check,
-  X,
-  ArrowRight,
-  RotateCcw,
-  Target,
-  Clock,
-  TrendingDown,
-  ChevronLeft,
-  Sparkles,
-  Play,
-  SkipForward,
-  Eye
-} from 'lucide-react'
 import type { ThemeCount } from '@shared/types'
 import { Board } from '../../../board/Board'
 import { pieceSetClass } from '../../../board/pieceSets'
 import { useSettings } from '../../../state/settings'
-// Shared 3-stage hint UI from the classic trainer (read-only imports; the
-// components live in the puzzles feature root and are reused verbatim).
-import { HintLadder } from '../HintLadder'
 import { HintArrow } from '../HintArrow'
+import { HintButton } from '../HintButton'
+import { PuzzleTask, type TaskState } from '../PuzzleTask'
+import { formatCount, formatDuration } from '../format'
+import { groupThemes } from '../themes'
 import {
-  useCustomSession,
-  humanizeTheme,
   BANDS,
+  POPULARITY_LEVELS,
   SET_LENGTHS,
   SOLUTION_LENGTHS,
-  POPULARITY_LEVELS,
-  type Band,
-  type SetLength,
-  type SolutionLength,
-  type CustomSummary
+  useCustomSession,
+  type CustomSession
 } from './custom-session'
-import './custom.css'
 
 // ============================================================================
-// SLICE A: Themed / Custom training.  ★ OWNED BY THE CUSTOM-TRAINING BUILDER ★
+// CUSTOM. v1's .puz-build: 73 themes, and the answer to picking among them is
+// three doors of different width. A search box, twelve one tap chips covering
+// what almost everybody wants, and nine drawers holding the rest by kind.
+// Nothing is a checkbox and nothing is a wall.
 //
-// Deliberate-practice trainer: configure a fixed set (themes + difficulty band +
-// length), drill it on a board with live progress + streak, then read an
-// end-of-set summary (accuracy, time, weakest theme). All session/solver logic
-// lives in ./custom-session; this file is the three screens (setup / solve /
-// summary) and their chrome.
+// The board, the walk through the set and the end of it are surfaces v1 never
+// drew, so they are built from the same parts Train uses: .lesson, .sec,
+// .panel, .facts.
 // ============================================================================
 
-export default function CustomMode(): JSX.Element {
+const MOST_USED = 12
+
+export default function CustomMode({ themes }: { themes: ThemeCount[] }): JSX.Element {
   const s = useCustomSession()
 
-  if (s.phase === 'setup') return <SetupScreen session={s} />
-  if (s.phase === 'summary' && s.summary) return <SummaryScreen session={s} summary={s.summary} />
-  return <SolveScreen session={s} />
+  if (s.phase === 'setup') return <SetupScreen s={s} themes={themes} />
+  if (s.phase === 'summary') return <SummaryScreen s={s} />
+  if (s.phase === 'empty' || s.phase === 'error') return <NothingScreen s={s} />
+  return <SolveScreen s={s} />
 }
 
-type Session = ReturnType<typeof useCustomSession>
+// ---------------------------------------------------------------- setup ----
 
-// ---------------------------------------------------------------------------
-// Setup screen
-// ---------------------------------------------------------------------------
-
-function SetupScreen({ session }: { session: Session }): JSX.Element {
-  const { config, setConfig, start, apiReady } = session
-  const [themes, setThemes] = useState<ThemeCount[]>([])
+function SetupScreen({ s, themes }: { s: CustomSession; themes: ThemeCount[] }): JSX.Element {
   const [query, setQuery] = useState('')
-  const [loadingThemes, setLoadingThemes] = useState(true)
 
-  useEffect(() => {
-    let cancelled = false
-    const api = window.api?.puzzles
-    if (!api) {
-      setLoadingThemes(false)
-      return
-    }
-    void api
-      .themes()
-      .then((r) => {
-        if (cancelled) return
-        // Most-common themes first: the picker reads as a "popular tactics" menu.
-        const sorted = [...(r?.themes ?? [])].sort((a, b) => b.count - a.count)
-        setThemes(sorted)
-      })
-      .catch(() => {
-        /* themes optional */
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingThemes(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
+  const sorted = useMemo(() => [...themes].sort((a, b) => b.count - a.count), [themes])
+  const q = query.trim().toLowerCase()
+  const matches = useMemo(
+    () => (q ? sorted.filter((t) => t.key.toLowerCase().includes(q)) : sorted),
+    [sorted, q]
+  )
+  const mostUsed = matches.slice(0, MOST_USED)
+  const groups = useMemo(() => groupThemes(matches), [matches])
 
-  const selected = config.themes
-  const toggleTheme = (key: string): void => {
-    setConfig({
-      themes: selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key]
+  const picked = s.config.themes
+  const toggle = (key: string): void => {
+    s.setConfig({
+      themes: picked.includes(key) ? picked.filter((k) => k !== key) : [...picked, key]
     })
   }
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return themes
-    return themes.filter(
-      (t) => t.key.toLowerCase().includes(q) || humanizeTheme(t.key).toLowerCase().includes(q)
-    )
-  }, [themes, query])
-
-  // Always surface the active selections, even when filtered out by the query.
-  const selectedChips = useMemo(
-    () => themes.filter((t) => selected.includes(t.key)),
-    [themes, selected]
-  )
+  const band = BANDS.find((b) => b.key === s.config.band) ?? BANDS[1]
+  const lo = band.lo ?? 0
+  const hi = band.hi ?? 4000
+  const whole = band.key === 'any'
 
   return (
-    <div className="custom-setup">
-      <header className="custom-setup-head">
-        <div className="custom-setup-titles">
-          <h2 className="custom-title">
-            <SlidersHorizontal size={20} aria-hidden /> Custom training
-          </h2>
-          <p className="muted custom-lede">
-            Build a focused set, then drill it. Custom sets sharpen specific motifs and
-            don&rsquo;t affect your puzzle rating.
-          </p>
-        </div>
-      </header>
-
-      {!apiReady && (
-        <div className="panel pad muted small custom-preview-note">
-          Preview mode. Connect to the desktop app to load puzzles.
-        </div>
-      )}
-
-      <div className="custom-setup-grid">
-        {/* ---- Themes ---- */}
-        <section className="panel custom-card custom-themes-card">
-          <div className="panel-head custom-card-head">
-            <span className="panel-title">Themes</span>
-            <span className="custom-card-hint">
-              {selected.length === 0
-                ? 'Any (mixed)'
-                : `${selected.length} selected`}
-            </span>
-          </div>
-
-          <div className="custom-search">
-            <Search size={15} aria-hidden className="custom-search-icon" />
-            <input
-              type="text"
-              className="custom-search-input"
-              placeholder="Search themes…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search themes"
-            />
-            {query && (
+    <div className="puz-build">
+      <div>
+        <div className="filterbar">
+          <input
+            className="filter-input"
+            type="search"
+            placeholder={themes.length > 0 ? `Filter ${themes.length} themes` : 'Filter themes'}
+            aria-label="Filter themes"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          {/* v1 offered Easier / My level / Harder. A custom set is served from a
+              FIXED rating window, the same one for everybody, so these are the
+              windows the app really queries rather than three words about a
+              rating that has no part in it. */}
+          <div className="segmented" role="group" aria-label="Difficulty">
+            {BANDS.map((b) => (
               <button
+                key={b.key}
+                className="seg"
                 type="button"
-                className="custom-search-clear"
-                onClick={() => setQuery('')}
-                aria-label="Clear search"
+                aria-pressed={s.config.band === b.key}
+                onClick={() => s.setConfig({ band: b.key })}
               >
-                <X size={14} aria-hidden />
+                {b.label}
               </button>
-            )}
+            ))}
           </div>
+        </div>
 
-          {selected.length > 0 && (
-            <div className="custom-selected-row">
-              {selectedChips.map((t) => (
-                <button
-                  key={t.key}
-                  type="button"
-                  className="custom-tag"
-                  onClick={() => toggleTheme(t.key)}
-                  title={`Remove ${humanizeTheme(t.key)}`}
-                >
-                  {humanizeTheme(t.key)}
-                  <X size={13} aria-hidden />
-                </button>
+        {sorted.length === 0 ? (
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Most used</h2>
+            </div>
+            <div className="well">
+              <div className="empty">
+                <p className="empty-line">No themes to pick from.</p>
+                <p className="empty-line">The puzzle set is what supplies them.</p>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <>
+            <section className="sec">
+              <div className="sec-head">
+                <h2 className="lbl">Most used</h2>
+                <span className="sec-count">
+                  {mostUsed.length} of {themes.length}
+                </span>
+              </div>
+              <div className="puz-extremes">
+                <span>
+                  <span className="lbl">Largest</span> {sorted[0].key} {formatCount(sorted[0].count)}
+                </span>
+                <span>
+                  <span className="lbl">Smallest</span> {sorted[sorted.length - 1].key}{' '}
+                  {formatCount(sorted[sorted.length - 1].count)}
+                </span>
+              </div>
+              <div className="chips">
+                {mostUsed.map((t) => (
+                  <button
+                    key={t.key}
+                    className="chip"
+                    type="button"
+                    aria-pressed={picked.includes(t.key)}
+                    onClick={() => toggle(t.key)}
+                  >
+                    {t.key} <span className="chip-n">{formatCount(t.count)}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="sec">
+              <div className="sec-head">
+                <h2 className="lbl">All themes</h2>
+                <span className="sec-count">{groups.length} groups</span>
+              </div>
+
+              {groups.map((g) => (
+                <details className="puz-group" key={g.name} open={q.length > 0}>
+                  <summary>
+                    <span className="lbl puz-gname">{g.name}</span>
+                    <span className="puz-gprev">{g.preview.join(', ')}</span>
+                    <svg className="icon puz-caret" aria-hidden focusable="false">
+                      <use href="#i-chev" />
+                    </svg>
+                  </summary>
+                  <div className="puz-gbody">
+                    <div className="chips">
+                      {g.themes.map((t) => (
+                        <button
+                          key={t.key}
+                          className="chip"
+                          type="button"
+                          aria-pressed={picked.includes(t.key)}
+                          onClick={() => toggle(t.key)}
+                        >
+                          {t.key} <span className="chip-n">{formatCount(t.count)}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </details>
               ))}
-              <button
-                type="button"
-                className="custom-tag custom-tag-clear"
-                onClick={() => setConfig({ themes: [] })}
-              >
-                Clear all
+            </section>
+          </>
+        )}
+      </div>
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Picked</h2>
+            <span className="sec-count">{picked.length}</span>
+          </div>
+          <div className="panel">
+            <div className="puz-selected">
+              {picked.map((name) => (
+                <div className="puz-selrow" key={name}>
+                  <span>{name}</span>
+                  <button className="puz-selrow-drop" type="button" onClick={() => toggle(name)}>
+                    drop
+                  </button>
+                </div>
+              ))}
+            </div>
+            {picked.length === 0 && (
+              <div className="empty">
+                <p className="empty-line">No theme picked.</p>
+                <p className="empty-line">Start anyway and you get the whole set.</p>
+              </div>
+            )}
+            <div className="panel-foot">
+              <button className="btn is-primary" type="button" onClick={s.start}>
+                Start custom run
               </button>
             </div>
-          )}
-
-          <div className="custom-theme-grid">
-            {loadingThemes
-              ? Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="custom-theme-chip is-skeleton" aria-hidden />
-                ))
-              : filtered.map((t) => {
-                  const on = selected.includes(t.key)
-                  return (
-                    <button
-                      key={t.key}
-                      type="button"
-                      className={`custom-theme-chip${on ? ' is-active' : ''}`}
-                      onClick={() => toggleTheme(t.key)}
-                      aria-pressed={on}
-                      title={humanizeTheme(t.key)}
-                    >
-                      <span className="custom-theme-check" aria-hidden>
-                        {on && <Check size={12} strokeWidth={3} />}
-                      </span>
-                      <span className="custom-theme-name">{humanizeTheme(t.key)}</span>
-                      <span className="custom-theme-count num">{formatCount(t.count)}</span>
-                    </button>
-                  )
-                })}
-            {!loadingThemes && filtered.length === 0 && (
-              <p className="muted small custom-noresults">No themes match “{query}”.</p>
-            )}
           </div>
         </section>
 
-        {/* ---- Difficulty + length + start ---- */}
-        <aside className="custom-setup-side">
-          <section className="panel custom-card">
-            <div className="panel-head custom-card-head">
-              <span className="panel-title">Difficulty</span>
-            </div>
-            <div className="custom-band-list">
-              {BANDS.map((b) => (
-                <button
-                  key={b.key}
-                  type="button"
-                  className={`custom-band${config.band === b.key ? ' is-active' : ''}`}
-                  onClick={() => setConfig({ band: b.key as Band })}
-                  aria-pressed={config.band === b.key}
-                >
-                  <span className="custom-band-label">{b.label}</span>
-                  <span className="custom-band-sub num">{b.sub}</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="panel custom-card">
-            <div className="panel-head custom-card-head">
-              <span className="panel-title">Set length</span>
-            </div>
-            <div className="custom-length-row">
-              {SET_LENGTHS.map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className={`custom-length${config.count === n ? ' is-active' : ''}`}
-                  onClick={() => setConfig({ count: n as SetLength })}
-                  aria-pressed={config.count === n}
-                >
-                  <span className="custom-length-num num">{n}</span>
-                  <span className="custom-length-cap">puzzles</span>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="panel custom-card">
-            <div className="panel-head custom-card-head">
-              <span className="panel-title">Filters</span>
-            </div>
-            <div className="custom-filters">
-              {/* Solution length */}
-              <div className="custom-filter-group">
-                <span className="custom-filter-label">Solution length</span>
-                <div className="custom-seg">
-                  {SOLUTION_LENGTHS.map((l) => (
-                    <button
-                      key={l.key}
-                      type="button"
-                      className={`custom-seg-btn${config.length === l.key ? ' is-active' : ''}`}
-                      onClick={() => setConfig({ length: l.key as SolutionLength })}
-                      aria-pressed={config.length === l.key}
-                      title={l.sub}
-                    >
-                      <span className="custom-seg-main">{l.label}</span>
-                      <span className="custom-seg-sub num">{l.sub}</span>
-                    </button>
-                  ))}
-                </div>
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Difficulty</h2>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Serving</span>
+                <span className="fact-value">{whole ? 'the whole set' : `${lo} to ${hi}`}</span>
               </div>
-
-              {/* Minimum popularity */}
-              <div className="custom-filter-group">
-                <span className="custom-filter-label">Minimum popularity</span>
-                <div className="custom-seg custom-seg-3">
-                  {POPULARITY_LEVELS.map((p) => (
-                    <button
-                      key={p.key}
-                      type="button"
-                      className={`custom-seg-btn${config.minPopularity === p.value ? ' is-active' : ''}`}
-                      onClick={() => setConfig({ minPopularity: p.value })}
-                      aria-pressed={config.minPopularity === p.value}
-                    >
-                      <span className="custom-seg-main">{p.label}</span>
-                    </button>
-                  ))}
-                </div>
+              <div className="fact">
+                <span className="lbl">Width</span>
+                <span className="fact-value">
+                  {whole ? 'everything' : `${hi - lo} points`}
+                  <span className="fact-note">
+                    {whole ? 'no window at all' : 'a fixed window, not your rating'}
+                  </span>
+                </span>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {/* Exclude solved */}
-              <button
-                type="button"
-                className={`custom-toggle${config.excludeSolved ? ' is-on' : ''}`}
-                onClick={() => setConfig({ excludeSolved: !config.excludeSolved })}
-                aria-pressed={config.excludeSolved}
-              >
-                <span className="custom-toggle-text">
-                  <span className="custom-toggle-title">Exclude solved</span>
-                  <span className="custom-toggle-sub">Only puzzles you haven&rsquo;t solved yet</span>
-                </span>
-                <span className="custom-toggle-switch" aria-hidden>
-                  <span className="custom-toggle-knob" />
-                </span>
-              </button>
+        {/* A custom run is a fixed set, and these are the other three cuts it
+            can be made with. v1 drew none of them. */}
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">The set</h2>
+            <span className="sec-count">{s.config.count} puzzles</span>
+          </div>
+          <div className="panel">
+            <div className="puz-pick">
+              <span className="lbl">How many</span>
+              <div className="chips">
+                {SET_LENGTHS.map((n) => (
+                  <button
+                    key={n}
+                    className="chip"
+                    type="button"
+                    aria-pressed={s.config.count === n}
+                    onClick={() => s.setConfig({ count: n })}
+                  >
+                    {n}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="puz-pick">
+              <span className="lbl">Solution length</span>
+              <div className="chips">
+                {SOLUTION_LENGTHS.map((l) => (
+                  <button
+                    key={l.key}
+                    className="chip"
+                    type="button"
+                    aria-pressed={s.config.length === l.key}
+                    onClick={() => s.setConfig({ length: l.key })}
+                  >
+                    {l.label} <span className="chip-n">{l.sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="puz-pick">
+              <span className="lbl">Liked by solvers</span>
+              <div className="chips">
+                {POPULARITY_LEVELS.map((p) => (
+                  <button
+                    key={p.key}
+                    className="chip"
+                    type="button"
+                    aria-pressed={s.config.minPopularity === p.value}
+                    onClick={() => s.setConfig({ minPopularity: p.value })}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="puz-pick">
+              <span className="lbl">Ones you have solved</span>
+              <div className="chips">
+                <button
+                  className="chip"
+                  type="button"
+                  aria-pressed={!s.config.excludeSolved}
+                  onClick={() => s.setConfig({ excludeSolved: false })}
+                >
+                  keep them
+                </button>
+                <button
+                  className="chip"
+                  type="button"
+                  aria-pressed={s.config.excludeSolved}
+                  onClick={() => s.setConfig({ excludeSolved: true })}
+                >
+                  skip them
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {!s.apiReady && (
+          <section className="sec">
+            <div className="well">
+              <div className="empty">
+                <p className="empty-line">This is a preview.</p>
+                <p className="empty-line">The desktop app is where the puzzle set lives.</p>
+              </div>
             </div>
           </section>
-
-          <button type="button" className="btn custom-start" onClick={start}>
-            <Play size={16} aria-hidden />
-            Start set
-          </button>
-          <p className="custom-start-note muted small">{summarize(config)}</p>
-        </aside>
-      </div>
+        )}
+      </aside>
     </div>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Solve screen
-// ---------------------------------------------------------------------------
+// ---------------------------------------------------------------- solve ----
 
-function SolveScreen({ session: s }: { session: Session }): JSX.Element {
+function SolveScreen({ s }: { s: CustomSession }): JSX.Element {
   const { settings } = useSettings()
-
   const isSolving = s.phase === 'solving'
-  const isLoading = s.phase === 'loading'
-  const isReview = s.phase === 'review'
-  const isEmpty = s.phase === 'empty' || s.phase === 'error'
   const hintsEnabled = settings.hintsEnabled
 
-  // Keyboard: Enter/n advances during the review flash; r retries; h hints
-  // (when hints are enabled in Settings).
+  // Enter takes the review flash off the screen, Escape leaves the set.
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if ((e.key === 'n' || e.key === 'Enter') && isReview) s.advance()
-      else if (e.key === 'r' && (isSolving || isReview)) s.retry()
+      if (e.key === 'Enter') s.advance()
+      else if (e.key === 'Escape') s.quit()
       else if (e.key === 'h' && isSolving && hintsEnabled) s.bumpHint()
       else if (e.key === 's' && isSolving) s.showSolution()
+      else if (e.key === 'r') s.retry()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [isReview, isSolving, hintsEnabled, s])
+  }, [s, isSolving, hintsEnabled])
 
-  if (isEmpty) {
-    return (
-      <div className="custom-empty-wrap">
-        <div className="panel pad custom-empty">
-          <div className="custom-empty-icon" aria-hidden>
-            <Search size={26} />
-          </div>
-          <h3>{s.phase === 'error' ? 'Could not build a set' : 'No puzzles match'}</h3>
-          <p className="muted">
-            {s.phase === 'error'
-              ? 'Something went wrong fetching your set. Try again.'
-              : 'No puzzles fit those themes and difficulty. Loosen the filters and try a new set.'}
-          </p>
-          <button type="button" className="btn" onClick={s.newSet}>
-            <ChevronLeft size={16} aria-hidden /> Back to setup
-          </button>
-        </div>
-      </div>
-    )
-  }
+  const taskState: TaskState = s.keepTrying
+    ? 'keepTrying'
+    : s.phase === 'review'
+      ? s.lastSolved
+        ? 'solved'
+        : 'failed'
+      : s.phase === 'loading'
+        ? 'loading'
+        : 'solving'
 
-  const userColor = s.orientation
-  // Fill the bar by puzzles *finished*: while a puzzle is in play the bar sits at
-  // its start; the review flash completes the segment for the one just finished.
-  const finished = s.index + (isReview ? 1 : 0)
-  const pct = s.total > 0 ? (finished / s.total) * 100 : 0
+  // Puzzles finished so far. The review flash completes the one just played,
+  // so it counts from that moment rather than at the next deal.
+  const finished = s.index + (s.phase === 'review' ? 1 : 0)
 
   return (
-    <div className="custom-solve">
-      {/* Top bar: progress + streak + quit */}
-      <div className="custom-solvebar">
-        <button type="button" className="custom-quit" onClick={s.quit} title="End set">
-          <ChevronLeft size={16} aria-hidden />
-          <span>End set</span>
-        </button>
-
-        <div className="custom-progress">
-          <div className="custom-progress-track">
-            <div className="custom-progress-fill" style={{ width: `${pct}%` }} />
-          </div>
-          <span className="custom-progress-label num">
-            {Math.min(s.index + 1, s.total)} <span className="custom-progress-sep">/</span> {s.total}
-          </span>
-        </div>
-
-        <div className={`custom-streak${s.streak > 0 ? ' is-active' : ''}`} title={`Streak ${s.streak}`}>
-          <Flame size={15} aria-hidden />
-          <span className="num">{s.streak}</span>
-        </div>
-      </div>
-
-      <div className="custom-solve-body">
+    <div className="lesson">
+      <div className="lesson-main">
         <div className="board-area">
           <div className="board-stage">
-            <div
-              className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
-            >
+            <div className={`board-wrap ${pieceSetClass(settings.pieceSet)}`}>
               <Board
                 fen={s.fen}
                 orientation={s.orientation}
@@ -445,363 +392,227 @@ function SolveScreen({ session: s }: { session: Session }): JSX.Element {
                   orientation={s.orientation}
                 />
               )}
-              {isLoading && <div className="puzzle-skeleton" aria-hidden />}
-              {isReview && (
-                <div
-                  className={`custom-flash${s.lastSolved ? ' is-solved' : ' is-failed'}`}
-                  aria-hidden
-                >
-                  <span className="custom-flash-badge">
-                    {s.lastSolved ? <Check size={30} strokeWidth={3} /> : <X size={30} strokeWidth={3} />}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <aside className="custom-solve-side">
-          <SolvePrompt session={s} userColor={userColor} />
-
-          <div className="panel custom-statgrid">
-            <div className="custom-stat">
-              <span className="custom-stat-label">Solved</span>
-              <span className="custom-stat-value num">
-                {s.solvedCount}
-                <span className="custom-stat-sub">/ {Math.max(s.index + (isReview ? 1 : 0), 0)}</span>
-              </span>
-            </div>
-            <div className="custom-stat">
-              <span className="custom-stat-label">Accuracy</span>
-              <span className="custom-stat-value num">{liveAccuracy(s, isReview)}%</span>
-            </div>
-            <div className="custom-stat">
-              <span className="custom-stat-label">Best streak</span>
-              <span className="custom-stat-value num">{s.bestStreak}</span>
             </div>
           </div>
 
-          {/* Same hint-row chrome as the classic trainer: ladder on top, actions below. */}
-          <div className="panel pad hint-row">
-            {hintsEnabled && (
-              <HintLadder
+          <div className="boardbar">
+            <div className="turn">
+              <span className={`turn-chip${s.turn === 'black' ? ' is-black' : ''}`} />
+              {s.turn === 'white' ? 'White to move' : 'Black to move'}
+            </div>
+            {isSolving && hintsEnabled && (
+              <HintButton
                 stage={s.hintStage}
                 disabled={!isSolving}
                 onHint={s.bumpHint}
                 revealSan={s.revealSan}
               />
             )}
-            {/* Give-up actions: available while solving (incl. the keep-trying
-                state after a wrong move). Skip records a fail if needed and moves
-                on; Show solution reveals the line first. */}
             {isSolving && (
-              <div className="hint-actions custom-giveup">
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={s.showSolution}
-                  disabled={!s.puzzle}
-                  title="Reveal the solution (s)"
-                >
-                  <Eye size={16} aria-hidden /> Show solution
+              <>
+                <button className="btn is-quiet" type="button" onClick={s.showSolution}>
+                  Show solution
                 </button>
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={s.skip}
-                  disabled={!s.puzzle}
-                  title="Skip this puzzle"
-                >
-                  Skip <SkipForward size={16} aria-hidden />
+                <button className="btn is-quiet" type="button" onClick={s.skip}>
+                  Skip
                 </button>
-              </div>
+              </>
             )}
-            <div className="hint-actions">
-              <button
-                type="button"
-                className="btn ghost"
-                onClick={s.retry}
-                disabled={!s.puzzle}
-                title="Retry this puzzle (r)"
-              >
-                <RotateCcw size={16} aria-hidden /> Retry
-              </button>
-              <button
-                type="button"
-                className="btn"
-                onClick={s.advance}
-                disabled={!isReview}
-                title="Next puzzle (n)"
-              >
-                Next <ArrowRight size={16} aria-hidden />
+            {/* Set the position back and play it again. The outcome is already
+                on the books, so this changes the score of nothing. */}
+            <button className="btn is-quiet" type="button" onClick={s.retry} disabled={!s.puzzle}>
+              Retry
+            </button>
+            <button className="btn is-quiet" type="button" onClick={s.quit}>
+              Leave the set
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">This puzzle</h2>
+            {s.puzzle && <span className="sec-count">{s.puzzle.id}</span>}
+          </div>
+
+          <PuzzleTask state={taskState} userColor={s.orientation} correctSan={s.correctSan} />
+
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Number</span>
+                <span className="fact-value">
+                  {s.index + 1} of {s.total}
+                </span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Rating</span>
+                <span className="fact-value">{s.puzzle ? s.puzzle.rating : ''}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Themes</span>
+                <span className="fact-value">
+                  {s.phase === 'review' && s.puzzle?.themes.length
+                    ? s.puzzle.themes.join(', ')
+                    : 'shown after you solve it'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">This run</h2>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Solved</span>
+                <span className="fact-value">{s.solvedCount}</span>
+              </div>
+              {/* Running accuracy over the ones already finished. Before the
+                  first one is finished there is nothing to divide by, so it
+                  says so instead of printing a zero. */}
+              <div className="fact">
+                <span className="lbl">Accuracy</span>
+                <span className="fact-value">
+                  {finished > 0 ? `${Math.round((s.solvedCount / finished) * 100)}%` : 'nothing yet'}
+                  {finished > 0 && (
+                    <span className="fact-note">
+                      over {finished} {finished === 1 ? 'puzzle' : 'puzzles'}
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="fact">
+                <span className="lbl">On the trot</span>
+                <span className="fact-value">{s.streak}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Best run</span>
+                <span className="fact-value">{s.bestStreak}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Your rating</span>
+                <span className="fact-value">
+                  untouched
+                  <span className="fact-note">a custom set is drilled, not rated</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  )
+}
+
+// -------------------------------------------------------------- the end ----
+
+function SummaryScreen({ s }: { s: CustomSession }): JSX.Element {
+  const sum = s.summary
+  if (!sum) return <NothingScreen s={s} />
+
+  return (
+    <div className="lesson">
+      <div className="lesson-main">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Set complete</h2>
+            <span className="sec-count">
+              {sum.solved} of {sum.total}
+            </span>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Accuracy</span>
+                <span className="fact-value">{Math.round(sum.accuracy * 100)}%</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Time</span>
+                <span className="fact-value">{formatDuration(sum.totalMs)}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Best run</span>
+                <span className="fact-value">{sum.bestStreak}</span>
+              </div>
+              {sum.weakest && (
+                <div className="fact">
+                  <span className="lbl">Hardest for you</span>
+                  <span className="fact-value">
+                    {sum.weakest.theme}
+                    <span className="fact-note">
+                      {sum.weakest.solved} of {sum.weakest.attempts}
+                    </span>
+                  </span>
+                </div>
+              )}
+              {sum.strongest && (
+                <div className="fact">
+                  <span className="lbl">Best for you</span>
+                  <span className="fact-value">
+                    {sum.strongest.theme}
+                    <span className="fact-note">
+                      {sum.strongest.solved} of {sum.strongest.attempts}
+                    </span>
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="panel-foot">
+              <button className="btn is-primary" type="button" onClick={s.playAgain}>
+                Run the same set again
               </button>
             </div>
           </div>
-        </aside>
+        </section>
       </div>
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Another set</h2>
+          </div>
+          <div className="panel">
+            <div className="panel-foot">
+              <button className="btn" type="button" onClick={s.newSet}>
+                Pick a new set
+              </button>
+            </div>
+          </div>
+        </section>
+      </aside>
     </div>
   )
 }
 
-function SolvePrompt({ session: s, userColor }: { session: Session; userColor: string }): JSX.Element {
-  if (s.phase === 'review') {
-    if (s.lastSolved) {
-      return (
-        <div className="panel pad custom-prompt is-solved">
-          <span className="custom-prompt-title">
-            <Check size={16} aria-hidden /> Solved
-          </span>
-          <span className="custom-prompt-sub">Nice. Loading the next one…</span>
-        </div>
-      )
-    }
-    return (
-      <div className="panel pad custom-prompt is-failed">
-        <span className="custom-prompt-title">
-          <X size={16} aria-hidden /> Not quite
-        </span>
-        <span className="custom-prompt-sub">
-          {s.correctSan ? (
-            <>
-              The move was <strong className="num">{s.correctSan}</strong>.
-            </>
-          ) : (
-            'Keep going.'
-          )}
-        </span>
-      </div>
-    )
-  }
-
-  if (s.phase === 'leadin') {
-    return (
-      <div className="panel pad custom-prompt">
-        <span className="custom-prompt-title">Get ready…</span>
-        <span className="custom-prompt-sub">Watch the opponent&rsquo;s move.</span>
-      </div>
-    )
-  }
-
-  if (s.phase === 'loading') {
-    return (
-      <div className="panel pad custom-prompt">
-        <span className="custom-prompt-title">Building your set…</span>
-        <span className="custom-prompt-sub">Fetching puzzles.</span>
-      </div>
-    )
-  }
-
-  // Retry-on-wrong: the fail is already recorded, but the learner keeps trying
-  // until they find it (or Skip / Show solution). Make that explicit.
-  if (s.keepTrying) {
-    return (
-      <div className="panel pad custom-prompt is-keeptrying">
-        <span className="custom-prompt-title">
-          <RotateCcw size={16} aria-hidden /> Recorded as failed. Keep trying.
-        </span>
-        <span className="custom-prompt-sub">
-          Take your time and find the move for {userColor === 'white' ? 'White' : 'Black'}.
-        </span>
-      </div>
-    )
-  }
-
+function NothingScreen({ s }: { s: CustomSession }): JSX.Element {
   return (
-    <div className="panel pad custom-prompt is-live">
-      <span className="custom-prompt-title">Your move</span>
-      <span className="custom-prompt-sub">
-        Find the best move for {userColor === 'white' ? 'White' : 'Black'}.
-      </span>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Summary screen
-// ---------------------------------------------------------------------------
-
-function SummaryScreen({
-  session: s,
-  summary
-}: {
-  session: Session
-  summary: CustomSummary
-}): JSX.Element {
-  const accPct = Math.round(summary.accuracy * 100)
-  const grade = gradeFor(summary.accuracy)
-  // SVG ring geometry for the accuracy dial.
-  const R = 52
-  const C = 2 * Math.PI * R
-  const dash = (summary.accuracy * C).toFixed(1)
-
-  return (
-    <div className="custom-summary-wrap">
-      <div className="panel custom-summary">
-        <div className="custom-summary-head">
-          <span className={`custom-grade custom-grade-${grade.tone}`}>{grade.label}</span>
-          <h2 className="custom-summary-title">Set complete</h2>
-          <p className="muted small">
-            {summary.solved} of {summary.total} solved
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">Custom set</h2>
+      </div>
+      <div className="well">
+        <div className="empty">
+          <p className="empty-line">
+            {s.phase === 'error' ? 'That set would not load.' : 'Nothing matched those themes.'}
           </p>
-        </div>
-
-        <div className="custom-summary-body">
-          <div className="custom-ring" role="img" aria-label={`Accuracy ${accPct} percent`}>
-            <svg viewBox="0 0 120 120" className="custom-ring-svg">
-              <circle className="custom-ring-bg" cx="60" cy="60" r={R} />
-              <circle
-                className={`custom-ring-fg custom-ring-${grade.tone}`}
-                cx="60"
-                cy="60"
-                r={R}
-                strokeDasharray={`${dash} ${C.toFixed(1)}`}
-                transform="rotate(-90 60 60)"
-              />
-            </svg>
-            <div className="custom-ring-center">
-              <span className="custom-ring-pct num">{accPct}</span>
-              <span className="custom-ring-unit">% accuracy</span>
-            </div>
-          </div>
-
-          <div className="custom-summary-stats">
-            <SummaryStat
-              icon={<Target size={16} aria-hidden />}
-              label="Solved"
-              value={`${summary.solved} / ${summary.total}`}
-            />
-            <SummaryStat
-              icon={<Clock size={16} aria-hidden />}
-              label="Total time"
-              value={formatDuration(summary.totalMs)}
-            />
-            <SummaryStat
-              icon={<Flame size={16} aria-hidden />}
-              label="Best streak"
-              value={String(summary.bestStreak)}
-            />
-            <SummaryStat
-              icon={<Clock size={16} aria-hidden />}
-              label="Avg / puzzle"
-              value={summary.total > 0 ? formatDuration(Math.round(summary.totalMs / summary.total)) : '·'}
-            />
-          </div>
-        </div>
-
-        {(summary.weakest || summary.strongest) && (
-          <div className="custom-themes-readout">
-            {summary.strongest && (
-              <div className="custom-readout custom-readout-strong">
-                <span className="custom-readout-icon" aria-hidden>
-                  <Sparkles size={15} />
-                </span>
-                <span className="custom-readout-body">
-                  <span className="custom-readout-label">Strongest</span>
-                  <span className="custom-readout-theme">{humanizeTheme(summary.strongest.theme)}</span>
-                </span>
-                <span className="custom-readout-score num">
-                  {summary.strongest.solved}/{summary.strongest.attempts}
-                </span>
-              </div>
-            )}
-            {summary.weakest && (
-              <div className="custom-readout custom-readout-weak">
-                <span className="custom-readout-icon" aria-hidden>
-                  <TrendingDown size={15} />
-                </span>
-                <span className="custom-readout-body">
-                  <span className="custom-readout-label">Work on</span>
-                  <span className="custom-readout-theme">{humanizeTheme(summary.weakest.theme)}</span>
-                </span>
-                <span className="custom-readout-score num">
-                  {summary.weakest.solved}/{summary.weakest.attempts}
-                </span>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="custom-summary-actions">
-          <button type="button" className="btn ghost" onClick={s.newSet}>
-            <SlidersHorizontal size={16} aria-hidden /> New set
-          </button>
-          <button type="button" className="btn" onClick={s.playAgain}>
-            <RotateCcw size={16} aria-hidden /> Play again
-          </button>
+          <p className="empty-line">Drop a theme or widen the difficulty and try again.</p>
         </div>
       </div>
-    </div>
+      <div className="startrow">
+        <div>
+          <div className="startrow-name">Back to the picker</div>
+          <div className="startrow-spec">Your picks are still there.</div>
+        </div>
+        <button className="btn is-primary" type="button" onClick={s.newSet}>
+          Pick again
+        </button>
+      </div>
+    </section>
   )
-}
-
-function SummaryStat({
-  icon,
-  label,
-  value
-}: {
-  icon: JSX.Element
-  label: string
-  value: string
-}): JSX.Element {
-  return (
-    <div className="custom-sumstat">
-      <span className="custom-sumstat-icon" aria-hidden>
-        {icon}
-      </span>
-      <span className="custom-sumstat-label">{label}</span>
-      <span className="custom-sumstat-value num">{value}</span>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-function formatCount(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
-  if (n >= 1000) return `${Math.round(n / 1000)}k`
-  return String(n)
-}
-
-function formatDuration(ms: number): string {
-  const totalSec = Math.round(ms / 1000)
-  const m = Math.floor(totalSec / 60)
-  const sec = totalSec % 60
-  if (m === 0) return `${sec}s`
-  return `${m}m ${sec.toString().padStart(2, '0')}s`
-}
-
-/** Live running accuracy over puzzles finished so far (review counts the current). */
-function liveAccuracy(s: Session, isReview: boolean): number {
-  const done = s.index + (isReview ? 1 : 0)
-  if (done <= 0) return 0
-  return Math.round((s.solvedCount / done) * 100)
-}
-
-function gradeFor(acc: number): { label: string; tone: 'good' | 'mid' | 'low' } {
-  if (acc >= 0.9) return { label: 'Excellent', tone: 'good' }
-  if (acc >= 0.7) return { label: 'Solid', tone: 'good' }
-  if (acc >= 0.5) return { label: 'Decent', tone: 'mid' }
-  return { label: 'Keep at it', tone: 'low' }
-}
-
-function summarize(config: {
-  themes: string[]
-  band: Band
-  count: number
-  length: SolutionLength
-  minPopularity: number
-  excludeSolved: boolean
-}): string {
-  const b = BANDS.find((x) => x.key === config.band)
-  const themeCount = config.themes.length
-  const themePart = themeCount === 0 ? 'mixed themes' : `${themeCount} theme${themeCount > 1 ? 's' : ''}`
-  const parts = [`${config.count} puzzles`, themePart, `${b?.label ?? ''} difficulty`]
-  const len = SOLUTION_LENGTHS.find((l) => l.key === config.length)
-  if (config.length !== 'any' && len) parts.push(`${len.label.toLowerCase()} solutions`)
-  const pop = POPULARITY_LEVELS.find((p) => p.value === config.minPopularity)
-  if (config.minPopularity > -100 && pop) parts.push(pop.label.toLowerCase())
-  if (config.excludeSolved) parts.push('unsolved only')
-  return parts.join(' · ')
 }

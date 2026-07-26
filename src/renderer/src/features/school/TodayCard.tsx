@@ -1,35 +1,22 @@
 import { useCallback, useEffect, useState, type JSX } from 'react'
-import {
-  CalendarCheck,
-  Flame,
-  GraduationCap,
-  ChevronRight,
-  RotateCcw,
-  Layers,
-  X,
-  CheckCircle2,
-  BookOpen
-} from 'lucide-react'
 import type { SchoolDaily, DailyStreak, DueConcept } from '@shared/types'
-import './school-home.css'
+import { Icon } from './SchoolScene'
 
 // ============================================================================
-// FEATURE 4 surface: the single "Today" card on the School home.
-//
-// ONE Today surface: today's recommended lesson + the LOCAL-day study streak, with
-// the SRS review queue folded in (no separate Reviews screen). Reads:
+// The one "Today" surface on the School index: today's lesson, the local-day
+// study streak, and the spaced-review queue folded into the same section. Reads:
 //   window.api.school.daily()   -> SchoolDaily (lesson + doneToday + reviewsDue)
 //   window.api.school.streak()  -> { streak: DailyStreak }  (calendar + flame)
 //
 // Surfaces, in order of "what should I do now":
-//   • not done, lesson queued  -> a big green "Start today's lesson" CTA
-//   • reviews due (any state)  -> a tappable row that opens the INLINE review drill
-//   • drill open               -> flashcard per DueConcept; grade each via
+//   • not done, lesson queued  -> the lesson as a row you can open
+//   • reviews due (any state)  -> a row that opens the INLINE review drill
+//   • drill open               -> a card per DueConcept; grade each via
 //                                 window.api.school.reviewConcept({conceptId,correct}).
 //                                 A review counts the day server-side, so on exit we
-//                                 re-pull daily()+streak() and the card flips to rest.
-//   • done today               -> "studied: come back tomorrow" rest state
-// A calendar strip of the last days (from streak.recent) sits at the foot always.
+//                                 re-pull daily()+streak() and the section flips to rest.
+//   • done today               -> the rest state
+// The calendar of the last local days sits at the foot of the panel always.
 //
 // Renders nothing only when the desktop bridge is absent (web/dev). Otherwise it
 // always shows a valid Today surface (even an empty curriculum is valid).
@@ -63,7 +50,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
   const [grading, setGrading] = useState(false)
   const [results, setResults] = useState<{ got: number; total: number }>({ got: 0, total: 0 })
 
-  // Re-pull daily + streak (after a review counts the day, the card must flip).
+  // Re-pull daily + streak (after a review counts the day, the section must flip).
   const refresh = useCallback(async (): Promise<void> => {
     const api = window.api?.school
     if (!api?.daily) return
@@ -97,7 +84,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
   }, [])
 
   // Open the inline drill: pull the due queue, reset progress. The loading flag
-  // keeps the terminal "All caught up" card from flashing while the IPC resolves
+  // keeps the terminal "All caught up" state from flashing while the IPC resolves
   // (queue is still [] until then).
   const openDrill = useCallback(async (): Promise<void> => {
     const api = window.api?.school
@@ -112,7 +99,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
     setDrillLoading(false)
   }, [])
 
-  // Close the drill and reconcile the card (a review counts the day server-side).
+  // Close the drill and reconcile the section (a review counts the day server-side).
   const closeDrill = useCallback(async (): Promise<void> => {
     setDrillOpen(false)
     setQueue([])
@@ -122,7 +109,7 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
   }, [refresh])
 
   // Grade the current card, advance, and fold the new remainingDue back into the
-  // card's reviewsDue so closing mid-drill leaves an accurate count.
+  // count so closing mid-drill leaves an accurate number.
   const grade = useCallback(
     async (correct: boolean): Promise<void> => {
       const api = window.api?.school
@@ -158,245 +145,172 @@ export function TodayCard({ onOpenChapter }: TodayCardProps): JSX.Element | null
   const current = streak?.current ?? 0
   const best = streak?.best ?? 0
 
-  const drillCard = queue[idx]
+  const card = queue[idx]
   const drillDone = drillOpen && queue.length > 0 && idx >= queue.length
   // Only a RESOLVED empty queue means "all caught up". Never the loading gap.
   const drillEmpty = drillOpen && !drillLoading && queue.length === 0
 
-  return (
-    <section className="school-today-card" aria-busy={!loaded}>
-      <header className="school-today-head">
-        <div className="school-today-titlewrap">
-          <span className="school-today-eyebrow" aria-hidden>
-            <CalendarCheck size={18} />
-          </span>
-          <div>
-            <h3 className="school-today-title">Today</h3>
-            {todayYmd && <span className="school-today-date">{todayYmd}</span>}
-          </div>
-        </div>
-        <span className={`school-today-streak${current === 0 ? ' is-cold' : ''}`}>
-          <Flame size={14} aria-hidden /> {current} day{current === 1 ? '' : 's'}
+  const count = drillOpen
+    ? card
+      ? `${idx + 1} of ${queue.length}`
+      : 'Review'
+    : current > 0
+      ? `${current} day streak`
+      : 'No streak yet'
+
+  const reviewRow = (
+    <button className="go" type="button" onClick={openDrill}>
+      <span>
+        <span className="go-name">Spaced review</span>
+        <span className="go-sub">
+          {reviewsDue} concept{reviewsDue === 1 ? '' : 's'} due · a quick refresh counts for today
         </span>
-      </header>
+      </span>
+      <Icon id="i-arrow" className="icon go-arrow" />
+    </button>
+  )
 
-      {/* -------- Inline review drill (takes over the body when open) -------- */}
-      {drillOpen ? (
-        drillLoading ? (
-          <div className="school-today-body">
-            <p className="muted small">Gathering what&rsquo;s due…</p>
-          </div>
-        ) : drillEmpty ? (
-          <div className="school-drill-done">
-            <span className="school-drill-done-icon" aria-hidden>
-              <CheckCircle2 size={28} />
-            </span>
-            <h4 className="school-drill-done-title">All caught up</h4>
-            <p className="school-drill-done-sub">
-              Nothing is due for review right now. Viktor will resurface concepts as they fade.
-            </p>
-            <button type="button" className="btn ghost" onClick={closeDrill}>
-              Back to Today
-            </button>
-          </div>
-        ) : drillDone ? (
-          <div className="school-drill-done">
-            <span className="school-drill-done-icon" aria-hidden>
-              <CheckCircle2 size={28} />
-            </span>
-            <h4 className="school-drill-done-title">Review complete</h4>
-            <p className="school-drill-done-score">
-              <b>{results.got}</b>
-              <span className="muted">/ {results.total} recalled</span>
-            </p>
-            <p className="school-drill-done-sub">
-              Today counts. Your streak is safe.
-            </p>
-            <button type="button" className="btn ghost" onClick={closeDrill}>
-              Back to Today
-            </button>
-          </div>
-        ) : drillCard ? (
-          <div className="school-drill">
-            <div className="school-drill-head">
-              <div className="school-drill-progress" aria-hidden>
-                <div
-                  className="school-drill-progress-fill"
-                  style={{ width: `${(idx / queue.length) * 100}%` }}
-                />
-              </div>
-              <span className="school-drill-count">
-                {idx + 1} / {queue.length}
-              </span>
-              <button
-                type="button"
-                className="school-drill-close"
-                onClick={closeDrill}
-                aria-label="Close review"
-              >
-                <X size={15} aria-hidden />
-              </button>
-            </div>
+  return (
+    <section className="sec" aria-busy={!loaded}>
+      <div className="sec-head">
+        <h2 className="lbl">Today</h2>
+        <span className="sec-count">{count}</span>
+      </div>
 
-            <div className="school-drill-card" key={drillCard.conceptId}>
-              <span className="school-drill-chapter">
-                <BookOpen size={12} aria-hidden /> {drillCard.chapterTitle}
-              </span>
-              <h4 className="school-drill-concept">{drillCard.conceptName}</h4>
-              {revealed ? (
-                <p className="school-drill-refresher">{drillCard.short}</p>
-              ) : (
-                <span className="school-drill-prompt">
-                  Do you remember this idea? Recall it, then reveal to check.
-                </span>
-              )}
+      <div className="panel">
+        {drillOpen ? (
+          drillLoading ? (
+            <div className="empty">
+              <p className="empty-line">Gathering what is due.</p>
             </div>
-
-            <div className="school-drill-actions">
-              {!revealed ? (
-                <button
-                  type="button"
-                  className="school-drill-reveal"
-                  onClick={() => setRevealed(true)}
-                >
-                  Show refresher
-                </button>
-              ) : (
-                <>
-                  <div className="school-drill-grade">
-                    <button
-                      type="button"
-                      className="school-drill-grade-btn is-missed"
-                      onClick={() => grade(false)}
-                      disabled={grading}
-                    >
-                      <RotateCcw size={16} aria-hidden /> Missed it
-                    </button>
-                    <button
-                      type="button"
-                      className="school-drill-grade-btn is-got"
-                      onClick={() => grade(true)}
-                      disabled={grading}
-                    >
-                      <CheckCircle2 size={16} aria-hidden /> Got it
-                    </button>
-                  </div>
-                  <p className="school-drill-hint muted small">
-                    Honest grades make the schedule work. “Missed it” brings it back sooner.
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        ) : null
-      ) : !loaded ? (
-        /* Loading skeleton: mirrors the lesson block + CTA shape to avoid jump. */
-        <div className="school-today-body" aria-hidden>
-          <div className="school-skel skel-line is-sm" />
-          <div className="school-skel skel-line is-lg" />
-          <div className="school-skel skel-cta" />
-        </div>
-      ) : (
-        /* -------------------- Normal Today body -------------------- */
-        <div className="school-today-body">
-          {doneToday ? (
-            <div className="school-today-rest">
-              <span className="school-today-rest-icon" aria-hidden>
-                <CheckCircle2 size={20} />
-              </span>
-              <div className="school-today-rest-body">
-                <span className="school-today-rest-title">Studied today</span>
-                <span className="school-today-rest-sub">
-                  {current > 1
-                    ? `That's ${current} days running. Come back tomorrow to keep it alive.`
-                    : 'Come back tomorrow to build your streak.'}
-                </span>
-                {reviewsDue > 0 && (
-                  <button type="button" className="school-today-rest-more" onClick={openDrill}>
-                    <Layers size={14} aria-hidden /> Review {reviewsDue} concept
-                    {reviewsDue === 1 ? '' : 's'} anyway
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : hasLesson ? (
+          ) : drillEmpty || drillDone ? (
             <>
-              <div className="school-today-lesson">
-                <span className="school-today-lesson-eyebrow">
-                  <GraduationCap size={13} aria-hidden /> Today&rsquo;s lesson
-                </span>
-                <h4 className="school-today-lesson-title">{daily?.lessonTitle}</h4>
-                {daily?.chapterTitle && (
-                  <span className="school-today-lesson-chapter">{daily.chapterTitle}</span>
-                )}
+              <div className="empty">
+                <p className="empty-line">
+                  {drillEmpty ? 'Nothing is due for review right now.' : 'Review complete.'}
+                </p>
+                <p className="empty-line">
+                  {drillEmpty
+                    ? 'Viktor will resurface concepts as they fade.'
+                    : `${results.got} of ${results.total} recalled. Today counts, so your streak is safe.`}
+                </p>
               </div>
+              <div className="panel-foot">
+                <button className="btn is-quiet" type="button" onClick={closeDrill}>
+                  Back to today
+                </button>
+              </div>
+            </>
+          ) : card ? (
+            <>
+              <div className="row" key={card.conceptId}>
+                <span className="lbl">{card.chapterTitle}</span>
+                <p className="go-name">{card.conceptName}</p>
+                <p className="go-sub">
+                  {revealed ? card.short : 'Recall this idea, then reveal it to check yourself.'}
+                </p>
+              </div>
+              <div className="row">
+                <div className="chips">
+                  {!revealed ? (
+                    <button className="btn" type="button" onClick={() => setRevealed(true)}>
+                      Show refresher
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={() => grade(false)}
+                        disabled={grading}
+                      >
+                        Missed it
+                      </button>
+                      <button
+                        className="btn is-primary"
+                        type="button"
+                        onClick={() => grade(true)}
+                        disabled={grading}
+                      >
+                        Got it
+                      </button>
+                    </>
+                  )}
+                  <button className="btn is-quiet" type="button" onClick={closeDrill}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : null
+        ) : !loaded ? (
+          <div className="empty" aria-hidden>
+            <p className="empty-line">Loading today.</p>
+          </div>
+        ) : (
+          <>
+            {doneToday ? (
+              <div className="empty">
+                <p className="empty-line">Studied today.</p>
+                <p className="empty-line">
+                  {current > 1
+                    ? `That is ${current} days running. Come back tomorrow to keep it alive.`
+                    : 'Come back tomorrow to build your streak.'}
+                </p>
+              </div>
+            ) : hasLesson ? (
               <button
+                className="go row is-here"
                 type="button"
-                className="school-today-cta"
                 onClick={() => daily?.chapterId && onOpenChapter?.(daily.chapterId)}
               >
-                Start lesson <ChevronRight size={18} aria-hidden />
-              </button>
-            </>
-          ) : (
-            <div className="school-today-empty">
-              <span className="school-today-empty-title">No lesson queued</span>
-              <span className="muted small">
-                {reviewsDue > 0
-                  ? 'You’re ahead of the curriculum. Keep your knowledge sharp with a review below.'
-                  : 'You’ve cleared every unlocked lesson. Pass a chapter test to open the next band.'}
-              </span>
-            </div>
-          )}
-
-          {/* Reviews-due row: folded into the one Today surface. Shown unless we
-              already offered "review anyway" inside the rest state. */}
-          {reviewsDue > 0 && !doneToday && (
-            <button type="button" className="school-today-reviews" onClick={openDrill}>
-              <span className="school-today-reviews-icon" aria-hidden>
-                <Layers size={18} />
-              </span>
-              <span className="school-today-reviews-body">
-                <span className="school-today-reviews-title">Spaced review</span>
-                <span className="school-today-reviews-sub">
-                  {reviewsDue} concept{reviewsDue === 1 ? '' : 's'} due. A quick refresh counts for
-                  today.
+                <span>
+                  <span className="go-name">{daily?.lessonTitle}</span>
+                  <span className="go-sub">{daily?.chapterTitle ?? 'Today’s lesson'}</span>
                 </span>
-              </span>
-              <span className="school-today-reviews-count">{reviewsDue}</span>
-            </button>
-          )}
-
-          {/* Calendar strip: last local days. */}
-          {strip.length > 0 && (
-            <div className="school-today-strip">
-              <div className="school-today-strip-label">
-                <span className="school-today-strip-title">Last {strip.length} days</span>
-                {best > 0 && <span className="school-today-strip-best">Best {best}</span>}
+                <Icon id="i-arrow" className="icon go-arrow" />
+              </button>
+            ) : (
+              <div className="empty">
+                <p className="empty-line">No lesson queued.</p>
+                <p className="empty-line">
+                  {reviewsDue > 0
+                    ? 'You are ahead of the curriculum. Keep it sharp with a review.'
+                    : 'You have cleared every unlocked lesson. Pass a chapter test to open the next band.'}
+                </p>
               </div>
-              <div className="school-today-cells">
-                {strip.map((day) => {
-                  const isToday = day.ymd === todayYmd
-                  return (
+            )}
+
+            {reviewsDue > 0 && reviewRow}
+
+            {strip.length > 0 && (
+              <>
+                <div className="row is-dense">
+                  <span className="lbl">
+                    {`Last ${strip.length} days${best > 0 ? ` · best ${best}` : ''}`}
+                  </span>
+                </div>
+                <div className="sch-days">
+                  {strip.map((day) => (
                     <span
+                      className="sch-day"
                       key={day.ymd}
-                      className="school-today-cell"
                       title={`${day.ymd}: ${day.solved ? 'studied' : 'no study'}`}
                     >
                       <span
-                        className={`school-today-cell-dot${day.solved ? ' is-studied' : ''}${
-                          isToday ? ' is-today' : ''
+                        className={`sch-day-dot${day.solved ? ' is-studied' : ''}${
+                          day.ymd === todayYmd ? ' is-today' : ''
                         }`}
                       />
-                      <span className="school-today-cell-day">{weekdayLabel(day.ymd)}</span>
+                      <span className="lbl">{weekdayLabel(day.ymd)}</span>
                     </span>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </section>
   )
 }

@@ -15,6 +15,7 @@ import { AssistPanel, useAssist } from './Assist'
 import type { ClockInterp } from './Clock'
 import { PlayerChip } from './PlayerChip'
 import { ResultBanner } from './ResultBanner'
+import './game.css'
 
 /** Clock state for one side, passed down from the clock engine. */
 export interface ClockSide {
@@ -298,7 +299,7 @@ export function GameView({
             onRematch={onRematch}
           />
         ) : (
-          <div className="board-controls play-controls">
+          <div className="boardbar play-controls">
             <div
               className={`play-controls-group${resignArmed ? ' is-confirm' : ''}`}
               role="group"
@@ -324,7 +325,7 @@ export function GameView({
                   <span className="play-controls-sep" aria-hidden />
                   {allowTakebacks && onTakeback && (
                     <button
-                      className="btn ghost play-takeback"
+                      className="btn ghost"
                       onClick={onTakeback}
                       disabled={over || !canTakeback}
                       title="Take back your last move (and the reply)"
@@ -358,7 +359,7 @@ export function GameView({
       <aside className="play-sidebar">
         <div className="panel move-panel">
           <div className="panel-head">
-            <span className="panel-title">Moves</span>
+            <h2 className="lbl">Moves</h2>
           </div>
           <MoveList
             root={tree.root}
@@ -380,7 +381,7 @@ export function GameView({
               onClick={() => setCoachOpen((o) => !o)}
               aria-expanded={coachOpen}
             >
-              <span className="panel-title">
+              <span className="lbl">
                 <GraduationCap size={15} /> Coach
               </span>
               <ChevronDown

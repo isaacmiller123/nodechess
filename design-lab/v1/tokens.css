@@ -1,0 +1,286 @@
+/* nodechess design tokens. Single source of visual truth.
+
+   This is d01's style.css promoted to the real property names, i.e. the names
+   already used by src/renderer/src/styles/tokens.css, so this file can replace
+   that one without touching a component. d01's values are kept as the default
+   palette (graphite instrument, amber signal). Dark only: :root IS the dark
+   palette, there is no light block.
+
+   FILE STRUCTURE, and the contract for alternate palettes:
+
+     1. PALETTE. Colour and only colour. Every property in this block is
+        overridable; an alternate palette is a [data-theme='name'] block that
+        redeclares this same list and nothing else. Shadows live here too
+        because a shadow is a colour on dark surfaces.
+     2. NON COLOUR. Space, radius, type, motion, metrics, z-index. A palette
+        must never touch this block. Swapping palettes cannot reflow a page.
+     3. COMPAT ALIASES. Old names kept pointing at the new ones so d01's
+        feel.css and any half-migrated component keep working. Deletable.
+
+   SURFACE LOGIC, inherited from d01 and load bearing: surfaces get LIGHTER as
+   they come forward and DARKER as they recess, so bg-subtle is darker than
+   bg-page on purpose. A container reads as a milled well, not a floating card.
+   An alternate palette that inverts that relationship breaks the design.
+
+   FONTS. Ship self hosted woff2, no CDN: Inter 4.x variable
+   (InterVariable.woff2) and JetBrains Mono 2.x variable
+   (JetBrainsMono[wght].woff2), both SIL OFL 1.1. Neither is installed here, so
+   the stacks fall through to the platform UI face and SF Mono, which is what
+   these pages actually render. Mono is structural: labels, identifiers and
+   numbers. Sans is everything you read. --font-display is deliberately the
+   sans, because a third voice would be costume. */
+
+/* ============================================================
+   1. PALETTE: cold iron, bone (default)
+   ============================================================ */
+
+:root {
+  /* Backgrounds and surfaces */
+  --bg-page: #1a1b1d;
+  --bg-subtle: #141415;
+  --surface: #222325;
+  --surface-2: #292a2d;
+  --border: #353639;
+  --border-strong: #636468;
+
+  /* Text. Primary sits near white because an instrument is read at a glance
+     and at an angle. Muted is the etched label grey. */
+  --text-primary: #e6e7e7;
+  --text-secondary: #a6a8aa;
+  --text-muted: #787b7f;
+  --text-inverse: #171819;
+
+  /* Accent: bone, a warm off white. Near monochrome by design, so it cannot
+     lean on hue to say "this is the important thing". Importance is carried by
+     fill, weight and contrast instead: a bone fill is the brightest area on a
+     dark screen, and it takes ink for a label. */
+  --accent: #cec9c0;
+  --accent-hover: #dcd8d0;
+  --accent-active: #eae7e1;
+  --accent-soft: #2f2d29;
+  --on-accent: #151619;
+
+  /* Semantic. These are the only hues on screen now, so they read as status
+     rather than as decoration. */
+  --success: #60a973;
+  --success-soft: #1b2620;
+  --danger: #d06962;
+  --danger-soft: #2a1c1b;
+  --warning: #d49849;
+  --warning-soft: #2a2116;
+  --info: #7da2bf;
+  --focus-ring: #dcd8d0;
+
+  /* Eval bar */
+  --eval-white: #f7f8f8;
+  --eval-black: #16191b;
+  --eval-mid: #757c81;
+
+  /* Move classification */
+  --class-brilliant: #2bc4bd;
+  --class-best: #79b94a;
+  --class-good: #8fae66;
+  --class-book: #b89a76;
+  --class-inaccuracy: #e6b25e;
+  --class-mistake: #e89a52;
+  --class-blunder: #e0504d;
+
+  /* Board annotation brushes: right click arrows and circles, and the engine's
+     own top lines. Six colours and two opacities, verbatim from chessground's
+     default brush table in node_modules/chessground/dist/state.js. They are
+     board colour, not palette colour, and no block in palettes.css touches
+     them: an arrow drawn on the board must be the same green whatever the
+     chrome around it is doing.
+
+     RANK, from AnalysisView.tsx: brushByRank = ['green', 'paleBlue',
+     'paleGrey']. The engine's best line is green at full opacity, the second is
+     pale blue, and grey belongs to the third and to nothing else. Drawing all
+     three grey throws away the only thing the colour was carrying. */
+  --brush-green: #15781b;
+  --brush-red: #882020;
+  --brush-blue: #003088;
+  --brush-yellow: #e68f00;
+  --brush-pale-blue: #003088;
+  --brush-pale-blue-opacity: 0.4;
+  --brush-pale-grey: #4a4a4a;
+  --brush-pale-grey-opacity: 0.35;
+
+  /* Board. NOT part of the palette. These five live in this block only because
+     the block is where colour is declared; no alternate palette may redeclare
+     them. They are the shipping app's .board-brown values from
+     src/renderer/src/styles/tokens.css, which calls the board square colours
+     "independent of light/dark chrome". The board is a fixed object: swapping
+     the chrome around it must leave every board pixel alone. */
+  --sq-light: #f0d9b5;
+  --sq-dark: #b58863;
+  --sq-mark: rgba(155, 199, 0, 0.41);
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+
+  /* Depth comes from borders. Shadows exist for things that truly float, and
+     they are tight and colourless. */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   2. NON COLOUR TOKENS. Palettes must not touch this block.
+   ============================================================ */
+
+:root {
+  /* Type */
+  --font-sans:
+    'InterVariable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text',
+    'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono', 'JetBrainsMono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas,
+    'Liberation Mono', monospace;
+  --font-display: var(--font-sans);
+  --font-figurine: 'Noto Sans Symbols 2', 'Apple Symbols', 'Segoe UI Symbol', serif;
+
+  /* Scale, compressed at the top end. This design has no display sizes: 23px
+     (--fs-xl) is the working ceiling, and hierarchy is carried by weight, rule
+     work and colour. The two sizes above it exist because the real token file
+     declares eight steps; nothing in these screens uses them. */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-base: 14px;
+  --fs-md: 16px;
+  --fs-lg: 19px;
+  --fs-xl: 23px;
+  --fs-2xl: 28px;
+  --fs-3xl: 34px;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 650;
+
+  --lh-tight: 1.22;
+  --lh-body: 1.5;
+
+  /* Inter wants a touch of negative tracking at text sizes. tracking-wide is
+     sized for small uppercase mono labels, which is its only job. */
+  --tracking-tight: -0.011em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.085em;
+
+  --num-feature: 'tnum' 1;
+
+  /* Spacing, 4px base. d01 used a seven step subset of this exact scale. */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-11: 64px;
+
+  /* Radii are machined fillets, not softness. Nothing is pill shaped except
+     things that genuinely are round. */
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 5px;
+  --radius-pill: 999px;
+  --radius-board: 4px;
+
+  --border-width: 1px;
+
+  /* THE BOARD MEASURE IS NOT A TOKEN. There used to be a --board-size here,
+     460px stepping down through three media queries, and every page sized its
+     board column from it. That was an invention. The shipping app sizes a board
+     in one line, on .board-wrap in src/renderer/src/styles/app.css:
+
+       width: min(78vh, 100%);  max-width: 760px;
+
+     Viewport height drives it, the column supplies the 100%, and 760 is the
+     ceiling. It lives in shell.css next to the rest of the board, it is not
+     parameterised, and no page may restate it. A token here would only be an
+     invitation to override it on one page. */
+
+  /* Width of the eval bar that stands beside the board on analysis. The bar is
+     a flex sibling inside .board-stage, so this is the bar itself and not a
+     reserved column: the stage centres the bar and the board together. */
+  --evalbar-w: 22px;
+
+  /* Motion is mechanical: short, and it decelerates hard rather than easing in
+     and out like a slideshow. --dur-entry is the one long duration in the set
+     and it belongs to a single arrival graphic, not to chrome. */
+  --dur-instant: 90ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 320ms;
+  --dur-board: 200ms;
+  --dur-entry: 700ms;
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Chrome metrics, so the rail and the readout can be pinned without magic
+     numbers leaking into layout files as raw pixels. --rail-w is reassigned by
+     [data-rail='min'] and is the only animated metric. */
+  --rail-w: 224px;
+  --rail-w-min: 56px;
+  --topbar-h: 44px;
+  --readout-h: 30px;
+  --tabbar-h: 60px;
+
+  /* Z index scale */
+  --z-base: 0;
+  --z-board-overlay: 50;
+  --z-sticky: 100;
+  --z-rail: 200;
+  --z-dropdown: 300;
+  --z-tooltip: 400;
+  --z-modal: 500;
+  --z-toast: 600;
+}
+
+/* Collapsed rail. Declared here because it is a metric, not a colour, and it
+   is set on <html> before first paint so the rail never flashes wide. */
+:root[data-rail='min'] {
+  --rail-w: var(--rail-w-min);
+}
+
+/* The three board-size media queries that used to sit here are gone with the
+   token. min(78vh, 100%) is already responsive in both axes: it shrinks with a
+   short window and it shrinks with a narrow column, and it does it continuously
+   rather than in three jumps at three breakpoints. Adding a query back would
+   reintroduce the exact defect, a board that is one size in the app and another
+   size here. */
+
+/* ============================================================
+   3. COMPAT ALIASES. d01 names pointing at the real ones.
+      Delete once nothing reads them.
+   ============================================================ */
+
+:root {
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-base: var(--fs-base);
+  --text-lg: var(--fs-md);
+  --text-xl: var(--fs-lg);
+  --text-2xl: var(--fs-xl);
+  --text-3xl: var(--fs-2xl);
+
+  --weight-normal: var(--fw-regular);
+  --weight-medium: var(--fw-medium);
+  --weight-bold: var(--fw-bold);
+
+  --leading-tight: var(--lh-tight);
+  --leading-normal: var(--lh-body);
+
+  --radius-full: var(--radius-pill);
+  --radius-board-legacy: var(--radius-board);
+
+  /* Motion aliases. shell.css writes --motion-*, which is the vocabulary the
+     owner asked for; these are the same three durations as --dur-*. */
+  --motion-fast: var(--dur-instant);
+  --motion-base: var(--dur-fast);
+  --motion-slow: var(--dur-base);
+}

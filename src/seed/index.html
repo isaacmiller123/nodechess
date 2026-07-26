@@ -9,6 +9,11 @@
       content="Run a nodechess seed node. Stores and relays data for other players."
     />
     <meta name="color-scheme" content="dark light" />
+    <!-- The same bundled faces the app uses. The seed page keeps its own
+         self-contained stylesheet, but the fonts are shared: a volunteer's
+         seed node should not be the one screen that looks like a different
+         product on Windows. Only the faces are pulled in, no tokens. -->
+    <link rel="stylesheet" href="../renderer/src/styles/fonts.css" />
   </head>
   <body>
     <div id="root"></div>

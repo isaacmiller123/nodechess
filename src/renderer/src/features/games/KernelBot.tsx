@@ -33,9 +33,11 @@ import { useBoardSound } from '../../games/boards/useBoardSound'
 import { BYOYOMI_PRESETS, byoyomiPresetById } from '../play/byoyomi'
 import { ReplayTheater, buildTheaterInput, type TheaterInput } from '../library/ReplayTheater'
 import type { CatalogEntry } from './catalog'
+import type { SurfaceSetup } from './setup'
 import { kernelColorLabel } from './KernelOtb'
 import { Board3DHost, BoardModeToggle, useBoardMode } from './boardMode'
 import { GO_MAIN_PRESETS, GoClockPair, useLocalGoClock, type GoClockConfig } from './goClock'
+import { SurfaceClockPair, useSurfaceClock } from './otbClock'
 import { TerritoryControl, useTerritoryEstimate } from './territory'
 import { useSaveFinishedGame } from './useSaveFinishedGame'
 
@@ -59,7 +61,8 @@ export function KernelBot({
   entry,
   kind,
   onToast,
-  onOpenSettings
+  onOpenSettings,
+  setup
 }: {
   entry: CatalogEntry
   /** Registry kind (GamePage resolves catalog aliases like checkers-8). */
@@ -67,6 +70,9 @@ export function KernelBot({
   onToast: (msg: string) => void
   /** Deep link to Settings → Datasets (the go install prompt). */
   onOpenSettings?: () => void
+  /** What the setup screen chose. Seeds only: the card below still owns every
+   *  game after this one, and it is where a missing engine gets said. */
+  setup?: SurfaceSetup
 }): JSX.Element {
   const game = useMemo(() => getGame(kind)!, [kind])
   const spec = game.spec
@@ -75,13 +81,13 @@ export function KernelBot({
   const isGo = kind === 'go'
 
   const [phase, setPhase] = useState<Phase>('setup')
-  const [level, setLevel] = useState(3)
-  const [userColor, setUserColor] = useState<PlayerColor>(spec.players[0])
-  const [goSize, setGoSize] = useState<9 | 13 | 19>(9)
-  const [goHandicap, setGoHandicap] = useState<GoHandicap>(0)
+  const [level, setLevel] = useState(setup?.level ?? 3)
+  const [userColor, setUserColor] = useState<PlayerColor>(setup?.color ?? spec.players[0])
+  const [goSize, setGoSize] = useState<9 | 13 | 19>(setup?.goSize ?? 9)
+  const [goHandicap, setGoHandicap] = useState<GoHandicap>(setup?.goHandicap ?? 0)
   // Go clocks (QoL): main + byo-yomi presets, both 'off' by default (untimed).
-  const [goMainId, setGoMainId] = useState('off')
-  const [goByoId, setGoByoId] = useState('off')
+  const [goMainId, setGoMainId] = useState(setup?.goMainId ?? 'off')
+  const [goByoId, setGoByoId] = useState(setup?.goByoId ?? 'off')
   const [state, setState] = useState<unknown>(null)
   const [thinking, setThinking] = useState(false)
   // A side lost on time (local go clocks). Terminal beside spec outcome.
@@ -120,9 +126,19 @@ export function KernelBot({
 
   useBoardSound(kind, state)
 
+  // Komi and the scoring rule have no control on this card, so they stay as
+  // the setup screen left them; handicap stones drop komi to 0.5 in go.ts.
   const initOptions = isGo
-    ? { size: goSize, ...(goHandicap >= 2 ? { handicap: goHandicap } : {}) }
-    : undefined
+    ? {
+        size: goSize,
+        ...(setup?.goScoring ? { scoring: setup.goScoring } : {}),
+        ...(goHandicap >= 2
+          ? { handicap: goHandicap }
+          : setup?.goKomi !== undefined
+            ? { komi: setup.goKomi }
+            : {})
+      }
+    : setup?.initOptions
   const moves = ((state ?? {}) as { moves?: readonly string[] }).moves ?? []
   const outcome = state !== null ? spec.result(state) : null
   const legal = useMemo(
@@ -154,6 +170,19 @@ export function KernelBot({
     timeLoss === null &&
     moves.length > 0
   const goClock = useLocalGoClock(goClockCfg, turn, clockRunning, clockEpoch, setTimeLoss)
+
+  // Every other kind runs v1's base-plus-increment control instead: same
+  // opener's grace, same flag, one clock model per game rather than per page.
+  const clockOver = outcome !== null || timeLoss !== null
+  const fischer = useSurfaceClock({
+    tcId: isGo ? undefined : setup?.tcId,
+    gameKey: clockEpoch,
+    turn,
+    moves: moves.length,
+    live: phase === 'playing' && state !== null && !clockOver,
+    over: clockOver,
+    onFlag: setTimeLoss
+  })
 
   // Territory estimate overlay + strip (hidden entirely without KataGo).
   const territory = useTerritoryEstimate(
@@ -256,6 +285,18 @@ export function KernelBot({
     setPhase('playing')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spec, goSize, goHandicap])
+
+  /* The game was configured on the library's setup screen, so this one opens
+     on the board. Go waits for the KataGo probe: an engine that is not
+     installed has to be said on this card, not swallowed by a board that then
+     never moves. */
+  const autoStarted = useRef(false)
+  useEffect(() => {
+    if (!setup?.autoStart || autoStarted.current || phase !== 'setup') return
+    if (isGo && engineReady !== true) return
+    autoStarted.current = true
+    start()
+  }, [setup, phase, isGo, engineReady, start])
 
   const backToSetup = useCallback(() => {
     gameSeq.current++
@@ -472,32 +513,41 @@ export function KernelBot({
   return (
     <div className="votb">
       <div className="votb-stage">
-        {state === null ? (
-          shimmer
-        ) : is3d ? (
-          <Board3DHost
-            kind={kind}
-            state={state}
-            orientation={userColor === 'black' && spec.flipPolicy === 'rotate' ? 'black' : 'white'}
-            // Scoring phase (go): the human marks dead stones for BOTH sides.
-            interactive={isUserTurn || (goScoring && timeLoss === null)}
-            onMove={onUserMove}
-            onAction={onAction}
-          />
-        ) : (
-          <Suspense fallback={shimmer}>
-            <Board
-              kind={kind}
-              state={state}
-              orientation={userColor === 'black' && spec.flipPolicy === 'rotate' ? 'black' : 'white'}
-              // Scoring phase (go): the human marks dead stones for BOTH sides.
-              interactive={isUserTurn || (goScoring && timeLoss === null)}
-              onMove={onUserMove}
-              onAction={onAction}
-              territory={territoryOn && !goScoring ? territory.estimate?.ownership : undefined}
-            />
-          </Suspense>
-        )}
+        {/* shell.css owns the measure: .board-stage centres, .board-wrap sizes. */}
+        <div className="board-stage">
+          <div className="board-wrap">
+            {state === null ? (
+              shimmer
+            ) : is3d ? (
+              <Board3DHost
+                kind={kind}
+                state={state}
+                orientation={
+                  userColor === 'black' && spec.flipPolicy === 'rotate' ? 'black' : 'white'
+                }
+                // Scoring phase (go): the human marks dead stones for BOTH sides.
+                interactive={isUserTurn || (goScoring && timeLoss === null)}
+                onMove={onUserMove}
+                onAction={onAction}
+              />
+            ) : (
+              <Suspense fallback={shimmer}>
+                <Board
+                  kind={kind}
+                  state={state}
+                  orientation={
+                    userColor === 'black' && spec.flipPolicy === 'rotate' ? 'black' : 'white'
+                  }
+                  // Scoring phase (go): the human marks dead stones for BOTH sides.
+                  interactive={isUserTurn || (goScoring && timeLoss === null)}
+                  onMove={onUserMove}
+                  onAction={onAction}
+                  territory={territoryOn && !goScoring ? territory.estimate?.ownership : undefined}
+                />
+              </Suspense>
+            )}
+          </div>
+        </div>
         {over && (
           <div className="votb-banner" role="status">
             <strong>{resultLabel}</strong>
@@ -521,6 +571,18 @@ export function KernelBot({
               white: userColor === 'white' ? 'You' : 'Bot'
             }}
             over={over || goScoring}
+          />
+        )}
+        {!isGo && (
+          <SurfaceClockPair
+            clock={fischer}
+            turn={turn}
+            labels={{
+              white: userColor === 'white' ? 'You' : 'Bot',
+              black: userColor === 'black' ? 'You' : 'Bot'
+            }}
+            order={spec.players}
+            over={over}
           />
         )}
         <div className="votb-turn">

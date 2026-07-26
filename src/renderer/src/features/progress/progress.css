@@ -1,644 +1,452 @@
-/* ============================================================
-   Progress / My games: feature-scoped styles. Tokens only.
-   ============================================================ */
+/* PROGRESS page styles. Everything here is prefixed .prg- so it cannot
+   collide with a sibling page, and every colour, size, radius and
+   duration is a token. shell.css is not touched.
 
-.progress-view {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-7);
-  max-width: 1100px;
-}
+   Charts are inline SVG rather than divs because the one rule shell.css
+   states about quantitative graphics is that a ratio is a class, never an
+   inline style. An SVG geometry attribute is neither: the numbers live in
+   the markup where they can be read, and no style attribute appears. */
 
-/* The global .card caps width at ~560px; lift it for the progress layout. */
-.progress-view .progress-card {
-  max-width: none;
-}
-
-/* ---- Header ---- */
-.progress-header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.progress-title {
-  margin: 0;
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-}
-.progress-sub {
-  margin: 0;
-  font-size: var(--fs-base);
-}
-
-/* ---- Card title primitives (mirror home/.panel-title look) ---- */
-.progress-card .card-title {
-  margin: 0 0 var(--space-5);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-}
-.progress-card .card-title-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
-.progress-card .card-title-row .card-title {
-  margin: 0;
-}
-
-/* ---- Top grid (ratings + totals + trend) ---- */
-.progress-grid {
+.prg-two {
   display: grid;
-  gap: var(--space-6);
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
   align-items: start;
 }
 
-/* ============================================================
-   Rating card
-   ============================================================ */
-.rating-rows {
+.prg-two > .sec {
+  margin-bottom: 0;
+}
+
+/* A pair of sections still owes the next section the same air one
+   section does. */
+.main > .prg-two {
+  margin-bottom: var(--space-8);
+}
+
+/* ---- chart frame, shared by the rating line and the accuracy bars ---- */
+
+.prg-plot {
+  padding: var(--space-5) var(--space-6) var(--space-4);
+}
+
+.prg-frame {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  column-gap: var(--space-4);
+}
+
+.prg-y {
   display: flex;
   flex-direction: column;
-}
-.rating-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    'head figures'
-    'bar  bar'
-    'range range';
-  align-items: center;
-  gap: var(--space-2) var(--space-4);
-  padding: var(--space-5) 0;
-  border-top: 1px solid var(--border);
-}
-.rating-row:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-.rating-row:last-child {
-  padding-bottom: 0;
-}
-.rating-head {
-  grid-area: head;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--text-secondary);
-}
-.rating-label {
-  font-size: var(--fs-sm);
-}
-.rating-figures {
-  grid-area: figures;
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  justify-self: end;
-}
-.rating-num {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.rating-num.muted {
-  color: var(--text-muted);
-  font-weight: var(--fw-medium);
-}
-.rating-band {
-  color: var(--text-secondary);
-  font-feature-settings: var(--num-feature);
-  white-space: nowrap;
-}
-.rating-prov {
-  font-style: italic;
-}
-.rating-range {
-  grid-area: range;
-  font-feature-settings: var(--num-feature);
-}
-
-/* Confidence bar (reused look from home strength card) */
-.rd-bar {
-  grid-area: bar;
-  height: 4px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.rd-fill {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  border-radius: var(--radius-pill);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
-/* ============================================================
-   Headline totals
-   ============================================================ */
-.headline-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-.headline-stat {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.headline-value {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.headline-label {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.headline-sub {
-  font-feature-settings: var(--num-feature);
-}
-
-@media (max-width: 520px) {
-  .headline-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-  }
-}
-
-/* ============================================================
-   Trend / sparkline
-   ============================================================ */
-.trend-empty {
-  margin: 0;
-}
-.trend-spark {
-  width: 100%;
-}
-.sparkline {
-  display: block;
-  width: 100%;
-  overflow: visible;
-  color: var(--accent);
-}
-.sparkline.trend-up {
-  color: var(--success);
-}
-.sparkline.trend-down {
-  color: var(--danger);
-}
-.spark-baseline {
-  stroke: var(--border);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-}
-.spark-line {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-.spark-area {
-  fill: currentColor;
-  opacity: 0.12;
-  stroke: none;
-}
-.spark-dot {
-  fill: currentColor;
-  stroke: var(--surface);
-  stroke-width: 1.5;
-}
-.trend-legend {
-  display: flex;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-  font-feature-settings: var(--num-feature);
-}
-.trend-tally {
-  font-weight: var(--fw-semibold);
-}
-.trend-tally.win {
-  color: var(--success);
-}
-.trend-tally.loss {
-  color: var(--danger);
-}
-.trend-tally.draw {
-  color: var(--text-secondary);
-}
-
-/* ============================================================
-   Streaks & form card
-   ============================================================ */
-.streaks-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-.streak-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.streak-stat .streak-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  margin-bottom: var(--space-1);
-}
-.streak-stat.tone-success .streak-icon {
-  color: var(--success);
-}
-.streak-stat.tone-danger .streak-icon {
-  color: var(--danger);
-}
-.streak-stat .streak-value {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.streak-stat.tone-success .streak-value {
-  color: var(--success);
-}
-.streak-stat.tone-danger .streak-value {
-  color: var(--danger);
-}
-.streak-stat .streak-label {
-  line-height: var(--lh-tight);
-}
-.streaks-foot {
-  margin: var(--space-5) 0 0;
-}
-
-@media (max-width: 520px) {
-  .streaks-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-  }
-}
-
-/* ============================================================
-   Analytics row (charts + breakdown)
-   ============================================================ */
-.analytics-grid {
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-}
-@media (max-width: 860px) {
-  .analytics-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.solverate-inline {
-  color: var(--text-primary);
-  font-weight: var(--fw-semibold);
-}
-
-/* ---- Chart blocks (rating / accuracy) ---- */
-.analytics-charts {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-6);
-}
-@media (max-width: 560px) {
-  .analytics-charts {
-    grid-template-columns: 1fr;
-    gap: var(--space-7);
-  }
-}
-.chart-block {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  min-width: 0;
-}
-.chart-block-head {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-3);
-}
-.chart-block-titles {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.chart-block-title {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.chart-block-hint {
-  line-height: var(--lh-tight);
-}
-.chart-block-foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-.chart-empty {
-  margin: 0;
-  padding: var(--space-6) 0;
+  height: 168px;
+  text-align: right;
 }
 
-.delta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  flex: none;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-.delta-pill.up {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.delta-pill.down {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-
-/* ---- Line chart (SVG) ---- */
-.linechart {
-  display: block;
-  width: 100%;
-  overflow: visible;
-  color: var(--accent);
-}
-.linechart.tone-success {
-  color: var(--success);
-}
-.lc-grid {
-  stroke: var(--border);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-}
-.lc-caption {
-  fill: var(--text-muted);
-  font-size: 9px;
+.prg-y span {
   font-family: var(--font-mono);
-  font-feature-settings: var(--num-feature);
-}
-.lc-line {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-.lc-area {
-  stroke: none;
-}
-.lc-dot {
-  fill: currentColor;
-  stroke: var(--surface);
-  stroke-width: 1.5;
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  line-height: 1;
+  color: var(--text-muted);
 }
 
-/* ============================================================
-   Results breakdown
-   ============================================================ */
-.breakdown-empty {
-  margin: 0;
+.prg-y span:first-child {
+  margin-top: -4px;
 }
-.rb-groups {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+
+.prg-y span:last-child {
+  margin-bottom: -4px;
 }
-.rb-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+
+.prg-canvas {
+  position: relative;
+  height: 168px;
 }
-.rb-row-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-3);
-}
-.rb-group-label {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.rb-score {
-  color: var(--text-secondary);
-  font-feature-settings: var(--num-feature);
-}
-.rb-bar {
-  display: flex;
-  width: 100%;
-  height: 10px;
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-  background: var(--surface-2);
-}
-.rb-seg {
+
+.prg-svg {
+  position: absolute;
+  inset: 0;
   display: block;
+  width: 100%;
   height: 100%;
-  transition: width var(--dur-base) var(--ease-out);
 }
-.rb-seg.win {
-  background: var(--success);
+
+/* The scale end labels are .ticks in shell.css and the words are .lbl.
+   This page only has to say which grid column they sit in. */
+.prg-x {
+  grid-column: 2;
+  margin-top: var(--space-3);
 }
-.rb-seg.draw {
-  background: var(--eval-mid);
+
+.prg-rule {
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
-.rb-seg.loss {
-  background: var(--danger);
+
+/* The provisional rating: a dashed level and a single tick at the origin,
+   which is the same reading the readout trace gives at zero. */
+.prg-level {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
 }
-.rb-tally {
+
+.prg-a,
+.prg-b {
+  fill: none;
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.prg-a {
+  stroke: var(--accent);
+}
+
+.prg-b {
+  stroke: var(--info);
+}
+
+.prg-seed {
+  fill: var(--accent);
+}
+
+.prg-bar {
+  fill: var(--surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.prg-bar.is-last {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+.prg-bar.is-void {
+  fill: none;
+  stroke: var(--border);
+  stroke-dasharray: 2 3;
+}
+
+/* A note sitting inside an empty chart, low left, clear of the level line. */
+.prg-void {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-4);
+}
+
+.prg-void.is-mid {
+  bottom: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.prg-legend {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  font-feature-settings: var(--num-feature);
-}
-.rb-count {
-  font-weight: var(--fw-semibold);
-}
-.rb-count.win {
-  color: var(--success);
-}
-.rb-count.draw {
-  color: var(--text-secondary);
-}
-.rb-count.loss {
-  color: var(--danger);
-}
-.rb-total {
+  gap: var(--space-5);
   margin-left: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .rb-seg {
-    transition: none;
+.prg-key {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.prg-dot {
+  width: 10px;
+  height: 2px;
+  flex: none;
+  background: var(--text-muted);
+}
+
+.prg-key.is-a .prg-dot {
+  background: var(--accent);
+}
+
+.prg-key.is-b .prg-dot {
+  background: var(--info);
+}
+
+.prg-key.is-off {
+  color: var(--text-muted);
+}
+
+/* ---- forty chapters ---- */
+
+.prg-chs {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+  /* Forty cells, capped so a wide column does not turn the map of the
+     curriculum into a wall of tiles. */
+  max-width: 420px;
+}
+
+.prg-ch {
+  aspect-ratio: 1 / 1;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.prg-ch.is-done {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+}
+
+.prg-ch.is-now {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* ---- theme meters ---- */
+
+.prg-th {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.prg-th:last-child {
+  border-bottom: 0;
+}
+
+.prg-th-name {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.prg-th-val {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+}
+
+.prg-meter {
+  grid-column: 1 / -1;
+  display: block;
+  width: 100%;
+  height: 3px;
+}
+
+.prg-meter-bg {
+  fill: var(--border);
+}
+
+.prg-meter-fill {
+  fill: var(--text-secondary);
+}
+
+.prg-th.is-weak .prg-meter-fill {
+  fill: var(--warning);
+}
+
+.prg-th.is-weak .prg-th-val {
+  color: var(--warning);
+}
+
+.prg-sub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.prg-sub .btn {
+  margin-left: auto;
+}
+
+/* ---- recent games table ----
+   The shell's sticky heads are pinned under the readout, which is right
+   for a page that is one long table and wrong for a table sitting deep
+   inside a scroll, so on this page they stay put. */
+.prg-games .gtable thead th {
+  position: static;
+}
+
+/* The shell sizes the opponent column for the games library, where the
+   name is the widest thing on the row. Here four measurements follow it,
+   so the name takes what is left and clips rather than running under
+   the result. */
+.prg-games .col-name {
+  width: auto;
+}
+
+.prg-games .g-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.prg-c-res {
+  width: 84px;
+}
+
+.prg-c-mv {
+  width: 72px;
+}
+
+.prg-c-acc {
+  width: 88px;
+}
+
+.prg-c-when {
+  width: 110px;
+}
+
+.prg-res {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.prg-res.is-win {
+  color: var(--success);
+}
+
+.prg-res.is-loss {
+  color: var(--danger);
+}
+
+@media (max-width: 1080px) {
+  .prg-two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .prg-plot {
+    padding: var(--space-4);
+  }
+
+  .prg-frame {
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: var(--space-3);
+  }
+
+  .prg-y,
+  .prg-canvas {
+    height: 132px;
+  }
+
+  .prg-chs {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    padding: var(--space-4);
+  }
+
+  .prg-th,
+  .prg-sub {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  /* Narrower, but never narrower than the column head itself. */
+  .prg-c-res {
+    width: 72px;
+  }
+
+  .prg-c-mv {
+    width: 64px;
+  }
+
+  .prg-c-acc {
+    width: 86px;
+  }
+
+  .prg-c-when {
+    display: none;
+  }
+
+  .prg-when-cell {
+    display: none;
+  }
+
+  /* THE OPPONENT WAS THE ONE THING THE ROW COULD NOT SAY.
+
+     Result, Moves and Accuracy are fixed at 72, 64 and 86, so at 375 the name
+     column is what is left: 127px, 103 of it inside the cell padding. The rule
+     above clips that name to one line, which turned "Stockfish level 8
+     (Grandmaster)" (206px) and an account handle like "gatecheck-a7#4EQH2"
+     (145px) into half a name and an ellipsis, and half an account handle is
+     not an identity. Three numbers keep their columns and the name wraps, so
+     the row is taller and nothing on it is a guess.
+
+     break-word is for the narrower phone. At 360 the name column is 88px and
+     "Grandmaster)", the last word of the longest bot label, measures 95, so
+     wrapping alone still painted 7px outside its own cell and into the
+     accuracy column beside it. break-word breaks a word only when the word
+     cannot fit a line by itself, so every name that fits stays whole. */
+  .prg-games .g-name {
+    overflow: visible;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* A row here opens that game in Analysis, so it is a target and not a
+     reading. One line of name gave it 38px. */
+  .prg-games .gtable tbody td {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+
+  /* "Start puzzles" is the one thing this section asks you to do. */
+  .prg-sub .btn {
+    height: 44px;
   }
 }
 
 /* ============================================================
-   My games table
+   THE ONLY THREE RULES THE DESIGN DOES NOT CARRY
+
+   No new visual idiom, only what a live page needs that a still one did not.
+   The design lab's own divider between the empty and the populated copies of
+   the page (.prg-band) is deliberately absent: this page shows whichever
+   reading the account actually gives, never both.
    ============================================================ */
-.games-loading {
-  padding: var(--space-5) 0;
-}
-.games-empty {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4) 0;
-}
-.games-empty p {
-  margin: 0;
+
+/* The design's two keys carry no figures while the page has none, and four
+   digits each once it does. That is wider than a phone's heading row, so they
+   wrap under it rather than pushing the heading off the screen. */
+.prg-legend {
+  flex-wrap: wrap;
 }
 
-.games-pager {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.games-range {
-  font-feature-settings: var(--num-feature);
-  margin-right: var(--space-1);
-}
-
-.games-table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-.games-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-base);
-}
-.games-table th {
-  text-align: left;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  padding: 0 var(--space-3) var(--space-3);
-  border-bottom: 1px solid var(--border);
-  white-space: nowrap;
-}
-.games-table td {
-  padding: var(--space-3);
-  border-bottom: 1px solid var(--border);
-  color: var(--text-primary);
-  vertical-align: middle;
-}
-.games-table tbody tr:last-child td {
-  border-bottom: 0;
-}
-.games-table .num {
-  font-feature-settings: var(--num-feature);
-  white-space: nowrap;
-}
-.games-table .col-date,
-.games-table .col-elo,
-.games-table .col-acc {
-  color: var(--text-secondary);
-}
-.games-table .col-opp {
-  width: 99%;
-}
-.opp-label {
-  font-weight: var(--fw-medium);
-  color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: inline-block;
-  max-width: 220px;
-}
-
-.col-color {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  white-space: nowrap;
-}
-.color-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: var(--radius-pill);
-  flex: none;
-  border: 1px solid var(--border-strong);
-}
-.color-dot.white {
-  background: var(--eval-white);
-}
-.color-dot.black {
-  background: var(--eval-black);
-}
-
-.games-table tr.row-clickable {
+/* A row in Recent games opens that game in Analysis. shell.css already lights
+   the row and its name on hover; only the pointer was missing, because in the
+   design the table was a picture rather than a control. The row keeps its row
+   semantics and takes focus, rather than claiming to be a button inside a
+   table, so the keyboard reaches it without the table losing its shape. */
+.prg-games .grow[tabindex] {
   cursor: pointer;
-  transition: background var(--dur-fast);
-}
-.games-table tr.row-clickable:hover td {
-  background: var(--surface-2);
-}
-.games-table tr.row-clickable:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: -2px;
 }
 
-/* Result chip: local copy (self-contained; matches home semantics) */
-.games-table .result-chip {
-  display: inline-block;
-  min-width: 48px;
-  text-align: center;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-sm);
-}
-.games-table .result-chip.win {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.games-table .result-chip.loss {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-.games-table .result-chip.draw,
-.games-table .result-chip.unknown {
-  background: var(--surface-2);
-  color: var(--text-secondary);
+/* The design's go row is a link. Navigation here is a click handler, so the row
+   is a button, and a button centres its text unless it is told otherwise. */
+.prg-two .golist .go {
+  text-align: left;
 }

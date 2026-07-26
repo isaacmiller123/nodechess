@@ -1,1177 +1,548 @@
-/* ============================================================
-   Games library: feature-scoped styles. Tokens only (tokens.css).
-   The library grid is the storefront: polish here is gating.
-   ============================================================ */
+/* GAMES LIBRARY, page scoped. Every rule is prefixed .gm- so it cannot
+   reach a sibling page, and every value is a token.
 
-.games-view {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  max-width: 1180px;
-}
+   The structure is the owner's: chess by itself at the top, then three
+   named groups, Variants, International and Other. Each group shows
+   three games and keeps the rest behind a dropdown that really opens.
+   The last thing in Variants is Create your own.
 
-.games-intro {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  max-width: 62ch;
-}
+   Picking a game opens one configuration screen: mode first, then a
+   clock, then a collapsed Advanced panel carrying the options that
+   particular game actually has. Nothing on this page plays a game. */
 
-.games-section-title {
-  margin: 0 0 var(--space-5);
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-}
-.games-section-sub {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-regular);
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--text-muted);
-}
-
-/* ---- Card grid ---- */
-
-.games-grid {
+.gm-grid {
   display: grid;
-  gap: var(--space-6);
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  align-items: stretch;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
 }
 
-.game-card {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  text-align: left;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    border-color 140ms ease;
+/* The rows behind a dropdown share the grid, so opening one adds rows to
+   the same rhythm rather than starting a second layout. */
+.gm-more {
+  margin-top: var(--space-4);
 }
-.game-card:hover,
-.game-card:focus-visible {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+
+/* Chess is one card and takes the full measure. */
+.gm-solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* The browser's own [hidden] rule is display:none at UA weight, which a
+   class that sets display:grid or display:flex outranks. Anything on
+   this page that can be hidden and also carries a display therefore has
+   to say so itself, or a shut dropdown stays on screen. */
+.gm-more[hidden],
+.gm-row[hidden] {
+  display: none;
+}
+
+.gm-card {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.gm-card:hover {
+  background: var(--surface-2);
   border-color: var(--border-strong);
 }
-.game-card:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-.game-card:active {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
 
-.game-card-thumb {
-  position: relative;
+.gm-art {
   display: block;
-  width: 100%;
-  aspect-ratio: 1;
+  width: 104px;
+  height: 104px;
   border-radius: var(--radius-md);
   overflow: hidden;
 }
-.game-card-board {
-  position: absolute;
-  inset: 0;
-  display: block;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  /* Thumbnails are decorative. Never interactive. */
-  pointer-events: none;
-}
-.game-card-board .cg-wrap {
-  width: 100%;
-  height: 100%;
-}
-.art-thumb {
+
+.gm-svg {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-md);
 }
 
-.game-card.is-coming .game-card-thumb::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  pointer-events: none;
+/* The thumb boards are the app's own board at 104px: the same --sq-light
+   and --sq-dark, and the same twelve cburnett SVGs as a full board,
+   embedded as <image>. Their colour rules are .thumb-* in shell.css,
+   next to .board, because they read the same five board tokens and must
+   survive a palette switch the same way. */
+
+.gm-text {
+  display: block;
+  min-width: 0;
 }
 
-.pill-p2 {
-  display: inline-flex;
+.gm-card .g-name {
+  display: block;
+}
+
+/* .g-note is a table cell in shell.css and clips to one line. In a card
+   it has two lines to work with. */
+.gm-card .g-note {
+  display: block;
+  white-space: normal;
+  margin-top: var(--space-1);
+}
+
+/* Chess on its own, one card wide, above the three groups. */
+.gm-hero {
+  grid-template-columns: 132px minmax(0, 1fr) auto;
   align-items: center;
-  padding: 1px var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.06em;
-}
-.game-card-pill {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
-  background: rgba(0, 0, 0, 0.55);
-  color: #fff;
-  backdrop-filter: blur(4px);
-}
-
-.game-card-title {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.game-card-tagline {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  line-height: 1.4;
-  min-height: 2.8em;
-}
-
-/* ---- Game page ---- */
-
-.game-page {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-6);
-  max-width: 1180px;
+  padding: var(--space-5);
 }
 
-/* In-play the page mirrors the chess Play experience: no 1180px cap, the
-   column fills the content viewport and the stage row takes everything the
-   slim playbar leaves behind. min-height (not height) keeps tall setup
-   screens (online host/join, bot picker) scrollable instead of clipped. */
-.game-page.is-playing {
-  max-width: none;
-  min-height: 100%;
-  gap: var(--space-5);
-}
-.game-page.is-playing > .game-online,
-.game-page.is-playing > .vbot-setup {
-  flex: 1;
-  min-height: 0;
-}
-.game-page.is-playing > .vbot-setup .vbot-setup-card {
-  /* auto margins center the card both ways without clipping on short windows */
-  margin: auto;
+.gm-hero .gm-art {
+  width: 132px;
+  height: 132px;
 }
 
-/* Slim in-play strip: back + title + mode tag (the PlayView-header analogue). */
-.game-playbar {
+.gm-hero .g-name {
+  font-size: var(--fs-lg);
+}
+
+.gm-hero-go {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.gm-card:hover .gm-hero-go {
+  color: var(--accent-hover);
+}
+
+/* THE DROPDOWN. A real disclosure: shell.js owns [data-disc], which flips
+   aria-expanded and the panel's hidden attribute, so the games behind it
+   are out of the accessibility tree while the group is shut. */
+.gm-disc {
   display: flex;
   align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-4);
+  height: 34px;
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.gm-disc:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.gm-disc .icon {
+  transform: rotate(-90deg);
+  transition: transform var(--motion-slow) var(--ease-out);
+}
+
+.gm-disc[aria-expanded='true'] .icon {
+  transform: rotate(90deg);
+}
+
+.gm-disc[aria-expanded='true'] .gm-disc-shut,
+.gm-disc[aria-expanded='false'] .gm-disc-open {
+  display: none;
+}
+
+.gm-count {
+  margin-left: auto;
+}
+
+.gm-group[hidden] {
+  display: none;
+}
+
+.gm-card.is-off {
+  display: none;
+}
+
+.gm-none {
+  display: none;
+}
+
+.gm-none.is-on {
+  display: block;
+}
+
+/* ---------- the configuration screen ----------
+
+   One dialog, filled per game. Simple by default: mode, clock, start.
+   Advanced is shut and carries only options the chosen game has. */
+
+/* Above --z-modal, because on a phone the tab bar is itself pinned at
+   --z-modal and would otherwise cover the Start button. */
+.gm-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-toast);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.gm-dialog {
+  position: fixed;
+  z-index: var(--z-toast);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - var(--space-8)));
+  max-height: calc(100vh - var(--space-9));
+  overflow-y: auto;
+  background: var(--surface);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.gm-dlg-head {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 28px;
   gap: var(--space-4);
-  min-height: 0;
+  align-items: center;
+  padding: var(--space-5);
+  border-bottom: var(--border-width) solid var(--border);
 }
-.game-playbar .game-back {
-  flex: none;
+
+.gm-dlg-art .gm-art {
+  width: 72px;
+  height: 72px;
 }
-.game-playbar-title {
-  margin: 0;
+
+.gm-dlg-title {
   font-size: var(--fs-lg);
   font-weight: var(--fw-semibold);
-  line-height: var(--lh-tight, 1.2);
-}
-.game-playbar-mode {
-  padding: 1px var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.04em;
+  line-height: var(--lh-tight);
 }
 
-.game-back {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  border: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
+.gm-dlg-note {
+  margin-top: var(--space-1);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  padding: var(--space-2) 0;
-}
-.game-back:hover {
-  color: var(--accent);
-}
-
-.game-hero {
-  display: flex;
-  gap: var(--space-7);
-  align-items: center;
-  padding: var(--space-6);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
-  box-shadow: var(--shadow-sm);
-}
-.game-hero-visual {
-  flex: 0 0 168px;
-  width: 168px;
-  height: 168px;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-.game-hero-board {
-  display: block;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-.game-hero-board .cg-wrap {
-  width: 100%;
-  height: 100%;
-}
-.game-hero-copy {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  min-width: 0;
-}
-.game-hero-titlerow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.game-hero-titlerow h2 {
-  margin: 0;
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-}
-.game-hero-tagline {
-  margin: 0;
   color: var(--text-secondary);
-  font-size: var(--fs-md);
-  max-width: 58ch;
 }
 
-.game-tabs {
-  display: inline-flex;
-  gap: var(--space-2);
-}
-.game-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition:
-    background 120ms ease,
-    color 120ms ease,
-    border-color 120ms ease;
-}
-.game-tab:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
-}
-.game-tab.is-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
-}
-
-/* ---- Play-mode cards ---- */
-
-.game-modes {
-  display: grid;
-  gap: var(--space-6);
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  max-width: 860px;
-}
-.mode-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-6);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  font: inherit;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    border-color 140ms ease;
-}
-.mode-card:hover,
-.mode-card:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-  border-color: var(--border-strong);
-}
-.mode-card:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-.mode-icon {
+.gm-x {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.mode-name {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-}
-.mode-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.mode-status {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  padding: 1px var(--space-3);
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.04em;
-}
-.mode-status.is-live {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.mode-status.is-p2 {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-/* ---- Local OTB ---- */
-
-/* In-play layout clones the chess Play experience (play.css .play-view):
-   the board is the hero in a height-bounded left column, with a compact side
-   rail on the right. --votb-h is the board's height budget: viewport height
-   minus the chrome stacked above it (topbar ~58 + content padding 48 +
-   playbar strip ~34 + page gap + air). */
-.votb {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: var(--space-7);
-  align-items: stretch;
-  flex: 1;
-  min-height: 0;
-  --votb-h: calc(100vh - 168px);
-}
-.votb-stage {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  min-height: 0;
-}
-/* The board tile fills the column up to the height budget. Kinds with a
-   readout strip under the board (go captures, othello count, morris/ttt hint)
-   hand its height back; non-square aspects (connect4 7:6.6, hex ~1.66:1)
-   convert the budget through their ratio so height stays the binding edge. */
-.votb-stage .goboard,
-.votb-stage .gboard.is-othello,
-.votb-stage .gboard.is-morris,
-.votb-stage .gboard.is-tictactoe {
-  width: min(100%, calc(var(--votb-h) - 34px));
-}
-.votb-stage .ckboard,
-.votb-stage .b3d-stage,
-.votb-stage .kotb-loading {
-  width: min(100%, var(--votb-h));
-}
-.votb-stage .gboard.is-connect4 {
-  width: min(100%, calc(var(--votb-h) * 7 / 6.6));
-}
-.votb-stage .gboard.is-hex {
-  width: min(100%, calc(var(--votb-h) * 1.55));
-}
-.votb-board {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: var(--radius-board);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-.votb-board .cg-wrap {
-  width: 100%;
-  height: 100%;
-}
-/* ChessFamilyBoard stage: the component owns its aspect ratio (9x10 boards,
-   pockets stacked above/below): this wrapper only carries the board-theme +
-   piece-set classes; the wrap's width is capped so board height fits the
-   --votb-h budget exactly (aspect-safe: width cap == height cap x ratio). */
-.votb-cfb {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.votb-cfb .cfb-wrap,
-.votb-cfb .cfb-loading {
-  width: min(100%, calc(var(--votb-h) * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
-}
-/* Pocket kinds (crazyhouse, shogi) stack trays above/below the board. Give
-   their height back to the budget so the whole column still fits. */
-.votb-cfb:has(.cfb-pocket) .cfb-wrap {
-  width: min(100%, calc((var(--votb-h) - 104px) * var(--cfb-files, 8) / var(--cfb-ranks, 8)));
-}
-.votb-banner {
-  position: absolute;
-  left: 50%;
-  bottom: var(--space-5);
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: calc(100% - var(--space-5) * 2);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
-  background: rgba(20, 22, 26, 0.88);
-  color: #fff;
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(6px);
-}
-/* Secondary banner actions (Watch replay) restated for the dark chip. */
-.votb-banner .votb-btn:not(.is-primary) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: #fff;
-}
-.votb-banner .votb-btn:not(.is-primary):hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.votb-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding: var(--space-6);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
+  width: 28px;
+  height: 28px;
   align-self: start;
-  min-width: 0;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
 }
 
-/* Narrow windows: side rail collapses under the board (GameView pattern). */
-@media (max-width: 1200px) {
-  .votb {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    --votb-h: calc(100vh - 200px);
+.gm-x:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.gm-dlg-body {
+  padding: var(--space-5);
+}
+
+.gm-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 34px;
+}
+
+.gm-row + .gm-row {
+  margin-top: var(--space-4);
+}
+
+.gm-row > .lbl {
+  flex: none;
+  width: 112px;
+}
+
+.gm-row > .gm-ctl {
+  margin-left: auto;
+}
+
+.gm-select,
+.gm-input {
+  height: 34px;
+  min-width: 168px;
+  padding: 0 var(--space-3);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-normal);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.gm-input.is-wide {
+  min-width: 240px;
+}
+
+.gm-select:focus,
+.gm-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.gm-adv {
+  margin-top: var(--space-6);
+  border-top: var(--border-width) solid var(--border);
+  padding-top: var(--space-5);
+}
+
+.gm-adv-panel {
+  margin-top: var(--space-5);
+  padding: var(--space-5);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.gm-dlg-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-top: var(--border-width) solid var(--border);
+}
+
+/* Sticky only where the readout has a fixed height. Below 1080px the
+   strip wraps, so a fixed offset would be wrong, and shell.css unpins
+   its own sticky heads at the same breakpoint for the same reason. */
+@media (min-width: 1081px) {
+  .gm-bar {
+    position: sticky;
+    top: var(--readout-h);
+    z-index: var(--z-sticky);
+    background: var(--bg-page);
+    padding-top: var(--space-6);
+    margin-top: calc(var(--space-6) * -1);
+    margin-bottom: var(--space-7);
+    border-bottom: var(--border-width) solid var(--border);
   }
-  .votb-stage {
+
+  .gm-bar .filterbar {
+    margin-bottom: 0;
+    padding-bottom: var(--space-4);
+  }
+}
+
+@media (max-width: 1000px) {
+  .gm-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .gm-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gm-card {
+    grid-template-columns: 88px minmax(0, 1fr);
+  }
+
+  .gm-art {
+    width: 88px;
+    height: 88px;
+  }
+
+  .gm-hero {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  .gm-hero .gm-art {
+    width: 88px;
+    height: 88px;
+  }
+
+  .gm-hero-go {
+    grid-column: 1 / -1;
+  }
+
+  /* THE SETUP SCREEN WAS NOT FIXED TO THE VIEWPORT, AND SO IT WAS NOT ON IT.
+
+     The rule below was written to size this screen to the phone and it was
+     sizing it to the games list instead, because top and bottom were being
+     measured against .main rather than against the window. Measured at
+     375x812 with Go and Advanced open:
+
+       .gm-dialog   y 146.5   height 3669.5   bottom 3816
+       scrollHeight === clientHeight, so there was nothing to scroll
+       Start        y 1076    bottom 1112, 360px below the tab bar
+
+     Two more symptoms of the same cause. .gm-scrim's inset: 0 covered .main
+     and not the window, so the readout above the sheet stayed lit and live.
+     And the --z-toast this file raises the sheet to "so the tab bar does not
+     cover the Start button" could not do that, because .main was opening a
+     stacking context as well: 600 inside it still lost to .tabbar's 500
+     outside it.
+
+     THE CAUSE IS SHELL-WIDE and its fix now lives in styles/components.css:
+     shell.css ends page-enter with fill-mode `both`, so .main kept a computed
+     identity transform for the life of the page, and any transform makes an
+     element the containing block, and the stacking context, for every
+     position: fixed descendant under it. components.css swaps the phone to a
+     keyframe that fades without moving. Nothing here repeats that; the rules
+     below are only what this screen owes on top of it.
+
+     Measured again at 375x812 with the same screen open:
+       .gm-dialog   y 16   height 780   bottom 796   scrollMax 313
+       .gm-scrim    0 to 812, the whole window
+       Start        y 735  bottom 779, on the screen and over the tab bar */
+
+  /* On a phone the screen is a sheet with margins rather than a centred card.
+
+     THE SHEET IS NOT DRAWN OVER THE TAB BAR, whatever the --z-toast above
+     was meant to buy. Measured at 375x812 with the Chess sheet open:
+     elementFromPoint at the middle of the Start button, y=757, returns
+     `button.tab.is-here`, the tab bar, with .btn.is-primary beneath it. Only
+     the 17px of that 44px button above y=752 could be pressed.
+
+     THE CAUSE IS NOT THIS FILE'S. .gm-dialog is z-index 600 and .tabbar is
+     500, and they would settle that between them if they shared a stacking
+     context. They do not: .main is still one. styles/components.css swapped
+     the phone to `page-enter-flat` to drop the transform that was making it
+     one, but the keyframe it swapped to animates opacity and .main keeps
+     shell.css's `animation-fill-mode: both`, and a filled opacity effect is
+     a stacking context in Chrome exactly like a transform is. Proved by
+     injecting `.main { animation: none }` at 375x812 and nothing else: the
+     same probe at y=757 then returns div.gm-dialog. So every z-index inside
+     .main, this sheet's included, is sealed under .tabbar's 500. Reported
+     as a shell change; the reservation below does not depend on it.
+
+     So the sheet stops above the bar rather than claiming to cover it, which
+     is what a phone sheet does anyway. --tabbar-h plus the inset is the same
+     reservation .main makes for itself in components.css. Measured after at
+     375x812: the sheet runs 16 to 744 and Start 683 to 727, a whole 44px
+     target with 25px between it and the bar, on all 24 games.
+
+     THE TOP END OF THE SAME FAULT IS LEFT ALONE ON PURPOSE. The readout is
+     sealed above this sheet the way the tab bar is, and it covers the head:
+     at 375x812 the readout runs 44 to 124.5 over a head that runs 17 to
+     129.2, so elementFromPoint on the close button returns span.rd-value and
+     the title reads through it. The bar can be reserved for because
+     --tabbar-h states its height. The readout's does not exist as a token:
+     --readout-h is a 30px min-height and the strip measured 80.5 here
+     because it wraps, and it wraps differently once an account fills it. An
+     offset guessed from one reading would be wrong at the next, so the head
+     waits for the shell fix. The sheet still closes: Escape, and the scrim
+     everywhere outside the readout's own band. */
+  .gm-dialog {
+    top: var(--space-5);
+    bottom: calc(
+      var(--tabbar-h) + var(--space-3) + env(safe-area-inset-bottom, 0px)
+    );
+    transform: translateX(-50%);
+    max-height: none;
+    /* A sheet that has reached its own end must not start scrolling the games
+       list behind it. */
+    overscroll-behavior: contain;
+  }
+
+  /* START WENT OFF THE END OF THE SHEET IT WAS INSIDE.
+
+     The rule above sizes the sheet to the phone, and the sheet scrolls, so
+     nothing in it is unreachable. But .gm-dlg-foot is the last block in that
+     scroller, so on the two games whose options do not fit it scrolled away
+     with everything else, and Start is the single action the screen exists
+     to offer. Measured at 375x812 with Advanced open, sheet 16 to 796:
+
+       Go            scrollHeight 1091 in 778   Start bottom at 1091.7
+       Three-check   scrollHeight  830 in 778   Start bottom at  831
+       every other game fits and the foot already sat at the sheet's end
+
+     339px and 79px past the bottom of the screen respectively, and no
+     amount of scrolling .content reaches them because the sheet is fixed
+     and scrolls by itself. Pinning the foot to the bottom of that scroller
+     puts Start where it already is on the twenty-two games that fit, and
+     keeps it there on the two that do not. The head is not pinned: the
+     close button scrolls, but Escape and the scrim both close as well. */
+  .gm-dlg-foot {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+  }
+
+  .gm-row {
+    flex-wrap: wrap;
+  }
+
+  .gm-row > .gm-ctl {
+    margin-left: 0;
     width: 100%;
   }
-  .votb-side {
-    width: min(100%, 620px);
-    align-self: center;
+
+  .gm-select,
+  .gm-input {
+    width: 100%;
   }
-}
-.votb-turn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-weight: var(--fw-semibold);
-}
-.votb-turn-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-}
-.votb-turn-dot.is-white {
-  background: #f5f5f5;
-}
-.votb-turn-dot.is-black {
-  background: #26282c;
-  /* stays visible on dark app themes. The dark disc needs a light ring */
-  border-color: rgba(255, 255, 255, 0.4);
-}
-.votb-movecount {
-  margin-left: auto;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-regular);
-  color: var(--text-muted);
-}
-.votb-flip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-}
-.votb-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-.votb-btn:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-2);
-}
-.votb-btn.is-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--on-accent);
-}
-.votb-note {
-  margin: 0;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  line-height: 1.5;
-}
 
-/* ---- vs Bot (VariantBot) ---- */
-
-.vbot-setup {
-  display: flex;
-  justify-content: center;
-  padding: var(--space-6) 0;
-}
-.vbot-setup-card {
-  width: min(560px, 100%);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  padding: var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-}
-.vbot-setup-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.vbot-setup-head h3 {
-  margin: 0;
-  font-size: var(--fs-lg);
-}
-.vbot-setup-head p {
-  margin: 2px 0 0;
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.vbot-levels {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: var(--space-2);
-}
-.vbot-level {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: var(--space-3) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-secondary);
-  font: inherit;
-  cursor: pointer;
-  transition: border-color 120ms ease, background 120ms ease;
-}
-.vbot-level:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-2);
-}
-.vbot-level.is-active {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-  color: var(--text-primary);
-}
-.vbot-level-num {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  line-height: 1.1;
-}
-.vbot-level-name {
-  font-size: var(--fs-xs);
-}
-.vbot-level-hint {
-  margin: calc(-1 * var(--space-3)) 0 0;
-  min-height: 1.2em;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  text-align: center;
-}
-.vbot-colors {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-}
-.vbot-color {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  cursor: pointer;
-}
-.vbot-color:hover {
-  border-color: var(--border-strong);
-  background: var(--surface-2);
-}
-.vbot-color.is-active {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-}
-.vbot-colors.is-three {
-  grid-template-columns: repeat(3, 1fr);
-}
-.vbot-start {
-  align-self: stretch;
-  padding: var(--space-4);
-  font-size: var(--fs-md);
-}
-/* Inline engine-install prompt (go: KataGo not downloaded yet). Replaces the
-   Start button with an actionable card instead of a dead toast. */
-.vbot-install {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
-}
-.vbot-install p {
-  margin: 0;
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  line-height: 1.45;
-}
-.vbot-opponent {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.vbot-opponent.is-thinking {
-  color: var(--text-primary);
-}
-.vbot-dots {
-  display: inline-flex;
-  gap: 3px;
-  margin-left: auto;
-}
-.vbot-dots i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: vbot-dot 1s ease-in-out infinite;
-}
-.vbot-dots i:nth-child(2) {
-  animation-delay: 0.16s;
-}
-.vbot-dots i:nth-child(3) {
-  animation-delay: 0.32s;
-}
-@keyframes vbot-dot {
-  0%,
-  80%,
-  100% {
-    opacity: 0.25;
-    transform: translateY(0);
+  .filter-input {
+    height: 40px;
   }
-  40% {
-    opacity: 1;
-    transform: translateY(-3px);
+
+  /* This page's own field goes the rest of the way. The 40 above is left
+     where it is because it is unscoped and reaches every other page's
+     filter field, and moving those is not this page's decision. */
+  .gm-bar .filter-input {
+    height: 44px;
   }
-}
 
-/* ---- Manual ---- */
-
-.manual-body {
-  max-width: 68ch;
-  padding: var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  line-height: 1.65;
-}
-.manual-body h2 {
-  margin: 0 0 var(--space-5);
-  font-size: var(--fs-xl);
-}
-.manual-body h3 {
-  margin: var(--space-7) 0 var(--space-3);
-  font-size: var(--fs-lg);
-}
-.manual-body h4 {
-  margin: var(--space-6) 0 var(--space-2);
-  font-size: var(--fs-base);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-secondary);
-}
-.manual-body p {
-  margin: 0 0 var(--space-4);
-  color: var(--text-primary);
-}
-.manual-body ul,
-.manual-body ol {
-  margin: 0 0 var(--space-4);
-  padding-left: var(--space-7);
-}
-.manual-body li {
-  margin-bottom: var(--space-2);
-}
-.manual-body blockquote {
-  margin: 0 0 var(--space-4);
-  padding: var(--space-3) var(--space-5);
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
-.manual-body blockquote p {
-  margin: 0;
-}
-.manual-body code {
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.9em;
-}
-.manual-body pre {
-  margin: 0 0 var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  overflow-x: auto;
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.85em;
-  line-height: 1.5;
-}
-.manual-body pre code {
-  padding: 0;
-  background: transparent;
-}
-
-/* ---- Manual board diagrams (```position fences) ---- */
-
-.manual-figure {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-3);
-  margin: var(--space-6) auto;
-}
-.manual-figure .manual-diagram {
-  display: block;
-  width: min(300px, 100%);
-  height: auto;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-}
-.manual-figure figcaption {
-  font-size: var(--fs-xs);
-  font-style: italic;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-}
-.manual-cfb {
-  width: min(320px, 100%);
-}
-.manual-cfb .cfb-board {
-  box-shadow: var(--shadow-md);
-}
-.manual-diagram-loading {
-  width: min(320px, 100%);
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-}
-
-.manual-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  max-width: 48ch;
-  padding: var(--space-7);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-lg);
-  color: var(--text-secondary);
-}
-.manual-empty p {
-  margin: 0;
-  font-size: var(--fs-sm);
-}
-
-/* ---- Toast ---- */
-
-.games-toast {
-  position: fixed;
-  bottom: var(--space-8);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--space-4) var(--space-6);
-  border-radius: var(--radius-pill);
-  background: rgba(20, 22, 26, 0.92);
-  color: #fff;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  box-shadow: var(--shadow-lg);
-  z-index: 60;
-  animation: games-toast-in 160ms ease;
-}
-@keyframes games-toast-in {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(8px);
+  /* ---- thumbs ----
+     Every control on this page was drawn for a pointer: 34px for a shelf
+     disclosure and a select, 32px for a button, 28px for the close. The sheet
+     scrolls inside itself now, so the height these gain costs nothing. */
+  .gm-disc {
+    height: 44px;
   }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
 
-@media (max-width: 760px) {
-  .game-hero {
-    flex-direction: column;
-    align-items: flex-start;
+  .gm-select,
+  .gm-input {
+    height: 44px;
   }
-}
 
-/* ---- Kernel OTB (non-chess boards) ---- */
-
-.kotb-loading {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-board);
-  border: 1px dashed var(--border);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-}
-.kotb-sizes {
-  display: flex;
-  gap: var(--space-2);
-}
-.kotb-chip {
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-}
-.kotb-chip:hover {
-  border-color: var(--border-strong);
-}
-.kotb-chip.is-active {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-  color: var(--accent);
-}
-/* Labeled chip rows (go handicap / main time / byo-yomi). Denser than the
-   size row: a fixed-width name column + compact mini chips. */
-.kotb-opt-row {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-}
-.kotb-opt-name {
-  flex: none;
-  width: 72px;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.kotb-chip.is-mini {
-  flex: none;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  min-width: 30px;
-}
-
-/* ---- Local go clocks (goClock.tsx: MAIN → BY n×30s byo-yomi rows) ---------- */
-.goclock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.goclock-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  transition: border-color var(--dur-fast) var(--ease-out);
-}
-.goclock-row.is-active {
-  border-color: var(--accent);
-}
-.goclock-name {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.goclock-tag {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 1px var(--space-1);
-  white-space: nowrap;
-}
-.goclock-tag.is-byo {
-  color: var(--danger);
-  border-color: color-mix(in srgb, var(--danger) 55%, var(--border));
-  background: var(--danger-soft);
-}
-
-/* ---- Territory estimate (territory.tsx: toggle + KataGo score strip) ------- */
-.territory {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.territory-toggle.is-on {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-soft);
-}
-.territory-strip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-xs);
-  color: var(--text-secondary);
-}
-.territory-bar {
-  position: relative;
-  flex: 1;
-  height: 8px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: #f2f2f0; /* white's share. Literal stone tones, both themes */
-  border: 1px solid var(--border);
-}
-.territory-bar-black {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: #26282c;
-  transition: width 400ms var(--ease-out);
-}
-.territory-label {
-  white-space: nowrap;
-  font-weight: var(--fw-medium);
-}
-.territory-pending {
-  color: var(--text-muted);
-}
-.territory-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: territory-pulse 1.2s var(--ease-in-out) infinite;
-}
-@keyframes territory-pulse {
-  0%,
-  100% {
-    opacity: 0.25;
+  .gm-dialog .seg,
+  .gm-dialog .btn {
+    height: 44px;
   }
-  50% {
-    opacity: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .territory-dot {
-    animation: none;
-  }
-}
 
-/* ---- 2D/3D board mode (boardMode.tsx) --------------------------------------
-   Segmented control in the OTB/Bot side panels + the online controls strip,
-   and the lazy 3D stage the Tabletop3D canvas mounts into. */
-.bmode {
-  display: inline-flex;
-  align-self: stretch;
-  padding: 3px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface-sunken, var(--surface));
-  gap: 3px;
-}
-.bmode-btn {
-  flex: 1;
-  min-width: 52px;
-  padding: var(--space-2) var(--space-3);
-  border: none;
-  border-radius: calc(var(--radius-md) - 3px);
-  background: transparent;
-  color: var(--text-muted);
-  font: inherit;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold, 600);
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  transition: background 120ms ease, color 120ms ease;
-}
-.bmode-btn:hover {
-  color: var(--text-primary);
-}
-.bmode-btn.is-active {
-  background: var(--accent-soft);
-  color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
-}
-/* Compact fit inside the online play-controls strip. */
-.play-controls .bmode {
-  align-self: center;
-  margin-right: var(--space-2);
-}
-.play-controls .bmode-btn {
-  min-width: 40px;
-  padding: var(--space-1) var(--space-2);
-}
+  .gm-x {
+    width: 44px;
+    height: 44px;
+  }
 
-.b3d-stage {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-board);
-  overflow: hidden;
-  /* Dim tabletop room behind the canvas (also the shimmer backdrop). */
-  background: radial-gradient(120% 90% at 50% 8%, #262219 0%, #171410 58%, #0d0c09 100%);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-}
-.b3d-wrap {
-  position: absolute;
-  inset: 0;
-}
-/* R3F's container div (className via Tabletop3D) fills the wrap. */
-.b3d-canvas {
-  width: 100%;
-  height: 100%;
-}
-.b3d-shimmer {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(100deg, transparent 30%, rgba(255, 244, 214, 0.07) 50%, transparent 70%),
-    radial-gradient(120% 90% at 50% 8%, #262219 0%, #171410 58%, #0d0c09 100%);
-  background-size: 220% 100%, 100% 100%;
-  animation: b3d-sheen 1.4s ease-in-out infinite;
-}
-@keyframes b3d-sheen {
-  from {
-    background-position: 120% 0, 0 0;
+  .gm-dlg-head {
+    grid-template-columns: 72px minmax(0, 1fr) 44px;
   }
-  to {
-    background-position: -120% 0, 0 0;
-  }
-}
-.b3d-scoring {
-  position: absolute;
-  left: 50%;
-  bottom: var(--space-4);
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-4);
-  border-radius: 999px;
-  background: rgba(16, 14, 11, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #ece5d4;
-  font-size: var(--fs-xs);
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
-}
-.b3d-scoring-btn {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font: inherit;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold, 600);
-  cursor: pointer;
 }

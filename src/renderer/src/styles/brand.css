@@ -1,0 +1,243 @@
+/* ============================================================
+   nodechess brand
+   The quorum mark, the split weight wordmark, and the two
+   motions the mark is allowed to make.
+
+   Mark geometry lives in the inline SVG sprite in the markup and
+   nowhere else. Nothing in this file rewrites a coordinate: every
+   motion below is a transform laid over the untouched drawing.
+   ============================================================ */
+
+/* The sprite is markup, not art. It is hidden without display:none so that
+   referenced symbols stay resolvable. */
+.nc-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* ---- Mark ------------------------------------------------------------
+   Colour is inherited through currentColor, so the mark takes the colour of
+   whatever it sits in. Size is set by --nc-mark-size on the element. */
+
+.nc-mark {
+  display: block;
+  flex: none;
+  width: var(--nc-mark-size, 24px);
+  height: var(--nc-mark-size, 24px);
+  color: inherit;
+  /* Stated here rather than on the drawing, so a mark lifted out of the
+     sprite for animation still takes its colour from what it sits in. */
+  fill: currentColor;
+}
+
+/* ---- Wordmark --------------------------------------------------------
+   node is bold, chess is regular, set as one word: no space between them and
+   no colour change. The weight is the only division. Always lowercase. */
+
+.nc-word {
+  font-family: var(--font-sans, 'InterVariable', 'Inter', -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif);
+  font-size: inherit;
+  line-height: 1;
+  letter-spacing: -0.028em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: inherit;
+}
+
+.nc-word-a { font-weight: 700; }
+.nc-word-b { font-weight: 400; }
+
+/* ---- Lockup ----------------------------------------------------------
+   Mark plus wordmark, optically centred. The three sizes below are the
+   sanctioned pairings. */
+
+.nc-lockup {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--nc-lockup-size, 18px);
+  color: inherit;
+}
+
+.nc-lockup .nc-mark {
+  --nc-mark-size: var(--nc-lockup-mark, 22px);
+}
+
+.nc-lockup .nc-word {
+  margin-left: 0.4em;
+}
+
+.nc-lockup-lg { --nc-lockup-size: 36px; --nc-lockup-mark: 44px; }
+.nc-lockup-md { --nc-lockup-size: 25px; --nc-lockup-mark: 30px; }
+.nc-lockup-sm { --nc-lockup-size: 18px; --nc-lockup-mark: 22px; }
+
+
+/* ============================================================
+   Motion
+   Two behaviours, both opt in by class. With neither class the
+   mark is the static original, which is what the favicon, the
+   print sheet and any surface where motion would be wrong use.
+
+   Both behaviours move elements only by transform, and both keep
+   the peak excursion inside a couple of parts in a hundred of the
+   mark's own 100 x 100 drawing box, so the lattice reads as a
+   surface flexing rather than as a shape changing.
+
+   nc-e is an edge, nc-n is a node. Those two classes and the
+   per element custom properties are written at hydration time by
+   cloning the sprite, so the sprite markup itself stays exactly
+   as drawn.
+   ============================================================ */
+
+@property --nc-wave-gain   { syntax: '<number>'; inherits: true;  initial-value: 0; }
+@property --nc-ripple-gain { syntax: '<number>'; inherits: true;  initial-value: 0; }
+@property --nc-ripple-amp  { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --nc-ripple-fall { syntax: '<number>'; inherits: false; initial-value: 0; }
+
+/* An edge is a line, so it may only slide: scaling it about the viewBox
+   origin would tear the lattice apart. A node is a circle and gets its own
+   centre as the origin, so it can swell in place. */
+.nc-mark .nc-e { transform-box: view-box; }
+.nc-mark .nc-n { transform-box: fill-box; transform-origin: 50% 50%; }
+
+/* The whole viewport of a moving mark is live, gaps in the lattice included,
+   otherwise the pointer falls through the holes between the edges. */
+.nc-mark--wave,
+.nc-mark--ripple { pointer-events: bounding-box; }
+
+
+/* ---- Wave on hover ---------------------------------------------------
+   One crest crossing the lattice from left to right. Every element runs the
+   identical cycle; --nc-wave-delay, derived once from the element's own x,
+   is the only thing that differs, and it is what turns a hundred odd
+   identical cycles into a single disturbance passing through. Edges take
+   the delay of their midpoint so they stay welded to the nodes they join.
+
+   Peak lift is 1.5 of the 100 units the mark is drawn in. */
+
+.nc-mark--wave {
+  --nc-wave-amp: 1.5px;      /* user units of the 100 x 100 viewBox */
+  --nc-wave-swell: 0.09;     /* extra node radius at the crest */
+  --nc-wave-period: 1.6s;
+  transition: --nc-wave-gain 220ms ease-out;
+}
+
+.nc-mark--wave:hover { --nc-wave-gain: 1; }
+
+.nc-mark--wave:hover .nc-e {
+  animation: nc-wave-edge var(--nc-wave-period) ease-in-out var(--nc-wave-delay, 0s) infinite;
+}
+
+.nc-mark--wave:hover .nc-n {
+  animation: nc-wave-node var(--nc-wave-period) ease-in-out var(--nc-wave-delay, 0s) infinite;
+}
+
+@keyframes nc-wave-edge {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(0, calc(var(--nc-wave-amp) * var(--nc-wave-gain) * -1)); }
+  50%  { transform: translate(0, 0); }
+  75%  { transform: translate(0, calc(var(--nc-wave-amp) * var(--nc-wave-gain) * 0.45)); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes nc-wave-node {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(0, calc(var(--nc-wave-amp) * var(--nc-wave-gain) * -1))
+               scale(calc(1 + var(--nc-wave-swell) * var(--nc-wave-gain)));
+  }
+  50% {
+    transform: translate(0, 0) scale(1);
+  }
+  75% {
+    transform: translate(0, calc(var(--nc-wave-amp) * var(--nc-wave-gain) * 0.45))
+               scale(calc(1 - var(--nc-wave-swell) * var(--nc-wave-gain) * 0.4));
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+
+/* ---- Interactive ripple ----------------------------------------------
+   The origin is wherever the pointer is, not the centre and not the edge.
+   Each element's --nc-ripple-amp and --nc-ripple-delay are rewritten from
+   its distance to that point, so the crest leaves the cursor, arrives later
+   the further out it goes, and dies as it travels. Move the pointer and the
+   origin moves with it.
+
+   Peak lift is 2.2 of the 100 units the mark is drawn in, at the cursor
+   itself, falling to nothing 62 units out. */
+
+.nc-mark--ripple {
+  --nc-ripple-period: 0.9s;
+  --nc-ripple-swell: 0.10;   /* extra node radius at the crest, at the origin */
+  transition: --nc-ripple-gain 420ms ease-out;
+}
+
+/* --nc-ripple-amp is how far this element lifts, --nc-ripple-fall is the same
+   decay as a bare number so the swell dies off with the lift. Without it the
+   dust at the rim would keep swelling after the water there had gone flat. */
+
+.nc-mark--ripple.nc-is-live { --nc-ripple-gain: 1; }
+
+/* nc-is-settling keeps the cycle alive for one fade after the pointer
+   leaves, so the water goes flat instead of being switched off. */
+.nc-mark--ripple.nc-is-live .nc-e,
+.nc-mark--ripple.nc-is-settling .nc-e {
+  animation: nc-ripple-edge var(--nc-ripple-period) ease-in-out var(--nc-ripple-delay, 0s) infinite;
+}
+
+.nc-mark--ripple.nc-is-live .nc-n,
+.nc-mark--ripple.nc-is-settling .nc-n {
+  animation: nc-ripple-node var(--nc-ripple-period) ease-in-out var(--nc-ripple-delay, 0s) infinite;
+}
+
+@keyframes nc-ripple-edge {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * -1)); }
+  46%  { transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * 0.34)); }
+  70%  { transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * -0.12)); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes nc-ripple-node {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  20% {
+    transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * -1))
+               scale(calc(1 + var(--nc-ripple-swell) * var(--nc-ripple-gain) * var(--nc-ripple-fall)));
+  }
+  46% {
+    transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * 0.34))
+               scale(calc(1 - var(--nc-ripple-swell) * var(--nc-ripple-gain) * var(--nc-ripple-fall) * 0.35));
+  }
+  70% {
+    transform: translate(0, calc(var(--nc-ripple-amp) * var(--nc-ripple-gain) * -0.12))
+               scale(1);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+
+/* ---- Reduced motion --------------------------------------------------
+   Both behaviours go to nothing. The mark stays exactly as drawn. */
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-mark .nc-e,
+  .nc-mark .nc-n {
+    animation: none !important;
+    transform: none !important;
+  }
+  .nc-mark--wave,
+  .nc-mark--ripple {
+    transition: none !important;
+  }
+}

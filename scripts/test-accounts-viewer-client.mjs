@@ -150,7 +150,9 @@ async function run(M) {
     const uiEmpty = V.viewToUiProfile(ef, { atWts: now })
     eq(uiEmpty.displayName, 'Unknown account', 'viewToUiProfile of an empty view is total (Unknown account, no throw)')
     eq(uiEmpty.games.length, 0, '…with no fabricated games')
-    eq(uiEmpty.ladders.length, 4, '…and honest seed ladders (four categories)')
+    eq(uiEmpty.ladders.length, 0, '…and NO ladders: nothing recovered is not a fresh account')
+    eq(uiEmpty.reputation, null, '…and no reputation: unknown conduct is never a score of 0')
+    eq(uiEmpty.friendsCount, null, '…and no friend count: nothing counted the edges')
     ok(V.openAccountHistory(ef) === null, 'openAccountHistory is null when no head pinned (honest unavailability)')
   }
 

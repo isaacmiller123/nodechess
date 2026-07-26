@@ -1,6 +1,11 @@
 // Pure, React-free formatting helpers for the Progress view.
 // Type-only import from shared is allowed (we never edit shared files).
-import type { GameRow } from '../../../../shared/types'
+import type {
+  GameRow,
+  PuzzleHistoryRow,
+  SchoolChapterMeta,
+  SchoolMastery
+} from '../../../../shared/types'
 
 /**
  * Confidence band around a Glicko-style rating: +/- 2*rd, floored at 0.
@@ -205,26 +210,6 @@ function chronological(games: GameRow[]): GameRow[] {
 }
 
 /**
- * An estimated playing-strength series derived from each reviewed game's
- * estimated-Elo band midpoint (est_elo_low/high). Games without an estimate are
- * skipped, so this reflects *reviewed* games only. Oldest -> newest.
- */
-export function estEloSeries(games: GameRow[]): SeriesPoint[] {
-  const out: SeriesPoint[] = []
-  let i = 0
-  for (const g of chronological(games)) {
-    const lo = g.est_elo_low
-    const hi = g.est_elo_high
-    if (lo == null || hi == null || !Number.isFinite(lo) || !Number.isFinite(hi)) continue
-    const mid = Math.round((lo + hi) / 2)
-    if (!Number.isFinite(mid) || mid <= 0) continue
-    i += 1
-    out.push({ t: g.created_at, value: mid, i })
-  }
-  return out
-}
-
-/**
  * The user's own per-game accuracy series (matched to their color). Games with
  * no usable accuracy are skipped. Oldest -> newest.
  */
@@ -236,6 +221,24 @@ export function accuracySeries(games: GameRow[]): SeriesPoint[] {
     if (acc == null) continue
     i += 1
     out.push({ t: g.created_at, value: Math.round(acc * 10) / 10, i })
+  }
+  return out
+}
+
+/**
+ * The puzzle ladder over time, from the attempt history. This is the only
+ * rating history the app keeps: the rating table holds one current row per
+ * ladder, so the bot ladder has no equivalent series. `rows` arrive newest
+ * first; attempts that did not move the rating (rush, custom) carry no
+ * rating_after and are skipped. Oldest -> newest.
+ */
+export function puzzleRatingSeries(rows: PuzzleHistoryRow[]): SeriesPoint[] {
+  const out: SeriesPoint[] = []
+  for (let idx = rows.length - 1; idx >= 0; idx--) {
+    const r = rows[idx]
+    const v = r.ratingAfter
+    if (v == null || !Number.isFinite(v)) continue
+    out.push({ t: r.createdAt, value: Math.round(v), i: out.length + 1 })
   }
   return out
 }
@@ -275,130 +278,181 @@ export function seriesStats(points: SeriesPoint[]): SeriesStats | null {
 }
 
 // ----------------------------------------------------------------------------
-// Streaks
+// School: the curriculum as a fraction and the chapter that is open
 // ----------------------------------------------------------------------------
 
-export interface StreakInfo {
-  /** Signed current run: + for a win streak, - for a loss streak, 0 if none. */
-  current: number
-  /** Longest win run anywhere in the window. */
-  bestWin: number
-  /** Longest loss run anywhere in the window. */
-  worstLoss: number
-}
-
-/**
- * Compute streaks from a games list. Draws and unknowns break a run (they are
- * neither wins nor losses). `games` is newest-first; the *current* streak is
- * read from the most recent end. Win/loss "best" runs scan the whole window.
- */
-export function computeStreaks(games: GameRow[]): StreakInfo {
-  const chrono = chronological(games)
-  let bestWin = 0
-  let worstLoss = 0
-  let runWin = 0
-  let runLoss = 0
-  for (const g of chrono) {
-    const k = resultKind(g)
-    if (k === 'win') {
-      runWin += 1
-      runLoss = 0
-      if (runWin > bestWin) bestWin = runWin
-    } else if (k === 'loss') {
-      runLoss += 1
-      runWin = 0
-      if (runLoss > worstLoss) worstLoss = runLoss
-    } else {
-      runWin = 0
-      runLoss = 0
-    }
-  }
-  // Current streak = the trailing run at the newest end.
-  let current = 0
-  for (let idx = chrono.length - 1; idx >= 0; idx--) {
-    const k = resultKind(chrono[idx])
-    if (idx === chrono.length - 1) {
-      if (k === 'win') current = 1
-      else if (k === 'loss') current = -1
-      else break
-    } else {
-      if (current > 0 && k === 'win') current += 1
-      else if (current < 0 && k === 'loss') current -= 1
-      else break
-    }
-  }
-  return { current, bestWin, worstLoss }
-}
-
-// ----------------------------------------------------------------------------
-// Results breakdown (W/D/L, optionally grouped by opponent kind)
-// ----------------------------------------------------------------------------
-
-export interface ResultTally {
-  wins: number
-  draws: number
-  losses: number
-  /** Games whose result couldn't be classified (still counted for total). */
-  unknown: number
+export interface SchoolProgress {
+  /** Chapters in the curriculum (40 today, read rather than assumed). */
   total: number
-}
-
-export function emptyTally(): ResultTally {
-  return { wins: 0, draws: 0, losses: 0, unknown: 0, total: 0 }
-}
-
-function addToTally(t: ResultTally, kind: GameResultKind): void {
-  t.total += 1
-  if (kind === 'win') t.wins += 1
-  else if (kind === 'draw') t.draws += 1
-  else if (kind === 'loss') t.losses += 1
-  else t.unknown += 1
-}
-
-/** Score percentage (win=1, draw=0.5) over decided games, or null if none. */
-export function scorePercent(t: ResultTally): number | null {
-  const decided = t.wins + t.draws + t.losses
-  if (decided <= 0) return null
-  return Math.round(((t.wins + t.draws * 0.5) / decided) * 100)
-}
-
-export type OpponentGroupKey = 'bot' | 'persona' | 'other'
-
-export interface OpponentGroup {
-  key: OpponentGroupKey
-  label: string
-  tally: ResultTally
-}
-
-/** Normalize the stored opponent_kind into one of our display buckets. */
-export function opponentGroupOf(game: GameRow): OpponentGroupKey {
-  const raw = (game.opponent_kind ?? '').toLowerCase()
-  if (raw.includes('persona')) return 'persona'
-  if (raw.includes('bot') || raw.includes('engine') || raw.includes('stockfish')) return 'bot'
-  // No explicit kind but a numeric Elo strongly implies a bot opponent.
-  if (raw === '' && game.opponent_elo != null && Number.isFinite(game.opponent_elo)) return 'bot'
-  return 'other'
-}
-
-const GROUP_LABELS: Record<OpponentGroupKey, string> = {
-  bot: 'Bots',
-  persona: 'Personas',
-  other: 'Other'
+  completed: number
+  /** The chapter the learner is standing in: first unlocked one not finished. */
+  current: SchoolChapterMeta | null
+  /** Lessons finished inside `current`. */
+  currentDone: number
+  /** Chapter ids already finished, for the pip strip. */
+  doneIds: Set<string>
 }
 
 /**
- * Split games into W/D/L tallies per opponent group, dropping empty groups and
- * ordering bots -> personas -> other. Returns [] for an empty/new profile.
+ * The same reading School's own path makes (SchoolView derives these three the
+ * same way): how many chapters are finished, which one is open, and how far
+ * into it the learner is. When every unlocked chapter is finished the first
+ * unfinished one is still named, so the row always leads somewhere.
  */
-export function groupByOpponent(games: GameRow[]): OpponentGroup[] {
-  const buckets: Record<OpponentGroupKey, ResultTally> = {
-    bot: emptyTally(),
-    persona: emptyTally(),
-    other: emptyTally()
+export function schoolProgress(
+  chapters: SchoolChapterMeta[],
+  mastery: SchoolMastery | null
+): SchoolProgress {
+  const ordered = [...chapters].sort((a, b) => a.order - b.order)
+  const doneIds = new Set(
+    (mastery?.chapters ?? []).filter((c) => c.completed).map((c) => c.chapterId)
+  )
+  const lessonsByChapter = new Map<string, number>()
+  for (const l of mastery?.lessons ?? []) {
+    lessonsByChapter.set(l.chapterId, (lessonsByChapter.get(l.chapterId) ?? 0) + 1)
   }
-  for (const g of games) addToTally(buckets[opponentGroupOf(g)], resultKind(g))
-  const order: OpponentGroupKey[] = ['bot', 'persona', 'other']
-  return order
-    .filter((k) => buckets[k].total > 0)
-    .map((k) => ({ key: k, label: GROUP_LABELS[k], tally: buckets[k] }))
+  const unfinished = ordered.filter((c) => !doneIds.has(c.id))
+  const current = unfinished.find((c) => !c.locked) ?? unfinished[0] ?? null
+  return {
+    total: ordered.length,
+    completed: ordered.filter((c) => doneIds.has(c.id)).length,
+    current,
+    currentDone: current ? (lessonsByChapter.get(current.id) ?? 0) : 0,
+    doneIds
+  }
+}
+
+// ----------------------------------------------------------------------------
+// Table cells the design asks for that are not stored columns
+// ----------------------------------------------------------------------------
+
+const SAN_MOVE = /^(?:[KQRBN][a-h1-8]?x?[a-h][1-8]|[a-h]x?[a-h]?[1-8](?:=[QRBN])?|O-O-O|O-O)[+#]?$/
+
+/**
+ * Full moves in a stored game, counted off the PGN movetext. GameRow has no
+ * move-count column and a full chessops walk per table row is far too heavy for
+ * a five-row list, so this counts SAN tokens after stripping headers, comments,
+ * variations, NAGs and move numbers. Null when nothing countable is left, so
+ * the cell can show a neutral placeholder rather than a wrong 0.
+ */
+export function moveCountOf(pgn: string | null | undefined): number | null {
+  if (!pgn) return null
+  const body = pgn
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/\{[^}]*\}/g, ' ')
+    .replace(/;[^\n]*/g, ' ')
+    .replace(/\([^()]*\)/g, ' ')
+    .replace(/\$\d+/g, ' ')
+    .replace(/\d+\.(\.\.)?/g, ' ')
+  let plies = 0
+  for (const tok of body.split(/\s+/)) {
+    if (tok && SAN_MOVE.test(tok)) plies += 1
+  }
+  return plies > 0 ? Math.ceil(plies / 2) : null
+}
+
+/**
+ * A Lichess theme key as a sentence: 'backRankMate' -> 'Back rank mate'. The
+ * design writes theme names in sentence case, not title case.
+ */
+export function humanizeTheme(key: string): string {
+  const spaced = key
+    .replace(/[-_]/g, ' ')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+    .replace(/([a-zA-Z])(\d)/g, '$1 $2')
+    .trim()
+    .toLowerCase()
+  if (!spaced) return ''
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+}
+
+// ----------------------------------------------------------------------------
+// Chart geometry. Pure numbers for the 600x160 viewBox both plots are drawn in.
+// ----------------------------------------------------------------------------
+
+/** The plot's own coordinate space, matching the viewBox in the markup. */
+export const PLOT_W = 600
+export const PLOT_H = 160
+
+/** A five-label vertical scale: four equal bands, round numbers at every line. */
+export interface PlotScale {
+  bottom: number
+  top: number
+  /** Top to bottom, as the y column reads. */
+  labels: number[]
+}
+
+const SCALE_STEPS = [10, 20, 25, 50, 100, 150, 200, 250, 500, 1000]
+
+/** The smallest rating span a chart is allowed to show, so a settled ladder
+ *  does not get magnified into a mountain range. */
+const MIN_RATING_SPAN = 100
+
+function scaleFrom(bottom: number, step: number): PlotScale {
+  const labels = [4, 3, 2, 1, 0].map((i) => bottom + i * step)
+  return { bottom, top: bottom + 4 * step, labels }
+}
+
+/**
+ * A rating scale that contains every value it is given, on round numbers.
+ * Derived, never fixed: the ladders start at 1200 here, and a hard-coded
+ * 1100-1700 axis would draw a new account's line off the bottom of the frame.
+ * With nothing to plot it centres on `center`, which is what the empty chart's
+ * dashed level line marks.
+ */
+export function ratingScale(values: number[], center: number): PlotScale {
+  const usable = values.filter((v) => Number.isFinite(v))
+  if (usable.length === 0) {
+    const step = 100
+    return scaleFrom(Math.round(center / step) * step - 2 * step, step)
+  }
+  let lo = Math.min(...usable)
+  let hi = Math.max(...usable)
+  if (hi - lo < MIN_RATING_SPAN) {
+    const pad = (MIN_RATING_SPAN - (hi - lo)) / 2
+    lo -= pad
+    hi += pad
+  }
+  for (const step of SCALE_STEPS) {
+    const bottom = Math.floor((lo - step * 0.3) / step) * step
+    if (bottom + 4 * step >= hi) return scaleFrom(bottom, step)
+  }
+  const step = Math.max(1000, Math.ceil((hi - lo) / 4 / 1000) * 1000)
+  return scaleFrom(Math.floor(lo / step) * step, step)
+}
+
+/** A value's y in plot space, clamped to the frame. */
+export function plotY(value: number, scale: PlotScale): number {
+  const span = scale.top - scale.bottom
+  if (span <= 0) return PLOT_H / 2
+  const y = ((scale.top - value) / span) * PLOT_H
+  return Math.round(Math.min(PLOT_H, Math.max(0, y)) * 10) / 10
+}
+
+/**
+ * A dated series as polyline points across the full width. `from`/`to` are the
+ * time domain shared by every track on the same plot, so two lines drawn from
+ * different sources still line up in time. One point is not a line and comes
+ * back empty: the caller marks a lone reading with a tick, the way the design
+ * marks the seed.
+ */
+export function polylinePoints(
+  points: SeriesPoint[],
+  from: number,
+  to: number,
+  scale: PlotScale
+): string {
+  if (points.length < 2) return ''
+  const span = to - from
+  return points
+    .map((p, i) => {
+      const x =
+        span > 0
+          ? ((p.t - from) / span) * PLOT_W
+          : points.length > 1
+            ? (i / (points.length - 1)) * PLOT_W
+            : 0
+      return `${Math.round(Math.min(PLOT_W, Math.max(0, x)) * 10) / 10},${plotY(p.value, scale)}`
+    })
+    .join(' ')
 }

@@ -1,5 +1,4 @@
-// Shared lesson-segment renderers used by both the legacy single-`segments`
-// chapter flow (ChapterPlayer) and the new lesson player (LessonPlayer).
+// The five lesson segments, drawn as design-lab/v1/school.html.
 //
 // Every renderer takes a normalized prop shape so it doesn't care whether it was
 // fed a legacy SchoolSegment or a new LessonSegment. The five kinds:
@@ -9,21 +8,18 @@
 //   puzzle:   solve query.count puzzles pulled from the bundled DB (skippable).
 //   boss:     beat a rating-capped engine, then a Viktor debrief.
 //
+// NONE of them lays out a screen. Each hands <Scene> a board, the line Viktor
+// actually said, the task in force, and its buttons; the .lesson grid, the head
+// over the board, the coach panel and the chapter list are the same object on
+// all five. The controls live in the boardbar, where v1 puts them, and not in a
+// footer under the coach.
+//
 // IMPORTANT (React #300): in every component, ALL hooks run before any early
 // return. We never short-circuit above a hook.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
 import type { Key } from 'chessground/types'
 import type { Role } from 'chessops/types'
-import {
-  ChevronRight,
-  RotateCcw,
-  Flag,
-  Trophy,
-  SkipForward,
-  CheckCircle2,
-  Lightbulb
-} from 'lucide-react'
 import type {
   CoachLine,
   Puzzle,
@@ -39,6 +35,7 @@ import {
   checkColor,
   destsFor,
   outcome,
+  pvToSan,
   turnColor,
   uciToLastMove,
   type Color
@@ -52,11 +49,11 @@ import {
   annotationsToShapes,
   hintShapes,
   SCHOOL_BRUSHES,
-  type AnnotationLabel,
   type SchoolHintStage
 } from './annotations'
-import { ViktorPanel } from './ViktorPanel'
-import './school-play.css'
+import { CoachCard, Scene, Turn, type BoardEnv } from './SchoolScene'
+
+export type { BoardEnv } from './SchoolScene'
 
 export const ROLE_FROM_CHAR: Record<string, Role> = {
   q: 'queen',
@@ -66,14 +63,6 @@ export const ROLE_FROM_CHAR: Record<string, Role> = {
 }
 
 export const EMPTY_DESTS = new Map<Key, Key[]>()
-
-/** Board-display settings threaded into every segment. */
-export interface BoardEnv {
-  boardClass: string
-  coordinates: boolean
-  animation: boolean
-  showDests: boolean
-}
 
 /** Deterministic pick keyed off a stable id, so Viktor's phrasing varies across
  *  puzzles/steps but never flickers between renders of the same one. */
@@ -101,87 +90,11 @@ const HINT_LINE: Record<Exclude<SchoolHintStage, 0>, string> = {
   3: 'There is the move. Play it, and understand why.'
 }
 
-// ===========================================================================
-// MOVE STRIP: compact SAN history shown under School boards (boss games,
-// placement games, model lines, debriefs). Numbered pairs, current move
-// highlighted, auto-scrolls to keep the current move in view.
-// ===========================================================================
-
-interface StripCell {
-  san: string
-  idx: number
-}
-interface StripPair {
-  no: number
-  white?: StripCell
-  black?: StripCell
-}
-
-export function MoveStrip({
-  startFen,
-  sans,
-  current,
-  className
-}: {
-  /** Position the game/line starts from (numbering + side-to-move derive from it). */
-  startFen: string
-  /** SAN moves in play order. */
-  sans: string[]
-  /** Index into `sans` to highlight; defaults to the last move. Negative = none. */
-  current?: number
-  className?: string
-}): JSX.Element | null {
-  const cur = current ?? sans.length - 1
-  const activeRef = useRef<HTMLSpanElement | null>(null)
-
-  // Keep the current move visible as the game grows / the debrief walks.
-  useEffect(() => {
-    activeRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
-  }, [cur, sans.length])
-
-  // Hooks above: safe to bail now (#300).
-  if (sans.length === 0) return null
-
-  const parts = startFen.split(' ')
-  const blackFirst = parts[1] === 'b'
-  let no = Number.parseInt(parts[5] ?? '1', 10)
-  if (!Number.isFinite(no) || no < 1) no = 1
-
-  const pairs: StripPair[] = []
-  let i = 0
-  if (blackFirst) {
-    pairs.push({ no, black: { san: sans[0], idx: 0 } })
-    no += 1
-    i = 1
-  }
-  for (; i < sans.length; i += 2, no += 1) {
-    pairs.push({
-      no,
-      white: { san: sans[i], idx: i },
-      black: sans[i + 1] !== undefined ? { san: sans[i + 1], idx: i + 1 } : undefined
-    })
-  }
-
-  const cell = (m: StripCell): JSX.Element => (
-    <span
-      ref={m.idx === cur ? activeRef : undefined}
-      className={`school-moves-move${m.idx === cur ? ' is-current' : ''}`}
-    >
-      {m.san}
-    </span>
-  )
-
-  return (
-    <div className={`school-moves${className ? ` ${className}` : ''}`} aria-label="Moves played">
-      {pairs.map((p) => (
-        <span className="school-moves-pair" key={p.no}>
-          <span className="school-moves-num num">{p.no}.</span>
-          {p.white ? cell(p.white) : <span className="school-moves-move is-gap">…</span>}
-          {p.black && cell(p.black)}
-        </span>
-      ))}
-    </div>
-  )
+/** What a screen reader is told about a board it cannot move on. v1 hand-wrote
+ *  a sentence per position; there is no such string per FEN in the curriculum,
+ *  so the board reports the one thing about it that is always derivable. */
+function positionLabel(color: Color): string {
+  return `Chess position, ${color === 'white' ? 'White' : 'Black'} to move`
 }
 
 // ===========================================================================
@@ -214,17 +127,25 @@ export function TeachSegment({
     [step, orientation]
   )
 
+  // v1's "Moves" section, when this segment's positions are one line. Steps that
+  // walk a game a move at a time have a move list; a set of unrelated positions
+  // on one theme does not, and gets no section rather than an invented one.
+  const lineSans = useMemo(() => lineThrough(steps.map((s) => s.fen)), [steps])
+
   // Empty teach segment: advance once on mount.
   useEffect(() => {
     if (!step) onDone()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step])
 
-  if (!step) return <div className="school-stage" aria-hidden />
+  if (!step) return <div className="lesson" aria-hidden />
 
   return (
-    <div className="school-stage">
-      <BoardFrame env={env} labels={labels}>
+    <Scene
+      env={env}
+      boardLabel={positionLabel(orientation)}
+      labels={labels}
+      board={
         <Board
           fen={fen}
           orientation={orientation}
@@ -240,25 +161,27 @@ export function TeachSegment({
           // forces the shape re-sync (Board only hashes orig/dest/brush).
           syncNonce={stepIdx}
         />
-      </BoardFrame>
-
-      <ViktorPanel text={step.coach.text} eyebrow={title}>
-        <div className="school-step-meta">
-          <span className="school-step-count">
-            {stepIdx + 1} / {steps.length}
-          </span>
-        </div>
+      }
+      turn={<Turn color={orientation} />}
+      actions={
         <button
-          className="btn school-primary"
+          className="btn is-primary"
+          type="button"
           onClick={() => {
             if (isLast) onDone()
             else setStepIdx((i) => i + 1)
           }}
         >
-          {isLast ? 'Continue' : 'Next'} <ChevronRight size={16} />
+          {isLast ? 'Continue' : 'Next'}
         </button>
-      </ViktorPanel>
-    </div>
+      }
+      title={title}
+      count={`${stepIdx + 1} of ${steps.length}`}
+      said={[step.coach.text]}
+      moves={
+        lineSans ? { startFen: steps[0].fen, sans: lineSans, current: stepIdx - 1 } : undefined
+      }
+    />
   )
 }
 
@@ -291,6 +214,10 @@ export function GuidedSegment({
   const [wrong, setWrong] = useState(false)
   const [nonce, setNonce] = useState(0)
   const [hintStage, setHintStage] = useState<SchoolHintStage>(0)
+  // The move the learner actually played, once it is on the board. That single
+  // move is the whole move list a guided step has: the step is one position, and
+  // a position has no history to print.
+  const [playedSan, setPlayedSan] = useState<string | null>(null)
 
   // Reset interaction state when the step changes.
   useEffect(() => {
@@ -300,6 +227,7 @@ export function GuidedSegment({
     setLine(step?.coach ?? null)
     setWrong(false)
     setHintStage(0)
+    setPlayedSan(null)
     setNonce((n) => n + 1)
   }, [step])
 
@@ -318,10 +246,7 @@ export function GuidedSegment({
     [phase, baseFen, boardFen]
   )
   const turn = useMemo(() => (displayFen ? turnColor(displayFen) : 'white'), [displayFen])
-  const check = useMemo(
-    () => (displayFen ? checkColor(displayFen) : undefined),
-    [displayFen]
-  )
+  const check = useMemo(() => (displayFen ? checkColor(displayFen) : undefined), [displayFen])
 
   const solutions = step?.solutionUci ?? []
   const hintUci = solutions[0] ?? ''
@@ -332,10 +257,7 @@ export function GuidedSegment({
     }
     return out
   }, [line, phase, hintStage, hintUci, settings.hintsEnabled])
-  const labels = useMemo(
-    () => annotationLabels(line?.annotations, orientation),
-    [line, orientation]
-  )
+  const labels = useMemo(() => annotationLabels(line?.annotations, orientation), [line, orientation])
 
   // A gentle nudge, three stages deep (glow -> circle -> arrow). The nonce bump
   // forces the board's shape re-sync (customSvg shapes hash by square only).
@@ -362,6 +284,7 @@ export function GuidedSegment({
         if (applied) {
           setBoardFen(applied.fen)
           setLastMove(uciToLastMove(applied.uci))
+          setPlayedSan(applied.san)
         }
         setPhase('solved')
         setWrong(false)
@@ -376,6 +299,7 @@ export function GuidedSegment({
       setLine(step.retryLine ?? { text: 'No. Look again.' })
       setBoardFen(step.fen)
       setLastMove(undefined)
+      setPlayedSan(null)
       setNonce((n) => n + 1)
     },
     [step, phase, boardFen, solutions]
@@ -389,6 +313,7 @@ export function GuidedSegment({
     setLine(step.coach)
     setWrong(false)
     setHintStage(0)
+    setPlayedSan(null)
     setNonce((n) => n + 1)
   }, [step])
 
@@ -397,11 +322,13 @@ export function GuidedSegment({
     else setStepIdx((i) => i + 1)
   }, [isLast, onDone])
 
-  if (!step) return <div className="school-stage" aria-hidden />
+  if (!step) return <div className="lesson" aria-hidden />
 
   return (
-    <div className="school-stage">
-      <BoardFrame env={env} labels={labels}>
+    <Scene
+      env={env}
+      labels={labels}
+      board={
         <Board
           fen={displayFen}
           orientation={orientation}
@@ -419,49 +346,37 @@ export function GuidedSegment({
           onMove={onUserMove}
           syncNonce={nonce}
         />
-      </BoardFrame>
-
-      <ViktorPanel
-        text={line?.text ?? step.coach.text}
-        eyebrow={title}
-        tone={phase === 'solved' ? 'pleased' : wrong ? 'stern' : undefined}
-      >
-        <div className="school-step-meta">
-          <span className="school-step-count">
-            {stepIdx + 1} / {steps.length}
-          </span>
-          {phase === 'solving' && (
-            <span className={`school-tag ${wrong ? 'is-wrong' : 'is-task'}`}>
-              {wrong ? 'Try again' : 'Your move'}
-            </span>
-          )}
-          {phase === 'solved' && <span className="school-tag is-good">Solved</span>}
-        </div>
-
-        {phase === 'solving' && (
-          <div className="school-play-row">
+      }
+      turn={<Turn color={turn} />}
+      actions={
+        phase === 'solving' ? (
+          <>
             {settings.hintsEnabled && (
               <button
-                className="btn ghost school-hint-btn"
+                className="btn is-quiet"
+                type="button"
                 onClick={bumpHint}
                 disabled={hintStage >= 3 || !hintUci}
-                title="A gentle hint"
               >
-                <Lightbulb size={15} /> {HINT_LABEL[hintStage]}
+                {HINT_LABEL[hintStage]}
               </button>
             )}
-            <button className="btn ghost school-secondary" onClick={reset}>
-              <RotateCcw size={16} /> Reset
+            <button className="btn is-quiet" type="button" onClick={reset}>
+              Reset
             </button>
-          </div>
-        )}
-        {phase === 'solved' && (
-          <button className="btn school-primary" onClick={advance}>
-            {isLast ? 'Continue' : 'Next'} <ChevronRight size={16} />
+          </>
+        ) : (
+          <button className="btn is-primary" type="button" onClick={advance}>
+            {isLast ? 'Continue' : 'Next'}
           </button>
-        )}
-      </ViktorPanel>
-    </div>
+        )
+      }
+      title={title}
+      count={`${stepIdx + 1} of ${steps.length}`}
+      said={[line?.text ?? step.coach.text]}
+      task={phase === 'solving' ? (wrong ? 'Try again.' : 'Your move.') : undefined}
+      moves={playedSan ? { startFen: step.fen, sans: [playedSan] } : undefined}
+    />
   )
 }
 
@@ -519,10 +434,7 @@ export function ModelSegment({
 
   const sans = useMemo(() => frames.slice(1).map((f) => f.san ?? '·'), [frames])
 
-  const orientation: Color = useMemo(
-    () => (startFen ? turnColor(startFen) : 'white'),
-    [startFen]
-  )
+  const orientation: Color = useMemo(() => (startFen ? turnColor(startFen) : 'white'), [startFen])
   const turn = useMemo(() => (shownFen ? turnColor(shownFen) : 'white'), [shownFen])
   const check = useMemo(() => (shownFen ? checkColor(shownFen) : undefined), [shownFen])
   const shapes = useMemo(() => annotationsToShapes(frame?.coach?.annotations), [frame])
@@ -532,16 +444,15 @@ export function ModelSegment({
   )
 
   if (!frame) {
-    return <div className="school-stage" aria-hidden />
+    return <div className="lesson" aria-hidden />
   }
 
   return (
-    <div className="school-stage">
-      <BoardFrame
-        env={env}
-        labels={labels}
-        below={<MoveStrip startFen={startFen} sans={sans} current={idx - 1} />}
-      >
+    <Scene
+      env={env}
+      boardLabel={positionLabel(turn)}
+      labels={labels}
+      board={
         <Board
           fen={shownFen}
           orientation={orientation}
@@ -556,34 +467,32 @@ export function ModelSegment({
           animation={env.animation}
           syncNonce={idx}
         />
-      </BoardFrame>
-
-      <ViktorPanel
-        text={frame.coach?.text ?? 'Watch the line.'}
-        eyebrow={title}
-      >
-        <div className="school-step-meta">
-          <span className="school-step-count">
-            Move {idx} / {frames.length - 1}
-          </span>
-          <span className="school-tag is-task">Model line</span>
-        </div>
-        {idx > 0 && (
-          <button className="btn ghost school-secondary" onClick={() => setIdx((i) => i - 1)}>
-            <RotateCcw size={16} /> Back
+      }
+      turn={<Turn color={turn} />}
+      actions={
+        <>
+          {idx > 0 && (
+            <button className="btn is-quiet" type="button" onClick={() => setIdx((i) => i - 1)}>
+              Back
+            </button>
+          )}
+          <button
+            className="btn is-primary"
+            type="button"
+            onClick={() => {
+              if (isLast) onDone()
+              else setIdx((i) => i + 1)
+            }}
+          >
+            {isLast ? 'Continue' : 'Next move'}
           </button>
-        )}
-        <button
-          className="btn school-primary"
-          onClick={() => {
-            if (isLast) onDone()
-            else setIdx((i) => i + 1)
-          }}
-        >
-          {isLast ? 'Continue' : 'Next move'} <ChevronRight size={16} />
-        </button>
-      </ViktorPanel>
-    </div>
+        </>
+      }
+      title={title}
+      count={`Move ${idx} of ${frames.length - 1}`}
+      said={[frame.coach?.text ?? 'Watch the line.']}
+      moves={{ startFen, sans, current: idx - 1 }}
+    />
   )
 }
 
@@ -710,9 +619,7 @@ export function PuzzleSegment({
 
       // Lead-in: show the position, then animate the opponent's first move.
       const m0 = next.moves[0]
-      const shown = m0
-        ? applyMove(next.fen, m0.slice(0, 2), m0.slice(2, 4), promoOf(m0))
-        : null
+      const shown = m0 ? applyMove(next.fen, m0.slice(0, 2), m0.slice(2, 4), promoOf(m0)) : null
       if (!shown) {
         setPhase('empty')
         return
@@ -774,6 +681,19 @@ export function PuzzleSegment({
     setNonce((n) => n + 1)
     if (next !== 0) setFeedback({ text: HINT_LINE[next] })
   }, [phase, hintStage, settings.hintsEnabled])
+
+  // v1's "Moves" section: the plies that are ON THE BOARD, which is the lead-in
+  // and whatever has been solved so far. Never the rest of the solution: the
+  // line ahead is the answer, and a puzzle does not print its answer. `fen` is
+  // in the deps because solIdxRef advances with every board change.
+  const puzzleMoves = useMemo(() => {
+    if (!puzzle || phase === 'loading') return undefined
+    const played = Math.min(solIdxRef.current, puzzle.moves.length)
+    if (played <= 0) return undefined
+    const sans = pvToSan(puzzle.fen, puzzle.moves.slice(0, played), played)
+    return sans.length > 0 ? { startFen: puzzle.fen, sans } : undefined
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [puzzle, phase, fen, nonce])
 
   const recordAttempt = useCallback(
     (p: Puzzle, solved: boolean) => {
@@ -898,28 +818,32 @@ export function PuzzleSegment({
   if (phase === 'empty') {
     const dbMissing = authoredCount === 0 && puzzlesReady === false
     return (
-      <div className="school-stage school-stage-single">
-        <ViktorPanel
-          text={
-            dbMissing
-              ? 'No drills today. The puzzle database is not installed on this machine. Fetch it in Settings, or we move on.'
-              : 'No puzzles matched this drill. We move on. You lose nothing.'
-          }
-          eyebrow={title}
-          thinking={authoredCount === 0 && puzzlesReady === null}
-        >
-          {dbMissing && <PuzzlesRequiredNotice onOpenSettings={onOpenSettings} />}
-          <button className="btn school-primary" onClick={onDone}>
-            Continue <ChevronRight size={16} />
-          </button>
-        </ViktorPanel>
-      </div>
+      <CoachCard
+        title={title}
+        thinking={authoredCount === 0 && puzzlesReady === null}
+        said={[
+          dbMissing
+            ? 'No drills today. The puzzle database is not installed on this machine. Fetch it in Settings, or we move on.'
+            : 'No puzzles matched this drill. We move on. You lose nothing.'
+        ]}
+        foot={
+          <div className="lesson-foot">
+            <p className="foot-note">The lesson continues either way.</p>
+            <button className="btn is-primary" type="button" onClick={onDone}>
+              Continue
+            </button>
+          </div>
+        }
+      >
+        {dbMissing && <PuzzlesRequiredNotice onOpenSettings={onOpenSettings} />}
+      </CoachCard>
     )
   }
 
   return (
-    <div className="school-stage">
-      <BoardFrame env={env}>
+    <Scene
+      env={env}
+      board={
         <Board
           fen={fen}
           orientation={orientation}
@@ -937,49 +861,42 @@ export function PuzzleSegment({
           onMove={onUserMove}
           syncNonce={nonce}
         />
-        {phase === 'loading' && <div className="school-board-skeleton" aria-hidden />}
-      </BoardFrame>
-
-      <ViktorPanel
-        text={feedback.text}
-        eyebrow={title}
-        thinking={phase === 'loading'}
-        tone={phase === 'solved' ? 'pleased' : phase === 'failed' ? 'stern' : undefined}
-      >
-        <div className="school-step-meta">
-          <span className="school-step-count">
-            Puzzle {Math.min(solvedCount + 1, count)} / {count}
-          </span>
-          {phase === 'solving' && <span className="school-tag is-task">Your move</span>}
-          {phase === 'solved' && <span className="school-tag is-good">Solved</span>}
-          {phase === 'failed' && <span className="school-tag is-wrong">Missed</span>}
-        </div>
-
-        {phase === 'solving' && settings.hintsEnabled && (
-          <button
-            className="btn ghost school-hint-btn"
-            onClick={bumpHint}
-            disabled={hintStage >= 3 || !puzzle}
-            title="Hint"
-          >
-            <Lightbulb size={15} /> {HINT_LABEL[hintStage]}
+      }
+      turn={<Turn color={turn} />}
+      actions={
+        <>
+          {phase === 'solving' && settings.hintsEnabled && (
+            <button
+              className="btn is-quiet"
+              type="button"
+              onClick={bumpHint}
+              disabled={hintStage >= 3 || !puzzle}
+            >
+              {HINT_LABEL[hintStage]}
+            </button>
+          )}
+          {(phase === 'solving' || phase === 'failed') && (
+            <button className="btn is-quiet" type="button" onClick={retry} disabled={!puzzle}>
+              Reset
+            </button>
+          )}
+          <button className="btn is-quiet" type="button" onClick={onDone}>
+            Skip warm-up
           </button>
-        )}
-        {(phase === 'solved' || phase === 'failed') && (
-          <button className="btn school-primary" onClick={advanceCount}>
-            {isLastPuzzle ? 'Continue' : 'Next puzzle'} <ChevronRight size={16} />
-          </button>
-        )}
-        {(phase === 'solving' || phase === 'failed') && (
-          <button className="btn ghost school-secondary" onClick={retry} disabled={!puzzle}>
-            <RotateCcw size={16} /> Reset
-          </button>
-        )}
-        <button className="btn ghost school-skip" onClick={onDone}>
-          <SkipForward size={15} /> Skip warm-up
-        </button>
-      </ViktorPanel>
-    </div>
+          {(phase === 'solved' || phase === 'failed') && (
+            <button className="btn is-primary" type="button" onClick={advanceCount}>
+              {isLastPuzzle ? 'Continue' : 'Next puzzle'}
+            </button>
+          )}
+        </>
+      }
+      title={title}
+      count={`Puzzle ${Math.min(solvedCount + 1, count)} of ${count}`}
+      said={[feedback.text]}
+      task={phase === 'solving' ? 'Your move.' : undefined}
+      thinking={phase === 'loading'}
+      moves={puzzleMoves}
+    />
   )
 }
 
@@ -1004,6 +921,13 @@ export interface BossConfig {
   bossIntro?: CoachLine
 }
 
+/** Strength the boss engine plays at when a chapter authored none. INTERNAL: it
+ *  is a level for the engine call and nothing else. No screen quotes it, and
+ *  when a chapter leaves the level unset the facts panel makes no claim about
+ *  how strong the opponent is. Elo is internal grouping and is never shown to
+ *  the learner (docs/SCHOOL-SPEC.md, curriculum principles). */
+const UNSET_BOSS_ELO = 1500
+
 export function BossSegment({
   chapterId,
   boss,
@@ -1021,7 +945,8 @@ export function BossSegment({
   const { settings } = useSettings()
   const userColor: Color = boss.bossUserColor ?? 'white'
   const startFen = boss.bossFen ?? ''
-  const elo = boss.bossEngineElo ?? 1500
+  const authoredElo = boss.bossEngineElo
+  const elo = authoredElo ?? UNSET_BOSS_ELO
 
   const [phase, setPhase] = useState<BossPhase>('intro')
   const [fen, setFen] = useState(startFen)
@@ -1205,13 +1130,50 @@ export function BossSegment({
     void finishGame(false, 'resignation')
   }, [phase, finishGame])
 
+  /** What the learner is facing, in facts rather than in prose. */
+  const gameFacts = (extra?: { label: string; value: string }): JSX.Element => (
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">The game</h2>
+      </div>
+      <div className="panel">
+        <div className="facts">
+          <div className="fact">
+            <span>You play</span>
+            <span className="fact-value">{userColor === 'white' ? 'White' : 'Black'}</span>
+          </div>
+          <div className="fact">
+            <span>Opponent</span>
+            {/* What the learner faces, said without a rating: the strength that
+                orders the curriculum is internal and is never shown. A chapter
+                that authored no level gets no claim about the level at all. */}
+            <span className="fact-value">
+              The engine
+              {authoredElo !== undefined && (
+                <span className="fact-note">held to this chapter’s level</span>
+              )}
+            </span>
+          </div>
+          {extra && (
+            <div className="fact">
+              <span>{extra.label}</span>
+              <span className="fact-value">{extra.value}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+
   // -------- INTRO --------
   if (phase === 'intro') {
     const introCheck = startFen ? checkColor(startFen) : undefined
     const introTurn: Color = startFen ? turnColor(startFen) : 'white'
     return (
-      <div className="school-stage">
-        <BoardFrame env={env}>
+      <Scene
+        env={env}
+        boardLabel={positionLabel(introTurn)}
+        board={
           <Board
             fen={startFen}
             orientation={orientation}
@@ -1222,24 +1184,17 @@ export function BossSegment({
             coordinates={env.coordinates}
             animation={env.animation}
           />
-        </BoardFrame>
-        <ViktorPanel
-          text={boss.bossIntro?.text ?? 'Now the test. Show me what you have learned.'}
-          eyebrow={title}
-        >
-          <div className="school-boss-facts">
-            <span className="school-tag is-boss">
-              <Trophy size={14} /> Boss
-            </span>
-            <span className="muted small">
-              You play {userColor} · opponent ≈ {elo} Elo
-            </span>
-          </div>
-          <button className="btn school-primary" onClick={startGame}>
-            Begin the test <ChevronRight size={16} />
+        }
+        turn={<Turn color={introTurn} />}
+        actions={
+          <button className="btn is-primary" type="button" onClick={startGame}>
+            Begin the test
           </button>
-        </ViktorPanel>
-      </div>
+        }
+        title={title}
+        said={[boss.bossIntro?.text ?? 'Now the test. Show me what you have learned.']}
+        extras={gameFacts()}
+      />
     )
   }
 
@@ -1273,12 +1228,11 @@ export function BossSegment({
     const debriefLabels = annotationLabels(cur?.annotations, orientation)
 
     return (
-      <div className="school-stage">
-        <BoardFrame
-          env={env}
-          labels={debriefLabels}
-          below={<MoveStrip startFen={startFen} sans={sans} current={stripCurrent} />}
-        >
+      <Scene
+        env={env}
+        boardLabel={positionLabel(shownTurn)}
+        labels={debriefLabels}
+        board={
           <Board
             fen={shownFen}
             orientation={orientation}
@@ -1295,29 +1249,32 @@ export function BossSegment({
             // ignores customSvg, so the line index forces the re-sync.
             syncNonce={debriefIdx}
           />
-        </BoardFrame>
-        <ViktorPanel
-          text={cur?.text ?? debrief?.verdict ?? 'That is the lesson.'}
-          eyebrow={debrief?.verdict ? `Debrief: ${debrief.verdict}` : 'Debrief'}
-        >
-          {lines.length > 0 && (
-            <div className="school-step-meta">
-              <span className="school-step-count">
-                {Math.min(debriefIdx + 1, lines.length)} / {lines.length}
-              </span>
-            </div>
-          )}
-          {!isLastLine && lines.length > 0 ? (
-            <button className="btn school-primary" onClick={() => setDebriefIdx((i) => i + 1)}>
-              Next <ChevronRight size={16} />
+        }
+        turn={<Turn color={shownTurn} />}
+        actions={
+          !isLastLine && lines.length > 0 ? (
+            <button
+              className="btn is-primary"
+              type="button"
+              onClick={() => setDebriefIdx((i) => i + 1)}
+            >
+              Next
             </button>
           ) : (
-            <button className="btn school-primary" onClick={() => onDone(result?.won ?? false)}>
-              Finish lesson <ChevronRight size={16} />
+            <button
+              className="btn is-primary"
+              type="button"
+              onClick={() => onDone(result?.won ?? false)}
+            >
+              Finish lesson
             </button>
-          )}
-        </ViktorPanel>
-      </div>
+          )
+        }
+        title={debrief?.verdict ? `Debrief: ${debrief.verdict}` : 'Debrief'}
+        count={lines.length > 0 ? `${Math.min(debriefIdx + 1, lines.length)} of ${lines.length}` : undefined}
+        said={[cur?.text ?? debrief?.verdict ?? 'That is the lesson.']}
+        moves={{ startFen, sans, current: stripCurrent }}
+      />
     )
   }
 
@@ -1325,9 +1282,10 @@ export function BossSegment({
   const over = phase === 'over'
   const gameSans = movesRef.current.map((m) => m.san)
   return (
-    <div className="school-stage">
-      <div className="school-board-col">
-        <div className={env.boardClass}>
+    <Scene
+      env={env}
+      board={
+        <>
           <Board
             fen={fen}
             orientation={orientation}
@@ -1346,109 +1304,117 @@ export function BossSegment({
           {phase === 'playing' && pendingPromo && (
             <PromotionPicker color={userColor} onSelect={onPromoPick} onCancel={onPromoCancel} />
           )}
-        </div>
-        <MoveStrip startFen={startFen} sans={gameSans} />
-        {!over && (
-          <div className="school-board-controls">
-            <button className="btn ghost" onClick={resign} disabled={phase !== 'playing'}>
-              <Flag size={16} /> Resign
-            </button>
-            {thinking && <span className="muted small">Viktor's champion is thinking…</span>}
-          </div>
-        )}
-      </div>
-
-      <ViktorPanel
-        text={
-          over
-            ? result?.won
-              ? 'Well played. You passed the test.'
-              : 'The test is over. Now let us see what happened.'
-            : ''
-        }
-        eyebrow={title}
-        silent={!over}
-        thinking={over && debriefLoading}
-        tone={over ? (result?.won ? 'pleased' : 'neutral') : undefined}
-      >
-        {over && (
+        </>
+      }
+      turn={
+        over ? undefined : (
+          <Turn color={turn} note={thinking ? 'thinking' : undefined} />
+        )
+      }
+      actions={
+        over ? (
           <>
-            <div className="school-boss-result">
-              <span className={`school-tag ${result?.won ? 'is-good' : 'is-wrong'}`}>
-                {result?.won ? 'Passed' : 'Not yet'}
-              </span>
-              <span className="muted small">{reasonLabel(result?.reason)}</span>
-            </div>
+            <button className="btn is-quiet" type="button" onClick={startGame}>
+              Play again
+            </button>
             <button
-              className="btn school-primary"
+              className="btn is-quiet"
+              type="button"
+              onClick={() => onDone(result?.won ?? false)}
+            >
+              Skip debrief
+            </button>
+            <button
+              className="btn is-primary"
+              type="button"
               disabled={debriefLoading}
               onClick={() => setPhase('debrief')}
             >
-              {debriefLoading ? 'Viktor is reviewing…' : 'Hear Viktor’s debrief'}{' '}
-              <ChevronRight size={16} />
-            </button>
-            <button className="btn ghost school-secondary" onClick={startGame}>
-              <RotateCcw size={16} /> Play again
-            </button>
-            <button
-              className="btn ghost school-skip"
-              onClick={() => onDone(result?.won ?? false)}
-            >
-              <CheckCircle2 size={15} /> Skip debrief
+              {debriefLoading ? 'Viktor is reviewing' : 'Hear Viktor’s debrief'}
             </button>
           </>
-        )}
-      </ViktorPanel>
-    </div>
+        ) : (
+          <button className="btn is-quiet" type="button" onClick={resign}>
+            Resign
+          </button>
+        )
+      }
+      title={title}
+      count={over ? (result?.won ? 'Passed' : 'Not yet') : undefined}
+      said={
+        over
+          ? [
+              result?.won
+                ? 'Well played. You passed the test.'
+                : 'The test is over. Now let us see what happened.'
+            ]
+          : []
+      }
+      silent={!over}
+      thinking={over && debriefLoading}
+      moves={{ startFen, sans: gameSans }}
+      extras={over ? gameFacts({ label: 'Result', value: reasonLabel(result?.reason) }) : undefined}
+    />
   )
 }
 
 // ===========================================================================
-// Shared frame + helpers
+// Helpers
 // ===========================================================================
-
-/** Large board column wrapper used by every static (non-control) segment.
- *  `below` renders under the board inside the column (e.g. a MoveStrip).
- *  `labels` render as readable pills positioned over the board: chessground's
- *  own shape labels shrink multi-word text to an unreadable dot. */
-export function BoardFrame({
-  env,
-  children,
-  below,
-  labels
-}: {
-  env: BoardEnv
-  children: React.ReactNode
-  below?: React.ReactNode
-  labels?: AnnotationLabel[]
-}): JSX.Element {
-  return (
-    <div className="school-board-col">
-      <div className={env.boardClass}>
-        {children}
-        {labels && labels.length > 0 && (
-          <div className="school-ann-labels" aria-hidden>
-            {labels.map((l, i) => (
-              <span
-                key={`${l.text}-${i}`}
-                className={`school-ann-label is-${l.color}`}
-                style={{ left: `${l.leftPct}%`, top: `${l.topPct}%` }}
-              >
-                {l.text}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-      {below}
-    </div>
-  )
-}
 
 function promoOf(uci: string): Role | undefined {
   return uci.length > 4 ? ROLE_FROM_CHAR[uci[4]] : undefined
 }
 
+const PROMO_ROLES: Role[] = ['queen', 'rook', 'bishop', 'knight']
+
+/**
+ * The single legal move that turns `from` into `to`, in SAN, or null.
+ *
+ * Two authored positions one move apart ARE a move, and naming it is derivation,
+ * not reconstruction. Anything ambiguous (two moves reach the same position) or
+ * unreachable returns null, and the caller then shows no move list at all rather
+ * than a plausible one.
+ */
+function connectingSan(from: string, to: string): string | null {
+  // Placement, side to move and castling rights only: authored FENs are often
+  // loose about the clocks and the en-passant square.
+  const key = (fen: string): string => fen.split(' ').slice(0, 3).join(' ')
+  const want = key(to)
+  const hits: string[] = []
+  destsFor(from).forEach((tos, orig) => {
+    for (const dest of tos) {
+      for (const promo of isPromoMove(from, orig, dest) ? PROMO_ROLES : [undefined]) {
+        const applied = applyMove(from, orig, dest, promo)
+        if (applied && key(applied.fen) === want) hits.push(applied.san)
+      }
+    }
+  })
+  return hits.length === 1 ? hits[0] : null
+}
+
+/**
+ * The SAN line a run of authored positions spells out, or null when they are not
+ * one line. A teach segment is a list of FENs: sometimes those FENs walk a game
+ * a move at a time (there is a real move list), and sometimes they are unrelated
+ * positions on one theme (there is none, and none is shown).
+ */
+export function lineThrough(fens: string[]): string[] | null {
+  if (fens.length < 2 || fens.some((f) => !f)) return null
+  const sans: string[] = []
+  try {
+    for (let i = 1; i < fens.length; i++) {
+      const san = connectingSan(fens[i - 1], fens[i])
+      if (!san) return null
+      sans.push(san)
+    }
+  } catch {
+    // An unparseable authored position is not a move list. It is also not worth
+    // taking the lesson down for: the step itself will report it.
+    return null
+  }
+  return sans
+}
 
 function reasonLabel(reason?: string): string {
   switch (reason) {

@@ -1,9 +1,31 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>nodechess</title>
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. This has to be
+         inline and it has to be here: a module script runs after the first
+         paint, and React mounts later still.
+
+         Two attributes on <html>, read from the two places the app writes
+         them. The palette lives inside the settings blob (state/settings.tsx,
+         'oct.settings.v1'), so this reads that blob rather than a second key
+         that could drift out of step with it. cold-iron-bone is declared on
+         :root, so the default is the ABSENCE of data-palette and this snippet
+         sets nothing at all in the common case. The rail's collapsed state is
+         chrome rather than a preference and lives under its own key. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min')
+        var ncStored = localStorage.getItem('oct.settings.v1')
+        var ncPal = ncStored ? JSON.parse(ncStored).palette : null
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal)
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

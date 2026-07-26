@@ -17,7 +17,7 @@ import type { SchoolChapter, SchoolChapterMeta } from '@shared/types'
 import { loadContent } from './fetchContent'
 
 /** One index row: a chapter card plus the internal floor the gate needs. */
-interface ChapterIndexEntry {
+export interface ChapterIndexEntry {
   id: string
   band: string
   order: number
@@ -55,6 +55,13 @@ function index(): Promise<ChapterIndexEntry[]> {
   return loadContent<{ chapters?: ChapterIndexEntry[] }>('school/chapters.json').then((f) =>
     Array.isArray(f.chapters) ? f.chapters : []
   )
+}
+
+/** The raw index, curriculum order, INCLUDING each chapter's internal eloFloor.
+ *  Only the progress store may read this: the floor drives placement's unlock
+ *  and pre-completion and must never reach a renderable shape (spec §2.2a). */
+export function chapterIndex(): Promise<ChapterIndexEntry[]> {
+  return index()
 }
 
 /**

@@ -1,7 +1,9 @@
 // The profile page: view anyone, including accounts whose owner is long gone.
-// When a target account root is opened and the live peer is up, the page
-// resolves the profile over the network via viewerClient; without a live peer it
-// falls back to the clearly-labelled sample profiles (offline preview).
+// The page resolves the account over the network via viewerClient and renders
+// what came back. There is no offline preview and no sample profile: a profile
+// this device has not actually fetched does not render, so a lookup that cannot
+// be reached says so, in the same sections and the same language as the rest of
+// the account page, and says what to do next.
 //
 // WHAT THIS PAGE SHOWS A PLAYER: a name, a region, an age, ratings, reputation,
 // and games. Nothing about how any of it was fetched or verified. The protocol
@@ -20,21 +22,16 @@ import {
   Ban,
   Check,
   Clock,
-  CloudOff,
   Copy,
   Globe,
   History,
   Loader2,
-  RefreshCw,
-  Search,
   ShieldAlert,
   Swords,
   Users
 } from 'lucide-react'
 import { visibleOpponentInfo, spectatorOpponentInfo } from '@shared/accounts/mm/pairing'
 import { pairViewOf } from '@shared/accounts/ratings/display'
-import { DEV_FIXTURE, MOCK_NOW, PROFILES, shortB64u } from '../mock/fixtures'
-import { FixturePreviewBadge } from '../mock/FixturePreviewBadge'
 import type { UiGameRow, UiLadder, UiProfile, UiStanding } from '../mock/types'
 import { useAccountsUi, type AccountsUiState, type ViewerDisplayByLadder } from '../mock/store'
 import { getAccountPeer } from '../net/peerService'
@@ -48,7 +45,19 @@ import {
 import { ReconstructionCard } from './ReconstructionCard'
 import { LADDER_ICON, RatingLadders, type LadderProjection } from './RatingLadders'
 import { ReputationPanel } from './ReputationPanel'
-import { DAY, accountAge, daysRemaining, gameDate, regionName, relativeWts } from './profileFormat'
+import {
+  DAY,
+  accountAge,
+  daysRemaining,
+  gameDate,
+  regionName,
+  relativeWts,
+  shortB64u
+} from './profileFormat'
+// The ladder, reputation and game-row rendering. The panels, wells, empty
+// states and buttons around them are v1's own vocabulary, so this stylesheet
+// carries only the parts v1 never drew.
+import './profile.css'
 
 /**
  * The rating-visibility projection for every ladder of a viewed profile (A4-17),
@@ -98,7 +107,8 @@ export function ProfilePage({
   handle,
   root,
   onBack,
-  initialRevealed
+  initialRevealed,
+  profile
 }: {
   handle: string
   /** Explicit target account root (b64u). When omitted, a 43-char b64u `handle`
@@ -109,39 +119,34 @@ export function ProfilePage({
    *  (scripts/test-a4-ui.mjs pins the revealed degraded view, A4-29); product
    *  callers omit it and get the owner-online default. */
   initialRevealed?: boolean
+  /**
+   * An ALREADY-RESOLVED profile, supplied by the caller. The A4 UI suite drives
+   * the page this way, over known inputs, to pin the shared projections. The
+   * app never passes it: every profile a player sees comes from the resolve
+   * below, so there is no path from the shipped UI to a profile this device did
+   * not fetch.
+   */
+  profile?: UiProfile
 }): JSX.Element {
-  // A target ROOT (explicit, or a root-shaped handle) drives LIVE reconstruction
-  // over the overlay; anything else is a fixture display handle (offline preview).
+  // A target ROOT (explicit, or a root-shaped handle) is what the overlay can
+  // look up. Anything else is not an account id this app can resolve.
   const targetRoot = root ?? (isAccountRoot(handle) ? handle : undefined)
-  const isLive = targetRoot !== undefined
-  const fixtureProfile: UiProfile | undefined = PROFILES[handle]
+  const isLive = profile === undefined && targetRoot !== undefined
   const ui = useAccountsUi()
 
   // Owner online → render straight from their live chain. Owner gone →
   // reconstruct from pointers/holders/shards first (§5), then reveal.
   const [revealed, setRevealed] = useState<boolean>(
-    () => initialRevealed ?? (!isLive && (!fixtureProfile || fixtureProfile.reconstruction.ownerOnline))
+    () => initialRevealed ?? (profile !== undefined && profile.reconstruction.ownerOnline)
   )
-  const [paging, setPaging] = useState<'idle' | 'busy' | 'settled'>('idle')
   const [live, setLive] = useState<LiveState>({ phase: 'resolving' })
   const [retryKey, setRetryKey] = useState(0)
 
   // Reset the flow when the viewed target changes.
   useEffect(() => {
-    const p = PROFILES[handle]
-    const liveTarget = root ?? (isAccountRoot(handle) ? handle : undefined)
-    setRevealed(initialRevealed ?? (liveTarget === undefined && (!p || p.reconstruction.ownerOnline)))
-    setPaging('idle')
+    setRevealed(initialRevealed ?? (profile !== undefined && profile.reconstruction.ownerOnline))
     setLive({ phase: 'resolving' })
-  }, [handle, root, initialRevealed])
-
-  // Fixture-only lazy-page mock: ask the holders, come back with the honest
-  // failure mode (temporary unavailability that heals), never a dead button.
-  useEffect(() => {
-    if (isLive || paging !== 'busy') return
-    const t = window.setTimeout(() => setPaging('settled'), 950)
-    return () => window.clearTimeout(t)
-  }, [paging, isLive])
+  }, [handle, root, initialRevealed, profile])
 
   // LIVE resolve: one authenticated-pointer lookup + the shard layer over the
   // peer overlay, via viewerClient. Never throws; a below-K_rec / no-pointer
@@ -175,167 +180,152 @@ export function ProfilePage({
     }
   }, [isLive, targetRoot, retryKey, initialRevealed])
 
-  // ---- LIVE reconstruction path ------------------------------------------
-  if (isLive && targetRoot !== undefined) {
-    const shortHandle = shortB64u(targetRoot)
+  // ---- Caller-supplied profile (the suite) -------------------------------
+  if (profile !== undefined) {
     return (
       <div className="aprof-page">
-        <div className="aprof-page-top">
-          <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}>
-            <ArrowLeft size={16} aria-hidden />
-          </button>
-          <span className="aprof-page-title">Profile</span>
-          <span className="account-handle-mono muted small">{shortHandle}</span>
-        </div>
-
-        {live.phase === 'resolving' && (
-          <ReconstructionCard handle={shortHandle} recon={null} checkpoint={null} onDone={() => {}} />
-        )}
-
-        {live.phase === 'unavailable' && (
-          <UnavailableCard
-            handle={shortHandle}
-            reason={live.reason}
-            onRetry={() => setRetryKey((k) => k + 1)}
-            onBack={onBack}
+        <PageTop label={profile.handle} onBack={onBack} />
+        {!revealed ? (
+          <ReconstructionCard
+            handle={profile.handle}
+            recon={profile.reconstruction}
+            checkpoint={profile.checkpoint}
+            onDone={() => setRevealed(true)}
           />
+        ) : (
+          <RevealedProfile profile={profile} ui={ui} nowMs={Date.now()} pager={null} />
         )}
-
-        {live.phase === 'ready' &&
-          (!revealed ? (
-            <ReconstructionCard
-              handle={shortHandle}
-              recon={live.result.profile.reconstruction}
-              checkpoint={live.result.profile.checkpoint}
-              onDone={() => setRevealed(true)}
-            />
-          ) : (
-            <RevealedProfile profile={live.result.profile} ui={ui} nowMs={Date.now()} pager={live.result.pager} />
-          ))}
       </div>
     )
   }
 
-  // ---- FIXTURE preview path (offline / display-handle) -------------------
-  if (!fixtureProfile) {
+  // ---- Nothing to look up ------------------------------------------------
+  // A real state, said plainly: what was typed is not an account id, so there
+  // is nothing to fetch and nothing to show. Never a stand-in profile.
+  if (targetRoot === undefined) {
     return (
       <div className="aprof-page">
-        <div className="aprof-page-top">
-          <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}>
-            <ArrowLeft size={16} aria-hidden />
-          </button>
-          <span className="aprof-page-title">Profile</span>
-          <span className="account-handle-mono muted small">{handle}</span>
-        </div>
-        <section className="card aprof-card aprof-missing">
-          <span className="aprof-missing-icon" aria-hidden>
-            <Search size={22} />
-          </span>
-          <h3 className="aprof-missing-title">Nothing found</h3>
-          <p className="muted">No account matches that id. Check it and try again.</p>
-          <button type="button" className="btn ghost" onClick={onBack}>
-            <ArrowLeft size={14} aria-hidden /> Back
-          </button>
+        <PageTop label={handle} onBack={onBack} />
+        <section className="sec">
+          <div className="well">
+            <div className="empty">
+              <p className="empty-line">No account matches that id. Check it and try again.</p>
+              <p className="empty-line">
+                An account id is 43 characters. Ask the player to copy theirs and paste the whole
+                thing.
+              </p>
+            </div>
+          </div>
         </section>
       </div>
     )
   }
 
+  // ---- LIVE resolve ------------------------------------------------------
+  const shortHandle = shortB64u(targetRoot)
   return (
     <div className="aprof-page">
-      <div className="aprof-page-top">
-        <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}>
-          <ArrowLeft size={16} aria-hidden />
-        </button>
-        <span className="aprof-page-title">Profile</span>
-        <span className="account-handle-mono muted small">{fixtureProfile.handle}</span>
-        {DEV_FIXTURE && (
-          <FixturePreviewBadge label="Sample profile (offline preview)" />
-        )}
-      </div>
+      <PageTop label={shortHandle} onBack={onBack} />
 
-      {!revealed ? (
-        <ReconstructionCard
-          handle={fixtureProfile.handle}
-          recon={fixtureProfile.reconstruction}
-          checkpoint={fixtureProfile.checkpoint}
-          onDone={() => setRevealed(true)}
-        />
-      ) : (
-        <RevealedProfile
-          profile={fixtureProfile}
-          ui={ui}
-          nowMs={MOCK_NOW}
-          pager={null}
-          paging={paging}
-          onLoadMore={() => setPaging('busy')}
+      {live.phase === 'resolving' && (
+        <ReconstructionCard handle={shortHandle} recon={null} checkpoint={null} onDone={() => {}} />
+      )}
+
+      {live.phase === 'unavailable' && (
+        <UnavailableSection
+          reason={live.reason}
+          onRetry={() => setRetryKey((k) => k + 1)}
+          onBack={onBack}
         />
       )}
+
+      {live.phase === 'ready' &&
+        (!revealed ? (
+          <ReconstructionCard
+            handle={shortHandle}
+            recon={live.result.profile.reconstruction}
+            checkpoint={live.result.profile.checkpoint}
+            onDone={() => setRevealed(true)}
+          />
+        ) : (
+          <RevealedProfile
+            profile={live.result.profile}
+            ui={ui}
+            nowMs={Date.now()}
+            pager={live.result.pager}
+          />
+        ))}
+    </div>
+  )
+}
+
+/** The page's one row of chrome: back, what page this is, whose id is open. */
+function PageTop({ label, onBack }: { label: string; onBack: () => void }): JSX.Element {
+  return (
+    <div className="aprof-page-top">
+      <button type="button" className="icon-btn" aria-label="Back" onClick={onBack}>
+        <ArrowLeft size={16} aria-hidden />
+      </button>
+      <span className="aprof-page-title">Profile</span>
+      <span className="account-handle-mono muted small">{label}</span>
     </div>
   )
 }
 
 /** The profile could not be loaded this pass (not connected, nothing found, or
- *  too little of it reachable). One plain sentence and a retry: the resolve's
- *  reason codes stay internal, because none of them changes what the player
- *  does next. Never a fabricated profile. */
-function UnavailableCard({
-  handle,
+ *  too little of it reachable). What happened and what to do about it, in the
+ *  page's own empty-state language: the resolve's reason codes stay internal,
+ *  because none of them changes what the player does next. Never a fabricated
+ *  profile. */
+function UnavailableSection({
   reason,
   onRetry,
   onBack
 }: {
-  handle: string
   reason: string
   onRetry: () => void
   onBack: () => void
 }): JSX.Element {
-  const copy =
+  const [line, next] =
     reason === 'no-peer'
-      ? 'You are not connected yet. Wait a moment, then retry.'
+      ? ['You are not connected yet.', 'Wait a moment, then retry.']
       : reason === 'no-pointers'
-        ? 'No account matches that id. Check it and try again.'
-        : 'This profile could not be loaded right now. Try again in a moment.'
+        ? ['No account matches that id. Check it and try again.', 'Retry once you have.']
+        : ['This profile could not be loaded right now.', 'Try again in a moment.']
   return (
-    <section className="card aprof-card aprof-rail aprof-recon">
-      <header className="aprof-card-head">
-        <span className="aprof-eyebrow">
-          <CloudOff size={14} aria-hidden /> <span className="account-handle-mono">{handle}</span>
-        </span>
-        <p className="aprof-card-sub muted small">{copy}</p>
-      </header>
-      <div className="aprof-games-foot">
-        <button type="button" className="btn ghost aprof-btn-sm" onClick={onRetry}>
-          <RefreshCw size={13} aria-hidden /> Retry
-        </button>
-        <button type="button" className="btn ghost aprof-btn-sm" onClick={onBack}>
-          <ArrowLeft size={13} aria-hidden /> Back
-        </button>
+    <section className="sec">
+      <div className="well">
+        <div className="empty">
+          <p className="empty-line">{line}</p>
+          <p className="empty-line">{next}</p>
+        </div>
+        <div className="panel-foot aprof-foot-row">
+          <button type="button" className="btn is-quiet" onClick={onRetry}>
+            Retry
+          </button>
+          <button type="button" className="btn is-quiet" onClick={onBack}>
+            Back
+          </button>
+        </div>
       </div>
     </section>
   )
 }
 
-/** The revealed profile body. Identical rendering for the live resolve and the
- *  fixture preview; the caller supplies the UiProfile, its evaluation clock
- *  (Date.now for live data, MOCK_NOW for the frozen fixture), and the lazy
- *  history pager (live) or the fixture mock paging state. */
+/** The revealed profile body. The caller supplies the resolved UiProfile, the
+ *  clock the relative times are read against, and the lazy history pager the
+ *  resolve came with (null when there is nothing more to page). */
 function RevealedProfile({
   profile,
   ui,
   nowMs,
-  pager,
-  paging: fixturePaging,
-  onLoadMore: fixtureLoadMore
+  pager
 }: {
   profile: UiProfile
   ui: AccountsUiState
   nowMs: number
   pager: ViewerResult['pager']
-  paging?: 'idle' | 'busy' | 'settled'
-  onLoadMore?: () => void
 }): JSX.Element {
-  const isLive = pager !== null || fixturePaging === undefined
   const stale = nowMs - profile.lastWitnessedWts > 30 * DAY
   const totalGames = profile.ladders.reduce((n, l) => n + l.games, 0)
   const recon = profile.reconstruction
@@ -345,8 +335,8 @@ function RevealedProfile({
     recon.path === 'floor' || recon.revocationContested || !profile.checkpoint.mOfN
   const [copied, setCopied] = useState(false)
 
-  // Live game history, lazy-paged through the pager (openHistory). Fixture
-  // preview renders profile.games with the mock "load more" note.
+  // Game history, lazy-paged through the pager the resolve returned
+  // (openHistory). Without a pager there is one page and it is already here.
   const [liveGames, setLiveGames] = useState<UiGameRow[] | null>(null)
   const [nextPage, setNextPage] = useState(0)
   const [livePaging, setLivePaging] = useState<'idle' | 'busy' | 'settled' | 'end'>('idle')
@@ -411,18 +401,17 @@ function RevealedProfile({
     setCopied(true)
   }
 
-  // The games to show + the paging control state (live pager vs fixture mock).
+  // The games to show + the paging control state.
   const games = pager ? (liveGames ?? []) : profile.games
-  const pagingBusy = pager ? livePaging === 'busy' : fixturePaging === 'busy'
-  const pagingSettled = pager ? livePaging === 'settled' : fixturePaging === 'settled'
-  // Live with no pager (rare: a segment floor with no pinned head) has nothing to
-  // page: treat as ended so no dead "Load more" button renders.
-  const pagingEnded = pager ? livePaging === 'end' : isLive
-  const onLoadMore = pager ? loadMoreLive : (fixtureLoadMore ?? (() => {}))
+  const pagingBusy = pager !== null && livePaging === 'busy'
+  const pagingSettled = pager !== null && livePaging === 'settled'
+  // No pager (rare: a segment floor with no pinned head) has nothing to page:
+  // treat as ended so no dead "Load more" button renders.
+  const pagingEnded = pager ? livePaging === 'end' : true
 
   return (
     <>
-      <section className="card aprof-card aprof-rail aprof-head-card">
+      <section className="panel aprof-card aprof-rail aprof-head-card">
         <div className="aprof-identity">
           <span className="aprof-avatar" aria-hidden>
             <span className="aprof-avatar-glyph">{profile.flair}</span>
@@ -433,7 +422,7 @@ function RevealedProfile({
               <span className="aprof-tag">#{profile.tag}</span>
             </h3>
             <span className="aprof-handle account-handle-mono">
-              {isLive ? shortB64u(profile.rootPub) : profile.handle}
+              {shortB64u(profile.rootPub)}
               <button
                 type="button"
                 className="aprof-copy"
@@ -446,20 +435,28 @@ function RevealedProfile({
             {profile.bio.trim() !== '' && <p className="aprof-bio">{profile.bio}</p>}
           </div>
           <div className="aprof-meta">
-            <span className="aprof-meta-pill">
-              <Globe size={12} aria-hidden /> {regionName(profile.country)}
-            </span>
+            {profile.country.trim() !== '' && (
+              <span className="aprof-meta-pill">
+                <Globe size={12} aria-hidden /> {regionName(profile.country)}
+              </span>
+            )}
             {profile.createdWts > 0 && (
               <span className="aprof-meta-pill">
                 <History size={12} aria-hidden /> {accountAge(profile.createdWts, nowMs)} on the network
               </span>
             )}
-            <span className="aprof-meta-pill num">
-              <Users size={12} aria-hidden /> {profile.friendsCount} friends
-            </span>
-            <span className="aprof-meta-pill num">
-              <Swords size={12} aria-hidden /> {totalGames.toLocaleString()} games
-            </span>
+            {/* A count nobody took is not a count of zero, so an unknown one
+                renders as nothing at all. */}
+            {profile.friendsCount !== null && (
+              <span className="aprof-meta-pill num">
+                <Users size={12} aria-hidden /> {profile.friendsCount} friends
+              </span>
+            )}
+            {profile.ladders.length > 0 && (
+              <span className="aprof-meta-pill num">
+                <Swords size={12} aria-hidden /> {totalGames.toLocaleString()} games
+              </span>
+            )}
           </div>
         </div>
         {profile.lastWitnessedWts > 0 && (
@@ -495,7 +492,7 @@ function RevealedProfile({
       )}
 
       <div className="aprof-columns">
-        <section className="card aprof-card aprof-panel">
+        <section className="panel aprof-card">
           <header className="aprof-card-head">
             <span className="aprof-eyebrow">Ratings</span>
             {viewerHiddenSomewhere && (
@@ -505,11 +502,20 @@ function RevealedProfile({
             )}
           </header>
           <div className="aprof-card-body">
-            <RatingLadders ladders={profile.ladders} projection={projection} />
+            {/* Nothing recovered means nothing known, and nothing known renders
+                as the empty state rather than as four fresh-looking ladders. */}
+            {profile.ladders.length > 0 ? (
+              <RatingLadders ladders={profile.ladders} projection={projection} />
+            ) : (
+              <div className="empty">
+                <p className="empty-line">Ratings could not be loaded.</p>
+                <p className="empty-line">Try again in a moment.</p>
+              </div>
+            )}
           </div>
         </section>
 
-        <section className="card aprof-card aprof-panel">
+        <section className="panel aprof-card">
           <header className="aprof-card-head">
             <span className="aprof-eyebrow">Reputation</span>
             <p className="aprof-card-sub muted small">
@@ -517,12 +523,19 @@ function RevealedProfile({
             </p>
           </header>
           <div className="aprof-card-body">
-            <ReputationPanel reputation={profile.reputation} />
+            {profile.reputation !== null ? (
+              <ReputationPanel reputation={profile.reputation} />
+            ) : (
+              <div className="empty">
+                <p className="empty-line">Their conduct record could not be loaded.</p>
+                <p className="empty-line">Try again in a moment.</p>
+              </div>
+            )}
           </div>
         </section>
       </div>
 
-      <section className="card aprof-card aprof-panel">
+      <section className="panel aprof-card">
         <header className="aprof-card-head aprof-card-head-row">
           <span className="aprof-eyebrow">Games</span>
           <span className="muted small">newest first</span>
@@ -540,9 +553,9 @@ function RevealedProfile({
           {!pagingEnded && (
             <button
               type="button"
-              className="btn ghost aprof-btn-sm"
+              className="btn is-quiet aprof-btn-sm"
               disabled={pagingBusy}
-              onClick={onLoadMore}
+              onClick={loadMoreLive}
             >
               {pagingBusy ? (
                 <>
@@ -553,7 +566,7 @@ function RevealedProfile({
               )}
             </button>
           )}
-          {pagingEnded && (
+          {pagingEnded && games.length > 0 && (
             <p className="aprof-games-note muted small" role="status">
               That&rsquo;s every game.
             </p>

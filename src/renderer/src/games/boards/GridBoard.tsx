@@ -748,7 +748,7 @@ function TicTacToeBoard({ state, interactive, onMove }: GameBoardProps): JSX.Ele
 
   return (
     <div className="gboard is-tictactoe">
-      <svg className="gb-svg is-ttt" viewBox={`0 0 ${TTT_S} ${TTT_S}`}>
+      <svg className="gb-svg" viewBox={`0 0 ${TTT_S} ${TTT_S}`}>
         <g className="ttt-grid">
           <path d="M104 18 V282 M196 18 V282 M18 104 H282 M18 196 H282" />
         </g>

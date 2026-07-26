@@ -1,28 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { JSX } from 'react'
-import {
-  BookOpen,
-  Check,
-  CheckCircle2,
-  ChevronRight,
-  Clock,
-  GraduationCap,
-  Lock,
-  Play,
-  RotateCcw,
-  Trophy
-} from 'lucide-react'
 import type {
   SchoolChapterMeta,
   ChapterProgressRow,
   SchoolMastery,
   PlacementState
 } from '@shared/types'
+import { useReadoutSlot } from '../../components/Layout'
 import { ChapterPlayer } from './ChapterPlayer'
 import { PlacementFlow } from './PlacementFlow'
 import { TodayCard } from './TodayCard'
 import { RecommendedNextCard } from './RecommendedNextCard'
-import { ProgressRing } from './ChapterOverview'
+import { Icon, pad } from './SchoolScene'
 import './school.css'
 
 type LoadState = 'loading' | 'ready' | 'empty'
@@ -76,16 +65,19 @@ const TIERS: TierDef[] = [
   }
 ]
 
-type NodeState = 'done' | 'current' | 'open' | 'locked'
-
 /**
- * Chess School index, Viktor's curriculum as a guided JOURNEY: a header band
- * (identity + stats + the Today/Recommended surfaces side by side) above the
- * tiered chapter path. The current chapter is the hero card with a progress
- * ring and Continue CTA; completed chapters compact with checkmarks; locked
- * chapters dimmed with a name-based hint (never an Elo). Selecting a chapter
- * opens the full-board ChapterPlayer. Degrades gracefully when the desktop
- * bridge is absent (clear "connect" state instead of crashing).
+ * Chess School.
+ *
+ * v1 draws the inside of a lesson and nothing else, so the index is built from
+ * the same parts that page is made of: a chapter is a .go row in a .panel, a
+ * tier is a .sec with its count in the .sec-head, and what you did today and
+ * what Viktor thinks you should do next stand in the aside. There is no ring,
+ * no node line and no hero card, because none of those exist in this design and
+ * a chapter list does not need them: the count says how far you are and the
+ * trace under the readout says it again for the whole school.
+ *
+ * Degrades honestly when the desktop bridge is absent (a clear "connect" state,
+ * never a sample chapter).
  */
 export default function SchoolView({
   onOpenSettings
@@ -135,68 +127,13 @@ export default function SchoolView({
     }
   }, [reloadKey])
 
-  // chapterId -> progress row, for badge lookup.
-  const progressById = useMemo(() => {
-    const map = new Map<string, ChapterProgressRow>()
-    for (const row of mastery?.chapters ?? []) map.set(row.chapterId, row)
-    return map
-  }, [mastery])
-
-  // chapterId -> count of completed lessons, for the real progress fractions.
-  const doneLessonsByChapter = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const l of mastery?.lessons ?? []) map.set(l.chapterId, (map.get(l.chapterId) ?? 0) + 1)
-    return map
-  }, [mastery])
-
-  const completedCount = useMemo(
-    () => (mastery?.chapters ?? []).filter((c) => c.completed).length,
-    [mastery]
-  )
-  const conceptsLearned = useMemo(
-    () => (mastery?.concepts ?? []).filter((c) => c.mastery >= 0.6).length,
-    [mastery]
-  )
-
-  // Sorted chapters + derived journey state. ALL hooks run before any early
-  // return below so the hook order is stable across renders (React error #300).
-  const ordered = useSorted(chapters)
-  const unlockedCount = useMemo(() => chapters.filter((c) => !c.locked).length, [chapters])
-
-  // The learner's CURRENT chapter: first unlocked chapter not yet completed.
-  // It renders as the hero card on the path.
-  const currentId = useMemo(() => {
-    for (const ch of ordered) {
-      if (ch.locked) continue
-      if (!(progressById.get(ch.id)?.completed ?? false)) return ch.id
-    }
-    return null
-  }, [ordered, progressById])
-
-  // Chapters grouped into the named tiers by order range (empty tiers dropped).
-  const tiers = useMemo(
-    () =>
-      TIERS.map((t) => ({
-        ...t,
-        chapters: ordered.filter((c) => c.order >= t.from && c.order <= t.to)
-      })).filter((t) => t.chapters.length > 0),
-    [ordered]
-  )
-
   // Placement is required once, and only when the bridge actually returned a state
   // (web/dev with no bridge => placement null => never block the index).
   const needsPlacement = state === 'ready' && placement != null && !placement.placed
 
-  // Clear placement so the learner can re-place (re-runs the placement game, which
-  // re-derives which chapters are pre-completed).
-  const retakePlacement = (): void => {
-    void window.api?.school
-      ?.resetPlacement?.()
-      .then(() => setReloadKey((k) => k + 1))
-      .catch(() => {})
-  }
-
   // ----- A chapter is open: hand the whole stage to the player. -----
+  // The index below is a separate component so that exactly ONE screen owns the
+  // readout at a time: two components writing the same slot fight over it.
   if (openId) {
     return (
       <ChapterPlayer
@@ -222,158 +159,64 @@ export default function SchoolView({
     )
   }
 
-  // ----- Index: header band + journey. -----
   return (
-    <div className="school-view">
-      <header className="school-hero">
-        <div className="school-hero-top">
-          <div className="school-hero-id">
-            <span className="school-hero-avatar" aria-hidden>
-              <GraduationCap size={20} />
-            </span>
-            <div className="school-hero-copy">
-              <h2 className="school-hero-title">Viktor’s Chess School</h2>
-              <p className="school-lede">
-                Taught on the board, drilled in guided practice, proven against the engine.
-              </p>
-            </div>
-          </div>
-          {state === 'ready' && (
-            <div className="school-stats">
-              <SchoolStat icon={<BookOpen size={15} />} num={unlockedCount} label="Unlocked" />
-              <SchoolStat icon={<CheckCircle2 size={15} />} num={completedCount} label="Completed" />
-              <SchoolStat icon={<Trophy size={15} />} num={conceptsLearned} label="Concepts" />
-              {placement?.placed && (
-                <button type="button" className="school-retake" onClick={retakePlacement}>
-                  <RotateCcw size={13} /> Retake placement
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Today (daily lesson + local-day streak) and Viktor's weakness-driven
-            "Recommended next", compact side-by-side header surfaces. Each renders
-            null until the bridge returns data. */}
-        {state === 'ready' && (
-          <div className="school-home-surfaces">
-            <TodayCard onOpenChapter={(id) => setOpenId(id)} />
-            <RecommendedNextCard onOpenChapter={(id) => setOpenId(id)} />
-          </div>
-        )}
-      </header>
-
-      {state === 'loading' && (
-        <>
-          <span className="visually-hidden" role="status">
-            Loading chapters…
-          </span>
-          <SchoolSkeleton />
-        </>
-      )}
-
-      {state === 'empty' && (
-        <div className="school-state">
-          <span className="school-state-icon" aria-hidden>
-            <GraduationCap size={26} />
-          </span>
-          <h3 className="school-state-title">
-            {window.api?.school ? 'No chapters yet' : 'Chess School lives in the desktop app'}
-          </h3>
-          <p className="muted">
-            {window.api?.school
-              ? 'No chapters are available yet.'
-              : 'Connect to the desktop app to load Viktor’s chapters.'}
-          </p>
-        </div>
-      )}
-
-      {state === 'ready' && (
-        <div className="school-journey">
-          {tiers.map((tier) => {
-            const doneInTier = tier.chapters.filter(
-              (c) => progressById.get(c.id)?.completed ?? false
-            ).length
-            const allLocked = tier.chapters.every((c) => c.locked)
-            const tierComplete = doneInTier === tier.chapters.length
-            const tierPct = tier.chapters.length > 0 ? doneInTier / tier.chapters.length : 0
-            return (
-              <section
-                key={tier.key}
-                className={`school-tier${allLocked ? ' is-locked' : ''}${
-                  tierComplete ? ' is-complete' : ''
-                }`}
-              >
-                <header className="school-tier-head">
-                  <span className="school-tier-index" aria-hidden>
-                    {tierComplete ? <Check size={18} /> : tier.numeral}
-                  </span>
-                  <div className="school-tier-copy">
-                    <h3 className="school-tier-name">{tier.name}</h3>
-                    <p className="school-tier-blurb">{tier.blurb}</p>
-                  </div>
-                  <div className="school-tier-meter">
-                    {allLocked ? (
-                      <span className="school-tier-lock">
-                        <Lock size={13} /> Locked
-                      </span>
-                    ) : (
-                      <>
-                        <span className="school-tier-count num">
-                          {doneInTier}/{tier.chapters.length}
-                        </span>
-                        <div
-                          className="school-tier-bar"
-                          role="progressbar"
-                          aria-valuenow={Math.round(tierPct * 100)}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-label={`${tier.name} progress`}
-                        >
-                          <div
-                            className="school-tier-bar-fill"
-                            style={{ width: `${Math.round(tierPct * 100)}%` }}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </header>
-                <ol className="school-path">
-                  {tier.chapters.map((ch) => {
-                    const progress = progressById.get(ch.id)
-                    const nodeState: NodeState = ch.locked
-                      ? 'locked'
-                      : (progress?.completed ?? false)
-                        ? 'done'
-                        : ch.id === currentId
-                          ? 'current'
-                          : 'open'
-                    return (
-                      <JourneyNode
-                        key={ch.id}
-                        meta={ch}
-                        nodeState={nodeState}
-                        bossWon={progress?.bossWon ?? false}
-                        lessonsDone={doneLessonsByChapter.get(ch.id) ?? 0}
-                        onOpen={() => setOpenId(ch.id)}
-                      />
-                    )
-                  })}
-                </ol>
-              </section>
-            )
-          })}
-        </div>
-      )}
-    </div>
+    <SchoolIndex
+      chapters={chapters}
+      mastery={mastery}
+      placement={placement}
+      state={state}
+      onOpenChapter={setOpenId}
+      onRetakePlacement={() => {
+        void window.api?.school
+          ?.resetPlacement?.()
+          .then(() => setReloadKey((k) => k + 1))
+          .catch(() => {})
+      }}
+    />
   )
 }
 
 // ---------------------------------------------------------------------------
 
-function useSorted(chapters: SchoolChapterMeta[]): SchoolChapterMeta[] {
-  return useMemo(
+function SchoolIndex({
+  chapters,
+  mastery,
+  placement,
+  state,
+  onOpenChapter,
+  onRetakePlacement
+}: {
+  chapters: SchoolChapterMeta[]
+  mastery: SchoolMastery | null
+  placement: PlacementState | null
+  state: LoadState
+  onOpenChapter: (id: string) => void
+  onRetakePlacement: () => void
+}): JSX.Element {
+  // chapterId -> progress row, for badge lookup.
+  const progressById = useMemo(() => {
+    const map = new Map<string, ChapterProgressRow>()
+    for (const row of mastery?.chapters ?? []) map.set(row.chapterId, row)
+    return map
+  }, [mastery])
+
+  // chapterId -> count of completed lessons, for the real progress fractions.
+  const doneLessonsByChapter = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const l of mastery?.lessons ?? []) map.set(l.chapterId, (map.get(l.chapterId) ?? 0) + 1)
+    return map
+  }, [mastery])
+
+  const completedCount = useMemo(
+    () => (mastery?.chapters ?? []).filter((c) => c.completed).length,
+    [mastery]
+  )
+  const conceptsLearned = useMemo(
+    () => (mastery?.concepts ?? []).filter((c) => c.mastery >= 0.6).length,
+    [mastery]
+  )
+
+  const ordered = useMemo(
     () =>
       [...chapters].sort((a, b) => {
         if (a.band !== b.band) return a.band.localeCompare(b.band)
@@ -381,197 +224,207 @@ function useSorted(chapters: SchoolChapterMeta[]): SchoolChapterMeta[] {
       }),
     [chapters]
   )
-}
+  const unlockedCount = useMemo(() => chapters.filter((c) => !c.locked).length, [chapters])
 
-function SchoolStat({
-  icon,
-  num,
-  label
-}: {
-  icon: JSX.Element
-  num: number
-  label: string
-}): JSX.Element {
+  // The learner's CURRENT chapter: first unlocked chapter not yet completed.
+  const current = useMemo(
+    () => ordered.find((ch) => !ch.locked && !(progressById.get(ch.id)?.completed ?? false)),
+    [ordered, progressById]
+  )
+
+  // Chapters grouped into the named tiers by order range (empty tiers dropped).
+  const tiers = useMemo(
+    () =>
+      TIERS.map((t) => ({
+        ...t,
+        chapters: ordered.filter((c) => c.order >= t.from && c.order <= t.to)
+      })).filter((t) => t.chapters.length > 0),
+    [ordered]
+  )
+
+  const started = current ? (doneLessonsByChapter.get(current.id) ?? 0) > 0 : false
+  useReadoutSlot(
+    current ? `${started ? 'Continue' : 'Start'} ${current.title}` : null,
+    chapters.length > 0 ? completedCount / chapters.length : null
+  )
+
+  if (state === 'loading') {
+    return (
+      <div className="col-single" aria-busy="true">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Chapters</h2>
+          </div>
+          <div className="well">
+            <div className="empty">
+              <p className="empty-line" role="status">
+                Loading the curriculum.
+              </p>
+              <p className="empty-line">Forty chapters, and where you stand in them.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  if (state === 'empty') {
+    return (
+      <div className="col-single">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Chapters</h2>
+          </div>
+          <div className="well">
+            <div className="empty">
+              <p className="empty-line">
+                {window.api?.school
+                  ? 'No chapters are installed yet.'
+                  : 'Chess School lives in the desktop app.'}
+              </p>
+              <p className="empty-line">
+                {window.api?.school
+                  ? 'Viktor has nothing to teach until the curriculum is on this machine.'
+                  : 'Connect to the desktop app to load Viktor’s chapters.'}
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
   return (
-    <div className="school-stat">
-      <span className="school-stat-icon">{icon}</span>
-      <span className="school-stat-num num">{num}</span>
-      <span className="school-stat-label">{label}</span>
+    <div className="home">
+      <div>
+        <TodayCard onOpenChapter={onOpenChapter} />
+
+        {tiers.map((tier) => {
+          const doneInTier = tier.chapters.filter(
+            (c) => progressById.get(c.id)?.completed ?? false
+          ).length
+          const allLocked = tier.chapters.every((c) => c.locked)
+          return (
+            <section className="sec" key={tier.key}>
+              <div className="sec-head">
+                <h2 className="lbl">
+                  {tier.numeral} · {tier.name}
+                </h2>
+                <span className="sec-count">
+                  {allLocked ? 'Locked' : `${doneInTier} of ${tier.chapters.length} done`}
+                </span>
+              </div>
+              <p className="sec-note">{tier.blurb}</p>
+              <div className="panel golist">
+                {tier.chapters.map((meta) => (
+                  <ChapterRow
+                    key={meta.id}
+                    meta={meta}
+                    isCurrent={meta.id === current?.id}
+                    completed={progressById.get(meta.id)?.completed ?? false}
+                    lessonsDone={doneLessonsByChapter.get(meta.id) ?? 0}
+                    onOpen={() => onOpenChapter(meta.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          )
+        })}
+      </div>
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Your school</h2>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span>Unlocked</span>
+                <span className="fact-value num">
+                  {unlockedCount} of {chapters.length}
+                </span>
+              </div>
+              <div className="fact">
+                <span>Chapters passed</span>
+                <span className="fact-value num">{completedCount}</span>
+              </div>
+              <div className="fact">
+                <span>Concepts held</span>
+                <span className="fact-value num">{conceptsLearned}</span>
+              </div>
+            </div>
+            {placement?.placed && (
+              <div className="panel-foot">
+                <button className="btn is-quiet" type="button" onClick={onRetakePlacement}>
+                  Retake placement
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <RecommendedNextCard onOpenChapter={onOpenChapter} />
+      </aside>
     </div>
   )
 }
 
-/** Two-digit chapter number for the compact rows ("04", "23"). */
-function pad(order: number): string {
-  return String(order).padStart(2, '0')
-}
-
 /**
- * One chapter on the journey path. Four states:
- *   • current. The hero: big card, progress ring, Continue/Start CTA
- *   • done:     compact row with a checkmark and a Review affordance
- *   • open:     unlocked but not current (rare; e.g. after a re-placement)
- *   • locked:   dimmed, non-interactive, name-based hint (NEVER an Elo)
+ * One chapter, as a row that takes you into it. Four states, and the state is
+ * written where .go writes everything else: the name, one mono line under it,
+ * and either the arrow or a .lbl saying why there is no arrow. A locked chapter
+ * says what opens it and NEVER shows the internal Elo that ordered it.
  */
-function JourneyNode({
+function ChapterRow({
   meta,
-  nodeState,
-  bossWon,
+  isCurrent,
+  completed,
   lessonsDone,
   onOpen
 }: {
   meta: SchoolChapterMeta
-  nodeState: NodeState
-  bossWon: boolean
+  isCurrent: boolean
+  completed: boolean
   lessonsDone: number
   onOpen: () => void
 }): JSX.Element {
-  const totalLessons = meta.lessonCount ?? 0
-  // Real progress: the fraction of lessons done (placement pre-completes the
-  // chapters you tested out of, so those read full via the 'done' state).
-  const donePct =
-    nodeState === 'done' ? 1 : totalLessons > 0 ? Math.min(1, lessonsDone / totalLessons) : 0
-  const started = lessonsDone > 0
+  const total = meta.lessonCount ?? 0
+  const name = `${pad(meta.order)} ${meta.title}`
 
-  if (nodeState === 'locked') {
+  if (meta.locked) {
     return (
-      <li className="school-node is-locked">
-        <span className="school-node-marker" aria-hidden>
-          <Lock size={14} />
-        </span>
-        <div className="school-locked-card" aria-disabled>
-          <span className="school-node-order num" aria-hidden>
-            {pad(meta.order)}
-          </span>
-          <span className="school-locked-title">{meta.title}</span>
-          <span className="school-locked-hint">
+      <div className="go" aria-disabled>
+        <span>
+          <span className="go-name">{name}</span>
+          <span className="go-sub">
             {meta.lockReason === 'placement'
-              ? 'Finish placement to unlock'
-              : 'Pass earlier chapters to unlock'}
+              ? 'Finish placement to open this one.'
+              : 'Pass the chapters before it to open this one.'}
           </span>
-        </div>
-      </li>
-    )
-  }
-
-  if (nodeState === 'done') {
-    return (
-      <li className="school-node is-done">
-        <span className="school-node-marker" aria-hidden>
-          <Check size={15} />
         </span>
-        <button type="button" className="school-done-card" onClick={onOpen}>
-          <span className="school-node-order num" aria-hidden>
-            {pad(meta.order)}
-          </span>
-          <span className="school-done-title">{meta.title}</span>
-          {bossWon && (
-            <span
-              className="school-done-boss"
-              role="img"
-              title="Sparring game won"
-              aria-label="Sparring game won"
-            >
-              <Trophy size={13} />
-            </span>
-          )}
-          <span className="school-done-cta">
-            Review <ChevronRight size={14} />
-          </span>
-        </button>
-      </li>
+        <span className="lbl">Locked</span>
+      </div>
     )
   }
 
-  if (nodeState === 'current') {
-    return (
-      <li className="school-node is-current">
-        <span className="school-node-marker" aria-hidden>
-          <Play size={14} />
-        </span>
-        <button type="button" className="school-current-card" onClick={onOpen}>
-          <ProgressRing
-            pct={donePct}
-            size={64}
-            stroke={6}
-            label={started ? undefined : <Play size={20} />}
-          />
-          <span className="school-current-body">
-            <span className="school-current-eyebrow">
-              Chapter {meta.order} · {started ? 'In progress' : 'Up next'}
-            </span>
-            <span className="school-current-title">{meta.title}</span>
-            <span className="school-current-sub">{meta.subtitle}</span>
-            <span className="school-card-meta">
-              {totalLessons > 0 ? (
-                <span className="school-card-fact">
-                  <BookOpen size={14} /> {started ? `${lessonsDone}/${totalLessons}` : totalLessons}{' '}
-                  lesson{totalLessons === 1 ? '' : 's'}
-                </span>
-              ) : (
-                <span className="school-card-fact">
-                  <GraduationCap size={14} /> {meta.conceptCount} concept
-                  {meta.conceptCount === 1 ? '' : 's'}
-                </span>
-              )}
-              <span className="school-card-fact">
-                <Clock size={14} /> ~{meta.estMinutes} min
-              </span>
-            </span>
-          </span>
-          <span className="school-current-cta">
-            {started ? 'Continue' : 'Start'} <ChevronRight size={18} />
-          </span>
-        </button>
-      </li>
-    )
-  }
+  const sub = completed
+    ? `Passed · ~${meta.estMinutes} min`
+    : total > 0
+      ? `${lessonsDone} of ${total} lessons · ~${meta.estMinutes} min`
+      : `${meta.conceptCount} concept${meta.conceptCount === 1 ? '' : 's'} · ~${meta.estMinutes} min`
 
-  // Unlocked but neither current nor completed.
   return (
-    <li className="school-node is-open">
-      <span className="school-node-marker" aria-hidden>
-        <span className="school-node-dot" />
+    <button className={`go${isCurrent ? ' row is-here' : ''}`} type="button" onClick={onOpen}>
+      <span>
+        <span className="go-name">{name}</span>
+        <span className="go-sub">{sub}</span>
       </span>
-      <button type="button" className="school-open-card" onClick={onOpen}>
-        <span className="school-node-order num" aria-hidden>
-          {pad(meta.order)}
-        </span>
-        <span className="school-open-body">
-          <span className="school-open-title">{meta.title}</span>
-          {started && totalLessons > 0 && (
-            <span className="school-open-progress" aria-hidden>
-              <span
-                className="school-open-progress-fill"
-                style={{ width: `${Math.round(donePct * 100)}%` }}
-              />
-            </span>
-          )}
-        </span>
-        <span className="school-open-cta">
-          {started ? `Continue · ${lessonsDone}/${totalLessons}` : 'Start'}{' '}
-          <ChevronRight size={14} />
-        </span>
-      </button>
-    </li>
-  )
-}
-
-/** Index loading skeleton: header surfaces + one tier with hero and rows. */
-function SchoolSkeleton(): JSX.Element {
-  return (
-    <div className="school-skeleton" aria-hidden>
-      <div className="school-home-surfaces">
-        <div className="school-skel skel-surface" />
-        <div className="school-skel skel-surface" />
-      </div>
-      <div className="skel-tier">
-        <div className="school-skel skel-tier-head" />
-        <div className="school-skel skel-hero" />
-        <div className="school-skel skel-row" />
-        <div className="school-skel skel-row" />
-        <div className="school-skel skel-row" />
-      </div>
-    </div>
+      {completed ? (
+        <span className="lbl">Done</span>
+      ) : (
+        <Icon id="i-arrow" className="icon go-arrow" />
+      )}
+    </button>
   )
 }

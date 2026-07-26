@@ -1,857 +1,1036 @@
-/* ============================================================
-   Analysis review: feature-scoped styles (game review, coach,
-   opening line, eval graph, move badges, game library). Tokens only.
-   ============================================================ */
+/* ANALYSIS. Page local, all of it prefixed .an-, all of it tokens.
 
-/* ---- Classification tones: single source mapping badge -> color ----
-   (kept as TEXT colors; .bchip-* below are the filled-chip variants) */
-.tone-brilliant {
-  color: var(--class-brilliant);
-}
-.tone-great {
-  color: var(--accent);
-}
-.tone-best {
-  color: var(--class-best);
-}
-.tone-excellent {
-  color: var(--success);
-}
-.tone-good {
-  color: var(--class-good);
-}
-.tone-book {
-  color: var(--class-book);
-}
-.tone-inaccuracy {
-  color: var(--class-inaccuracy);
-}
-.tone-mistake {
-  color: var(--class-mistake);
-}
-.tone-miss {
-  color: var(--danger);
-}
-.tone-blunder {
-  color: var(--class-blunder);
-}
+   THE BOARD IS NOT ON THIS PAGE. .lesson, .board-area, .board-stage,
+   .board-wrap, .cg-wrap, cg-board, piece, coords, .shapes and .rank-1..3
+   all come from shell.css, which transcribes them from the shipping app
+   and from chessground. This file sets no board width, no square colour,
+   no piece and no brush. It adds one thing beside the board, the eval
+   bar, because that is what analysis is.
 
-/* ---- Filled badge chips (chess.com-style colored squares) ---- */
-.bchip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 var(--space-1);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--text-inverse);
-  user-select: none;
-}
-.bchip-brilliant {
-  background: var(--class-brilliant);
-}
-.bchip-great {
-  background: var(--accent);
-}
-.bchip-best {
-  background: var(--class-best);
-}
-.bchip-excellent {
-  background: var(--success);
-}
-.bchip-good {
-  background: var(--class-good);
-}
-.bchip-book {
-  background: var(--class-book);
-}
-.bchip-inaccuracy {
-  background: var(--class-inaccuracy);
-}
-.bchip-mistake {
-  background: var(--class-mistake);
-}
-.bchip-miss {
-  background: var(--danger);
-}
-.bchip-blunder {
-  background: var(--class-blunder);
-}
+   SHAPE. Two columns, which is what the shipped AnalysisView is: a
+   centred board on the left and ONE sidebar stack on the right. The
+   version this replaces cut the sidebar into a second and third column,
+   and that is why it made you hunt. The grid is .lesson, the same shape
+   school and puzzles use, so a board page is a board page.
 
-/* The former .opening-line rules lived here; the opening identity header is
-   now the shared OpeningTag (chess/openingTrace.ts, styled in
-   chess/opening-tag.css) rendered by MoveList itself. */
+   HIERARCHY. Every section in the sidebar opens with the same object, a
+   .sec-head: mono label on the left, one hairline, one count on the
+   right. Nine instruments, one repeated rule, so the eye learns the page
+   once and then reads down it. Nothing is behind a disclosure except the
+   second tab of the game library, which is two lists of the same thing.
 
-/* ============================================================
-   Move-list badge chips (every reviewed move gets one)
-   ============================================================ */
-/* Chips inside the notation table (.ml-chip) size themselves off .bchip;
-   nothing extra needed here since the table cell handles alignment. */
+   The three strips in the board column, the eval line above the board and
+   the controls and FEN below it, land on the board's exact left and right
+   edges. See .an-strip: they are given the eval bar's column as a spacer
+   and then the board's own width rule, so they shrink with the board
+   instead of restating its measure. */
 
-/* ============================================================
-   Review panel
-   ============================================================ */
-.review-body {
-  padding: var(--space-4);
+/* ---------- strips that share the board's edges ----------
+
+   .board-stage is a flex row holding the eval bar and the board, and the
+   board is the only item allowed to shrink, so the board is exactly the
+   column minus the bar minus the gutter. A strip repeats that flex row
+   with an empty spacer where the bar stands, which lands its content on
+   the board's two edges without this file writing the measure down. The
+   alternative was subtracting the bar from min(78vh, 100%) here, and a
+   page restating the board rule is the defect this shell just removed. */
+
+.an-strip {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.review-intro {
-  margin: 0;
-}
-.review-run {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  width: 100%;
-}
-.review-rerun {
-  align-self: flex-start;
-}
-.review-error {
-  margin: 0;
-  color: var(--danger);
-}
-
-/* ---- Progress ---- */
-.review-progress {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-3);
-}
-.review-progress-head {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-secondary);
-  font-feature-settings: var(--num-feature);
-}
-.review-bar {
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.review-bar-fill {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  border-radius: var(--radius-pill);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
-/* ---- Chess.com-style per-side summary table ---- */
-.rv-table {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg-subtle);
-  overflow: hidden;
-}
-.rv-row {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr 1fr;
-  align-items: center;
-  padding: var(--space-1) var(--space-4);
-}
-.rv-cell {
-  min-width: 0;
-}
-.rv-row .rv-cell:first-child {
-  text-align: center;
-}
-.rv-row .rv-cell:last-child {
-  text-align: center;
-}
-.rv-players {
-  padding-top: var(--space-3);
-}
-.rv-player {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-.rv-accuracy-row {
-  padding-bottom: var(--space-2);
-}
-.rv-acc {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-  padding: var(--space-2) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-feature-settings: var(--num-feature);
-}
-.rv-acc-white {
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  color: var(--text-primary);
-}
-.rv-acc-black {
-  background: var(--text-primary);
-  border: 1px solid var(--text-primary);
-  color: var(--text-inverse);
-}
-.rv-label {
-  text-align: center;
-  font-size: var(--fs-xs);
-  color: var(--text-secondary);
-}
-.rv-elo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-}
-.rv-elo-est {
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  font-feature-settings: var(--num-feature);
-}
-.rv-elo-range {
-  line-height: var(--lh-tight);
-}
-.rv-acpl-row {
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-2);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-}
-.rv-badge-row {
-  font-size: var(--fs-sm);
-}
-.rv-badge-row:hover {
-  background: var(--surface-2);
-}
-/* Classes nobody hit stay listed (chess.com keeps the full ladder) but recede. */
-.rv-badge-row.rv-row-zero {
-  opacity: 0.45;
-}
-.rv-badge-row.rv-row-zero:hover {
-  background: transparent;
-}
-.rv-badge-label {
-  display: inline-flex;
-  align-items: center;
+  width: 100%;
   justify-content: center;
-  gap: var(--space-2);
-  font-weight: var(--fw-medium);
-  text-align: center;
-}
-.rv-count {
-  font-weight: var(--fw-semibold);
-  font-feature-settings: var(--num-feature);
-}
-.rv-count.rv-zero {
-  color: var(--text-muted);
-  font-weight: var(--fw-regular);
-  opacity: 0.7;
-}
-.rv-table .rv-row:last-child {
-  padding-bottom: var(--space-3);
-}
-.review-elo-note {
-  margin: 0;
-  font-style: italic;
+  align-items: stretch;
 }
 
-/* ============================================================
-   Eval graph (SVG advantage chart)
-   ============================================================ */
-.review-graph-wrap {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-.eval-graph {
-  width: 100%;
-}
-.eval-graph.empty {
-  padding: var(--space-4);
-}
-.eval-graph-svg {
-  display: block;
-  width: 100%;
-  height: 96px;
-}
-.eg-white-zone {
-  fill: var(--surface);
-}
-.eg-black-zone {
-  fill: var(--surface-2);
-}
-.eg-axis {
-  stroke: var(--border-strong);
-  stroke-width: 0.5;
-  stroke-dasharray: 2 2;
-  vector-effect: non-scaling-stroke;
-}
-.eg-area {
-  fill: var(--accent);
-  opacity: 0.16;
-}
-.eg-line {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
-.eg-pt-group {
-  cursor: pointer;
-}
-.eg-hit {
-  fill: transparent;
-}
-.eg-pt-group:hover .eg-hit {
-  fill: var(--text-primary);
-  opacity: 0.05;
-}
-.eg-mark {
-  fill: currentColor;
-}
-.eg-current {
-  fill: none;
-  stroke: var(--text-primary);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-}
-
-/* ============================================================
-   Coach panel
-   ============================================================ */
-.coach-badge {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-.coach-body {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.coach-body p {
-  margin: 0;
-}
-/* Chess.com-style verdict headline: badge icon + "Qxb2 is a blunder" in the
-   classification color (the tone-* class on the wrapper sets it). */
-.coach-headline {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
-}
-.coach-headline-chip.bchip {
+.an-strip::before {
+  content: '';
   flex: none;
-  min-width: 20px;
-  height: 20px;
-  font-size: var(--fs-sm);
+  width: var(--evalbar-w);
 }
-.coach-headline-text {
+
+.an-strip > * {
+  flex: 0 1 auto;
+  width: var(--board-measure, min(78vh, 100%));
+  max-width: 760px;
   min-width: 0;
 }
-.coach-text {
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  color: var(--text-primary);
+
+/* .board-area already spaces its children, so the bar's own margin would
+   be a second gap. */
+.an-strip .boardbar {
+  margin-top: 0;
 }
-/* "best was Nf3": plain text normally; a pill button when the board preview
-   hook is wired (hover/click paints the best-move arrow). */
-.coach-best .num {
+
+/* ---------- the eval line above the board ---------- */
+
+.an-plate {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.an-eval {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
-  color: var(--text-secondary);
-}
-.coach-best-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  align-self: flex-start;
-  border: 1px solid var(--border);
-  background: var(--bg-subtle);
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.coach-best-btn:hover {
-  border-color: var(--class-best);
-  color: var(--class-best);
-  background: var(--surface);
-}
-.coach-best-btn:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 1px;
-}
-.coach-best-btn .num {
-  font-weight: var(--fw-semibold);
-  color: inherit;
-}
-
-/* ============================================================
-   Board annotations overlay (user right-click arrows/circles)
-   ============================================================ */
-.annot-overlay {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  /* The board element below handles right-click capture; the SVG is purely
-     presentational so left-click moves pass through to chessground. */
-  pointer-events: none;
-  z-index: var(--z-board-overlay);
-}
-
-/* ============================================================
-   Share panel (Copy PGN / Copy FEN / Paste PGN / Clear annotations)
-   ============================================================ */
-.share-body {
-  padding: var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.share-row {
-  display: flex;
-  gap: var(--space-3);
-}
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  flex: 1;
-}
-.share-full {
-  width: 100%;
-}
-.share-clear {
-  color: var(--text-secondary);
-}
-.share-paste {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.share-textarea {
-  width: 100%;
-  min-width: 0;
-  resize: vertical;
-  min-height: 88px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  line-height: 1;
   color: var(--text-primary);
+}
+
+.an-src {
+  margin-left: auto;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  line-height: var(--lh-body);
-}
-.share-textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-.share-error {
-  margin: 0;
-  color: var(--danger);
-  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-/* ============================================================
-   Loaded-game header strip (players / result)
-   ============================================================ */
-.game-header-strip {
+/* ---------- the eval bar ----------
+
+   A flex sibling inside .board-stage, the way EvalBar.tsx is a sibling of
+   .board-wrap, so the stage centres the bar and the board as a pair. It
+   does not shrink: the board takes the whole adjustment, which is what
+   lets the strips above and below match the board exactly.
+
+   The fill is white's win expectancy, not the score. +0.86 is 57.9% of
+   the bar, from winPercent() in src/renderer/src/chess/scores.ts, not 86%
+   and not half. */
+
+.an-evalbar {
+  position: relative;
+  flex: none;
+  width: var(--evalbar-w);
+  align-self: stretch;
+  background: var(--eval-black);
+  border-radius: var(--radius-board);
+  overflow: hidden;
+}
+
+.an-evalfill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--an-fill, 50%);
+  background: var(--eval-white);
+  transition: height var(--motion-slow) var(--ease-out);
+}
+
+.an-evalfill.is-58 {
+  --an-fill: 57.9%;
+}
+
+.an-evalmid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--eval-mid);
+}
+
+/* ---------- engine arrows ----------
+
+   Geometry only. Colour, opacity and stroke width are .rank-1, .rank-2
+   and .rank-3 in shell.css, which are chessground's green, paleBlue and
+   paleGrey in the order AnalysisView.tsx ranks them:
+
+     const brushByRank = ['green', 'paleBlue', 'paleGrey']
+
+   so the best line is green at full opacity and only the third line is
+   grey. The overlay is .shapes, viewBox 0 0 8 8, one unit per square, so
+   a square centre is (file + 0.5, 8 - rank + 0.5).
+
+   Each arrow is chessground's own arithmetic and none of it is guessed.
+   The line stops 10/64 of a square short of the destination centre
+   (arrowMargin in chessground/dist/svg.js) and the head is that marker
+   drawn out as a triangle: three stroke widths long, four across, with
+   the tip 0.95 stroke widths past the line's end, which is what refX 2.05
+   on a markerWidth 4 marker means. .rank-N sets fill AND stroke, so the
+   head turns its stroke off and takes the fill. */
+
+.an-arrowhead {
+  stroke: none;
+}
+
+/* ---------- board bar ---------- */
+
+.an-nav {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.an-nav .key {
+  min-width: 34px;
+}
+
+/* ---------- under the board ----------
+
+   Getting a position onto the board is one job, so its two halves stand
+   together under the board rather than eight sections apart down a
+   sidebar: paste a FEN or a PGN on the left, open a game you already have
+   on the right. It also means the sidebar holds only what is being said
+   ABOUT the position, which is what makes that column readable. */
+
+.an-under {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.an-under > .sec {
+  margin-bottom: 0;
+}
+
+.an-fen {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: var(--space-3);
-  width: min(78vh, 100%);
-  max-width: 760px;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
   border-radius: var(--radius-md);
+}
+
+.an-fen-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+  line-height: var(--lh-body);
+  overflow-wrap: anywhere;
+}
+
+.an-load {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.an-load .filter-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ---------- engine ---------- */
+
+.an-readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
+}
+
+.an-readout b {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* Stop belongs to the search that is running, so it sits at the end of the
+   control row rather than floating in the readout above it. */
+.an-stop {
+  margin-left: auto;
+}
+
+.an-depthbar {
+  position: relative;
+  height: 1px;
+  margin: 0 var(--space-4) var(--space-4);
+  background: var(--border);
+}
+
+.an-depthbar::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--an-w, 0);
+  background: var(--accent);
+  transition: width var(--motion-slow) var(--ease-out);
+}
+
+.an-depthbar.is-68::after {
+  --an-w: 68%;
+}
+
+.an-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-top: var(--border-width) solid var(--border);
+  border-bottom: var(--border-width) solid var(--border);
   background: var(--bg-subtle);
 }
-.game-header-players {
+
+/* ---------- the three lines ----------
+
+   Swatch, score, moves. The swatch is the arrow's brush painted on a
+   light square, which is where you are actually looking at it, so line
+   two reads as the pale blue arrow on the board and line three as the
+   pale grey one and nobody has to be told. */
+
+.an-pv {
+  display: grid;
+  grid-template-columns: 10px 48px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.an-pv:last-child {
+  border-bottom: 0;
+}
+
+.an-pv:hover {
+  background: var(--surface-2);
+}
+
+.an-pv.is-best {
+  background: var(--surface-2);
+}
+
+.an-brush {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-sm);
+  background: var(--sq-light);
+  overflow: hidden;
+}
+
+.an-brush::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--an-brush);
+  opacity: var(--an-brush-op, 1);
+}
+
+/* The same three brushes shell.css gives .rank-1..3, so a swatch cannot
+   drift from the arrow it is standing for. */
+.an-brush.is-1 {
+  --an-brush: #15781b;
+  --an-brush-op: 1;
+}
+
+.an-brush.is-2 {
+  --an-brush: #003088;
+  --an-brush-op: 0.4;
+}
+
+.an-brush.is-3 {
+  --an-brush: #4a4a4a;
+  --an-brush-op: 0.35;
+}
+
+.an-score {
+  font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
   color: var(--text-primary);
-  line-height: var(--lh-tight);
-  min-width: 0;
+}
+
+.an-pvline {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.game-header-vs {
-  font-weight: var(--fw-regular);
+
+.an-pv.is-best .an-pvline {
+  color: var(--text-primary);
 }
 
-/* ============================================================
-   Game library (Your games | Famous): collapsible sidebar panel
-   ============================================================ */
-.famous-toggle {
-  width: 100%;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.famous-toggle .panel-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.famous-toggle-icon {
-  color: var(--text-secondary);
-}
-.famous-toggle-chevron {
-  font-weight: var(--fw-bold);
-  color: var(--text-secondary);
-  line-height: 1;
-}
-.famous-drawer {
-  padding: var(--space-3);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  max-height: 52vh;
-  overflow-y: auto;
-  border-top: 1px solid var(--border);
+/* ---------- review ----------
+
+   White on the left, black on the right, the label between them. That is
+   ReviewPanel.tsx's own table and the symmetry is the whole trick: two
+   players are being compared, so every number has its opposite number on
+   the same baseline and the eye reads across a row instead of hunting
+   down two lists. */
+
+.an-rv {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 74px;
+  align-items: baseline;
 }
 
-/* ---- Source tabs ---- */
-.library-tabs {
-  display: flex;
-  gap: var(--space-2);
-  padding: var(--space-1);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+.an-rv > * {
+  min-width: 0;
+  padding: var(--space-2);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.an-rv-side,
+.an-rv-mid {
+  text-align: center;
+}
+
+.an-rv-head {
   background: var(--bg-subtle);
-  position: sticky;
-  top: 0;
-  z-index: var(--z-sticky);
 }
-.library-tab {
-  flex: 1;
-  border: 0;
-  background: transparent;
+
+.an-rv-mid {
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
+}
+
+.an-rv-side {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+}
+
+.an-acc {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+}
+
+.an-est {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* A class nobody hit keeps its row and goes quiet, so the table is the
+   same shape after every game and Blunder is always in the same place. */
+.an-rv-zero {
+  color: var(--text-muted);
+}
+
+.an-rv-mid .an-mk {
+  margin-right: var(--space-2);
+}
+
+/* ---------- eval graph ----------
+
+   The eval bar beside the board, unrolled along the game. Same encoding
+   in both, white's share of the height, so the graph needs no key. */
+
+.an-graph {
+  padding: var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.an-graph-svg {
+  display: block;
+  width: 100%;
+  height: 64px;
+  background: var(--eval-black);
+  border-radius: var(--radius-sm);
+}
+
+.an-graph-fill {
+  fill: var(--eval-white);
+}
+
+.an-graph-mid {
+  stroke: var(--eval-mid);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.an-graph-cursor {
+  stroke: var(--accent);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.an-graph-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* ---------- this move ---------- */
+
+.an-note {
+  padding: var(--space-4);
+}
+
+.an-note-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.an-note-move {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+}
+
+.an-note-class {
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    color var(--dur-fast);
-}
-.library-tab:hover {
-  color: var(--text-primary);
-}
-.library-tab.is-active {
-  background: var(--surface);
-  color: var(--text-primary);
-  font-weight: var(--fw-semibold);
-  box-shadow: var(--shadow-sm);
 }
 
-/* ---- Your games rows ---- */
-.ug-list {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
+.an-note-class.is-inacc {
+  color: var(--class-inaccuracy);
 }
-.ug-rows {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+
+.an-note-text {
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+.an-note-best {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+}
+
+.an-note-best .an-ev {
+  margin-left: auto;
+}
+
+/* ---------- classification mark ----------
+
+   One glyph vocabulary for the page. The same object appears in the
+   review table, in the move list and in the note, so a ?! never has to be
+   explained twice. The glyphs are badges.ts's own. */
+
+.an-mk {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-normal);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.an-mk.is-brilliant {
+  color: var(--class-brilliant);
+}
+.an-mk.is-great {
+  color: var(--class-best);
+}
+.an-mk.is-good {
+  color: var(--class-good);
+}
+.an-mk.is-book {
+  color: var(--class-book);
+}
+.an-mk.is-inacc {
+  color: var(--class-inaccuracy);
+}
+.an-mk.is-mistake {
+  color: var(--class-mistake);
+}
+.an-mk.is-blunder {
+  color: var(--class-blunder);
+}
+/* tokens.css has no --class-miss, so Miss borrows the danger red. */
+.an-mk.is-miss {
+  color: var(--danger);
+}
+
+/* ---------- move list ---------- */
+
+.an-moves {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr);
+  max-height: 420px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+}
+
+.an-moves > * {
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.an-moves .mv-no {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-2);
+}
+
+/* san, mark, eval. The third column is why a move row is worth its width:
+   it turns the slack into a straight numeric edge, so the move list is
+   also the eval history and you can find the swing without a graph. */
+.an-cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px 42px;
   gap: var(--space-2);
+  align-items: baseline;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-2);
+  color: var(--text-primary);
+  transition: background-color var(--motion-fast) var(--ease-out);
 }
-.ug-row {
+
+.an-cell:hover {
+  background: var(--surface-2);
+}
+
+.an-cell.is-cursor {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.an-cell.is-cursor .an-san {
+  color: var(--accent-active);
+  font-weight: var(--fw-medium);
+}
+
+.an-san {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.an-ev {
+  font-size: var(--fs-xs);
+  text-align: right;
+  color: var(--text-muted);
+}
+
+.an-result {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1 / -1;
+  padding: var(--space-3);
+  border-bottom: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- game library ---------- */
+
+.an-libhead {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.an-lib {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
   width: 100%;
   text-align: left;
   padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    border-color var(--dur-fast);
-}
-.ug-row:hover {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
-}
-.ug-chip {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 42px;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  white-space: nowrap;
-}
-.ug-chip-win {
-  background: var(--success-soft);
-  color: var(--success);
-  border: 1px solid var(--success);
-}
-.ug-chip-loss {
-  background: var(--danger-soft);
-  color: var(--danger);
-  border: 1px solid var(--danger);
-}
-.ug-chip-draw {
-  background: var(--surface-2);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-strong);
-}
-.ug-chip-open {
-  background: var(--warning-soft);
-  color: var(--warning);
-  border: 1px solid var(--warning);
-  font-feature-settings: var(--num-feature);
-}
-.ug-main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.ug-opponent {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  line-height: var(--lh-tight);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ug-vs {
-  font-weight: var(--fw-regular);
-}
-.ug-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-feature-settings: var(--num-feature);
-}
-.ug-dot {
-  opacity: 0.6;
-}
-.ug-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.ug-skel-row {
-  height: 52px;
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  opacity: 0.7;
-  animation: famous-pulse 1.2s var(--ease-in-out) infinite;
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
 }
 
-/* ---- Famous library (unchanged list internals) ---- */
-.famous-library {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  min-width: 0;
+.an-lib:last-child {
+  border-bottom: 0;
 }
-.famous-load-error {
-  margin: 0;
-  color: var(--danger);
+
+.an-lib:hover {
+  background: var(--surface-2);
 }
-.famous-empty {
-  padding: var(--space-6) var(--space-4);
-  text-align: center;
-  color: var(--text-muted);
+
+.an-lib-name {
+  display: block;
   font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
 }
-.famous-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.famous-section-head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: 0 var(--space-2);
-}
-.famous-section-label {
+
+.an-lib-sub {
+  display: block;
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.an-lib-res {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
   color: var(--text-secondary);
 }
-.famous-section-blurb {
-  line-height: var(--lh-tight);
+
+/* ---------- narrow ----------
+
+   The shell folds .lesson to one column at 1080 and gives .side the
+   board's own measure there, so nothing on this page has to say anything
+   about that fold except one thing, and the one thing is the eval bar.
+
+   At the fold the shell centres .side in the column, and .board-stage
+   centres the bar and the board together, so the board's centre lands
+   half the bar's column to the right of the column's centre and the panel
+   under it would sit 15px to the left of the position it is describing.
+   Both rules below are about the BAR: leave its column free, and move by
+   half of it. Neither restates min(78vh, 100%), which is the shell's to
+   own. The result is that the sidebar and the board share both edges.
+
+   Below 720 the board column is under 400px and the board bar carries
+   five controls and a sentence, which is one line too many. */
+
+@media (max-width: 1080px) {
+  .lesson > .side {
+    max-width: calc(100% - var(--evalbar-w) - var(--space-3));
+    transform: translateX(calc((var(--evalbar-w) + var(--space-3)) / 2));
+  }
 }
-.famous-cards {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+
+@media (max-width: 720px) {
+  .an-under {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .an-plate {
+    gap: var(--space-3);
+  }
+
+  .an-src {
+    flex: 1 0 100%;
+    margin-left: 0;
+  }
+
+  /* Five controls and a sentence do not fit on one 358px line, so the
+     sentence takes its own. */
+  .an-strip .boardbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+  }
+
+  .an-strip .turn {
+    flex: 1 0 100%;
+    margin-right: 0;
+  }
+
+  .an-nav {
+    flex: 1 1 auto;
+  }
+
+  .an-nav .key {
+    flex: 1 1 auto;
+    height: 34px;
+  }
+
+  .an-moves {
+    max-height: 320px;
+  }
 }
-.famous-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  width: 100%;
-  max-width: none;
-  box-sizing: border-box;
-  text-align: left;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  box-shadow: none;
-  transition:
-    background var(--dur-fast),
-    border-color var(--dur-fast),
-    box-shadow var(--dur-fast);
+
+/* ============================================================
+   BEYOND THE MOCK.
+
+   Everything above this line is design-lab/v1/analysis.html, verbatim. Below it
+   is the remainder: surfaces the shipping analysis screen genuinely has and a
+   static page genuinely does not. A mock has one position, one game, one
+   review and one orientation, so it never had to draw a flipped eval bar, a
+   branch in the move list, a failed load or a class nobody in that one game
+   played. Each block below says which of those it is.
+
+   Nothing here restates a v1 rule and nothing here touches the board.
+   ============================================================ */
+
+/* The bar flips with the board. v1 drew one orientation, so its fill is always
+   anchored to the bottom; White's share belongs on White's side. */
+.an-evalfill.is-flipped {
+  bottom: auto;
+  top: 0;
 }
-.famous-card:hover:not(:disabled) {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
+
+/* The eval bar is a preference (settings.showEvalBar). With it off there is no
+   bar for the strips to step around, so the spacer reserving its column goes
+   too and the strips stay on the board's edges. */
+.board-area.is-nobar .an-strip::before {
+  display: none;
 }
-.famous-card:disabled {
-  cursor: default;
+
+/* Black to move. v1's chip is White's, hard coded, because the mock's one
+   position had White on the move. */
+.turn-chip.is-black {
+  background: var(--piece-black);
 }
-.famous-card.is-loading {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+
+/* You cannot step back from the first move. The mock's nav sits in the middle
+   of a game, so none of its four keys is ever unavailable. */
+.an-nav .key[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
 }
-.famous-card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
+
+/* The cell that closes a row whose last move is White's. It is a placeholder,
+   not a move, so it does not light up under the pointer. */
+.an-cell.is-empty {
+  pointer-events: none;
 }
-.famous-card-players {
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-base);
-  color: var(--text-primary);
-  line-height: var(--lh-tight);
+
+/* The era line under a library group head. A sentence, so it is not the
+   uppercase mono the row subtitles use. */
+.an-libblurb {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* Real names run longer than the mock's. "Najdorf" is "Sicilian Defense:
+   Najdorf Variation" out of the openings table, and the engine names itself in
+   full. The count keeps its one line and the whole string is on the element. */
+.an-clip {
   min-width: 0;
-}
-.famous-vs {
-  font-weight: var(--fw-regular);
-}
-.famous-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-}
-.famous-card-event {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 100%;
 }
-.famous-card-dot {
-  opacity: 0.6;
+
+/* A label and the chips it names wrap as one thing. v1's control row is a
+   plain flex wrap, which at the sidebar's real width leaves "Lines" stranded
+   at the end of the first line with its chips on the second. */
+.an-ctlgroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
-.famous-card-sig {
-  color: var(--text-secondary);
+
+/* Two more classification marks. The mock's one game contained eight of the
+   ten classes the reviewer emits, so v1 wrote eight rules. Best and Excellent
+   are real rows in every review table and take the same two tokens their
+   neighbours already use. */
+.an-mk.is-best {
+  color: var(--class-best);
+}
+.an-mk.is-excellent {
+  color: var(--class-good);
+}
+
+/* The verdict word beside the mark in the note. v1 tinted the one class its
+   sample move happened to be. */
+.an-note-class.is-brilliant {
+  color: var(--class-brilliant);
+}
+.an-note-class.is-great,
+.an-note-class.is-best {
+  color: var(--class-best);
+}
+.an-note-class.is-good,
+.an-note-class.is-excellent {
+  color: var(--class-good);
+}
+.an-note-class.is-book {
+  color: var(--class-book);
+}
+.an-note-class.is-mistake {
+  color: var(--class-mistake);
+}
+.an-note-class.is-blunder {
+  color: var(--class-blunder);
+}
+.an-note-class.is-miss {
+  color: var(--danger);
+}
+
+/* An input that can be wrong. The mock's FEN field is never rejected, so it has
+   nowhere to say so. */
+.an-error {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--danger);
+}
+
+/* Two actions in one panel foot. v1's foot holds a single button and stretches
+   it; the review foot has a primary and a re-run, so they share the row
+   instead of stacking two footers. */
+.an-foot-pair {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.an-foot-pair .btn {
+  width: auto;
+  flex: 1 1 auto;
+}
+
+/* A branch in the move list. The board on this page is playable, so a move
+   played off the mainline creates a variation, and v1's rigid three column
+   grid has no row for one: without this the move you just played would vanish.
+   It spans the grid the way .an-result does and reads as an aside, not a row. */
+.an-var {
+  grid-column: 1 / -1;
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-muted);
   line-height: var(--lh-body);
 }
 
-/* ---- Result chip (shared with the cards) ---- */
-.fg-result-chip {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
+.an-varmove {
+  padding: 0 var(--space-1);
+  font-family: inherit;
   font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  white-space: nowrap;
-  border: 1px solid var(--border-strong);
-  background: var(--surface-2);
   color: var(--text-secondary);
-}
-.fg-result-white {
-  background: var(--surface);
-  border-color: var(--border-strong);
-  color: var(--text-primary);
-}
-.fg-result-black {
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-  color: var(--text-inverse);
-}
-.fg-result-draw {
-  background: var(--surface-2);
-  border-color: var(--border-strong);
-  color: var(--text-secondary);
-}
-.fg-result-open {
-  background: var(--warning-soft);
-  border-color: var(--warning);
-  color: var(--warning);
+  transition: color var(--motion-fast) var(--ease-out);
 }
 
-/* ---- Library loading skeleton ---- */
-.famous-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-2);
+.an-varmove:hover {
+  color: var(--text-primary);
 }
-.famous-skel-card {
-  height: 78px;
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  opacity: 0.7;
-  animation: famous-pulse 1.2s var(--ease-in-out) infinite;
+
+.an-varmove.is-cursor {
+  color: var(--accent-active);
+  font-weight: var(--fw-medium);
 }
-@keyframes famous-pulse {
-  0%,
-  100% {
-    opacity: 0.45;
+
+/* A column of the eval graph you can click. The mock's graph is a picture; this
+   one seeks the board to the move under the pointer, and the target has to be
+   wide enough to hit without being visible. */
+.an-graph-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+
+/* The engine's own install prompt (components/EngineRequiredNotice.tsx) sits
+   inside the Engine panel on a fresh machine, where there is no engine to
+   report a depth for. It carries its own styling; this only stops it fighting
+   the panel's edges. */
+.an-notice {
+  padding: var(--space-4);
+}
+
+/* Your own arrows and circles (AnnotationsLayer.tsx). The mock's board is a
+   picture and carries none. The layer is an 8x8 SVG laid exactly over the
+   board, so it MEASURES the board rather than sizing it: inset 0 inside
+   .board-wrap and nothing else. It never eats a click, because the click
+   belongs to the square underneath, and it sits below the promotion picker,
+   which is the one thing that must be reachable while it is up. */
+.annot-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: calc(var(--z-board-overlay) - 1);
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ============================================================
+   PHONE. Every rule below is inside the 720px query, which is the breakpoint
+   shell.css already uses to swap the rail for the tab bar, and it sits at the
+   end of the file so that nothing declared after the query above can outrank
+   it. No value outside the query was touched, so a desktop window renders what
+   it rendered before, to the pixel.
+
+   What was already right and is left alone: the eval. .an-plate stands ABOVE
+   the board, so the number and the position it belongs to are on screen
+   together on every phone measured (375x812, 390x844, 360x740). The board
+   measure is not touched either; on a phone the WIDTH is binding, not the 78vh.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  /* ---------- the move list is the instrument, not the last section ----------
+
+     The sidebar is Engine, Game review, This move, Moves, in that order, and
+     the shell stacks it under the board below 1080. Measured at 360x740 with a
+     twenty move game loaded, the board ended at 527 and the move list began at
+     1839: over a thousand pixels of engine lines and empty states between the
+     position and the list you step it with. The engine's number is already
+     above the board in .an-plate, so nothing above the move list in that column
+     is needed while you are walking a game. It goes first. */
+  .side > .sec:has(.an-moves) {
+    order: -1;
   }
-  50% {
-    opacity: 0.8;
+
+  /* ---------- the eval bar's compensation belongs to the page with a bar ----
+
+     The 1080px rule above pulls .side in by the eval bar's column and shifts it
+     half a column right, so the sidebar and the board share both edges on this
+     page. It is written on .lesson > .side, and .lesson is also Puzzles and
+     School, so the moment Analysis had been opened once in a session its rule
+     was live on those two: measured at 360 wide, the puzzle sidebar came back
+     30px narrower than the board and sitting 15px to the right of it, and which
+     it was depended on whether you had visited Analysis first.
+
+     A page with no eval bar gets its own column back. The rule above is the one
+     that should be scoped, and scoping it would move pixels between 720 and
+     1080, which is not this pass's to move: this corrects the phone, and the
+     narrow-desktop half of the same fault is reported rather than touched. */
+  .lesson:not(:has(.an-evalbar)) > .side {
+    max-width: 100%;
+    transform: none;
+  }
+}
+
+/* ---------- and the setup block gets out of the way ----------
+
+   Ordering the move list first inside the sidebar only got it past the other
+   three sidebar sections. What still stood between the board and it was
+   .an-under, the Position strip and the game library: 322px of the two controls
+   you use ONCE, to put a game on the board, sitting between the board and every
+   instrument you use afterwards. On a desktop it is correctly the foot of the
+   board column; on a phone the whole page is one column and the foot of the
+   board column is the middle of the screen.
+
+   .lesson-main and .board-area become display: contents here, which does not
+   touch the DOM (every selector above still matches) and does not touch
+   inheritance (--board-measure is declared on .board-area and still reaches the
+   board), but it does promote the three strips to grid items of .lesson
+   alongside .side, so the setup strip can be ordered past it. .board-area's own
+   12px gap goes with it, which is why .lesson states the row gap here.
+
+   THE GUARD IS :has(.an-moves), so this only happens once a game is actually
+   loaded. With an empty board there is no move list to bring up and the thing
+   you want is the paste field, so the setup strip stays exactly where it is. */
+
+@media (max-width: 720px) {
+  .lesson:has(.an-moves) > .lesson-main,
+  .lesson:has(.an-moves) .board-area {
+    display: contents;
+  }
+
+  .lesson:has(.an-moves) {
+    row-gap: var(--space-3);
+  }
+
+  .lesson:has(.an-moves) .an-strip:has(.an-under) {
+    order: 1;
   }
 }

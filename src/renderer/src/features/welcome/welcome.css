@@ -1,0 +1,466 @@
+/* THE WELCOME SURFACES. Two popups that must never be mistaken for each other.
+
+   .welcome-fr  desktop first launch. A page, not a dialog: 620px, no head
+                strip, no close cross, the mark at hero size, and vertical
+                rhythm off the wide end of the space scale.
+   .welcome-wb  the returning card. 400px, one head row, a body only when
+                there is something to put in it, and a faster arrival. It is
+                built to be killed in a keystroke.
+
+   Everything structural is v1 (sec, sec-head, sec-count, panel, well, row,
+   lbl, tag, empty, empty-line, btn, shell-modal-foot). This file adds only the
+   measures v1 never drew for a modal, and it never restates a board measure or
+   introduces a second scroller: the changelog list scrolls inside its own well
+   and the first-run body scrolls around its own content. */
+
+/* ============================================================
+   DESKTOP FIRST LAUNCH
+   ============================================================ */
+
+.overlay-dialog.welcome-fr {
+  max-width: 620px;
+}
+
+.welcome-fr-body {
+  padding: var(--space-9) var(--space-8) var(--space-8);
+  overflow-y: auto;
+}
+
+/* The hero. Centred, and the only centred text in either surface: it is the
+   arrival graphic, and everything below it is read left to right. */
+.welcome-fr-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-fr-mark {
+  display: block;
+  color: var(--accent);
+  margin-bottom: var(--space-6);
+}
+
+/* The wordmark rides inside this sentence at the sentence's size. node bold,
+   chess regular, one lowercase word with no space and no colour change: every
+   one of those is brand.css's .nc-word / .nc-word-a / .nc-word-b, and nothing
+   here restates or overrides them. */
+.welcome-fr-title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+}
+
+.welcome-fr-lede {
+  margin: var(--space-4) 0 0;
+  max-width: 44ch;
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+/* The gap BELOW this section is .sec's own var(--space-8) and is left to it.
+   THE LOAD ORDER OF THIS FILE AGAINST THE SHELL SHEETS IS NOT GUARANTEED (it
+   is a component import; they are entry imports), so a bare .welcome-fr-sec
+   margin-bottom would be a coin toss against .sec. Everything here that has to
+   beat a shell class is scoped to the dialog, which wins on specificity in
+   either order. Only margin-top is set, and .sec never declares one. */
+.welcome-fr-sec {
+  margin-top: var(--space-9);
+}
+
+/* One advantage. .row supplies the inset; this supplies the two-column shape
+   and the rule between rows, which .panel deliberately does not draw. */
+.welcome-adv {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.welcome-adv + .welcome-adv {
+  border-top: var(--border-width) solid var(--border);
+}
+
+.welcome-adv-icon {
+  flex: none;
+  display: inline-flex;
+  margin-top: 1px;
+  color: var(--accent);
+}
+
+.welcome-adv-title {
+  display: block;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.welcome-adv-body {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+/* The one thing the app ever asks for. A well on its own line so it reads as a
+   field and not as a fifth advantage. */
+.welcome-fr-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+}
+
+.welcome-fr-name .lbl {
+  flex: none;
+}
+
+.welcome-fr-name .filter-input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* The foot is v1's .shell-modal-foot; only its inset changes, and it is scoped
+   to the dialog so it beats the shell rule regardless of load order. */
+.welcome-fr .shell-modal-foot {
+  padding: var(--space-5) var(--space-8);
+}
+
+/* ---- Arrival ----------------------------------------------------------
+   The mark lands first and slowest (--dur-entry is the set's one long
+   duration and it belongs to a single arrival graphic), then the lines
+   behind it rise in reading order. Every one of these stops dead under
+   prefers-reduced-motion, at the foot of this file. */
+
+@keyframes welcome-fr-land {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes welcome-fr-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.welcome-fr-mark {
+  animation: welcome-fr-land var(--dur-entry) var(--ease-out) both;
+}
+
+.welcome-fr-title {
+  animation: welcome-fr-rise var(--dur-slow) var(--ease-out) 80ms both;
+}
+
+.welcome-fr-lede {
+  animation: welcome-fr-rise var(--dur-slow) var(--ease-out) 150ms both;
+}
+
+.welcome-fr-sec {
+  animation: welcome-fr-rise var(--dur-slow) var(--ease-out) 220ms both;
+}
+
+.welcome-fr-name {
+  animation: welcome-fr-rise var(--dur-slow) var(--ease-out) 290ms both;
+}
+
+/* ============================================================
+   WELCOME BACK
+   ============================================================ */
+
+.overlay-dialog.welcome-wb {
+  max-width: 400px;
+  /* The fast surface arrives fast. overlay-pop is shell-overlays.css's; only
+     its duration is shortened here. */
+  animation-duration: var(--dur-fast);
+}
+
+.welcome-wb-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-4) var(--space-5);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.welcome-wb-head .nc-mark {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+/* The greeting wraps rather than truncating: a display name is the one string
+   on this card that must survive intact, and beside the mark, the tag and the
+   close there is not always a line's worth of room for it.
+
+   break-word, NOT anywhere. `anywhere` counts mid-word breaks when the browser
+   works out this flex item's minimum size, which lets the row squeeze the
+   greeting to a ribbon and hyphenate a handle down the middle. `break-word`
+   keeps the longest word as the minimum, so the line breaks at the space and
+   only splits a word that genuinely cannot fit at all. */
+.welcome-wb-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+  overflow-wrap: break-word;
+}
+
+/* The tag beside the greeting is v1's .tag, unmodified: it already declares
+   flex: none, its own mono type and its own inset, so there is nothing for
+   this file to add. It is named here only so the next reader stops looking. */
+
+.welcome-wb-body {
+  padding: var(--space-5);
+  overflow-y: auto;
+}
+
+.welcome-wb-line {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-body);
+  color: var(--text-secondary);
+}
+
+.welcome-wb-line + .welcome-wb-cl {
+  margin-top: var(--space-6);
+}
+
+.welcome-wb .shell-modal-foot {
+  padding: var(--space-4) var(--space-5);
+}
+
+/* The offer sits at the far end from Continue, so the dismissing hand never
+   passes over it. Continue is the primary: this card closes without an
+   account. */
+.welcome-wb-alt {
+  margin-right: auto;
+}
+
+/* ---- Changelog (desktop only) ---- */
+
+.welcome-cl-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-4);
+}
+
+/* .sec-count carries margin-left:auto for a .sec-head; this row is already
+   spaced apart and the auto margin would fight the baseline alignment. */
+.welcome-cl-head .sec-count {
+  margin-left: 0;
+}
+
+.welcome-changelog {
+  /* THE SHELL OWNS SCROLLING: this list is the thing that grows, so it scrolls
+     inside its own well instead of pushing the card past the viewport. */
+  max-height: 220px;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-5);
+}
+
+.welcome-release + .welcome-release {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.welcome-release-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.welcome-release-version {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.welcome-release-date {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.welcome-release-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.welcome-release-items li {
+  position: relative;
+  padding-left: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-body);
+}
+
+.welcome-release-items li::before {
+  content: '';
+  position: absolute;
+  left: var(--space-1);
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+/* The honest empty state: no releases have been recorded, so none are shown.
+   .empty's own vertical padding is sized for a full panel, not a card row, and
+   its lines are sized for a page. Neither should make an empty well look like
+   a failure. */
+.welcome-changelog .empty {
+  padding: var(--space-1) 0;
+}
+
+.welcome-changelog .empty-line {
+  font-size: var(--fs-sm);
+}
+
+.welcome-changelog .empty-line + .empty-line {
+  font-size: var(--fs-sm);
+}
+
+/* ============================================================
+   LANDING FALLBACK
+   Only ever seen if features/landing is absent from the build.
+   Deliberately plain: it is a degraded state, not a second landing page.
+   ============================================================ */
+
+.welcome-landing-fallback {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: var(--space-8);
+  text-align: center;
+}
+
+.welcome-landing-fallback h1 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.welcome-landing-fallback p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+/* ============================================================
+   PHONE
+
+   Both surfaces are dialogs inside .overlay-scrim, which is fixed to inset: 0.
+   src/web/index.html asks for viewport-fit=cover, so on a notched phone that
+   bottom edge is UNDER the home indicator: a dialog tall enough to reach it
+   puts its primary action beneath a system control. Neither surface reserved a
+   pixel for that, and neither did the scrim.
+
+   Everything below is inside the breakpoint shell.css uses to swap the rail for
+   the tab bar. The scrim is another agent's file and is not touched: every rule
+   here is scoped to one of this file's two dialogs, which wins on specificity
+   whichever way the sheets happen to load.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  /* The card stops short of the home indicator instead of running under it,
+     and the foot, which carries the primary action, keeps its own clearance
+     even when the card is capped at full height. */
+  .overlay-dialog.welcome-wb,
+  .overlay-dialog.welcome-fr {
+    max-height: calc(100% - env(safe-area-inset-bottom, 0px));
+  }
+
+  .welcome-wb .shell-modal-foot,
+  .welcome-fr .shell-modal-foot {
+    padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Touch targets. v1's .btn is 32px and the close cross 32px square, both
+     drawn for a cursor. Raised on these two dialogs only. */
+  .welcome-wb .btn,
+  .welcome-fr .btn {
+    min-height: 44px;
+  }
+
+  .welcome-wb .shell-modal-close,
+  .welcome-fr .shell-modal-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Two actions at 44px each do not sit on one 375px row beside each other in
+     every language, so the foot wraps and the primary keeps the end position. */
+  .welcome-wb .shell-modal-foot {
+    flex-wrap: wrap;
+  }
+
+  /* A dialog is one column on a phone, so the wide first-run insets come in to
+     the same measure the card next door uses. */
+  .welcome-fr-body {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .welcome-fr .shell-modal-foot {
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+  }
+
+  /* The changelog well is capped at 220px for a desktop window. On a phone the
+     dialog is already capped and its body already scrolls, so a second cap
+     inside it just makes a small box smaller. */
+  .welcome-changelog {
+    max-height: none;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   Every animation this file adds stops dead, and the two dialogs stop
+   popping. shell.css's own guard names its own selectors, so it does not
+   reach these.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay-dialog.welcome-fr,
+  .overlay-dialog.welcome-wb,
+  .welcome-fr-mark,
+  .welcome-fr-title,
+  .welcome-fr-lede,
+  .welcome-fr-sec,
+  .welcome-fr-name {
+    animation: none;
+  }
+}

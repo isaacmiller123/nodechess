@@ -1,0 +1,714 @@
+/* Surfaces v1 never drew.
+
+   design-lab/v1 is the design. tokens.css, palettes.css, shell.css and
+   board-pieces.css are that design, copied in verbatim, and between them they
+   style every element on the ten approved pages. This file is the remainder and
+   nothing else: chrome the app genuinely has and the mockups genuinely do not,
+   because a static page has no error to fall over on, no promotion to pick and
+   no engine avatar to draw.
+
+   THE RULE FOR ADDING TO THIS FILE. If v1 draws the thing, it does not belong
+   here, it belongs in the v1 stylesheet under the v1 class name. This file is
+   where the old app.css went to die: 845 lines of a shell that no longer
+   exists, a move list, an engine panel, a settings form and a profile chip,
+   all of which v1 redraws under its own names. Reintroducing one of those
+   selectors here would put the old UI back on screen one rule at a time, which
+   is exactly the failure this rebuild is undoing. */
+
+/* ---- Avatars (Avatar.tsx: the engine's face, and a fallback initial) ---- */
+.avatar {
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.avatar-default {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border: var(--border-width) solid var(--border);
+}
+.avatar-engine {
+  background: var(--accent-soft);
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* ---- Promotion picker (PromotionPicker.tsx) ----
+   Sits over the board, so it is positioned against .board-wrap and must not
+   restyle it. */
+.promo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-board-overlay);
+}
+.promo-card {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-lg);
+}
+.promo-choice {
+  width: 56px;
+  height: 56px;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out);
+}
+.promo-choice:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.promo-glyph {
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+/* ---- THE SHELL OWNS SCROLLING ----
+
+   v1 is ten static pages of fixed length, so it lets the WINDOW scroll and pins
+   the readout with position: sticky. That works for a mockup and it is wrong for
+   an application, because this app has surfaces that GROW while you are looking
+   at them. A move list gains a row on every move, so with a scrolling window the
+   document gets taller under the player and the page walks downward: you make a
+   move, the board slides up, and you scroll back. Same for an engine adding
+   lines, a rush counter, a chat.
+
+   So the shell is pinned to the viewport and .content is the only scroller. The
+   readout keeps position: sticky and keeps working, because sticky resolves
+   against its nearest scrolling ancestor, which is now .content instead of the
+   document. The board's min(78vh, 100%) also becomes honest again: 78vh only
+   means "78% of what you can see" if the shell is what you can see.
+
+   This is the one place the app deliberately departs from v1's layout, and it
+   restores what the pre-v1 shell did on purpose. */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  overflow: hidden;
+}
+
+.app {
+  height: 100%;
+  min-height: 0;
+}
+
+.content {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* The rail is its own column and never scrolls with the page. Its nav can still
+   scroll internally on a short window, which .rail-nav already does. */
+.rail {
+  height: 100%;
+}
+
+/* .content is a flex column, and giving it a real height turns its children
+   into flex items that can be COMPRESSED. v1 never hit this because its
+   .content grew with the page, so nothing was ever squeezed. Once the shell is
+   pinned to the viewport, the two headers shrink to whatever is left: measured
+   at 375px wide, the readout collapsed to 13px while its own fields sat at
+   y=48 and y=71, clipped by its overflow: hidden, with the first section head
+   overlapping them at y=58. On phones the readout wraps to two rows, so it is
+   the tallest and it lost the most.
+   The headers are fixed furniture and the page is what flexes. */
+.topbar-m,
+.readout {
+  flex: none;
+}
+
+.main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ---- THE PHONE TAB BAR MUST NOT SIT ON THE CONTENT ----
+
+   Two separate faults, and together they buried the last control on a page.
+
+   1. NOTHING IN THE APP EVER PAID THE SAFE AREA. src/web/index.html asks for
+      viewport-fit=cover so the shell can paint under the home indicator, and
+      then no stylesheet spends a single env(safe-area-inset-bottom) buying that
+      back. shell.css gives .tabbar a flat 60px. On a notched phone the bottom
+      34px of that bar is under the home indicator, so the labels are crowded
+      AND the bar covers 34px more of the page than anything reserves for it.
+
+   2. .main COULD SHRINK. It is flex: 1 1 auto in the pinned shell, so on a page
+      whose content nearly fills the viewport it shrinks to the space available
+      instead of growing past it, its padding-bottom ends up inside that
+      squeezed box, and .content never becomes scrollable. Measured on the live
+      site at 375x812: scrollMax was 0 and Account's "Create account" button ran
+      714 to 750 with the tab bar starting at 752. Two pixels of clearance in a
+      browser with no inset, and underneath the bar on a real iPhone.
+
+   flex: 1 0 auto is the fix for the second: grow to the content, never shrink
+   below it, so the reservation below is real and the page scrolls when it needs
+   to. The reservation itself is v1's (tab bar plus a space-10 breath) with the
+   inset added, which is the part v1 never had to think about because it was
+   never opened on a phone. */
+@media (max-width: 720px) {
+  .tabbar {
+    height: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* The overflow sheet lifts from the top of the bar, so it moves with it. */
+  .sheet {
+    bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .main {
+    flex: 1 0 auto;
+    padding-bottom: calc(
+      var(--tabbar-h) + var(--space-10) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+}
+
+/* ---- A DIALOG INSIDE A VIEW WAS NOT PINNED TO THE VIEWPORT ----
+
+   SHELL-WIDE, and reported as such. Any overlay a view renders inside itself
+   (Play's explainer, the games table's dialog) is `position: fixed; inset: 0`
+   via .overlay-scrim, and on a phone it was neither fixed nor inset 0.
+
+   THE CAUSE. shell.css gives .main the page-enter animation, whose from-frame
+   is `transform: translateY(6px)`. animation-fill-mode is `both`, so the
+   effect stays applied after it ends, and the computed transform settles at
+   matrix(1, 0, 0, 1, 0, 0) rather than `none`. A transform value that is not
+   `none` makes the element the containing block for every `position: fixed`
+   descendant, so the scrim resolves against .main instead of the viewport.
+
+   Measured at 375x812 with the Play explainer open: .main was 1385 tall, the
+   scrim took that whole 1385 instead of 812, and the dialog it centres landed
+   at y=520 with its bottom at 1138. "Start playing", the one action in the
+   thing, sat 326px BELOW the bottom of the screen, and a fixed element cannot
+   be scrolled to. On a desktop .main is about the height of the window, so
+   the same mistake is worth a few pixels and nobody ever saw it.
+
+   The fix keeps the animation and drops the transform, on phones only: the
+   page still fades in, it just no longer claims to be a containing block.
+   Desktop keeps page-enter exactly as shell.css wrote it, and readers who ask
+   for reduced motion keep shell.css's `animation: none`, which never had a
+   transform to begin with, so the no-preference guard leaves them alone.
+
+   The real repair is for the overlay to portal to the body, which is
+   components/OverlayDialog.tsx and not this file's to make. */
+@keyframes page-enter-flat {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .main {
+    animation-name: page-enter-flat;
+  }
+}
+
+/* ---- Buttons standing in where v1 wrote anchors ----
+   v1 is ten static pages, so every destination there is an <a href>. The app
+   navigates by callback, so the same rows are <button>s. That one substitution
+   has a real layout consequence and this is the whole of the fix for it: an
+   anchor is block level inside the rail and fills it, a button is shrink to
+   fit, so .rail-link's `grid-template-columns: 15px minmax(0, 1fr)` was
+   resolving against the width of the WORD rather than the width of the rail.
+   The row was 84px wide in a 224px rail, which is why hover only lit up a stub
+   of it. Buttons also centre their text, which anchors do not.
+
+   This does not restyle anything v1 drew. It restores the box the v1 rule was
+   written against. */
+.rail-head,
+.rail-link,
+.sheet-link {
+  width: 100%;
+  text-align: left;
+}
+
+/* The mark sits in a span so Logo.tsx, which takes no className, can still be
+   coloured and pinned by v1's .rail-mark rule. */
+.rail-mark {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* THE WORDMARK. Size only. Everything else about the lockup belongs to
+   .nc-word in brand.css, which is the brand definition: node is bold, chess is
+   regular, set as one word with no space between them and no colour change.
+   The WEIGHT is the only division, and it is never a colour and never a space.
+   Declaring a single font-weight here would flatten that back into one word,
+   which is why this rule sets --fs-lg and stops.
+
+   --fs-lg, not v1's --fs-base, because v1 drew a 16px placeholder rook and
+   sized the word to sit with that. The real mark is the 28px lattice, and the
+   name has to stand with it. */
+.rail-word {
+  font-size: var(--fs-lg);
+  line-height: 1;
+}
+
+/* THE RAIL'S OWN TYPE. v1 sets the nav rows at --fs-sm, 12px, in a 34px row,
+   which leaves the label floating in a box built for something bigger. The
+   destinations are the most-read words in the product and they get --fs-base.
+   The tool row under them stays a step down, because SETTINGS and the collapse
+   chevron are chrome for the rail rather than places to go, but it comes up off
+   11px so it is legible at the same glance. */
+.rail-link,
+.sheet-link {
+  font-size: var(--fs-base);
+}
+
+.rail-tool {
+  font-size: var(--fs-sm);
+}
+
+/* ---- THE BOARDS THAT ARE NOT CHECKERBOARDS ----
+
+   Xiangqi, janggi and shogi were drawing an 8x8 chess checkerboard over their
+   own board art. The cause is a substring match nobody intended:
+
+     shell.css:1380   .board-wrap[class*='board-'] cg-board { ...checker... }
+
+   [class*='board-'] was meant to read "a board-wrap carrying a board-<theme>
+   class". It also matches the element's OWN class name, because the string
+   "board-wrap" contains "board-". So the checker applies to every chessground
+   board in the app, whatever game it is.
+
+   games/boards/chess-family-board.css already declares the correct answer, and
+   its comment shows the author expected exactly this collision: "The global
+   chessground.brown.css / app board themes paint cg-board with a checker: blank
+   it for the wood boards". It loses anyway, on specificity rather than order:
+
+     .board-wrap[class*='board-'] cg-board   (0,2,1)
+     .cfb-int cg-board                       (0,1,1)
+
+   so no import order could have saved it. This restates the same intent at
+   (0,3,1), which beats the shell rule outright rather than relying on which
+   file happens to be injected last. Lazy loaded feature CSS makes that ordering
+   genuinely unpredictable, so the specificity has to do the work.
+
+   The wood boards draw their surface on .cfb-board and their grid as an SVG
+   overlay UNDERNEATH a transparent cg-board, so blanking cg-board is what
+   reveals the real board. .cfb-cells8, the 8x8 chess kinds, is deliberately
+   untouched and keeps #f0d9b5 / #b58863. */
+.board-wrap .cfb-wrap.cfb-int cg-board,
+.board-wrap .cfb-wrap.cfb-shogi cg-board {
+  background: transparent;
+}
+
+/* ---- Bare icon button (UpdateToast's dismiss) ----
+   v1 has no equivalent: nothing in the mockups closes itself. Sized to the
+   shell's icon metric so it sits on the same grid as everything around it. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+.icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+/* ---- Error boundary and route placeholder ----
+   Classes referenced by ErrorBoundary.tsx and Placeholder.tsx. Both draw a
+   .panel, which is v1's, so only the framing around it is declared here. */
+.app-error {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-6);
+}
+.app-error .panel,
+.placeholder .panel {
+  max-width: 460px;
+  text-align: center;
+}
+.app-error-detail {
+  margin: var(--space-4) 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+  max-height: 180px;
+}
+.placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+}
+
+/* ---- Lazy-route fallback (App.tsx ViewFallback) ---- */
+.view-loading {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+}
+.view-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: var(--radius-pill);
+  animation: view-spin 0.7s linear infinite;
+}
+@keyframes view-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- The live-online dot ----
+   A real capability v1 never drew: an online game is running while you are
+   standing somewhere else. It marks the Play rail item, in v1's language, which
+   means it borrows --success and nothing else. */
+.rail-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+.rail-live-dot {
+  position: absolute;
+  top: -2px;
+  right: -3px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--success);
+  box-shadow: 0 0 0 2px var(--bg-subtle);
+}
+.rail-live-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--success);
+  animation: rail-live-pulse 1.8s var(--ease-out) infinite;
+}
+@keyframes rail-live-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* ---- A panel's own header strip ----
+   v1 puts a panel's title OUTSIDE the panel, in a .sec-head, because every
+   panel in the mockups is static. Two of the app's are not: Assistance and
+   Coach collapse, and their head IS the control that opens them, so it has to
+   sit inside the box it opens, and the two heads that do not collapse (Play's
+   Moves, Replay's Moves) match them rather than sitting a level out on their
+   own. The metrics are .panel-foot's, mirrored to the top, so a strip reads
+   the same at either end of a panel. The title on it is v1's .lbl. */
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+/* ---- The live game's move list (panels/MoveList.tsx) ----
+
+   The grid, the number, a move and the move you are on are v1's .moves,
+   .mv-no, .mv and .mv.is-next in shell.css, and nothing below restates one of
+   them. Four things the shipping list does that a static twelve move excerpt
+   never had to: it scrolls, a move is a place you can go rather than a word,
+   it branches, and it carries a review's classification marks. Those four are
+   what is here. */
+
+/* Play's list is as long as the game. The box takes whatever the sidebar
+   leaves it and the list inside takes the overflow, so no page names a
+   height. */
+.moves.is-scroll {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* A move is a button here, not a span: clicking it puts the board there. The
+   element qualifier is the point. This is the interactive .mv, not a second
+   opinion about the one in shell.css. */
+button.mv {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+button.mv:hover:not(.is-next) {
+  background: var(--surface-2);
+}
+
+.mv-san {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The cell that closes a row a variation interrupted ("…"), and the blank
+   that ends a line on White's move. A placeholder, not a move. */
+.mv.is-gap {
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* The review's classification mark. analysis.css draws the same object under
+   v1's own name, .an-mk, but that stylesheet ships with the Analysis route
+   alone and this list is on screen while you are playing. Same --class-*
+   tokens, so a blunder is the same red on both pages. */
+.mv-mk {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.mv-mk.is-brilliant {
+  color: var(--class-brilliant);
+}
+.mv-mk.is-great,
+.mv-mk.is-best {
+  color: var(--class-best);
+}
+.mv-mk.is-good,
+.mv-mk.is-excellent {
+  color: var(--class-good);
+}
+.mv-mk.is-book {
+  color: var(--class-book);
+}
+.mv-mk.is-inacc {
+  color: var(--class-inaccuracy);
+}
+.mv-mk.is-mistake {
+  color: var(--class-mistake);
+}
+.mv-mk.is-blunder {
+  color: var(--class-blunder);
+}
+/* tokens.css has no --class-miss, so Miss borrows the danger red, which is
+   the answer analysis.css already reached. */
+.mv-mk.is-miss {
+  color: var(--danger);
+}
+
+/* A branch. The board is playable, so a move off the mainline creates one,
+   and v1's three column grid has no row for it: without this the move you
+   just played would have nowhere to appear. It spans the grid and reads as an
+   aside rather than a row. */
+.mv-var {
+  grid-column: 1 / -1;
+  color: var(--text-muted);
+  line-height: var(--lh-body);
+}
+
+.mv-var + .mv-var {
+  border-top: 0;
+}
+
+.mv-varmove {
+  padding: 0 var(--space-1);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.mv-varmove:hover {
+  color: var(--text-primary);
+}
+
+.mv-varmove.is-next {
+  color: var(--accent);
+  font-weight: var(--fw-medium);
+}
+
+/* A branch off a branch: one step quieter than the line holding it, which is
+   all the nesting a reader can follow inline. */
+.mv-subvar {
+  color: var(--text-muted);
+}
+
+/* ---- Eval bar (board/EvalBar.tsx) ----
+
+   The Analysis page draws its own bar as v1's .an-evalbar, but analysis.css
+   ships with that route alone and this component is the Library replay's bar,
+   so the shared one carries the definition. Same width token, same radius and
+   the same three --eval-* colours, so the two are one object.
+
+   It is a measurement: the fill is white's WIN EXPECTANCY, not the score.
+   +0.86 is 57.9% of the bar, from whiteWinPercent() in
+   src/renderer/src/chess/scores.ts, and the component hands the percentage
+   down as an inline height. Nothing here is a board square or a piece and
+   nothing here reads a chrome token. */
+.eval-bar {
+  position: relative;
+  flex: none;
+  width: var(--evalbar-w);
+  align-self: stretch;
+  background: var(--eval-black);
+  border-radius: var(--radius-board);
+  overflow: hidden;
+}
+
+.eval-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--eval-white);
+  transition: height var(--motion-slow) var(--ease-out);
+}
+
+/* Black at the bottom of the board puts White's share at the top of the bar,
+   so the bar and the board always agree about which end is whose. */
+.eval-bar.is-flipped .eval-fill {
+  bottom: auto;
+  top: 0;
+}
+
+/* No engine line yet: a neutral half bar with no number on it, so the bar
+   never shows a confident +0.00 that nothing computed. */
+.eval-bar.eval-empty {
+  opacity: 0.4;
+}
+
+/* The number rides the leading side, which is the side with room for it. */
+.eval-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9px;
+  font-weight: var(--fw-bold);
+}
+.eval-label.on-white {
+  bottom: var(--space-1);
+  color: var(--eval-black);
+}
+.eval-label.on-black {
+  top: var(--space-1);
+  color: var(--eval-white);
+}
+.eval-bar.is-flipped .eval-label.on-white {
+  bottom: auto;
+  top: var(--space-1);
+}
+.eval-bar.is-flipped .eval-label.on-black {
+  top: auto;
+  bottom: var(--space-1);
+}
+
+/* ---- Three names the app writes and v1 does not ----
+
+   .muted and .small are the app's two text utilities, on roughly ninety
+   elements between them; v1 has no utility layer at all and reaches for
+   --text-muted and --fs-sm inline in each component's own rule. .ghost is
+   v1's quiet button under the app's name for it. All three were app.css's,
+   and the alternative to declaring them here is renaming several hundred call
+   sites, which is churn without a reader noticing. Same bargain as
+   .visually-hidden/.vh below. */
+.muted {
+  color: var(--text-muted);
+}
+
+.small {
+  font-size: var(--fs-sm);
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+.btn.ghost:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+/* A toggle drawn as an icon button, on while its overlay is on. */
+.icon-btn.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ---- Focus visibility ----
+   One ring on every interactive element. v1's shell.css styles focus per
+   component; this is the floor under everything it does not name. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[role='button']:focus-visible,
+[role='switch']:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.board-wrap:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Screen-reader-only text. v1 calls this .vh; the app's components call it
+   .visually-hidden. Both names, one declaration, so neither has to be renamed
+   across a few hundred call sites. */
+.visually-hidden,
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-live-dot::after,
+  .view-spinner {
+    animation: none;
+  }
+}

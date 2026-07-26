@@ -1,11 +1,15 @@
 import { lazy, Suspense, useCallback, useEffect, useState, type JSX } from 'react'
 import { Layout, type ViewKey } from './components/Layout'
 import { Placeholder } from './components/Placeholder'
-import { SettingsProvider, useSettings } from './state/settings'
+import { SettingsProvider } from './state/settings'
 import HomeView from './features/home/HomeView'
 import { CommandPalette } from './components/CommandPalette'
 import { ShortcutsHelp } from './components/ShortcutsHelp'
 import { Onboarding } from './components/Onboarding'
+import { LandingGate } from './features/welcome/LandingGate'
+import { WelcomeBack } from './features/welcome/WelcomeBack'
+import { useWelcome } from './features/welcome/useWelcome'
+import { isWebBuild } from './platform'
 import { OnlineReturnChip } from './features/play/OnlineReturnChip'
 import { UpdateToast } from './components/UpdateToast'
 import { useOnlineGame } from './features/play/online/useOnlineGame'
@@ -28,20 +32,15 @@ const SettingsView = lazy(() =>
 )
 const AccountView = lazy(() => import('./features/account/AccountView'))
 
-const TITLES: Record<ViewKey, string> = {
-  home: 'Home',
-  play: 'Play',
-  games: 'Games',
-  analysis: 'Analysis',
-  puzzles: 'Puzzles',
-  school: 'School',
-  openings: 'Openings',
-  progress: 'Progress',
-  account: 'Account',
-  settings: 'Settings'
-}
+/* There is no screen title anywhere in v1 and so there is no TITLES map here
+   any more. The old shell printed the name of the current screen in a top bar;
+   v1 spends that row on the readout instead, on the grounds that you already
+   know which screen you clicked and you do not know your rating. */
 
-const ONBOARDING_SEEN_KEY = 'oct.onboarding.seen.v1'
+/* The first-run keys, the legacy onboarding key it migrates, and the whole
+   web/desktop matrix live in features/welcome/welcomeState.ts. Nothing about
+   which welcome surface appears is decided here any more: App only renders
+   what useWelcome() picked. */
 
 function ViewFallback(): JSX.Element {
   return (
@@ -113,12 +112,17 @@ function isMacPlatform(): boolean {
 }
 
 /**
- * Inner shell: lives inside SettingsProvider so it can read settings and drive
- * onboarding. Owns routing plus the three app-shell overlays (command palette,
- * shortcuts help, first-run onboarding).
+ * Inner shell: routing plus the app-shell overlays (command palette, shortcuts
+ * help) and the welcome surface for this load.
+ *
+ * THE WELCOME SURFACE. features/welcome decides which of the three it is; this
+ * component only renders it. Two of them are popups over the shell. The third,
+ * the web landing page, REPLACES the shell: it explains the site before you are
+ * in it, so drawing the app behind it would defeat the point. That is the early
+ * return below, and it sits after every hook in this component deliberately.
  */
 function AppShell(): JSX.Element {
-  const { settings } = useSettings()
+  const welcome = useWelcome()
   // Live online session (survives across all views; the store is app-lifetime).
   // Drives the Play-rail pulsing dot and a floating "return to game" chip when
   // the Play view isn't the one showing.
@@ -129,7 +133,6 @@ function AppShell(): JSX.Element {
   const [pendingFamousId, setPendingFamousId] = useState<string | null>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
-  const [onboardingOpen, setOnboardingOpen] = useState(false)
   const isMac = isMacPlatform()
 
   // Plain navigation clears any pending game so opening Analysis from the rail
@@ -150,43 +153,6 @@ function AppShell(): JSX.Element {
     setPendingGameId(null)
     setPendingFamousId(id)
     setView('analysis')
-  }, [])
-
-  // First-run onboarding: brand-new profile (default username) with no saved
-  // games and no prior 'seen' flag. Never blocks. Purely additive, and the flag
-  // is written immediately so it shows at most once.
-  useEffect(() => {
-    let seen = true
-    try {
-      seen = localStorage.getItem(ONBOARDING_SEEN_KEY) === '1'
-    } catch {
-      /* storage may be unavailable: treat as already seen */
-    }
-    if (seen || settings.username !== 'User') return
-
-    let cancelled = false
-    void (async () => {
-      let hasGames = true
-      try {
-        const res = await window.api?.games?.list?.({ limit: 1 })
-        hasGames = (res?.games?.length ?? 0) > 0
-      } catch {
-        // If we cannot confirm an empty history, err toward not interrupting.
-        hasGames = true
-      }
-      if (cancelled || hasGames) return
-      try {
-        localStorage.setItem(ONBOARDING_SEEN_KEY, '1')
-      } catch {
-        /* ignore */
-      }
-      setOnboardingOpen(true)
-    })()
-    return () => {
-      cancelled = true
-    }
-    // Run once on mount; username is read at that point intentionally.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Global shortcuts: Cmd/Ctrl+K toggles the palette; '?' opens shortcuts help.
@@ -218,14 +184,17 @@ function AppShell(): JSX.Element {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
+  /* WEB, FIRST EVER VISIT. The landing page instead of the app, never over it.
+     Every hook in this component is above this line; nothing below it is
+     conditional on the branch. features/landing is another agent's file, so
+     LandingGate loads it lazily and survives its absence. */
+  if (welcome.surface === 'landing') {
+    return <LandingGate onEnter={welcome.dismiss} />
+  }
+
   return (
     <>
-      <Layout
-        active={view}
-        onNavigate={navigate}
-        title={TITLES[view]}
-        playPulse={onlineLive && view !== 'play'}
-      >
+      <Layout active={view} onNavigate={navigate} playPulse={onlineLive && view !== 'play'}>
         <Suspense fallback={<ViewFallback />}>
           <CurrentView
             view={view}
@@ -250,8 +219,18 @@ function AppShell(): JSX.Element {
       />
       {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} onNavigate={navigate} />}
       {shortcutsOpen && <ShortcutsHelp onClose={() => setShortcutsOpen(false)} isMac={isMac} />}
-      {onboardingOpen && (
-        <Onboarding onClose={() => setOnboardingOpen(false)} onNavigate={navigate} />
+      {/* DESKTOP, FIRST EVER LAUNCH: thanks, and what this build gives them. */}
+      {welcome.surface === 'firstRunDesktop' && (
+        <Onboarding onClose={welcome.dismiss} onNavigate={navigate} />
+      )}
+      {/* EVERY LOAD AFTER THE FIRST, both targets. The changelog rides along on
+          desktop only: a web visit is always the current build. */}
+      {welcome.surface === 'welcomeBack' && (
+        <WelcomeBack
+          onClose={welcome.dismiss}
+          onOpenAccount={() => navigate('account')}
+          withChangelog={!isWebBuild}
+        />
       )}
     </>
   )

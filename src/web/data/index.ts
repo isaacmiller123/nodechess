@@ -12,9 +12,14 @@
 //   manifest.ts     the build manifest, and the rowid arithmetic it enables
 //   puzzleSource.ts the query surface, mirroring the puzzle IPC channels
 //
+// The artifact does NOT have to sit on the site's own origin, and in production
+// it does not: Cloudflare Pages ignores Range. puzzleArtifactBaseUrl() resolves
+// where it lives (VITE_PUZZLE_BASE_URL, defaulting to same-origin for dev), and
+// docs/DEPLOY-WEB.md Part 6 sets that origin up.
+//
 // Wiring:
 //
-//   const puzzles = createStaticPuzzleReader()      // <base>puzzles/ by default
+//   const puzzles = createStaticPuzzleReader()      // puzzleArtifactBaseUrl()
 //   const { puzzle } = await puzzles.next({ ratingLo: 900, ratingHi: 1400 })
 //
 // Hold ONE reader for the life of the page: it owns a worker and its page cache,
@@ -23,7 +28,7 @@
 // are user state that does not exist in a static artifact; `daily()` returns
 // `result: null` and the caller merges the local outcome.
 
-export { createStaticPuzzleReader } from './puzzleSource'
+export { createStaticPuzzleReader, puzzleArtifactBaseUrl } from './puzzleSource'
 export type {
   PuzzleDatasetInfo,
   StaticPuzzleReader,

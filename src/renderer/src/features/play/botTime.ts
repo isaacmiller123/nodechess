@@ -50,7 +50,7 @@ export const TIME_PERSONALITIES: Record<TimeStyle, TimePersonality> = {
   tanker: { targetMul: 1.35, sigma: 0.4, tankChance: 0.15, tankMul: 2.8, bias: 0.8 }
 }
 
-/** UI copy for the PersonaDetail "Clock style" row. */
+/** UI copy for a persona's clock style. */
 export const TIME_STYLE_COPY: Record<TimeStyle, { name: string; line: string }> = {
   blitzer: { name: 'Blitzer', line: 'moves fast, banks time, and squeezes you in the scramble.' },
   steady: { name: 'Steady', line: 'spends time evenly and is rarely rushed.' },

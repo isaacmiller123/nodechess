@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marks, lane C: the board as a topology</title>
+    <style>
+      :root {
+        --ground: #16181a;
+        --ink: #e9ebec;
+        --muted: #8b9094;
+        --line: #262a2d;
+        --font: 'InterVariable', 'Inter', -apple-system, BlinkMacSystemFont,
+          'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 56px 40px 96px;
+      }
+
+      .head {
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 8px;
+      }
+
+      .head h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+
+      .head p {
+        margin: 10px 0 0;
+        max-width: 74ch;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .cand {
+        padding: 48px 0 44px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cand-head {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+
+      .cand-no {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        color: #cfa257;
+      }
+
+      .cand-name {
+        font-size: 16px;
+        font-weight: 620;
+        letter-spacing: -0.01em;
+      }
+
+      .rows {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 40px 56px;
+        align-items: flex-end;
+      }
+
+      .cell {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .cap {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: #6d7276;
+      }
+
+      .marks {
+        display: flex;
+        align-items: flex-end;
+        gap: 28px;
+      }
+
+      .mk { display: block; color: var(--ink); overflow: visible; }
+
+      .lock {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .lock .word {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.035em;
+        line-height: 1;
+      }
+
+      .lock-sm .word { font-size: 17px; letter-spacing: -0.03em; }
+
+      .whitebar {
+        margin-top: 36px;
+        background: #ffffff;
+        color: var(--ground);
+        border-radius: 2px;
+        padding: 26px 30px;
+        display: flex;
+        align-items: center;
+        gap: 44px;
+        flex-wrap: wrap;
+      }
+
+      .whitebar .mk { color: var(--ground); }
+      .whitebar .cap { color: #8a8f93; }
+      .whitebar .word { color: var(--ground); }
+
+      .why {
+        margin-top: 30px;
+        display: grid;
+        gap: 7px;
+        max-width: 86ch;
+      }
+
+      .why div {
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: #c3c8cb;
+      }
+
+      .why b {
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .pxrow {
+        display: flex;
+        align-items: flex-end;
+        gap: 22px;
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: 2px;
+      }
+
+      .whitebar .pxrow { border-color: #d8dbdd; }
+    </style>
+  </head>
+
+  <body>
+    <!-- Geometry lives here once, so every size on the page is provably the
+         same object and not a redraw. -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <!-- ================= 01, POINT LATTICE ================= -->
+        <symbol id="c1" viewBox="0 0 64 64">
+          <g fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M8 2V49" />
+            <path d="M24 2V33" />
+            <path d="M24 47V62" />
+            <path d="M40 2V17" />
+            <path d="M40 31V62" />
+            <path d="M56 15V62" />
+            <path d="M2 8H49" />
+            <path d="M2 24H33" />
+            <path d="M47 24H62" />
+            <path d="M2 40H17" />
+            <path d="M31 40H62" />
+            <path d="M15 56H62" />
+          </g>
+          <path d="M2 62L62 2" fill="none" stroke="currentColor" stroke-width="3.4" />
+          <circle cx="8" cy="56" r="4.6" fill="currentColor" />
+          <circle cx="24" cy="40" r="4.6" fill="currentColor" />
+          <circle cx="56" cy="8" r="4.6" fill="currentColor" />
+          <circle cx="40" cy="24" r="3.8" fill="none" stroke="currentColor" stroke-width="2.4" />
+        </symbol>
+
+        <symbol id="c1f" viewBox="0 0 16 16">
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M3.5 0.5V10.3" />
+            <path d="M8.5 0.5V5.3" />
+            <path d="M8.5 11.7V15.5" />
+            <path d="M13.5 6.7V15.5" />
+            <path d="M0.5 3.5H10.3" />
+            <path d="M0.5 8.5H5.3" />
+            <path d="M11.7 8.5H15.5" />
+            <path d="M6.7 13.5H15.5" />
+          </g>
+          <path d="M0.5 15.5L15.5 0.5" fill="none" stroke="currentColor" stroke-width="2" />
+          <circle cx="3.5" cy="13.5" r="2.2" fill="currentColor" />
+          <circle cx="8.5" cy="8.5" r="2.2" fill="currentColor" />
+          <circle cx="13.5" cy="3.5" r="2.2" fill="currentColor" />
+        </symbol>
+
+        <!-- ================= 02, DARK SQUARES ================= -->
+        <symbol id="c2" viewBox="0 0 64 64">
+          <g fill="currentColor">
+            <rect x="3.5" y="3.5" width="12" height="12" />
+            <rect x="33.5" y="3.5" width="12" height="12" />
+            <rect x="18.5" y="18.5" width="12" height="12" />
+            <rect x="48.5" y="18.5" width="12" height="12" />
+            <rect x="3.5" y="33.5" width="12" height="12" />
+            <rect x="33.5" y="33.5" width="12" height="12" />
+            <rect x="18.5" y="48.5" width="12" height="12" />
+          </g>
+          <g fill="currentColor">
+            <path d="M20.25 20.25 L18.2 15.8 L13.75 13.75 L15.8 18.2Z" />
+            <path d="M35.25 13.75 L33.2 18.2 L28.75 20.25 L30.8 15.8Z" />
+            <path d="M50.25 20.25 L48.2 15.8 L43.75 13.75 L45.8 18.2Z" />
+            <path d="M20.25 28.75 L18.2 33.2 L13.75 35.25 L15.8 30.8Z" />
+            <path d="M35.25 35.25 L33.2 30.8 L28.75 28.75 L30.8 33.2Z" />
+            <path d="M50.25 28.75 L48.2 33.2 L43.75 35.25 L45.8 30.8Z" />
+            <path d="M20.25 50.25 L18.2 45.8 L13.75 43.75 L15.8 48.2Z" />
+            <path d="M35.25 43.75 L33.2 48.2 L28.75 50.25 L30.8 45.8Z" />
+            <path d="M50.25 50.25 L48.2 45.8 L43.75 43.75 L45.8 48.2Z" />
+          </g>
+        </symbol>
+
+        <symbol id="c2f" viewBox="0 0 16 16">
+          <g fill="currentColor">
+            <rect x="1" y="1" width="4" height="4" />
+            <rect x="11" y="1" width="4" height="4" />
+            <rect x="6" y="6" width="4" height="4" />
+            <rect x="1" y="11" width="4" height="4" />
+            <rect x="11" y="11" width="4" height="4" />
+          </g>
+          <g fill="currentColor">
+            <path d="M5.5 3.8L7.2 5.5L5.5 7.2L3.8 5.5Z" />
+            <path d="M10.5 3.8L12.2 5.5L10.5 7.2L8.8 5.5Z" />
+            <path d="M5.5 8.8L7.2 10.5L5.5 12.2L3.8 10.5Z" />
+            <path d="M10.5 8.8L12.2 10.5L10.5 12.2L8.8 10.5Z" />
+          </g>
+        </symbol>
+
+        <!-- ================= 03, PARTIAL VIEW ================= -->
+        <symbol id="c3" viewBox="0 0 64 64">
+          <g fill="currentColor">
+            <rect x="3.5" y="33.5" width="12" height="12" />
+            <rect x="3.5" y="48.5" width="12" height="12" />
+            <rect x="18.5" y="48.5" width="12" height="12" />
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4.5" y="19.5" width="10" height="10" />
+            <rect x="19.5" y="34.5" width="10" height="10" />
+            <rect x="34.5" y="49.5" width="10" height="10" />
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3.5 11.5V15.5H7.5" />
+            <path d="M15.5 7.5V3.5H11.5" />
+            <path d="M18.5 26.5V30.5H22.5" />
+            <path d="M30.5 22.5V18.5H26.5" />
+            <path d="M33.5 41.5V45.5H37.5" />
+            <path d="M45.5 37.5V33.5H41.5" />
+            <path d="M48.5 56.5V60.5H52.5" />
+            <path d="M60.5 52.5V48.5H56.5" />
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18.5 12.5V15.5H21.5" />
+            <path d="M33.5 27.5V30.5H36.5" />
+            <path d="M48.5 42.5V45.5H51.5" />
+          </g>
+        </symbol>
+
+        <symbol id="c3f" viewBox="0 0 16 16">
+          <g fill="currentColor">
+            <rect x="1" y="6" width="4" height="4" />
+            <rect x="1" y="11" width="4" height="4" />
+            <rect x="6" y="11" width="4" height="4" />
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="1.5" y="1.5" width="3" height="3" />
+            <rect x="6.5" y="6.5" width="3" height="3" />
+            <rect x="11.5" y="11.5" width="3" height="3" />
+          </g>
+        </symbol>
+
+        <!-- ================= 04, THE ROUTE ================= -->
+        <symbol id="c4" viewBox="0 0 64 64">
+          <mask id="m4" maskUnits="userSpaceOnUse" x="0" y="0" width="80" height="80">
+            <rect x="-10" y="-10" width="90" height="90" fill="#fff" />
+            <g stroke="#000" fill="none" stroke-width="1.3">
+              <path d="M21.4 10.79V53.21" />
+              <path d="M32 10.79V53.21" />
+              <path d="M42.61 10.79V53.21" />
+              <path d="M10.79 21.4H53.21" />
+              <path d="M10.79 32H53.21" />
+              <path d="M10.79 42.61H53.21" />
+            </g>
+            <g stroke="#000" fill="none" stroke-width="5.4" stroke-linejoin="miter">
+              <path d="M21.4 56.5V42.61H32V21.4H42.61V7.5" />
+              <path d="M32 21.4H7.5" />
+            </g>
+            <g fill="#000">
+              <rect x="16.4" y="37.61" width="10" height="10" />
+              <rect x="27" y="37.61" width="10" height="10" />
+              <rect x="27" y="16.4" width="10" height="10" />
+              <rect x="37.61" y="16.4" width="10" height="10" />
+            </g>
+          </mask>
+          <g transform="rotate(45 32 32)">
+            <rect
+              x="10.79"
+              y="10.79"
+              width="42.43"
+              height="42.43"
+              fill="currentColor"
+              mask="url(#m4)"
+            />
+          </g>
+        </symbol>
+
+        <symbol id="c4f" viewBox="0 0 16 16">
+          <mask id="m4f" maskUnits="userSpaceOnUse" x="0" y="0" width="20" height="20">
+            <rect x="-3" y="-3" width="24" height="24" fill="#fff" />
+            <g stroke="#000" fill="none" stroke-width="2" stroke-linejoin="miter">
+              <path d="M5.39 14.6V8H10.61V1.4" />
+              <path d="M8 8V14.6" />
+            </g>
+          </mask>
+          <g transform="rotate(45 8 8)">
+            <rect
+              x="2.77"
+              y="2.77"
+              width="10.46"
+              height="10.46"
+              fill="currentColor"
+              mask="url(#m4f)"
+            />
+          </g>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div class="page">
+      <div class="head">
+        <h1>nodechess, lane C: the board as a topology</h1>
+        <p>
+          A board is already a lattice, and a lattice is already a network, so nothing here adds a
+          network to chess. Each mark reveals the one that was in the board to begin with. Squares
+          are addresses, intersections are where peers sit, and the diagonal is the edge that joins
+          them. Primary marks carry detail and are for 24px and up. Each favicon is the same object
+          with detail taken out, never a substitute idea. One flat colour throughout, no gradient,
+          no badge.
+        </p>
+      </div>
+
+      <!-- ===================== 01 ===================== -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">C 01</span>
+          <span class="cand-name">point lattice</span>
+        </div>
+
+        <div class="rows">
+          <div class="cell">
+            <span class="cap">PRIMARY 128 / 48 / 24</span>
+            <div class="marks">
+              <svg class="mk" width="128" height="128" viewBox="0 0 64 64"><use href="#c1" /></svg>
+              <svg class="mk" width="48" height="48" viewBox="0 0 64 64"><use href="#c1" /></svg>
+              <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c1" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">FAVICON 32 / 16</span>
+            <div class="pxrow">
+              <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c1f" /></svg>
+              <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c1f" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">LOCKUP</span>
+            <div class="lock">
+              <svg class="mk" width="34" height="34" viewBox="0 0 64 64"><use href="#c1" /></svg>
+              <span class="word">nodechess</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="whitebar">
+          <div class="marks">
+            <svg class="mk" width="64" height="64" viewBox="0 0 64 64"><use href="#c1" /></svg>
+            <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c1" /></svg>
+          </div>
+          <div class="pxrow">
+            <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c1f" /></svg>
+            <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c1f" /></svg>
+          </div>
+          <div class="lock lock-sm">
+            <svg class="mk" width="22" height="22" viewBox="0 0 64 64"><use href="#c1" /></svg>
+            <span class="word">nodechess</span>
+          </div>
+        </div>
+
+        <div class="why">
+          <div>
+            <b>Idea.</b> Play happens on the points, not in the cells. The orthogonal lattice is the
+            addressing scheme, a1 to h8, drawn as hairlines that run off the edge because any one
+            machine only ever sees a fragment. Where a peer sits, the lattice is cut away and leaves
+            the node standing in clean ground, so the only thing that touches a node is the heavy
+            diagonal, which is the connection. One node is drawn open, and that one is you.
+          </div>
+          <div>
+            <b>Favicon.</b> Removed one rank of the lattice, one node, and the open ring, keeping the
+            cut halos and the cropped diagonal that runs off both corners.
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 02 ===================== -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">C 02</span>
+          <span class="cand-name">dark squares</span>
+        </div>
+
+        <div class="rows">
+          <div class="cell">
+            <span class="cap">PRIMARY 128 / 48 / 24</span>
+            <div class="marks">
+              <svg class="mk" width="128" height="128" viewBox="0 0 64 64"><use href="#c2" /></svg>
+              <svg class="mk" width="48" height="48" viewBox="0 0 64 64"><use href="#c2" /></svg>
+              <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c2" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">FAVICON 32 / 16</span>
+            <div class="pxrow">
+              <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c2f" /></svg>
+              <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c2f" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">LOCKUP</span>
+            <div class="lock">
+              <svg class="mk" width="34" height="34" viewBox="0 0 64 64"><use href="#c2" /></svg>
+              <span class="word">nodechess</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="whitebar">
+          <div class="marks">
+            <svg class="mk" width="64" height="64" viewBox="0 0 64 64"><use href="#c2" /></svg>
+            <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c2" /></svg>
+          </div>
+          <div class="pxrow">
+            <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c2f" /></svg>
+            <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c2f" /></svg>
+          </div>
+          <div class="lock lock-sm">
+            <svg class="mk" width="22" height="22" viewBox="0 0 64 64"><use href="#c2" /></svg>
+            <span class="word">nodechess</span>
+          </div>
+        </div>
+
+        <div class="why">
+          <div>
+            <b>Idea.</b> Only the dark squares of a board are drawn, and dark squares touch nothing
+            but each other, corner to corner. That is already a connected graph, so the network is
+            not added, it is what a chessboard was doing all along. The light squares are never
+            drawn and become the voids that give the mark its air. At each corner meeting sits a
+            small diamond, a link on a lattice intersection. One square in the set is missing and
+            its link is left hanging into empty ground, because the network continues past what this
+            node holds.
+          </div>
+          <div>
+            <b>Favicon.</b> Removed one board rank, three squares, and the hanging link, leaving five
+            squares and four diamonds, which is the same corner-to-corner logic at its smallest.
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 03 ===================== -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">C 03</span>
+          <span class="cand-name">partial view</span>
+        </div>
+
+        <div class="rows">
+          <div class="cell">
+            <span class="cap">PRIMARY 128 / 48 / 24</span>
+            <div class="marks">
+              <svg class="mk" width="128" height="128" viewBox="0 0 64 64"><use href="#c3" /></svg>
+              <svg class="mk" width="48" height="48" viewBox="0 0 64 64"><use href="#c3" /></svg>
+              <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c3" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">FAVICON 32 / 16</span>
+            <div class="pxrow">
+              <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c3f" /></svg>
+              <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c3f" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">LOCKUP</span>
+            <div class="lock">
+              <svg class="mk" width="34" height="34" viewBox="0 0 64 64"><use href="#c3" /></svg>
+              <span class="word">nodechess</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="whitebar">
+          <div class="marks">
+            <svg class="mk" width="64" height="64" viewBox="0 0 64 64"><use href="#c3" /></svg>
+            <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c3" /></svg>
+          </div>
+          <div class="pxrow">
+            <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c3f" /></svg>
+            <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c3f" /></svg>
+          </div>
+          <div class="lock lock-sm">
+            <svg class="mk" width="22" height="22" viewBox="0 0 64 64"><use href="#c3" /></svg>
+            <span class="word">nodechess</span>
+          </div>
+        </div>
+
+        <div class="why">
+          <div>
+            <b>Idea.</b> No node holds the whole network, so the board is drawn in four states of
+            knowing, banded along the long diagonal. Squares you hold are solid, squares you have
+            only the outline of are drawn as outline, squares that are an address and nothing more
+            keep two corner brackets, and squares that are only a rumour keep one. Past that,
+            nothing, which is the honest edge of a partial view. Every state stays locked to the
+            same lattice, so the board is still legible in the part that was never filled in, and
+            the whole gradient is made of shape alone, no tint and no opacity.
+          </div>
+          <div>
+            <b>Favicon.</b> Removed both bracket states and one rank, keeping only solid and
+            outline, so the dissolve survives as three held squares against three outlines.
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 04 ===================== -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">C 04</span>
+          <span class="cand-name">the route</span>
+        </div>
+
+        <div class="rows">
+          <div class="cell">
+            <span class="cap">PRIMARY 128 / 48 / 24</span>
+            <div class="marks">
+              <svg class="mk" width="128" height="128" viewBox="0 0 64 64"><use href="#c4" /></svg>
+              <svg class="mk" width="48" height="48" viewBox="0 0 64 64"><use href="#c4" /></svg>
+              <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c4" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">FAVICON 32 / 16</span>
+            <div class="pxrow">
+              <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c4f" /></svg>
+              <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c4f" /></svg>
+            </div>
+          </div>
+
+          <div class="cell">
+            <span class="cap">LOCKUP</span>
+            <div class="lock">
+              <svg class="mk" width="34" height="34" viewBox="0 0 64 64"><use href="#c4" /></svg>
+              <span class="word">nodechess</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="whitebar">
+          <div class="marks">
+            <svg class="mk" width="64" height="64" viewBox="0 0 64 64"><use href="#c4" /></svg>
+            <svg class="mk" width="24" height="24" viewBox="0 0 64 64"><use href="#c4" /></svg>
+          </div>
+          <div class="pxrow">
+            <svg class="mk" width="32" height="32" viewBox="0 0 16 16"><use href="#c4f" /></svg>
+            <svg class="mk" width="16" height="16" viewBox="0 0 16 16"><use href="#c4f" /></svg>
+          </div>
+          <div class="lock lock-sm">
+            <svg class="mk" width="22" height="22" viewBox="0 0 64 64"><use href="#c4" /></svg>
+            <span class="word">nodechess</span>
+          </div>
+        </div>
+
+        <div class="why">
+          <div>
+            <b>Idea.</b> A solid board stood on its corner, the way you draw a board when you care
+            about its diagonals, with everything cut out rather than drawn on. Fine cuts divide it
+            into addresses. One heavy cut runs the addresses as a staircase, forks once, and leaves
+            by three different edges, notching the silhouette so the shape is never a badge. The
+            widened cuts at the turns are the peers the route passed through. The mark is entirely
+            what was taken away.
+          </div>
+          <div>
+            <b>Favicon.</b> Removed the address lattice and the widened turns, keeping the diamond
+            and a single straightened channel with its fork, so the notched silhouette still reads.
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

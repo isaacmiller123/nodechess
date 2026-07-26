@@ -1,67 +1,88 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { JSX } from 'react'
-import {
-  CalendarDays,
-  Flame,
-  Trophy,
-  BarChart3,
-  Check,
-  X,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  RotateCcw,
-  History,
-  Sparkles,
-  Target,
-  PartyPopper
-} from 'lucide-react'
-import { Board } from '../../../board/Board'
-import { pieceSetClass } from '../../../board/pieceSets'
-import { isWebBuild } from '../../../platform'
-import { useSettings } from '../../../state/settings'
-// Shared 3-stage hint UI from the classic trainer (read-only imports). The
-// same ladder + board overlay Train and Custom use, for one consistent look.
-import { HintLadder } from '../HintLadder'
-import { HintArrow } from '../HintArrow'
 import type {
   DailyPuzzle,
   DailyResult,
   DailyStreak,
-  PuzzleStats,
   PuzzleHistoryRow,
-  PuzzleMode
+  PuzzleMode,
+  PuzzleStats
 } from '@shared/types'
+import { Board } from '../../../board/Board'
+import { pieceSetClass } from '../../../board/pieceSets'
+import { useSettings } from '../../../state/settings'
+import { HintArrow } from '../HintArrow'
+import { HintButton } from '../HintButton'
+import { PuzzleTask, type TaskState } from '../PuzzleTask'
+import { dateToYmd, formatAgo, formatDuration, formatYmd, formatYmdShort, ymdToDate } from '../format'
 import { useDailySolver, type DailyOutcome } from './daily-session'
-import './daily.css'
 
 // ============================================================================
-// SLICE C: Daily puzzle + streaks + stats/history.  ★ OWNED BY THE DAILY BUILDER ★
+// DAILY. One puzzle a day, the same one for everybody, drawn deterministically
+// from a fixed rating window. v1 draws the lobby: today's row, the week, what
+// the puzzle is, and the days that got away. The board itself it never drew, so
+// it is built from the same parts Train uses.
 //
-// One mode screen with three sub-tabs:
-//   1. Daily:    the SAME puzzle for everyone on a given UTC day; solve it on a
-//                board (lead-in -> solve -> auto-reply via useDailySolver), persist
-//                the outcome (recordDaily + a mode:'daily' attempt that moves the
-//                Glicko ladder), and show a "come back tomorrow" state once done.
-//   2. Streak:   current / best consecutive-solved days + a calendar strip.
-//   3. Stats:    overall accuracy/solved, per-theme accuracy bars, a daily
-//                sparkline, and a paginated solve-history list.
+// The rating window is real (daily.repo draws from 1200 to 1800), the streak is
+// real, and the missed list only counts days that were never opened: a day you
+// tried and failed is not a day you missed.
 // ============================================================================
 
-type SubTab = 'daily' | 'streak' | 'stats'
+const WEEK_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+/** The window the daily is drawn from (daily.repo DAILY_RATING_LO/HI). */
+const DAILY_BAND = '1200 to 1800'
+const MISSED_SHOWN = 6
+const THEMES_SHOWN = 8
+/** One page of solve history. The store is asked for exactly this many, so a
+ *  full page is also how we know another one probably exists. */
+const HISTORY_PAGE = 10
 
-const SUBTABS: { key: SubTab; label: string; Icon: typeof CalendarDays }[] = [
-  { key: 'daily', label: 'Daily', Icon: CalendarDays },
-  { key: 'streak', label: 'Streak', Icon: Flame },
-  { key: 'stats', label: 'Stats', Icon: BarChart3 }
+const HISTORY_FILTERS: { key: PuzzleMode | 'all'; label: string }[] = [
+  { key: 'all', label: 'all' },
+  { key: 'train', label: 'train' },
+  { key: 'custom', label: 'custom' },
+  { key: 'rush', label: 'rush' },
+  { key: 'daily', label: 'daily' }
 ]
 
-export default function DailyMode(): JSX.Element {
-  const apiReady = typeof window !== 'undefined' && !!window.api
-  const [tab, setTab] = useState<SubTab>('daily')
+type Load = 'loading' | 'ready' | 'empty' | 'error'
 
-  // The streak is lifted here so solving the daily updates the Streak tab too.
+export default function DailyMode({
+  onRecorded
+}: {
+  /** Today's daily has just been recorded, solved or missed. The page above
+   *  owns the readout line about it. */
+  onRecorded?: () => void
+}): JSX.Element {
+  const { settings } = useSettings()
+  const [load, setLoad] = useState<Load>('loading')
+  const [day, setDay] = useState<DailyPuzzle | null>(null)
+  const [result, setResult] = useState<DailyResult | null>(null)
   const [streak, setStreak] = useState<DailyStreak | null>(null)
+  const [attempted, setAttempted] = useState<Set<string>>(new Set())
+  const [stats, setStats] = useState<PuzzleStats | null>(null)
+  const [open, setOpen] = useState(false)
+  const [replaying, setReplaying] = useState(false)
+  const apiReady = typeof window !== 'undefined' && !!window.api
+
+  const todayKey = useMemo(() => dateToYmd(new Date()), [])
+
+  const loadDay = useCallback((ymd?: string) => {
+    const api = window.api?.puzzles
+    if (!api) {
+      setLoad('empty')
+      return
+    }
+    setLoad('loading')
+    void api
+      .daily(ymd ? { ymd } : undefined)
+      .then((d) => {
+        setDay(d)
+        setResult(d.result)
+        setLoad(d.puzzle ? 'ready' : 'empty')
+      })
+      .catch(() => setLoad('error'))
+  }, [])
 
   const refreshStreak = useCallback(() => {
     const api = window.api?.puzzles
@@ -70,134 +91,68 @@ export default function DailyMode(): JSX.Element {
       .dailyStreak()
       .then((r) => setStreak(r.streak))
       .catch(() => {
-        /* streak optional */
+        /* the week strip stays blank */
       })
   }, [])
 
   useEffect(() => {
+    loadDay()
     refreshStreak()
-  }, [refreshStreak])
-
-  return (
-    <div className="daily-mode">
-      <nav className="daily-subtabs" aria-label="Daily sections">
-        {SUBTABS.map(({ key, label, Icon }) => (
-          <button
-            key={key}
-            type="button"
-            className={`daily-subtab${tab === key ? ' is-active' : ''}`}
-            aria-pressed={tab === key}
-            onClick={() => setTab(key)}
-          >
-            <Icon size={15} aria-hidden />
-            <span>{label}</span>
-            {key === 'streak' && streak && streak.current > 0 && (
-              <span className="daily-subtab-badge">{streak.current}</span>
-            )}
-          </button>
-        ))}
-      </nav>
-
-      {!apiReady && (
-        <div className="panel pad muted small daily-preview-note">
-          Preview mode. Connect to the desktop app to load the daily puzzle, your
-          streak, and stats.
-        </div>
-      )}
-
-      {tab === 'daily' && <DailyTab onSolved={refreshStreak} streak={streak} />}
-      {tab === 'streak' && <StreakSection streak={streak} onRefresh={refreshStreak} />}
-      {tab === 'stats' && <StatsSection />}
-    </div>
-  )
-}
-
-// ============================================================================
-// 1. DAILY TAB: solve the day's puzzle, or "come back tomorrow" if done.
-// ============================================================================
-
-type DailyLoad = 'loading' | 'ready' | 'empty' | 'error'
-
-function DailyTab({
-  onSolved,
-  streak
-}: {
-  onSolved: () => void
-  streak: DailyStreak | null
-}): JSX.Element {
-  const { settings } = useSettings()
-  const [load, setLoad] = useState<DailyLoad>('loading')
-  const [daily, setDaily] = useState<DailyPuzzle | null>(null)
-  // The locally-recorded result (set on solve/fail or read from the server).
-  const [result, setResult] = useState<DailyResult | null>(null)
-
-  // Load today's daily once.
-  useEffect(() => {
-    let cancelled = false
     const api = window.api?.puzzles
-    if (!api) {
-      setLoad('empty')
-      return
-    }
-    setLoad('loading')
+    if (!api) return
+    // Which past days were actually opened. DailyStreak.recent reports a failed
+    // day and a day nobody looked at exactly the same way, and those are not the
+    // same thing, so the attempts are what tell them apart.
     void api
-      .daily()
-      .then((d) => {
-        if (cancelled) return
-        setDaily(d)
-        setResult(d.result)
-        setLoad(d.puzzle ? 'ready' : 'empty')
+      .history({ mode: 'daily', limit: 200 })
+      .then((r) => {
+        const rows = (r?.rows ?? []) as PuzzleHistoryRow[]
+        setAttempted(new Set(rows.map((x) => dateToYmd(new Date(x.createdAt)))))
       })
       .catch(() => {
-        if (!cancelled) setLoad('error')
+        /* then the missed list stays conservative and shows nothing */
       })
-    return () => {
-      cancelled = true
-    }
-  }, [])
+    void api
+      .stats()
+      .then((r) => setStats(r ?? null))
+      .catch(() => {
+        /* the solving panel simply stays out */
+      })
+  }, [loadDay, refreshStreak])
 
-  const puzzle = daily?.puzzle ?? null
-  const [replaying, setReplaying] = useState(false)
-  // Interactive only when today's daily is still open (no result) or the user
-  // chose to replay for practice. When a result already exists we still hand the
-  // puzzle to the solver so the board shows the real position, but the board is
-  // rendered view-only (below), which also means onUserMove can never fire and
-  // re-trigger persistence.
-  const interactive = !result || replaying
+  const puzzle = day?.puzzle ?? null
+  const isToday = day?.ymd === todayKey
 
   const onComplete = useCallback(
     (o: DailyOutcome) => {
+      if (!day || !puzzle || replaying) return
       const api = window.api?.puzzles
-      if (!daily || !puzzle) return
-      // While replaying for practice we do not re-persist or re-rate.
-      if (replaying) return
-
-      const newResult: DailyResult = {
-        ymd: daily.ymd,
+      const fresh: DailyResult = {
+        ymd: day.ymd,
         puzzleId: puzzle.id,
         solved: o.solved,
         firstTry: o.firstTry,
         ms: o.ms
       }
-      setResult(newResult)
-
+      setResult(fresh)
+      if (day.ymd === todayKey) onRecorded?.()
       if (!api) return
-      // Persist the daily outcome (drives the streak)…
       void api
         .recordDaily({
-          ymd: daily.ymd,
+          ymd: day.ymd,
           puzzleId: puzzle.id,
           solved: o.solved,
           firstTry: o.firstTry,
           ms: o.ms
         })
-        .then(() => onSolved())
-        .catch(() => {
-          /* recording failed; UI already reflects the local result */
+        .then(() => {
+          refreshStreak()
+          setAttempted((prev) => new Set(prev).add(day.ymd))
         })
-      // …and log a mode:'daily' attempt so the daily solve moves the Glicko ladder
-      // (and feeds the Stats tab). This path DOES update the rating (unlike rush).
-      // Tag the primary theme so the daily feeds "Accuracy by theme" too.
+        .catch(() => {
+          /* the local result already reflects it */
+        })
+      // A daily is one of the two modes that move the ladder.
       void api
         .attempt({
           puzzleId: puzzle.id,
@@ -208,541 +163,458 @@ function DailyTab({
           theme: puzzle.themes[0]
         })
         .catch(() => {
-          /* rating update is best-effort */
+          /* rating update is best effort */
         })
     },
-    [daily, puzzle, replaying, onSolved]
+    [day, puzzle, replaying, refreshStreak, todayKey, onRecorded]
   )
 
-  const solver = useDailySolver(puzzle, onComplete)
+  // The solver only gets the puzzle once the board is open, so nothing animates
+  // or sounds behind the lobby.
+  const solver = useDailySolver(open && puzzle ? puzzle : null, onComplete)
 
-  const startReplay = useCallback(() => {
-    setReplaying(true)
-    // Restart the solver too (same restart the Retry button uses). Otherwise it
-    // stays in 'solved'/'failed' and the board remains view-only on the final
-    // position. While `replaying` is set, onComplete skips re-persisting.
-    solver.retry()
-  }, [solver])
-
-  // Keyboard: h bumps the hint ladder (parity with Train/Custom). Guarded on
-  // `interactive` so a finished, view-only daily can't be marked assisted by a
-  // stray keypress, and on settings.hintsEnabled (hints hidden app-wide).
   const hintsEnabled = settings.hintsEnabled
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if (e.key === 'h' && interactive && hintsEnabled && solver.phase === 'solving')
-        solver.bumpHint()
+      if (!open) return
+      if (e.key === 'Escape') setOpen(false)
+      else if (e.key === 'h' && hintsEnabled && solver.phase === 'solving') solver.bumpHint()
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [interactive, hintsEnabled, solver])
+  }, [open, hintsEnabled, solver])
 
-  // ---- Render branches (all hooks above; safe to early-return below) ----
+  // The day you first opened a daily. A day before that is not a day you
+  // missed, it is a day before you started, and nothing on this screen may
+  // mark it against you. Null until you have opened one at all.
+  const started = useMemo(() => {
+    let first: string | null = null
+    for (const ymd of attempted) if (first === null || ymd < first) first = ymd
+    return first
+  }, [attempted])
 
-  if (load === 'loading') {
-    return (
-      <div className="daily-board-layout">
-        <div className="board-area">
-          <div className="board-stage">
-            <div
-              className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
-            >
-              <div className="puzzle-skeleton" aria-hidden />
-            </div>
-          </div>
-        </div>
-        <aside className="daily-side">
-          <div className="panel pad daily-loading muted">Loading today’s puzzle…</div>
-        </aside>
-      </div>
-    )
+  const openDay = (ymd: string): void => {
+    setReplaying(false)
+    setOpen(true)
+    loadDay(ymd)
   }
 
-  if (load === 'empty' || load === 'error' || !daily) {
-    return (
-      <div className="panel pad daily-empty">
-        <CalendarDays size={26} aria-hidden />
-        <h3>{load === 'error' ? 'Could not load the daily' : 'No daily puzzle yet'}</h3>
-        <p className="muted">
-          {/* Web: there's no dataset import. The puzzle DB lives server-side. */}
-          {load === 'error'
-            ? 'Something went wrong fetching today’s puzzle. Try again shortly.'
-            : isWebBuild
-              ? 'The daily puzzle is coming online soon.'
-              : 'The puzzle library isn’t available yet. Import the datasets to unlock the daily puzzle.'}
-        </p>
-      </div>
-    )
+  const openToday = (): void => {
+    // An already-recorded day replays as practice: it is not persisted twice
+    // and it cannot turn a miss into a solve.
+    setReplaying(result !== null)
+    setOpen(true)
   }
 
-  const showDone = result && !replaying
+  if (open) {
+    return (
+      <DailyBoard
+        s={solver}
+        day={day}
+        result={result}
+        replaying={replaying}
+        load={load}
+        onBack={() => {
+          setOpen(false)
+          // Leaving an old daily puts today back in front of you.
+          if (day && day.ymd !== todayKey) loadDay()
+        }}
+        onReplay={() => {
+          setReplaying(true)
+          solver.retry()
+        }}
+      />
+    )
+  }
 
   return (
-    <div className="daily-board-layout">
-      <div className="board-area">
-        <div className="board-stage">
-          <div
-            className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
-          >
-            <Board
-              fen={solver.fen}
-              orientation={solver.orientation}
-              turnColor={solver.turn}
-              dests={solver.dests}
-              movableColor={solver.orientation}
-              viewOnly={!interactive || solver.phase !== 'solving'}
-              lastMove={solver.lastMove}
-              check={solver.check}
-              showDests={settings.showLegal}
-              coordinates={settings.coordinates}
-              animation={settings.animation}
-              onMove={solver.onUserMove}
-              syncNonce={solver.nonce}
-            />
-            {hintsEnabled && (
-              <HintArrow
-                from={solver.hintFrom}
-                to={solver.hintTo}
-                stage={solver.hintStage}
-                orientation={solver.orientation}
-              />
-            )}
+    <div className="lesson">
+      <div className="lesson-main">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">{isToday ? 'Today' : 'That day'}</h2>
+            {day && <span className="sec-count">{formatYmd(day.ymd)}</span>}
           </div>
-        </div>
+
+          {load === 'ready' && puzzle ? (
+            <div className="startrow is-first">
+              <div>
+                <div className="startrow-name">
+                  One puzzle <span className="tag">{tagFor(result)}</span>
+                </div>
+                <div className="startrow-spec">
+                  {isToday
+                    ? 'The same position everybody gets today. One try, no clock.'
+                    : 'The same position everybody got that day. One try, no clock.'}
+                </div>
+              </div>
+              <button className="btn is-primary" type="button" onClick={openToday}>
+                Open it
+              </button>
+            </div>
+          ) : (
+            <div className="well">
+              <div className="empty">
+                <p className="empty-line">
+                  {load === 'loading'
+                    ? 'Getting the day.'
+                    : load === 'error'
+                      ? 'That day would not load.'
+                      : 'No puzzle for that day.'}
+                </p>
+                <p className="empty-line">
+                  {apiReady
+                    ? 'The puzzle set is what the daily is drawn from.'
+                    : 'The desktop app is where the daily lives.'}
+                </p>
+              </div>
+            </div>
+          )}
+
+        </section>
+
+        <ThisWeek streak={streak} todayKey={todayKey} started={started} />
+
+        {stats && stats.totalAttempts > 0 && <YourSolving stats={stats} />}
+
+        <SolveHistory />
       </div>
 
-      <aside className="daily-side">
-        <DailyHeader ymd={daily.ymd} rating={puzzle?.rating ?? null} streak={streak} />
-
-        {showDone ? (
-          <DailyDoneCard result={result} streak={streak} onReplay={startReplay} />
-        ) : (
-          <DailySolvePanel solver={solver} replaying={replaying} />
-        )}
-
-        {puzzle?.themes && puzzle.themes.length > 0 && (showDone || solver.phase === 'solved') && (
-          <div className="panel pad daily-themes">
-            <div className="daily-themes-label">Themes</div>
-            <div className="daily-theme-chips">
-              {puzzle.themes.slice(0, 8).map((t) => (
-                <span key={t} className="daily-theme-chip">
-                  {prettyTheme(t)}
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Today&apos;s puzzle</h2>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              {/* v1 prints one number here: the puzzle's own rating. That is a
+                  real column on the row, so it is the number. Before the day
+                  has loaded there is no rating to print, and the window it will
+                  be drawn from is the only true thing left to say. */}
+              <div className="fact">
+                <span className="lbl">Band</span>
+                <span className="fact-value">
+                  {puzzle ? (
+                    puzzle.rating
+                  ) : (
+                    <>
+                      {DAILY_BAND}
+                      <span className="fact-note">the window every daily is drawn from</span>
+                    </>
+                  )}
                 </span>
-              ))}
+              </div>
+              <div className="fact">
+                <span className="lbl">Themes</span>
+                <span className="fact-value">
+                  {result && puzzle?.themes.length
+                    ? puzzle.themes.join(', ')
+                    : 'shown after you solve it'}
+                </span>
+              </div>
+              {result && (
+                <div className="fact">
+                  <span className="lbl">Your try</span>
+                  <span className="fact-value">
+                    {result.solved ? 'solved' : 'missed'}
+                    {result.solved && result.firstTry && (
+                      <span className="fact-note">first try, no help</span>
+                    )}
+                  </span>
+                </div>
+              )}
+              {result !== null && result.ms !== null && result.ms > 0 && (
+                <div className="fact">
+                  <span className="lbl">Took you</span>
+                  <span className="fact-value">{formatDuration(result.ms)}</span>
+                </div>
+              )}
+              <div className="fact">
+                <span className="lbl">Solved by</span>
+                <span className="fact-value">
+                  not counted
+                  <span className="fact-note">no network, so no global tally</span>
+                </span>
+              </div>
             </div>
           </div>
-        )}
+        </section>
+
+        <MissedDays
+          streak={streak}
+          attempted={attempted}
+          started={started}
+          todayKey={todayKey}
+          onOpen={openDay}
+        />
       </aside>
     </div>
   )
 }
 
-function DailyHeader({
-  ymd,
-  rating,
-  streak
-}: {
-  ymd: string
-  rating: number | null
-  streak: DailyStreak | null
-}): JSX.Element {
-  return (
-    <div className="panel pad daily-header">
-      <div className="daily-header-main">
-        <div className="daily-header-eyebrow">
-          <CalendarDays size={14} aria-hidden /> Daily puzzle
-        </div>
-        <div className="daily-header-date">{formatYmdLong(ymd)}</div>
-      </div>
-      <div className="daily-header-meta">
-        {rating != null && (
-          <span className="daily-pill" title="Puzzle rating">
-            <Target size={13} aria-hidden /> {rating}
-          </span>
-        )}
-        {streak && streak.current > 0 && (
-          <span className="daily-pill daily-pill-flame" title="Current streak">
-            <Flame size={13} aria-hidden /> {streak.current}
-          </span>
-        )}
-      </div>
-    </div>
-  )
+function tagFor(result: DailyResult | null): string {
+  if (!result) return 'not started'
+  return result.solved ? 'solved' : 'missed'
 }
 
-function DailySolvePanel({
-  solver,
-  replaying
-}: {
-  solver: ReturnType<typeof useDailySolver>
-  replaying: boolean
-}): JSX.Element {
-  const { settings } = useSettings()
-  const { phase } = solver
-  const solving = phase === 'solving' || phase === 'leadin'
+// ----------------------------------------------------------------- week ----
 
-  let title: string
-  let subtitle: string
-  let tone: 'neutral' | 'solved' | 'failed' = 'neutral'
-  if (phase === 'solved') {
-    title = 'Solved!'
-    subtitle = replaying ? 'Nice practice solve.' : 'You’ve cracked today’s puzzle.'
-    tone = 'solved'
-  } else if (phase === 'failed') {
-    title = 'Not today'
-    subtitle = solver.correctSan ? `The move was ${solver.correctSan}.` : 'That wasn’t the move.'
-    tone = 'failed'
-  } else {
-    title = `Find the best move for ${solver.orientation === 'white' ? 'White' : 'Black'}`
-    subtitle = replaying ? 'Practice run. Solve it again.' : 'One shot. Make it count.'
-  }
-
-  return (
-    <div className="daily-solve">
-      <div className={`panel pad daily-prompt is-${tone}`}>
-        <div className="daily-prompt-title">{title}</div>
-        <div className="daily-prompt-sub">{subtitle}</div>
-      </div>
-
-      <div className="panel pad daily-controls">
-        {/* Shared 3-stage ladder (piece -> destination -> reveal), as in Train.
-            Using it clears today's "first try" flag but never the streak.
-            Hidden entirely when hints are disabled in Settings. */}
-        {settings.hintsEnabled && (
-          <HintLadder
-            stage={solver.hintStage}
-            disabled={phase !== 'solving'}
-            onHint={solver.bumpHint}
-            revealSan={solver.revealSan}
-          />
-        )}
-        <button
-          type="button"
-          className="btn ghost"
-          onClick={solver.retry}
-          disabled={solving}
-          title="Replay this puzzle"
-        >
-          <RotateCcw size={15} aria-hidden /> Retry
-        </button>
-      </div>
-    </div>
-  )
-}
-
-function DailyDoneCard({
-  result,
+function ThisWeek({
   streak,
-  onReplay
-}: {
-  result: DailyResult
-  streak: DailyStreak | null
-  onReplay: () => void
-}): JSX.Element {
-  return (
-    <div className={`panel daily-done is-${result.solved ? 'solved' : 'missed'}`}>
-      <div className="daily-done-head">
-        <span className="daily-done-icon" aria-hidden>
-          {result.solved ? <PartyPopper size={22} /> : <X size={22} />}
-        </span>
-        <div>
-          <div className="daily-done-title">
-            {result.solved ? 'Daily complete' : 'Daily attempted'}
-          </div>
-          <div className="daily-done-sub muted">
-            {result.solved
-              ? result.firstTry
-                ? 'Solved first try. Flawless.'
-                : 'Solved. Come back tomorrow for the next one.'
-              : 'You’ll get the next one. Come back tomorrow.'}
-          </div>
-        </div>
-      </div>
-
-      <div className="daily-done-stats">
-        <div className="daily-done-stat">
-          <span className="daily-done-stat-label">Result</span>
-          <span className={`daily-done-stat-val ${result.solved ? 'is-good' : 'is-bad'}`}>
-            {result.solved ? 'Solved' : 'Missed'}
-          </span>
-        </div>
-        <div className="daily-done-stat">
-          <span className="daily-done-stat-label">First try</span>
-          <span className="daily-done-stat-val">{result.firstTry ? 'Yes' : 'No'}</span>
-        </div>
-        <div className="daily-done-stat">
-          <span className="daily-done-stat-label">Time</span>
-          <span className="daily-done-stat-val">{formatMs(result.ms)}</span>
-        </div>
-        <div className="daily-done-stat">
-          <span className="daily-done-stat-label">Streak</span>
-          <span className="daily-done-stat-val daily-done-streak">
-            <Flame size={13} aria-hidden /> {streak?.current ?? 0}
-          </span>
-        </div>
-      </div>
-
-      <button type="button" className="btn ghost daily-replay" onClick={onReplay}>
-        <RotateCcw size={15} aria-hidden /> Replay for practice
-      </button>
-    </div>
-  )
-}
-
-// ============================================================================
-// 2. STREAK SECTION: current / best + calendar strip.
-// ============================================================================
-
-function StreakSection({
-  streak,
-  onRefresh
+  todayKey,
+  started
 }: {
   streak: DailyStreak | null
-  onRefresh: () => void
+  todayKey: string
+  /** The first day this player ever opened a daily, or null for never. */
+  started: string | null
 }): JSX.Element {
-  useEffect(() => {
-    onRefresh()
-  }, [onRefresh])
+  const solvedDays = useMemo(() => {
+    const set = new Set<string>()
+    for (const r of streak?.recent ?? []) if (r.solved) set.add(r.ymd)
+    return set
+  }, [streak])
 
-  if (!streak) {
-    return <div className="panel pad muted daily-loading">Loading your streak…</div>
-  }
+  // Monday first, as v1 labels it.
+  const week = useMemo(() => {
+    const today = ymdToDate(todayKey) ?? new Date()
+    const monday = new Date(today)
+    const shift = (today.getDay() + 6) % 7
+    monday.setDate(today.getDate() - shift)
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday)
+      d.setDate(monday.getDate() + i)
+      return dateToYmd(d)
+    })
+  }, [todayKey])
 
-  const total = streak.recent.filter((d) => d.solved).length
-
-  return (
-    <div className="daily-streak-view">
-      <div className="daily-stat-cards">
-        <StatCard
-          icon={<Flame size={18} aria-hidden />}
-          tone="flame"
-          label="Current streak"
-          value={String(streak.current)}
-          unit={streak.current === 1 ? 'day' : 'days'}
-        />
-        <StatCard
-          icon={<Trophy size={18} aria-hidden />}
-          tone="gold"
-          label="Best streak"
-          value={String(streak.best)}
-          unit={streak.best === 1 ? 'day' : 'days'}
-        />
-        <StatCard
-          icon={streak.todaySolved ? <Check size={18} aria-hidden /> : <Clock size={18} aria-hidden />}
-          tone={streak.todaySolved ? 'good' : 'neutral'}
-          label="Today"
-          value={streak.todaySolved ? 'Done' : 'Open'}
-          unit={streak.todaySolved ? '' : 'go solve it'}
-        />
-      </div>
-
-      <div className="panel daily-calendar-panel">
-        <div className="panel-head">
-          <span className="panel-title">Last 5 weeks</span>
-          <span className="muted small">{total} solved</span>
-        </div>
-        <div className="daily-calendar pad">
-          <DailyCalendar recent={streak.recent} />
-        </div>
-        <div className="daily-calendar-legend pad">
-          <span className="daily-legend-item">
-            <span className="daily-cell daily-cell-solved daily-legend-swatch" /> Solved
-          </span>
-          <span className="daily-legend-item">
-            <span className="daily-cell daily-cell-missed daily-legend-swatch" /> Missed / skipped
-          </span>
-          <span className="daily-legend-item">
-            <span className="daily-cell daily-cell-today daily-legend-swatch" /> Today
-          </span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function DailyCalendar({ recent }: { recent: { ymd: string; solved: boolean }[] }): JSX.Element {
-  // `recent` is most-recent first; show oldest -> newest left to right.
-  const days = useMemo(() => [...recent].reverse(), [recent])
-  const todayKey = days.length ? days[days.length - 1].ymd : ''
+  const solvedThisWeek = week.filter((y) => solvedDays.has(y)).length
+  const last35 = streak?.recent.filter((r) => r.solved).length ?? 0
 
   return (
-    <div className="daily-calendar-grid">
-      {days.map((d) => {
-        const isToday = d.ymd === todayKey
-        const cls = d.solved
-          ? 'daily-cell-solved'
-          : isToday
-            ? 'daily-cell-today'
-            : 'daily-cell-missed'
-        return (
-          <div
-            key={d.ymd}
-            className={`daily-cell ${cls}${isToday ? ' is-today-ring' : ''}`}
-            title={`${formatYmdLong(d.ymd)}: ${d.solved ? 'solved' : isToday ? 'not yet' : 'missed'}`}
-          >
-            {d.solved && <Check size={11} aria-hidden />}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-// ============================================================================
-// 3. STATS SECTION: totals, per-theme bars, sparkline, paginated history.
-// ============================================================================
-
-const HISTORY_PAGE = 12
-
-function StatsSection(): JSX.Element {
-  const [stats, setStats] = useState<PuzzleStats | null>(null)
-  const [statsLoad, setStatsLoad] = useState<'loading' | 'ready' | 'error'>('loading')
-
-  useEffect(() => {
-    let cancelled = false
-    const api = window.api?.puzzles
-    if (!api) {
-      setStatsLoad('error')
-      return
-    }
-    void api
-      .stats()
-      .then((s) => {
-        if (cancelled) return
-        setStats(s)
-        setStatsLoad('ready')
-      })
-      .catch(() => {
-        if (!cancelled) setStatsLoad('error')
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  if (statsLoad === 'loading') {
-    return <div className="panel pad muted daily-loading">Crunching your numbers…</div>
-  }
-  if (statsLoad === 'error' || !stats) {
-    return (
-      <div className="panel pad daily-empty">
-        <BarChart3 size={26} aria-hidden />
-        <h3>No stats yet</h3>
-        <p className="muted">Solve some puzzles and your accuracy and history will show up here.</p>
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">This week</h2>
+        <span className="sec-count">streak {streak?.current ?? 0}</span>
       </div>
-    )
-  }
-
-  const hasData = stats.totalAttempts > 0
-
-  return (
-    <div className="daily-stats-view">
-      <div className="daily-stat-cards">
-        <StatCard
-          icon={<Target size={18} aria-hidden />}
-          tone="accent"
-          label="Accuracy"
-          value={hasData ? `${Math.round(stats.accuracy * 100)}%` : '·'}
-          unit={hasData ? `${stats.totalSolved}/${stats.totalAttempts}` : 'no attempts'}
-        />
-        <StatCard
-          icon={<Check size={18} aria-hidden />}
-          tone="good"
-          label="Solved"
-          value={String(stats.totalSolved)}
-          unit="puzzles"
-        />
-        <StatCard
-          icon={<Sparkles size={18} aria-hidden />}
-          tone="flame"
-          label="Best run"
-          value={String(stats.bestStreak)}
-          unit="in a row"
-        />
-      </div>
-
-      <div className="panel daily-spark-panel">
-        <div className="panel-head">
-          <span className="panel-title">Activity · 30 days</span>
-          <span className="muted small">{spark30Total(stats)} attempts</span>
-        </div>
-        <div className="pad">
-          <DailySparkline daily={stats.daily} />
-        </div>
-      </div>
-
-      <div className="panel daily-theme-panel">
-        <div className="panel-head">
-          <span className="panel-title">Accuracy by theme</span>
-          <span className="muted small">{stats.byTheme.length} themes</span>
-        </div>
-        {stats.byTheme.length === 0 ? (
-          <div className="pad muted small">
-            No themed attempts yet. Custom training and the daily tag their themes here.
-          </div>
-        ) : (
-          <div className="daily-theme-bars pad">
-            {stats.byTheme.map((t) => (
-              <div key={t.theme} className="daily-theme-row">
-                <div className="daily-theme-row-head">
-                  <span className="daily-theme-name" title={prettyTheme(t.theme)}>
-                    {prettyTheme(t.theme)}
-                  </span>
-                  <span className="daily-theme-acc">{Math.round(t.accuracy * 100)}%</span>
-                </div>
-                <div className="daily-bar-track">
-                  <div
-                    className={`daily-bar-fill ${accClass(t.accuracy)}`}
-                    style={{ width: `${Math.max(2, Math.round(t.accuracy * 100))}%` }}
-                  />
-                </div>
-                <div className="daily-theme-row-foot muted">
-                  {t.solved}/{t.attempts}
-                  {t.avgMs != null && <span> · {formatMs(t.avgMs)} avg</span>}
-                </div>
+      <div className="panel">
+        <div className="puz-week">
+          {week.map((ymd, i) => {
+            const solved = solvedDays.has(ymd)
+            const ahead = ymd > todayKey
+            // Only a day you were already playing can be a day you missed.
+            const missed =
+              !solved && !ahead && ymd !== todayKey && started !== null && ymd >= started
+            return (
+              <div
+                className={`puz-day${ymd === todayKey ? ' is-today' : ''}${ahead ? ' is-ahead' : ''}`}
+                key={ymd}
+              >
+                <span
+                  className={`puz-day-dot${solved ? ' is-solved' : missed ? ' is-missed' : ''}`}
+                  title={solved ? 'Solved' : ahead ? 'Not yet' : 'Not solved'}
+                />
+                <span className="lbl">{WEEK_LETTERS[i]}</span>
               </div>
-            ))}
+            )
+          })}
+        </div>
+        <div className="facts">
+          <div className="fact">
+            <span className="lbl">Solved this week</span>
+            <span className="fact-value">{solvedThisWeek} of 7</span>
           </div>
-        )}
+          <div className="fact">
+            <span className="lbl">Best streak</span>
+            <span className="fact-value">{streak?.best ?? 0}</span>
+          </div>
+          <div className="fact">
+            <span className="lbl">Last 35 days</span>
+            <span className="fact-value">{last35} of 35</span>
+          </div>
+        </div>
       </div>
-
-      <HistoryPanel />
-
-      {!hasData && (
-        <p className="muted small daily-stats-hint">
-          Stats span every mode: Train, Custom, Rush, and Daily.
-        </p>
-      )}
-    </div>
+    </section>
   )
 }
 
-const HISTORY_MODES: { key: PuzzleMode | 'all'; label: string }[] = [
-  { key: 'all', label: 'All' },
-  { key: 'train', label: 'Train' },
-  { key: 'custom', label: 'Custom' },
-  { key: 'rush', label: 'Rush' },
-  { key: 'daily', label: 'Daily' }
-]
+// --------------------------------------------------------------- missed ----
 
-function HistoryPanel(): JSX.Element {
+function MissedDays({
+  streak,
+  attempted,
+  started,
+  todayKey,
+  onOpen
+}: {
+  streak: DailyStreak | null
+  attempted: Set<string>
+  /** A day before your first daily is not a day you missed: it is a day before
+   *  you started, so the window opens there and never earlier. */
+  started: string | null
+  todayKey: string
+  onOpen: (ymd: string) => void
+}): JSX.Element {
+  const missed = (streak?.recent ?? [])
+    .filter(
+      (r) => started !== null && r.ymd > started && r.ymd < todayKey && !r.solved && !attempted.has(r.ymd)
+    )
+    .slice(0, MISSED_SHOWN)
+
+  return (
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">Missed days</h2>
+        {missed.length > 0 && <span className="sec-count">{missed.length}</span>}
+      </div>
+      {missed.length === 0 ? (
+        <div className="well">
+          <div className="empty">
+            <p className="empty-line">Nothing missed yet.</p>
+            <p className="empty-line">Old dailies stay open, so a skipped day is still there.</p>
+          </div>
+        </div>
+      ) : (
+        <div className="panel">
+          {missed.map((d) => (
+            <button className="go" type="button" key={d.ymd} onClick={() => onOpen(d.ymd)}>
+              <span>
+                <span className="go-name">{formatYmdShort(d.ymd)}</span>
+                <span className="go-sub">never opened</span>
+              </span>
+              <svg className="icon go-arrow" aria-hidden focusable="false">
+                <use href="#i-arrow" />
+              </svg>
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
+// -------------------------------------------------------------- solving ----
+
+function YourSolving({ stats }: { stats: PuzzleStats }): JSX.Element {
+  const themes = stats.byTheme.slice(0, THEMES_SHOWN)
+  // The day buckets the store keeps, oldest first. Every column is a real day
+  // and an empty day draws nothing rather than a floor.
+  const days = stats.daily
+  const busiest = Math.max(1, ...days.map((d) => d.attempts))
+  const windowAttempts = days.reduce((sum, d) => sum + d.attempts, 0)
+
+  return (
+    <>
+      <section className="sec">
+        <div className="sec-head">
+          <h2 className="lbl">Your solving</h2>
+          <span className="sec-count">every mode</span>
+        </div>
+        <div className="panel">
+          {days.length > 0 && (
+            <div className="puz-spark" aria-label={`Attempts over the last ${days.length} days`}>
+              {days.map((d) => (
+                <span
+                  className="puz-sparkcol"
+                  key={d.ymd}
+                  title={`${d.ymd}: ${d.solved} of ${d.attempts}`}
+                >
+                  <span
+                    className={`puz-sparkbar${d.attempts === 0 ? ' is-idle' : d.solved * 2 >= d.attempts ? ' is-good' : ' is-poor'}`}
+                    style={{
+                      height: d.attempts === 0 ? '2px' : `${Math.max(12, (d.attempts / busiest) * 100)}%`
+                    }}
+                  />
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="facts">
+            <div className="fact">
+              <span className="lbl">Solved</span>
+              <span className="fact-value">
+                {stats.totalSolved} of {stats.totalAttempts}
+              </span>
+            </div>
+            <div className="fact">
+              <span className="lbl">Accuracy</span>
+              <span className="fact-value">{Math.round(stats.accuracy * 100)}%</span>
+            </div>
+            <div className="fact">
+              <span className="lbl">Best run</span>
+              <span className="fact-value">{stats.bestStreak}</span>
+            </div>
+            {days.length > 0 && (
+              <div className="fact">
+                <span className="lbl">Last {days.length} days</span>
+                <span className="fact-value">
+                  {windowAttempts}
+                  <span className="fact-note">
+                    {windowAttempts === 1 ? 'attempt' : 'attempts'}
+                  </span>
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {themes.length > 0 && (
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">By theme</h2>
+            <span className="sec-count">
+              {themes.length} of {stats.byTheme.length}
+            </span>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              {themes.map((t) => (
+                <div className="fact" key={t.theme}>
+                  <span className="lbl">{t.theme}</span>
+                  <span className="fact-value">
+                    {Math.round(t.accuracy * 100)}%
+                    <span className="fact-note">
+                      {t.solved} of {t.attempts}
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
+  )
+}
+
+// -------------------------------------------------------------- history ----
+
+/**
+ * Every attempt the app kept, newest first, one mode at a time, a page at a
+ * time. Train and Daily move the ladder so their rows carry the points they
+ * moved it by; Custom and Rush record the attempt but not a rating, and their
+ * rows say nothing there rather than a zero.
+ */
+function SolveHistory(): JSX.Element {
   const [rows, setRows] = useState<PuzzleHistoryRow[]>([])
-  const [page, setPage] = useState(0)
   const [filter, setFilter] = useState<PuzzleMode | 'all'>('all')
-  const [loading, setLoading] = useState(true)
-  // Whether another page likely exists (we fetched a full page).
-  const [hasMore, setHasMore] = useState(false)
+  const [page, setPage] = useState(0)
+  const [more, setMore] = useState(false)
+  const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading')
+  // Only the newest request may write: switching filter mid-flight otherwise
+  // lands the old page under the new heading.
   const reqRef = useRef(0)
 
   useEffect(() => {
     const api = window.api?.puzzles
     if (!api) {
-      setLoading(false)
+      setState('error')
       return
     }
-    const myReq = ++reqRef.current
-    setLoading(true)
+    const mine = ++reqRef.current
+    setState('loading')
     void api
       .history({
         limit: HISTORY_PAGE,
@@ -750,236 +622,246 @@ function HistoryPanel(): JSX.Element {
         mode: filter === 'all' ? undefined : filter
       })
       .then((r) => {
-        if (reqRef.current !== myReq) return
-        setRows(r.rows)
-        setHasMore(r.rows.length === HISTORY_PAGE)
-        setLoading(false)
+        if (reqRef.current !== mine) return
+        const got = r?.rows ?? []
+        setRows(got)
+        setMore(got.length === HISTORY_PAGE)
+        setState('ready')
       })
       .catch(() => {
-        if (reqRef.current === myReq) setLoading(false)
+        if (reqRef.current === mine) setState('error')
       })
   }, [page, filter])
 
-  const changeFilter = (f: PuzzleMode | 'all'): void => {
-    setFilter(f)
+  const pick = (key: PuzzleMode | 'all'): void => {
+    setFilter(key)
     setPage(0)
   }
 
   return (
-    <div className="panel daily-history-panel">
-      <div className="panel-head daily-history-head">
-        <span className="panel-title">
-          <History size={14} aria-hidden /> History
-        </span>
-        <div className="daily-history-filters">
-          {HISTORY_MODES.map((m) => (
-            <button
-              key={m.key}
-              type="button"
-              className={`daily-filter${filter === m.key ? ' is-active' : ''}`}
-              aria-pressed={filter === m.key}
-              onClick={() => changeFilter(m.key)}
-            >
-              {m.label}
-            </button>
-          ))}
-        </div>
+    <section className="sec">
+      <div className="sec-head">
+        <h2 className="lbl">Every attempt</h2>
+        {rows.length > 0 && <span className="sec-count">page {page + 1}</span>}
       </div>
 
-      {loading ? (
-        <div className="pad muted small">Loading…</div>
-      ) : rows.length === 0 ? (
-        <div className="pad muted small">
-          {page === 0 ? 'No solves recorded yet.' : 'No more history.'}
+      <div className="chips">
+        {HISTORY_FILTERS.map((f) => (
+          <button
+            key={f.key}
+            className="chip"
+            type="button"
+            aria-pressed={filter === f.key}
+            onClick={() => pick(f.key)}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="well">
+        <div className="empty-head">
+          <span className="lbl">Puzzle</span>
+          <span className="lbl">Result</span>
+          <span className="lbl">Moved</span>
+          <span className="lbl">When</span>
         </div>
-      ) : (
-        <ul className="daily-history-list">
-          {rows.map((r) => (
-            <li key={r.id} className="daily-history-row">
-              <span
-                className={`daily-history-dot ${r.solved ? 'is-solved' : 'is-missed'}`}
-                aria-hidden
-              >
-                {r.solved ? <Check size={13} /> : <X size={13} />}
-              </span>
-              <span className="daily-history-main">
-                <span className="daily-history-puzzle">#{r.puzzleId}</span>
-                <span className="daily-history-meta muted">
-                  <span className={`daily-mode-tag mode-${r.mode}`}>{r.mode}</span>
-                  {r.theme && <span className="daily-history-theme">{prettyTheme(r.theme)}</span>}
-                </span>
-              </span>
-              <span className="daily-history-right">
-                {r.ratingAfter != null && r.ratingBefore != null && r.ratingAfter !== r.ratingBefore && (
-                  <span
-                    className={`daily-history-delta ${
-                      r.ratingAfter - r.ratingBefore >= 0 ? 'is-up' : 'is-down'
-                    }`}
-                  >
-                    {r.ratingAfter - r.ratingBefore >= 0 ? '+' : ''}
-                    {r.ratingAfter - r.ratingBefore}
+        {rows.length === 0 ? (
+          <div className="empty">
+            <p className="empty-line">
+              {state === 'loading'
+                ? 'Reading your attempts.'
+                : state === 'error'
+                  ? 'Your attempts could not be read.'
+                  : page > 0
+                    ? 'That is the end of it.'
+                    : filter === 'all'
+                      ? 'No attempt recorded yet.'
+                      : `No ${filter} attempt yet.`}
+            </p>
+            <p className="empty-line">
+              {page > 0 ? 'Newer goes back.' : 'Every mode records here, solved or not.'}
+            </p>
+          </div>
+        ) : (
+          rows.map((r) => {
+            const moved =
+              r.ratingAfter !== null && r.ratingBefore !== null
+                ? r.ratingAfter - r.ratingBefore
+                : null
+            return (
+              <div className="puz-runrow" key={r.id}>
+                <span>
+                  {r.puzzleId}
+                  <span className="go-sub">
+                    {r.mode}
+                    {r.theme ? `, ${r.theme}` : ''}
+                    {r.ms ? `, ${formatDuration(r.ms)}` : ''}
                   </span>
-                )}
-                <span className="daily-history-time muted">{formatMs(r.ms)}</span>
-                <span className="daily-history-when muted">{formatRelative(r.createdAt)}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="daily-history-pager pad">
-        <button
-          type="button"
-          className="btn ghost daily-pager-btn"
-          onClick={() => setPage((p) => Math.max(0, p - 1))}
-          disabled={page === 0 || loading}
-        >
-          <ChevronLeft size={15} aria-hidden /> Newer
-        </button>
-        <span className="muted small daily-pager-page">Page {page + 1}</span>
-        <button
-          type="button"
-          className="btn ghost daily-pager-btn"
-          onClick={() => setPage((p) => p + 1)}
-          disabled={!hasMore || loading}
-        >
-          Older <ChevronRight size={15} aria-hidden />
-        </button>
+                </span>
+                <span>{r.solved ? 'solved' : 'missed'}</span>
+                <span>{moved === null || moved === 0 ? '' : moved > 0 ? `+${moved}` : moved}</span>
+                <span className="puz-runrow-when">{formatAgo(r.createdAt)}</span>
+              </div>
+            )
+          })
+        )}
       </div>
-    </div>
+
+      {(page > 0 || more) && (
+        <div className="puz-pager">
+          <button
+            className="btn"
+            type="button"
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0 || state === 'loading'}
+          >
+            Newer
+          </button>
+          <button
+            className="btn"
+            type="button"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={!more || state === 'loading'}
+          >
+            Older
+          </button>
+        </div>
+      )}
+    </section>
   )
 }
 
-// ============================================================================
-// Small shared bits.
-// ============================================================================
+// ---------------------------------------------------------------- board ----
 
-function StatCard({
-  icon,
-  label,
-  value,
-  unit,
-  tone
+function DailyBoard({
+  s,
+  day,
+  result,
+  replaying,
+  load,
+  onBack,
+  onReplay
 }: {
-  icon: JSX.Element
-  label: string
-  value: string
-  unit?: string
-  tone: 'accent' | 'good' | 'flame' | 'gold' | 'neutral'
+  s: ReturnType<typeof useDailySolver>
+  day: DailyPuzzle | null
+  result: DailyResult | null
+  replaying: boolean
+  load: Load
+  onBack: () => void
+  onReplay: () => void
 }): JSX.Element {
-  return (
-    <div className={`daily-stat-card tone-${tone}`}>
-      <span className="daily-stat-icon" aria-hidden>
-        {icon}
-      </span>
-      <span className="daily-stat-label">{label}</span>
-      <span className="daily-stat-value">{value}</span>
-      {unit && <span className="daily-stat-unit muted">{unit}</span>}
-    </div>
-  )
-}
+  const { settings } = useSettings()
+  const hintsEnabled = settings.hintsEnabled
+  const isSolving = s.phase === 'solving'
+  const done = s.phase === 'solved' || s.phase === 'failed'
 
-function DailySparkline({
-  daily
-}: {
-  daily: { ymd: string; attempts: number; solved: number }[]
-}): JSX.Element {
-  const max = Math.max(1, ...daily.map((d) => d.attempts))
-  const anyData = daily.some((d) => d.attempts > 0)
+  const taskState: TaskState =
+    load === 'loading'
+      ? 'loading'
+      : s.phase === 'solved'
+        ? 'solved'
+        : s.phase === 'failed'
+          ? 'failed'
+          : 'solving'
+
   return (
-    <div className="daily-spark">
-      <div className="daily-spark-bars">
-        {daily.map((d) => {
-          const h = d.attempts > 0 ? Math.max(6, (d.attempts / max) * 100) : 0
-          const acc = d.attempts > 0 ? d.solved / d.attempts : 0
-          return (
-            <div
-              key={d.ymd}
-              className="daily-spark-col"
-              title={`${formatYmdLong(d.ymd)}: ${d.solved}/${d.attempts}`}
-            >
-              {d.attempts > 0 ? (
-                <div
-                  className={`daily-spark-bar ${accClass(acc)}`}
-                  style={{ height: `${h}%` }}
+    <div className="lesson">
+      <div className="lesson-main">
+        <div className="board-area">
+          <div className="board-stage">
+            <div className={`board-wrap ${pieceSetClass(settings.pieceSet)}`}>
+              <Board
+                fen={s.fen}
+                orientation={s.orientation}
+                turnColor={s.turn}
+                dests={s.dests}
+                movableColor={s.orientation}
+                viewOnly={!isSolving}
+                lastMove={s.lastMove}
+                check={s.check}
+                showDests={settings.showLegal}
+                coordinates={settings.coordinates}
+                animation={settings.animation}
+                onMove={s.onUserMove}
+                syncNonce={s.nonce}
+              />
+              {hintsEnabled && (
+                <HintArrow
+                  from={s.hintFrom}
+                  to={s.hintTo}
+                  stage={s.hintStage}
+                  orientation={s.orientation}
                 />
-              ) : (
-                <div className="daily-spark-bar is-empty" />
               )}
             </div>
-          )
-        })}
+          </div>
+
+          <div className="boardbar">
+            <div className="turn">
+              <span className={`turn-chip${s.turn === 'black' ? ' is-black' : ''}`} />
+              {s.turn === 'white' ? 'White to move' : 'Black to move'}
+            </div>
+            {isSolving && hintsEnabled && (
+              <HintButton
+                stage={s.hintStage}
+                disabled={!isSolving}
+                onHint={s.bumpHint}
+                revealSan={s.revealSan}
+              />
+            )}
+            {done && (
+              <button className="btn is-quiet" type="button" onClick={onReplay}>
+                Play it again
+              </button>
+            )}
+            <button className="btn is-quiet" type="button" onClick={onBack}>
+              Back
+            </button>
+          </div>
+        </div>
       </div>
-      {!anyData && <div className="daily-spark-empty muted small">No activity in the last 30 days.</div>}
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">This puzzle</h2>
+            {day && <span className="sec-count">{formatYmd(day.ymd)}</span>}
+          </div>
+
+          <PuzzleTask state={taskState} userColor={s.orientation} correctSan={s.correctSan} />
+
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Band</span>
+                <span className="fact-value">{day?.puzzle ? day.puzzle.rating : DAILY_BAND}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Themes</span>
+                <span className="fact-value">
+                  {result && day?.puzzle?.themes.length
+                    ? day.puzzle.themes.join(', ')
+                    : 'shown after you solve it'}
+                </span>
+              </div>
+              <div className="fact">
+                <span className="lbl">This run</span>
+                <span className="fact-value">
+                  {replaying ? 'practice' : 'counts'}
+                  <span className="fact-note">
+                    {replaying
+                      ? 'the day is already recorded'
+                      : s.assisted
+                        ? 'help used, so it is not a first try'
+                        : 'one try, and it moves your rating'}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </aside>
     </div>
   )
-}
-
-// ---- formatting helpers ----
-
-const MONTHS = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-]
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-/** 'YYYY-MM-DD' (UTC) -> e.g. "Tue, Jun 30 2026". Parsed as UTC to match the key. */
-function formatYmdLong(ymd: string): string {
-  const d = new Date(`${ymd}T00:00:00Z`)
-  if (Number.isNaN(d.getTime())) return ymd
-  return `${WEEKDAYS[d.getUTCDay()]}, ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()} ${d.getUTCFullYear()}`
-}
-
-function formatMs(ms: number | null): string {
-  if (ms == null || ms <= 0) return '·'
-  const totalSec = ms / 1000
-  if (totalSec < 60) return `${totalSec.toFixed(totalSec < 10 ? 1 : 0)}s`
-  const m = Math.floor(totalSec / 60)
-  const s = Math.round(totalSec % 60)
-  return `${m}m ${s.toString().padStart(2, '0')}s`
-}
-
-function formatRelative(ms: number): string {
-  const diff = Date.now() - ms
-  if (diff < 0) return 'just now'
-  const sec = Math.floor(diff / 1000)
-  if (sec < 60) return 'just now'
-  const min = Math.floor(sec / 60)
-  if (min < 60) return `${min}m ago`
-  const hr = Math.floor(min / 60)
-  if (hr < 24) return `${hr}h ago`
-  const day = Math.floor(hr / 24)
-  if (day < 7) return `${day}d ago`
-  const wk = Math.floor(day / 7)
-  if (wk < 5) return `${wk}w ago`
-  const d = new Date(ms)
-  return `${MONTHS[d.getMonth()]} ${d.getDate()}`
-}
-
-/** Lichess theme keys are camelCase (e.g. "hangingPiece"); make them readable. */
-function prettyTheme(key: string): string {
-  if (!key) return 'Other'
-  const spaced = key.replace(/([a-z0-9])([A-Z])/g, '$1 $2').replace(/[_-]+/g, ' ')
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1)
-}
-
-function accClass(acc: number): string {
-  if (acc >= 0.75) return 'is-high'
-  if (acc >= 0.5) return 'is-mid'
-  return 'is-low'
-}
-
-function spark30Total(stats: PuzzleStats): number {
-  return stats.daily.reduce((sum, d) => sum + d.attempts, 0)
 }

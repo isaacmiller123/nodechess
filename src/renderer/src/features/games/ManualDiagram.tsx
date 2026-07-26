@@ -484,7 +484,7 @@ export function ManualDiagram({ entry, payload }: { entry: CatalogEntry; payload
   if (isFen && fenState && entry.family === 'chess' && isRegisteredGame(entry.kind)) {
     const caption = text.split(' ')[1] === 'b' ? 'Black to play' : 'White to play'
     return (
-      <figure className="manual-figure is-board">
+      <figure className="manual-figure">
         <div className={`manual-cfb board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}>
           <Suspense fallback={<div className="manual-diagram-loading" aria-hidden />}>
             <ChessFamilyBoard

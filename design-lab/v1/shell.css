@@ -1,0 +1,2373 @@
+/* nodechess SHELL: layout and interaction. d01's feel.css, with the horizontal
+   nav converted to a rail and motion added. No colour, font family, radius or
+   duration is written literally in this file; everything is a token or a ratio.
+
+   WHAT CHANGED FROM d01, and what did not.
+
+   Nav moved to a left rail. That is the only structural change. The rail holds
+   nine destinations in three rule separated groups with no group headings,
+   because a heading over two items is exposition; the rules do the grouping
+   silently. It collapses to icon only and the state is written to
+   localStorage and applied to <html> before first paint.
+
+   The readout strip stayed horizontal and moved down one level: it is now the
+   header of the content column rather than a band under a top bar. Reasons, in
+   order. It is a fixed slot line read left to right and stacking it into a
+   224px rail would destroy the "same pixels page to page" property that is the
+   whole point of it. It would also disappear when the rail collapses, and
+   anything that can vanish is not a readout. Putting it at the top of the
+   content column means it now spans the full width the eye is already using,
+   the trace runs the whole measurable width of the page, and collapsing the
+   rail does not move it. It belongs to the content, not to the chrome.
+
+   Two things were deleted. The top bar, because with nav on the side its only
+   remaining jobs were the brand (now the rail head) and the identity chip. And
+   the identity chip itself, because Account is now a destination in the rail
+   and the readout's first field is already the player id, so the chip was the
+   third copy of the same string on screen.
+
+   Untouched from d01: the type scale, the mono-is-structural rule, .lbl, the
+   button set, wells versus panels, .startrow, the empty states, the games
+   table, the board and lesson furniture. Restraint is the thing he liked. */
+
+/* ---------- reset-ish base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-page);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-tight);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: var(--border-width) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* The etched label. Every field name, column head and group head in the app.
+   This single rule is what makes the mono structural. */
+.lbl {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Any number or identifier. Tabular so columns of digits line up. */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+}
+
+.icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  display: block;
+}
+
+.vh {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- shell: rail + content ---------- */
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- the rail ---------- */
+
+.rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  z-index: var(--z-rail);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-subtle);
+  border-right: var(--border-width) solid var(--border);
+  overflow: hidden;
+
+  /* ANIMATION 1. The rail's own width is the animated thing, so collapsing
+     reads as the same nine items narrowing rather than one menu being swapped
+     for another. The grid track is auto, so it follows this width. */
+  width: var(--rail-w);
+  transition: width var(--motion-slow) var(--ease-out);
+}
+
+.rail-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--topbar-h);
+  flex: none;
+  padding: 0 var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  color: var(--text-primary);
+}
+
+.rail-mark {
+  color: var(--accent);
+  flex: none;
+}
+
+.rail-word {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  white-space: nowrap;
+}
+
+.rail-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--space-3) 0;
+  overflow-y: auto;
+}
+
+/* Nine destinations without a wall of words: three groups, hairline separated,
+   deliberately unlabelled. Play and Home are what you came for, the middle
+   group is where you learn, the last is where you look back. */
+.rail-group + .rail-group {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.rail-link {
+  position: relative;
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+  height: 34px;
+  padding: 0 var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out),
+    padding var(--motion-slow) var(--ease-out);
+}
+
+/* ANIMATION 4. Hover is a 90ms colour and ground change on the row you are
+   pointing at, which is the cheapest possible confirmation that the whole row
+   is the target and not just the word. */
+.rail-link:hover {
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+/* The current page. The accent is bone, a near white, so it cannot announce
+   itself by hue the way amber did. Three things carry it instead: the raised
+   ground, the label going to full weight, and a 3px marker rather than 2px.
+   Read together they are unambiguous at a glance, which is the only test that
+   matters for a rail. */
+.rail-link[aria-current='page'] {
+  color: var(--text-primary);
+  background: var(--surface-2);
+  font-weight: var(--fw-bold);
+}
+
+.rail-icon {
+  color: var(--text-muted);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.rail-link:hover .rail-icon {
+  color: var(--text-secondary);
+}
+
+.rail-link[aria-current='page'] .rail-icon {
+  color: var(--accent);
+}
+
+.rail-label {
+  white-space: nowrap;
+  overflow: hidden;
+  transition:
+    opacity var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+/* ANIMATION 2. The selected marker scales out from the row's centre, so it
+   appears to be placed by the click rather than repainted. */
+.rail-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: 3px;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: 50% 50%;
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+.rail-link[aria-current='page']::before {
+  transform: scaleY(1);
+  animation: marker-in var(--motion-base) var(--ease-out) 120ms both;
+}
+
+@keyframes marker-in {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* The foot. Account is the ninth destination and stays a nav row. Settings is
+   not a destination in the list: it is a tool, so it sits with the collapse
+   control below the rule, smaller and icon first. */
+.rail-foot {
+  flex: none;
+  border-top: var(--border-width) solid var(--border);
+  padding: var(--space-3) 0 var(--space-2);
+}
+
+.rail-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) 0;
+}
+
+.rail-tool {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 28px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.rail-tool:hover {
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+.rail-toggle {
+  margin-left: auto;
+}
+
+/* ANIMATION 3. The chevron rotates through 180 degrees on collapse, which is
+   the control telling you which way the next press will go. */
+.rail-toggle .icon {
+  transition: transform var(--motion-slow) var(--ease-out);
+}
+
+:root[data-rail='min'] .rail-toggle .icon {
+  transform: rotate(180deg);
+}
+
+/* Collapsed geometry. Labels fade and pull 4px toward their icon, so they read
+   as folding into it. The icon re-centres in the narrower rail. */
+:root[data-rail='min'] .rail-label,
+:root[data-rail='min'] .rail-word,
+:root[data-rail='min'] .rail-tool-label {
+  opacity: 0;
+  transform: translateX(-4px);
+  pointer-events: none;
+}
+
+:root[data-rail='min'] .rail-link {
+  padding: 0 20px;
+}
+
+:root[data-rail='min'] .rail-head {
+  padding: 0 20px;
+}
+
+:root[data-rail='min'] .rail-tools {
+  padding: var(--space-2) 16px 0;
+}
+
+:root[data-rail='min'] .rail-tools {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+:root[data-rail='min'] .rail-toggle {
+  margin-left: 0;
+}
+
+/* ---------- THE SIGNATURE: readout strip ---------- */
+
+.readout {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: stretch;
+  min-height: var(--readout-h);
+  /* The fields line up with the content column, not with the viewport edge, so
+     PLAYER sits directly above the first section head on every screen. The
+     trace underneath still runs edge to edge, because what it measures is the
+     whole width, not the column. */
+  padding-left: max(var(--space-6), calc((100% - 1180px) / 2 + var(--space-6)));
+  padding-right: max(var(--space-6), calc((100% - 1180px) / 2 + var(--space-6)));
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width) solid var(--border);
+  overflow: hidden;
+}
+
+.rd-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  border-left: var(--border-width) solid var(--border);
+  white-space: nowrap;
+}
+
+.rd-field:first-child {
+  border-left: 0;
+  padding-left: 0;
+}
+
+.rd-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+  align-self: center;
+}
+
+.rd-value.is-quiet {
+  color: var(--text-secondary);
+}
+
+.rd-value.is-live {
+  color: var(--accent);
+}
+
+/* Prose is allowed in exactly one readout slot, the one that says what to do
+   next, and it is set in the sans so it does not read as machine output.
+
+   This is the field that lost the most when the accent went from amber to
+   bone. --accent-soft used to be a warm tint that separated from --surface by
+   hue alone; a bone tint sits within two points of the surface it lies on and
+   would be invisible. So the slot is now bounded on both sides by an accent
+   rule and lifted onto --surface-2, and the tint is only the third signal
+   rather than the only one. */
+.rd-field.is-next {
+  margin-left: auto;
+  background: var(--accent-soft);
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  padding-left: var(--space-5);
+  padding-right: var(--space-5);
+}
+
+.rd-next-text {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--accent-active);
+  align-self: center;
+}
+
+/* ANIMATION 5. A readout field that has actually changed flashes to the accent
+   and rises 2px once, because a number that quietly rewrites itself in a
+   sixteen character strip is a number nobody notices changed. */
+.rd-value.is-updated,
+.rd-next-text.is-updated {
+  animation: rd-update var(--motion-slow) var(--ease-out) both;
+}
+
+@keyframes rd-update {
+  0% {
+    color: var(--accent);
+    transform: translateY(2px);
+    opacity: 0.4;
+  }
+  40% {
+    color: var(--accent);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* The trace. One pixel, full width of the content column, pinned to the strip's
+   bottom edge. The filled portion is the single ratio each screen is about. */
+.trace {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ANIMATION 6, the arrival moment. The trace draws once from zero to the value
+   it is reporting, so the one quantitative graphic on the screen is seen being
+   measured instead of arriving pre-filled. */
+.trace::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--trace-w, 3px);
+  background: var(--accent);
+  /* backwards, not both: once the draw is done the property falls back to its
+     base value, which is the same number, so a later change to --trace-w
+     transitions instead of snapping. */
+  animation: trace-draw var(--dur-entry) var(--ease-out) 180ms backwards;
+  transition: width var(--motion-slow) var(--ease-out);
+}
+
+@keyframes trace-draw {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--trace-w, 3px);
+  }
+}
+
+/* No inline styles, so the ratio is a class. At zero the trace is an origin
+   tick on a flat baseline, which is the honest reading of a fresh account:
+   nothing has been measured yet. */
+.trace.is-0 {
+  --trace-w: 3px;
+}
+.trace.is-40 {
+  --trace-w: 40%;
+}
+.trace.is-100 {
+  --trace-w: 100%;
+}
+
+/* ---------- main and section furniture ---------- */
+
+.main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-10);
+}
+
+/* ANIMATION 7. Page content rises 6px and fades in once, so a navigation feels
+   like a page arriving rather than the window contents being replaced. */
+.main {
+  animation: page-enter var(--motion-base) var(--ease-out) both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.sec {
+  margin-bottom: var(--space-8);
+}
+
+.sec:last-child {
+  margin-bottom: 0;
+}
+
+.sec-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-4);
+}
+
+.sec-head .lbl {
+  flex: none;
+}
+
+.sec-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.sec-note {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-4);
+  max-width: 62ch;
+}
+
+/* A recessed well: darker than the page, bordered, no shadow. */
+.well {
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* A raised panel: lighter than the page. */
+.panel {
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 32px;
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.btn:hover {
+  border-color: var(--text-muted);
+  background: var(--border);
+}
+
+/* ANIMATION 8. A pressed button drops one pixel, which is the only mechanical
+   travel in the design and the thing that makes a real control feel physical
+   next to a link. */
+.btn:active {
+  background: var(--surface-2);
+  transform: translateY(1px);
+}
+
+.btn.is-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: var(--fw-bold);
+  height: 36px;
+  padding: 0 var(--space-6);
+}
+
+.btn.is-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn.is-primary:active {
+  background: var(--accent-active);
+  border-color: var(--accent-active);
+}
+
+.btn.is-quiet {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+.btn.is-quiet:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.btn[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Small mono key, used for the per row mode controls on the games table. */
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  height: 22px;
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.key:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* ---------- home ---------- */
+
+.home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-8);
+  align-items: start;
+  flex: 1 1 auto;
+}
+
+/* The left column fills the bezel, and the last section is the one that grows.
+   On a fresh account that section is the empty resume well, so the void on this
+   screen is a deliberate, labelled measurement area rather than dead margin. */
+.home-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.home-col > .sec:last-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  margin-bottom: 0;
+  min-height: 220px;
+}
+
+.home-col > .sec:last-child > .well {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each way to start a game is one full width row: what it is, what it costs
+   you, and the control. Nothing is behind a choice you have to make first. */
+.startrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-4) var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  margin-bottom: var(--space-3);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.startrow:hover {
+  border-color: var(--border-strong);
+}
+
+.startrow.is-first {
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+}
+
+.startrow-name {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-4);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+}
+
+.startrow-spec {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent);
+  border: var(--border-width) solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+  flex: none;
+}
+
+/* Empty state. The column heads of the list that will fill it are shown, so the
+   shape of the missing data is visible. It says what fills it, and it does not
+   apologise for being empty. */
+.empty-head {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 90px 70px 110px;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-8) var(--space-6);
+  text-align: left;
+}
+
+.empty-line {
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+}
+
+.empty-line + .empty-line {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* The right column. */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.side > .sec {
+  margin-bottom: 0;
+}
+
+/* A panel's footer strip. It was inset var(--space-4) while every other row in
+   the same panel was inset var(--space-6), so a button in the foot sat 8px
+   left of the text above it. */
+.panel-foot {
+  padding: var(--space-3) var(--space-6);
+  border-top: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.panel-foot .btn {
+  width: 100%;
+}
+
+.facts {
+  padding: var(--space-4) var(--space-6);
+}
+
+.fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.fact:last-child {
+  border-bottom: 0;
+}
+
+.fact-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.fact-note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+}
+
+.golist {
+  display: flex;
+  flex-direction: column;
+}
+
+.go {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.go:last-child {
+  border-bottom: 0;
+}
+
+.go:hover {
+  background: var(--surface-2);
+}
+
+.go-name {
+  display: block;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+}
+
+.go-sub {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+.go-arrow {
+  color: var(--text-muted);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+/* ANIMATION 9. The arrow moves 2px in the direction the row will take you,
+   which distinguishes a row that navigates from a row that only highlights. */
+.go:hover .go-arrow {
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+/* ---------- account ---------- */
+
+/* Account is a third single column page, so it takes .col-single like play and
+   settings. It used to declare max-width: 760px and no margin, which left it
+   hanging on the left of a 1140px content box with 380px of nothing beside it. */
+.acct {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+}
+
+/* The grid gap separates these, so kill the section margin or the three
+   sections drift apart into unrelated pages. */
+.acct > .sec {
+  margin-bottom: 0;
+}
+
+.acct .facts {
+  padding: var(--space-2) var(--space-6);
+}
+
+.acct .fact {
+  padding: var(--space-4) 0;
+}
+
+.acct-where {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.acct-where .icon {
+  color: var(--success);
+  margin-top: 2px;
+}
+
+.acct-where-text {
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+  max-width: 58ch;
+}
+
+.acct-where-sub {
+  margin-top: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.phrase {
+  padding: var(--space-6);
+}
+
+/* The phrase is covered until you ask for it, and covering it is a blur on the
+   real words rather than a placeholder, so the shape of what you are about to
+   reveal is visible. */
+.phrase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  filter: blur(5px);
+  opacity: 0.5;
+  user-select: none;
+  transition:
+    filter var(--motion-slow) var(--ease-out),
+    opacity var(--motion-slow) var(--ease-out);
+}
+
+.phrase.is-open .phrase-grid {
+  filter: blur(0);
+  opacity: 1;
+  user-select: text;
+}
+
+.word {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-normal);
+}
+
+.word-no {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  min-width: 14px;
+}
+
+.phrase-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.phrase-note {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  max-width: 58ch;
+}
+
+.saved {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--success);
+}
+
+.phrase.is-saved .saved {
+  display: flex;
+  animation: page-enter var(--motion-base) var(--ease-out) both;
+}
+
+.phrase.is-saved .phrase-actions {
+  display: none;
+}
+
+/* ---------- games ---------- */
+
+.filterbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  flex: 1 1 260px;
+  min-width: 200px;
+  height: 34px;
+  padding: 0 var(--space-4);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-normal);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.filter-input::placeholder {
+  color: var(--text-muted);
+}
+
+.filter-input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.segmented {
+  display: flex;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-subtle);
+}
+
+.seg {
+  padding: 0 var(--space-4);
+  height: 34px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-left: var(--border-width) solid var(--border);
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.seg:first-child {
+  border-left: 0;
+}
+
+.seg:hover {
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+.seg[aria-pressed='true'] {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+
+.gtable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.gtable th,
+.gtable td {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+  vertical-align: middle;
+}
+
+.gtable thead th {
+  position: sticky;
+  top: var(--readout-h);
+  z-index: 1;
+  background: var(--bg-page);
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom-color: var(--border-strong);
+}
+
+.col-name {
+  width: 20%;
+}
+.col-note {
+  width: auto;
+}
+.col-board {
+  width: 88px;
+}
+.col-pieces {
+  width: 78px;
+}
+.col-modes {
+  width: 196px;
+}
+
+.gtable .num-cell {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+}
+
+.grow {
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.grow:hover {
+  background: var(--surface);
+}
+
+.grow:hover .g-name {
+  color: var(--accent-hover);
+}
+
+.g-name {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.g-note {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modes {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.ghead th {
+  position: sticky;
+  top: calc(var(--readout-h) + 26px);
+  z-index: 1;
+  background: var(--bg-subtle);
+  border-top: var(--border-width) solid var(--border-strong);
+  border-bottom-color: var(--border-strong);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.ghead .lbl {
+  color: var(--text-secondary);
+}
+
+.ghead-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.ghead-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* ---------- board page: a board beside a panel ----------
+
+   THE ONE SHAPE. School, puzzles and analysis all draw a board with a panel
+   next to it, and they used to draw it three different ways: 380px of aside at
+   a --space-8 gutter here, 344 at --space-7 there, a third page inventing its
+   own. This is the app's own shape, from .analysis-view in
+   src/renderer/src/styles/app.css: a fluid board column, a 344px panel, a
+   --space-7 gutter, tops aligned. It folds to one column at 1080, which is
+   where the app folds too.
+
+   The board column is minmax(0, 1fr) and never a fixed width. It does not need
+   one: .board-wrap already refuses to exceed its column, so the column's job is
+   only to say how much room the board may have. That is what stopped the board
+   and the panel disagreeing about where the middle is. */
+.lesson {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 344px;
+  gap: var(--space-7);
+  align-items: start;
+}
+
+.lesson-main {
+  min-width: 0;
+}
+
+/* ============================================================
+   THE BOARD. Transcribed from the shipping app, not designed here.
+
+   Nothing in this block is a judgement call. Every rule is copied from one of
+   three files and the source is named on each:
+
+     A  src/renderer/src/styles/app.css        layout, measure, centering
+     B  node_modules/chessground/assets/chessground.base.css   element geometry
+     C  node_modules/chessground/assets/chessground.brown.css  square and label
+                                                               colour
+
+   What the mockups used to do, and why it was wrong. The board was sized from
+   a --board-size token that stepped through three media queries, and it was
+   painted as sixty-four div elements inside a grid. Neither exists in the app.
+   The token produced a board 242px narrower than the real one at a 900px tall
+   window, and the grid could put an odd pixel into one row. Both are gone. A
+   board on these pages is now the same object, at the same size, in the same
+   place, as a board in the app.
+
+   THE BOARD IS NOT PART OF THE PALETTE. Not one rule below reads --accent,
+   --border, --surface or any other chrome token. The five board colours are
+   declared once, in tokens.css, and no palette block redeclares them. Switching
+   palette must not move or repaint a single board pixel.
+   ============================================================ */
+
+/* A. app.css .board-area. The column a board and its furniture live in.
+
+   --board-measure is the app's own one line, min(78vh, 100%), written out once
+   under a name so that a strip standing under the board can take the board's
+   exact left and right edges instead of guessing at them. It is read and never
+   redeclared: no page, no palette and no media query may set it. The 100% in it
+   resolves against whichever element reads it, and .board-stage and .board-area
+   are the same width, so the board and the strip beneath it always agree. */
+.board-area {
+  --board-measure: min(78vh, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Furniture directly under a board takes the board's measure, so the turn
+   readout starts on the board's left edge and the buttons end on its right.
+   The app centres this strip instead; sharing the edges is the same idea with
+   the alignment actually landing on something. */
+.board-area > .boardbar,
+.board-area > .board-under {
+  width: var(--board-measure);
+  max-width: 760px;
+}
+
+/* A. app.css .board-stage.
+
+   CENTERING IS THIS RULE AND NOTHING ELSE. The stage is the full width of
+   whatever column it is given, and it centres its children. No page adds a
+   margin, a justify-self or a text-align to place a board. Anything that stands
+   beside the board (analysis puts an eval bar there) is a flex sibling inside
+   the stage, and the pair is centred together. */
+.board-stage {
+  display: flex;
+  gap: var(--space-3);
+  align-items: stretch;
+  width: 100%;
+  justify-content: center;
+}
+
+/* A. app.css .board-wrap.
+
+   THE MEASURE. Viewport HEIGHT drives it: min(78vh, 100%), capped at 760px. A
+   board is a square you look at, so the height of the window is the constraint
+   that matters, and 100% keeps it inside a column that is narrower than that.
+   There is no page token, no media query and no per-page override anywhere in
+   these files. Every board on every page is this one line. */
+.board-wrap {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: var(--board-measure, min(78vh, 100%));
+  max-width: 760px;
+  border-radius: var(--radius-board);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* A. app.css .board-wrap:focus-visible */
+.board-wrap:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* A. app.css .board-wrap .cg-wrap */
+.board-wrap .cg-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+/* B. chessground.base.css .cg-wrap, cg-container, cg-board */
+.cg-wrap {
+  box-sizing: content-box;
+  position: relative;
+  display: block;
+}
+
+cg-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: block;
+  top: 0;
+}
+
+cg-board {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  line-height: 0;
+  background-size: cover;
+}
+
+/* A. app.css .board-wrap[class*='board-'] cg-board.
+
+   The squares. One conic-gradient tile is a 2x2 checker, and background-size
+   25% repeats it into the full 8x8. Light at top-left, which is a8, dark at a1:
+   standard orientation. There is no row grid here, so there is no row for a
+   rounding error to land in and no rank can come out taller than another. */
+.board-wrap[class*='board-'] cg-board {
+  background-color: var(--sq-light);
+  background-image: conic-gradient(
+    var(--sq-dark) 90deg,
+    var(--sq-light) 90deg 180deg,
+    var(--sq-dark) 180deg 270deg,
+    var(--sq-light) 270deg
+  );
+  background-size: 25% 25%;
+}
+
+/* B. chessground.base.css cg-board square. One square of overlay, placed by a
+   transform in whole multiples of its own width. */
+cg-board square {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  pointer-events: none;
+}
+
+/* C. chessground.brown.css cg-board square.last-move, which is the same
+   rgba(155, 199, 0, 0.41) tokens.css already carries as --sq-mark. A flat wash
+   over the square and no ring: the app draws no ring. */
+cg-board square.last-move {
+  background-color: var(--sq-mark);
+}
+
+/* C. chessground.brown.css cg-board square.selected */
+cg-board square.selected {
+  background-color: rgba(20, 85, 30, 0.5);
+}
+
+/* C. chessground.brown.css cg-board square.check */
+cg-board square.check {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 0, 0, 1) 0%,
+    rgba(231, 0, 0, 1) 25%,
+    rgba(169, 0, 0, 0) 89%,
+    rgba(158, 0, 0, 0) 100%
+  );
+}
+
+/* C. chessground.brown.css cg-board square.move-dest, and its .oc variant for a
+   square that already holds a piece. */
+cg-board square.move-dest {
+  background: radial-gradient(rgba(20, 85, 30, 0.5) 22%, #208530 0, rgba(0, 0, 0, 0.3) 0, rgba(0, 0, 0, 0) 0);
+}
+
+cg-board square.oc.move-dest {
+  background: radial-gradient(transparent 0%, transparent 80%, rgba(20, 85, 0, 0.3) 80%);
+}
+
+/* B. chessground.base.css .cg-wrap piece.
+
+   A piece is one square, so a translate of 100% is one file or one rank, and
+   the artwork scales with the board with no font size and no magic number. The
+   twelve SVGs are in pieces.css, byte for byte out of chessground's own
+   stylesheet. Class is two letters, colour then role: .wq, .bn. */
+.cg-wrap piece,
+.pc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* B + C. chessground.base.css .cg-wrap coords, and the alternating label colour
+   out of chessground.brown.css.
+
+   Coordinates ride inside the board, the way chessground draws them, at a fixed
+   9px whatever the board measures. Two offsets differ from chessground's stock
+   numbers and only because the app forces it: base.css puts the ranks at
+   top: -20px and the files at bottom: -4px, and .board-wrap sets
+   overflow: hidden, so both would be clipped. They are pinned to the board's
+   own edges instead. Nothing else here is changed. */
+.cg-wrap coords {
+  position: absolute;
+  display: flex;
+  pointer-events: none;
+  opacity: 0.8;
+  font-family: sans-serif;
+  font-size: 9px;
+  z-index: 3;
+}
+
+.cg-wrap coords.ranks {
+  left: 4px;
+  top: 0;
+  flex-flow: column-reverse;
+  height: 100%;
+  width: 12px;
+}
+
+.cg-wrap coords.files {
+  bottom: 0;
+  left: 0;
+  flex-flow: row;
+  width: 100%;
+  height: 16px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.cg-wrap coords coord {
+  flex: 1 1 auto;
+}
+
+.cg-wrap coords.ranks coord {
+  transform: translateY(39%);
+}
+
+/* C. chessground.brown.css alternating rank and file label colour. */
+.orientation-white coords.ranks :nth-child(odd),
+.orientation-white coords.files :nth-child(even) {
+  color: rgba(72, 72, 72, 0.8);
+}
+
+.orientation-white coords.ranks :nth-child(even),
+.orientation-white coords.files :nth-child(odd) {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---------- board annotation brushes ----------
+
+   chessground's default brushes, from node_modules/chessground/dist/state.js.
+   Colour and opacity are the brush; stroke width is chessground's lineWidth
+   expressed in board squares, because the overlay's viewBox is 0 0 8 8 and one
+   unit is one square. chessground draws at a 512 unit board, so lineWidth 10 is
+   10/64 of a square and lineWidth 15 is 15/64.
+
+   RANK MATTERS. AnalysisView.tsx ranks engine lines
+   ['green', 'paleBlue', 'paleGrey'], so the best line is green at full opacity,
+   the second is pale blue and only the third is grey. A board that draws every
+   arrow grey has thrown the ranking away. */
+.shapes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.brush-green,
+.brush-red,
+.brush-blue,
+.brush-yellow,
+.brush-pale-blue,
+.brush-pale-grey,
+.rank-1,
+.rank-2,
+.rank-3 {
+  fill: none;
+  stroke-linecap: butt;
+}
+
+.brush-green {
+  stroke: var(--brush-green);
+  fill: var(--brush-green);
+  opacity: 1;
+  stroke-width: 0.156;
+}
+
+.brush-red {
+  stroke: var(--brush-red);
+  fill: var(--brush-red);
+  opacity: 1;
+  stroke-width: 0.156;
+}
+
+.brush-blue {
+  stroke: var(--brush-blue);
+  fill: var(--brush-blue);
+  opacity: 1;
+  stroke-width: 0.156;
+}
+
+.brush-yellow {
+  stroke: var(--brush-yellow);
+  fill: var(--brush-yellow);
+  opacity: 1;
+  stroke-width: 0.156;
+}
+
+.brush-pale-blue {
+  stroke: var(--brush-pale-blue);
+  fill: var(--brush-pale-blue);
+  opacity: var(--brush-pale-blue-opacity);
+  stroke-width: 0.234;
+}
+
+.brush-pale-grey {
+  stroke: var(--brush-pale-grey);
+  fill: var(--brush-pale-grey);
+  opacity: var(--brush-pale-grey-opacity);
+  stroke-width: 0.234;
+}
+
+/* Engine line rank. A page writes .rank-1, .rank-2, .rank-3 and cannot get the
+   ordering wrong, because the number is the rank and the colour is this file's
+   business. Best is green, second is pale blue, third is pale grey. */
+.rank-1 {
+  stroke: var(--brush-green);
+  fill: var(--brush-green);
+  opacity: 1;
+  stroke-width: 0.156;
+}
+
+.rank-2 {
+  stroke: var(--brush-pale-blue);
+  fill: var(--brush-pale-blue);
+  opacity: var(--brush-pale-blue-opacity);
+  stroke-width: 0.234;
+}
+
+.rank-3 {
+  stroke: var(--brush-pale-grey);
+  fill: var(--brush-pale-grey);
+  opacity: var(--brush-pale-grey-opacity);
+  stroke-width: 0.234;
+}
+
+.boardbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.turn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-right: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.turn-chip {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--piece-white);
+  border: var(--border-width) solid var(--border-strong);
+  flex: none;
+}
+
+.coach {
+  padding: var(--space-6);
+}
+
+.coach-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  margin-bottom: var(--space-4);
+}
+
+.coach-name {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+}
+
+.coach-role {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.coach-said {
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+}
+
+.coach-said + .coach-said {
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+}
+
+.task {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+}
+
+.task-text {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--accent-active);
+}
+
+.moves {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) minmax(0, 1fr);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+}
+
+.moves > * {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.mv-no {
+  color: var(--text-muted);
+}
+
+.mv {
+  color: var(--text-primary);
+}
+
+.mv.is-next {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.lessons {
+  display: flex;
+  flex-direction: column;
+}
+
+.ls {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.ls:last-child {
+  border-bottom: 0;
+}
+
+.ls-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--success);
+}
+
+.ls-no {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.ls.is-current {
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-6) - 3px);
+}
+
+.ls.is-locked {
+  color: var(--text-muted);
+}
+
+.lesson-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.side > .lesson-foot {
+  margin-top: 0;
+}
+
+.boardbar + .sec {
+  margin-top: var(--space-6);
+}
+
+.foot-note {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-right: auto;
+}
+
+/* ---------- phone chrome, hidden until the media query ---------- */
+
+.topbar-m,
+.tabbar,
+.sheet,
+.scrim {
+  display: none;
+}
+
+/* ---------- narrow desktop ---------- */
+
+@media (max-width: 1080px) {
+  .home,
+  .lesson {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Single column: the aside takes the same measure the board takes, so the
+     panel and the position it is talking about share both edges. Both are
+     min(78vh, 100%) capped at 760, and both are centred by the same rule. */
+  .lesson > .side {
+    width: min(78vh, 100%);
+    max-width: 760px;
+    margin-inline: auto;
+    justify-self: center;
+  }
+
+  .col-note {
+    display: none;
+  }
+
+  .gtable .col-note-cell {
+    display: none;
+  }
+
+  /* The strip clips its last field somewhere under 880px of content width, so
+     below that it wraps rather than losing information. */
+  .readout {
+    flex-wrap: wrap;
+    min-height: 0;
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    row-gap: var(--space-2);
+  }
+
+  .rd-field {
+    padding: 0 var(--space-3);
+  }
+
+  .rd-field:first-child {
+    padding-left: 0;
+  }
+
+  .rd-field.is-next {
+    margin-left: 0;
+    flex: 1 1 100%;
+    border-left: 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+  }
+
+  .gtable thead th,
+  .ghead th {
+    position: static;
+  }
+}
+
+/* ---------- phone ----------
+
+   Nine destinations cannot be five words in a bottom bar, and they cannot be a
+   hamburger in the top left where no thumb reaches. So: the four things you
+   open every session are permanent tabs at 60px, and the fifth tab lifts a
+   sheet from the bottom edge holding the other five as 56px rows. Everything
+   stays thumb sized and the overflow lives at the bottom of the screen, which
+   is the only part of a 390px phone a thumb owns. The readout strip survives
+   unchanged, wrapping to two lines and keeping its trace, exactly as in d01. */
+
+@media (max-width: 720px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .topbar-m {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-rail);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    height: var(--topbar-h);
+    padding: 0 var(--space-4);
+    background: var(--bg-page);
+    border-bottom: var(--border-width) solid var(--border);
+  }
+
+  .topbar-m .rail-mark {
+    color: var(--accent);
+  }
+
+  .readout {
+    top: var(--topbar-h);
+  }
+
+  .main {
+    padding: var(--space-6) var(--space-4) calc(var(--tabbar-h) + var(--space-10));
+  }
+
+  .home-col {
+    min-height: 0;
+  }
+
+  .home-col > .sec:last-child {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .empty {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .empty-head {
+    grid-template-columns: minmax(0, 1fr) 90px;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Touch targets, sized for a thumb rather than a cursor. */
+  .startrow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    padding: var(--space-4);
+    min-height: 72px;
+    align-content: center;
+  }
+
+  .startrow .btn {
+    width: 100%;
+    height: 44px;
+  }
+
+  .startrow .btn.is-primary {
+    height: 48px;
+  }
+
+  .go {
+    min-height: 56px;
+    padding: var(--space-4);
+  }
+
+  .phrase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    height: var(--tabbar-h);
+    background: var(--bg-page);
+    border-top: var(--border-width) solid var(--border);
+  }
+
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    padding-top: var(--space-1);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: var(--tracking-normal);
+    border-top: 2px solid transparent;
+    transition:
+      color var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out);
+  }
+
+  .tab[aria-current='page'],
+  .tab[aria-expanded='true'] {
+    color: var(--accent);
+    border-top-color: var(--accent);
+  }
+
+  .scrim {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-dropdown);
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--motion-base) var(--ease-out);
+  }
+
+  /* ANIMATION 10. The overflow sheet slides up from the tab that opened it,
+     so the five extra destinations are visibly coming out of More rather than
+     appearing over the page. */
+  .sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: var(--tabbar-h);
+    z-index: var(--z-modal);
+    display: block;
+    background: var(--surface);
+    border-top: var(--border-width) solid var(--border-strong);
+    transform: translateY(100%);
+    transition: transform var(--motion-base) var(--ease-out);
+  }
+
+  body.sheet-open .sheet {
+    transform: translateY(0);
+  }
+
+  body.sheet-open .scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sheet-link {
+    display: grid;
+    grid-template-columns: 15px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-4);
+    min-height: 56px;
+    padding: 0 var(--space-6);
+    border-bottom: var(--border-width) solid var(--border);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+  }
+
+  .sheet-link .icon {
+    color: var(--text-muted);
+  }
+
+  .sheet-link:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* ---------- reduced motion ----------
+
+   Not a blanket duration kill. Colour and opacity changes are feedback and
+   they stay at full duration; everything that MOVES or resizes is removed,
+   and the trace jumps straight to the value it is reporting. */
+
+@media (prefers-reduced-motion: reduce) {
+  .rail,
+  .rail-link,
+  .rail-label,
+  .rail-toggle .icon,
+  .phrase-grid {
+    transition-property: opacity, color, background-color, border-color, filter;
+  }
+
+  .main,
+  .trace::before,
+  .rail-link[aria-current='page']::before,
+  .phrase.is-saved .saved {
+    animation: none;
+  }
+
+  .rd-value.is-updated,
+  .rd-next-text.is-updated {
+    animation: rd-update-flat var(--motion-slow) var(--ease-out) both;
+  }
+
+  @keyframes rd-update-flat {
+    0%,
+    40% {
+      color: var(--accent);
+    }
+  }
+
+  .btn:active {
+    transform: none;
+  }
+
+  .go:hover .go-arrow {
+    transform: none;
+  }
+
+  .sheet {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   PROMOTED SHELL COMPONENTS
+
+   Everything below was invented separately on two or more pages during a
+   parallel build and is now declared once. The page style blocks that used to
+   carry these have been deleted, not merely overridden: a rule that exists in
+   two places will drift, and this shell already paid for that once.
+
+   Promoted here, with where each came from:
+     .chip / .chips     was .puz-chip, .play-chip, .key.is-on, .set-sw
+     .chip.is-stacked   was .play-chip, the two line time control chip
+     .is-here           was .open-here, .an-here, .startrow.is-first, .prg-seed
+     .pal / .pal-sw     was .set-pals / .set-chip, and existed on one page only
+     .thumb-board       was .gm-brd, the SVG mini board on the games cards
+     .board-col         was .sch-board, .puz-board, .open-boardcol, .an-boardhold
+     .col-single        was .play at 880px and .set-page at 820px, neither centred
+     .ticks             was .prg-x span and .set-ticks span, both reimplementing .lbl
+   ============================================================ */
+
+/* ---------- the single column measure ----------
+
+   A page that is one column of controls does not want the full 1180. Play had
+   picked 880 for itself and settings had picked 820, and because .main is
+   already the centred element neither of those was centred inside it: both
+   pages hung on the left of the content area with 260 to 300px of nothing down
+   the right hand side. That is the "off centre" the owner is looking at on the
+   pages with no board on them.
+
+   One measure, and it centres. 880 is play's number, kept because it is the
+   wider of the two and settings' rows read fine at it. */
+.col-single {
+  width: 100%;
+  max-width: 880px;
+  margin-inline: auto;
+}
+
+/* ---------- the row inset ----------
+
+   THE CONVENTION, so no page has to decide again: anything that sits as a row
+   inside a .panel or a .well is inset var(--space-6) from the sides, and
+   var(--space-4) from the top and bottom when it is a comfortable row,
+   var(--space-3) when it is a dense one. That is what .startrow, .go, .facts,
+   .ls and .empty-head in this file already did.
+
+   Five pages had not been told. Openings ran every row at var(--space-5) and
+   its FEN strip at var(--space-4); play's mode cards ran at var(--space-5). So
+   the same kind of row started 4 or 8px further in on one page than the next,
+   and two panels stacked on one screen did not share a left edge. Those pages
+   now use the numbers below. */
+.row {
+  padding: var(--space-4) var(--space-6);
+}
+
+.row.is-dense {
+  padding: var(--space-3) var(--space-6);
+}
+
+/* A row marked as the current one takes a 3px rule on its leading edge and
+   gives back the same 3px of inset, so the text does not step sideways when the
+   marker appears. */
+.row.is-here {
+  padding-left: calc(var(--space-6) - 3px);
+}
+
+/* ---------- axis end labels ----------
+
+   The pair of words under a scale, one at each end. Progress and settings had
+   each written it, and each had rebuilt .lbl inside it rather than using .lbl.
+   The span rule is gone: put .lbl on the words. */
+.ticks {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---------- board column ----------
+
+   Any page that draws a board puts it in one of these. It is fluid, because the
+   board's measure is min(78vh, 100%) and the column only has to say how much
+   room that 100% refers to. It used to be pinned to a --board-size token, which
+   is what let a page hand the board a width the app never gives it. The eval
+   bar variant is gone with it: an eval bar is a flex sibling inside
+   .board-stage, so the stage centres the bar and the board together and no page
+   has to do the arithmetic. */
+.board-col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+/* ---------- chip: a filter or option you can switch on ----------
+
+   Four pages had four versions of this, and three of them said "on" with a 1px
+   --accent border over an --accent-soft fill. That worked while the accent was
+   amber and does not now: bone is a near white, and a near white hairline over
+   a fill two points off the surface is not a state, it is a rumour. The on
+   state is a solid bone fill with ink on it, the same answer .seg already used,
+   so "chosen" looks identical everywhere and survives a monochrome palette. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: 26px;
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+/* The two line chip: a value and what it is. Play used it for time controls and
+   bot levels and called it .play-chip, with its own on state. Same object, same
+   on state as every other chip now. Declared here, ABOVE the hover and pressed
+   rules, because it carries a colour and it must not outrank either of them. */
+.chip.is-stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 64px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+}
+
+.chip-main {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  line-height: 1;
+}
+
+.chip-sub {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.chip:hover {
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+  background: var(--surface);
+}
+
+.chip[aria-pressed='true'] {
+  color: var(--on-accent);
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: var(--fw-medium);
+}
+
+/* The count inside a chip. Quiet when the chip is off, ink when it is on,
+   because it is sitting on a bone fill by then. */
+.chip-n {
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.chip[aria-pressed='true'] .chip-n,
+.chip[aria-pressed='true'] .chip-sub {
+  color: var(--on-accent);
+  opacity: 0.72;
+}
+
+.chip:disabled,
+.chip[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* ---------- the row you are standing on ----------
+
+   One marker for "this is the current item in a list", used by the openings
+   path, the analysis move list, the home resume list and the progress ladder.
+   A 3px bone rule and a raised ground: two signals, neither of them hue. */
+.is-here {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+}
+
+/* ---------- palette control ----------
+
+   The compact switcher, in the rail foot on every page. Nine buttons, no
+   popup: the rail clips its overflow, and a menu that has to escape a clipped
+   sticky column is a bug waiting to happen. Each swatch previews its own
+   palette by carrying data-palette on the inner span, so --surface and
+   --accent inside that span resolve to the palette being offered while the
+   button around it stays in the palette you are actually running.
+
+   The first swatch names cold-iron-bone explicitly rather than relying on "no
+   attribute". Both routes land on identical values, and naming it means the
+   swatch previews the default correctly even while another palette is live. */
+.pal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-1);
+}
+
+.pal-sw {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  line-height: 0;
+  transition: box-shadow var(--motion-fast) var(--ease-out);
+}
+
+.pal-chip {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-sm);
+  border: var(--border-width) solid var(--border-strong);
+  background: linear-gradient(135deg, var(--surface-2) 0 52%, var(--accent) 52% 100%);
+}
+
+.pal-sw:hover {
+  box-shadow: 0 0 0 2px var(--border-strong);
+}
+
+.pal-sw[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.pal-sw:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Collapsed rail: 56px wide, so nine swatches wrap to two per row rather than
+   being hidden. You can still change the palette with the rail folded. */
+:root[data-rail='min'] .pal {
+  padding: var(--space-3) 16px var(--space-1);
+  gap: var(--space-1);
+}
+
+/* ---------- games card mini board ----------
+
+   The one place a board appears as artwork rather than as a board. It reads the
+   same five board tokens as .board and no chrome token, so it does not repaint
+   on a palette change either. */
+.thumb-board .thumb-sl {
+  fill: var(--sq-light);
+}
+
+.thumb-board .thumb-sd {
+  fill: var(--sq-dark);
+}
+
+.thumb-board .thumb-fr {
+  fill: none;
+  stroke: var(--sq-dark);
+  stroke-width: 1.5;
+}
+
+/* ---------- visibility helpers ----------
+
+   Three pages each wrote their own. Filtering a list is filtering a list. */
+.is-off {
+  display: none;
+}
+
+.is-only-on {
+  display: none;
+}
+
+.is-only-on.is-on {
+  display: block;
+}

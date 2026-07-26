@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>nodechess brand</title>
+<link rel="stylesheet" href="tokens.css"/>
+<link rel="stylesheet" href="brand.css"/>
+<style>
+  *,*::before,*::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #101214;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet { max-width: 940px; margin: 0 auto; padding: 48px 32px 72px; display: grid; gap: 24px; }
+  .ground { border: 1px solid; border-radius: 3px; padding: 34px 32px; display: grid; gap: 12px; }
+  .ground.dark { background: var(--bg-page); color: var(--text-primary); border-color: var(--border); }
+  .ground.light { background: #fff; color: #16191b; border-color: #d5d8da; }
+  .lab {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    opacity: 0.45;
+  }
+  .lab + .row { margin-bottom: 22px; }
+  .row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 34px; }
+  .row-mid { align-items: center; }
+  .row-spec { gap: 48px; }
+  .spec { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .spec b {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    opacity: 0.42;
+  }
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px 6px 9px;
+    border-radius: 7px 7px 0 0;
+    background: rgba(128,136,142,0.16);
+    font-size: 11.5px;
+  }
+</style>
+</head>
+<body>
+
+<svg class="nc-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="nc-mark" viewBox="0 0 100 100" fill="currentColor"><line x1="27.2" y1="36.82" x2="39.8" y2="36.82" stroke="currentColor" stroke-width="1.5"/><line x1="27.2" y1="36.82" x2="33.5" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="36.82" x2="52.4" y2="36.82" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="36.82" x2="33.5" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="36.82" x2="46.1" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="36.82" x2="65" y2="36.82" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="36.82" x2="46.1" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="36.82" x2="58.7" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="65" y1="36.82" x2="58.7" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="33.5" y1="47.74" x2="46.1" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="33.5" y1="47.74" x2="39.8" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="47.74" x2="58.7" y2="47.74" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="47.74" x2="39.8" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="47.74" x2="52.4" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="58.7" y1="47.74" x2="52.4" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="58.7" y1="47.74" x2="65" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="58.65" x2="52.4" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="58.65" x2="33.5" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="58.65" x2="46.1" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="58.65" x2="65" y2="58.65" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="58.65" x2="46.1" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="58.65" x2="58.7" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="65" y1="58.65" x2="58.7" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="65" y1="58.65" x2="71.3" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="33.5" y1="69.56" x2="46.1" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="33.5" y1="69.56" x2="27.2" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="33.5" y1="69.56" x2="39.8" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="69.56" x2="58.7" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="69.56" x2="39.8" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="46.1" y1="69.56" x2="52.4" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="58.7" y1="69.56" x2="71.3" y2="69.56" stroke="currentColor" stroke-width="1.5"/><line x1="58.7" y1="69.56" x2="52.4" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="58.7" y1="69.56" x2="65" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="71.3" y1="69.56" x2="65" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="71.3" y1="69.56" x2="77.6" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="27.2" y1="80.47" x2="39.8" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="80.47" x2="52.4" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="52.4" y1="80.47" x2="65" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="65" y1="80.47" x2="77.6" y2="80.47" stroke="currentColor" stroke-width="1.5"/><line x1="39.8" y1="36.82" x2="33.5" y2="25.91" stroke="currentColor" stroke-width="0.75"/><line x1="39.8" y1="36.82" x2="46.1" y2="25.91" stroke="currentColor" stroke-width="0.75"/><line x1="65" y1="36.82" x2="58.7" y2="25.91" stroke="currentColor" stroke-width="0.75"/><line x1="65" y1="36.82" x2="71.3" y2="25.91" stroke="currentColor" stroke-width="0.75"/><line x1="65" y1="36.82" x2="77.6" y2="36.82" stroke="currentColor" stroke-width="0.75"/><line x1="65" y1="36.82" x2="71.3" y2="47.74" stroke="currentColor" stroke-width="0.75"/><line x1="39.8" y1="58.65" x2="27.2" y2="58.65" stroke="currentColor" stroke-width="0.75"/><line x1="65" y1="58.65" x2="71.3" y2="47.74" stroke="currentColor" stroke-width="0.75"/><line x1="32.5" y1="21.5" x2="27.2" y2="36.82" stroke="currentColor" stroke-width="1.5"/><line x1="50" y1="21.5" x2="52.4" y2="36.82" stroke="currentColor" stroke-width="1.5"/><line x1="67.5" y1="21.5" x2="65" y2="36.82" stroke="currentColor" stroke-width="1.5"/><circle cx="2" cy="15" r="0.7"/><circle cx="14.6" cy="15" r="1.15"/><circle cx="27.2" cy="15" r="1.15"/><circle cx="39.8" cy="15" r="1.15"/><circle cx="52.4" cy="15" r="1.15"/><circle cx="65" cy="15" r="1.15"/><circle cx="77.6" cy="15" r="1.15"/><circle cx="90.2" cy="15" r="0.7"/><circle cx="8.3" cy="25.91" r="1.15"/><circle cx="20.9" cy="25.91" r="2.1"/><circle cx="33.5" cy="25.91" r="2.1"/><circle cx="46.1" cy="25.91" r="2.1"/><circle cx="58.7" cy="25.91" r="2.1"/><circle cx="71.3" cy="25.91" r="2.1"/><circle cx="83.9" cy="25.91" r="1.15"/><circle cx="96.5" cy="25.91" r="0.7"/><circle cx="2" cy="36.82" r="0.7"/><circle cx="14.6" cy="36.82" r="1.15"/><circle cx="27.2" cy="36.82" r="4.9"/><circle cx="39.8" cy="36.82" r="4.9"/><circle cx="52.4" cy="36.82" r="4.9"/><circle cx="65" cy="36.82" r="4.9"/><circle cx="77.6" cy="36.82" r="2.1"/><circle cx="90.2" cy="36.82" r="1.15"/><circle cx="8.3" cy="47.74" r="1.15"/><circle cx="20.9" cy="47.74" r="1.15"/><circle cx="33.5" cy="47.74" r="4.9"/><circle cx="46.1" cy="47.74" r="4.9"/><circle cx="58.7" cy="47.74" r="4.9"/><circle cx="71.3" cy="47.74" r="2.1"/><circle cx="83.9" cy="47.74" r="1.15"/><circle cx="96.5" cy="47.74" r="0.7"/><circle cx="2" cy="58.65" r="0.7"/><circle cx="14.6" cy="58.65" r="1.15"/><circle cx="27.2" cy="58.65" r="2.1"/><circle cx="39.8" cy="58.65" r="4.9"/><circle cx="52.4" cy="58.65" r="4.9"/><circle cx="65" cy="58.65" r="4.9"/><circle cx="77.6" cy="58.65" r="1.15"/><circle cx="90.2" cy="58.65" r="1.15"/><circle cx="8.3" cy="69.56" r="1.15"/><circle cx="20.9" cy="69.56" r="2.1"/><circle cx="33.5" cy="69.56" r="4.9"/><circle cx="46.1" cy="69.56" r="4.9"/><circle cx="58.7" cy="69.56" r="4.9"/><circle cx="71.3" cy="69.56" r="4.9"/><circle cx="83.9" cy="69.56" r="1.15"/><circle cx="96.5" cy="69.56" r="1.15"/><circle cx="2" cy="80.47" r="1.15"/><circle cx="14.6" cy="80.47" r="2.1"/><circle cx="27.2" cy="80.47" r="4.9"/><circle cx="39.8" cy="80.47" r="4.9"/><circle cx="52.4" cy="80.47" r="4.9"/><circle cx="65" cy="80.47" r="4.9"/><circle cx="77.6" cy="80.47" r="4.9"/><circle cx="90.2" cy="80.47" r="2.1"/><circle cx="8.3" cy="91.38" r="1.15"/><circle cx="20.9" cy="91.38" r="2.1"/><circle cx="33.5" cy="91.38" r="2.1"/><circle cx="46.1" cy="91.38" r="2.1"/><circle cx="58.7" cy="91.38" r="2.1"/><circle cx="71.3" cy="91.38" r="2.1"/><circle cx="83.9" cy="91.38" r="2.1"/><circle cx="96.5" cy="91.38" r="1.15"/><circle cx="32.5" cy="21.5" r="6.3"/><circle cx="50" cy="21.5" r="6.3"/><circle cx="67.5" cy="21.5" r="6.3"/></symbol>
+  <symbol id="nc-mark-16" viewBox="0 0 16 16" fill="currentColor"><circle cx="4.4" cy="2.4" r="1.35"/><circle cx="8" cy="2.4" r="1.35"/><circle cx="11.6" cy="2.4" r="1.35"/><path d="M3.4 5 H12.6 V6.6 L10.6 7.6 V11 L13 13 V15.6 H3 V13 L5.4 11 V7.6 L3.4 6.6 Z"/></symbol>
+</svg>
+
+<div class="sheet">
+  <section class="ground dark">
+    <div class="lab">mark, 128 48 24 16</div><div class="row"><div class="spec"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" style="--nc-mark-size:128px" aria-hidden="true"><use href="#nc-mark"/></svg><b>128</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:48px" aria-hidden="true"><use href="#nc-mark"/></svg><b>48</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:24px" aria-hidden="true"><use href="#nc-mark"/></svg><b>24</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark"/></svg><b>16</b></div></div>
+    <div class="lab">favicon derivative, the same object with the field, the links and the dust removed</div><div class="row"><div class="spec"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:32px" aria-hidden="true"><use href="#nc-mark-16"/></svg><b>32</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark-16"/></svg><b>16</b></div><div class="spec"><span class="tab"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark-16"/></svg><span>nodechess</span></span><b>tab</b></div></div>
+    <div class="lab">lockup, 36 25 18</div><div class="row row-mid"><span class="nc-lockup nc-lockup-lg"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span><span class="nc-lockup nc-lockup-md"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span><span class="nc-lockup nc-lockup-sm"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span></div>
+    <div class="lab">wordmark</div><div class="row"><span class="nc-word" style="font-size:44px"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></div>
+    <div class="lab">specimen, hover the left one to send the wave across, move the pointer over the right one to ripple from it</div><div class="row row-spec"><div class="spec"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" style="--nc-mark-size:240px" aria-hidden="true"><use href="#nc-mark"/></svg><b>wave</b></div><div class="spec"><svg class="nc-mark nc-mark--ripple" viewBox="0 0 100 100" style="--nc-mark-size:240px" aria-hidden="true"><use href="#nc-mark"/></svg><b>ripple</b></div></div>
+  </section>
+  <section class="ground light">
+    <div class="lab">mark, 128 48 24 16</div><div class="row"><div class="spec"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" style="--nc-mark-size:128px" aria-hidden="true"><use href="#nc-mark"/></svg><b>128</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:48px" aria-hidden="true"><use href="#nc-mark"/></svg><b>48</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:24px" aria-hidden="true"><use href="#nc-mark"/></svg><b>24</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 100 100" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark"/></svg><b>16</b></div></div>
+    <div class="lab">favicon derivative, the same object with the field, the links and the dust removed</div><div class="row"><div class="spec"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:32px" aria-hidden="true"><use href="#nc-mark-16"/></svg><b>32</b></div><div class="spec"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark-16"/></svg><b>16</b></div><div class="spec"><span class="tab"><svg class="nc-mark" viewBox="0 0 16 16" style="--nc-mark-size:16px" aria-hidden="true"><use href="#nc-mark-16"/></svg><span>nodechess</span></span><b>tab</b></div></div>
+    <div class="lab">lockup, 36 25 18</div><div class="row row-mid"><span class="nc-lockup nc-lockup-lg"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span><span class="nc-lockup nc-lockup-md"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span><span class="nc-lockup nc-lockup-sm"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" aria-hidden="true"><use href="#nc-mark"/></svg><span class="nc-word"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></span></div>
+    <div class="lab">wordmark</div><div class="row"><span class="nc-word" style="font-size:44px"><span class="nc-word-a">node</span><span class="nc-word-b">chess</span></span></div>
+    <div class="lab">specimen, hover the left one to send the wave across, move the pointer over the right one to ripple from it</div><div class="row row-spec"><div class="spec"><svg class="nc-mark nc-mark--wave" viewBox="0 0 100 100" style="--nc-mark-size:240px" aria-hidden="true"><use href="#nc-mark"/></svg><b>wave</b></div><div class="spec"><svg class="nc-mark nc-mark--ripple" viewBox="0 0 100 100" style="--nc-mark-size:240px" aria-hidden="true"><use href="#nc-mark"/></svg><b>ripple</b></div></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var geometry = document.getElementById('nc-mark');
+  var VIEW = 100;             /* the mark is drawn in a 100 x 100 box */
+  var WAVE_SWEEP = 0.80;      /* seconds for the crest to cross the mark */
+  var RIPPLE_REACH = 62;      /* user units the ripple carries before it dies */
+  var RIPPLE_LAG = 0.78;      /* seconds the far edge trails the origin */
+  var RIPPLE_AMP = 2.2;       /* user units of lift at the origin */
+  var RIPPLE_PERIOD = 0.9;    /* matches --nc-ripple-period in brand.css */
+  var SETTLE = 460;           /* matches the --nc-ripple-gain transition */
+
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* A node sits at its centre. An edge answers for its midpoint, which keeps
+     it welded to the two nodes it joins while the surface flexes. */
+  function centre(el) {
+    if (el.tagName === 'circle') {
+      return [+el.getAttribute('cx'), +el.getAttribute('cy')];
+    }
+    return [
+      (+el.getAttribute('x1') + +el.getAttribute('x2')) / 2,
+      (+el.getAttribute('y1') + +el.getAttribute('y2')) / 2
+    ];
+  }
+
+  /* Swap the <use> for a live clone of the very same elements. Coordinates
+     are copied, never recomputed, so the mark is the mark. */
+  function hydrate(svg) {
+    var parts = [];
+    svg.textContent = '';
+    for (var i = 0; i < geometry.children.length; i++) {
+      var el = geometry.children[i].cloneNode(true);
+      var c = centre(el);
+      el.setAttribute('class', el.tagName === 'circle' ? 'nc-n' : 'nc-e');
+      el.style.setProperty('--nc-wave-delay', (c[0] / VIEW * WAVE_SWEEP).toFixed(3) + 's');
+      svg.appendChild(el);
+      parts.push({ el: el, x: c[0], y: c[1] });
+    }
+    return parts;
+  }
+
+  function wireRipple(svg, parts) {
+    var pending = null, frame = 0, settle = 0;
+
+    function write() {
+      frame = 0;
+      if (!pending || still.matches) return;
+      var ox = pending[0], oy = pending[1];
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        var dx = p.x - ox, dy = p.y - oy;
+        var reach = Math.sqrt(dx * dx + dy * dy) / RIPPLE_REACH;
+        if (reach > 1) reach = 1;
+        var fall = 1 - reach;
+        p.el.style.setProperty('--nc-ripple-fall', fall.toFixed(3));
+        p.el.style.setProperty('--nc-ripple-amp', (fall * RIPPLE_AMP).toFixed(3) + 'px');
+        p.el.style.setProperty('--nc-ripple-delay',
+          (reach * RIPPLE_LAG - RIPPLE_PERIOD).toFixed(3) + 's');
+      }
+    }
+
+    svg.addEventListener('pointermove', function (ev) {
+      var box = svg.getBoundingClientRect();
+      if (!box.width || !box.height) return;
+      pending = [
+        (ev.clientX - box.left) / box.width * VIEW,
+        (ev.clientY - box.top) / box.height * VIEW
+      ];
+      if (!frame) frame = window.requestAnimationFrame(write);
+    });
+
+    svg.addEventListener('pointerenter', function () {
+      window.clearTimeout(settle);
+      svg.classList.remove('nc-is-settling');
+      svg.classList.add('nc-is-live');
+    });
+
+    svg.addEventListener('pointerleave', function () {
+      svg.classList.remove('nc-is-live');
+      svg.classList.add('nc-is-settling');
+      settle = window.setTimeout(function () {
+        svg.classList.remove('nc-is-settling');
+      }, SETTLE);
+    });
+  }
+
+  var marks = document.querySelectorAll('.nc-mark--wave, .nc-mark--ripple');
+  for (var i = 0; i < marks.length; i++) {
+    var parts = hydrate(marks[i]);
+    if (marks[i].classList.contains('nc-mark--ripple')) wireRipple(marks[i], parts);
+  }
+}());
+</script>
+</body>
+</html>

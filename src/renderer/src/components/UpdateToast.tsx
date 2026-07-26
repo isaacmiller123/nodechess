@@ -86,7 +86,7 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
       </div>
       {phase === 'offer' && (
         <div className="update-toast-actions">
-          <button type="button" className="btn update-toast-cta" onClick={updateNow}>
+          <button type="button" className="btn" onClick={updateNow}>
             {status.state === 'ready' ? 'Restart & update' : 'Update now'}
           </button>
           <button type="button" className="btn ghost" onClick={later}>

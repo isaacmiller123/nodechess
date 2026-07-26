@@ -1,1784 +1,247 @@
-/* School accent: matches the rest of the app (blue). Completion/correct
-   states keep the success green via --school-done. */
-:root {
-  --school-accent: var(--accent);
-  --school-accent-soft: var(--accent-soft);
-}
-.school-view,
-.lesson-player,
-.school-player,
-.chapter-overview,
-.placement {
-  --school-accent: var(--accent);
-  --school-accent-soft: var(--accent-soft);
+/* SCHOOL.
+
+   The first block is design-lab/v1/school.html's own <style> block, lifted
+   verbatim (de-indented, text unchanged). Everything after it is the remainder:
+   surfaces the app genuinely has and that page genuinely does not draw. Nothing
+   else belongs in this file. Every other class the School renders is a shell.css
+   class used exactly as it is written there.
+
+   The old school.css, school-home.css and school-play.css are deleted. They
+   described a UI that no longer exists: a lesson top bar, a card stack, a
+   progress ring, a streak card, a typewriter bubble. v1 draws a lesson as a
+   board with a head over it and a coach beside it, and that is what ships. */
+
+/* ---------------------------------------------------------------------------
+   design-lab/v1/school.html, verbatim
+   --------------------------------------------------------------------------- */
+
+/* Four rules this page needs and shell.css does not have. All prefixed
+   .sch- so nothing can collide with a sibling page.
+
+   There is no page title class in the shell: every heading in it is a
+   .lbl over a section. A lesson has a name, and the name is the largest
+   thing in the column, so it needs one rule of its own.
+
+
+/* The lesson head takes the board's measure, so the chapter line, the
+   title and the question all start on the board's left edge instead of
+   40px to the left of it. .board-area supplies the gap under it. */
+.sch-head {
+  margin-bottom: var(--space-3);
 }
 
-/* Chess School: Duolingo-journey index + chess.com-Lessons player, on the app's
-   dark tokens. The index is a guided PATH: named tiers, a connected node line,
-   the current chapter as a hero card with a progress ring, completed chapters
-   compact with checkmarks, locked chapters dimmed (name-based hints only; the
-   internal Elo is NEVER rendered). School keeps its green accent (chess.com
-   feel) while the rest of the app stays blue. Tokens only: no hard-coded
-   color/space/radius outside tokens.css.
-
-   ┌──────────────────────────────────────────────────────────────────────┐
-   │ SHARED CONTRACT: the "Player chrome" sections further down (lesson-  │
-   │ top / lesson-progress / school-stage / lesson-card / school-tag /    │
-   │ school-primary / lesson-complete / test-* / placement*) are used by  │
-   │ segments.tsx, LessonPlayer.tsx, ChapterTest.tsx, PlacementFlow.tsx   │
-   │ and ViktorPanel.tsx. Do not rename or remove those classes.          │
-   └──────────────────────────────────────────────────────────────────────┘ */
-
-.school-view {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-7);
-  animation: fade-rise var(--dur-base) var(--ease-out) both;
-}
-
-/* ============================== Header band ============================== */
-/* Identity row (Viktor avatar + lede) with compact stat pills, then the two
-   home surfaces (Today / Recommended) side by side: see school-home.css. */
-.school-hero {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-}
-.school-hero-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-5);
-  flex-wrap: wrap;
-}
-.school-hero-id {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  min-width: 0;
-}
-.school-hero-avatar {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  flex: none;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--school-accent), color-mix(in srgb, var(--school-accent) 70%, #000));
-  color: #fff;
-  box-shadow: var(--shadow-sm);
-}
-.school-hero-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.school-hero-title {
-  margin: 0;
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-.school-lede {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  max-width: 62ch;
-}
-
-/* Compact stat pills */
-.school-stats {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-.school-stat {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 6px var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-}
-.school-stat-icon {
-  display: inline-flex;
-  color: var(--school-accent);
-}
-.school-stat-num {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-}
-.school-stat-label {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-.school-retake {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-secondary);
-  font: inherit;
-  font-size: var(--fs-xs);
+.sch-title {
+  margin-top: var(--space-2);
+  font-size: var(--fs-xl);
   font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-}
-.school-retake:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
 }
 
-/* ============================== Journey ============================== */
-.school-journey {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
+/* Below 1080 the shell drops .lesson to one column and holds .side to the
+   board's own measure, so Viktor lands on the same two edges as the
+   position he is talking about. That rule is in shell.css and applies to
+   every board page; this page adds nothing to it. */
+
+/* ---------------------------------------------------------------------------
+   Surfaces v1/school.html never drew
+   --------------------------------------------------------------------------- */
+
+/* The turn chip is white in shell.css. Black needs the other one. v1 hit this
+   on openings.html and answered it with a page-prefixed class; this is that
+   rule under this page's prefix. The mockup only ever drew White to move. */
+.sch-turn-b {
+  background: var(--piece-black);
 }
 
-/* ---- Tier section: header card + its stretch of the path ---- */
-.school-tier {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  animation: fade-rise var(--dur-base) var(--ease-out) both;
-}
-.school-tier-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, var(--bg-subtle), var(--surface));
-}
-.school-tier-index {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  flex: none;
-  border-radius: var(--radius-md);
-  background: var(--school-accent-soft);
-  color: var(--school-accent);
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.02em;
-}
-.school-tier.is-complete .school-tier-index {
-  background: var(--success);
-  color: #fff;
-}
-.school-tier.is-locked .school-tier-index {
-  background: var(--surface-2);
-  color: var(--text-muted);
-}
-.school-tier-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1;
-  min-width: 0;
-}
-.school-tier-name {
-  margin: 0;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-}
-.school-tier.is-locked .school-tier-name {
-  color: var(--text-secondary);
-}
-.school-tier-blurb {
-  margin: 0;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  line-height: var(--lh-body);
-}
-.school-tier-meter {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex: none;
-}
-.school-tier-count {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-  font-variant-numeric: tabular-nums;
-}
-.school-tier.is-complete .school-tier-count {
-  color: var(--success);
-}
-.school-tier-bar {
-  width: 110px;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.school-tier-bar-fill {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--school-accent);
-  transition: width var(--dur-slow) var(--ease-out);
-}
-.school-tier-lock {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  color: var(--text-muted);
+/* v1 writes every row that navigates as an <a>. This app has no routes, so the
+   same rows are buttons, and a button is shrink-to-fit even when it is told to
+   be a grid. These two lines give the button form the width and the alignment
+   the anchor form got for free from being a block. Nothing else is touched. */
+button.go {
+  width: 100%;
+  text-align: left;
 }
 
-/* ---- The path: a vertical line threading node markers ---- */
-.school-path {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-.school-node {
-  position: relative;
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  column-gap: var(--space-4);
-  align-items: center;
-  padding: var(--space-2) 0;
-}
-/* Connector segments above/below each marker. Green up to (and into) the
-   current node; neutral beyond it. */
-.school-node::before,
-.school-node::after {
-  content: '';
+/* Viktor's square cues, as readable labels over the board (annotations.ts
+   supplies the text and the two percentages). Chessground's own shape labels
+   shrink multi-word text to an unreadable dot, so these are HTML pills sitting
+   on top of the board instead. v1's board carries no cue layer at all. */
+.sch-labels {
   position: absolute;
-  left: 24px;
-  width: 2px;
-  transform: translateX(-50%);
-  background: var(--border);
-}
-.school-node::before {
-  top: 0;
-  bottom: calc(50% + 24px);
-}
-.school-node::after {
-  top: calc(50% + 24px);
-  bottom: 0;
-}
-.school-node:first-child::before,
-.school-node:last-child::after {
-  display: none;
-}
-.school-node.is-done::before,
-.school-node.is-done::after,
-.school-node.is-current::before {
-  background: color-mix(in srgb, var(--success) 60%, var(--border));
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-board-overlay);
 }
 
-.school-node-marker {
-  position: relative;
-  z-index: 1;
-  justify-self: center;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
+.sch-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  max-width: 46%;
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  border: 2px solid var(--border);
-  color: var(--text-muted);
-}
-.school-node.is-done .school-node-marker {
-  background: var(--success);
-  border-color: var(--success);
-  color: #fff;
-}
-.school-node.is-current .school-node-marker {
-  background: var(--school-accent);
-  border-color: color-mix(in srgb, var(--school-accent) 45%, var(--surface));
-  color: #fff;
-  animation: school-node-pulse 2.4s var(--ease-in-out) infinite;
-}
-.school-node.is-open .school-node-marker {
   background: var(--surface);
-  border-color: color-mix(in srgb, var(--school-accent) 50%, var(--border));
+  border: var(--border-width) solid var(--border-strong);
+  box-shadow: var(--shadow-md);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.school-node-dot {
+
+/* The four cue colours are the board's brush colours, not chrome tokens: a cue
+   belongs to the position, so it must not move when the palette does. */
+.sch-label.is-good {
+  border-color: var(--brush-green);
+}
+
+.sch-label.is-bad {
+  border-color: var(--brush-red);
+}
+
+.sch-label.is-info {
+  border-color: var(--brush-blue);
+}
+
+.sch-label.is-focus {
+  border-color: var(--brush-yellow);
+}
+
+/* The move list is the one School surface with no end to it: a placement game
+   or a boss game keeps adding rows. The shell owns scrolling, so the list
+   scrolls inside its own panel rather than lengthening the aside and pushing
+   the board's column past the fold. Roughly ten pairs are in view and the move
+   in hand is kept there (MoveSection scrolls it into view). */
+.sch-moves {
+  max-height: 19rem;
+  overflow-y: auto;
+}
+
+/* The streak calendar. v1 has no repeated-unit strip anywhere, and a row of
+   days is the one thing on the School index that is not a list of names. One
+   cell is a day: a dot that is either studied or not, under its weekday. */
+.sch-days {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+}
+
+.sch-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.sch-day-dot {
   width: 10px;
   height: 10px;
   border-radius: var(--radius-pill);
-  background: var(--school-accent);
-}
-.school-node.is-locked .school-node-marker {
   background: var(--bg-subtle);
-  border-style: dashed;
-  color: var(--text-muted);
+  border: var(--border-width) solid var(--border-strong);
 }
-@keyframes school-node-pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--school-accent) 40%, transparent);
+
+.sch-day-dot.is-studied {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.sch-day-dot.is-today {
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ============================================================
+   PHONE. Everything below is inside the 720px query, the breakpoint shell.css
+   already uses to swap the rail for the tab bar, and every selector is scoped
+   to a lesson screen by :has(.sch-head), which only SchoolScene draws. No value
+   outside the query was touched, so a desktop window renders what it rendered
+   before, to the pixel.
+
+   THE FAULT, measured on lesson 1 of chapter 1 at 375x812 and 360x740. Viktor
+   is the right hand column on a desktop and the shell stacks him under the
+   board below 1080. At 375x812 the board ended at 626, the tab bar starts at
+   752, and the coach panel started at 748: you saw four pixels of the panel
+   edge and nothing else. At 360x740 he started at 769 with the bar at 680, so
+   he was 89px past the bottom of the screen. On the steps that set a task the
+   task line sat lower still, at 989 on a 740 tall phone. A lesson that hides
+   the coach is a broken lesson, and this one hid him on every phone.
+
+   Four things give the space back, in the order they were worth:
+
+   1. THE PANEL COMES BEFORE ITS HEADING and the task comes before Viktor. The
+      section head ("How the board is named", "1 of 4") is a caption, so on a
+      phone it reads under the thing it captions and the 38px it used to cost
+      go to the coach. Inside the panel the task is the line you act on, so it
+      leads and Viktor's paragraph follows it.
+   2. THE GAPS COME DOWN A STEP. Board to bar, bar to column: 24px each on a
+      desktop, one --space-3 each here.
+   3. THE HEAD IS COMPACT. The lesson name at --fs-lg rather than --fs-xl and
+      its one line of blurb at --fs-xs. Nothing is dropped: a phone gets the
+      same words in the phone's type scale.
+   4. THE BOARD GIVES UP THE LAST OF IT. This is the one screen in the app
+      where the furniture could not be cut far enough on its own: a 336px board
+      plus a 112px head plus the bar leaves about 30px of a 535px screen for
+      the coach, and Viktor's name alone is 30. shell.css exposes --board-measure
+      for exactly this, so the lesson board reads min(100%, 36vh) here and only
+      here. On a 740 tall phone that is 266 rather than 336; on an 844 it is
+      304 rather than 366. It is set as the VARIABLE: no width, no max-width and
+      no aspect-ratio is restated on .board-wrap anywhere in this file.
+   ============================================================ */
+
+@media (max-width: 720px) {
+  /* The one place in this feature that sets the measure, and it sets the
+     variable rather than restating width, max-width or aspect-ratio. */
+  .lesson:has(.sch-head) .board-area {
+    --board-measure: min(100%, 36vh);
+    gap: var(--space-3);
   }
-  70%,
-  100% {
-    box-shadow: 0 0 0 12px transparent;
+
+  .lesson:has(.sch-head) .boardbar {
+    margin-top: var(--space-3);
   }
-}
 
-/* Small mono chapter number shared by the compact rows */
-.school-node-order {
-  flex: none;
-  min-width: 26px;
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---- Hero: the current chapter ---- */
-.school-current-card {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-6);
-  width: 100%;
-  margin: var(--space-2) 0;
-  padding: var(--space-6) var(--space-7);
-  text-align: left;
-  font: inherit;
-  color: var(--text-primary);
-  cursor: pointer;
-  border: 1px solid color-mix(in srgb, var(--school-accent) 40%, var(--border));
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(
-      130% 160% at 0% 0%,
-      color-mix(in srgb, var(--school-accent) 12%, transparent),
-      transparent 58%
-    ),
-    var(--surface);
-  box-shadow: var(--shadow-md);
-  transition:
-    transform var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-}
-.school-current-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-  border-color: color-mix(in srgb, var(--school-accent) 60%, var(--border));
-}
-.school-current-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 0;
-}
-.school-current-eyebrow {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--school-accent);
-}
-.school-current-title {
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-  line-height: var(--lh-tight);
-  color: var(--text-primary);
-}
-.school-current-sub {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  line-height: var(--lh-body);
-}
-.school-card-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-  flex-wrap: wrap;
-  margin-top: var(--space-1);
-}
-.school-card-fact {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-.school-current-cta {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 44px;
-  padding: 0 var(--space-6);
-  border-radius: var(--radius-md);
-  background: var(--school-accent);
-  color: #fff;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  box-shadow: var(--shadow-sm);
-  transition: background var(--dur-fast) var(--ease-out);
-}
-.school-current-card:hover .school-current-cta {
-  background: color-mix(in srgb, var(--school-accent) 88%, #fff);
-}
-
-/* ---- Completed: compact row with a checkmark ---- */
-.school-done-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  width: 100%;
-  padding: var(--space-3) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--school-accent) 4%, var(--surface));
-  color: var(--text-primary);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-.school-done-card:hover {
-  border-color: color-mix(in srgb, var(--school-accent) 45%, var(--border));
-  transform: translateX(2px);
-}
-.school-done-title {
-  flex: 1;
-  min-width: 0;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.school-done-boss {
-  flex: none;
-  display: inline-flex;
-  color: var(--warning);
-}
-.school-done-cta {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  color: var(--text-muted);
-  transition: color var(--dur-fast) var(--ease-out);
-}
-.school-done-card:hover .school-done-cta {
-  color: var(--school-accent);
-}
-
-/* ---- Open: unlocked but neither current nor completed ---- */
-.school-open-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  width: 100%;
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-.school-open-card:hover {
-  border-color: color-mix(in srgb, var(--school-accent) 45%, var(--border));
-  box-shadow: var(--shadow-sm);
-  transform: translateX(2px);
-}
-.school-open-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.school-open-title {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.school-open-progress {
-  display: block;
-  width: min(240px, 100%);
-  height: 5px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.school-open-progress-fill {
-  display: block;
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--school-accent);
-  transition: width var(--dur-base) var(--ease-out);
-}
-.school-open-cta {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  color: var(--school-accent);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---- Locked: dimmed, dashed, name-based hint (never an Elo) ---- */
-.school-node.is-locked {
-  opacity: 0.72;
-}
-.school-locked-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  width: 100%;
-  padding: var(--space-3) var(--space-5);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-md);
-  background: transparent;
-}
-.school-locked-title {
-  flex: 1;
-  min-width: 0;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.school-locked-hint {
-  flex: none;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-
-/* ============================== Progress ring ============================== */
-.school-ring {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-}
-.school-ring svg {
-  display: block;
-}
-.school-ring-track {
-  fill: none;
-  stroke: var(--surface-2);
-}
-.school-ring-fill {
-  fill: none;
-  stroke: var(--school-accent);
-  stroke-linecap: round;
-  transition: stroke-dashoffset var(--dur-slow) var(--ease-out);
-}
-.school-ring-label {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  color: var(--school-accent);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ============================== Skeletons ============================== */
-/* Base shimmer block. Also used by TodayCard (school-home.css) and the
-   ChapterPlayer loading state: keep the class name stable. */
-.school-skel {
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  animation: school-skel 1.1s var(--ease-in-out) infinite alternate;
-}
-@keyframes school-skel {
-  from {
-    opacity: 0.45;
+  .lesson:has(.sch-head) {
+    gap: var(--space-3);
   }
-  to {
-    opacity: 0.9;
+
+  /* The head keeps every word and spends fewer pixels on them. */
+  .lesson:has(.sch-head) .sch-title {
+    margin-top: 0;
+    font-size: var(--fs-lg);
   }
-}
-.school-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-7);
-}
-.skel-surface {
-  height: 150px;
-  border-radius: var(--radius-lg);
-}
-.skel-tier {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-.skel-tier-head {
-  height: 66px;
-  border-radius: var(--radius-lg);
-}
-.skel-hero {
-  height: 132px;
-  border-radius: var(--radius-lg);
-}
-.skel-row {
-  height: 48px;
-}
-/* ChapterPlayer's overview skeleton */
-.chapter-skeleton {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
 
-/* ============================== Empty state ============================== */
-.school-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-3);
-  padding: var(--space-10) var(--space-6);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-lg);
-}
-.school-state-icon {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-pill);
-  background: var(--school-accent-soft);
-  color: var(--school-accent);
-}
-.school-state-title {
-  margin: 0;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-}
-.school-state .muted {
-  margin: 0;
-  max-width: 48ch;
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   PLAYER CHROME: SHARED CONTRACT with segments.tsx / LessonPlayer.tsx /
-   ChapterTest.tsx / PlacementFlow.tsx / ViktorPanel.tsx. Class names below
-   must not change.
-   ══════════════════════════════════════════════════════════════════════════ */
-.lesson-player {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  height: 100%;
-}
-
-/* Top bar: back · progress · chapter label */
-.lesson-top {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-.lesson-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex: none;
-  padding: 7px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  cursor: pointer;
-  transition: all var(--dur-fast) var(--ease-out);
-}
-.lesson-back:hover {
-  border-color: var(--border-strong);
-  color: var(--text-primary);
-}
-.lesson-progress {
-  flex: 1;
-  height: 8px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.lesson-progress-fill {
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--school-accent);
-  transition: width var(--dur-slow) var(--ease-out);
-}
-.lesson-top-label {
-  flex: none;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-secondary);
-}
-
-/* Board (large) + instruction card */
-.school-stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 384px;
-  gap: var(--space-8);
-  align-items: start;
-}
-.school-board-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  min-width: 0;
-}
-.school-board-col .board-wrap {
-  width: min(68vh, 100%);
-  box-shadow: var(--shadow-md);
-}
-.school-board-skeleton {
-  position: absolute;
-  inset: 0;
-  background: var(--surface-2);
-}
-.school-board-controls {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  justify-content: center;
-  min-height: 36px;
-}
-.school-missing {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-}
-
-/* ----------------------- Instruction card ----------------------- */
-.lesson-card {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-  min-height: 340px;
-}
-.lesson-instructor {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--border);
-  background: var(--bg-subtle);
-}
-.lesson-instructor-avatar {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  flex: none;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--school-accent), color-mix(in srgb, var(--school-accent) 70%, #000));
-  color: #fff;
-  box-shadow: var(--shadow-sm);
-}
-.lesson-instructor-id {
-  display: flex;
-  flex-direction: column;
-  line-height: var(--lh-tight);
-}
-.lesson-instructor-name {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-}
-.lesson-instructor-role {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-.lesson-card-body {
-  flex: 1;
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  overflow: auto;
-}
-.lesson-step-title {
-  margin: 0;
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-}
-.lesson-text {
-  margin: 0;
-  font-size: var(--fs-md);
-  line-height: 1.6;
-  color: var(--text-primary);
-}
-.lesson-card-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-5) var(--space-6) var(--space-6);
-  border-top: 1px solid var(--border);
-}
-
-/* Step meta + feedback chips */
-.school-step-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.school-step-count {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  margin-right: auto;
-}
-.school-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-}
-.school-tag.is-task {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.school-tag.is-good {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.school-tag.is-wrong {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-.school-tag.is-boss {
-  background: var(--warning-soft);
-  color: var(--warning);
-}
-.school-boss-facts,
-.school-boss-result {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-/* Big green primary action (chess.com signature); ghost secondary. */
-.school-primary {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 46px;
-  font-size: var(--fs-md);
-  font-weight: var(--fw-bold);
-  background: var(--school-accent);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-}
-.school-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--school-accent) 88%, #fff);
-}
-.school-primary:active:not(:disabled) {
-  transform: translateY(1px);
-}
-.school-secondary {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-/* Single-column stage (overview, results, MC-without-board, completion cards). */
-.school-stage-single {
-  grid-template-columns: minmax(0, 560px);
-  justify-content: center;
-}
-
-/* Skip / tertiary action under the primary button. */
-.school-skip {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-}
-.school-skip:hover {
-  color: var(--text-secondary);
-}
-
-/* ===================== Chapter overview (owned by ChapterOverview.tsx) ===================== */
-.chapter-overview {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  animation: fade-rise var(--dur-base) var(--ease-out) both;
-}
-
-/* Hero: identity + facts + concept chips, progress ring on the right. */
-.chapter-hero {
-  flex: none;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-7);
-  padding: var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(
-      120% 150% at 0% 0%,
-      color-mix(in srgb, var(--school-accent) 12%, transparent),
-      transparent 60%
-    ),
-    var(--surface);
-  position: relative;
-  overflow: hidden;
-}
-.chapter-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: var(--school-accent);
-}
-.chapter-hero-main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 0;
-}
-.chapter-hero-eyebrow {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--school-accent);
-}
-.chapter-hero-title {
-  margin: 0;
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-}
-.chapter-hero-sub {
-  margin: 0;
-  max-width: 64ch;
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  line-height: var(--lh-body);
-}
-.chapter-hero-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-5);
-  margin-top: var(--space-2);
-}
-.chapter-hero-fact {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-.chapter-hero-fact.is-passed {
-  color: var(--success);
-  font-weight: var(--fw-semibold);
-}
-.chapter-hero-concepts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-.concept-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-}
-.concept-chip svg {
-  flex: none;
-  color: var(--school-accent);
-}
-.concept-chip.is-more {
-  background: transparent;
-  border-style: dashed;
-  color: var(--text-muted);
-}
-.chapter-hero-ring {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-}
-.chapter-hero-ring .school-ring-label {
-  font-size: var(--fs-lg);
-}
-.chapter-hero-ring-caption {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ---- Lesson timeline: nodes on a connected vertical line ---- */
-.lesson-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-.lesson-node {
-  position: relative;
-  display: grid;
-  grid-template-columns: 44px minmax(0, 1fr);
-  column-gap: var(--space-4);
-  align-items: center;
-  padding: var(--space-2) 0;
-}
-.lesson-node::before,
-.lesson-node::after {
-  content: '';
-  position: absolute;
-  left: 22px;
-  width: 2px;
-  transform: translateX(-50%);
-  background: var(--border);
-}
-.lesson-node::before {
-  top: 0;
-  bottom: calc(50% + 21px);
-}
-.lesson-node::after {
-  top: calc(50% + 21px);
-  bottom: 0;
-}
-.lesson-node:first-child::before,
-.lesson-node:last-child::after {
-  display: none;
-}
-.lesson-node.is-done::before,
-.lesson-node.is-done::after,
-.lesson-node.is-next::before,
-.lesson-node.is-capstone.is-passed::before {
-  background: color-mix(in srgb, var(--success) 60%, var(--border));
-}
-.lesson-node-marker {
-  position: relative;
-  z-index: 1;
-  justify-self: center;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  border: 2px solid var(--border);
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-}
-.lesson-node.is-done .lesson-node-marker {
-  background: var(--success);
-  border-color: var(--success);
-  color: #fff;
-}
-.lesson-node.is-next .lesson-node-marker {
-  background: var(--surface);
-  border-color: var(--school-accent);
-  color: var(--school-accent);
-  box-shadow: 0 0 0 4px var(--school-accent-soft);
-}
-.lesson-node.is-locked {
-  opacity: 0.72;
-}
-.lesson-node.is-locked .lesson-node-marker {
-  background: var(--bg-subtle);
-  border-style: dashed;
-  color: var(--text-muted);
-}
-.lesson-node.is-capstone .lesson-node-marker {
-  background: var(--warning-soft);
-  border-color: color-mix(in srgb, var(--warning) 55%, var(--border));
-  color: var(--warning);
-}
-.lesson-node.is-capstone.is-passed .lesson-node-marker {
-  background: var(--success);
-  border-color: var(--success);
-  color: #fff;
-}
-
-/* Lesson rows */
-.lesson-row {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  text-align: left;
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-.lesson-row:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
-  transform: translateX(2px);
-}
-.lesson-row.is-done {
-  background: color-mix(in srgb, var(--success) 4%, var(--surface));
-}
-.lesson-row.is-next {
-  border-color: color-mix(in srgb, var(--school-accent) 45%, var(--border));
-  box-shadow: var(--shadow-sm);
-}
-.lesson-row.is-next:hover {
-  border-color: color-mix(in srgb, var(--school-accent) 65%, var(--border));
-}
-.lesson-row.is-locked {
-  cursor: default;
-  background: transparent;
-  border-style: dashed;
-}
-.lesson-row.is-locked:hover {
-  border-color: var(--border);
-  box-shadow: none;
-  transform: none;
-}
-.lesson-row-body {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 0;
-}
-.lesson-row-titleline {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-.lesson-row-title {
-  font-size: var(--fs-md);
-  font-weight: var(--fw-semibold);
-}
-.lesson-row-summary {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-body);
-}
-.lesson-row-cta {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  color: var(--school-accent);
-}
-.lesson-row-cta.is-muted {
-  color: var(--text-muted);
-}
-.lesson-next-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 9px;
-  border-radius: var(--radius-pill);
-  background: var(--school-accent);
-  color: #fff;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-}
-
-/* Kind chips */
-.kind-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 9px;
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-}
-.kind-chip svg {
-  flex: none;
-}
-.kind-opening,
-.kind-variation {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.kind-tactics,
-.kind-practice {
-  background: var(--warning-soft);
-  color: var(--warning);
-}
-.kind-concept,
-.kind-positional {
-  background: var(--school-accent-soft);
-  color: var(--school-accent);
-}
-.kind-endgame {
-  background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
-  color: var(--text-secondary);
-}
-.kind-warmup,
-.kind-cooldown {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-.kind-chip.is-test {
-  background: var(--warning-soft);
-  color: var(--warning);
-}
-
-/* ---- Capstone: the chapter test as a distinct card ---- */
-.capstone-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  min-width: 0;
-}
-.capstone-card {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  text-align: left;
-  font: inherit;
-  color: var(--text-primary);
-  cursor: pointer;
-  margin-top: var(--space-2);
-  padding: var(--space-6) var(--space-7);
-  border: 1px dashed color-mix(in srgb, var(--warning) 40%, var(--border));
-  border-radius: var(--radius-lg);
-  background:
-    radial-gradient(
-      130% 170% at 100% 0%,
-      color-mix(in srgb, var(--warning) 10%, transparent),
-      transparent 55%
-    ),
-    var(--surface);
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-}
-.capstone-card:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--warning) 60%, var(--border));
-}
-.capstone-card.is-ready {
-  border-style: solid;
-  box-shadow: var(--shadow-sm);
-}
-.capstone-card.is-passed {
-  border: 1px solid color-mix(in srgb, var(--success) 45%, var(--border));
-  background:
-    radial-gradient(
-      130% 170% at 100% 0%,
-      color-mix(in srgb, var(--success) 10%, transparent),
-      transparent 55%
-    ),
-    var(--surface);
-}
-.capstone-card.is-passed:hover {
-  border-color: color-mix(in srgb, var(--success) 65%, var(--border));
-}
-.capstone-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-.capstone-titles {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.capstone-eyebrow {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--warning);
-}
-.capstone-card.is-passed .capstone-eyebrow {
-  color: var(--success);
-}
-.capstone-title {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.01em;
-}
-.capstone-best {
-  flex: none;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  background: var(--warning-soft);
-  color: var(--warning);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-}
-.capstone-best.is-passed {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.capstone-sub {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  line-height: var(--lh-body);
-}
-.capstone-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-5);
-}
-.capstone-fact {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-.capstone-cta {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 var(--space-6);
-  margin-top: var(--space-1);
-  border-radius: var(--radius-md);
-  background: var(--warning);
-  color: #fff;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  box-shadow: var(--shadow-sm);
-  transition: background var(--dur-fast) var(--ease-out);
-}
-.capstone-card:hover .capstone-cta {
-  background: color-mix(in srgb, var(--warning) 88%, #fff);
-}
-.capstone-card.is-passed .capstone-cta {
-  background: var(--success);
-}
-.capstone-card.is-passed:hover .capstone-cta {
-  background: color-mix(in srgb, var(--success) 88%, #fff);
-}
-.test-hint {
-  margin: 0;
-}
-
-/* ===================== Lesson player rail + completion (SHARED) ===================== */
-.lesson-segment-rail {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.lesson-seg-dot {
-  width: 26px;
-  height: 5px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  transition: background var(--dur-base) var(--ease-out);
-}
-.lesson-seg-dot.is-done {
-  background: var(--success);
-}
-.lesson-seg-dot.is-active {
-  background: color-mix(in srgb, var(--school-accent) 55%, var(--surface-2));
-}
-
-.lesson-complete-card,
-.test-result-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-4);
-  padding: var(--space-9) var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-}
-.lesson-complete-icon {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--success), color-mix(in srgb, var(--success) 70%, #000));
-  color: #fff;
-  box-shadow: var(--shadow-sm);
-}
-.lesson-complete-title {
-  margin: 0;
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-}
-.lesson-complete-sub {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  max-width: 44ch;
-}
-.lesson-complete-btn {
-  margin-top: var(--space-2);
-  max-width: 280px;
-}
-
-/* ===================== Test result (SHARED with ChapterTest.tsx) ===================== */
-.test-result-card.is-pass {
-  border-color: color-mix(in srgb, var(--school-accent) 45%, var(--border));
-}
-.test-result-card.is-fail {
-  border-color: color-mix(in srgb, var(--danger) 35%, var(--border));
-}
-/* Neutral states: recording-in-flight and record-failed. No verdict tint. */
-.test-result-card.is-pending {
-  border-color: var(--border);
-}
-.test-result-card.is-pending .test-result-icon {
-  background: var(--surface-2);
-  color: var(--text-muted);
-}
-.test-result-icon {
-  display: grid;
-  place-items: center;
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-pill);
-  color: #fff;
-}
-.test-result-card.is-pass .test-result-icon {
-  background: var(--school-accent);
-}
-.test-result-card.is-fail .test-result-icon {
-  background: var(--danger);
-}
-.test-result-title {
-  margin: 0;
-  font-size: var(--fs-xl);
-  font-weight: var(--fw-bold);
-}
-.test-result-score {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-.test-result-pct {
-  font-size: 44px;
-  font-weight: var(--fw-bold);
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.test-result-card.is-pass .test-result-pct {
-  color: var(--school-accent);
-}
-.test-result-card.is-fail .test-result-pct {
-  color: var(--danger);
-}
-.test-result-frac {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-.test-result-best {
-  margin-top: var(--space-2);
-}
-.test-result-msg {
-  margin: 0;
-  max-width: 48ch;
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  line-height: var(--lh-body);
-}
-.test-result-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  width: 100%;
-  max-width: 320px;
-  margin-top: var(--space-2);
-}
-.test-result-actions .btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-}
-
-/* ===================== Test questions (SHARED with ChapterTest.tsx) ===================== */
-.test-mc-options {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.test-mc-option {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  text-align: left;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  color: var(--text-primary);
-  font: inherit;
-  cursor: pointer;
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.test-mc-option:hover:not(:disabled) {
-  border-color: var(--school-accent);
-  background: var(--school-accent-soft);
-}
-.test-mc-option:disabled {
-  cursor: default;
-  opacity: 0.7;
-}
-.test-mc-option.is-selected {
-  border-color: var(--school-accent);
-  background: var(--school-accent-soft);
-  opacity: 1;
-}
-.test-mc-key {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background: var(--surface-2);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  color: var(--text-secondary);
-}
-.test-mc-option.is-selected .test-mc-key {
-  background: var(--school-accent);
-  color: #fff;
-}
-.test-mc-text {
-  font-size: var(--fs-md);
-  line-height: var(--lh-tight);
-}
-
-.test-judge-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-}
-.test-judge-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  height: 46px;
-  font-weight: var(--fw-bold);
-  border-radius: var(--radius-md);
-  color: #fff;
-  border: none;
-}
-.test-judge-btn.is-correct {
-  background: var(--success);
-}
-.test-judge-btn.is-correct:hover {
-  background: color-mix(in srgb, var(--success) 88%, #fff);
-}
-.test-judge-btn.is-blunder {
-  background: var(--danger);
-}
-.test-judge-btn.is-blunder:hover {
-  background: color-mix(in srgb, var(--danger) 88%, #fff);
-}
-
-/* ----------------------------- Placement game (SHARED with PlacementFlow.tsx) ----------------------------- */
-.placement {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: var(--space-8) 0;
-}
-.placement-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
-  max-width: 560px;
-}
-.placement-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.placement-title {
-  font-size: var(--fs-2xl);
-  font-weight: var(--fw-bold);
-  color: var(--text-primary);
-  margin: 0;
-  line-height: 1.2;
-}
-.placement-lede {
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  line-height: 1.6;
-  margin: 0;
-}
-.placement-cta {
-  margin-top: var(--space-2);
-}
-.placement-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  margin-top: var(--space-2);
-}
-.spin {
-  animation: school-spin 0.9s linear infinite;
-}
-@keyframes school-spin {
-  to {
-    transform: rotate(360deg);
+  .lesson:has(.sch-head) .sch-head .sec-note {
+    margin-bottom: 0;
+    font-size: var(--fs-xs);
   }
-}
 
-/* ============================== Responsive ============================== */
-@media (max-width: 1080px) {
-  .school-stage {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
+  /* Viktor's panel first, its caption under it. */
+  .lesson:has(.sch-head) > .side > .sec:first-child {
+    display: flex;
+    flex-direction: column;
   }
-  .school-stage-single {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .lesson-card {
-    min-height: 0;
-  }
-}
 
-@media (max-width: 940px) {
-  /* Hero card: ring + copy on top, full-width CTA below. */
-  .school-current-card {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-5);
+  .lesson:has(.sch-head) > .side > .sec:first-child > .sec-head {
+    order: 1;
+    margin: var(--space-3) 0 0;
+    padding-bottom: 0;
   }
-  .school-current-cta {
-    grid-column: 1 / -1;
-    width: 100%;
+
+  /* The task leads the panel: it is the line you act on, and on a phone it was
+     the last thing in it. */
+  .lesson:has(.sch-head) .coach {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
   }
-  /* Overview hero: ring rides above the copy. */
-  .chapter-hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-5);
-  }
-  .chapter-hero-ring {
+
+  .lesson:has(.sch-head) .coach > .task {
     order: -1;
-    flex-direction: row;
-    align-self: flex-start;
-    gap: var(--space-4);
-  }
-}
-
-@media (max-width: 700px) {
-  .school-locked-hint {
-    display: none;
-  }
-  .school-node {
-    grid-template-columns: 40px minmax(0, 1fr);
-  }
-  .school-node::before,
-  .school-node::after {
-    left: 20px;
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+    padding: var(--space-3) var(--space-4);
   }
 }

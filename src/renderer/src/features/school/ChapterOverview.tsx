@@ -1,25 +1,8 @@
-import type { JSX, ReactNode } from 'react'
-import {
-  ArrowLeft,
-  BookOpen,
-  Castle,
-  Check,
-  ChevronRight,
-  ClipboardCheck,
-  Clock,
-  Crosshair,
-  Flame,
-  GraduationCap,
-  Layers,
-  Lock,
-  RotateCcw,
-  Snowflake,
-  Swords,
-  Target,
-  Trophy
-} from 'lucide-react'
+import type { JSX } from 'react'
 import { MAX_ATTEMPTS } from '@shared/types'
 import type { SchoolChapter, SchoolLesson, SchoolLessonKind } from '@shared/types'
+import { useReadoutSlot } from '../../components/Layout'
+import { Icon, pad } from './SchoolScene'
 
 export interface ChapterOverviewProps {
   chapter: SchoolChapter
@@ -32,64 +15,27 @@ export interface ChapterOverviewProps {
   onOpenTest: () => void
 }
 
-/**
- * Shared circular progress indicator (also used by the School index hero card;
- * this file is the import leaf, so SchoolView can pull it without a cycle).
- * Pure SVG on design tokens; label defaults to the rounded percentage.
- */
-export function ProgressRing({
-  pct,
-  size = 72,
-  stroke = 6,
-  label
-}: {
-  pct: number
-  size?: number
-  stroke?: number
-  label?: ReactNode
-}): JSX.Element {
-  const clamped = Math.min(1, Math.max(0, pct))
-  const r = (size - stroke) / 2
-  const c = 2 * Math.PI * r
-  return (
-    <span
-      className="school-ring"
-      style={{ width: size, height: size }}
-      role="progressbar"
-      aria-valuenow={Math.round(clamped * 100)}
-      aria-valuemin={0}
-      aria-valuemax={100}
-    >
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-hidden>
-        <circle
-          className="school-ring-track"
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          strokeWidth={stroke}
-        />
-        <circle
-          className="school-ring-fill"
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          strokeWidth={stroke}
-          strokeDasharray={c}
-          strokeDashoffset={c * (1 - clamped)}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </svg>
-      <span className="school-ring-label">{label ?? `${Math.round(clamped * 100)}%`}</span>
-    </span>
-  )
+const KIND_LABEL: Record<SchoolLessonKind, string> = {
+  warmup: 'Warm-up',
+  concept: 'Concept',
+  opening: 'Opening',
+  variation: 'Variation',
+  tactics: 'Tactics',
+  positional: 'Positional',
+  endgame: 'Endgame',
+  practice: 'Practice',
+  cooldown: 'Cool-down'
 }
 
 /**
- * Chapter overview. A rich hero (progress ring + concept chips) above the
- * lesson TIMELINE: each lesson is a node on a connected vertical path (done →
- * check, next → highlighted, later → locked until the one before is finished),
- * capped by the Chapter Test as a distinct capstone card. The test stays
- * takeable at any time (per spec it only LOOKS gated until the lessons are done).
+ * The chapter, before you are inside a lesson. v1 never drew this screen, so it
+ * is built out of the same parts its lesson page is: the .sch-head that names
+ * the thing, a list of rows on the left, and the chapter's own facts on the
+ * right. A lesson is a .go row, because a row that takes you somewhere is what
+ * .go is; its state is written in the same .lbl v1 uses for Now and Locked.
+ *
+ * The test is takeable at any point in the chapter (SCHOOL-SPEC §1 and §4), so
+ * nothing here gates it and no copy claims it opens later.
  */
 export function ChapterOverview({
   chapter,
@@ -102,214 +48,162 @@ export function ChapterOverview({
   const lessons = chapter.lessons ?? []
   const doneCount = lessons.filter((l) => doneLessonIds.has(l.id)).length
   const allDone = lessons.length > 0 && doneCount === lessons.length
-  const pct = lessons.length > 0 ? doneCount / lessons.length : 0
   // Sequential unlock: the completed lessons plus the FIRST not-yet-done lesson are
   // open; everything after that is locked until you finish the one before it.
   const firstIncomplete = lessons.findIndex((l) => !doneLessonIds.has(l.id))
+  const nextLesson = firstIncomplete >= 0 ? lessons[firstIncomplete] : undefined
 
   const concepts = chapter.concepts ?? []
   const shownConcepts = concepts.slice(0, 8)
   const extraConcepts = concepts.length - shownConcepts.length
   const threshold = Math.round((chapter.test?.passThreshold ?? 0.7) * 100)
 
-  return (
-    <div className="chapter-overview">
-      <header className="lesson-top">
-        <button className="lesson-back" onClick={onBack}>
-          <ArrowLeft size={16} /> Chapters
-        </button>
-        <div className="lesson-progress" aria-hidden>
-          <div className="lesson-progress-fill" style={{ width: `${Math.round(pct * 100)}%` }} />
-        </div>
-        <span className="lesson-top-label">
-          {doneCount} / {lessons.length} lessons
-        </span>
-      </header>
+  useReadoutSlot(
+    nextLesson
+      ? `${doneCount > 0 ? 'Continue' : 'Start'} with ${nextLesson.title}`
+      : chapter.test && !test.passed
+        ? 'Take the chapter test'
+        : null,
+    lessons.length > 0 ? doneCount / lessons.length : null
+  )
 
-      {/* ---------------- Hero: identity + facts + concepts + progress ring ---------------- */}
-      <div className="chapter-hero">
-        <div className="chapter-hero-main">
-          <span className="chapter-hero-eyebrow">Chapter {chapter.order}</span>
-          <h1 className="chapter-hero-title">{chapter.title}</h1>
-          <p className="chapter-hero-sub">{chapter.subtitle}</p>
-          <div className="chapter-hero-facts">
-            <span className="chapter-hero-fact">
-              <BookOpen size={15} /> {lessons.length} lesson{lessons.length === 1 ? '' : 's'}
-            </span>
-            <span className="chapter-hero-fact">
-              <Clock size={15} /> ~{chapter.estMinutes} min
-            </span>
-            {test.passed && (
-              <span className="chapter-hero-fact is-passed">
-                <ClipboardCheck size={15} /> Test passed
-              </span>
-            )}
+  return (
+    <div className="home">
+      <div>
+        <div className="sch-head">
+          <div className="lbl">
+            {`Ch ${pad(chapter.order)} · ${lessons.length} lesson${lessons.length === 1 ? '' : 's'} · ~${chapter.estMinutes} min`}
           </div>
-          {shownConcepts.length > 0 && (
-            <div className="chapter-hero-concepts" aria-label="Concepts taught in this chapter">
-              {shownConcepts.map((c) => (
-                <span key={c.id} className="concept-chip" title={c.short}>
-                  <GraduationCap size={12} aria-hidden /> {c.name}
-                </span>
-              ))}
-              {extraConcepts > 0 && <span className="concept-chip is-more">+{extraConcepts} more</span>}
-            </div>
-          )}
+          <h1 className="sch-title">{chapter.title}</h1>
+          {chapter.subtitle && <p className="sec-note">{chapter.subtitle}</p>}
         </div>
-        <div className="chapter-hero-ring">
-          <ProgressRing pct={pct} size={96} stroke={8} />
-          <span className="chapter-hero-ring-caption num">
-            {doneCount} / {lessons.length} lessons
-          </span>
-        </div>
+
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Lessons</h2>
+            <span className="sec-count">
+              {doneCount} of {lessons.length} done
+            </span>
+          </div>
+          <div className="panel golist">
+            {lessons.map((lesson, i) => {
+              const done = doneLessonIds.has(lesson.id)
+              const isNext = i === firstIncomplete
+              const locked = firstIncomplete !== -1 && i > firstIncomplete
+              const kind = KIND_LABEL[lesson.kind] ?? lesson.kind
+              const sub = locked
+                ? 'Finish the lesson before it to open this one.'
+                : lesson.summary
+                  ? `${kind} · ${lesson.summary}`
+                  : kind
+
+              if (locked) {
+                return (
+                  <div className="go" key={lesson.id} aria-disabled>
+                    <span>
+                      <span className="go-name">
+                        {pad(i + 1)} {lesson.title}
+                      </span>
+                      <span className="go-sub">{sub}</span>
+                    </span>
+                    <span className="lbl">Locked</span>
+                  </div>
+                )
+              }
+
+              return (
+                <button
+                  className={`go${isNext ? ' row is-here' : ''}`}
+                  type="button"
+                  key={lesson.id}
+                  onClick={() => onOpenLesson(lesson)}
+                >
+                  <span>
+                    <span className="go-name">
+                      {pad(i + 1)} {lesson.title}
+                    </span>
+                    <span className="go-sub">{sub}</span>
+                  </span>
+                  {done ? (
+                    <span className="lbl">Done</span>
+                  ) : (
+                    <Icon id="i-arrow" className="icon go-arrow" />
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </section>
       </div>
 
-      {/* ---------------- Lesson timeline ---------------- */}
-      <ol className="lesson-list">
-        {lessons.map((lesson, i) => {
-          const done = doneLessonIds.has(lesson.id)
-          const isNext = i === firstIncomplete
-          const locked = firstIncomplete !== -1 && i > firstIncomplete
-          const nodeClass = `lesson-node${done ? ' is-done' : ''}${isNext ? ' is-next' : ''}${
-            locked ? ' is-locked' : ''
-          }`
-
-          // ----- Locked: finish the previous lesson first. Not interactive. -----
-          if (locked) {
-            return (
-              <li key={lesson.id} className={nodeClass}>
-                <span className="lesson-node-marker" aria-hidden>
-                  <Lock size={13} />
-                </span>
-                <div className="lesson-row is-locked" aria-disabled>
-                  <span className="lesson-row-body">
-                    <span className="lesson-row-titleline">
-                      <span className="lesson-row-title">{lesson.title}</span>
-                      <KindChip kind={lesson.kind} />
-                    </span>
-                    <span className="lesson-row-summary">Finish the previous lesson to unlock.</span>
-                  </span>
-                  <span className="lesson-row-cta is-muted">
-                    <Lock size={14} />
-                  </span>
-                </div>
-              </li>
-            )
-          }
-
-          return (
-            <li key={lesson.id} className={nodeClass}>
-              <span className="lesson-node-marker" aria-hidden>
-                {done ? <Check size={15} /> : i + 1}
-              </span>
-              <button
-                type="button"
-                className={`lesson-row${done ? ' is-done' : ''}${isNext ? ' is-next' : ''}`}
-                onClick={() => onOpenLesson(lesson)}
-              >
-                <span className="lesson-row-body">
-                  <span className="lesson-row-titleline">
-                    {isNext && <span className="lesson-next-chip">Up next</span>}
-                    <span className="lesson-row-title">{lesson.title}</span>
-                    <KindChip kind={lesson.kind} />
-                  </span>
-                  {lesson.summary && <span className="lesson-row-summary">{lesson.summary}</span>}
-                </span>
-                <span className="lesson-row-cta">
-                  {done ? 'Review' : 'Start'} <ChevronRight size={16} />
-                </span>
-              </button>
-            </li>
-          )
-        })}
-
-        {/* Capstone: the chapter test. Always takeable; styled gated until lessons done. */}
+      <aside className="side">
         {chapter.test && (
-          <li className={`lesson-node is-capstone${test.passed ? ' is-passed' : ''}`}>
-            <span className="lesson-node-marker" aria-hidden>
-              {test.passed ? <Check size={15} /> : <Trophy size={14} />}
-            </span>
-            <div className="capstone-wrap">
-              <button
-                type="button"
-                className={`capstone-card${test.passed ? ' is-passed' : allDone ? ' is-ready' : ''}`}
-                onClick={onOpenTest}
-              >
-                <span className="capstone-head">
-                  <span className="capstone-titles">
-                    <span className="capstone-eyebrow">Capstone</span>
-                    <span className="capstone-title">Chapter Test</span>
-                  </span>
-                  {test.bestPct > 0 && (
-                    <span className={`capstone-best num${test.passed ? ' is-passed' : ''}`}>
-                      Best {Math.round(test.bestPct * 100)}%
-                    </span>
-                  )}
-                </span>
-                <span className="capstone-sub">
-                  {test.passed
-                    ? 'Passed. Viktor is satisfied. Retake it any time to keep the ideas sharp.'
-                    : test.attempts > 0
-                      ? `${test.attempts} of ${MAX_ATTEMPTS} attempts used. Fail both and you retake the whole chapter.`
-                      : allDone
-                        ? 'Every lesson is done. Prove the chapter to Viktor.'
-                        : 'Takeable at any time, but the lessons are the preparation.'}
-                </span>
-                <span className="capstone-facts">
-                  <span className="capstone-fact">
-                    <Target size={13} /> {chapter.test.questions.length} questions
-                  </span>
-                  <span className="capstone-fact">
-                    <ClipboardCheck size={13} /> {threshold}% to pass
-                  </span>
-                  <span className="capstone-fact">
-                    <Layers size={13} /> {MAX_ATTEMPTS} attempts
-                  </span>
-                </span>
-                <span className="capstone-cta">
-                  {test.passed ? (
-                    <>
-                      <RotateCcw size={15} /> Retake test
-                    </>
-                  ) : (
-                    <>
-                      <Swords size={15} /> Take the test
-                    </>
-                  )}
-                </span>
-              </button>
-              {!allDone && !test.passed && (
-                <p className="test-hint muted small">
-                  Finish the lessons first for the best shot, but you may sit the test whenever
-                  you like.
-                </p>
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Chapter test</h2>
+              {test.bestPct > 0 && (
+                <span className="sec-count">Best {Math.round(test.bestPct * 100)}%</span>
               )}
             </div>
-          </li>
+            <p className="sec-note">
+              {test.passed
+                ? 'Passed. Viktor is satisfied. Retake it any time to keep the ideas sharp.'
+                : test.attempts > 0
+                  ? `${test.attempts} of ${MAX_ATTEMPTS} attempts used. Fail both and you retake the whole chapter.`
+                  : allDone
+                    ? 'Every lesson is done. Prove the chapter to Viktor.'
+                    : 'Takeable at any time, but the lessons are the preparation.'}
+            </p>
+            <div className="panel">
+              <div className="facts">
+                <div className="fact">
+                  <span>Questions</span>
+                  <span className="fact-value num">{chapter.test.questions.length}</span>
+                </div>
+                <div className="fact">
+                  <span>To pass</span>
+                  <span className="fact-value num">{threshold}%</span>
+                </div>
+                <div className="fact">
+                  <span>Attempts</span>
+                  <span className="fact-value num">
+                    {test.attempts} of {MAX_ATTEMPTS}
+                  </span>
+                </div>
+              </div>
+              <div className="panel-foot">
+                <button className="btn is-primary" type="button" onClick={onOpenTest}>
+                  {test.passed ? 'Retake test' : 'Take the test'}
+                </button>
+              </div>
+            </div>
+          </section>
         )}
-      </ol>
+
+        {shownConcepts.length > 0 && (
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Concepts</h2>
+              <span className="sec-count">{concepts.length}</span>
+            </div>
+            <div className="chips">
+              {shownConcepts.map((c) => (
+                <span key={c.id} className="chip" title={c.short}>
+                  {c.name}
+                </span>
+              ))}
+              {extraConcepts > 0 && <span className="chip">+{extraConcepts} more</span>}
+            </div>
+          </section>
+        )}
+
+        <div className="lesson-foot">
+          <button className="btn is-quiet" type="button" onClick={onBack}>
+            All chapters
+          </button>
+        </div>
+      </aside>
     </div>
-  )
-}
-
-const KIND_META: Record<SchoolLessonKind, { label: string; icon: JSX.Element }> = {
-  warmup: { label: 'Warm-up', icon: <Flame size={12} /> },
-  concept: { label: 'Concept', icon: <GraduationCap size={12} /> },
-  opening: { label: 'Opening', icon: <BookOpen size={12} /> },
-  variation: { label: 'Variation', icon: <Layers size={12} /> },
-  tactics: { label: 'Tactics', icon: <Crosshair size={12} /> },
-  positional: { label: 'Positional', icon: <Target size={12} /> },
-  endgame: { label: 'Endgame', icon: <Castle size={12} /> },
-  practice: { label: 'Practice', icon: <Swords size={12} /> },
-  cooldown: { label: 'Cool-down', icon: <Snowflake size={12} /> }
-}
-
-function KindChip({ kind }: { kind: SchoolLessonKind }): JSX.Element {
-  const meta = KIND_META[kind] ?? { label: kind, icon: <BookOpen size={12} /> }
-  return (
-    <span className={`kind-chip kind-${kind}`}>
-      {meta.icon} {meta.label}
-    </span>
   )
 }
 

@@ -381,7 +381,7 @@ export function GameReplayView({
 
   return (
     <div className="replay-view">
-      <header className="game-playbar replay-playbar">
+      <header className="game-playbar">
         <button type="button" className="game-back" onClick={onBack}>
           <ArrowLeft size={15} aria-hidden /> Library
         </button>
@@ -390,7 +390,7 @@ export function GameReplayView({
       </header>
 
       <div className="votb replay-votb">
-        <div className="votb-stage replay-stage">
+        <div className="votb-stage">
           <div className="replay-stage-row">
             {evalState.family === 'chess' && (
               <EvalBar score={evalState.score} orientation={orientation} />
@@ -432,7 +432,7 @@ export function GameReplayView({
             </div>
           </div>
 
-          <div className="board-controls replay-controls">
+          <div className="boardbar replay-controls">
             <button
               className="icon-btn"
               onClick={() => setOrientation((o) => (o === 'white' ? 'black' : 'white'))}
@@ -440,7 +440,7 @@ export function GameReplayView({
             >
               <FlipVertical2 size={18} />
             </button>
-            <div className="nav-group">
+            <div className="replay-nav">
               <button className="icon-btn" onClick={goFirst} disabled={onMainline && ply === 0} title="First">
                 <ChevronsLeft size={18} />
               </button>
@@ -530,7 +530,7 @@ export function GameReplayView({
               <span className="replay-player">
                 <span className="votb-turn-dot is-white" aria-hidden /> {whiteName ?? sideLabel('white')}
               </span>
-              <span className={`fg-result-chip fg-result-${resultTone(result)}`}>{result}</span>
+              <span className={`replay-result num is-${resultTone(result)}`}>{result}</span>
               <span className="replay-player">
                 <span className="votb-turn-dot is-black" aria-hidden /> {blackName ?? sideLabel('black')}
               </span>
@@ -568,7 +568,7 @@ export function GameReplayView({
 
           <div className="panel replay-moves-panel">
             <div className="panel-head">
-              <span className="panel-title">Moves</span>
+              <h2 className="lbl">Moves</h2>
             </div>
             <div className="replay-moves" role="list">
               {replay.moves.length === 0 && !branch && (

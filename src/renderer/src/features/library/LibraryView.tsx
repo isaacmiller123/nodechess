@@ -185,7 +185,7 @@ export default function LibraryView({
         </div>
         <div className="lib-subfilters">
           {sources.length > 1 && (
-            <div className="lib-chips lib-chips-sub" role="group" aria-label="Mode">
+            <div className="lib-chips" role="group" aria-label="Mode">
               <button
                 type="button"
                 className={`lib-chip is-sub${sourceFilter === null ? ' is-active' : ''}`}
@@ -205,7 +205,7 @@ export default function LibraryView({
               ))}
             </div>
           )}
-          <div className="lib-chips lib-chips-sub" role="group" aria-label="Outcome">
+          <div className="lib-chips" role="group" aria-label="Outcome">
             {(
               [
                 ['all', 'Any result'],

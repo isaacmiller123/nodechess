@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <style>
+      /* Four rules this page needs and shell.css does not have. All prefixed
+         .sch- so nothing can collide with a sibling page.
+
+         There is no page title class in the shell: every heading in it is a
+         .lbl over a section. A lesson has a name, and the name is the largest
+         thing in the column, so it needs one rule of its own.
+
+
+      /* The lesson head takes the board's measure, so the chapter line, the
+         title and the question all start on the board's left edge instead of
+         40px to the left of it. .board-area supplies the gap under it. */
+      .sch-head {
+        margin-bottom: var(--space-3);
+      }
+
+      .sch-title {
+        margin-top: var(--space-2);
+        font-size: var(--fs-xl);
+        font-weight: var(--fw-medium);
+        line-height: var(--lh-tight);
+        letter-spacing: var(--tracking-tight);
+      }
+
+      /* Below 1080 the shell drops .lesson to one column and holds .side to the
+         board's own measure, so Viktor lands on the same two edges as the
+         position he is talking about. That rule is in shell.css and applies to
+         every board page; this page adds nothing to it. */
+    </style>
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <!-- Added by school.html: the finished-lesson tick. Same 15x15 grid and
+           the same stroke weight as the set above. -->
+      <symbol id="i-check" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3 8.2 6 11.2 12 4.4" />
+      </symbol>
+      <!-- The mark. Candidate 1 from logos.html: the rook seen from above,
+           which is also a cell with a port on each side. -->
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" aria-current="page" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <!-- Phone only: the rail is gone, so the brand needs a home. -->
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <!-- THE READOUT. Same four slots as every other screen. The trace is the
+             one ratio this page is about: two of the chapter's five lessons are
+             behind you. -->
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Take back d3 and castle</span>
+          </div>
+          <div class="trace is-40" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <div class="lesson">
+            <!-- ============ THE BOARD ============ -->
+            <div class="lesson-main">
+              <div class="board-area">
+                <div class="sch-head board-under">
+                  <div class="lbl">Ch 07 &middot; The Italian Game &middot; Lesson 3 of 5</div>
+                  <h1 class="sch-title">Every move buys something</h1>
+                  <p class="sec-note">Four moves in, nothing is forcing your hand. So what did move four buy?</p>
+                </div>
+
+                <div class="board-stage">
+                  <div class="board-wrap board-brown" role="img" aria-label="Italian Game, position after White's fourth move d3. The pawn just moved from d2 to d3 and both squares are marked.">
+                    <div class="cg-wrap orientation-white">
+                      <cg-container>
+                        <cg-board>
+                          <!-- last move -->
+                          <square class="last-move" style="transform: translate(300%, 500%)"></square>
+                          <square class="last-move" style="transform: translate(300%, 600%)"></square>
+                          <!-- pieces: cburnett, one square each, placed by whole-square translate -->
+                          <piece class="pc br" style="transform: translate(0%, 0%)"></piece>
+                          <piece class="pc bb" style="transform: translate(200%, 0%)"></piece>
+                          <piece class="pc bq" style="transform: translate(300%, 0%)"></piece>
+                          <piece class="pc bk" style="transform: translate(400%, 0%)"></piece>
+                          <piece class="pc bn" style="transform: translate(600%, 0%)"></piece>
+                          <piece class="pc br" style="transform: translate(700%, 0%)"></piece>
+                          <piece class="pc bp" style="transform: translate(0%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(100%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(200%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(300%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(500%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(600%, 100%)"></piece>
+                          <piece class="pc bp" style="transform: translate(700%, 100%)"></piece>
+                          <piece class="pc bn" style="transform: translate(200%, 200%)"></piece>
+                          <piece class="pc bb" style="transform: translate(200%, 300%)"></piece>
+                          <piece class="pc bp" style="transform: translate(400%, 300%)"></piece>
+                          <piece class="pc wb" style="transform: translate(200%, 400%)"></piece>
+                          <piece class="pc wp" style="transform: translate(400%, 400%)"></piece>
+                          <piece class="pc wp" style="transform: translate(300%, 500%)"></piece>
+                          <piece class="pc wn" style="transform: translate(500%, 500%)"></piece>
+                          <piece class="pc wp" style="transform: translate(0%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(100%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(200%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(500%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(600%, 600%)"></piece>
+                          <piece class="pc wp" style="transform: translate(700%, 600%)"></piece>
+                          <piece class="pc wr" style="transform: translate(0%, 700%)"></piece>
+                          <piece class="pc wn" style="transform: translate(100%, 700%)"></piece>
+                          <piece class="pc wb" style="transform: translate(200%, 700%)"></piece>
+                          <piece class="pc wq" style="transform: translate(300%, 700%)"></piece>
+                          <piece class="pc wk" style="transform: translate(400%, 700%)"></piece>
+                          <piece class="pc wr" style="transform: translate(700%, 700%)"></piece>
+                        </cg-board>
+                        <coords class="ranks">
+                          <coord>1</coord><coord>2</coord><coord>3</coord><coord>4</coord><coord>5</coord><coord>6</coord><coord>7</coord><coord>8</coord>
+                        </coords>
+                        <coords class="files">
+                          <coord>a</coord><coord>b</coord><coord>c</coord><coord>d</coord><coord>e</coord><coord>f</coord><coord>g</coord><coord>h</coord>
+                        </coords>
+                      </cg-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="boardbar">
+                  <div class="turn">
+                    <span class="turn-chip"></span>
+                    White to move again
+                  </div>
+                  <button class="btn is-primary" type="button">Take back d3</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ============ VIKTOR, THE MOVES, THE CHAPTER ============ -->
+            <aside class="side">
+              <section class="sec">
+                <div class="panel">
+                  <div class="coach">
+                    <div class="coach-head">
+                      <span class="coach-name">Viktor</span>
+                      <span class="coach-role">Coach</span>
+                    </div>
+                    <p class="coach-said">
+                      You played d3. Not a blunder. Worse than a blunder: a wasted move.
+                    </p>
+                    <p class="coach-said">
+                      Nothing was attacking that bishop. Nothing needed propping up. Meanwhile your
+                      king is still standing in the middle of the board and Black is one move from
+                      castling. You had a move to spend and you spent it on nothing.
+                    </p>
+                    <p class="coach-said">
+                      Two more like that and you are losing without ever having been wrong.
+                    </p>
+                    <div class="task">
+                      <p class="task-text">Take it back. Castle.</p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">Moves</h2>
+                  <span class="sec-count">4</span>
+                </div>
+                <div class="panel">
+                  <div class="moves">
+                    <span class="mv-no">1</span>
+                    <span class="mv">e4</span>
+                    <span class="mv">e5</span>
+                    <span class="mv-no">2</span>
+                    <span class="mv">Nf3</span>
+                    <span class="mv">Nc6</span>
+                    <span class="mv-no">3</span>
+                    <span class="mv">Bc4</span>
+                    <span class="mv">Bc5</span>
+                    <span class="mv-no">4</span>
+                    <span class="mv is-next">d3</span>
+                    <span class="mv"></span>
+                  </div>
+                </div>
+              </section>
+
+              <section class="sec">
+                <div class="sec-head">
+                  <h2 class="lbl">This chapter</h2>
+                  <span class="sec-count">2 of 5 done</span>
+                </div>
+                <div class="panel lessons">
+                  <div class="ls">
+                    <span class="ls-no">01</span>
+                    <span>Three moves, three jobs</span>
+                    <span class="ls-mark">
+                      <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>
+                      <span class="vh">Finished</span>
+                    </span>
+                  </div>
+                  <div class="ls">
+                    <span class="ls-no">02</span>
+                    <span>The bishop looks at f7</span>
+                    <span class="ls-mark">
+                      <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg>
+                      <span class="vh">Finished</span>
+                    </span>
+                  </div>
+                  <div class="ls is-current" aria-current="true">
+                    <span class="ls-no">03</span>
+                    <span>Every move buys something</span>
+                    <span class="lbl">Now</span>
+                  </div>
+                  <div class="ls is-locked">
+                    <span class="ls-no">04</span>
+                    <span>When Black answers Nf6</span>
+                    <span class="lbl">Locked</span>
+                  </div>
+                  <div class="ls is-locked">
+                    <span class="ls-no">05</span>
+                    <span>The Fried Liver, and how to refuse it</span>
+                    <span class="lbl">Locked</span>
+                  </div>
+                </div>
+              </section>
+
+              <div class="lesson-foot">
+                <p class="foot-note">Chapter test opens after lesson 5.</p>
+                <button class="btn is-quiet" type="button">Leave lesson</button>
+              </div>
+            </aside>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION =================
+         Four permanent tabs at 60px plus a sheet for the other five. -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script src="shell.js" defer></script>
+  </body>
+</html>

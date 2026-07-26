@@ -1,0 +1,358 @@
+/* palettes.css - the eight chrome palettes.
+
+   The default, cold iron and bone, is declared in tokens.css and applies with
+   no data-palette attribute set at all. Its block is repeated below, byte for
+   byte identical, so that selecting it explicitly from the switcher is a no-op
+   rather than a small unexplained shift. The other seven are alternates.
+
+   WHAT A PALETTE MAY TOUCH. Colour, and only chrome colour: the six background
+   and border tokens, the four text tokens, the five accent tokens, the five
+   semantic tokens and the three shadow tints. Nothing else. Type, scale,
+   spacing, radii and motion belong to tokens.css block 2.
+
+   WHAT A PALETTE MAY NEVER TOUCH: the board. --sq-light, --sq-dark, --sq-mark,
+   --piece-white and --piece-black are declared once, in tokens.css, and no
+   block in this file redeclares them. This is the same rule the shipping app
+   follows; src/renderer/src/styles/tokens.css calls the board square colours
+   "independent of light/dark chrome". Every one of these blocks used to carry
+   five --d01-sq-* / --d01-piece-* overrides, which is what repainted the board
+   grey on every theme. They are gone. Adding one back is a regression, not a
+   feature: the chessboard is a fixed object and changing the furniture around
+   it must not change a single board pixel.
+
+   Mechanism, mirroring the app, is one complete override block per attribute
+   value on the root:
+
+     <html data-palette="warm-ash-slate-blue">
+     <link rel="stylesheet" href="tokens.css">
+     <link rel="stylesheet" href="palettes.css">   <!-- must load after -->
+
+   tokens.css declares its palette on :root and this file uses an attribute
+   selector, so these win on specificity as well as order. Setting data-palette
+   on any container also works: custom properties inherit, so a section can
+   carry a palette while the rest of the page keeps another. That is how
+   settings.html previews all eight side by side on one screen.
+
+   Shared lightness ramp across all eight, so the palettes differ only in hue
+   and chroma: page 10.8%, well 8%, surface 13.9%, raised 16.8%, border 21.5%,
+   strong border 39.8%, muted 48.5%, secondary 66%, primary text 90.5%.
+
+   --border-strong was 47.5% in every block here, which measured about 3.7:1
+   against --surface. That was defensible while it was an alternate and amber
+   carried the emphasis; as the default it drew a bright wire around every
+   input, every sticky table head and the board frame, which is louder than
+   this design wants. It is now 39.8% in all eight, about 2.6:1, still clearly
+   above d01's original 1.9:1. Hue and chroma are untouched, so switching
+   palettes changes colour and never line weight. */
+
+/* cold graphite, oxblood
+   neutrals cold blue-grey (hue 210), accent deep wine red (hue 354).
+   The accent is dark, so its label is near-white ink rather than black. Danger is pushed to a brighter orange-red because the accent already owns deep red. */
+[data-palette='cold-graphite-oxblood'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #191c1e;
+  --bg-subtle: #131416;
+  --surface: #212326;
+  --surface-2: #272b2e;
+  --border: #33373b;
+  --border-strong: #61666a;
+
+  /* Text */
+  --text-primary: #e6e7e8;
+  --text-secondary: #a4a8ac;
+  --text-muted: #757c82;
+  --text-inverse: #16181a;
+
+  /* Accent */
+  --accent: #a1454e;
+  --accent-hover: #b8515b;
+  --accent-active: #c3656e;
+  --accent-soft: #241618;
+  --on-accent: #f6eeef;
+
+  /* Semantic */
+  --success: #60a973;
+  --danger: #da6a62;
+  --warning: #d29c4b;
+  --info: #7da5bf;
+  --focus-ring: #b8515b;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* warm ash, slate blue
+   neutrals warm grey (hue 32), accent dusty slate blue (hue 215).
+   Cool accent on warm neutrals. Info is pushed to cyan so it cannot be read as the accent. */
+[data-palette='warm-ash-slate-blue'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #1e1c19;
+  --bg-subtle: #161513;
+  --surface: #262421;
+  --surface-2: #2e2b27;
+  --border: #3b3733;
+  --border-strong: #6a6661;
+
+  /* Text */
+  --text-primary: #e8e7e6;
+  --text-secondary: #aca9a4;
+  --text-muted: #827c75;
+  --text-inverse: #1a1816;
+
+  /* Accent */
+  --accent: #7b98c1;
+  --accent-hover: #8da8ce;
+  --accent-active: #a0b8da;
+  --accent-soft: #19202a;
+  --on-accent: #11161d;
+
+  /* Semantic */
+  --success: #60a973;
+  --danger: #ce6f64;
+  --warning: #d49849;
+  --info: #6fb1b8;
+  --focus-ring: #8da8ce;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(14, 10, 4, 0.4);
+  --shadow-md: 0 2px 6px rgba(14, 10, 4, 0.45);
+  --shadow-lg: 0 10px 28px rgba(14, 10, 4, 0.55);
+}
+
+/* cool steel, deep teal
+   neutrals cold steel blue (hue 214, higher chroma), accent teal (hue 178).
+   Info is moved to a true blue because teal already sits between green and blue. */
+[data-palette='cool-steel-deep-teal'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #181b1f;
+  --bg-subtle: #121417;
+  --surface: #1f2328;
+  --surface-2: #252a30;
+  --border: #30363e;
+  --border-strong: #5f656c;
+
+  /* Text */
+  --text-primary: #e5e7e8;
+  --text-secondary: #a2a7af;
+  --text-muted: #717a86;
+  --text-inverse: #15181b;
+
+  /* Accent */
+  --accent: #45b0ad;
+  --accent-hover: #57c1be;
+  --accent-active: #70cdca;
+  --accent-soft: #152626;
+  --on-accent: #0c1a1d;
+
+  /* Semantic */
+  --success: #54ab63;
+  --danger: #d06d62;
+  --warning: #d79447;
+  --info: #8696cb;
+  --focus-ring: #57c1be;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(0, 2, 6, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 2, 6, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 2, 6, 0.55);
+}
+
+/* warm umber, sage green
+   neutrals genuinely warm brown (hue 28, chroma 15), accent muted sage green (hue 82).
+   Success is pushed to a blue-green because the accent already owns yellow-green. */
+[data-palette='warm-umber-sage'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #201b17;
+  --bg-subtle: #171411;
+  --surface: #29231e;
+  --surface-2: #312a24;
+  --border: #3f362f;
+  --border-strong: #6d665e;
+
+  /* Text */
+  --text-primary: #e9e7e5;
+  --text-secondary: #b0a8a0;
+  --text-muted: #887b70;
+  --text-inverse: #1c1815;
+
+  /* Accent */
+  --accent: #95af6a;
+  --accent-hover: #a7be7e;
+  --accent-active: #b8cc93;
+  --accent-soft: #202518;
+  --on-accent: #1a1a0f;
+
+  /* Semantic */
+  --success: #51a485;
+  --danger: #d26b60;
+  --warning: #d98f45;
+  --info: #7ba3c1;
+  --focus-ring: #a7be7e;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(20, 12, 4, 0.4);
+  --shadow-md: 0 2px 6px rgba(20, 12, 4, 0.45);
+  --shadow-lg: 0 10px 28px rgba(20, 12, 4, 0.55);
+}
+
+/* cold iron, bone
+   neutrals cold near-neutral grey (hue 220, chroma 4), accent barely chromatic bone (hue 40, chroma 12) - the near-monochrome option.
+   Near-monochrome: the accent is a warm off-white, so the only hue on screen comes from the semantic colours. Everything is carried by value. */
+[data-palette='cold-iron-bone'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #1a1b1d;
+  --bg-subtle: #141415;
+  --surface: #222325;
+  --surface-2: #292a2d;
+  --border: #353639;
+  --border-strong: #636468;
+
+  /* Text */
+  --text-primary: #e6e7e7;
+  --text-secondary: #a6a8aa;
+  --text-muted: #787b7f;
+  --text-inverse: #171819;
+
+  /* Accent */
+  --accent: #cec9c0;
+  --accent-hover: #dcd8d0;
+  --accent-active: #eae7e1;
+  --accent-soft: #2f2d29;
+  --on-accent: #151619;
+
+  /* Semantic */
+  --success: #60a973;
+  --danger: #d06962;
+  --warning: #d49849;
+  --info: #7da2bf;
+  --focus-ring: #dcd8d0;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* green slate, plum
+   neutrals green-tinted grey (hue 155), accent desaturated plum (hue 298).
+   Success needs more chroma than usual here because the neutrals are already faintly green. */
+[data-palette='green-slate-plum'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #191e1c;
+  --bg-subtle: #131615;
+  --surface: #212624;
+  --surface-2: #272e2b;
+  --border: #333b38;
+  --border-strong: #616a66;
+
+  /* Text */
+  --text-primary: #e6e8e7;
+  --text-secondary: #a4aca9;
+  --text-muted: #75827d;
+  --text-inverse: #161a19;
+
+  /* Accent */
+  --accent: #b081b1;
+  --accent-hover: #c094c2;
+  --accent-active: #cfa9d1;
+  --accent-soft: #291929;
+  --on-accent: #1d101e;
+
+  /* Semantic */
+  --success: #52ad70;
+  --danger: #d06d62;
+  --warning: #d79847;
+  --info: #7ba5c1;
+  --focus-ring: #c094c2;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(0, 4, 2, 0.4);
+  --shadow-md: 0 2px 6px rgba(0, 4, 2, 0.45);
+  --shadow-lg: 0 10px 28px rgba(0, 4, 2, 0.55);
+}
+
+/* blue ink, straw
+   neutrals indigo-tinted (hue 245, chroma 17), accent pale straw yellow (hue 48).
+   Warning is pushed toward red, the way d01 does, because a yellow accent and an orange warning would compete. */
+[data-palette='blue-ink-straw'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #181720;
+  --bg-subtle: #121118;
+  --surface: #1e1d29;
+  --surface-2: #252432;
+  --border: #2f2e40;
+  --border-strong: #5f5d6e;
+
+  /* Text */
+  --text-primary: #e5e5e9;
+  --text-secondary: #a19fb1;
+  --text-muted: #706e89;
+  --text-inverse: #15141c;
+
+  /* Accent */
+  --accent: #d0c080;
+  --accent-hover: #dbcd94;
+  --accent-active: #e5d9a9;
+  --accent-soft: #2a2619;
+  --on-accent: #12101e;
+
+  /* Semantic */
+  --success: #57a86f;
+  --danger: #d26760;
+  --warning: #db784d;
+  --info: #7ea8c8;
+  --focus-ring: #dbcd94;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(4, 4, 16, 0.4);
+  --shadow-md: 0 2px 6px rgba(4, 4, 16, 0.45);
+  --shadow-lg: 0 10px 28px rgba(4, 4, 16, 0.55);
+}
+
+/* warm putty, dusty rose
+   neutrals warm putty grey (hue 20, chroma 7), accent light dusty rose (hue 350).
+   The mirror of oxblood: same corner of the wheel, but light instead of dark and sitting on warm neutrals rather than cold. */
+[data-palette='warm-putty-dusty-rose'] {
+  /* Backgrounds and surfaces */
+  --bg-page: #1d1b1a;
+  --bg-subtle: #161413;
+  --surface: #262321;
+  --surface-2: #2e2a28;
+  --border: #3a3633;
+  --border-strong: #696562;
+
+  /* Text */
+  --text-primary: #e8e6e6;
+  --text-secondary: #aca7a5;
+  --text-muted: #817a76;
+  --text-inverse: #1a1817;
+
+  /* Accent */
+  --accent: #c18690;
+  --accent-hover: #ce97a0;
+  --accent-active: #daa9b1;
+  --accent-soft: #29191c;
+  --on-accent: #1d1113;
+
+  /* Semantic */
+  --success: #57a86f;
+  --danger: #d46549;
+  --warning: #d7a247;
+  --info: #7ba5c1;
+  --focus-ring: #ce97a0;
+
+
+  /* Shadow tint */
+  --shadow-sm: 0 1px 0 rgba(18, 10, 8, 0.4);
+  --shadow-md: 0 2px 6px rgba(18, 10, 8, 0.45);
+  --shadow-lg: 0 10px 28px rgba(18, 10, 8, 0.55);
+}

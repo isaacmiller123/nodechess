@@ -36,14 +36,14 @@ const LADDER_ICON: Record<RatedCategory, LucideIcon> = {
 
 /** Display state as a label: a rating once the ladder reveals, the progress
  *  toward it before that. */
-function standingLabel(d: DisplayState): string {
+export function standingLabel(d: DisplayState): string {
   if (d.state === 'ranked') return String(d.rating)
   if (d.state === 'banned') return 'Banned'
   return `${d.n}/${d.of}`
 }
 
 /** The longer form, for the line under the Play button. */
-function standingSentence(key: RatedCategory, d: DisplayState): string {
+export function standingSentence(key: RatedCategory, d: DisplayState): string {
   if (d.state === 'ranked') return `${key} · your rating is ${d.rating}`
   if (d.state === 'banned') return `${key} · banned`
   if (d.state === 'provisional')
@@ -51,7 +51,7 @@ function standingSentence(key: RatedCategory, d: DisplayState): string {
   return `${key} · placement, game ${d.n + 1} of ${d.of}`
 }
 
-function banDate(untilWts: number): string {
+export function banDate(untilWts: number): string {
   return new Date(untilWts).toLocaleDateString()
 }
 
@@ -62,7 +62,7 @@ function banDate(untilWts: number): string {
  * loading or signed out, so the surface waits instead of seeking with a wrong
  * number. Recomputes when the chain advances.
  */
-function useOwnFold(account: UiOwnAccount | null): {
+export function useOwnFold(account: UiOwnAccount | null): {
   tMicro: number | null
   bans: { [ladderId: string]: { until: number } }
   /** The instant trust and ban activity were evaluated at. */

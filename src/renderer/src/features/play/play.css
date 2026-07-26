@@ -1,1001 +1,726 @@
-/* ============================================================
-   Play vs Engine, feature-local styles.
-   Only tokens.css variables + existing shared classes are used;
-   no shared CSS files are edited. All new classes are namespaced
-   under .play-* / .setup-* to avoid collisions.
-   ============================================================ */
+/* PLAY. Everything here is prefixed .play- so it cannot collide with a
+   sibling page. Only colour, size, radius and duration tokens are used.
 
-/* ---- Setup phase ---- */
-.play-view-shell {
+   The three ways to play are peers, so they are three equal cards in one
+   row, and picking one changes only the panel below it. Rated versus
+   casual is a two segment control INSIDE Online, one line under it says
+   what each costs you, and that line is the only place either word is
+   explained.
+
+   Searching is a full state of this screen, not a spinner in a corner,
+   because waiting is most of what playing online feels like. */
+
+/* Measure and centering come from .col-single in shell.css, which settings
+   also uses, so the two single column pages sit on the same two edges. */
+.play {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+/* The last section is the one that grows, so the space at the bottom of
+   the screen is a labelled measurement area and not dead margin. Same
+   trick the home column uses. */
+.play > .sec:last-child {
+  margin-bottom: 0;
+}
+
+.play-resume {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 200px;
+}
+
+/* These two set a display, so they have to opt back out of [hidden]. */
+.play-resume[hidden] {
+  display: none;
+}
+
+.play-resume > .well {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- the three peers ---------- */
+
+.play-modes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.play-mode {
+  display: flex;
+  flex-direction: column;
   align-items: flex-start;
-}
-.setup-grid {
-  width: 100%;
-  max-width: 480px;
-}
-.setup-card {
-  max-width: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-.setup-opponent {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-}
-.setup-opponent-meta {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-1);
-}
-.setup-opponent-meta h2 {
-  margin: 0;
-  font-size: var(--fs-lg);
-}
-.setup-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.setup-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.setup-label {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text-secondary);
-}
-.elo-readout {
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-md);
-  color: var(--text-primary);
-}
-.elo-range {
-  width: 100%;
-  accent-color: var(--accent);
-  cursor: pointer;
-}
-.preset-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-  padding: 2px;
-}
-.preset-row .seg {
-  flex: 1 1 auto;
-  text-align: center;
-  font-size: var(--fs-sm);
-}
-.color-row {
-  display: flex;
-}
-.color-row .seg {
-  flex: 1;
-  text-align: center;
-}
-.time-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-}
-.time-row .seg {
-  flex: 1 1 auto;
-  text-align: center;
-  font-size: var(--fs-sm);
-  white-space: nowrap;
-}
-.mode-row {
-  display: flex;
-}
-.mode-row .seg {
-  flex: 1;
-  text-align: center;
-}
-
-/* ---- Persona gallery (Grandmaster style mode) ---- */
-.persona-gallery {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
-  max-height: 360px;
-  overflow-y: auto;
-  padding-right: var(--space-1);
-}
-.persona-empty {
-  padding: var(--space-5);
-  text-align: center;
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-}
-.persona-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
   text-align: left;
-  padding: var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  padding: var(--space-4) var(--space-6);
+  border: var(--border-width) solid var(--border);
+  border-left: 3px solid var(--border);
   border-radius: var(--radius-md);
-  cursor: pointer;
-  font: inherit;
-  color: var(--text-primary);
+  background: var(--surface);
   transition:
-    border-color var(--dur-fast),
-    background var(--dur-fast);
+    border-color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
 }
-.persona-card:hover {
+
+.play-mode:hover {
   border-color: var(--border-strong);
+}
+
+.play-mode[aria-pressed='true'] {
   background: var(--surface-2);
+  border-color: var(--border-strong);
+  border-left-color: var(--accent);
 }
-.persona-card.is-selected {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
-.persona-card-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.persona-card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
-}
-.persona-card-name {
-  font-weight: var(--fw-semibold);
+
+.play-mode-name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
   color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
-.persona-card-era {
-  line-height: var(--lh-tight);
-}
-.persona-card-elo {
-  margin-left: auto;
-}
-.persona-card-bio {
-  margin: 0;
+
+.play-mode-spec {
   font-size: var(--fs-sm);
-  line-height: var(--lh-body);
   color: var(--text-secondary);
 }
-.persona-card-style {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.persona-meter {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.persona-meter-label {
-  flex: none;
-  width: 76px;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.persona-meter-track {
-  flex: 1;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-.persona-card.is-selected .persona-meter-track {
-  background: var(--surface);
-}
-.persona-meter-fill {
-  display: block;
-  height: 100%;
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-}
-.setup-start {
+
+.play-mode-meta {
   margin-top: var(--space-2);
-  width: 100%;
-  padding: var(--space-4);
-  font-weight: var(--fw-semibold);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-/* ---- Game phase: layout clones .analysis-view ---- */
-.play-view {
+.play-mode[aria-pressed='true'] .play-mode-meta {
+  color: var(--accent);
+}
+
+/* ---------- setup rows ---------- */
+
+.play-field {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 344px;
-  gap: var(--space-7);
-  align-items: stretch;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  /* A square board that always fits without page scroll: bounded by the column
-     width, a sensible max, and the viewport height minus the player cards,
-     controls/banner row and content padding stacked above & below it. */
-  --play-board: min(100%, 680px, calc(100vh - 352px));
-}
-.play-board-area {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-}
-.play-board-area .board-wrap {
-  width: var(--play-board);
-  max-width: 100%;
-}
-.play-sidebar {
-  display: flex;
-  flex-direction: column;
+  grid-template-columns: 92px minmax(0, 1fr);
   gap: var(--space-5);
-  min-width: 0;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
 }
 
-/* ---- Player cards (chess.com-style bars hugging the board) ----
-   Avatar | name + sub / style line / captured pieces | thinking dots | clock.
-   The card carries the active-turn glow; the docked clock echoes it. */
-.player-chip {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  width: 100%;
-  max-width: var(--play-board, min(72vh, 720px));
-  min-height: 60px;
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-}
-/* Active-turn glow: accent ring, same non-color signal as .profile-chip. */
-.player-chip.is-active {
-  border-color: var(--accent);
-  box-shadow:
-    0 0 0 1px var(--accent),
-    var(--shadow-sm);
-}
-/* Portraits read better squared on the play cards; scoped so avatars stay
-   circular everywhere else in the app. */
-.player-chip .avatar {
-  border-radius: var(--radius-md);
-}
-.chip-photo {
-  object-fit: cover;
-  background: var(--surface-2);
-}
-.chip-meta {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.chip-name-row {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-3);
-  min-width: 0;
-}
-.chip-name {
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.chip-sub {
-  flex: none;
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  line-height: var(--lh-tight);
-}
-.chip-style {
-  font-size: var(--fs-xs);
-  font-style: italic;
-  color: var(--text-muted);
-  line-height: var(--lh-tight);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.play-field:last-child {
+  border-bottom: 0;
 }
 
-/* Captured pieces + material-lead badge. min-height keeps the card from
-   jumping when the first capture lands. */
-.chip-captured {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-height: 16px;
-  line-height: 1;
-}
-.chip-material {
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  line-height: var(--lh-tight);
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--success-soft);
-  color: var(--success);
-}
-
-/* Thinking indicator: three staggered dots beside the opponent's name. */
-.chip-thinking {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
+.play-field > .lbl {
   align-self: center;
 }
-.chip-dot {
-  width: 5px;
-  height: 5px;
+
+/* A two or three way control is as wide as its words, never as wide as
+   the row. */
+.play-field .segmented {
+  width: max-content;
+  max-width: 100%;
+}
+
+.play-note {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  max-width: 58ch;
+}
+
+.play-note .play-em {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+/* ---------- chips: time controls, bot levels ----------
+
+   The chip itself, its hover, its on state and its two lines are
+   .chip.is-stacked in shell.css. This page had its own copy with its own
+   on state, an --accent-soft fill under a hairline, so "chosen" on play
+   did not look like "chosen" anywhere else. Only the bot level width is
+   still page local, because only this page has bot levels. */
+
+.play-lvl {
+  min-width: 52px;
+}
+
+/* Custom control. Two numbers, and it only exists once you ask for it. */
+.play-custom {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+}
+
+.play-custom[hidden] {
+  display: none;
+}
+
+.play-num {
+  width: 64px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.play-num:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.play-name {
+  width: 148px;
+  height: 32px;
+  padding: 0 var(--space-3);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.play-name::placeholder {
+  color: var(--text-muted);
+}
+
+.play-name:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.play-inputs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ---------- the commit row ---------- */
+
+.play-go {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.play-go-note {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  margin-left: auto;
+  text-align: right;
+}
+
+/* ---------- searching ---------- */
+
+.play-search-head {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.play-search-title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+}
+
+.play-search-sub {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* The one live thing on the screen. It breathes because a search that
+   looks frozen reads as a search that has failed. */
+.play-dot {
+  width: 10px;
+  height: 10px;
   border-radius: var(--radius-pill);
   background: var(--accent);
-  animation: play-think 1s var(--ease-in-out) infinite;
-}
-.chip-dot:nth-child(2) {
-  animation-delay: 0.16s;
-}
-.chip-dot:nth-child(3) {
-  animation-delay: 0.32s;
-}
-@keyframes play-think {
-  0%,
-  100% {
-    opacity: 0.25;
-    transform: scale(0.7);
-  }
-  40% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  align-self: center;
+  animation: play-pulse 1400ms var(--ease-in-out) infinite;
 }
 
-/* ---- Countdown clock: digit block docked to the card's right edge ---- */
-.play-clock {
-  flex: none;
-  align-self: stretch;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 88px;
-  padding: 0 var(--space-4);
-  /* Bleed over the card's padding so the block owns the full right edge. */
-  margin: calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) calc(-1 * var(--space-3)) 0;
-  background: var(--surface-2);
-  border-left: 1px solid var(--border);
-  border-radius: 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px) 0;
-  color: var(--text-secondary);
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-}
-.play-clock-time {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: var(--num-feature);
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.01em;
-  line-height: var(--lh-tight);
-}
-/* Ticking side: accent fill + an inset accent edge as the non-color cue. */
-.play-clock.is-active {
-  background: var(--accent-soft);
-  border-left-color: var(--accent);
-  box-shadow: inset 2px 0 0 var(--accent);
-  color: var(--text-primary);
-}
-/* Low on time: urgent danger tint; the digits blink only while ticking. */
-.play-clock.is-low {
-  color: var(--danger);
-}
-.play-clock.is-low.is-active {
-  background: var(--danger-soft);
-  border-left-color: var(--danger);
-  box-shadow: inset 2px 0 0 var(--danger);
-  color: var(--danger);
-}
-.play-clock.is-low.is-active .play-clock-time {
-  animation: play-clock-blink 1s var(--ease-in-out) infinite;
-}
-/* Byo-yomi (go): the periods-left badge beside the digits. A consumed period
-   re-mounts the badge (React key), retriggering the one-beat flash. */
-.play-clock.is-byo {
-  gap: var(--space-1);
-}
-.play-clock-periods {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-semibold);
-  color: var(--text-tertiary);
-  padding: 1px var(--space-1);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  animation: play-clock-period-flash 700ms var(--ease-out);
-}
-.play-clock.is-active .play-clock-periods {
-  color: var(--text-secondary);
-}
-.play-clock.is-low .play-clock-periods {
-  color: var(--danger);
-  border-color: var(--danger);
-}
-@keyframes play-clock-period-flash {
-  0% {
-    background: var(--danger-soft);
-    border-color: var(--danger);
-    color: var(--danger);
-    transform: scale(1.25);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Flagged: frozen danger fill, no blink (the game is over). */
-.play-clock.is-flagged {
-  background: var(--danger-soft);
-  border-left-color: var(--danger);
-  color: var(--danger);
-}
-.play-clock.is-flagged .play-clock-time {
-  animation: none;
-}
-@keyframes play-clock-blink {
+@keyframes play-pulse {
   0%,
   100% {
     opacity: 1;
+    box-shadow: 0 0 0 0 var(--accent-soft);
   }
   50% {
-    opacity: 0.45;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .play-clock.is-low.is-active .play-clock-time,
-  .play-clock-periods,
-  .chip-dot {
-    animation: none;
+    opacity: 0.35;
+    box-shadow: 0 0 0 5px var(--accent-soft);
   }
 }
 
-/* ---- Board controls: one grouped pill (flip | resign · new game) ----
-   .play-controls extends the shared .board-controls row without restyling it
-   for other views. Buttons go flat inside the group. */
-.play-controls {
-  width: 100%;
-  max-width: var(--play-board, min(72vh, 720px));
-}
-.play-controls-group {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.play-controls-group .icon-btn {
-  background: transparent;
-}
-.play-controls-group .btn.ghost {
-  border-color: transparent;
-  padding-block: var(--space-2);
-}
-.play-controls-group .btn.ghost:hover:not(:disabled) {
-  background: var(--surface);
-}
-.play-controls-sep {
-  width: 1px;
-  align-self: stretch;
-  margin-block: var(--space-2);
-  background: var(--border-strong);
-}
-
-/* Resign button (ghost + danger tint). */
-.btn-resign {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--danger);
-}
-.btn-resign:hover:not(:disabled),
-.play-controls-group .btn.ghost.btn-resign:hover:not(:disabled) {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-.play-newgame {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-/* Inline two-step resign confirm (settings.confirmResign): the whole group
-   turns danger-tinted while armed; commit is a solid danger button. */
-.play-controls-group.is-confirm {
-  border-color: var(--danger);
-  background: var(--danger-soft);
-}
-.resign-confirm {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.resign-confirm-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--danger);
-  padding-inline: var(--space-3) var(--space-2);
-}
-.play-resign-commit {
-  background: var(--danger);
-  border-color: var(--danger);
-  color: var(--surface);
-  padding-block: var(--space-2);
-}
-.play-resign-commit:hover:not(:disabled) {
-  background: var(--danger);
-  box-shadow: var(--shadow-sm);
-}
-
-/* ---- Result banner (game-over card under the board) ----
-   Medal | headline + reason | stat chips (rating delta, accuracy slot) |
-   actions. Entrance animation is local; the global reduced-motion kill-switch
-   in global.css zeroes it, and the explicit block below documents intent. */
-.result-banner {
-  width: 100%;
-  max-width: var(--play-board, min(72vh, 720px));
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-5);
-  padding: var(--space-4) var(--space-5);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  animation: play-banner-in var(--dur-slow) var(--ease-out) both;
-}
-@keyframes play-banner-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-.banner-medal {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  color: var(--text-secondary);
-  animation: chip-pop var(--dur-base) var(--ease-out) both;
-  animation-delay: var(--dur-instant);
-}
-.result-banner.is-win .banner-medal {
-  background: var(--success-soft);
-  color: var(--success);
-}
-.result-banner.is-loss .banner-medal {
-  background: var(--danger-soft);
-  color: var(--danger);
-}
-.banner-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-}
-.banner-title {
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  line-height: var(--lh-tight);
+.play-elapsed {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
   color: var(--text-primary);
 }
-.result-banner.is-win .banner-title {
-  color: var(--success);
-}
-.result-banner.is-loss .banner-title {
-  color: var(--danger);
-}
-.banner-reason {
+
+.play-search-note {
+  padding: 0 var(--space-6) var(--space-6);
   font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  line-height: var(--lh-tight);
-}
-.banner-score {
-  font-weight: var(--fw-semibold);
   color: var(--text-muted);
 }
 
-/* Stat chips: rating delta now; accuracy joins when a review provides it. */
-.banner-stats {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-.banner-stat {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.banner-stat-label {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  line-height: var(--lh-tight);
-}
-.banner-accuracy {
-  background: var(--accent-soft);
-  color: var(--accent);
+/* The wait has room for one honest offer, and it sits below the search,
+   not inside it. */
+.play-wait {
+  margin-top: var(--space-8);
 }
 
-/* Actions: Analyze / Rematch (ghost) + New game (primary). */
-.banner-actions {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+/* ---------- phone ---------- */
+
+@media (max-width: 720px) {
+  .play-modes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .play-mode {
+    min-height: 72px;
+    padding: var(--space-4);
+  }
+
+  .play-field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .chips .chip {
+    height: 44px;
+    flex: 1 0 auto;
+  }
+
+  .play-go {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .play-go .btn {
+    width: 100%;
+    height: 44px;
+  }
+
+  .play-go .btn.is-primary {
+    height: 48px;
+  }
+
+  .play-go-note {
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .play-search-head {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .play-search-note {
+    padding: 0 var(--space-4) var(--space-5);
+  }
+
+  .play-name {
+    width: 100%;
+  }
+
+  .play-resume {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
 }
-.banner-actions .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  white-space: nowrap;
-}
+
 @media (prefers-reduced-motion: reduce) {
-  .result-banner,
-  .banner-medal {
+  .play-dot {
     animation: none;
   }
 }
 
 /* ============================================================
-   Assistance panel (Play vs a bot). Hint ladder + live helper
-   toggles. Namespaced .assist-*; tokens only. The dot colors
-   deliberately reuse the board-annotation brush tokens so each
-   readout matches the arrow it describes on the board.
+   BEYOND v1.
+
+   Everything above this line is design-lab/v1/play.html's own
+   stylesheet, unchanged. Below are the few surfaces the app has
+   that the mock never drew. Each one is built out of v1's
+   objects (.panel, .play-field, .chips, .facts, .go) and only
+   needs a rule where v1 had no equivalent object at all:
+   a join code, a portrait, and a row inside the Unfinished well.
+   Same .play- prefix, same tokens, no new visual idiom.
    ============================================================ */
-.assist-panel {
-  overflow: hidden;
+
+/* A row whose entire answer is a sentence, because the app has no
+   control to put there. v1's note always follows something, so it
+   carries a gap; standing alone in the row it only pushes itself
+   off the label it belongs to. */
+.play-field > .play-note {
+  margin-top: 0;
 }
-.assist-head {
-  width: 100%;
-  border: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
+
+/* ---------- the qualifier ----------
+
+   v1's .play-note was a paragraph, and the screen filled up with
+   paragraphs teaching what rated and casual mean. That teaching is
+   in the Play explainer now. What a control may still say for
+   itself is ONE line at the .fact-note measure: same family, same
+   size, same colour as a fact's qualifier, without the uppercasing,
+   because these are sentences and a sentence in caps is a headline.
+
+   Two of them can stack (a bot level's blurb and its softened
+   reading) and they still read as two readings rather than a
+   paragraph, because each is one line of mono at --fs-xs. */
+.play-qual {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-body);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+  max-width: 56ch;
+}
+
+/* Standing alone as the whole answer of a row, it has nothing above
+   it to be pushed off. */
+.play-field > .play-qual {
+  margin-top: 0;
+}
+
+/* ---------- the way back into the explainer ----------
+
+   A text control, not a button-shaped one: it belongs to the head
+   rule, and the head rule is not a place where anything is pressed
+   often. It sits after .sec-count, which owns the margin-left auto,
+   so the two ride the right edge together. */
+.play-help {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: none;
+  border: 0;
+  padding: 0;
   cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+.play-help:hover {
+  color: var(--text-primary);
+}
+
+/* ---------- the explainer ----------
+
+   The teaching, all of it, in one screen that opens before the tab
+   and then gets out of the way. It is the shell's centred modal
+   (.shell-modal in shell-overlays.css); everything below only
+   arranges the two lists inside its body. */
+/* Qualified by .overlay-dialog so the width beats .shell-modal's own
+   480px whichever order the two stylesheets land in. */
+.overlay-dialog.play-explainer {
+  max-width: 540px;
+}
+
+.play-explain-lead {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.play-explain + .play-explain-lead {
+  margin-top: var(--space-4);
+}
+
+.play-explain-head {
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-5);
+  border-top: var(--border-width) solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.play-explain {
+  margin: var(--space-4) 0 0;
+}
+
+/* The same 92px label gutter the setup rows use, so the explainer
+   reads as the screen it is explaining. */
+.play-explain-row {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.play-explain-row:last-child {
+  border-bottom: 0;
+}
+
+.play-explain-row dd {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* A control the app draws but cannot let you answer: the rated side,
+   whose colours come with the pairing. shell.css already dims a
+   .chip this way, and a .btn; .seg had no such state because until
+   now nothing locked one. Same two declarations, scoped to this
+   page so no sibling inherits a state it never asked for. The line
+   next to it always says why. */
+.play .segmented .seg:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* The casual join code. It is the whole point of the waiting
+   screen, so it is the largest thing on it and the click target
+   is the code itself. */
+.play-code {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-.assist-head .panel-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.assist-chevron {
-  color: var(--text-muted);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.assist-chevron.is-open {
-  transform: rotate(180deg);
-}
-.assist-body {
-  padding: var(--space-4);
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+  text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-out);
 }
 
-/* Hint ladder button: label left, 3 progress pips right. */
-.assist-hint-btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+.play-code:hover {
+  background: var(--surface-2);
 }
-.assist-hint-label {
-  flex: 1;
-  min-width: 0;
+
+.play-code-text {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-primary);
+}
+
+.play-code-hint {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* The join field. A .play-name that has to hold a code, so it is
+   wider and monospaced; everything else about it is the same box. */
+.play-join {
+  width: 190px;
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+/* A grandmaster, once one is picked. The portrait is the only
+   image on this page, so it takes the same radius and hairline as
+   every other box rather than a treatment of its own. */
+.play-gm {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.play-gm-face {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  border: var(--border-width) solid var(--border);
+  background: var(--surface-2);
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+}
+
+.play-gm-name {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.play-gm-years {
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.play-gm-bio {
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  max-width: 58ch;
+}
+
+/* One open table inside the Unfinished well. The columns are the
+   .empty-head above it, so the labels and the values line up. */
+.play-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) 90px 70px 110px;
+  gap: var(--space-4);
+  align-items: center;
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
   text-align: left;
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.play-row:hover {
+  background: var(--surface-2);
+}
+
+.play-row-name {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.assist-hint-steps {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.assist-step {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  border: 1px solid var(--border-strong);
-}
-.assist-step.is-on {
-  background: var(--brush-yellow);
-  border-color: var(--brush-yellow);
-}
 
-/* Toggle rows: label + pill switch. */
-.assist-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  cursor: pointer;
-}
-.assist-row-label {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-.assist-switch {
-  appearance: none;
-  -webkit-appearance: none;
-  flex: none;
-  width: 34px;
-  height: 20px;
-  margin: 0;
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
-  border: 1px solid var(--border-strong);
-  position: relative;
-  cursor: pointer;
-  transition:
-    background var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-}
-.assist-switch::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 14px;
-  height: 14px;
-  border-radius: var(--radius-pill);
-  background: var(--text-muted);
-  transition:
-    transform var(--dur-fast) var(--ease-out),
-    background var(--dur-fast) var(--ease-out);
-}
-.assist-switch:checked {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-.assist-switch:checked::after {
-  transform: translateX(14px);
-  background: var(--accent);
-}
-.assist-switch:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Live readouts (best move / expected reply / loose pieces). */
-.assist-readouts {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-}
-.assist-readout {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-sm);
-}
-.assist-dot {
-  flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-pill);
-}
-.assist-dot.is-best {
-  background: var(--brush-green);
-}
-.assist-dot.is-threat {
-  background: var(--brush-red);
-}
-.assist-readout-label {
-  flex: 1;
-  color: var(--text-secondary);
-}
-.assist-readout-value {
+.play-row-cell {
   font-family: var(--font-mono);
-  font-feature-settings: var(--num-feature);
   font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-.assist-readout-value.is-quiet {
-  color: var(--text-muted);
-  font-weight: var(--fw-medium);
-}
-.assist-loose {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--space-2);
-}
-.assist-loose-chip {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-tight);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--danger-soft);
-  border: 1px solid var(--danger);
-  color: var(--danger);
-}
-.assist-note {
-  margin: 0;
-}
-
-/* ============================================================
-   Coach (on-demand): shared CoachHint component styles.
-   Namespaced .coachhint-* so they never collide with shared or
-   other-feature CSS. Mirrored in puzzles.css (component is used
-   in both features and shared app.css must not be edited).
-   ============================================================ */
-.coachhint-panel {
-  overflow: hidden;
-}
-.coachhint-toggle {
-  width: 100%;
-  border: none;
-  background: transparent;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.coachhint-toggle .panel-title {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-.coachhint-chevron {
-  color: var(--text-muted);
-  transition: transform var(--dur-fast) var(--ease-out);
-}
-.coachhint-chevron.is-open {
-  transform: rotate(180deg);
-}
-.coachhint-panel-body {
-  padding: var(--space-4);
-  border-top: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.coachhint-lede {
-  margin: 0;
-}
-.coachhint {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.coachhint-actions {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.coachhint-btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.coachhint-result {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface-2);
-  border-radius: var(--radius-md);
-}
-.coachhint-verdict {
-  align-self: flex-start;
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--accent);
-}
-.coachhint-text {
-  margin: 0;
-  font-size: var(--fs-sm);
-  line-height: var(--lh-body);
-  color: var(--text-primary);
-}
-.coachhint-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.coachhint-tag {
-  font-size: var(--fs-xs);
-  padding: 2px var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  border: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
   color: var(--text-secondary);
 }
-.coachhint-empty {
-  margin: 0;
-}
 
-/* ----------------------------------------------------------------------------
-   Bot time manager (GameView-owned, additive: see PlayView/botTime.ts).
-   Deep think: when the bot allocates a long think (>= ~8s), .play-view gains
-   .is-deepthink and the opponent's thinking dots slow down and warm up, a calm
-   "settling in for a big think" read instead of the usual quick pulse, and the
-   chip itself (PlayerChip `deepThink` prop) adds a quiet "thinking deeply…"
-   caption beside them.
-   ---------------------------------------------------------------------------- */
-.play-view.is-deepthink .chip-thinking .chip-dot {
-  background: var(--warning);
-  animation-duration: 2.4s;
-}
-.chip-thinking .chip-think-label {
-  margin-left: var(--space-1);
-  font-size: var(--fs-xs);
-  line-height: 1;
-  color: var(--text-muted);
-  white-space: nowrap;
-  animation: play-deepthink-label-in var(--dur-slow) var(--ease-out) both;
-}
-@keyframes play-deepthink-label-in {
-  from {
-    opacity: 0;
+@media (max-width: 720px) {
+  .play-gm {
+    padding: var(--space-4);
   }
-  to {
-    opacity: 1;
+
+  .play-code {
+    padding: var(--space-4);
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .chip-thinking .chip-think-label {
-    animation: none;
+
+  .play-join {
+    width: 100%;
+  }
+
+  .play-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: var(--space-2);
+    padding: var(--space-4);
+  }
+
+  /* Same collapse .play-field takes: the label sits over its answer
+     rather than beside it. */
+  .play-explain-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+
+  /* ---- Things a thumb has to hit ----
+
+     Measured at 375x812. The stakes and colour segments came out 34px tall
+     (shell.css .seg, a mouse target), and the way back into the explainer was
+     17px of bare text in the section head. Both are pressed on the way into
+     every game, so both get 44. The segments are qualified by .play so no
+     other screen's .segmented changes; the head control becomes a real box
+     instead of a line of type, which is the only way a 17px word can be a
+     touch target at all. Neither exists above 720px. */
+  .play .segmented .seg {
+    height: 44px;
+  }
+
+  /* The two text fields on the local board (player names) and the custom
+     clock's two numbers are 32px in v1, which is a field you click into with a
+     pointer. min-height clamps the explicit height without restating it. */
+  .play-name,
+  .play-num {
+    min-height: 44px;
+  }
+
+  /* Join sits beside the code field, so it takes the field's new height. */
+  .play-inputs .btn {
+    min-height: 44px;
+  }
+
+  .play-help {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--space-2);
+    margin-right: calc(-1 * var(--space-2));
+  }
+
+  /* The explainer's own two controls. Everything else about the dialog belongs
+     to shell-overlays.css and stays there; these are the two things you press
+     in it, and 35px and 31px are mouse sizes. Scoped to .play-explainer so no
+     other modal in the app changes. */
+  .play-explainer .shell-modal-foot .btn {
+    min-height: 44px;
+  }
+
+  .play-explainer .shell-modal-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* The scrim pays a flat --space-5 all round and never the home indicator, so
+     a dialog tall enough to hit its max-height ends with "Start playing" in the
+     bottom 34px of a notched screen. Buying the inset back on the dialog is the
+     part of that this file can own: the cap comes down by the inset and a
+     matching bottom margin holds the box off it, so the margin box still fills
+     the scrim and the centring stays honest. On any screen with no inset both
+     terms are 0 and nothing moves, which is why desktop cannot see this.
+
+     Qualified by .overlay-dialog for the same reason the max-width above it
+     is: .overlay-dialog's own max-height is 100% at the same specificity, and
+     feature CSS is lazy loaded, so the order the two land in is not something
+     this file may rely on. */
+  .overlay-dialog.play-explainer {
+    max-height: calc(100% - env(safe-area-inset-bottom, 0px));
+    margin-bottom: env(safe-area-inset-bottom, 0px);
   }
 }

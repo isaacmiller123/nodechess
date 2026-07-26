@@ -1,370 +1,750 @@
-/* ============================================================
-   Openings explorer: feature-scoped styles. Tokens only (tokens.css).
-   Reuses global primitives (.board-area .board-stage .board-wrap
-   .board-controls .nav-group .icon-btn .panel .panel-head .panel-title
-   .eval-chip .seg .move .move-num .move-san) and adds layout + the
-   explorer list / banner on top.
-   ============================================================ */
+/* OPENINGS. Page local, all of it prefixed .open-, all of it tokens.
+   Everything structural is shell.css: .board .boardwrap .coord .panel
+   .well .sec .filterbar .segmented .filter-input .empty .lbl .num .tag
+   .key .btn .boardbar .turn.
 
-.openings-view {
+   THE PROBLEM: a tree 3,733 lines deep that you can descend without
+   losing your place. Three answers, in order of how much they carry.
+
+   1. The path strip is sticky. It sits under the readout and holds every
+      ply of the line, so scrolling a 35 row index cannot separate you
+      from the position you are standing on.
+   2. The path keeps the plies AHEAD of the cursor, dimmed. Stepping back
+      to compare a sibling move does not delete the branch you came from,
+      so returning is one click on a chip you can still see.
+   3. Every continuation carries the name and code it leads to and the
+      count of named lines beneath it, so a descent is chosen rather than
+      guessed. */
+
+/* Three columns need about 1030px of content width before the
+   continuation table starts eating its own names, and the rail is 224 of
+   them, so the fold to two columns happens at 1300 and not at the 1080
+   shell.css uses for the readout.
+
+   The board column is fluid and used to be pinned to a --board-size
+   token. It is fluid because the board's own rule is min(78vh, 100%): the
+   column only has to say what that 100% refers to, and the board takes
+   whichever of the two is smaller. The two fixed tracks are the index and
+   the continuation table, which are text and do need a measure.
+
+   The index measure is 330 and not v1's 260. v1 drew the index as one line
+   of "C60 Ruy Lopez"; it holds a family header now, and a header carries a
+   name, an ECO range and a count on one line. 330 is the width at which
+   "Queen's Gambit Declined", the longest name among the families anyone
+   opens first, stops ellipsizing; at 260 even "Sicilian Defense" did. */
+.open {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: 330px minmax(0, 1fr) 300px;
+  grid-template-areas: 'index board cont';
   gap: var(--space-7);
   align-items: start;
 }
 
-/* ---- Live opening banner (under the board) ---- */
-.opening-banner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: min(72vh, 100%);
-  max-width: 720px;
-  box-sizing: border-box;
-  padding: var(--space-3) var(--space-4);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-.opening-banner-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex: none;
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-  transition:
-    background var(--dur-base) var(--ease-out),
-    color var(--dur-base) var(--ease-out);
-}
-/* Idle / out-of-book: dim the book icon so the "named line" state pops. */
-.opening-banner.is-idle .opening-banner-icon {
-  background: var(--surface-2);
-  color: var(--text-muted);
-}
-.opening-banner-text {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+.open-index {
+  grid-area: index;
   min-width: 0;
 }
-.opening-banner-name {
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-md);
+.open-boardcol {
+  grid-area: board;
+  min-width: 0;
+}
+.open-cont {
+  grid-area: cont;
+  min-width: 0;
+}
+
+.open-index > .sec,
+.open-cont > .sec {
+  margin-bottom: 0;
+}
+
+/* ---------- the path strip ---------- */
+
+.open-path {
+  position: sticky;
+  top: var(--readout-h);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.open-path .lbl {
+  margin-right: var(--space-2);
+}
+
+.open-ply {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  transition:
+    color var(--motion-fast) var(--ease-out),
+    background-color var(--motion-fast) var(--ease-out);
+}
+
+.open-ply:hover {
   color: var(--text-primary);
+  background: var(--surface);
+}
+
+.open-ply.is-here {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+/* The branch you stepped back from, kept and dimmed. */
+.open-ply.is-ahead {
+  color: var(--text-muted);
+}
+
+.open-pathmeta {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ---------- the name plate ---------- */
+
+.open-plate {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface-2);
+  border: var(--border-width) solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+}
+
+.open-eco {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-medium);
+  letter-spacing: var(--tracking-normal);
+  color: var(--accent);
+}
+
+.open-title {
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+}
+
+.open-sub {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.open-fen {
+  padding: var(--space-3) var(--space-6);
+  background: var(--bg-subtle);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+.open-fen .lbl {
+  margin-right: var(--space-3);
+}
+
+/* The turn chip is white in shell.css. Black needs the other one. */
+.open-turn-b {
+  background: var(--piece-black);
+}
+
+/* ---------- continuations ---------- */
+
+.open-cont-head,
+.open-cont-row {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 40px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+}
+
+.open-cont-head {
+  border-bottom: var(--border-width) solid var(--border);
+  background: var(--bg-subtle);
+}
+
+.open-cont-head .lbl:last-child,
+.open-below {
+  text-align: right;
+}
+
+.open-cont-row {
+  width: 100%;
+  text-align: left;
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.open-cont-row:last-child {
+  border-bottom: 0;
+}
+
+.open-cont-row:hover {
+  background: var(--surface-2);
+}
+
+.open-cont-row.is-here {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-6) - 3px);
+}
+
+.open-mv {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-primary);
+}
+
+.open-leads {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+  min-width: 0;
+}
+
+.open-leads > span:first-child {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  animation: opening-banner-in var(--dur-base) var(--ease-out);
 }
-.opening-banner-name.muted {
-  font-weight: var(--fw-medium);
+
+.open-leads-eco {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
   color: var(--text-muted);
-}
-/* "Family · Variation" split: the family carries the weight. */
-.opening-banner-variation {
-  color: var(--text-secondary);
-  font-weight: var(--fw-regular);
-}
-.opening-banner-variation::before {
-  content: ' · ';
-  color: var(--text-muted);
-}
-@keyframes opening-banner-in {
-  from {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-.opening-eco {
   flex: none;
 }
 
-/* ---- Sidebar ---- */
-.openings-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  min-width: 0;
+.open-below {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-normal);
+  color: var(--text-secondary);
 }
 
-/* ---- Explorer panel ---- */
-.openings-explorer {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
+/* ---------- the index: families, then the lines inside them ----------
 
-.explorer-search {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
-}
-.explorer-search-icon {
-  position: absolute;
-  left: calc(var(--space-4) + var(--space-2));
-  color: var(--text-muted);
-  pointer-events: none;
-}
-.explorer-search-input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: var(--space-3) var(--space-8) var(--space-3) var(--space-9);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-subtle);
-  color: var(--text-primary);
-  font: inherit;
-  font-size: var(--fs-sm);
-  transition:
-    border-color var(--dur-fast),
-    box-shadow var(--dur-fast);
-}
-.explorer-search-input::placeholder {
-  color: var(--text-muted);
-}
-.explorer-search-input:focus {
-  outline: none;
-  border-color: var(--focus-ring);
-  box-shadow: 0 0 0 2px var(--accent-soft);
-}
-.explorer-search-clear {
-  position: absolute;
-  right: calc(var(--space-4) + var(--space-1));
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    color var(--dur-fast);
-}
-.explorer-search-clear:hover {
-  background: var(--surface-2);
-  color: var(--text-primary);
-}
+   THE TOP LEVEL IS A NAME, not a line. 3,733 rows in one column is a scroll
+   nobody finishes; the same book read as 148 families is a page you can hold
+   in your head, and the family you want opens under your finger.
 
-.explorer-groups {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
-}
-.explorer-groups .seg {
-  flex: 0 0 auto;
-}
+   The group header is v1's own object: .ghead / .ghead-inner / .ghead-count,
+   with .g-name for the name and .chip for the ECO range. shell.css styles
+   .ghead through `.ghead th`, which needs the <table> the games index has,
+   and a table's header pinned under the readout is the wrong object for a
+   column that scrolls inside its own well. So the row chrome is declared
+   here; the layout, the count, the name and the chip are shell.css
+   untouched. */
 
-.explorer-list {
-  list-style: none;
-  margin: 0;
-  padding: var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  max-height: 52vh;
+.open-list {
+  max-height: 58vh;
   overflow-y: auto;
 }
 
-.explorer-empty {
-  padding: var(--space-6) var(--space-4);
-  text-align: center;
+.open-list .ghead {
+  /* One sticky header per family, each bounded by its own block: the name
+     you opened stays on screen while you scroll the lines under it. */
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  text-align: left;
+  background: var(--bg-subtle);
+  border-bottom: var(--border-width) solid var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.open-list .ghead:hover {
+  background: var(--surface);
+}
+
+.open-list .ghead:hover .g-name {
+  color: var(--accent-hover);
+}
+
+/* #i-chev points left. Shut turns it to the right, open turns it down: the
+   two directions a tree has ever used. */
+.open-list .ghead .icon {
   color: var(--text-muted);
+  transform: rotate(180deg);
+  transition: transform var(--motion-slow) var(--ease-out);
+}
+
+.open-list .ghead[aria-expanded='true'] .icon {
+  color: var(--accent);
+  transform: rotate(-90deg);
+}
+
+/* The name takes whatever the chip and the count leave, and ellipsizes. */
+.open-fam-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A chip in a 300px column, so it is the shell chip at the shell's smaller
+   inset rather than a second kind of chip. */
+.open-fam-eco {
+  flex: none;
+  height: 20px;
+  padding: 0 var(--space-3);
+}
+
+.open-fam-head .ghead-count {
+  flex: none;
+  min-width: 3ch;
+  text-align: right;
+}
+
+/* A shut family still says the position you are standing on is inside it. */
+.open-fam-head.has-active {
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-5) - 3px);
+}
+
+.open-fam-lines[hidden] {
+  display: none;
+}
+
+.open-fam-more {
+  padding: var(--space-3) var(--space-5) var(--space-3) var(--space-7);
+  border-bottom: var(--border-width) solid var(--border);
   font-size: var(--fs-sm);
-}
-.explorer-more {
-  padding: var(--space-3) var(--space-4);
-  text-align: center;
   color: var(--text-muted);
-  font-size: var(--fs-xs);
-  border-top: 1px solid var(--border);
 }
 
-.explorer-item {
-  display: flex;
-  align-items: center;
+.open-line {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
   gap: var(--space-3);
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  padding: var(--space-3);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    border-color var(--dur-fast);
-}
-.explorer-item:hover {
-  background: var(--surface-2);
-}
-.explorer-item.is-active {
-  background: var(--accent-soft);
-  border-color: var(--accent);
-}
-.explorer-item-main {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
-  flex: 1;
-}
-.explorer-item-name {
-  font-weight: var(--fw-medium);
-  font-size: var(--fs-base);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.explorer-item-line {
-  font-size: var(--fs-xs);
+  align-items: baseline;
+  padding: var(--space-3) var(--space-5);
+  border-bottom: var(--border-width) solid var(--border);
   color: var(--text-secondary);
-  font-feature-settings: var(--num-feature);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.explorer-item-eco {
-  flex: none;
 }
 
-/* ---- Family rows (two-level browser) ---- */
-.explorer-family-block {
-  display: flex;
-  flex-direction: column;
+/* A line sits under the name that owns it. */
+.open-fam-lines .open-line {
+  padding-left: var(--space-7);
 }
-.explorer-family {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--text-primary);
-  font: inherit;
-  padding: var(--space-3);
-  cursor: pointer;
-  transition:
-    background var(--dur-fast),
-    border-color var(--dur-fast);
-}
-.explorer-family:hover {
-  background: var(--surface-2);
-}
-/* Collapsed family that contains the loaded line: keep a quiet marker. */
-.explorer-family.has-active {
-  border-color: var(--accent);
-}
-.explorer-family-chevron {
-  flex: none;
+
+.open-line-eco {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
   color: var(--text-muted);
-  transition: transform var(--dur-fast) var(--ease-out);
 }
-.explorer-family.is-open .explorer-family-chevron {
-  transform: rotate(90deg);
-}
-.explorer-family-name {
-  flex: 1;
+
+.open-line-text {
   min-width: 0;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-base);
+}
+
+.open-line-name {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.explorer-family-count {
-  flex: none;
+
+.open-line .g-note {
+  display: block;
+  margin-top: var(--space-1);
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-normal);
   color: var(--text-muted);
-  background: var(--surface-2);
-  border-radius: var(--radius-pill);
-  padding: 1px var(--space-3);
-  font-feature-settings: var(--num-feature);
-  transition:
-    background var(--dur-fast),
-    color var(--dur-fast);
 }
-.explorer-family.is-open .explorer-family-count {
-  background: var(--accent-soft);
+
+.open-line.is-here {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-5) - 3px);
+}
+
+.open-fam-lines .open-line.is-here {
+  padding-left: calc(var(--space-7) - 3px);
+}
+
+.open-line.is-here .open-line-eco,
+.open-line.is-here .g-name {
   color: var(--accent);
 }
-.explorer-family-eco {
-  flex: none;
+
+/* Phone: the sheet has no current marker in shell.css. */
+.open-here {
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  padding-left: calc(var(--space-6) - 3px);
 }
 
-/* Nested variation list under an open family. */
-.explorer-variations {
-  list-style: none;
-  margin: var(--space-1) 0 var(--space-2) var(--space-4);
-  padding: 0 0 0 var(--space-4);
-  border-left: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-.explorer-variation {
-  padding: var(--space-2) var(--space-3);
-}
-.explorer-variation .explorer-item-name {
-  font-weight: var(--fw-medium);
-  font-size: var(--fs-sm);
-}
-.explorer-more-inline {
-  padding: var(--space-2) var(--space-3);
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
+.open-here .icon {
+  color: var(--accent);
 }
 
-/* ---- Played-line preview ---- */
-.opening-moves {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-1) var(--space-2);
-  padding: var(--space-4);
-}
-.opening-moves-empty {
-  padding: var(--space-4);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-}
-.opening-move-slot {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--space-1);
-}
-.opening-move {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+@media (max-width: 1300px) {
+  .open {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-areas:
+      'board cont'
+      'index index';
+  }
+
+  .open-index {
+    margin-top: var(--space-8);
+  }
+
+  .open-list {
+    max-height: 420px;
+  }
 }
 
-@media (max-width: 980px) {
-  .openings-view {
+@media (max-width: 1080px) {
+  /* The readout wraps below 1080, so its height is no longer a number the
+     path strip can be pinned under. */
+  .open-path {
+    position: static;
+  }
+}
+
+@media (max-width: 900px) {
+  .open {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'board'
+      'cont'
+      'index';
+    gap: var(--space-8);
   }
-  .explorer-list {
-    max-height: 40vh;
+
+  .open-index {
+    margin-top: 0;
   }
+
+  .open-cont-head,
+  .open-cont-row {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .open-cont-row {
+    min-height: 52px;
+  }
+
+  .open-list .ghead,
+  .open-line {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .open-fam-lines .open-line {
+    padding-left: var(--space-6);
+  }
+
+  .open-fam-head.has-active {
+    padding-left: calc(var(--space-4) - 3px);
+  }
+
+  .open-line.is-here {
+    padding-left: calc(var(--space-4) - 3px);
+  }
+
+  .open-fam-lines .open-line.is-here {
+    padding-left: calc(var(--space-6) - 3px);
+  }
+
+  /* Thumb targets. The header is a row of text and the line is two, so only
+     the header needs a floor to reach 44. */
+  .open-list .ghead {
+    min-height: 44px;
+  }
+
+  .open-list {
+    max-height: 340px;
+  }
+
+  /* Six controls and a sentence do not fit on one 366px line, so the
+     sentence takes its own. */
+  .open-boardcol .boardbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-3);
+  }
+
+  .open-boardcol .turn {
+    flex: 1 0 100%;
+    margin-right: 0;
+  }
+
+  .open-boardcol .boardbar .key {
+    flex: 1 1 auto;
+    height: 34px;
+  }
+}
+
+/* ---------- phone ----------
+
+   Everything below 720 and nothing above it. The three column page already
+   folds to one at 900; what is left is that the page was drawn for a window
+   with vertical room to spare, and a phone has none. */
+@media (max-width: 720px) {
+  /* THE BOARD WAS MOSTLY UNDER THE TAB BAR, AND THE FILTER WAS 1500px FROM
+     THE LIST IT FILTERS. One cause, two symptoms.
+
+     The earlier pass here measured the page with NOTHING loaded, where the
+     name plate is one line and the path strip is empty, and got the board to
+     390.5 to 741.5 with the tab bar at 752. That is not the page anyone uses.
+     Load a line, which is the whole errand, and both of those blocks grow.
+     Measured at 375x812 on C89 Marshall Attack, Main Line, Spassky Variation,
+     36 plies, the deepest line in the book:
+
+       .open-path    296 to 469     173 tall, six wrapped rows of chips
+       .open-plate   477 to 582.5   105.5 tall, the variation name wraps
+       .board-wrap   590.5 to 941.5
+
+     The tab bar starts at 752, so ranks 1 to 4 were under it, 190px of an
+     8x8 board that a finger could not reach until the page was scrolled. At
+     390x844 it was 166px of the same. Even a short named line put 16px of
+     rank 1 under the bar. The path strip is the moving part: it has no
+     ceiling, so a deep line simply pushes the board off the screen.
+
+     THE SECOND SYMPTOM IS THE SAME STACK. On a desktop the search field sits
+     directly above the index it filters, because the index is the left
+     column. Folded to one column the page reads search, line, board,
+     continuations, index, so the field ended up at y=182 and the list it
+     drives began at y=1191, a page and a half apart. Typing into it moved
+     something nobody could see.
+
+     THE FIX IS THE ORDER PLUS A CEILING. .main is already a flex column in
+     shell.css, so `display: contents` on .open at this width alone hands its
+     three areas to .main as siblings and lets all five blocks be ordered:
+     the line, then the board, then the continuations, then the search with
+     the index it filters directly under it. .open keeps its grid, and its
+     gap, at every width above this one. The gap it stops applying here is
+     restored as margins below.
+
+     Measured again at 375x812 on the same line, with the strip capped at
+     three rows:
+
+       .open-path    144.5 to 236     capped, scrolls inside itself
+       .open-plate   244 to 349.5
+       .board-wrap   357.5 to 708.5   clear of the 752 bar by 43.5
+       .turn         720.5 to 737     the readout reads with the board
+
+     and on a short line, where the strip is under its own cap and unchanged:
+
+       .board-wrap   265.5 to 616.5
+       .boardbar     628.5 to 697     board, turn and step keys all at rest */
+  .open {
+    display: contents;
+  }
+
+  .open-path {
+    order: 1;
+  }
+
+  .open-boardcol {
+    order: 2;
+  }
+
+  .open-cont {
+    order: 3;
+  }
+
+  .open-search {
+    order: 4;
+  }
+
+  .open-index {
+    order: 5;
+  }
+
+  /* .open's own gap, paid by the blocks now that .open is not laying them
+     out. The index is last and .main's padding-bottom closes the page. */
+  .open-boardcol,
+  .open-cont {
+    margin-bottom: var(--space-8);
+  }
+
+  /* The search block and the index are one object now, so the air between
+     them is a field's worth and not a section's. */
+  .open-search.sec {
+    margin-bottom: var(--space-4);
+  }
+
+  .open-search .filterbar {
+    margin-bottom: 0;
+  }
+
+  /* THE CEILING ON THE LINE. Two rows of chips, then the strip scrolls
+     inside itself, so a 36 ply line costs the board exactly what a 6 ply one
+     does.
+
+     Two rows of 44 rather than three of the 22.5 a chip measures at rest.
+     A chip jumps the board to that ply, so it is a target and not a label,
+     and the four keys under the board that do the same errand are already
+     44 here. Both arrangements cost the strip the same 108px; this one is
+     the reachable version of it.
+
+     overscroll-behavior keeps a strip that has reached its own end from
+     handing the gesture to the page behind it. OpeningsView scrolls the
+     chip you are standing on into the strip's view whenever the cursor
+     moves, and only when the strip is actually overflowing, so nothing
+     happens at any width where it is not. */
+  .open-path {
+    --open-ply-row: 44px;
+    margin-bottom: var(--space-3);
+    max-height: calc(
+      2 * var(--open-ply-row) + var(--space-2) + 2 * var(--space-3)
+    );
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .open-ply {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--open-ply-row);
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  .open-plate {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  /* The plate, the board and the bar read as one object on a phone, so the
+     air between them is the last of what this had to find. */
+  .open-boardcol .board-area {
+    gap: var(--space-3);
+  }
+
+  /* Stepping along a line is the whole of this page and the keys are 34px
+     high, which is a pointer's target. The bar sits under the board, so the
+     height it gains costs the board nothing. */
+  .open-boardcol .boardbar .key,
+  .open-boardcol .boardbar .btn {
+    height: 44px;
+  }
+
+  /* The bar's own margin sat on top of the .board-area gap above, 20px of
+     air between a board and the line of type that says whose move it is. On
+     the deepest line that 12px was the difference between "White to move"
+     reading at rest and reading 9.5px under the tab bar. The gap keeps them
+     apart; the margin was saying it twice. */
+  .open-boardcol .boardbar {
+    margin-top: 0;
+  }
+
+  /* The same for the two controls that choose what the board shows. Both are
+     scoped to this page's own search block, so no other page's field moves. */
+  .open-search .filter-input,
+  .open-search .segmented .seg {
+    height: 44px;
+  }
+
+  /* A NAME CUT IN HALF IS NOT A NAME. At 375 the index column is 228px, and
+     v1's one-line row turned "Blackmar-Diemer Gambit Accepted" and "Vienna
+     Gambit, with Max Lange Defense" into a name and an ellipsis; the line rows
+     under them lost the end of their move list the same way. There is no
+     second column here competing for the width, so a name that needs two
+     lines takes two lines. */
+  .open-fam-name,
+  .open-line-name,
+  .open-line .g-note {
+    overflow: visible;
+    white-space: normal;
+  }
+
+  /* THE INDEX IS THE PAGE, NOT A PORTHOLE. 340px is a tablet's window on a
+     148 family book, and on a phone it leaves the list scrolling inside a box
+     that is itself two thirds dead space, with a page scroller outside it to
+     fight. The index is the last block on the page, so a taller box is a
+     shorter fight: the page reaches its own bottom and the list takes over
+     from there. */
+  .open-list {
+    max-height: 60vh;
+  }
+}
+
+/* ---------- the short phone ----------
+
+   A 740px window has 72 fewer pixels than the 812 the rules above were sized
+   against, and the board gives none of them back: it is bound by the width,
+   not by the 78vh in --board-measure. So the last thing that can yield is the
+   strip, and on the deepest line it has to.
+
+   Measured at 360x740 on the same 36 ply line, tab bar at 680:
+
+     two rows   .board-wrap  374 to 710    30px of rank 1 under the bar
+     one row    .board-wrap  374 to 662    clear by 18
+
+   Nothing at 375x812 or 390x844 is inside this query, so neither moves. */
+@media (max-width: 720px) and (max-height: 780px) {
+  .open-path {
+    max-height: calc(var(--open-ply-row) + 2 * var(--space-3));
+  }
+}
+
+/* ---------- surfaces the mock did not have to draw ----------
+
+   Everything above is design-lab/v1/openings.html verbatim. The two rules
+   below exist because the mock's index rows were anchors and its board keys
+   were decoration, and in the app both are real controls. */
+
+/* An index row loads a line rather than navigating, so it is a button. A
+   button does not inherit the block width and left alignment an anchor gets
+   for free; .open-cont-row, which v1 already wrote as a button, declares the
+   same two properties for the same reason. */
+.open-line {
+  width: 100%;
+  text-align: left;
+}
+
+/* The ends of a line have to read as unavailable, and shell.css only gives
+   .btn a disabled state. Scoped to this page's boardbar so it stays out of
+   the way of whatever the shared sheet decides later. */
+.open-boardcol .boardbar .key[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
 }

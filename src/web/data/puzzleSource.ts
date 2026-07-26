@@ -97,7 +97,8 @@ export interface StaticPuzzleReader {
 }
 
 export interface StaticPuzzleReaderOptions {
-  /** Directory holding the chunks + manifest. Default `<base>puzzles/`. */
+  /** Directory holding the chunks + manifest. May be another origin.
+   *  Default: puzzleArtifactBaseUrl(). */
   baseUrl?: string
   manifestName?: string
   workerUrl?: string
@@ -105,15 +106,45 @@ export interface StaticPuzzleReaderOptions {
   fetchImpl?: typeof fetch
 }
 
-/** Vite base URL; guarded so non-Vite bundlers (the esbuild test harnesses)
- *  can evaluate this module. Mirrors src/web/engines/assets.ts. */
-function viteBase(): string {
-  const env = (import.meta as { env?: { BASE_URL?: string } }).env
-  return env?.BASE_URL ?? '/'
+/** Vite env; guarded so non-Vite bundlers (the esbuild test harnesses) can
+ *  evaluate this module. Mirrors src/web/engines/assets.ts. */
+interface ReaderEnv {
+  BASE_URL?: string
+  VITE_PUZZLE_BASE_URL?: string
+}
+
+function viteEnv(): ReaderEnv {
+  return (import.meta as { env?: ReaderEnv }).env ?? {}
+}
+
+/** Where the chunked artifact is served from, trailing slash guaranteed.
+ *
+ *  Default is same-origin `<base>puzzles/`, which is what `npm run dev:web`
+ *  serves (vite.web.config.ts streams dist-puzzles/ from there, honouring
+ *  Range). Production points VITE_PUZZLE_BASE_URL at an object store instead,
+ *  because THE SITE'S OWN HOST DOES NOT DO BYTE SERVING: measured on
+ *  2026-07-26, Cloudflare Pages answered `Range: bytes=0-1023` against
+ *  /puzzles/puzzles.sqlite.000 with `200` and all 25,165,824 bytes, while
+ *  still advertising `accept-ranges: bytes`. Every read this reader makes is a
+ *  range read, so on Pages each one pulls a whole 24 MiB chunk, and worse, the
+ *  library treats the body as the bytes it asked for (see chunkedDb.ts), which
+ *  means wrong pages rather than slow ones. docs/DEPLOY-WEB.md Part 6 sets up
+ *  the origin that answers 206.
+ *
+ *  A cross-origin base has to be agreed to by the bucket: the reads are XHR
+ *  from a worker, so a missing Access-Control-Allow-Origin is a hard failure
+ *  and a missing Access-Control-Expose-Headers is a silent one (nothing can
+ *  read Content-Range, so the service worker caches nothing). Exact header set
+ *  in the deploy doc. */
+export function puzzleArtifactBaseUrl(): string {
+  const env = viteEnv()
+  const configured = env.VITE_PUZZLE_BASE_URL?.trim()
+  const base = configured && configured.length > 0 ? configured : `${env.BASE_URL ?? '/'}puzzles/`
+  return base.endsWith('/') ? base : `${base}/`
 }
 
 export function createStaticPuzzleReader(opts: StaticPuzzleReaderOptions = {}): StaticPuzzleReader {
-  const baseUrl = opts.baseUrl ?? `${viteBase()}puzzles/`
+  const baseUrl = opts.baseUrl ?? puzzleArtifactBaseUrl()
   const manifestUrl = `${baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`}${opts.manifestName ?? 'puzzles.manifest.json'}`
 
   interface Conn {

@@ -1,54 +1,70 @@
 import { useCallback, useEffect, useRef, useState, type JSX } from 'react'
-import { ArrowLeft, BookOpen, Bot, Globe, Swords, Users } from 'lucide-react'
-import { Board } from '../../board/Board'
-import { pieceSetClass } from '../../board/pieceSets'
-import { useSettings } from '../../state/settings'
+import { ArrowLeft } from 'lucide-react'
 import type { GameKind } from '../../games/kernel'
 import { isRegisteredGame } from '../../games/registry'
 import OnlineTab from '../play/OnlineTab'
 import type { CatalogEntry } from './catalog'
-import { ArtThumb } from './ArtThumb'
 import { KernelBot } from './KernelBot'
 import { KernelOtb } from './KernelOtb'
 import { ManualPane } from './ManualPane'
 import { VariantBot } from './VariantBot'
 import { VariantOtb } from './VariantOtb'
+import type { GameLaunch, SetupMode } from './setup'
 
-type PageTab = 'play' | 'manual'
-type PlayMode = 'bot' | 'otb' | 'online'
-
-/** Slim in-play strip labels (the hero collapses once a game starts). */
-const MODE_LABEL: Record<PlayMode, string> = { bot: 'vs Bot', otb: 'Local OTB', online: 'Online' }
+/** The mode strip, in the setup screen's own three words. */
+const MODE_LABEL: Record<SetupMode, string> = { local: 'Local', bot: 'Bot', online: 'Online' }
 
 /** Catalog kinds that predate the kernel registry's naming. */
 const REGISTRY_ALIAS: Record<string, GameKind> = { 'checkers-8': 'checkers', ttt: 'tictactoe' }
 
 /** The registry kind for a catalog entry, or null when this build has no
- *  kernel for it (Online then keeps its "landing in P2" toast). */
+ *  kernel for it. */
 function registryKind(entry: CatalogEntry): GameKind | null {
   if (isRegisteredGame(entry.kind)) return entry.kind
   const alias = REGISTRY_ALIAS[entry.kind]
   return alias !== undefined && isRegisteredGame(alias) ? alias : null
 }
 
+function Playbar({
+  title,
+  tag,
+  onBack
+}: {
+  title: string
+  tag: string
+  onBack: () => void
+}): JSX.Element {
+  return (
+    <header className="game-playbar">
+      <button type="button" className="game-back" onClick={onBack}>
+        <ArrowLeft size={15} aria-hidden />
+        All games
+      </button>
+      <h2 className="game-playbar-title">{title}</h2>
+      <span className="game-playbar-mode">{tag}</span>
+    </header>
+  )
+}
+
 /**
- * Per-game page: hero + Play (vs Bot / Local OTB / Online) + Manual.
- * vs Bot: chess family → VariantBot (Fairy-Stockfish), every other registered
- * kind → KernelBot (KataGo GTP ipc for go, in-process bots for the rest).
+ * The board, opened on the options the setup screen collected.
+ *
+ * The design lab stops at Start ("Nothing on this page plays a game"), so
+ * everything below the playbar is the app's own play surface: the chess family
+ * through the variant adapter, every other family through the generic kernel
+ * owner, online through the shared join-code screen.
  */
 export function GamePage({
-  entry,
+  launch,
   onBack,
   onOpenSettings
 }: {
-  entry: CatalogEntry
+  launch: GameLaunch
   onBack: () => void
   /** Deep link to Settings (KernelBot's inline KataGo install prompt). */
   onOpenSettings?: () => void
 }): JSX.Element {
-  const { settings } = useSettings()
-  const [tab, setTab] = useState<PageTab>('play')
-  const [mode, setMode] = useState<PlayMode | null>(null)
+  const { entry, mode, surface } = launch
   const [toast, setToast] = useState<string | null>(null)
   const toastTimer = useRef<number | null>(null)
 
@@ -65,188 +81,78 @@ export function GamePage({
     toastTimer.current = window.setTimeout(() => setToast(null), 2600)
   }, [])
 
-  const onlineKind = registryKind(entry)
+  const kind = registryKind(entry)
+  const isChessFamily = entry.family === 'chess'
 
-  const pickMode = useCallback(
-    (m: PlayMode) => {
-      // Online: any kernel-registered game. The OnlineTab below is pre-seeded
-      // with this kind (wire v4 start config carries it to the joiner).
-      if (m === 'online') {
-        if (onlineKind) {
-          setMode('online')
-        } else {
-          showToast(`Online ${entry.title} is landing in P2. Join codes will carry the game.`)
-        }
-        return
-      }
-      if (entry.status !== 'playable') {
-        showToast(`${entry.title} is landing in P2.`)
-        return
-      }
-      if ((m === 'otb' || m === 'bot') && !entry.otbReady) {
-        showToast(`The ${entry.title} board is landing in P2.`)
-        return
-      }
-      if (m === 'otb') {
-        setMode('otb')
-        return
-      }
-      if (m === 'bot') {
-        // Chess family → VariantBot (Fairy-Stockfish); every other registered
-        // kind → KernelBot over the games/bots.ts provider seam (KataGo GTP
-        // for go. Its install state is handled INLINE by KernelBot).
-        // (Standard chess lives in the Play tab's richer PlayView, not here.)
-        if (entry.family === 'chess' || onlineKind) {
-          setMode('bot')
-        } else {
-          showToast(`Bots for ${entry.title} are landing in P2.`)
-        }
-      }
-    },
-    [entry, onlineKind, showToast]
-  )
-
-  const playable = entry.status === 'playable'
-  const botReady = playable && entry.otbReady === true && (entry.family === 'chess' || onlineKind !== null)
+  let surfaceEl: JSX.Element
+  if (mode === 'online') {
+    surfaceEl = kind ? (
+      <div className="game-online">
+        <OnlineTab initialGameKind={kind} />
+      </div>
+    ) : (
+      <NoKernel title={entry.title} />
+    )
+  } else if (mode === 'bot') {
+    surfaceEl = isChessFamily ? (
+      <VariantBot entry={entry} onToast={showToast} setup={surface} />
+    ) : kind ? (
+      <KernelBot
+        entry={entry}
+        kind={kind}
+        onToast={showToast}
+        onOpenSettings={onOpenSettings}
+        setup={surface}
+      />
+    ) : (
+      <NoKernel title={entry.title} />
+    )
+  } else {
+    surfaceEl = isChessFamily ? (
+      <VariantOtb entry={entry} setup={surface} />
+    ) : (
+      <KernelOtb entry={entry} setup={surface} />
+    )
+  }
 
   return (
-    // In-play the page trades the hero for a slim title strip and hands the
-    // whole content column to the board (games.css .game-page.is-playing).
-    <div className={`game-page${mode ? ' is-playing' : ''}`}>
-      {mode ? (
-        <header className="game-playbar">
-          <button type="button" className="game-back" onClick={() => setMode(null)}>
-            <ArrowLeft size={15} aria-hidden />
-            Modes
-          </button>
-          <h2 className="game-playbar-title">{entry.title}</h2>
-          <span className="game-playbar-mode">{MODE_LABEL[mode]}</span>
-        </header>
-      ) : (
-        <button type="button" className="game-back" onClick={onBack}>
-          <ArrowLeft size={15} aria-hidden />
-          All games
-        </button>
-      )}
-
-      {mode === 'otb' ? (
-        // The chess family (chessops + ffish waves, incl. runtime customs)
-        // keeps its dedicated view (side naming, janggi pass, 960 reshuffle);
-        // every other family plays through the generic kernel owner
-        // (go sizes/scoring, hex swap, ...).
-        entry.family === 'chess' ? (
-          <VariantOtb entry={entry} />
-        ) : (
-          <KernelOtb entry={entry} />
-        )
-      ) : mode === 'bot' ? (
-        entry.family === 'chess' ? (
-          <VariantBot entry={entry} onToast={showToast} />
-        ) : (
-          <KernelBot
-            entry={entry}
-            kind={onlineKind!}
-            onToast={showToast}
-            onOpenSettings={onOpenSettings}
-          />
-        )
-      ) : mode === 'online' && onlineKind ? (
-        <div className="game-online">
-          <OnlineTab initialGameKind={onlineKind} />
-        </div>
-      ) : (
-        <>
-          <header className="game-hero">
-            <div className="game-hero-visual" aria-hidden>
-              {entry.thumbFen ? (
-                <div className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)} game-hero-board`}>
-                  <Board
-                    fen={entry.thumbFen}
-                    orientation="white"
-                    turnColor="white"
-                    dests={new Map()}
-                    viewOnly
-                    coordinates={false}
-                    animation={false}
-                  />
-                </div>
-              ) : (
-                <ArtThumb kind={entry.kind} />
-              )}
-            </div>
-            <div className="game-hero-copy">
-              <div className="game-hero-titlerow">
-                <h2>{entry.title}</h2>
-                {!playable && <span className="pill-p2">P2</span>}
-              </div>
-              <p className="game-hero-tagline">{entry.tagline}</p>
-              <div className="game-tabs" role="tablist" aria-label={`${entry.title} sections`}>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === 'play'}
-                  className={`game-tab${tab === 'play' ? ' is-active' : ''}`}
-                  onClick={() => setTab('play')}
-                >
-                  <Swords size={15} aria-hidden /> Play
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === 'manual'}
-                  className={`game-tab${tab === 'manual' ? ' is-active' : ''}`}
-                  onClick={() => setTab('manual')}
-                >
-                  <BookOpen size={15} aria-hidden /> Manual
-                </button>
-              </div>
-            </div>
-          </header>
-
-          {tab === 'play' ? (
-            <div className="game-modes">
-              <button type="button" className="mode-card" onClick={() => pickMode('bot')}>
-                <span className="mode-icon"><Bot size={22} aria-hidden /></span>
-                <span className="mode-name">vs Bot</span>
-                <span className="mode-desc">Five strength levels, engine-backed</span>
-                {botReady ? (
-                  <span className="mode-status is-live">Play now</span>
-                ) : (
-                  <span className="mode-status is-p2">P2</span>
-                )}
-              </button>
-              <button type="button" className="mode-card" onClick={() => pickMode('otb')}>
-                <span className="mode-icon"><Users size={22} aria-hidden /></span>
-                <span className="mode-name">Local OTB</span>
-                <span className="mode-desc">Two players, one machine, auto-flip</span>
-                {playable && entry.otbReady ? (
-                  <span className="mode-status is-live">Play now</span>
-                ) : (
-                  <span className="mode-status is-p2">P2</span>
-                )}
-              </button>
-              <button type="button" className="mode-card" onClick={() => pickMode('online')}>
-                <span className="mode-icon"><Globe size={22} aria-hidden /></span>
-                <span className="mode-name">Online</span>
-                <span className="mode-desc">Peer-to-peer with a join code</span>
-                {onlineKind ? (
-                  <span className="mode-status is-live">Play now</span>
-                ) : (
-                  <span className="mode-status is-p2">P2</span>
-                )}
-              </button>
-            </div>
-          ) : (
-            <ManualPane entry={entry} />
-          )}
-        </>
-      )}
-
+    <div className="game-page is-playing">
+      <Playbar title={entry.title} tag={MODE_LABEL[mode]} onBack={onBack} />
+      {surfaceEl}
       {toast && (
         <div className="games-toast" role="status" aria-live="polite">
           {toast}
         </div>
       )}
+    </div>
+  )
+}
+
+/** A kind the setup screen offered but this build has no rules for. Says so
+ *  rather than mounting an empty board. */
+function NoKernel({ title }: { title: string }): JSX.Element {
+  return (
+    <div className="well">
+      <div className="empty">
+        <p className="empty-line">{title} is not playable in this build.</p>
+        <p className="empty-line">Pick another game from the library.</p>
+      </div>
+    </div>
+  )
+}
+
+/** The illustrated manual for one game, reached from the setup screen. */
+export function ManualPage({
+  entry,
+  onBack
+}: {
+  entry: CatalogEntry
+  onBack: () => void
+}): JSX.Element {
+  return (
+    <div className="game-page">
+      <Playbar title={entry.title} tag="Rules" onBack={onBack} />
+      <ManualPane entry={entry} />
     </div>
   )
 }

@@ -9,7 +9,9 @@ import { replayOptionsOf } from '../../games/archive'
 import { useBoardSound } from '../../games/boards/useBoardSound'
 import { ReplayTheater, buildTheaterInput, type TheaterInput } from '../library/ReplayTheater'
 import type { CatalogEntry } from './catalog'
+import type { SurfaceSetup } from './setup'
 import { Board3DHost, BoardModeToggle, useBoardMode } from './boardMode'
+import { SurfaceClockPair, useSurfaceClock } from './otbClock'
 import { useSaveFinishedGame } from './useSaveFinishedGame'
 
 type Phase = 'setup' | 'playing'
@@ -24,10 +26,14 @@ type Phase = 'setup' | 'playing'
  */
 export function VariantBot({
   entry,
-  onToast
+  onToast,
+  setup
 }: {
   entry: CatalogEntry
   onToast: (msg: string) => void
+  /** What the setup screen chose. With autoStart the level picker below is
+   *  skipped on the way in and kept for the game after this one. */
+  setup?: SurfaceSetup
 }): JSX.Element {
   const { settings } = useSettings()
   const kind = entry.kind as GameKind
@@ -37,12 +43,31 @@ export function VariantBot({
   const provider = useMemo(() => resolveBotProvider(kind), [kind])
   const BoardView = useMemo(() => lazy(game.loadRenderer), [game])
 
+  /* A pasted position the rules refuse throws out of spec.init, and a throw
+     here is a blank screen instead of a board. The setup screen already tried
+     this for every kind whose rules load synchronously; the ffish kinds could
+     not be judged until now, so this is where THEY report it. */
+  const initOptions = setup?.initOptions
+  const rejected = useRef(false)
+  const makeState = useCallback((): unknown => {
+    try {
+      return spec.init(initOptions)
+    } catch {
+      rejected.current = true
+      return spec.init()
+    }
+  }, [spec, initOptions])
+
   const [phase, setPhase] = useState<Phase>('setup')
-  const [level, setLevel] = useState(3)
-  const [userColor, setUserColor] = useState<'white' | 'black'>('white')
+  const [level, setLevel] = useState(setup?.level ?? 3)
+  const [userColor, setUserColor] = useState<'white' | 'black'>(setup?.color ?? 'white')
   const [ready, setReady] = useState(!game.requiresPreload)
-  const [state, setState] = useState<unknown>(() => (game.requiresPreload ? null : spec.init()))
+  const [state, setState] = useState<unknown>(() => (game.requiresPreload ? null : makeState()))
   const [thinking, setThinking] = useState(false)
+  // A side ran out of time: a terminal state the SPEC cannot know about.
+  const [timeLoss, setTimeLoss] = useState<'white' | 'black' | null>(null)
+  // Bumped on every fresh game so the clock goes back to its base time.
+  const [clockEpoch, setClockEpoch] = useState(0)
   const { is3d } = useBoardMode(kind)
   // Monotonic game id: a stale engine reply from a finished/restarted game is dropped.
   const gameSeq = useRef(0)
@@ -55,7 +80,10 @@ export function VariantBot({
       .preload()
       .then(() => {
         if (cancelled) return
-        setState(spec.init())
+        setState(makeState())
+        if (rejected.current) {
+          onToast('That position is not legal here. The standard start is on the board.')
+        }
         setReady(true)
       })
       .catch(() => {
@@ -64,7 +92,7 @@ export function VariantBot({
     return () => {
       cancelled = true
     }
-  }, [ready, spec, onToast])
+  }, [ready, spec, makeState, onToast])
 
   useBoardSound(kind, state)
 
@@ -74,7 +102,19 @@ export function VariantBot({
   const turn: 'white' | 'black' =
     fenTurn === 'b' ? 'black' : fenTurn === 'w' ? 'white' : moves.length % 2 === 0 ? 'white' : 'black'
   const outcome = ready && state !== null ? spec.result(state) : null
-  const isUserTurn = phase === 'playing' && !outcome && turn === userColor
+  const over = outcome !== null || timeLoss !== null
+  const isUserTurn = phase === 'playing' && !over && turn === userColor
+
+  // The clock the setup screen chose. Unlimited draws nothing and runs nothing.
+  const clock = useSurfaceClock({
+    tcId: setup?.tcId,
+    gameKey: clockEpoch,
+    turn,
+    moves: moves.length,
+    live: phase === 'playing' && ready && state !== null && !over,
+    over,
+    onFlag: setTimeLoss
+  })
 
   // Archive every finished bot game (feature foundation: reviewable later).
   const botLabel = `Bot L${level}`
@@ -97,7 +137,7 @@ export function VariantBot({
 
   // Bot turn: ask the provider once per position; drop stale replies.
   useEffect(() => {
-    if (phase !== 'playing' || outcome || turn === userColor || state === null) return
+    if (phase !== 'playing' || over || turn === userColor || state === null) return
     const seq = gameSeq.current
     let cancelled = false
     setThinking(true)
@@ -130,7 +170,7 @@ export function VariantBot({
     return () => {
       cancelled = true
     }
-  }, [phase, state, turn, userColor, outcome, provider, level, spec, onToast])
+  }, [phase, state, turn, userColor, over, provider, level, spec, onToast])
 
   // The board proposes canonical kernel moves (promotion dialogs and pocket
   // drops included). Validate through spec.play and ignore rejects.
@@ -144,10 +184,22 @@ export function VariantBot({
   const start = useCallback(() => {
     if (!ready) return
     gameSeq.current++
-    setState(spec.init())
+    setState(makeState())
     setThinking(false)
+    setTimeLoss(null)
+    setClockEpoch((k) => k + 1)
     setPhase('playing')
-  }, [ready, spec])
+  }, [ready, makeState])
+
+  /* The game was configured on the library's setup screen, so this one opens
+     on the board. Once only: coming back here by hand means the player wants
+     the picker. ffish kinds wait for their rules to load first. */
+  const autoStarted = useRef(false)
+  useEffect(() => {
+    if (!setup?.autoStart || autoStarted.current || !ready) return
+    autoStarted.current = true
+    start()
+  }, [setup, ready, start])
 
   const backToSetup = useCallback(() => {
     gameSeq.current++
@@ -155,29 +207,30 @@ export function VariantBot({
     setPhase('setup')
   }, [])
 
-  const resultLabel =
-    outcome &&
-    (outcome.score === '1/2-1/2'
-      ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
-      : `${outcome.winner === userColor ? 'You win' : 'Bot wins'}: ${outcome.reason.replace(/-/g, ' ')}`)
+  const resultLabel = timeLoss
+    ? `${timeLoss === userColor ? 'Bot wins' : 'You win'} on time`
+    : outcome &&
+      (outcome.score === '1/2-1/2'
+        ? `Draw: ${outcome.reason.replace(/-/g, ' ')}`
+        : `${outcome.winner === userColor ? 'You win' : 'Bot wins'}: ${outcome.reason.replace(/-/g, ' ')}`)
 
   // Post-game Replay Theater (cinematic 3D/2D re-run of the finished game).
   const [theater, setTheater] = useState<TheaterInput | null>(null)
   const openTheater = useCallback(() => {
-    if (state === null || !outcome) return
+    if (state === null || (!outcome && !timeLoss)) return
     setTheater(
       buildTheaterInput({
         entry: game,
         moves,
         options: replayOptionsOf(spec, state),
-        result: outcome.score,
-        reason: outcome.reason,
+        result: outcome?.score ?? (timeLoss === 'white' ? '0-1' : '1-0'),
+        reason: outcome?.reason ?? 'time',
         white: userColor === 'white' ? 'You' : botLabel,
         black: userColor === 'black' ? 'You' : botLabel,
         event: 'Play vs Bot'
       })
     )
-  }, [state, outcome, game, spec, moves, userColor, botLabel])
+  }, [state, outcome, timeLoss, game, spec, moves, userColor, botLabel])
 
   if (phase === 'setup') {
     return (
@@ -246,30 +299,35 @@ export function VariantBot({
   return (
     <div className="votb">
       <div className="votb-stage">
-        <div className={`votb-cfb board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}>
-          {state === null ? (
-            shimmer
-          ) : is3d ? (
-            <Board3DHost
-              kind={kind}
-              state={state}
-              orientation={userColor}
-              interactive={isUserTurn}
-              onMove={onUserMove}
-            />
-          ) : (
-            <Suspense fallback={shimmer}>
-              <BoardView
+        {/* shell.css owns the measure: .board-stage centres, .board-wrap sizes. */}
+        <div className="board-stage">
+          <div
+            className={`board-wrap votb-cfb board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
+          >
+            {state === null ? (
+              shimmer
+            ) : is3d ? (
+              <Board3DHost
                 kind={kind}
                 state={state}
                 orientation={userColor}
                 interactive={isUserTurn}
                 onMove={onUserMove}
               />
-            </Suspense>
-          )}
+            ) : (
+              <Suspense fallback={shimmer}>
+                <BoardView
+                  kind={kind}
+                  state={state}
+                  orientation={userColor}
+                  interactive={isUserTurn}
+                  onMove={onUserMove}
+                />
+              </Suspense>
+            )}
+          </div>
         </div>
-        {outcome && (
+        {over && (
           <div className="votb-banner" role="status">
             <strong>{resultLabel}</strong>
             <button type="button" className="votb-btn" onClick={openTheater}>
@@ -283,9 +341,18 @@ export function VariantBot({
         {theater && <ReplayTheater data={theater} onExit={() => setTheater(null)} />}
       </div>
       <aside className="votb-side">
+        <SurfaceClockPair
+          clock={clock}
+          turn={turn}
+          labels={{
+            white: userColor === 'white' ? 'You' : botLabel,
+            black: userColor === 'black' ? 'You' : botLabel
+          }}
+          over={over}
+        />
         <div className="votb-turn">
           <span className={`votb-turn-dot is-${turn}`} aria-hidden />
-          {outcome ? 'Game over' : turn === userColor ? 'Your move' : 'Bot to move'}
+          {over ? 'Game over' : turn === userColor ? 'Your move' : 'Bot to move'}
           <span className="votb-movecount">{moves.length} moves</span>
         </div>
         <div className={`vbot-opponent${thinking ? ' is-thinking' : ''}`}>

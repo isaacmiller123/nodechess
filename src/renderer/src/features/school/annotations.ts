@@ -71,9 +71,10 @@ export function brushFor(color: AnnotationColor | undefined): string {
 }
 
 // ---------------------------------------------------------------------------
-// customSvg builders, 0..100 box covering the target square. Elements carry
-// classes so school-play.css can theme/animate them with design tokens (CSS
-// properties override presentation attributes); the attrs are the fallback.
+// customSvg builders, 0..100 box covering the target square. Every colour is a
+// presentation attribute off the board's own brush palette, because a cue names
+// a square in a position: it belongs to the board and must not move when the
+// chrome palette does. The classes are hooks for a debugger, not styling.
 // ---------------------------------------------------------------------------
 
 function ringSvg(color: AnnotationColor): string {
@@ -99,7 +100,7 @@ function highlightSvg(color: AnnotationColor): string {
 function glowSvg(): string {
   const hex = HEX.focus
   // Concentric discs fake a soft radial glow (no SVG filters; their ids would
-  // collide across shapes). school-play.css pulses the group.
+  // collide across shapes).
   return (
     `<g class="school-hint-glow">` +
     `<circle cx="50" cy="50" r="47" fill="${hex}" fill-opacity="0.14"/>` +
@@ -150,8 +151,8 @@ export function annotationsToShapes(annotations?: BoardAnnotation[]): DrawShape[
 // Readable HTML labels for annotations. Chessground's own shape labels scale
 // text down to fit a small circle: multi-word labels become dust. Instead the
 // School renders labels as absolutely-positioned pills over the board
-// (BoardFrame's .school-ann-labels overlay): arrows label at their midpoint,
-// circles/highlights just above their square.
+// (the .sch-labels overlay inside Scene's .board-wrap): arrows label at their
+// midpoint, circles/highlights just above their square.
 // ---------------------------------------------------------------------------
 
 export interface AnnotationLabel {

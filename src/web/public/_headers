@@ -1,12 +1,15 @@
 # Cloudflare Pages response headers. Copied to the deploy root by the web build
 # (publicDir in vite.web.config.ts), so `npm run build:web` output is deployable
-# as-is: upload dist-web, add the puzzle chunks under /puzzles, done.
+# as-is: upload dist-web, done. The puzzle chunks are NOT part of this deploy;
+# Pages does not serve HTTP Range, so they live in an R2 bucket instead
+# (docs/DEPLOY-WEB.md Part 6).
 
 # Cross-origin isolation. The multithreaded Stockfish build (stockfish-18-lite,
 # the one the app prefers) needs SharedArrayBuffer, which browsers only hand to
 # a crossOriginIsolated page: that requires BOTH headers on the document, and
-# every subresource to be same-origin (they all are: /assets, /engines, /content,
-# /puzzles). Drop these and chess still works: src/web/engines/assets.ts checks
+# every subresource to be either same-origin (/assets, /engines, /content all
+# are) or agreed to cross-origin, which is what the puzzle bucket's CORS rules
+# do. Drop these and chess still works: src/web/engines/assets.ts checks
 # crossOriginIsolated and loads stockfish-18-lite-single instead, at reduced
 # strength-per-second. Fairy-Stockfish does NOT have a single-threaded build
 # here, so engine.status() reports fairyReady:false and the variant bots go
@@ -21,11 +24,12 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Puzzle chunks carry ?cb=<artifact sha256> and are only ever read by range
-# request; a redeploy changes the query, never a chunk's contents.
-/puzzles/*
-  Cache-Control: public, max-age=31536000, immutable
-  Accept-Ranges: bytes
+# There is deliberately no /puzzles/* rule. The chunks are read by HTTP Range
+# and nothing else, and Pages answers a ranged GET with 200 and the whole 24 MiB
+# object (measured 2026-07-26: `Range: bytes=0-1023` returned 25,165,824 bytes)
+# while still advertising `accept-ranges: bytes`. Caching directives cannot fix
+# that, so the artifact is served from a bucket that does byte serving and the
+# cache headers are set on the objects there instead.
 
 # Unfingerprinted names: engines are pinned to the npm package version and the
 # content tree is regenerated per deploy, so both must revalidate.
@@ -34,3 +38,25 @@
 
 /content/*
   Cache-Control: public, max-age=0, must-revalidate
+
+# The offline layer (src/web/sw.ts). The script must never be served from a
+# cache: it is the only thing that can tell a browser a new build exists, and a
+# stale copy of it pins everyone to the shell it precached. The registration
+# also passes updateViaCache:'none', so this is belt and braces.
+/sw.js
+  Cache-Control: no-cache
+  Service-Worker-Allowed: /
+
+/manifest.webmanifest
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Icons have FIXED filenames, unlike /assets/* which Vite content-hashes. A
+# week of caching therefore means a changed icon stays invisible for a week,
+# with no redeploy able to shift it: exactly what happened when the blue rook
+# was replaced by the lattice mark and the old one kept being served with
+# cf-cache-status: HIT and age: 26203.
+# A day, and revalidated, so a new mark is picked up without a manual purge.
+# These are a few tens of KB and are fetched once per install, so there is
+# nothing meaningful to save by holding them longer.
+/icons/*
+  Cache-Control: public, max-age=86400, must-revalidate

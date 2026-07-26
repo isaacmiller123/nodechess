@@ -1,84 +1,35 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { JSX } from 'react'
-import {
-  Timer,
-  Heart,
-  HeartCrack,
-  Flame,
-  Trophy,
-  Crown,
-  Zap,
-  History,
-  Play,
-  RotateCcw,
-  X,
-  Hourglass,
-  Skull,
-  Target,
-  Check,
-  Gauge
-} from 'lucide-react'
 import type { RushMode as RushModeId, RushRunRow, RushBest, RushEndReason } from '@shared/types'
 import { Board } from '../../../board/Board'
 import { pieceSetClass } from '../../../board/pieceSets'
 import { useSettings } from '../../../state/settings'
-import { useRushSession, RUSH_VARIANTS, type RushVariant } from './rush-session'
-import './rush.css'
+import { PuzzleTask } from '../PuzzleTask'
+import { formatAgo, formatClock, formatDuration, formatSeconds } from '../format'
+import {
+  RUSH_VARIANTS,
+  band,
+  survivalBudgetSec,
+  useRushSession,
+  type RushSession,
+  type RushVariant
+} from './rush-session'
 
 // ============================================================================
-// SLICE B: Puzzle Rush / Storm (timed).  ★ OWNED BY THE RUSH BUILDER ★
+// RUSH. v1 drew two clocks, "3 minutes" and "5 minutes". The app has four
+// variants and neither of those is one of them: Storm is a 3:00 clock that
+// buys and loses time, Survival is a per-puzzle budget that keeps shrinking,
+// and Rush 3 / Rush 5 are lives with no clock at all. So the clock section
+// holds the two real clocks, and the two lives variants get their own section
+// rather than being dropped or renamed into a length they do not have.
 //
-// Variant picker -> live solve (board + HUD) -> results card, plus a personal-
-// best leaderboard and recent-run history. The whole clock-driven solve loop
-// lives in ./rush-session.ts (useRushSession); this file is the view.
+// Every number in "The run" is read off the variant, not typed in.
 // ============================================================================
 
 const MODE_PREF_KEY = 'oct.puzzles.rush.mode.v1'
 
-const VARIANT_ORDER: RushModeId[] = ['rush3', 'rush5', 'storm', 'survival']
-
-const VARIANT_ICON: Record<RushModeId, typeof Timer> = {
-  rush3: Heart,
-  rush5: Heart,
-  storm: Zap,
-  survival: Skull
-}
-
-function loadModePref(): RushModeId {
-  try {
-    const raw = localStorage.getItem(MODE_PREF_KEY)
-    if (raw === 'rush3' || raw === 'rush5' || raw === 'storm' || raw === 'survival') return raw
-  } catch {
-    /* storage may be unavailable */
-  }
-  return 'rush3'
-}
-
-function fmtClock(ms: number): string {
-  const total = Math.max(0, Math.ceil(ms / 1000))
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return `${m}:${String(s).padStart(2, '0')}`
-}
-
-function fmtDuration(ms: number): string {
-  const total = Math.round(ms / 1000)
-  const m = Math.floor(total / 60)
-  const s = total % 60
-  return m > 0 ? `${m}m ${s}s` : `${s}s`
-}
-
-function fmtAgo(ts: number): string {
-  const diff = Date.now() - ts
-  const min = Math.floor(diff / 60_000)
-  if (min < 1) return 'just now'
-  if (min < 60) return `${min}m ago`
-  const hr = Math.floor(min / 60)
-  if (hr < 24) return `${hr}h ago`
-  const day = Math.floor(hr / 24)
-  if (day < 7) return `${day}d ago`
-  return new Date(ts).toLocaleDateString()
-}
+const CLOCKS: RushModeId[] = ['storm', 'survival']
+const LIVES: RushModeId[] = ['rush3', 'rush5']
 
 const REASON_LABEL: Record<RushEndReason, string> = {
   time: "Time's up",
@@ -87,196 +38,398 @@ const REASON_LABEL: Record<RushEndReason, string> = {
   cleared: 'Band cleared'
 }
 
+const LOW_TIME_MS = 10_000
+
+function loadModePref(): RushModeId {
+  try {
+    const raw = localStorage.getItem(MODE_PREF_KEY)
+    if (raw === 'rush3' || raw === 'rush5' || raw === 'storm' || raw === 'survival') return raw
+  } catch {
+    /* storage may be unavailable */
+  }
+  return 'storm'
+}
+
 export default function RushMode(): JSX.Element {
   const [mode, setMode] = useState<RushModeId>(loadModePref)
   const s = useRushSession(mode)
 
-  const chooseMode = useCallback(
+  // Starting a variant is also choosing it: the rules panel then describes the
+  // run you last asked for rather than one you never picked. The solve loop is
+  // keyed to the variant, so a switch starts on the NEXT render, once the hook
+  // is running the variant that was asked for.
+  const [pending, setPending] = useState<RushModeId | null>(null)
+
+  const choose = useCallback(
     (m: RushModeId) => {
-      if (s.phase !== 'idle' && s.phase !== 'over') return
-      if (m === mode) return
-      // Switching variant clears any lingering result card from the prior run so
-      // the new variant's lobby starts clean (the hook state persists across the
-      // mode-prop change otherwise).
-      if (s.phase === 'over') s.reset()
+      if (m === mode) {
+        s.start()
+        return
+      }
       setMode(m)
+      setPending(m)
       try {
         localStorage.setItem(MODE_PREF_KEY, m)
       } catch {
         /* ignore */
       }
     },
-    [s, mode]
+    [mode, s]
   )
-
-  const isIdle = s.phase === 'idle'
-  const isOver = s.phase === 'over'
-  const isLive = !isIdle && !isOver
-
-  if (isLive) return <RushPlaying s={s} />
-
-  return (
-    <RushLobby
-      mode={mode}
-      onChoose={chooseMode}
-      onStart={s.start}
-      apiReady={s.apiReady}
-      result={isOver ? s : null}
-    />
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Lobby: variant picker + (when a run just ended) the results card, with the
-// personal-best board and recent history beneath.
-// ---------------------------------------------------------------------------
-function RushLobby(props: {
-  mode: RushModeId
-  onChoose: (m: RushModeId) => void
-  onStart: () => void
-  apiReady: boolean
-  result: ReturnType<typeof useRushSession> | null
-}): JSX.Element {
-  const { mode, onChoose, onStart, apiReady, result } = props
-  const variant = RUSH_VARIANTS[mode]
-
-  const [bests, setBests] = useState<RushBest[]>([])
-  const [runs, setRuns] = useState<RushRunRow[]>([])
-  // Re-pull stats whenever a run finishes (result identity changes via saving flag).
-  const refreshKey = result ? `${result.solved}-${result.missed}-${result.saving}` : 'init'
 
   useEffect(() => {
+    if (pending === null || pending !== mode) return
+    setPending(null)
+    s.start()
+  }, [pending, mode, s])
+
+  if (s.phase === 'over') return <RunOver s={s} onAgain={() => s.start()} onBack={s.reset} />
+  if (s.phase !== 'idle') return <RushPlaying s={s} />
+  return <RushLobby s={s} mode={mode} onStart={choose} />
+}
+
+// ---------------------------------------------------------------- lobby ----
+
+function RushLobby({
+  s,
+  mode,
+  onStart
+}: {
+  s: RushSession
+  mode: RushModeId
+  onStart: (m: RushModeId) => void
+}): JSX.Element {
+  const [runs, setRuns] = useState<RushRunRow[]>([])
+  const [bests, setBests] = useState<RushBest[]>([])
+
+  useEffect(() => {
+    let cancelled = false
     const api = window.api?.puzzles
     if (!api) return
-    let cancelled = false
-    void api
-      .rushBests()
-      .then((r) => {
-        if (!cancelled && r?.bests) setBests(r.bests)
-      })
-      .catch(() => {
-        /* leaderboard optional */
-      })
     void api
       .rushRuns({ limit: 12 })
       .then((r) => {
-        if (!cancelled && r?.runs) setRuns(r.runs)
+        if (!cancelled) setRuns(r?.runs ?? [])
       })
       .catch(() => {
-        /* history optional */
+        /* the well stays empty then */
+      })
+    void api
+      .rushBests()
+      .then((r) => {
+        // A variant you have never run has no best, and a zero is not one.
+        if (!cancelled) setBests((r?.bests ?? []).filter((b) => b.runs > 0))
+      })
+      .catch(() => {
+        /* no bests panel then */
       })
     return () => {
       cancelled = true
     }
-  }, [refreshKey])
+  }, [])
 
-  const bestForMode = bests.find((b) => b.mode === mode)?.best ?? 0
+  // v1 promises "best first" and the store hands them over newest first.
+  const bestFirst = useMemo(() => [...runs].sort((a, b) => b.score - a.score), [runs])
+  const last = runs[0] ?? null
+  const variant = RUSH_VARIANTS[mode]
 
   return (
-    <div className="rush-lobby">
-      {result && <RushResultCard s={result} onPlayAgain={onStart} />}
-
-      <section className="rush-picker panel">
-        <header className="rush-picker-head">
-          <div className="rush-picker-title">
-            <Timer size={18} aria-hidden />
-            <h2>Puzzle Rush</h2>
+    <div className="lesson">
+      <div className="lesson-main">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Pick a clock</h2>
+            {/* v1's word, and the count is the rows below it, not a constant. */}
+            <span className="sec-count">{CLOCKS.length} lengths</span>
           </div>
-          <p className="muted small">Solve against the clock. Difficulty ramps as you climb.</p>
-        </header>
+          {CLOCKS.map((m, i) => (
+            <StartRow
+              key={m}
+              variant={RUSH_VARIANTS[m]}
+              first={i === 0}
+              usual={m === 'storm'}
+              onStart={() => onStart(m)}
+            />
+          ))}
+        </section>
 
-        <div className="rush-variant-grid" role="radiogroup" aria-label="Rush variant">
-          {VARIANT_ORDER.map((m) => {
-            const v = RUSH_VARIANTS[m]
-            const Icon = VARIANT_ICON[m]
-            const best = bests.find((b) => b.mode === m)?.best ?? 0
-            const active = m === mode
-            return (
-              <button
-                key={m}
-                type="button"
-                role="radio"
-                aria-checked={active}
-                className={`rush-variant-card${active ? ' is-active' : ''}`}
-                onClick={() => onChoose(m)}
-              >
-                <span className="rush-variant-icon" aria-hidden>
-                  <Icon size={20} />
-                </span>
-                <span className="rush-variant-body">
-                  <span className="rush-variant-name">{v.label}</span>
-                  <span className="rush-variant-blurb">{v.blurb}</span>
-                </span>
-                <span className="rush-variant-best">
-                  <Trophy size={12} aria-hidden />
-                  {best > 0 ? best : '·'}
-                </span>
-              </button>
-            )
-          })}
-        </div>
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Lives instead</h2>
+            <span className="sec-count">{LIVES.length} runs</span>
+          </div>
+          {LIVES.map((m) => (
+            <StartRow
+              key={m}
+              variant={RUSH_VARIANTS[m]}
+              first={false}
+              usual={false}
+              onStart={() => onStart(m)}
+            />
+          ))}
+        </section>
 
-        <div className="rush-start-row">
-          <div className="rush-start-meta">
-            <VariantTagline variant={variant} />
-            {bestForMode > 0 && (
-              <span className="rush-start-best">
-                Best <strong>{bestForMode}</strong>
-              </span>
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Your runs</h2>
+            {runs.length > 0 && <span className="sec-count">{runs.length} kept</span>}
+          </div>
+          <div className="well">
+            <div className="empty-head">
+              <span className="lbl">Clock</span>
+              <span className="lbl">Score</span>
+              <span className="lbl">Streak</span>
+              <span className="lbl">When</span>
+            </div>
+            {bestFirst.length === 0 ? (
+              <div className="empty">
+                <p className="empty-line">No run yet.</p>
+                <p className="empty-line">Finished runs land here, best first.</p>
+              </div>
+            ) : (
+              bestFirst.map((r) => (
+                <div className="puz-runrow" key={r.id}>
+                  <span>
+                    {RUSH_VARIANTS[r.mode].label}
+                    {r.endedReason && <span className="go-sub">{REASON_LABEL[r.endedReason]}</span>}
+                  </span>
+                  <span>{r.score}</span>
+                  <span>{r.bestStreak}</span>
+                  <span className="puz-runrow-when">{formatAgo(r.createdAt)}</span>
+                </div>
+              ))
             )}
           </div>
-          <button type="button" className="btn rush-start-btn" onClick={onStart}>
-            <Play size={16} aria-hidden />
-            Start {variant.label}
-          </button>
-        </div>
-
-        {!apiReady && (
-          <p className="muted small rush-preview-note">
-            Preview mode. Connect to the desktop app to load puzzles.
-          </p>
-        )}
-      </section>
-
-      <div className="rush-stats">
-        <RushLeaderboard bests={bests} />
-        <RushHistory runs={runs} />
+        </section>
       </div>
+
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">The run</h2>
+            <span className="sec-count">{variant.label}</span>
+          </div>
+          <div className="panel">
+            <div className="facts">
+              <RunRules variant={variant} />
+            </div>
+          </div>
+        </section>
+
+        {bests.length > 0 && (
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Your best</h2>
+            </div>
+            <div className="panel">
+              <div className="facts">
+                {bests.map((b) => (
+                  <div className="fact" key={b.mode}>
+                    <span className="lbl">{RUSH_VARIANTS[b.mode].label}</span>
+                    <span className="fact-value">
+                      {b.best}
+                      <span className="fact-note">
+                        {b.runs} {b.runs === 1 ? 'run' : 'runs'}
+                        {b.lastScore !== null ? `, last ${b.lastScore}` : ''}
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {last && (
+          <section className="sec">
+            <div className="sec-head">
+              <h2 className="lbl">Last run</h2>
+              <span className="sec-count">{formatAgo(last.createdAt)}</span>
+            </div>
+            <div className="panel">
+              <div className="facts">
+                <RunDetail
+                  score={last.score}
+                  solved={last.solved}
+                  missed={last.missed}
+                  bestStreak={last.bestStreak}
+                  topRating={last.topRating}
+                  durationMs={last.durationMs}
+                  reason={last.endedReason}
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {!s.apiReady && (
+          <section className="sec">
+            <div className="well">
+              <div className="empty">
+                <p className="empty-line">This is a preview.</p>
+                <p className="empty-line">The desktop app is where a run can be played and kept.</p>
+              </div>
+            </div>
+          </section>
+        )}
+      </aside>
     </div>
   )
 }
 
-function VariantTagline({ variant }: { variant: RushVariant }): JSX.Element {
-  if (variant.clock && variant.mode === 'survival') {
-    return (
-      <span className="rush-start-rule">
-        <Hourglass size={13} aria-hidden /> One life · shrinking clock
-      </span>
-    )
-  }
-  if (variant.clock) {
-    return (
-      <span className="rush-start-rule">
-        <Hourglass size={13} aria-hidden /> {variant.startSec}s · +{variant.bonusSec}s per solve
-      </span>
-    )
-  }
+function StartRow({
+  variant,
+  first,
+  usual,
+  onStart
+}: {
+  variant: RushVariant
+  first: boolean
+  usual: boolean
+  onStart: () => void
+}): JSX.Element {
   return (
-    <span className="rush-start-rule">
-      <Heart size={13} aria-hidden /> {variant.lives} lives
-    </span>
+    <div className={`startrow${first ? ' is-first' : ''}`}>
+      <div>
+        <div className="startrow-name">
+          {variant.label} {usual && <span className="tag">usual</span>}
+        </div>
+        <div className="startrow-spec">{variant.blurb}</div>
+      </div>
+      <button className={`btn${first ? ' is-primary' : ''}`} type="button" onClick={onStart}>
+        {variant.clock ? `Start ${formatSeconds(variant.startSec)}` : 'Start'}
+      </button>
+    </div>
   )
 }
 
-// ---------------------------------------------------------------------------
-// Live run: board on the left, HUD on the right.
-// ---------------------------------------------------------------------------
-function RushPlaying({ s }: { s: ReturnType<typeof useRushSession> }): JSX.Element {
+/** The rules of one variant, every number read off RUSH_VARIANTS and band(). */
+function RunRules({ variant }: { variant: RushVariant }): JSX.Element {
+  const start = band(0)
+  return (
+    <>
+      {variant.clock ? (
+        <div className="fact">
+          <span className="lbl">Clock hits zero</span>
+          <span className="fact-value">run over</span>
+        </div>
+      ) : (
+        <div className="fact">
+          <span className="lbl">Clock</span>
+          <span className="fact-value">none</span>
+        </div>
+      )}
+
+      {variant.mode === 'survival' ? (
+        <div className="fact">
+          <span className="lbl">Each puzzle gets</span>
+          <span className="fact-value">
+            {survivalBudgetSec(0)} seconds
+            <span className="fact-note">less every time you solve one</span>
+          </span>
+        </div>
+      ) : null}
+
+      <div className="fact">
+        <span className="lbl">A miss costs</span>
+        <span className="fact-value">
+          {variant.penaltySec > 0
+            ? `${variant.penaltySec} seconds`
+            : variant.lives === 1
+              ? 'the run'
+              : 'a life'}
+        </span>
+      </div>
+
+      {variant.bonusSec > 0 && (
+        <div className="fact">
+          <span className="lbl">A solve adds</span>
+          <span className="fact-value">
+            {variant.bonusSec} seconds
+            <span className="fact-note">more once you are on a streak</span>
+          </span>
+        </div>
+      )}
+
+      {Number.isFinite(variant.lives) && variant.lives > 1 && (
+        <div className="fact">
+          <span className="lbl">Lives</span>
+          <span className="fact-value">{variant.lives}</span>
+        </div>
+      )}
+
+      <div className="fact">
+        <span className="lbl">Starting band</span>
+        <span className="fact-value">
+          {start.lo} to {start.hi}
+          <span className="fact-note">rises with every solve</span>
+        </span>
+      </div>
+
+      <div className="fact">
+        <span className="lbl">Your rating</span>
+        <span className="fact-value">
+          untouched
+          <span className="fact-note">a run is scored, not rated</span>
+        </span>
+      </div>
+    </>
+  )
+}
+
+function RunDetail(props: {
+  score: number
+  solved: number
+  missed: number
+  bestStreak: number
+  topRating: number | null
+  durationMs: number
+  reason: RushEndReason | null
+}): JSX.Element {
+  return (
+    <>
+      <div className="fact">
+        <span className="lbl">Score</span>
+        <span className="fact-value">{props.score}</span>
+      </div>
+      <div className="fact">
+        <span className="lbl">Solved</span>
+        <span className="fact-value">{props.solved}</span>
+      </div>
+      <div className="fact">
+        <span className="lbl">Missed</span>
+        <span className="fact-value">{props.missed}</span>
+      </div>
+      <div className="fact">
+        <span className="lbl">Best run</span>
+        <span className="fact-value">{props.bestStreak}</span>
+      </div>
+      {props.topRating !== null && props.topRating > 0 && (
+        <div className="fact">
+          <span className="lbl">Hardest solved</span>
+          <span className="fact-value">{props.topRating}</span>
+        </div>
+      )}
+      <div className="fact">
+        <span className="lbl">Time</span>
+        <span className="fact-value">{formatDuration(props.durationMs)}</span>
+      </div>
+      {props.reason && (
+        <div className="fact">
+          <span className="lbl">Ended</span>
+          <span className="fact-value">{REASON_LABEL[props.reason]}</span>
+        </div>
+      )}
+    </>
+  )
+}
+
+// -------------------------------------------------------------- playing ----
+
+function RushPlaying({ s }: { s: RushSession }): JSX.Element {
   const { settings } = useSettings()
   const isSolving = s.phase === 'solving'
-  const isLoading = s.phase === 'loading'
 
-  // Esc quits the run.
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.key === 'Escape') s.quit()
@@ -285,261 +438,188 @@ function RushPlaying({ s }: { s: ReturnType<typeof useRushSession> }): JSX.Eleme
     return () => window.removeEventListener('keydown', onKey)
   }, [s])
 
+  const low = s.clockOn && s.clockMs <= LOW_TIME_MS
+
   return (
-    <div className="rush-play">
-      <div className="board-area">
-        <div className="board-stage">
-          <div className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}>
-            <Board
-              fen={s.fen}
-              orientation={s.orientation}
-              turnColor={s.turn}
-              dests={s.dests}
-              movableColor={s.orientation}
-              viewOnly={!isSolving}
-              lastMove={s.lastMove}
-              check={s.check}
-              showDests={settings.showLegal}
-              coordinates={settings.coordinates}
-              animation={settings.animation}
-              onMove={s.onUserMove}
-              syncNonce={s.nonce}
-            />
-            {isLoading && <div className="puzzle-skeleton" aria-hidden />}
+    <div className="lesson">
+      <div className="lesson-main">
+        <div className="board-area">
+          <div className="board-stage">
+            <div className={`board-wrap ${pieceSetClass(settings.pieceSet)}`}>
+              <Board
+                fen={s.fen}
+                orientation={s.orientation}
+                turnColor={s.turn}
+                dests={s.dests}
+                movableColor={s.orientation}
+                viewOnly={!isSolving}
+                lastMove={s.lastMove}
+                check={s.check}
+                showDests={settings.showLegal}
+                coordinates={settings.coordinates}
+                animation={settings.animation}
+                onMove={s.onUserMove}
+                syncNonce={s.nonce}
+              />
+            </div>
+          </div>
+
+          <div className="boardbar">
+            <div className="turn">
+              <span className={`turn-chip${s.turn === 'black' ? ' is-black' : ''}`} />
+              {s.turn === 'white' ? 'White to move' : 'Black to move'}
+            </div>
+            {s.clockOn && (
+              <span className={`tag${low ? ' puz-low' : ''}`}>{formatClock(s.clockMs)}</span>
+            )}
+            <button className="btn is-quiet" type="button" onClick={s.quit}>
+              End the run
+            </button>
           </div>
         </div>
       </div>
 
-      <aside className="rush-hud">
-        <RushHud s={s} />
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">This run</h2>
+            <span className="sec-count">{s.variant.label}</span>
+          </div>
+
+          {/* A run gives one line of feedback per puzzle and then moves on. A
+              miss holds the right move on the board for a beat; a solve has no
+              phase of its own, so the flash the session raises is what says it
+              landed. */}
+          {s.phase === 'feedback' ? (
+            <PuzzleTask state="failed" userColor={s.orientation} />
+          ) : s.flash === 'solve' ? (
+            <PuzzleTask state="solved" userColor={s.orientation} />
+          ) : null}
+
+          <div className="panel">
+            <div className="facts">
+              <div className="fact">
+                <span className="lbl">Score</span>
+                <span
+                  className={`fact-value${s.flash ? ` puz-flash is-${s.flash}` : ''}`}
+                >
+                  {s.score}
+                </span>
+              </div>
+              {s.maxLives > 0 && (
+                <div className="fact">
+                  <span className="lbl">Lives left</span>
+                  <span className="fact-value">
+                    {s.livesLeft} of {s.maxLives}
+                  </span>
+                </div>
+              )}
+              <div className="fact">
+                <span className="lbl">On the trot</span>
+                <span className="fact-value">
+                  {s.streak}
+                  {s.comboMult > 1 && (
+                    <span className="fact-note">{s.comboMult}x time back per solve</span>
+                  )}
+                </span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Solved</span>
+                <span className="fact-value">{s.solved}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Missed</span>
+                <span className="fact-value">{s.missed}</span>
+              </div>
+              <div className="fact">
+                <span className="lbl">Best run</span>
+                <span className="fact-value">{s.bestStreak}</span>
+              </div>
+              {/* The band climbs with every solve, so the one in front of you
+                  says how far the run has got. Read off the puzzle, not the
+                  nominal window. */}
+              {s.puzzle && (
+                <div className="fact">
+                  <span className="lbl">This one</span>
+                  <span className="fact-value">
+                    {s.puzzle.rating}
+                    <span className="fact-note">harder with every solve</span>
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       </aside>
     </div>
   )
 }
 
-function RushHud({ s }: { s: ReturnType<typeof useRushSession> }): JSX.Element {
-  const v = s.variant
-  const lowTime = s.clockOn && s.clockMs <= 10_000
-  return (
-    <>
-      <div className={`rush-hud-card panel${s.flash === 'solve' ? ' flash-solve' : ''}${s.flash === 'miss' ? ' flash-miss' : ''}`}>
-        <div className="rush-hud-label">{v.label}</div>
-        <div className="rush-score" aria-live="polite" aria-label={`Score ${s.score}`}>
-          {s.score}
-        </div>
-        <div className="rush-hud-sub">solved</div>
-      </div>
+// ------------------------------------------------------------------ over ----
 
-      {s.clockOn ? (
-        <div className={`rush-clock panel${lowTime ? ' is-low' : ''}`}>
-          <Hourglass size={16} aria-hidden />
-          <span className="rush-clock-time">{fmtClock(s.clockMs)}</span>
-          {v.mode === 'storm' && s.comboMult > 1 && (
-            <span className="rush-combo">×{s.comboMult}</span>
-          )}
-        </div>
-      ) : (
-        <div className="rush-lives panel" aria-label={`${s.livesLeft} of ${s.maxLives} lives`}>
-          {Array.from({ length: s.maxLives }).map((_, i) =>
-            i < s.livesLeft ? (
-              <Heart key={i} size={20} className="rush-life is-on" aria-hidden />
-            ) : (
-              <HeartCrack key={i} size={20} className="rush-life is-off" aria-hidden />
-            )
-          )}
-        </div>
-      )}
-
-      <div className="rush-hud-stats panel">
-        <div className="rush-stat">
-          <Flame size={15} className={s.streak > 0 ? 'rush-stat-ico is-hot' : 'rush-stat-ico'} aria-hidden />
-          <span className="rush-stat-val">{s.streak}</span>
-          <span className="rush-stat-key">streak</span>
-        </div>
-        <div className="rush-stat">
-          <Target size={15} className="rush-stat-ico" aria-hidden />
-          <span className="rush-stat-val">{s.solved}</span>
-          <span className="rush-stat-key">solved</span>
-        </div>
-        <div className="rush-stat">
-          <X size={15} className="rush-stat-ico is-miss" aria-hidden />
-          <span className="rush-stat-val">{s.missed}</span>
-          <span className="rush-stat-key">missed</span>
-        </div>
-      </div>
-
-      {s.puzzle && (
-        <div className="rush-puzzle-meta panel">
-          <span className="muted small">
-            {s.orientation === 'white' ? 'White' : 'Black'} to move
-          </span>
-          <span className="rush-puzzle-rating">
-            <Gauge size={13} aria-hidden /> {s.puzzle.rating}
-          </span>
-        </div>
-      )}
-
-      <button type="button" className="btn ghost rush-quit" onClick={s.quit}>
-        <X size={15} aria-hidden /> End run
-      </button>
-    </>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Results card (shown in the lobby after a run ends).
-// ---------------------------------------------------------------------------
-function RushResultCard(props: {
-  s: ReturnType<typeof useRushSession>
-  onPlayAgain: () => void
+function RunOver({
+  s,
+  onAgain,
+  onBack
+}: {
+  s: RushSession
+  onAgain: () => void
+  onBack: () => void
 }): JSX.Element {
-  const { s, onPlayAgain } = props
-  const v = s.variant
-  const accuracy = s.solved + s.missed > 0 ? Math.round((s.solved / (s.solved + s.missed)) * 100) : 0
-  const isBest = s.result?.isBest ?? false
-  const best = s.result?.best ?? s.score
-
   return (
-    <section className={`rush-result panel${isBest ? ' is-best' : ''}`}>
-      <header className="rush-result-head">
-        <div className="rush-result-eyebrow">
-          {s.endedReason ? REASON_LABEL[s.endedReason] : 'Run complete'} · {v.label}
-        </div>
-        {isBest ? (
-          <div className="rush-result-badge is-best">
-            <Crown size={15} aria-hidden /> New personal best!
+    <div className="lesson">
+      <div className="lesson-main">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Run over</h2>
+            <span className="sec-count">
+              {s.endedReason ? REASON_LABEL[s.endedReason] : s.variant.label}
+            </span>
           </div>
-        ) : (
-          best > 0 && (
-            <div className="rush-result-badge">
-              <Trophy size={14} aria-hidden /> Best {best}
+          <div className="panel">
+            <div className="facts">
+              <RunDetail
+                score={s.score}
+                solved={s.solved}
+                missed={s.missed}
+                bestStreak={s.bestStreak}
+                topRating={s.topRating}
+                durationMs={s.durationMs}
+                reason={s.endedReason}
+              />
+              {s.result && (
+                <div className="fact">
+                  <span className="lbl">Your best</span>
+                  <span className="fact-value">
+                    {s.result.best}
+                    {s.result.isBest && <span className="fact-note">this run set it</span>}
+                  </span>
+                </div>
+              )}
             </div>
-          )
-        )}
-      </header>
-
-      <div className="rush-result-score">
-        <span className="rush-result-num">{s.score}</span>
-        <span className="rush-result-unit">solved</span>
+            <div className="panel-foot">
+              <button className="btn is-primary" type="button" onClick={onAgain} disabled={s.saving}>
+                {s.saving ? 'Saving the run' : `Another ${s.variant.label}`}
+              </button>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div className="rush-result-grid">
-        <ResultStat icon={<Flame size={16} aria-hidden />} label="Best streak" value={s.bestStreak} />
-        <ResultStat icon={<Target size={16} aria-hidden />} label="Accuracy" value={`${accuracy}%`} />
-        <ResultStat icon={<X size={16} aria-hidden />} label="Missed" value={s.missed} />
-        <ResultStat
-          icon={<Gauge size={16} aria-hidden />}
-          label="Hardest solved"
-          value={s.topRating > 0 ? s.topRating : '·'}
-        />
-        {s.durationMs > 0 && (
-          <ResultStat
-            icon={<Hourglass size={16} aria-hidden />}
-            label="Time"
-            value={fmtDuration(s.durationMs)}
-          />
-        )}
-      </div>
-
-      <div className="rush-result-actions">
-        <button type="button" className="btn rush-again" onClick={onPlayAgain}>
-          <RotateCcw size={16} aria-hidden /> Play again
-        </button>
-        {s.saving && <span className="muted small rush-saving">Saving…</span>}
-      </div>
-    </section>
-  )
-}
-
-function ResultStat(props: {
-  icon: JSX.Element
-  label: string
-  value: string | number
-}): JSX.Element {
-  return (
-    <div className="rush-result-stat">
-      <span className="rush-result-stat-ico" aria-hidden>
-        {props.icon}
-      </span>
-      <span className="rush-result-stat-val">{props.value}</span>
-      <span className="rush-result-stat-key">{props.label}</span>
+      <aside className="side">
+        <section className="sec">
+          <div className="sec-head">
+            <h2 className="lbl">Another way</h2>
+          </div>
+          <div className="panel">
+            <div className="panel-foot">
+              <button className="btn" type="button" onClick={onBack}>
+                Back to the clocks
+              </button>
+            </div>
+          </div>
+        </section>
+      </aside>
     </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Personal-best leaderboard (per mode).
-// ---------------------------------------------------------------------------
-function RushLeaderboard({ bests }: { bests: RushBest[] }): JSX.Element {
-  const ordered = VARIANT_ORDER.map((m) => bests.find((b) => b.mode === m)).filter(
-    (b): b is RushBest => !!b
-  )
-  const has = ordered.some((b) => b.runs > 0)
-  return (
-    <section className="panel rush-board">
-      <header className="rush-board-head">
-        <Trophy size={15} aria-hidden />
-        <h3>Personal bests</h3>
-      </header>
-      {has ? (
-        <ul className="rush-board-list">
-          {ordered.map((b) => {
-            const Icon = VARIANT_ICON[b.mode]
-            return (
-              <li key={b.mode} className="rush-board-row">
-                <span className="rush-board-mode">
-                  <Icon size={15} aria-hidden />
-                  {RUSH_VARIANTS[b.mode].label}
-                </span>
-                <span className="rush-board-best">{b.runs > 0 ? b.best : '·'}</span>
-                <span className="rush-board-runs muted small">
-                  {b.runs} {b.runs === 1 ? 'run' : 'runs'}
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-      ) : (
-        <p className="muted small rush-empty">No runs yet. Your bests will show up here.</p>
-      )}
-    </section>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Recent-run history.
-// ---------------------------------------------------------------------------
-function RushHistory({ runs }: { runs: RushRunRow[] }): JSX.Element {
-  return (
-    <section className="panel rush-board">
-      <header className="rush-board-head">
-        <History size={15} aria-hidden />
-        <h3>Recent runs</h3>
-      </header>
-      {runs.length > 0 ? (
-        <ul className="rush-history-list">
-          {runs.map((r) => {
-            const Icon = VARIANT_ICON[r.mode]
-            return (
-              <li key={r.id} className="rush-history-row">
-                <span className="rush-history-mode">
-                  <Icon size={14} aria-hidden />
-                  {RUSH_VARIANTS[r.mode].label}
-                </span>
-                <span className="rush-history-score">
-                  <Check size={12} aria-hidden /> {r.score}
-                </span>
-                <span className="rush-history-streak muted small">
-                  <Flame size={11} aria-hidden /> {r.bestStreak}
-                </span>
-                <span className="rush-history-when muted small">{fmtAgo(r.createdAt)}</span>
-              </li>
-            )
-          })}
-        </ul>
-      ) : (
-        <p className="muted small rush-empty">No history yet. Start a run!</p>
-      )}
-    </section>
   )
 }

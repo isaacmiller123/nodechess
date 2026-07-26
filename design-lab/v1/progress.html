@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="palettes.css" />
+    <link rel="stylesheet" href="shell.css" />
+    <link rel="stylesheet" href="pieces.css" />
+    <script>
+      /* Chrome state is applied before first paint, so neither a collapsed rail
+         nor a chosen palette ever flashes the default first. Two keys, two
+         attributes on <html>, nothing else. This has to be inline and it has to
+         be here: a deferred file runs after the first paint. */
+      try {
+        if (localStorage.getItem('nc.rail') === 'min')
+          document.documentElement.setAttribute('data-rail', 'min');
+        var ncPal = localStorage.getItem('nc.palette');
+        if (ncPal && ncPal !== 'cold-iron-bone')
+          document.documentElement.setAttribute('data-palette', ncPal);
+      } catch (e) {}
+    </script>
+    <style>
+      /* PROGRESS page styles. Everything here is prefixed .prg- so it cannot
+         collide with a sibling page, and every colour, size, radius and
+         duration is a token. shell.css is not touched.
+
+         Charts are inline SVG rather than divs because the one rule shell.css
+         states about quantitative graphics is that a ratio is a class, never an
+         inline style. An SVG geometry attribute is neither: the numbers live in
+         the markup where they can be read, and no style attribute appears. */
+
+      .prg-two {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: var(--space-8);
+        align-items: start;
+      }
+
+      .prg-two > .sec {
+        margin-bottom: 0;
+      }
+
+      /* A pair of sections still owes the next section the same air one
+         section does. */
+      .main > .prg-two {
+        margin-bottom: var(--space-8);
+      }
+
+      /* ---- chart frame, shared by the rating line and the accuracy bars ---- */
+
+      .prg-plot {
+        padding: var(--space-5) var(--space-6) var(--space-4);
+      }
+
+      .prg-frame {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        column-gap: var(--space-4);
+      }
+
+      .prg-y {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 168px;
+        text-align: right;
+      }
+
+      .prg-y span {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        line-height: 1;
+        color: var(--text-muted);
+      }
+
+      .prg-y span:first-child {
+        margin-top: -4px;
+      }
+
+      .prg-y span:last-child {
+        margin-bottom: -4px;
+      }
+
+      .prg-canvas {
+        position: relative;
+        height: 168px;
+      }
+
+      .prg-svg {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* The scale end labels are .ticks in shell.css and the words are .lbl.
+         This page only has to say which grid column they sit in. */
+      .prg-x {
+        grid-column: 2;
+        margin-top: var(--space-3);
+      }
+
+      .prg-rule {
+        stroke: var(--border);
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* The provisional rating: a dashed level and a single tick at the origin,
+         which is the same reading the readout trace gives at zero. */
+      .prg-level {
+        stroke: var(--border-strong);
+        stroke-width: 1;
+        stroke-dasharray: 3 5;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .prg-a,
+      .prg-b {
+        fill: none;
+        stroke-width: 1.6;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .prg-a {
+        stroke: var(--accent);
+      }
+
+      .prg-b {
+        stroke: var(--info);
+      }
+
+      .prg-seed {
+        fill: var(--accent);
+      }
+
+      .prg-bar {
+        fill: var(--surface-2);
+        stroke: var(--border-strong);
+        stroke-width: 1;
+        vector-effect: non-scaling-stroke;
+      }
+
+      .prg-bar.is-last {
+        fill: var(--accent);
+        stroke: var(--accent);
+      }
+
+      .prg-bar.is-void {
+        fill: none;
+        stroke: var(--border);
+        stroke-dasharray: 2 3;
+      }
+
+      /* A note sitting inside an empty chart, low left, clear of the level line. */
+      .prg-void {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: var(--space-4);
+      }
+
+      .prg-void.is-mid {
+        bottom: auto;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .prg-legend {
+        display: flex;
+        align-items: center;
+        gap: var(--space-5);
+        margin-left: auto;
+      }
+
+      .prg-key {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+
+      .prg-dot {
+        width: 10px;
+        height: 2px;
+        flex: none;
+        background: var(--text-muted);
+      }
+
+      .prg-key.is-a .prg-dot {
+        background: var(--accent);
+      }
+
+      .prg-key.is-b .prg-dot {
+        background: var(--info);
+      }
+
+      .prg-key.is-off {
+        color: var(--text-muted);
+      }
+
+      /* ---- forty chapters ---- */
+
+      .prg-chs {
+        display: grid;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        gap: var(--space-2);
+        padding: var(--space-5) var(--space-6);
+        /* Forty cells, capped so a wide column does not turn the map of the
+           curriculum into a wall of tiles. */
+        max-width: 420px;
+      }
+
+      .prg-ch {
+        aspect-ratio: 1 / 1;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+
+      .prg-ch.is-done {
+        background: var(--text-muted);
+        border-color: var(--text-muted);
+      }
+
+      .prg-ch.is-now {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        box-shadow: inset 0 0 0 1px var(--accent);
+      }
+
+      /* ---- theme meters ---- */
+
+      .prg-th {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: baseline;
+        column-gap: var(--space-4);
+        row-gap: var(--space-3);
+        padding: var(--space-4) var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+      }
+
+      .prg-th:last-child {
+        border-bottom: 0;
+      }
+
+      .prg-th-name {
+        font-size: var(--fs-sm);
+        color: var(--text-primary);
+      }
+
+      .prg-th-val {
+        font-family: var(--font-mono);
+        font-size: var(--fs-sm);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--tracking-normal);
+        color: var(--text-secondary);
+      }
+
+      .prg-meter {
+        grid-column: 1 / -1;
+        display: block;
+        width: 100%;
+        height: 3px;
+      }
+
+      .prg-meter-bg {
+        fill: var(--border);
+      }
+
+      .prg-meter-fill {
+        fill: var(--text-secondary);
+      }
+
+      .prg-th.is-weak .prg-meter-fill {
+        fill: var(--warning);
+      }
+
+      .prg-th.is-weak .prg-th-val {
+        color: var(--warning);
+      }
+
+      .prg-sub {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-6);
+        border-bottom: var(--border-width) solid var(--border);
+        background: var(--bg-subtle);
+      }
+
+      .prg-sub .btn {
+        margin-left: auto;
+      }
+
+      /* ---- recent games table ----
+         The shell's sticky heads are pinned under the readout, which is right
+         for a page that is one long table and wrong for a table sitting deep
+         inside a scroll, so on this page they stay put. */
+      .prg-games .gtable thead th {
+        position: static;
+      }
+
+      /* The shell sizes the opponent column for the games library, where the
+         name is the widest thing on the row. Here four measurements follow it,
+         so the name takes what is left and clips rather than running under
+         the result. */
+      .prg-games .col-name {
+        width: auto;
+      }
+
+      .prg-games .g-name {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .prg-c-res {
+        width: 84px;
+      }
+
+      .prg-c-mv {
+        width: 72px;
+      }
+
+      .prg-c-acc {
+        width: 88px;
+      }
+
+      .prg-c-when {
+        width: 110px;
+      }
+
+      .prg-res {
+        font-family: var(--font-mono);
+        font-size: var(--fs-xs);
+        letter-spacing: var(--tracking-wide);
+        text-transform: uppercase;
+        color: var(--text-secondary);
+      }
+
+      .prg-res.is-win {
+        color: var(--success);
+      }
+
+      .prg-res.is-loss {
+        color: var(--danger);
+      }
+
+      /* ---- the second copy of the page, for the owner ---- */
+
+      .prg-band {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+        margin: var(--space-11) 0 var(--space-8);
+        padding-top: var(--space-6);
+        border-top: var(--border-width) solid var(--border-strong);
+      }
+
+      .prg-band-note {
+        font-size: var(--fs-sm);
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 1080px) {
+        .prg-two {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .prg-plot {
+          padding: var(--space-4);
+        }
+
+        .prg-frame {
+          grid-template-columns: 32px minmax(0, 1fr);
+          column-gap: var(--space-3);
+        }
+
+        .prg-y,
+        .prg-canvas {
+          height: 132px;
+        }
+
+        .prg-chs {
+          grid-template-columns: repeat(8, minmax(0, 1fr));
+          padding: var(--space-4);
+        }
+
+        .prg-th,
+        .prg-sub {
+          padding-left: var(--space-4);
+          padding-right: var(--space-4);
+        }
+
+        /* Narrower, but never narrower than the column head itself. */
+        .prg-c-res {
+          width: 72px;
+        }
+
+        .prg-c-mv {
+          width: 64px;
+        }
+
+        .prg-c-acc {
+          width: 86px;
+        }
+
+        .prg-c-when {
+          display: none;
+        }
+
+        .prg-when-cell {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Icon sprite. Radix Icons (MIT), redrawn to their 15x15 grid at one
+         optical weight. Swap in the real files on adoption. -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <symbol id="i-home" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 6.8 7.5 2.5l5 4.3V12.5H2.5z" />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M4.8 2.9 12.2 7.5 4.8 12.1z" />
+      </symbol>
+      <symbol id="i-games" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h4.2v4.2H2.5zM8.3 2.5h4.2v4.2H8.3zM2.5 8.3h4.2v4.2H2.5zM8.3 8.3h4.2v4.2H8.3z" />
+      </symbol>
+      <symbol id="i-puzzles" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 2.5h5v5h5v5H2.5z" />
+      </symbol>
+      <symbol id="i-school" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M7.5 4.2C6.1 3.1 4.2 2.9 2.5 3.1v8.4c1.7-.2 3.6 0 5 1.1 1.4-1.1 3.3-1.3 5-1.1V3.1c-1.7-.2-3.6 0-5 1.1zM7.5 4.2v8.4" />
+      </symbol>
+      <symbol id="i-openings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.5 12.5V3.5M3.5 7h4.6V3.8M3.5 10.4h7.9V7.2" />
+      </symbol>
+      <symbol id="i-analysis" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 10.6 5.6 7l2.5 2 4.4-5.4" />
+      </symbol>
+      <symbol id="i-progress" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M3.2 12.5V9.2M7.5 12.5V6.1M11.8 12.5V3.2" />
+      </symbol>
+      <symbol id="i-account" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M5 5.3a2.5 2.5 0 1 0 5 0 2.5 2.5 0 1 0-5 0M2.9 12.6c0-2.2 2-3.4 4.6-3.4s4.6 1.2 4.6 3.4" />
+      </symbol>
+      <symbol id="i-settings" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 5.2h10M2.5 9.8h10" />
+        <rect x="4.6" y="3.6" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+        <rect x="8.6" y="8.2" width="1.8" height="3.2" fill="currentColor" stroke="none" />
+      </symbol>
+      <symbol id="i-chev" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M9.2 4.3 5.8 7.5l3.4 3.2" />
+      </symbol>
+      <symbol id="i-more" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 4.5h10M2.5 7.5h10M2.5 10.5h10" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="square">
+        <path d="M2.5 7.5h9.5M8.5 4l3.5 3.5-3.5 3.5" />
+      </symbol>
+      <symbol id="mark" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M3 3h18v18H3zM9.5 3h5v2.8h-5zM9.5 18.2h5V21h-5zM3 9.5h2.8v5H3zM18.2 9.5H21v5h-2.8z"
+        />
+      </symbol>
+    </svg>
+
+    <div class="app">
+      <!-- ================= THE RAIL ================= -->
+      <nav class="rail" aria-label="Main">
+        <a class="rail-head" href="home.html">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </a>
+
+        <div class="rail-nav">
+          <div class="rail-group">
+            <a class="rail-link" href="home.html" title="Home">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-home" /></svg>
+              <span class="rail-label">Home</span>
+            </a>
+            <a class="rail-link" href="play.html" title="Play">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-play" /></svg>
+              <span class="rail-label">Play</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="games.html" title="Games">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-games" /></svg>
+              <span class="rail-label">Games</span>
+            </a>
+            <a class="rail-link" href="puzzles.html" title="Puzzles">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+              <span class="rail-label">Puzzles</span>
+            </a>
+            <a class="rail-link" href="school.html" title="School">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-school" /></svg>
+              <span class="rail-label">School</span>
+            </a>
+            <a class="rail-link" href="openings.html" title="Openings">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-openings" /></svg>
+              <span class="rail-label">Openings</span>
+            </a>
+          </div>
+
+          <div class="rail-group">
+            <a class="rail-link" href="analysis.html" title="Analysis">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+              <span class="rail-label">Analysis</span>
+            </a>
+            <a class="rail-link" href="progress.html" aria-current="page" title="Progress">
+              <svg class="icon rail-icon" aria-hidden="true"><use href="#i-progress" /></svg>
+              <span class="rail-label">Progress</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="rail-foot">
+          <a class="rail-link" href="account.html" title="Account">
+            <svg class="icon rail-icon" aria-hidden="true"><use href="#i-account" /></svg>
+            <span class="rail-label">Account</span>
+          </a>
+
+          <!-- The compact palette control. Same eight swatches on every page, so a
+               palette can be changed from wherever you happen to be standing. The
+               inner span carries data-palette, so each swatch previews the palette
+               it offers while the button around it stays in the one you are
+               running. Settings has the same eight with their names spelled out. -->
+          <div class="pal" role="group" aria-label="Palette">
+            <button class="pal-sw" type="button" data-pal="cold-iron-bone" aria-pressed="false" title="Cold iron, bone">
+              <span class="pal-chip" data-palette="cold-iron-bone" aria-hidden="true"></span>
+              <span class="vh">Cold iron, bone</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cold-graphite-oxblood" aria-pressed="false" title="Cold graphite, oxblood">
+              <span class="pal-chip" data-palette="cold-graphite-oxblood" aria-hidden="true"></span>
+              <span class="vh">Cold graphite, oxblood</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-ash-slate-blue" aria-pressed="false" title="Warm ash, slate blue">
+              <span class="pal-chip" data-palette="warm-ash-slate-blue" aria-hidden="true"></span>
+              <span class="vh">Warm ash, slate blue</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="cool-steel-deep-teal" aria-pressed="false" title="Cool steel, deep teal">
+              <span class="pal-chip" data-palette="cool-steel-deep-teal" aria-hidden="true"></span>
+              <span class="vh">Cool steel, deep teal</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-umber-sage" aria-pressed="false" title="Warm umber, sage">
+              <span class="pal-chip" data-palette="warm-umber-sage" aria-hidden="true"></span>
+              <span class="vh">Warm umber, sage</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="green-slate-plum" aria-pressed="false" title="Green slate, plum">
+              <span class="pal-chip" data-palette="green-slate-plum" aria-hidden="true"></span>
+              <span class="vh">Green slate, plum</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="blue-ink-straw" aria-pressed="false" title="Blue ink, straw">
+              <span class="pal-chip" data-palette="blue-ink-straw" aria-hidden="true"></span>
+              <span class="vh">Blue ink, straw</span>
+            </button>
+            <button class="pal-sw" type="button" data-pal="warm-putty-dusty-rose" aria-pressed="false" title="Warm putty, dusty rose">
+              <span class="pal-chip" data-palette="warm-putty-dusty-rose" aria-hidden="true"></span>
+              <span class="vh">Warm putty, dusty rose</span>
+            </button>
+          </div>
+
+          <div class="rail-tools">
+            <a class="rail-tool" href="settings.html" title="Settings">
+              <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+              <span class="rail-tool-label">Settings</span>
+            </a>
+            <button class="rail-tool rail-toggle" type="button" data-rail-toggle title="Collapse">
+              <svg class="icon" aria-hidden="true"><use href="#i-chev" /></svg>
+              <span class="vh">Collapse sidebar</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ================= CONTENT ================= -->
+      <div class="content">
+        <header class="topbar-m">
+          <svg class="rail-mark" width="16" height="16" aria-hidden="true"><use href="#mark" /></svg>
+          <span class="rail-word">nodechess</span>
+        </header>
+
+        <div class="readout">
+          <div class="rd-field">
+            <span class="lbl">Player</span>
+            <span class="rd-value">mercer#K4T9P</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Rating</span>
+            <span class="rd-value">1500</span>
+            <span class="rd-value is-quiet">provisional</span>
+          </div>
+          <div class="rd-field">
+            <span class="lbl">Games</span>
+            <span class="rd-value">0</span>
+          </div>
+          <div class="rd-field is-next">
+            <span class="lbl">Next</span>
+            <span class="rd-next-text">Play your first game</span>
+          </div>
+          <div class="trace is-0" aria-hidden="true"></div>
+        </div>
+
+        <main class="main">
+          <!-- ============================================================
+               THE REAL STATE OF THIS ACCOUNT. Nothing has been measured, so
+               every well shows the shape of the reading it will take and the
+               one action that starts it. The page does not apologise once.
+               ============================================================ -->
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Measured so far</h2>
+              <span class="sec-count">0 games, 0 puzzles</span>
+            </div>
+
+            <div class="startrow is-first">
+              <div>
+                <div class="startrow-name">Nothing on the instruments yet <span class="tag">provisional</span></div>
+                <div class="startrow-spec">One game moves the rating, the accuracy figure and the list at the bottom of this page.</div>
+              </div>
+              <button class="btn is-primary" type="button">Play your first game</button>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Rating</h2>
+              <div class="prg-legend">
+                <span class="prg-key is-off"><i class="prg-dot"></i>Puzzles</span>
+                <span class="prg-key is-off"><i class="prg-dot"></i>Vs bot</span>
+              </div>
+            </div>
+
+            <div class="well prg-plot">
+              <div class="prg-frame">
+                <div class="prg-y">
+                  <span>1700</span>
+                  <span>1550</span>
+                  <span>1400</span>
+                  <span>1250</span>
+                  <span>1100</span>
+                </div>
+                <div class="prg-canvas">
+                  <svg class="prg-svg" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                    <line class="prg-rule" x1="0" y1="0.5" x2="600" y2="0.5" />
+                    <line class="prg-rule" x1="0" y1="40" x2="600" y2="40" />
+                    <line class="prg-rule" x1="0" y1="80" x2="600" y2="80" />
+                    <line class="prg-rule" x1="0" y1="120" x2="600" y2="120" />
+                    <line class="prg-rule" x1="0" y1="159.5" x2="600" y2="159.5" />
+                    <!-- 1500, where every account starts, and the single tick
+                         that is the only point actually on record. -->
+                    <line class="prg-level" x1="0" y1="53.3" x2="600" y2="53.3" />
+                    <rect class="prg-seed" x="0" y="50.3" width="3" height="6" />
+                  </svg>
+                  <div class="prg-void">
+                    <p class="empty-line">1500 to start, both tracks.</p>
+                    <p class="empty-line">A rated game plots the first point.</p>
+                  </div>
+                </div>
+                <div class="prg-x ticks">
+                  <span class="lbl">Apr</span>
+                  <span class="lbl">May</span>
+                  <span class="lbl">Jun</span>
+                  <span class="lbl">Jul</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="prg-two">
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Accuracy</h2>
+                <span class="sec-count">last 12 games</span>
+              </div>
+              <div class="well prg-plot">
+                <div class="prg-frame">
+                  <div class="prg-y">
+                    <span>100%</span>
+                    <span>75%</span>
+                    <span>50%</span>
+                    <span>25%</span>
+                    <span>0</span>
+                  </div>
+                  <div class="prg-canvas">
+                    <svg class="prg-svg" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                      <line class="prg-rule" x1="0" y1="159.5" x2="600" y2="159.5" />
+                      <rect class="prg-bar is-void" x="5" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="55" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="105" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="155" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="205" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="255" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="305" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="355" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="405" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="455" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="505" y="150" width="40" height="10" />
+                      <rect class="prg-bar is-void" x="555" y="150" width="40" height="10" />
+                    </svg>
+                    <div class="prg-void is-mid">
+                      <p class="empty-line">Nothing measured.</p>
+                      <p class="empty-line">One bar per finished game.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">School</h2>
+                <span class="sec-count">0 of 40 chapters</span>
+              </div>
+              <div class="well">
+                <div class="prg-chs" aria-hidden="true">
+                  <span class="prg-ch is-now"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                </div>
+                <div class="panel golist">
+                  <a class="go" href="school.html">
+                    <span>
+                      <span class="go-name">Chapter 01, Board and notation</span>
+                      <span class="go-sub">5 lessons, one test</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Puzzle themes</h2>
+              <span class="sec-count">0 solved</span>
+            </div>
+            <div class="prg-two">
+              <div class="well">
+                <div class="prg-sub"><span class="lbl">Strongest</span></div>
+                <div class="empty">
+                  <p class="empty-line">Nothing to rank yet.</p>
+                  <p class="empty-line">Themes sort themselves as you solve.</p>
+                </div>
+              </div>
+              <div class="well">
+                <div class="prg-sub">
+                  <span class="lbl">Weakest</span>
+                  <a class="btn is-quiet" href="#">Start puzzles</a>
+                </div>
+                <div class="empty">
+                  <p class="empty-line">Nothing to work on yet.</p>
+                  <p class="empty-line">The three you miss most land here.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Recent games</h2>
+            </div>
+            <div class="well">
+              <div class="empty-head">
+                <span class="lbl">Opponent</span>
+                <span class="lbl">Result</span>
+                <span class="lbl">Moves</span>
+                <span class="lbl">When</span>
+              </div>
+              <div class="empty">
+                <p class="empty-line">No games yet.</p>
+                <p class="empty-line">Finished games land here, newest first.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================================
+               SECOND COPY, FOR THE OWNER. The same page with data in it, so
+               both readings can be judged side by side. Marked, because
+               nothing in this app may show numbers it does not have.
+               ============================================================ -->
+
+          <div class="prg-band">
+            <span class="lbl">Populated variant</span>
+            <span class="prg-band-note">
+              The same page on an account with 62 games. Sample figures, not mercer#K4T9P.
+            </span>
+          </div>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Measured so far</h2>
+              <span class="sec-count">62 games, 480 puzzles</span>
+            </div>
+            <div class="panel">
+              <div class="facts">
+                <div class="fact">
+                  <span class="lbl">Puzzles</span>
+                  <span class="fact-value">1462<span class="fact-note">up 262 in 12 weeks</span></span>
+                </div>
+                <div class="fact">
+                  <span class="lbl">Vs bot</span>
+                  <span class="fact-value">1528<span class="fact-note">up 328 in 12 weeks</span></span>
+                </div>
+                <div class="fact">
+                  <span class="lbl">Accuracy</span>
+                  <span class="fact-value">70%<span class="fact-note">last 12 games</span></span>
+                </div>
+                <div class="fact">
+                  <span class="lbl">School</span>
+                  <span class="fact-value">7 of 40<span class="fact-note">chapter 08 open</span></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Rating</h2>
+              <div class="prg-legend">
+                <span class="prg-key is-a"><i class="prg-dot"></i>Puzzles 1462</span>
+                <span class="prg-key is-b"><i class="prg-dot"></i>Vs bot 1528</span>
+              </div>
+            </div>
+
+            <div class="well prg-plot">
+              <div class="prg-frame">
+                <div class="prg-y">
+                  <span>1700</span>
+                  <span>1550</span>
+                  <span>1400</span>
+                  <span>1250</span>
+                  <span>1100</span>
+                </div>
+                <div class="prg-canvas">
+                  <svg class="prg-svg" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                    <line class="prg-rule" x1="0" y1="0.5" x2="600" y2="0.5" />
+                    <line class="prg-rule" x1="0" y1="40" x2="600" y2="40" />
+                    <line class="prg-rule" x1="0" y1="80" x2="600" y2="80" />
+                    <line class="prg-rule" x1="0" y1="120" x2="600" y2="120" />
+                    <line class="prg-rule" x1="0" y1="159.5" x2="600" y2="159.5" />
+                    <polyline
+                      class="prg-b"
+                      points="0,133.3 54.5,122.7 109.1,125.3 163.6,109.3 218.2,98.7 272.7,104 327.3,88 381.8,77.3 436.4,81.3 490.9,66.7 545.5,56 600,45.9"
+                    />
+                    <polyline
+                      class="prg-a"
+                      points="0,133.3 54.5,129.3 109.1,136 163.6,122.7 218.2,112 272.7,116 327.3,104 381.8,92 436.4,96 490.9,82.7 545.5,73.3 600,63.5"
+                    />
+                  </svg>
+                </div>
+                <div class="prg-x ticks">
+                  <span class="lbl">Apr</span>
+                  <span class="lbl">May</span>
+                  <span class="lbl">Jun</span>
+                  <span class="lbl">Jul</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="prg-two">
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">Accuracy</h2>
+                <span class="sec-count">79% last, 70% mean</span>
+              </div>
+              <div class="well prg-plot">
+                <div class="prg-frame">
+                  <div class="prg-y">
+                    <span>100%</span>
+                    <span>75%</span>
+                    <span>50%</span>
+                    <span>25%</span>
+                    <span>0</span>
+                  </div>
+                  <div class="prg-canvas">
+                    <svg class="prg-svg" viewBox="0 0 600 160" preserveAspectRatio="none" aria-hidden="true">
+                      <line class="prg-rule" x1="0" y1="40" x2="600" y2="40" />
+                      <line class="prg-rule" x1="0" y1="80" x2="600" y2="80" />
+                      <line class="prg-rule" x1="0" y1="120" x2="600" y2="120" />
+                      <line class="prg-rule" x1="0" y1="159.5" x2="600" y2="159.5" />
+                      <rect class="prg-bar" x="5" y="62.4" width="40" height="97.6" />
+                      <rect class="prg-bar" x="55" y="67.2" width="40" height="92.8" />
+                      <rect class="prg-bar" x="105" y="57.6" width="40" height="102.4" />
+                      <rect class="prg-bar" x="155" y="59.2" width="40" height="100.8" />
+                      <rect class="prg-bar" x="205" y="49.6" width="40" height="110.4" />
+                      <rect class="prg-bar" x="255" y="54.4" width="40" height="105.6" />
+                      <rect class="prg-bar" x="305" y="46.4" width="40" height="113.6" />
+                      <rect class="prg-bar" x="355" y="48" width="40" height="112" />
+                      <rect class="prg-bar" x="405" y="41.6" width="40" height="118.4" />
+                      <rect class="prg-bar" x="455" y="44.8" width="40" height="115.2" />
+                      <rect class="prg-bar" x="505" y="36.8" width="40" height="123.2" />
+                      <rect class="prg-bar is-last" x="555" y="33.6" width="40" height="126.4" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="sec">
+              <div class="sec-head">
+                <h2 class="lbl">School</h2>
+                <span class="sec-count">7 of 40 chapters</span>
+              </div>
+              <div class="well">
+                <div class="prg-chs" aria-hidden="true">
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-done"></span>
+                  <span class="prg-ch is-now"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                  <span class="prg-ch"></span>
+                </div>
+                <div class="panel golist">
+                  <a class="go" href="school.html">
+                    <span>
+                      <span class="go-name">Chapter 08, The isolated pawn</span>
+                      <span class="go-sub">Lesson 3 of 5</span>
+                    </span>
+                    <svg class="icon go-arrow" aria-hidden="true"><use href="#i-arrow" /></svg>
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section class="sec">
+            <div class="sec-head">
+              <h2 class="lbl">Puzzle themes</h2>
+              <span class="sec-count">480 solved</span>
+            </div>
+            <div class="prg-two">
+              <div class="well">
+                <div class="prg-sub"><span class="lbl">Strongest</span></div>
+                <div class="prg-th">
+                  <span class="prg-th-name">Pin</span>
+                  <span class="prg-th-val">84%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="84" height="3" />
+                  </svg>
+                </div>
+                <div class="prg-th">
+                  <span class="prg-th-name">Fork</span>
+                  <span class="prg-th-val">79%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="79" height="3" />
+                  </svg>
+                </div>
+                <div class="prg-th">
+                  <span class="prg-th-name">Discovered attack</span>
+                  <span class="prg-th-val">76%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="76" height="3" />
+                  </svg>
+                </div>
+              </div>
+              <div class="well">
+                <div class="prg-sub">
+                  <span class="lbl">Weakest</span>
+                  <a class="btn is-quiet" href="#">Train these</a>
+                </div>
+                <div class="prg-th is-weak">
+                  <span class="prg-th-name">Back-rank mate</span>
+                  <span class="prg-th-val">41%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="41" height="3" />
+                  </svg>
+                </div>
+                <div class="prg-th is-weak">
+                  <span class="prg-th-name">Zugzwang</span>
+                  <span class="prg-th-val">44%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="44" height="3" />
+                  </svg>
+                </div>
+                <div class="prg-th is-weak">
+                  <span class="prg-th-name">Deflection</span>
+                  <span class="prg-th-val">52%</span>
+                  <svg class="prg-meter" viewBox="0 0 100 3" preserveAspectRatio="none" aria-hidden="true">
+                    <rect class="prg-meter-bg" x="0" y="1" width="100" height="1" />
+                    <rect class="prg-meter-fill" x="0" y="0" width="52" height="3" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="sec prg-games">
+            <div class="sec-head">
+              <h2 class="lbl">Recent games</h2>
+              <span class="sec-count">5 of 62</span>
+            </div>
+            <div class="well">
+              <table class="gtable">
+                <thead>
+                  <tr>
+                    <th class="col-name"><span class="lbl">Opponent</span></th>
+                    <th class="prg-c-res"><span class="lbl">Result</span></th>
+                    <th class="prg-c-mv"><span class="lbl">Moves</span></th>
+                    <th class="prg-c-acc"><span class="lbl">Accuracy</span></th>
+                    <th class="prg-c-when"><span class="lbl">When</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="grow">
+                    <td><span class="g-name">brindle#7Q2M</span></td>
+                    <td><span class="prg-res is-win">Win</span></td>
+                    <td class="num-cell">38</td>
+                    <td class="num-cell">74%</td>
+                    <td class="num-cell prg-when-cell">2 hours ago</td>
+                  </tr>
+                  <tr class="grow">
+                    <td><span class="g-name">Bot level 5</span></td>
+                    <td><span class="prg-res is-loss">Loss</span></td>
+                    <td class="num-cell">41</td>
+                    <td class="num-cell">66%</td>
+                    <td class="num-cell prg-when-cell">Yesterday</td>
+                  </tr>
+                  <tr class="grow">
+                    <td><span class="g-name">halden#R3W8</span></td>
+                    <td><span class="prg-res">Draw</span></td>
+                    <td class="num-cell">61</td>
+                    <td class="num-cell">79%</td>
+                    <td class="num-cell prg-when-cell">Yesterday</td>
+                  </tr>
+                  <tr class="grow">
+                    <td><span class="g-name">Bot level 4</span></td>
+                    <td><span class="prg-res is-win">Win</span></td>
+                    <td class="num-cell">29</td>
+                    <td class="num-cell">81%</td>
+                    <td class="num-cell prg-when-cell">2 days ago</td>
+                  </tr>
+                  <tr class="grow">
+                    <td><span class="g-name">quill#M9K1</span></td>
+                    <td><span class="prg-res is-loss">Loss</span></td>
+                    <td class="num-cell">44</td>
+                    <td class="num-cell">63%</td>
+                    <td class="num-cell prg-when-cell">3 days ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- ================= PHONE NAVIGATION ================= -->
+    <div class="scrim" data-sheet-close aria-hidden="true"></div>
+
+    <div class="sheet" id="sheet" hidden>
+      <a class="sheet-link" href="games.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-games" /></svg>
+        <span>Games</span>
+      </a>
+      <a class="sheet-link" href="openings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-openings" /></svg>
+        <span>Openings</span>
+      </a>
+      <a class="sheet-link" href="analysis.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-analysis" /></svg>
+        <span>Analysis</span>
+      </a>
+      <a class="sheet-link" href="progress.html" aria-current="page">
+        <svg class="icon" aria-hidden="true"><use href="#i-progress" /></svg>
+        <span>Progress</span>
+      </a>
+      <a class="sheet-link" href="account.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-account" /></svg>
+        <span>Account</span>
+      </a>
+      <a class="sheet-link" href="settings.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-settings" /></svg>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <nav class="tabbar" aria-label="Main">
+      <a class="tab" href="home.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-home" /></svg>
+        Home
+      </a>
+      <a class="tab" href="play.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-play" /></svg>
+        Play
+      </a>
+      <a class="tab" href="puzzles.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-puzzles" /></svg>
+        Puzzles
+      </a>
+      <a class="tab" href="school.html">
+        <svg class="icon" aria-hidden="true"><use href="#i-school" /></svg>
+        School
+      </a>
+      <button class="tab" type="button" data-sheet-toggle aria-expanded="false" aria-controls="sheet">
+        <svg class="icon" aria-hidden="true"><use href="#i-more" /></svg>
+        More
+      </button>
+    </nav>
+
+    <script src="shell.js" defer></script>
+  </body>
+</html>

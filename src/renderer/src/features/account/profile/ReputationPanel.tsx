@@ -1,8 +1,7 @@
 // Reputation: public conduct standing, separate from rating. A deterministic
 // fold over witnessed conduct events, visible from game 1 (only competitive
-// rating hides). Shared by the own-profile preview (ProfileTab) and the viewer
-// page (ProfilePage). The panel shows a score, a tier, and what moved them.
-// It does not explain how the fold works.
+// rating hides). The panel shows a score, a tier, and what moved them. It does
+// not explain how the fold works.
 
 import { type JSX } from 'react'
 import { AlertCircle, Check, ThumbsUp } from 'lucide-react'

@@ -1,46 +1,36 @@
 /**
- * Sample data for the accounts UI preview (A-UI). Deliberately static.
+ * TEST-ONLY DATA for the A4 accounts-UI suite (scripts/test-a4-ui.mjs).
  *
- * A6 WIRING STATUS: identity, chain, profile, ladders, reputation, standing,
- * devices and recovery export are REAL (mock/store.ts over src/web/accounts.ts
- * + ../store/derive.ts). What is LEFT here is only what a live surface still
- * reads: own account, PIN status, mailbox, recent games and other profiles.
- * Every such surface mounts ./FixturePreviewBadge.tsx behind an explicit
- * DEV_FIXTURE gate, so it labels itself as sample data in the UI and
- * `grep DEV_FIXTURE` across features/account lists every fixture surface.
+ * NOTHING UNDER src/renderer IMPORTS THIS FILE, AND NOTHING MAY. These
+ * accounts do not exist: the names, ratings, reputations and game rows below
+ * are invented so the suite can drive the shared rating/visibility projections
+ * over known inputs. The app resolves every profile it shows over the network
+ * and says so plainly when it cannot; it has no fixture path, no offline
+ * preview and no sample profile to fall back to.
  *
- * Fixtures for a surface that no longer renders them are DELETED, not parked:
- * an unreferenced sample constant is one careless import away from putting
- * invented numbers on screen, which this app does not do.
+ * The guard below is the enforcement: this module blows up loudly the moment
+ * it is loaded in a browser, so an accidental import fails at once instead of
+ * quietly putting invented numbers in front of a player.
  *
  * Shapes follow ./types (which mirror src/shared/accounts). Timestamps are
  * absolute unix ms near MOCK_NOW so relative-time copy stays stable in tests.
  */
 
-/**
- * TRUE while the network-dependent surfaces render sample data (spec quality
- * gate: no dead buttons. Fixture surfaces degrade visibly, never pretend to
- * be live). The mechanism: each fixture-rendering component gates on this
- * flag and mounts ./FixturePreviewBadge.tsx, which states "Sample data:
- * awaiting network transport" in place. Grep for DEV_FIXTURE to find every
- * fixture surface; flips off with the overlay/witness transport work.
- * Typed `boolean` (not a literal) so the gates stay live conditionals.
- */
-export const DEV_FIXTURE: boolean = true
+if (typeof window !== 'undefined') {
+  throw new Error('features/account/mock/fixtures.ts is test-only data and must not ship in the app')
+}
 
 import { displayState } from '@shared/accounts/ratings/display'
 import type {
   LadderKey,
   UiGameRow,
   UiLadder,
-  UiMailItem,
   UiOwnAccount,
-  UiPinStatus,
   UiProfile,
   UiReputation
 } from './types'
 
-/** "Now" for the preview: 2026-07-15T00:00Z. All fixture times are relative. */
+/** "Now" for the suite: 2026-07-15T00:00Z. All fixture times are relative. */
 export const MOCK_NOW = 1784073600000
 
 const DAY = 86_400_000
@@ -56,11 +46,6 @@ export function fakeB64u(seed: string): string {
     out += alphabet[(h >>> 8) & 63]
   }
   return out
-}
-
-/** Shorten a b64u for display: first 8 chars + ellipsis. */
-export function shortB64u(v: string): string {
-  return `${v.slice(0, 8)}…`
 }
 
 /**
@@ -139,60 +124,10 @@ export const OWN_ACCOUNT: UiOwnAccount = {
 }
 
 // ---------------------------------------------------------------------------
-// PIN (§1)
-// ---------------------------------------------------------------------------
-
-export const PIN_STATUS: UiPinStatus = {
-  set: true,
-  failures: 7,
-  lifetimeCap: 100,
-  refill: 20,
-  committee: { t: 5, n: 8 },
-  fuse: null
-}
-
-// ---------------------------------------------------------------------------
-// Social (§3 friendships, §10 mailbox)
-// ---------------------------------------------------------------------------
-
-export const MAILBOX: UiMailItem[] = [
-  {
-    id: 'mail-1',
-    from: 'oldguard#N2WQ4',
-    kind: 'rematch-invite',
-    ts: MOCK_NOW - 4 * HOUR,
-    priority: 'entangled',
-    note: 'Rapid, 10+5: best of three?'
-  },
-  {
-    id: 'mail-2',
-    from: 'sable#J6KT9',
-    kind: 'friend-request',
-    ts: MOCK_NOW - 9 * HOUR,
-    priority: 'reputable',
-    note: 'Great endgame yesterday.'
-  },
-  {
-    id: 'mail-3',
-    from: 'mira#T8FQ2',
-    kind: 'commendation',
-    ts: MOCK_NOW - 2 * DAY,
-    priority: 'entangled'
-  },
-  {
-    id: 'mail-4',
-    from: 'zzgrind#X2VB8',
-    kind: 'friend-request',
-    ts: MOCK_NOW - 30 * HOUR,
-    priority: 'new'
-  }
-]
-
-// ---------------------------------------------------------------------------
 // Game history rows
 // ---------------------------------------------------------------------------
 
-export const RECENT_GAMES: UiGameRow[] = [
+const RECENT_GAMES: UiGameRow[] = [
   { id: 'g-1408', opponent: 'kestrel#V9DM3', ladder: 'Blitz', result: '1-0', userColor: 'w', ts: MOCK_NOW - 5 * HOUR, witnessed: true },
   { id: 'g-1407', opponent: 'newbie#F2PLC', ladder: 'Blitz', result: '1-0', userColor: 'b', ts: MOCK_NOW - 6 * HOUR, witnessed: true },
   { id: 'g-1405', opponent: 'oldguard#N2WQ4', ladder: 'Rapid', result: '0-1', userColor: 'w', ts: MOCK_NOW - DAY, witnessed: true },

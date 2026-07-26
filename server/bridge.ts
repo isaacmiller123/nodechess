@@ -31,6 +31,7 @@ export const PUBLIC_CHANNELS: ReadonlySet<string> = new Set([
   'puzzles:next',
   'puzzles:get',
   'puzzles:themes',
+  'puzzles:count',
   'puzzles:batch',
   'puzzles:daily',
   'famous:list',

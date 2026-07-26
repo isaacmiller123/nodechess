@@ -1,6 +1,13 @@
 import { z } from 'zod'
 import { handle } from './util'
-import { batchPuzzles, getPuzzle, listThemes, nextPuzzle, solvedPuzzleIds } from '../db/puzzles.repo'
+import {
+  batchPuzzles,
+  countPuzzles,
+  getPuzzle,
+  listThemes,
+  nextPuzzle,
+  solvedPuzzleIds
+} from '../db/puzzles.repo'
 import { applyPuzzleResult } from '../db/ratings.repo'
 import { getAppDb, hasPuzzlesDb } from '../db/database'
 
@@ -37,6 +44,12 @@ export function registerPuzzles(): void {
   handle('puzzles:themes', z.object({}).strict(), () =>
     hasPuzzlesDb() ? { themes: listThemes() } : { themes: [] }
   )
+
+  // The size of the installed set. Zero is the honest answer on a lean install:
+  // the caller reports the corpus only when there is one.
+  handle('puzzles:count', z.object({}).strict(), () => ({
+    puzzles: hasPuzzlesDb() ? countPuzzles() : 0
+  }))
 
   // Bulk fetch (slice A custom sets + slice B Rush/Storm streaming). Degrades to
   // an empty list when the puzzle DB is not yet imported.

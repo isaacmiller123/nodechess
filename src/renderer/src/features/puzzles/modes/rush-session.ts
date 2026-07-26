@@ -51,7 +51,9 @@ const RATING_HALF = 120 // half-window around the center
 const RATING_FLOOR = 400
 const RATING_CEIL = 2900
 
-function band(solved: number): { lo: number; hi: number } {
+/** The rating window a run serves at `solved` solves. Exported so the lobby can
+ *  state the starting band instead of naming a number of its own. */
+export function band(solved: number): { lo: number; hi: number } {
   const center = Math.min(RATING_CEIL, RATING_BASE + solved * RATING_STEP)
   return {
     lo: Math.max(RATING_FLOOR, Math.round(center - RATING_HALF)),
@@ -121,7 +123,7 @@ export const RUSH_VARIANTS: Record<RushMode, RushVariant> = {
 
 // Survival: the clock is refilled per puzzle, but the budget shrinks as you climb.
 const SURVIVAL_MIN_SEC = 8
-function survivalBudgetSec(solved: number): number {
+export function survivalBudgetSec(solved: number): number {
   return Math.max(SURVIVAL_MIN_SEC, RUSH_VARIANTS.survival.startSec - solved * 2)
 }
 

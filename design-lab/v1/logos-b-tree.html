@@ -1,0 +1,801 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nodechess marks, lane B, branching</title>
+    <style>
+      :root {
+        --ground: #16181a;
+        --ink: #e8ebed;
+        --dim: #8d959b;
+        --line: #2b2f33;
+        --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: var(--sans);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 56px 32px 96px;
+      }
+
+      .head {
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 48px;
+      }
+
+      .head h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .head p {
+        margin: 10px 0 0;
+        max-width: 76ch;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .cand {
+        padding: 40px 0 44px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .cand-head {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        margin-bottom: 26px;
+      }
+
+      .cand-no {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.09em;
+        color: var(--dim);
+      }
+
+      .cand-name {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .rack {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 40px;
+        margin-bottom: 30px;
+      }
+
+      .cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .cap {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--dim);
+      }
+
+      .m { display: block; color: inherit; }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 8px 0 22px;
+      }
+
+      .divider span {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        color: var(--dim);
+        white-space: nowrap;
+      }
+
+      .divider i {
+        flex: 1;
+        height: 1px;
+        background: var(--line);
+      }
+
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .lockup .wm {
+        font-size: 30px;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+      }
+
+      .lockup .wm b { font-weight: 600; }
+      .lockup .wm i { font-style: normal; font-weight: 400; }
+
+      .lockup.sm .wm { font-size: 20px; }
+
+      .white {
+        background: #ffffff;
+        color: #16181a;
+        border-radius: 4px;
+        padding: 26px 30px;
+        margin-top: 6px;
+      }
+
+      .white .cap { color: #6b7378; }
+
+      .why {
+        margin-top: 26px;
+        max-width: 84ch;
+        font-size: 13.5px;
+        line-height: 1.65;
+      }
+
+      .why p { margin: 0 0 7px; }
+      .why b { font-weight: 600; }
+      .why .lab {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--dim);
+        margin-right: 8px;
+      }
+
+      .pixrow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 26px;
+        align-items: flex-end;
+      }
+
+      canvas { display: block; image-rendering: pixelated; }
+    </style>
+  </head>
+  <body>
+    <!-- ============ symbol library ============ -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <!-- B1 primary: transposition -->
+      <symbol id="b1" viewBox="0 0 64 64">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M35 8 V56" stroke-width="4.4" />
+          <path
+            d="M35 17 C24 18 17 25 17 31 C17 38 24 44 35 45"
+            stroke-width="3"
+          />
+          <path
+            d="M35 29 C46 30 53 36 53 43 C53 50 45 55 35 56"
+            stroke-width="2.2"
+          />
+          <path d="M20.2 38.7 C16.5 43 14.5 46.5 13.4 49.2" stroke-width="2" />
+          <circle cx="12.3" cy="52" r="3" stroke-width="2" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="35" cy="8" r="3.4" />
+          <circle cx="35" cy="56" r="3.4" />
+          <circle cx="35" cy="17" r="2.4" />
+          <circle cx="35" cy="29" r="2.4" />
+          <circle cx="35" cy="45" r="2.4" />
+        </g>
+      </symbol>
+
+      <!-- B1 favicon -->
+      <symbol id="b1f" viewBox="0 0 64 64">
+        <g fill="none" stroke="currentColor" stroke-linecap="round">
+          <path d="M41 11 V53" stroke-width="6" />
+          <path
+            d="M41 18 C25 20 17 26 17 32 C17 39 26 45 41 46"
+            stroke-width="6"
+          />
+        </g>
+        <g fill="currentColor">
+          <circle cx="41" cy="11" r="7.5" />
+          <circle cx="41" cy="53" r="7.5" />
+        </g>
+      </symbol>
+
+      <!-- B2 primary: lattice -->
+      <symbol id="b2" viewBox="0 0 64 64">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M44 10 L56 32 L44 54" stroke-width="2" />
+          <path d="M44 10 L32 32" stroke-width="2" />
+          <path d="M20 10 L8 32 L20 54" stroke-width="2.8" />
+          <path d="M32 32 L20 54" stroke-width="2.8" />
+          <path d="M20 10 L32 32 L44 54" stroke-width="4.2" />
+          <circle cx="56" cy="32" r="3.2" stroke-width="2" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="20" cy="10" r="3.2" />
+          <circle cx="44" cy="10" r="3.2" />
+          <circle cx="8" cy="32" r="3.2" />
+          <circle cx="32" cy="32" r="3.9" />
+          <circle cx="20" cy="54" r="3.2" />
+          <circle cx="44" cy="54" r="3.2" />
+        </g>
+      </symbol>
+
+      <!-- B2 favicon -->
+      <symbol id="b2f" viewBox="0 0 64 64">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M32 8 L55 32 L32 56" stroke-width="5" />
+          <path d="M32 8 L9 32 L32 56" stroke-width="9" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="32" cy="8" r="7.5" />
+          <circle cx="32" cy="56" r="7.5" />
+        </g>
+      </symbol>
+
+      <!-- B3 primary: hourglass fan -->
+      <symbol id="b3" viewBox="0 0 64 64">
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M32 26 V38" stroke-width="4.6" />
+          <path d="M32 26 C24 25 14 22 9 16" stroke-width="2.6" />
+          <path d="M32 26 C33 20 30 12 26 8" stroke-width="2.2" />
+          <path d="M32 26 C29 20 33 12 38 8" stroke-width="2.2" />
+          <path d="M32 26 C40 25 50 22 55 16" stroke-width="2.6" />
+          <path d="M32 26 C22 30 12 26 9 16" stroke-width="1.7" />
+          <path d="M32 38 C40 39 50 42 55 48" stroke-width="2.6" />
+          <path d="M32 38 C31 44 34 52 38 56" stroke-width="2.2" />
+          <path d="M32 38 C35 44 31 52 26 56" stroke-width="2.2" />
+          <path d="M32 38 C24 39 14 42 9 48" stroke-width="2.6" />
+          <circle cx="55" cy="48" r="3" stroke-width="1.9" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="32" cy="26" r="3.4" />
+          <circle cx="32" cy="38" r="3.4" />
+          <circle cx="9" cy="16" r="2.6" />
+          <circle cx="26" cy="8" r="2.6" />
+          <circle cx="38" cy="8" r="2.6" />
+          <circle cx="55" cy="16" r="2.6" />
+          <circle cx="38" cy="56" r="2.6" />
+          <circle cx="26" cy="56" r="2.6" />
+          <circle cx="9" cy="48" r="2.6" />
+        </g>
+      </symbol>
+
+      <!-- B3 favicon -->
+      <symbol id="b3f" viewBox="0 0 64 64">
+        <g fill="none" stroke="currentColor" stroke-linecap="round">
+          <path d="M32 23 V41" stroke-width="9" />
+          <path d="M32 23 C22 21 12 17 8 10" stroke-width="7" />
+          <path d="M32 41 C42 43 52 47 56 54" stroke-width="7" />
+        </g>
+      </symbol>
+
+      <!-- B4 primary: braid -->
+      <symbol id="b4" viewBox="0 0 64 64">
+        <g
+          transform="translate(-5,0)"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+        >
+          <path
+            d="M44 24 C51 25.5 56 28.5 56 32 C56 35.5 51 38.5 44 40"
+            stroke-width="1.8"
+          />
+          <path
+            d="M44 8 C44 11.6 38.5 11.7 35.7 13.5"
+            stroke-width="2.4"
+          />
+          <path
+            d="M28.3 18.5 C25.5 20.3 20 20.4 20 24 C20 27.6 26.6 28.4 32 32 C37.4 35.6 44 36.4 44 40 C44 43.6 38.5 43.7 35.7 45.5"
+            stroke-width="2.4"
+          />
+          <path d="M28.3 50.5 C25.5 52.3 20 52.4 20 56" stroke-width="2.4" />
+          <path
+            d="M20 8 C20 11.6 26.6 12.4 32 16 C37.4 19.6 44 20.4 44 24 C44 27.6 38.5 27.7 35.7 29.5"
+            stroke-width="3.6"
+          />
+          <path
+            d="M28.3 34.5 C25.5 36.3 20 36.4 20 40 C20 43.6 26.6 44.4 32 48 C37.4 51.6 44 52.4 44 56"
+            stroke-width="3.6"
+          />
+        </g>
+        <g transform="translate(-5,0)" fill="currentColor">
+          <circle cx="20" cy="8" r="2.7" />
+          <circle cx="44" cy="8" r="2.7" />
+          <circle cx="20" cy="56" r="2.7" />
+          <circle cx="44" cy="56" r="2.7" />
+          <circle cx="44" cy="24" r="2.7" />
+          <circle cx="44" cy="40" r="2.7" />
+          <circle cx="20" cy="24" r="2.2" />
+          <circle cx="20" cy="40" r="2.2" />
+        </g>
+      </symbol>
+
+      <!-- B4 favicon -->
+      <symbol id="b4f" viewBox="0 0 64 64">
+        <g fill="none" stroke="currentColor" stroke-linecap="round">
+          <path d="M52 8 C52 22 46 26 40.1 29.6" stroke-width="8" />
+          <path d="M23.9 34.4 C18 38 12 42 12 56" stroke-width="8" />
+          <path d="M12 8 C12 26 52 38 52 56" stroke-width="8" />
+        </g>
+      </symbol>
+    </svg>
+
+    <div class="page">
+      <div class="head">
+        <h1>nodechess, identity marks, lane B: branching</h1>
+        <p>
+          Four candidates. Each is a two tier system: a primary mark that carries
+          real detail and lives at 24px and above, and a favicon derivative that
+          is the same object with detail removed, never a substitute idea. One
+          flat colour throughout, no gradients, no badge. Every mark is shown on
+          the product ground #16181a and again on white.
+        </p>
+      </div>
+
+      <!-- ================= B1 ================= -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">B1</span>
+          <span class="cand-name">Transposition</span>
+        </div>
+
+        <div class="divider"><span>PRIMARY</span><i></i></div>
+        <div class="rack">
+          <div class="cell">
+            <svg class="m" width="128" height="128"><use href="#b1" /></svg>
+            <span class="cap">128</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="48" height="48"><use href="#b1" /></svg>
+            <span class="cap">48</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="24" height="24"><use href="#b1" /></svg>
+            <span class="cap">24</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>FAVICON DERIVATIVE</span><i></i></div>
+        <div class="rack pixrow">
+          <div class="cell">
+            <svg class="m" width="32" height="32"><use href="#b1f" /></svg>
+            <span class="cap">32</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="16" height="16"><use href="#b1f" /></svg>
+            <span class="cap">16</span>
+          </div>
+          <div class="cell">
+            <canvas class="pix" data-sym="b1f" width="112" height="112"></canvas>
+            <span class="cap">16 RASTERISED, 7x</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>LOCKUP</span><i></i></div>
+        <div class="lockup">
+          <svg class="m" width="44" height="44"><use href="#b1" /></svg>
+          <span class="wm"><b>node</b><i>chess</i></span>
+        </div>
+
+        <div class="white">
+          <div class="rack" style="margin-bottom: 0">
+            <div class="cell">
+              <svg class="m" width="48" height="48"><use href="#b1" /></svg>
+              <span class="cap">48</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="32" height="32"><use href="#b1f" /></svg>
+              <span class="cap">32</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="16" height="16"><use href="#b1f" /></svg>
+              <span class="cap">16</span>
+            </div>
+            <div class="cell">
+              <canvas
+                class="pix"
+                data-sym="b1f"
+                data-light="1"
+                width="112"
+                height="112"
+              ></canvas>
+              <span class="cap">16 RASTERISED, 7x</span>
+            </div>
+            <div class="cell">
+              <div class="lockup sm">
+                <svg class="m" width="30" height="30"><use href="#b1" /></svg>
+                <span class="wm"><b>node</b><i>chess</i></span>
+              </div>
+              <span class="cap">LOCKUP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="why">
+          <p>
+            <span class="lab">IDEA</span>The main line runs straight between two
+            identical terminal nodes, and two sidelines bow away from it and
+            rejoin at different plies, which is the one thing a hierarchy cannot
+            do and a shared opening book does constantly. Neither end node is the
+            root, they are the same weight. The thin branch that leaves and ends
+            in an open ring is a line only one peer is holding.
+          </p>
+          <p>
+            <span class="lab">REDUCTION</span>Removed the second sideline, the
+            unwitnessed branch and the three ply markers, keeping the straight
+            main line, one bow and the two equal terminals, so 16px is the bow
+            and the string.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= B2 ================= -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">B2</span>
+          <span class="cand-name">Lattice</span>
+        </div>
+
+        <div class="divider"><span>PRIMARY</span><i></i></div>
+        <div class="rack">
+          <div class="cell">
+            <svg class="m" width="128" height="128"><use href="#b2" /></svg>
+            <span class="cap">128</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="48" height="48"><use href="#b2" /></svg>
+            <span class="cap">48</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="24" height="24"><use href="#b2" /></svg>
+            <span class="cap">24</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>FAVICON DERIVATIVE</span><i></i></div>
+        <div class="rack pixrow">
+          <div class="cell">
+            <svg class="m" width="32" height="32"><use href="#b2f" /></svg>
+            <span class="cap">32</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="16" height="16"><use href="#b2f" /></svg>
+            <span class="cap">16</span>
+          </div>
+          <div class="cell">
+            <canvas class="pix" data-sym="b2f" width="112" height="112"></canvas>
+            <span class="cap">16 RASTERISED, 7x</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>LOCKUP</span><i></i></div>
+        <div class="lockup">
+          <svg class="m" width="44" height="44"><use href="#b2" /></svg>
+          <span class="wm"><b>node</b><i>chess</i></span>
+        </div>
+
+        <div class="white">
+          <div class="rack" style="margin-bottom: 0">
+            <div class="cell">
+              <svg class="m" width="48" height="48"><use href="#b2" /></svg>
+              <span class="cap">48</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="32" height="32"><use href="#b2f" /></svg>
+              <span class="cap">32</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="16" height="16"><use href="#b2f" /></svg>
+              <span class="cap">16</span>
+            </div>
+            <div class="cell">
+              <canvas
+                class="pix"
+                data-sym="b2f"
+                data-light="1"
+                width="112"
+                height="112"
+              ></canvas>
+              <span class="cap">16 RASTERISED, 7x</span>
+            </div>
+            <div class="cell">
+              <div class="lockup sm">
+                <svg class="m" width="30" height="30"><use href="#b2" /></svg>
+                <span class="wm"><b>node</b><i>chess</i></span>
+              </div>
+              <span class="cap">LOCKUP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="why">
+          <p>
+            <span class="lab">IDEA</span>A move lattice, not a move tree. Every
+            edge has the same slope so the figure is crystalline, and the whole
+            graph is identical when you turn it upside down, which is the precise
+            statement that no node is the root. Two different routes reach the
+            lower left node, the heavy stroke picks out the main line threading
+            through the middle, and one node is an open ring because only one
+            peer has been there.
+          </p>
+          <p>
+            <span class="lab">REDUCTION</span>Removed six of the seven nodes and
+            six of the eight edges, down to the smallest unit the lattice is made
+            of, one diamond with a heavy route and a light route between the same
+            two positions.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= B3 ================= -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">B3</span>
+          <span class="cand-name">Both directions</span>
+        </div>
+
+        <div class="divider"><span>PRIMARY</span><i></i></div>
+        <div class="rack">
+          <div class="cell">
+            <svg class="m" width="128" height="128"><use href="#b3" /></svg>
+            <span class="cap">128</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="48" height="48"><use href="#b3" /></svg>
+            <span class="cap">48</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="24" height="24"><use href="#b3" /></svg>
+            <span class="cap">24</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>FAVICON DERIVATIVE</span><i></i></div>
+        <div class="rack pixrow">
+          <div class="cell">
+            <svg class="m" width="32" height="32"><use href="#b3f" /></svg>
+            <span class="cap">32</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="16" height="16"><use href="#b3f" /></svg>
+            <span class="cap">16</span>
+          </div>
+          <div class="cell">
+            <canvas class="pix" data-sym="b3f" width="112" height="112"></canvas>
+            <span class="cap">16 RASTERISED, 7x</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>LOCKUP</span><i></i></div>
+        <div class="lockup">
+          <svg class="m" width="44" height="44"><use href="#b3" /></svg>
+          <span class="wm"><b>node</b><i>chess</i></span>
+        </div>
+
+        <div class="white">
+          <div class="rack" style="margin-bottom: 0">
+            <div class="cell">
+              <svg class="m" width="48" height="48"><use href="#b3" /></svg>
+              <span class="cap">48</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="32" height="32"><use href="#b3f" /></svg>
+              <span class="cap">32</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="16" height="16"><use href="#b3f" /></svg>
+              <span class="cap">16</span>
+            </div>
+            <div class="cell">
+              <canvas
+                class="pix"
+                data-sym="b3f"
+                data-light="1"
+                width="112"
+                height="112"
+              ></canvas>
+              <span class="cap">16 RASTERISED, 7x</span>
+            </div>
+            <div class="cell">
+              <div class="lockup sm">
+                <svg class="m" width="30" height="30"><use href="#b3" /></svg>
+                <span class="wm"><b>node</b><i>chess</i></span>
+              </div>
+              <span class="cap">LOCKUP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="why">
+          <p>
+            <span class="lab">IDEA</span>One move, drawn as the only straight
+            stroke in the mark, with the whole past fanning out of one end and
+            the whole future fanning out of the other, so every position is a
+            leaf of what came before and a root of what comes after and neither
+            fan is privileged. Two strands cross on the way up because two move
+            orders swap, two more arrive at a single shared tip, and one tip is
+            an open ring because nobody else has that line.
+          </p>
+          <p>
+            <span class="lab">REDUCTION</span>Removed both fans down to a single
+            strand each way and dropped every terminal node, leaving the heavy
+            move and the two sweeps that prove it has a before and an after.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= B4 ================= -->
+      <section class="cand">
+        <div class="cand-head">
+          <span class="cand-no">B4</span>
+          <span class="cand-name">Braid</span>
+        </div>
+
+        <div class="divider"><span>PRIMARY</span><i></i></div>
+        <div class="rack">
+          <div class="cell">
+            <svg class="m" width="128" height="128"><use href="#b4" /></svg>
+            <span class="cap">128</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="48" height="48"><use href="#b4" /></svg>
+            <span class="cap">48</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="24" height="24"><use href="#b4" /></svg>
+            <span class="cap">24</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>FAVICON DERIVATIVE</span><i></i></div>
+        <div class="rack pixrow">
+          <div class="cell">
+            <svg class="m" width="32" height="32"><use href="#b4f" /></svg>
+            <span class="cap">32</span>
+          </div>
+          <div class="cell">
+            <svg class="m" width="16" height="16"><use href="#b4f" /></svg>
+            <span class="cap">16</span>
+          </div>
+          <div class="cell">
+            <canvas class="pix" data-sym="b4f" width="112" height="112"></canvas>
+            <span class="cap">16 RASTERISED, 7x</span>
+          </div>
+        </div>
+
+        <div class="divider"><span>LOCKUP</span><i></i></div>
+        <div class="lockup">
+          <svg class="m" width="44" height="44"><use href="#b4" /></svg>
+          <span class="wm"><b>node</b><i>chess</i></span>
+        </div>
+
+        <div class="white">
+          <div class="rack" style="margin-bottom: 0">
+            <div class="cell">
+              <svg class="m" width="48" height="48"><use href="#b4" /></svg>
+              <span class="cap">48</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="32" height="32"><use href="#b4f" /></svg>
+              <span class="cap">32</span>
+            </div>
+            <div class="cell">
+              <svg class="m" width="16" height="16"><use href="#b4f" /></svg>
+              <span class="cap">16</span>
+            </div>
+            <div class="cell">
+              <canvas
+                class="pix"
+                data-sym="b4f"
+                data-light="1"
+                width="112"
+                height="112"
+              ></canvas>
+              <span class="cap">16 RASTERISED, 7x</span>
+            </div>
+            <div class="cell">
+              <div class="lockup sm">
+                <svg class="m" width="30" height="30"><use href="#b4" /></svg>
+                <span class="wm"><b>node</b><i>chess</i></span>
+              </div>
+              <span class="cap">LOCKUP</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="why">
+          <p>
+            <span class="lab">IDEA</span>A game is two lines that keep crossing,
+            and the strand that passes over is the one on move, so alternation is
+            drawn rather than illustrated. The heavier strand is white, the
+            lighter is black, and the thin bow on the right is a third machine
+            that held two of these plies and then left, which is what a witness
+            actually looks like.
+          </p>
+          <p>
+            <span class="lab">REDUCTION</span>Removed the witness bow, six of the
+            eight nodes and two of the three crossings, keeping one crossing with
+            its break intact so the weave, not the X, is what survives.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // True 16px raster preview, magnified with nearest neighbour so the
+      // small end can be judged honestly. Local only, data URIs, no network.
+      (function () {
+        var pix = document.querySelectorAll("canvas.pix");
+        Array.prototype.forEach.call(pix, function (cv) {
+          var sym = document.getElementById(cv.dataset.sym);
+          if (!sym) return;
+          var light = cv.dataset.light === "1";
+          var ink = light ? "#16181a" : "#e8ebed";
+          var bg = light ? "#ffffff" : "#16181a";
+          var src =
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" ' +
+            'viewBox="0 0 64 64" style="color:' +
+            ink +
+            '">' +
+            sym.innerHTML +
+            "</svg>";
+          var img = new Image();
+          img.onload = function () {
+            var off = document.createElement("canvas");
+            off.width = 16;
+            off.height = 16;
+            var oc = off.getContext("2d");
+            oc.fillStyle = bg;
+            oc.fillRect(0, 0, 16, 16);
+            oc.drawImage(img, 0, 0, 16, 16);
+            var c = cv.getContext("2d");
+            c.imageSmoothingEnabled = false;
+            c.fillStyle = bg;
+            c.fillRect(0, 0, cv.width, cv.height);
+            c.drawImage(off, 0, 0, 16, 16, 0, 0, cv.width, cv.height);
+          };
+          img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src);
+        });
+      })();
+    </script>
+  </body>
+</html>

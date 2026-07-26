@@ -13,6 +13,23 @@
 // The costs, both accepted knowingly: the package has been unmaintained since
 // 2022, and its page cache never evicts (see `transferStats`).
 //
+// THE ONE THING TO KNOW ABOUT ITS READS: lazyFile.doXHR accepts any 2xx and
+// returns the body as the bytes it asked for. It does not check for 206. So an
+// origin that ignores Range and replies 200 with the whole file does not make
+// this slow, it makes it WRONG: the file lands at the offset of the range and
+// SQLite parses whatever those bytes happen to be. That is what Cloudflare
+// Pages does (puzzleSource.puzzleArtifactBaseUrl has the measurement), so the
+// artifact is served from an origin that does byte serving, and src/web/sw.ts
+// slices a whole-file 200 back down to the requested range as a floor under a
+// half-configured one.
+//
+// CROSS-ORIGIN. The reads are synchronous XHR, so a base URL on another origin
+// is a CORS request: the bucket must allow this site's origin for GET and HEAD
+// and must EXPOSE accept-ranges and content-range, or the library warns that
+// byte serving is unavailable and the service worker cannot cache a range.
+// COEP require-corp is satisfied by that same CORS agreement (the requests are
+// mode 'cors'); docs/DEPLOY-WEB.md Part 6 has the exact configuration.
+//
 // Everything here is deliberately thin. The queries live in puzzleSource.ts.
 
 import { releaseProxy } from 'comlink'
@@ -27,9 +44,11 @@ import type { PuzzleChunkManifest } from './manifest'
 export type SqlParam = string | number | null
 
 export interface ChunkedDbOptions {
-  /** Directory the chunk files live in, e.g. '/puzzles/'. Resolved against the
-   *  document before use: the worker resolves relative URLs against ITS own
-   *  location (the emitted /assets/ path), which would 404 every read. */
+  /** Directory the chunk files live in, e.g. '/puzzles/' in dev or the R2
+   *  origin in production (puzzleSource.puzzleArtifactBaseUrl). Resolved
+   *  against the document before use: the worker resolves relative URLs
+   *  against ITS own location (the emitted /assets/ path), which would 404
+   *  every read. May be another origin, see the CORS note above. */
   baseUrl: string
   manifest: PuzzleChunkManifest
   workerUrl?: string

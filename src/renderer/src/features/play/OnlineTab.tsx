@@ -66,9 +66,9 @@ const GO_SIZES = [9, 13, 19] as const
 const GO_HANDICAPS: readonly GoHandicap[] = [0, 2, 3, 4, 5, 6, 7, 8, 9]
 
 /** What the host surface needs to know about this tab: nothing live ('idle'),
- *  a session is open but no game yet ('lobby'), or a game is live ('game'). Kept
- *  for SetupCard's width handoff. It is NO LONGER a nav lock (the store survives
- *  unmount, so switching tabs or views can never kill the session). */
+ *  a session is open but no game yet ('lobby'), or a game is live ('game'). It
+ *  is NOT a nav lock (the store survives unmount, so switching tabs or views can
+ *  never kill the session). */
 export type OnlineStage = 'idle' | 'lobby' | 'game'
 
 export interface OnlineTabProps {

@@ -1,37 +1,24 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import type { Role } from 'chessops/types'
 import type { Key } from 'chessground/types'
 import type { DrawShape } from 'chessground/draw'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  FlipVertical2,
-  Cpu,
-  Type as TypeIcon,
-  ClipboardCopy,
-  Library
-} from 'lucide-react'
 import type { GameReview, GameRow, ReviewMoveEval, ReviewProgress } from '@shared/types'
 import { Board } from '../../board/Board'
-import { EvalBar } from '../../board/EvalBar'
 import { PromotionPicker } from '../../board/PromotionPicker'
 import { pieceSetClass } from '../../board/pieceSets'
+import { useReadoutSlot } from '../../components/Layout'
 import { useSound } from '../../sound'
-import { EnginePanel } from '../../panels/EnginePanel'
-import { MoveList } from '../../panels/MoveList'
-import { CoachPanel } from '../../panels/CoachPanel'
-import { ReviewPanel } from './ReviewPanel'
-import { SharePanel } from './SharePanel'
-import { FamousBrowser } from './FamousBrowser'
+import { EngineSection, LINE_COUNTS } from './EngineSection'
+import { ReviewSection } from './ReviewSection'
+import { MoveNote } from './MoveNote'
+import { MovesSection } from './MovesSection'
+import { GameLibrary } from './GameLibrary'
 import { detailToPgn } from './famousData'
-import { MyGamesBrowser } from './MyGamesBrowser'
 import { AnnotationsLayer } from './AnnotationsLayer'
 import { useAnnotations } from './annotations'
 import { parsePgnToGame, type LoadedGame } from './shareGame'
-import type { ReviewBadge } from './badges'
-import { useGameTree } from '../../state/gameTree'
+import { isMistakeBadge, type ReviewBadge } from './badges'
+import { useGameTree, type TreeNode } from '../../state/gameTree'
 import { useSettings } from '../../state/settings'
 import { useAnalysis } from '../../hooks/useAnalysis'
 import { useEngineReady } from '../../hooks/useEngineReady'
@@ -42,24 +29,22 @@ import {
   checkColor,
   destsFor,
   isPromotion,
+  outcome,
   position,
   turnColor,
   uciToLastMove,
   type AppliedMove,
   type Color
 } from '../../chess/chess'
-import { toWhite } from '../../chess/scores'
+import { formatScore, toWhite, whiteWinPercent } from '../../chess/scores'
 import './analysis.css'
 
 const ROLE_FROM_CHAR: Record<string, Role> = { q: 'queen', r: 'rook', b: 'bishop', n: 'knight' }
 
-// Tone suffix (-> .fg-result-*) for the loaded-game header chip.
-function headerResultTone(result?: string): 'white' | 'black' | 'draw' | 'open' {
-  if (result === '1-0') return 'white'
-  if (result === '0-1') return 'black'
-  if (result === '1/2-1/2') return 'draw'
-  return 'open'
-}
+/* A FEN is one line of eight rank fields. A PGN is anything else worth trying:
+   the single Load field takes both, and the shape decides which error the user
+   gets back when it fails. */
+const FEN_SHAPE = /^(?:[pnbrqkPNBRQK1-8]+\/){7}[pnbrqkPNBRQK1-8]+(?:\s|$)/
 
 export function AnalysisView({
   gameId,
@@ -72,17 +57,20 @@ export function AnalysisView({
   const [orientation, setOrientation] = useState<Color>('white')
   const [engineOn, setEngineOn] = useState(true)
   const [multipv, setMultipv] = useState(settings.analysisMultiPV)
+  // Depth cap for the live search: null is the infinite analysis this screen
+  // has always run. Session state, not a preference: there is no settings key
+  // for it yet (see the report).
+  const [depthCap, setDepthCap] = useState<number | null>(null)
   const [figurine, setFigurine] = useState(false)
   const [pendingPromo, setPendingPromo] = useState<{ orig: string; dest: string } | null>(null)
   const [nonce, setNonce] = useState(0)
-  const [fenInput, setFenInput] = useState('')
-  const [fenError, setFenError] = useState<string | null>(null)
+  const [loadInput, setLoadInput] = useState('')
+  const [loadError, setLoadError] = useState<string | null>(null)
+  const [copied, setCopied] = useState<'fen' | 'pgn' | null>(null)
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Game library drawer (Your games | Famous) in the sidebar.
-  const [libraryOpen, setLibraryOpen] = useState(false)
-  const [libraryTab, setLibraryTab] = useState<'mine' | 'famous'>('mine')
-
-  // Players/result of the currently-loaded game, for the compact header strip.
+  // Players/result of the currently-loaded game. The result is the only thing
+  // the move list can put in its footer without inventing one.
   const [gameHeader, setGameHeader] = useState<{
     white?: string
     black?: string
@@ -97,6 +85,14 @@ export function AnalysisView({
     },
     [updateSettings]
   )
+
+  // The retired range control could store 2 or 4; the three chips are the only
+  // way in now, so a stored value they cannot show is snapped once at mount
+  // rather than left running behind an unpressed control.
+  useEffect(() => {
+    if (!LINE_COUNTS.includes(multipv)) changeMultipv(3)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Board element (for the annotations overlay to attach right-click drawing).
   const [boardEl, setBoardEl] = useState<HTMLDivElement | null>(null)
@@ -154,25 +150,25 @@ export function AnalysisView({
   const lastMove = tree.current.move ? uciToLastMove(tree.current.move.uci) : undefined
   const currentPly = tree.current.ply
 
-  // Whether the current node lies on the mainline (root.children[0] chain). The
-  // eval graph is mainline-only, so its current-ply marker must hide when we are
-  // off in a variation (otherwise it points at an unrelated mainline ply).
-  const onMainline = useMemo(() => {
-    let n = tree.root
-    while (n !== tree.current && n.children[0]) n = n.children[0]
-    return n === tree.current
-  }, [tree.root, tree.current])
+  // The mainline, walked fresh every render: the tree mutates in place, so
+  // anything memoized on its identity goes stale.
+  const mainline: TreeNode[] = []
+  for (let n = tree.root; n.children[0]; ) {
+    n = n.children[0]
+    mainline.push(n)
+  }
+  const totalMoves = Math.ceil(mainline.length / 2)
+  const onMainline = mainline.length === 0 ? currentPly === 0 : mainline.some((n) => n === tree.current) || currentPly === 0
   const graphCurrentPly = onMainline ? currentPly : -1
 
-  const { lines, depth, error: engineError } = useAnalysis(fen, engineOn, multipv)
+  const { lines, stats, error: engineError } = useAnalysis(fen, engineOn, multipv, depthCap)
   // Stockfish-on-disk probe (datasets:status().engine): when the engine dataset
-  // was never imported, EnginePanel swaps "analyzing… depth 0" for the install
-  // CTA. The fresh-install Analysis hang from the audit.
+  // was never imported the Engine panel swaps its lines for the install CTA
+  // instead of sitting at depth 0 forever.
   const { ready: engineReady } = useEngineReady(engineOn)
   const engineMissing = engineOn && engineReady === false
   const best = lines.find((l) => l.multipv === 1) ?? lines[0]
-  // Null (not a confident +0.00) when the engine is off or before the first line;
-  // the eval bar renders a neutral, dimmed state for null.
+  // Null (not a confident +0.00) when the engine is off or before the first line.
   const score = best ? toWhite({ cp: best.scoreCp, mate: best.mate }, turn) : null
 
   // Engine top-line arrows on the board: best move is a solid green arrow, the
@@ -196,20 +192,36 @@ export function AnalysisView({
     return out
   }, [lines, engineOn, settings.showEngineArrows])
 
-  // Per-ply badge map for the move list (only meaningful once a review exists).
-  // ReviewBadge widens the shared MoveBadge with 'Miss', which the review engine
-  // already emits over IPC.
+  // Per-ply review data for the move list. Both maps are empty without a review,
+  // which is what keeps the mark and eval columns blank rather than borrowing
+  // the live engine's number for a move it never looked at.
   const badges = useMemo(() => {
     const map = new Map<number, ReviewBadge>()
     if (review) for (const m of review.moveEvals) map.set(m.ply, m.badge)
     return map
   }, [review])
 
-  // Review eval for the move that produced the current position (null at root).
-  const currentMoveEval: ReviewMoveEval | null = useMemo(() => {
-    if (!review) return null
-    return review.moveEvals.find((m) => m.ply === currentPly) ?? null
-  }, [review, currentPly])
+  const moveEvalsByPly = useMemo(() => {
+    const map = new Map<number, ReviewMoveEval>()
+    if (review) for (const m of review.moveEvals) map.set(m.ply, m)
+    return map
+  }, [review])
+
+  const currentMoveEval: ReviewMoveEval | null = useMemo(
+    () => moveEvalsByPly.get(currentPly) ?? null,
+    [moveEvalsByPly, currentPly]
+  )
+
+  // Every move the review flagged, in order, and the next one after the cursor.
+  const flaggedPlies = useMemo(() => {
+    if (!review) return []
+    return review.moveEvals.filter((m) => isMistakeBadge(m.badge)).map((m) => m.ply)
+  }, [review])
+
+  const nextMistakePly = useMemo(() => {
+    if (flaggedPlies.length === 0) return null
+    return flaggedPlies.find((p) => p > currentPly) ?? flaggedPlies[0]
+  }, [flaggedPlies, currentPly])
 
   const commit = useCallback(
     (orig: string, dest: string, promotion?: Role) => {
@@ -248,9 +260,9 @@ export function AnalysisView({
     [commit]
   )
 
-  // Jump the board to the position AFTER the move at `ply`. The eval graph it
-  // serves is mainline-only, so we seek by walking the mainline to the matching
-  // node and go to it by id (never landing on a variation node).
+  // Jump the board to the position AFTER the move at `ply`. The eval graph and
+  // the mistake walk are mainline-only, so we seek by walking the mainline and
+  // go to it by id (never landing on a variation node).
   const seekToPly = useCallback(
     (ply: number) => {
       let n = tree.root
@@ -267,6 +279,10 @@ export function AnalysisView({
     return reviewApi.onProgress((p: ReviewProgress) => {
       setReviewProgress(p.total > 0 ? Math.min(1, p.ply / p.total) : 0)
     })
+  }, [])
+
+  useEffect(() => () => {
+    if (copyTimer.current) clearTimeout(copyTimer.current)
   }, [])
 
   const runReview = useCallback(() => {
@@ -322,24 +338,6 @@ export function AnalysisView({
     return () => window.removeEventListener('keydown', onKey)
   }, [tree])
 
-  const loadFen = () => {
-    const v = fenInput.trim()
-    if (!v) return
-    try {
-      position(v) // throws if invalid
-      tree.reset(v)
-      loadQueue.current = null // abandon any half-drained game load
-      jumpToStartRef.current = false // ...and its pending jump-to-start
-      setLoadedGameId(null) // no longer looking at a stored game
-      invalidateReview() // a new position invalidates prior AND in-flight reviews
-      setGameHeader(null)
-      setFenInput('')
-      setFenError(null)
-    } catch {
-      setFenError('That is not a valid FEN.') // keep input; surface inline
-    }
-  }
-
   // ---- Load a pasted game into the tree (mainline) ----
   const loadGame = useCallback(
     (game: LoadedGame) => {
@@ -353,7 +351,6 @@ export function AnalysisView({
           ? { white: game.white, black: game.black, result: game.result }
           : null
       )
-      setLibraryOpen(false)
       // Defer move application to the queue effect: addMove must run one move
       // per render so each call sees the freshly-selected current node. Once the
       // queue drains, land on the ROOT so the game starts at move 1.
@@ -364,7 +361,7 @@ export function AnalysisView({
     [tree, invalidateReview]
   )
 
-  // ---- Load a SAVED game row (sidebar "Your games" or the gameId prop) ----
+  // ---- Load a SAVED game row (the library's "Your games", or the gameId prop) ----
   // On top of loadGame: runs future reviews under the stored id, orients the
   // board to the side the user played, prefers the row's player names, and
   // hydrates a cached review instead of forcing a multi-minute re-run.
@@ -397,6 +394,53 @@ export function AnalysisView({
     },
     [loadGame]
   )
+
+  // One field, two formats. The shape of the text decides which failure the
+  // user is told about; guessing would answer the wrong question.
+  const loadFromInput = useCallback(() => {
+    const v = loadInput.trim()
+    if (!v) return
+    if (FEN_SHAPE.test(v)) {
+      try {
+        position(v) // throws if invalid
+      } catch {
+        setLoadError('That is not a valid FEN.') // keep input; surface inline
+        return
+      }
+      tree.reset(v)
+      loadQueue.current = null // abandon any half-drained game load
+      jumpToStartRef.current = false // ...and its pending jump-to-start
+      setLoadedGameId(null) // no longer looking at a stored game
+      invalidateReview() // a new position invalidates prior AND in-flight reviews
+      setGameHeader(null)
+      setLoadInput('')
+      setLoadError(null)
+      return
+    }
+    const game = parsePgnToGame(v)
+    if (!game) {
+      setLoadError('Could not read a game from that PGN.')
+      return
+    }
+    loadGame(game)
+    setLoadInput('')
+    setLoadError(null)
+  }, [loadInput, tree, invalidateReview, loadGame])
+
+  const copy = useCallback((text: string, which: 'fen' | 'pgn') => {
+    const clip = navigator.clipboard
+    if (!clip?.writeText) return
+    clip
+      .writeText(text)
+      .then(() => {
+        setCopied(which)
+        if (copyTimer.current) clearTimeout(copyTimer.current)
+        copyTimer.current = setTimeout(() => setCopied(null), 1400)
+      })
+      .catch(() => {
+        /* clipboard denied: silently no-op */
+      })
+  }, [])
 
   // Drives the load queue: applies the next move once the board has settled on
   // the previously-added position. Self-terminates when the line is exhausted,
@@ -448,7 +492,7 @@ export function AnalysisView({
 
   // ---- Open a famous game by id (persona gallery "see their famous games") ----
   // Mirrors the gameId effect above: fetch the detail, convert to PGN, parse into
-  // a LoadedGame and load the mainline (same path FamousBrowser clicks take).
+  // a LoadedGame and load the mainline (same path the library clicks take).
   useEffect(() => {
     if (famousId == null) return
     const famousApi = window.api?.famous
@@ -471,105 +515,280 @@ export function AnalysisView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [famousId])
 
-  const hasMoves = tree.root.children.length > 0
+  const hasMoves = mainline.length > 0
   const currentPgn = useMemo(() => treeToPgn(tree.root, {}), [tree.root, tree.current.id])
 
+  // Result of the game on the board: the loaded game's header, or a mainline
+  // that actually ends in a terminal position. A freely explored line has none
+  // and the move list simply has no footer.
+  const tipFen = mainline.length > 0 ? mainline[mainline.length - 1].fen : tree.root.fen
+  const terminal = outcome(tipFen)
+  const headerResult = gameHeader?.result
+  const gameResult =
+    headerResult === '1-0' || headerResult === '0-1' || headerResult === '1/2-1/2'
+      ? headerResult
+      : (terminal.over && terminal.result) || null
+
+  // ---- The readout's NEXT ----
+  const flaggedCount = flaggedPlies.length
+  const readoutNext = !hasMoves
+    ? 'Paste a FEN or open a game'
+    : !review
+      ? 'Review the game to classify every move'
+      : flaggedCount > 0
+        ? `Look again at ${flaggedCount} ${flaggedCount === 1 ? 'move' : 'moves'}`
+        : null
+  useReadoutSlot(readoutNext, hasMoves ? Math.min(1, currentPly / mainline.length) : null)
+
+  const leader = score
+    ? (score.mate ?? score.cp ?? 0) > 0
+      ? 'white'
+      : (score.mate ?? score.cp ?? 0) < 0
+        ? 'black'
+        : 'level'
+    : null
+  const evalText = score ? formatScore(score) : null
+  const barPercent = score ? whiteWinPercent(score) : 50
+  const barLabel = score
+    ? `Evaluation, ${leader === 'level' ? 'level' : leader === 'white' ? 'White' : 'Black'} ${evalText}`
+    : 'Evaluation unavailable'
+  const evalUnavailable =
+    engineMissing || engineError != null ? 'unavailable' : engineOn ? 'thinking' : 'engine off'
+
+  // "Move 12 of 28 · reviewed": where the board is standing in the game, and
+  // whether what it is saying came from a review.
+  let source: string | null = null
+  if (hasMoves) {
+    if (currentPly === 0) source = `Start · ${totalMoves} moves`
+    else if (onMainline) source = `Move ${Math.ceil(currentPly / 2)} of ${totalMoves}`
+    else source = `Move ${Math.ceil(currentPly / 2)} · variation`
+    if (review) source += ' · reviewed'
+  }
+
   return (
-    <div className="analysis-view">
-      <div className="board-area">
-        {gameHeader && (gameHeader.white || gameHeader.black) && (
-          <div className="game-header-strip">
-            <span className="game-header-players">
-              {gameHeader.white ?? 'White'} <span className="game-header-vs muted">vs</span>{' '}
-              {gameHeader.black ?? 'Black'}
-            </span>
-            {gameHeader.result && (
-              <span className={`fg-result-chip fg-result-${headerResultTone(gameHeader.result)}`}>
-                {gameHeader.result}
-              </span>
-            )}
+    <div className="lesson">
+      {/* ============ THE BOARD ============ */}
+      <div className="lesson-main">
+        <div className={`board-area${settings.showEvalBar ? '' : ' is-nobar'}`}>
+          {/* The one number this column exists to produce, on the board's own
+              left edge. */}
+          <div className="an-strip">
+            <div className="an-plate">
+              <span className="lbl">Eval</span>
+              {evalText ? (
+                <>
+                  <span className="an-eval">{evalText}</span>
+                  <span className="tag">{leader}</span>
+                </>
+              ) : (
+                <span className="tag">{evalUnavailable}</span>
+              )}
+              {source && <span className="an-src">{source}</span>}
+            </div>
           </div>
-        )}
-        <div className="board-stage">
-          {settings.showEvalBar && <EvalBar score={score} orientation={orientation} />}
-          <div
-            ref={setBoardEl}
-            className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
-          >
-            <Board
-              fen={fen}
-              orientation={orientation}
-              turnColor={turn}
-              dests={dests}
-              lastMove={lastMove}
-              check={check}
-              shapes={engineShapes}
-              showDests={settings.showLegal}
-              coordinates={settings.coordinates}
-              animation={settings.animation}
-              onMove={onMove}
-              syncNonce={nonce}
-            />
-            <AnnotationsLayer boardEl={boardEl} orientation={orientation} store={annotations} />
-            {pendingPromo && (
-              <PromotionPicker
-                color={turn}
-                onSelect={(role) => {
-                  commit(pendingPromo.orig, pendingPromo.dest, role)
-                  setPendingPromo(null)
-                }}
-                onCancel={() => {
-                  setPendingPromo(null)
-                  setNonce((n) => n + 1)
-                }}
+
+          <div className="board-stage">
+            {settings.showEvalBar && (
+              <div className="an-evalbar" role="img" aria-label={barLabel}>
+                <div
+                  className={`an-evalfill${orientation === 'black' ? ' is-flipped' : ''}`}
+                  style={{ '--an-fill': `${barPercent.toFixed(1)}%` } as CSSProperties}
+                />
+                <div className="an-evalmid" />
+              </div>
+            )}
+
+            <div
+              ref={setBoardEl}
+              className={`board-wrap board-${settings.boardTheme} ${pieceSetClass(settings.pieceSet)}`}
+            >
+              <Board
+                fen={fen}
+                orientation={orientation}
+                turnColor={turn}
+                dests={dests}
+                lastMove={lastMove}
+                check={check}
+                shapes={engineShapes}
+                showDests={settings.showLegal}
+                coordinates={settings.coordinates}
+                animation={settings.animation}
+                onMove={onMove}
+                syncNonce={nonce}
               />
-            )}
+              <AnnotationsLayer boardEl={boardEl} orientation={orientation} store={annotations} />
+              {pendingPromo && (
+                <PromotionPicker
+                  color={turn}
+                  onSelect={(role) => {
+                    commit(pendingPromo.orig, pendingPromo.dest, role)
+                    setPendingPromo(null)
+                  }}
+                  onCancel={() => {
+                    setPendingPromo(null)
+                    setNonce((n) => n + 1)
+                  }}
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="board-controls">
-          <button className="icon-btn" onClick={() => setOrientation((o) => (o === 'white' ? 'black' : 'white'))} title="Flip board (f)">
-            <FlipVertical2 size={18} />
-          </button>
-          <div className="nav-group">
-            <button className="icon-btn" onClick={tree.first} disabled={!tree.canPrev} title="First">
-              <ChevronsLeft size={18} />
-            </button>
-            <button className="icon-btn" onClick={tree.prev} disabled={!tree.canPrev} title="Previous (←)">
-              <ChevronLeft size={18} />
-            </button>
-            <button className="icon-btn" onClick={tree.next} disabled={!tree.canNext} title="Next (→)">
-              <ChevronRight size={18} />
-            </button>
-            <button className="icon-btn" onClick={tree.last} disabled={!tree.canNext} title="Last">
-              <ChevronsRight size={18} />
-            </button>
+
+          <div className="an-strip">
+            <div className="boardbar">
+              <span className="turn">
+                <span className={`turn-chip${turn === 'black' ? ' is-black' : ''}`} />
+                {turn === 'white' ? 'White to move' : 'Black to move'}
+              </span>
+              <span className="an-nav">
+                <button
+                  className="key"
+                  type="button"
+                  title="Start"
+                  aria-label="Start"
+                  disabled={!tree.canPrev}
+                  onClick={tree.first}
+                >
+                  {'|<'}
+                </button>
+                <button
+                  className="key"
+                  type="button"
+                  title="Back"
+                  aria-label="Back"
+                  disabled={!tree.canPrev}
+                  onClick={tree.prev}
+                >
+                  {'<'}
+                </button>
+                <button
+                  className="key"
+                  type="button"
+                  title="Forward"
+                  aria-label="Forward"
+                  disabled={!tree.canNext}
+                  onClick={tree.next}
+                >
+                  {'>'}
+                </button>
+                <button
+                  className="key"
+                  type="button"
+                  title="End"
+                  aria-label="End"
+                  disabled={!tree.canNext}
+                  onClick={tree.last}
+                >
+                  {'>|'}
+                </button>
+              </span>
+              <span className="chips">
+                <button
+                  className="chip"
+                  type="button"
+                  aria-pressed={orientation === 'black'}
+                  onClick={() => setOrientation((o) => (o === 'white' ? 'black' : 'white'))}
+                >
+                  Flip
+                </button>
+                <button
+                  className="chip"
+                  type="button"
+                  aria-pressed={engineOn}
+                  onClick={() => setEngineOn((v) => !v)}
+                >
+                  Engine
+                </button>
+                <button
+                  className="chip"
+                  type="button"
+                  aria-pressed={figurine}
+                  onClick={() => setFigurine((f) => !f)}
+                >
+                  Figurine
+                </button>
+                {annotations.hasAny && (
+                  <button className="chip" type="button" onClick={annotations.clear}>
+                    Clear annotations
+                  </button>
+                )}
+              </span>
+            </div>
           </div>
-          <button className={`icon-btn ${figurine ? 'active' : ''}`} onClick={() => setFigurine((f) => !f)} title="Figurine / letters">
-            <TypeIcon size={18} />
-          </button>
-          <button className={`icon-btn ${engineOn ? 'active' : ''}`} onClick={() => setEngineOn((v) => !v)} title="Toggle engine">
-            <Cpu size={18} />
-          </button>
+
+          <div className="an-strip">
+            <div className="an-under">
+              <section className="sec">
+                <div className="sec-head">
+                  <h2 className="lbl">Position</h2>
+                  <span className="sec-count">FEN</span>
+                </div>
+                <div className="an-fen">
+                  <span className="an-fen-text">{fen}</span>
+                  <button className="btn is-quiet" type="button" onClick={() => copy(fen, 'fen')}>
+                    {copied === 'fen' ? 'Copied' : 'Copy'}
+                  </button>
+                  <button
+                    className="btn is-quiet"
+                    type="button"
+                    disabled={!hasMoves}
+                    onClick={() => copy(currentPgn, 'pgn')}
+                  >
+                    {copied === 'pgn' ? 'Copied' : 'Copy PGN'}
+                  </button>
+                </div>
+                <div className="an-load">
+                  <input
+                    className="filter-input"
+                    type="text"
+                    aria-label="Paste a FEN or a PGN"
+                    placeholder="Paste a FEN or a PGN"
+                    value={loadInput}
+                    onChange={(e) => {
+                      setLoadInput(e.target.value)
+                      if (loadError) setLoadError(null)
+                    }}
+                    onKeyDown={(e) => e.key === 'Enter' && loadFromInput()}
+                  />
+                  <button className="btn" type="button" onClick={loadFromInput}>
+                    Load
+                  </button>
+                </div>
+                {loadError && (
+                  <p className="an-error" role="alert">
+                    {loadError}
+                  </p>
+                )}
+              </section>
+
+              <GameLibrary onLoadSavedGame={loadSavedGame} onLoadGame={loadGame} />
+            </div>
+          </div>
         </div>
       </div>
 
-      <aside className="analysis-sidebar">
-        <EnginePanel
+      {/* ============ ENGINE, REVIEW, MOVES ============ */}
+      <aside className="side">
+        <EngineSection
           fen={fen}
+          turn={turn}
           lines={lines}
-          depth={depth}
+          stats={stats}
           enabled={engineOn}
+          depthCap={depthCap}
           multipv={multipv}
-          figurineMode={figurine}
+          showArrows={settings.showEngineArrows}
+          figurine={figurine}
           engineMissing={engineMissing}
           error={engineError}
-          onOpenSettings={onOpenSettings}
-          onToggle={() => setEngineOn((v) => !v)}
+          onDepthCap={setDepthCap}
           onMultipv={changeMultipv}
+          onToggleArrows={() => updateSettings({ showEngineArrows: !settings.showEngineArrows })}
+          onStop={() => setEngineOn(false)}
           onPlayUci={playUci}
+          onOpenSettings={onOpenSettings}
         />
 
-        <ReviewPanel
+        <ReviewSection
           review={review}
           running={reviewRunning}
           progress={reviewProgress}
@@ -578,101 +797,21 @@ export function AnalysisView({
           currentPly={graphCurrentPly}
           onRun={runReview}
           onSeek={seekToPly}
+          nextMistakePly={nextMistakePly}
         />
 
-        {review && <CoachPanel moveEval={currentMoveEval} figurineMode={figurine} />}
+        <MoveNote moveEval={currentMoveEval} hasReview={review !== null} figurine={figurine} />
 
-        <div className="panel move-panel">
-          <div className="panel-head">
-            <span className="panel-title">Moves</span>
-          </div>
-          {/* Opening identity renders inside MoveList (OpeningTag header, driven
-              by the persistent trace: it no longer clears when out of book). */}
-          <MoveList
-            root={tree.root}
-            currentId={tree.current.id}
-            figurineMode={figurine}
-            onSelect={tree.goTo}
-            badges={review ? badges : undefined}
-            trace={openingTrace}
-          />
-        </div>
-        <div className="panel fen-panel">
-          <div className="fen-row">
-            <input
-              className="fen-input num"
-              placeholder="Paste FEN to load a position…"
-              value={fenInput}
-              onChange={(e) => {
-                setFenInput(e.target.value)
-                if (fenError) setFenError(null)
-              }}
-              onKeyDown={(e) => e.key === 'Enter' && loadFen()}
-            />
-            <button className="btn" onClick={loadFen}>
-              Load
-            </button>
-          </div>
-          {fenError && (
-            <p className="share-error" role="alert">
-              {fenError}
-            </p>
-          )}
-          <button className="btn ghost copy-fen" onClick={() => navigator.clipboard?.writeText(fen)}>
-            <ClipboardCopy size={14} /> Copy current FEN
-          </button>
-        </div>
-
-        <SharePanel
-          pgn={currentPgn}
-          fen={fen}
-          canClearAnnotations={annotations.hasAny}
-          onClearAnnotations={annotations.clear}
-          onLoadGame={loadGame}
+        <MovesSection
+          root={tree.root}
+          currentId={tree.current.id}
+          figurine={figurine}
+          onSelect={tree.goTo}
+          badges={review ? badges : undefined}
+          evals={review ? moveEvalsByPly : undefined}
+          trace={openingTrace}
+          result={gameResult}
         />
-
-        <div className="panel famous-panel">
-          <button
-            type="button"
-            className="panel-head famous-toggle"
-            aria-expanded={libraryOpen}
-            onClick={() => setLibraryOpen((o) => !o)}
-          >
-            <span className="panel-title">
-              <Library size={14} className="famous-toggle-icon" /> Game library
-            </span>
-            <span className="famous-toggle-chevron">{libraryOpen ? '−' : '+'}</span>
-          </button>
-          {libraryOpen && (
-            <div className="famous-drawer">
-              <div className="library-tabs" role="tablist" aria-label="Game library source">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={libraryTab === 'mine'}
-                  className={`library-tab${libraryTab === 'mine' ? ' is-active' : ''}`}
-                  onClick={() => setLibraryTab('mine')}
-                >
-                  Your games
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={libraryTab === 'famous'}
-                  className={`library-tab${libraryTab === 'famous' ? ' is-active' : ''}`}
-                  onClick={() => setLibraryTab('famous')}
-                >
-                  Famous
-                </button>
-              </div>
-              {libraryTab === 'mine' ? (
-                <MyGamesBrowser onLoadGame={loadSavedGame} />
-              ) : (
-                <FamousBrowser onLoadGame={loadGame} />
-              )}
-            </div>
-          )}
-        </div>
       </aside>
     </div>
   )
