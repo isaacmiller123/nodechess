@@ -776,3 +776,81 @@ write-lease, ladders update in-app.
   clean; electron + web + server builds green; test-mp 277 (casual byte-identical) + test-mp-store +
   test-mp-v6; broad desktop wall 33/33 suites (every accounts suite incl. reconstruct, tier1/2, judge-runner,
   viewer-client, live-slice, matchmaking, shard-duty). A6 COMPLETE.
+
+## Post-A-final: cross-device accounts, the rebrand, a static web target, UI-v1 (2026-07-25 to 07-27)
+Seven commits landed after the entry above. Scope and date per commit, oldest first.
+- **c44d731 (2026-07-25) Cross-device accounts + the standalone seed node.** Lease takeover gets two
+  lanes, PIN-signed when the account carries an active PIN record and root-signed when it does not,
+  chosen from the subject's own signed state; that broke the deadlock (a PIN needed a live committee,
+  the committee needed a PIN) which had made a second device impossible. leaseRunner auto-takes only
+  past a full TTL, so a live holder is still refused. signIn now resolves its own chain over the
+  overlay on a machine that has never seen the account, verifies it, and enrolls a fresh per-machine
+  device key as a root-signed cert; only a full reconstruction is adoptable, since the segment-union
+  floor would silently truncate history. NEW PROGRAM src/seed (dist-seed + out-seed): N nodes in one
+  process, for seed.nodechess.com and as a tray desktop app from the same source, infrastructure by
+  default (routing, shard hosting, relay, presence) with caps.witness and caps.committee false, so it
+  carries capacity and zero authority. Also service receipts (shared/accounts/receipts.ts), signed by
+  the receiver rather than the performer; nothing consumes them yet. Gates: typecheck x3, all 37
+  accounts suites, all 7 web suites, both seed builds; lease 45, lease-runner 50, web-accounts 183,
+  receipts 13.
+- **fff521d (2026-07-25) Account UI: delete the machinery, keep the product.** 7 tabs to 3 (Profile /
+  Friends / Account), 7,000 lines out: chain viewer, shard-duty tables, overlay stats, witness-peer
+  lists, the fair-play explainer (it published the judge's exact sigma thresholds), GameChromeShowcase,
+  the PIN wizard/entry/fuse card (provisioning cannot currently succeed and the fuse can still ban for
+  90 days; the protocol keeps the lane, so turning it on later is an append, not a migration),
+  OverviewSection, NetStatusPill, the Rated lobby. Every one deleted with zero typecheck breakage.
+  TrustWidthMeter deliberately kept at this point. test-a4-ui 188 green; A4-26/A4-27 were pinned to
+  the deleted lobby and are excised with a note to re-point them at the Play rated flow.
+- **1845e5f (2026-07-25) nodechess: rated play in Play, a static web target, and the rebrand.** Rated
+  is now a choice inside Play, Online, next to the time control; the separate lobby is gone. The web
+  target lost its backend: the 2 GB puzzle SQLite is split into sub-25 MiB chunks read over HTTP
+  Range, and curriculum, personas, famous games and openings ship as static JSON, which leaves
+  nothing for a server to do. TrustWidthMeter deleted (its two pinned rules survive as the shared
+  quadratic width() goldens and a source scan for trust vocabulary across every player-facing file).
+  Docs 9,913 to about 6,626 lines, flattened out of the three-bucket split. Rebrand across 81 files,
+  appId org.nodechess.app; the single kept Chess# reference is in docs/DATASETS.md, because installs
+  predating the rename hold their datasets under the old productName folder. First verification of
+  the combined tree: typecheck x3, 57 of 57 suites, build:web + build:seed + build:server.
+- **c5a568e (2026-07-25) Remove every em dash, and verify the combined tree.** 664 files. The
+  character was not swapped for a hyphen: most became a period, comma or colon, and a few tails were
+  dropped as mechanism nobody had asked for. No behavior change; the two goldens files that moved
+  were comment blocks above frozen digests, not the digests. Typecheck x3, 57 suites judged by exit
+  code, build:web/seed/server, both apps booted. NOT established by that pass: no rated game was
+  actually paired (every public relay refused this machine), and the puzzle artifact was absent from
+  the checkout, so the puzzle path went unobserved.
+- **0aaff75 (2026-07-25) Wire the chunked puzzle artifact into the web target.** First run of
+  build:puzzle-chunks against the real database: 2.15 GB becomes 1.49 GB across 60 chunk files,
+  largest 24.0 MiB, clearing the Cloudflare Pages 25 MiB per-file cap. 4,699,980 puzzles from rating
+  399 to 3327; the 73 theme counts are precomputed into the manifest, so listing themes is no longer
+  a GROUP BY over 21M junction rows. Verified end to end in the browser (themes with counts, a puzzle
+  fetched by rating, rendered with a clean console).
+- **4f722ae (2026-07-25) Design lab: ten directions on two swappable axes.** Ten independent takes,
+  four screens each, against a shared token contract, so any navigation feel can be viewed under any
+  visual style. The owner picked d01 (flat nav with a persistent readout, graphite with an amber
+  signal) as the basis of UI-v1. The eight unpicked directions stay in-tree as the record of what was
+  considered and rejected.
+- **b065a55 (2026-07-27) UI-v1: the app is design-lab/v1, and it ships.** v1's stylesheets are
+  installed VERBATIM as src/renderer/src/styles/{tokens,palettes,shell,brand,board-pieces}.css and
+  every view is transcribed from its page; app.css (845 lines) and global.css (296) are deleted, and
+  components.css is the only place for additions, and only for surfaces v1 never drew. NEVER SHOW
+  FABRICATED DATA applied throughout: five invented account profiles reachable from the shipped UI, a
+  `?? 1500` Elo rendered as a measurement, a `?? 52` placement accuracy that silently decided which
+  chapters unlocked, and a rating chart drawn around a seed constant are gone. NEW: recovery-phrase
+  sign in (mnemonicToSeed had no caller, so every account was single-device), QR device pairing (the
+  code carries a public key and a nonce, never the seed; the approval step on the holder is the
+  security), a web landing page, first-run and welcome-back surfaces, and updateRecovery.ts for a tab
+  left open across a deploy. DEPLOYMENT: the puzzle artifact moved to R2 because Cloudflare Pages does
+  not serve HTTP Range (it answered a 1,024 byte request with all 25,165,824 bytes, and sql.js-httpvfs
+  accepts any 2xx as the range, so the reader parsed whole files as the page at that offset and
+  returned puzzles that do not exist); dist-web went from 1.5 GB to 67 MB; docs/DEPLOY-WEB.md is the
+  click by click. MOBILE audited at 375x812, 390x844 and 360x740: the live game screen had NO BOARD on
+  a phone (.board-wrap measured 0x0), and nothing had ever spent an env(safe-area-inset-bottom)
+  despite asking for viewport-fit=cover.
+- **STILL OPEN after this run.** (a) The chunked puzzle artifact has to be built and uploaded before
+  a deploy has puzzles at all: dist-puzzles is gitignored, is not part of the site upload, and goes
+  to its own bucket (docs/DEPLOY-WEB.md Part 6). (b) The Cloudflare Pages project and the DNS/domain
+  setup are not recorded as done here (docs/DEPLOY-WEB.md Parts 2 to 5). (c) The GitHub repo rename
+  to isaacmiller123/nodechess is still pending, so `node scripts/release.mjs check` fails and the
+  in-app updater names a repo that does not resolve (docs/RELEASE.md §2). (d) The A-final residuals
+  above stand: public-relay reliability and a TURN server for NAT-hard peers are ops work, and rated
+  ladders need real opponents before they mean anything.

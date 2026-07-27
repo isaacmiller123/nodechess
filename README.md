@@ -33,16 +33,27 @@ macOS. They are unsigned, so Windows shows a SmartScreen prompt (More info → R
 needs a right-click → Open on first launch. After installing, open Settings → Datasets and import
 the engine and puzzle database once; everything else is bundled.
 
-To host the web version:
+The web version ships static, with no backend. `npm run build:web` writes the site to `dist-web`,
+and `npm run build:puzzle-chunks` writes the puzzle database to `dist-puzzles` as range-readable
+chunks the browser queries directly. The two are uploaded separately, because the chunks need a
+host that answers HTTP Range requests and a static site host may not. Click by click, from an empty
+domain to a live site, is [docs/DEPLOY-WEB.md](docs/DEPLOY-WEB.md).
+
+Self-hosting a server is the alternative:
 
 ```bash
 docker compose up --build -d     # http://localhost:8080
 ```
 
-Puzzles need `resources/data/puzzles.sqlite` (~2.1 GB, built by `npm run setup:puzzles &&
-npm run build:puzzles`). Without it every other feature still works. TLS, reverse proxy, TURN and
-backups are covered in [docs/WEB-DEPLOY.md](docs/WEB-DEPLOY.md); putting it on a public domain is
-[deploy/DEPLOY.md](deploy/DEPLOY.md).
+That image serves the SPA from a Fastify server and keeps accounts and per-user game DBs in the
+`/data` volume (`DATA_DIR`), which is the only thing it has to back up. TLS, reverse proxy, TURN
+and backups are covered in [docs/WEB-DEPLOY.md](docs/WEB-DEPLOY.md); the full public stack, relay
+and TURN included, is [deploy/DEPLOY.md](deploy/DEPLOY.md). The static build has no server and no
+server-side state, so there is nothing there to back up.
+
+Either route needs `resources/data/puzzles.sqlite` (2.15 GB, built by `npm run setup:puzzles &&
+npm run build:puzzles`, see [docs/DATASETS.md](docs/DATASETS.md)). Without it every other feature
+still works.
 
 ## Accounts
 
@@ -51,12 +62,19 @@ account data is a signed hash chain that peers store and witness for each other.
 your account for you, which is the point and also the risk. The phrase or the exported keyfile is
 the only way back in.
 
-This layer is built but **not finished**. The cryptography, the chain format, ratings, reputation
-and the anti-cheat judge all exist and are tested. What does not work yet is the network: presence,
-friends, mailbox and verdict publishing do not sync between peers, so those screens in the app show
-sample data behind a `DEV_FIXTURE` badge rather than pretending to be live. The anti-cheat scoring
-also still needs recalibration against real games before any rated play should count. Design and
-parameters are in [docs/ACCOUNTS-SPEC.md](docs/ACCOUNTS-SPEC.md) and
+This layer is live, not a preview. Identity, the chain format, ratings, reputation and the
+anti-cheat judge are built and tested, and they run on the wire: two strangers pair with no room
+code, a third client witnesses the game, and the countersigned result lands in both players'
+chains. `npm run smoke:acceptance` asserts that end to end.
+
+What the account screen does today: make an account from a name and password; sign in on a machine
+that has never seen it, which resolves your chain over the overlay and enrolls a fresh per-machine
+device key; sign in with the 24 words when the password is gone; and pair a second device by
+scanning a QR code, which carries a public key and a nonce and never the seed.
+
+The gap is scale rather than function. Rated ladders need real opponents before they mean anything,
+and peer discovery over public relays is the part that has not been proven outside a local harness.
+Design and parameters are in [docs/ACCOUNTS-SPEC.md](docs/ACCOUNTS-SPEC.md) and
 [docs/ACCOUNTS-PARAMS.md](docs/ACCOUNTS-PARAMS.md); current state is in
 [docs/STATUS.md](docs/STATUS.md).
 
@@ -65,7 +83,8 @@ of this and work today.
 
 ## Building from source
 
-Node 24+, npm 11+, and Python 3 for the dataset scripts. Package on the OS you are targeting.
+Node 26+, npm 11+, and Python 3 for the dataset scripts (3.14+ for its stdlib zstd, or
+`pip install zstandard` on older). Package on the OS you are targeting.
 
 ```bash
 git clone https://github.com/isaacmiller123/nodechess.git
@@ -94,7 +113,7 @@ src/renderer/  React UI; src/renderer/src/games holds the per-game rules and boa
 src/shared/    types, wire protocol, and the accounts layer (no Node or DOM)
 src/web/       browser entry point and its storage/engine adapters
 src/seed/      the standalone node runner
-server/        Node server for the web build
+server/        Node server for the self-hosted (Docker) web route
 scripts/       dataset builders and the test suites
 docs/          architecture and the binding specs
 ```

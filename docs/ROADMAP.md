@@ -4,7 +4,7 @@
 > Status per the owner (2026-06-30): the whole thing is **~60% there**.
 > Authoritative school spec: `docs/SCHOOL-SPEC.md`. Curriculum: `docs/school-curriculum.md`.
 
-## 🔜 In progress / recently shipped (this session)
+## 🔜 In progress / recently shipped (2026-07-02 to 07)
 - [x] **Games platform shipped (2026-07-06/07, spec-driven).** Per the binding
       `docs/GAMES-PLATFORM-SPEC.md`: game kernel + registry; 22 playable games (chess + 8 chessops
       variants, xiangqi/shogi/janggi/makruk/placement via ffish WASM, both checkers, go + gomoku,
@@ -19,10 +19,11 @@
       manuals 222, bots 176, bots-ui 24, board3d 27, mp 215, mp-store 147.
 - [ ] **Games platform residuals.** (1) CI (`.github/workflows/build.yml`) typechecks + builds +
       packages on windows-latest + macos-latest but does not yet run the game suites (spec P3
-      wants suites in CI on both OSes. Needs a Windows-verified run before wiring in). (2) No
-      tagged release contains the games platform yet (v1.0.1 predates it). Tag once pushed.
-      (3) `src/main/window.ts` TODO(packaging): move loadFile → registered `app://` protocol;
-      PROD_CSP already allows `file:` for the extraResources games-art so art survives the move.
+      wants suites in CI on both OSes. Needs a Windows-verified run before wiring in). (2) DONE:
+      tagged and released. v1.0.1 predated the games platform, but v1.1.0 (2026-07-07) and every
+      tag since contain it. (3) `src/main/window.ts` TODO(packaging): move loadFile → registered
+      `app://` protocol; PROD_CSP already allows `file:` for the extraResources games-art so art
+      survives the move.
 - [x] **Removed the old Lessons tab → folded into the School.** Deleted the `Lessons` nav tab,
       `features/lessons/*`, and the `curriculum` backend/IPC/types. Home "next" card now continues the
       current School chapter / starts the next / prompts placement.
@@ -72,10 +73,10 @@
       third peer, send-error + controllable delivery); `scripts/test-mp-store.mjs` runs the store against a
       mocked mp (esbuild-aliased), **112 assertions** (optimistic-move rollback, K-vs-heavy
       insufficient-material flag→draw, save-once, peerAway board-freeze, sole `mp.leave()` caller); and
-      the two-window Electron E2E harness (`scratchpad/mp-e2e-v3`) drives the REAL session over live
-      Nostr relays: first-move grace (no debit while idle), Fischer debit+increment with guest clock
-      acks, a real 15s flag delivered as `flag` (not resign) with the loser at 0, and the no-move
-      abort path. All PASS.
+      the two-window Electron E2E harness (`scratchpad/mp-e2e-v3`, never tracked in this repo and
+      not kept) drove the REAL session over live Nostr relays: first-move grace (no debit while
+      idle), Fischer debit+increment with guest clock acks, a real 15s flag delivered as `flag` (not
+      resign) with the loser at 0, and the no-move abort path. All PASS.
 
 ## ⏳ Deferred (needs a decision or owner action)
 - [x] **Mac Stockfish engine: upload to the release.** DONE 2026-07-06 (Fix A): uploaded
@@ -91,13 +92,18 @@
 - [ ] **Proactive in-game Viktor coaching.** Viktor narrates at instructive moments during live play
       (the `narrate` path is built but not wired into a live game loop).
 
-## 🔜 Next major system: decentralized accounts (spec locked 2026-07-14)
-- [ ] **docs/ACCOUNTS-SPEC.md** is the binding spec: database-less accounts (entangled personal
-      chains + witnesses + client-side deterministic anticheat + trust-width matchmaking).
-      Build phases A1–A6 defined in §14; open parameters in §13. Supersedes the interim
-      server-account system when complete. Also queued from the same design sessions: repertoire
-      trainer (SRS opening drills), shareable game/profile links, one-click rematch everywhere,
-      networking-resilience polish pass.
+## ✅ Shipped: decentralized accounts (spec locked 2026-07-14, A-final 2026-07-24)
+- [x] **A1–A6 and A-final are complete.** **docs/ACCOUNTS-SPEC.md** is the binding spec:
+      database-less accounts (entangled personal chains + witnesses + client-side deterministic
+      anticheat + trust-width matchmaking). Build phases A1–A6 in §14; open parameters in §13. It
+      superseded the interim server-account system, which now answers 410. Where each phase landed,
+      per docs/STATUS.md: A1 identity and keys 2026-07-14; A2 witness fabric + PIN 2026-07-16; A3
+      overlay, storage and wire v6 2026-07-19; A4 ratings/reputation/trust/matchmaking 2026-07-21;
+      A5 anticheat judge 2026-07-21/22; A6 social + go-live wiring 2026-07-22/24; A-final acceptance
+      gate green 2026-07-24 (`npm run smoke:acceptance`); cross-device sign-in and the standalone
+      seed node 2026-07-25.
+- [ ] Still queued from the same design sessions: repertoire trainer (SRS opening drills), shareable
+      game/profile links, one-click rematch everywhere, networking-resilience polish pass.
 
 ## 🔭 Post-A-final: P2P self-sufficiency ("Bitcoin-grade bootstrap", owner directive 2026-07-21)
 - [ ] **Owner's goal, recorded verbatim in spirit:** the accounts/network substrate should stand on
@@ -121,9 +127,13 @@
       5. **Substrate extraction**: keep src/shared/accounts/** game-agnostic (it already is:
          segments carry a kind string; the judge is a pluggable verdict fn) so the identity/chain/
          witness/storage stack can be lifted into any future product.
-- [ ] **Web port.** The renderer is already React/TS; the blockers are the Electron-only main process
-      (node:sqlite DBs, local Stockfish, IPC). Path: replace IPC with a server/WASM backend, use
-      Stockfish.wasm in-browser for the engine, and host a DB/API for puzzles/games. Notes in session.
+- [x] **Web port. SHIPPED** (W1–W6, 2026-07-12; docs/STATUS.md). It went further than the plan kept
+      below: the target is static now, with no backend at all. Engines are WASM in the browser and
+      the puzzle DB is read over HTTP Range from chunked files (docs/DATASETS.md, deploy walkthrough
+      in docs/DEPLOY-WEB.md). The original sketch, kept for the record: the renderer is already
+      React/TS; the blockers are the Electron-only main process (node:sqlite DBs, local Stockfish,
+      IPC). Path: replace IPC with a server/WASM backend, use Stockfish.wasm in-browser for the
+      engine, and host a DB/API for puzzles/games. Notes in session.
 
 ## ✅ Done (for reference)
 - **Internet multiplayer (2026-07-02):** play any two computers anywhere. One player hosts and gets a

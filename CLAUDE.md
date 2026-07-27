@@ -1,8 +1,9 @@
 # nodechess: project instructions
 
-Offline-first chess app: Electron desktop (mac + Windows) and a web target built from the same
-source. Bundled Stockfish, ~4.7M Lichess puzzles, a 40-chapter school, 20+ board games, online
-multiplayer, and a decentralized account system.
+Offline-first chess app: Electron desktop (mac + Windows), a web target, and a standalone seed
+node, all built from the same source. A 40-chapter school, 20+ board games, online multiplayer, and
+a decentralized account system. Stockfish and the ~4.7M Lichess puzzles are imported at runtime,
+not bundled (`docs/DATASETS.md`).
 
 ## Build / run
 
@@ -12,7 +13,8 @@ before any npm/node command.
 | | |
 |---|---|
 | Desktop dev | `npm run dev` (electron-vite) |
-| Web dev | `npm run dev:web`; `npm run start:web` builds SPA + server and serves it |
+| Web dev | `npm run dev:web`. The web target ships STATIC: `npm run build:web` + `npm run build:puzzle-chunks` (`docs/DEPLOY-WEB.md`). `npm run start:web` builds SPA + server and serves it, which is the Docker route (`docs/WEB-DEPLOY.md`) |
+| Seed node | `npm run dev:seed` / `npm run build:seed`; tray desktop build is `npm run dev:seed:desktop` / `npm run build:seed:desktop` |
 | Typecheck | `npm run typecheck` runs three targets (node, web, server); all must be green |
 | Tests | `npm run test:*` / `npm run smoke:*`, one script per area under `scripts/` |
 | Datasets | `npm run setup` fetches engines + puzzles and builds the derived DBs |
@@ -42,6 +44,9 @@ Non-negotiables from that spec:
 - Keep every React hook above any early return. A hook after a return caused a prior #300 crash.
 - Cross-platform desktop: engine and puzzle DB resolve through `src/main/datasets` (imported copies
   first, then bundled). See `docs/DATASETS.md`.
+- UI-v1: `src/renderer/src/styles/{tokens,palettes,shell,brand,board-pieces}.css` are installed
+  verbatim from `design-lab/v1` and are not edited. `styles/components.css` is the only place for
+  additions, and only for surfaces v1 never drew.
 - Never show fabricated data in the UI. If a surface needs the network and the network isn't there,
   say so in the UI rather than rendering samples or fixtures.
 - No emojis in product UI chrome, labels, buttons, or navigation.

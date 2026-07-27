@@ -17,6 +17,7 @@ bump); a human pushes the tag.
 | Download page | GitHub Releases of **`isaacmiller123/nodechess`** (public) |
 | What triggers a build | pushing a tag matching `v*` (also runnable manually via Actions) |
 | Who builds | `.github/workflows/build.yml`: `macos-latest` + `windows-latest`, in parallel |
+| Platforms | mac + Windows only: `electron-builder.yml` has no `linux:` target, so no Linux build has ever been produced |
 | Signing | **none**: mac + win ship unsigned (users clear Gatekeeper / SmartScreen once) |
 | Auto-update | Windows = in-place (electron-updater); macOS = check-and-notify + `.dmg` download |
 | Installer size | ~186–188 MB per mac artifact (lean: engine + puzzle DB are **not** bundled) |
@@ -39,6 +40,10 @@ produced every mac artifact into `release/` (git-ignored):
 | `nodechess-1.2.1-mac-x64.zip` | 187,692,632 | 188 MB | Intel (update feed / no-DMG) |
 | `*.blockmap` (×4) | ~0.2 MB each | n/a | delta-update maps |
 | `latest-mac.yml` | 801 B | n/a | update-feed metadata (lists all four) |
+
+Sizes and timings are from that 1.2.1 run and have not been re-measured since; the filenames
+follow the current scheme in §9, and releases published before the 2026-07-25 rename carry a
+`Chess-` prefix instead.
 
 Notes from the run:
 - electron-builder **26.15.3**, electron **42.5.0**, dmg tooling (`hdiutil`) present.
@@ -66,12 +71,14 @@ Gatekeeper story in §6 is written for, not a build defect.
 ## 2. One-time owner setup (mostly already done)
 
 The classic "it's not a git repo yet" step is **already complete**: this tree is a git repo
-with remote `origin → https://github.com/isaacmiller123/nodechess.git` and tags through
-`v1.2.1`. Kept here so the flow is reproducible from scratch:
+with remote `origin → https://github.com/isaacmiller123/chess-sharp.git` (the rename to
+`nodechess` is the one step still outstanding, see below) and tags through `v1.3.0`. Kept here
+so the flow is reproducible from scratch:
 
-1. **GitHub repo** `isaacmiller123/nodechess`, **public** (the Releases page *is* the
-   download page). Actions enabled. Done.
-2. **Origin remote + first push** (already done):
+1. **GitHub repo**, **public** (the Releases page *is* the download page), Actions enabled.
+   Done, but still under the old name `isaacmiller123/chess-sharp`.
+2. **Origin remote + first push** (already done, against `chess-sharp`; a from-scratch setup
+   would use the new name):
    ```sh
    git init && git branch -M main
    git remote add origin https://github.com/isaacmiller123/nodechess.git
@@ -168,7 +175,7 @@ installer. They download on first run via **Settings → Datasets** from the sep
 |---|---|---:|---:|
 | Stockfish 18 (Windows) | `stockfish-sf18-win-x64.exe` | 114 MB | 114 MB |
 | Stockfish 18 (Apple Silicon) | `stockfish-sf18-mac-arm64` | 114 MB | 114 MB |
-| Lichess puzzles | `puzzles.sqlite.zst` | 705 MB | 2.1 GB |
+| Lichess puzzles | `puzzles.sqlite.zst` | 705 MB | 2.15 GB |
 | Maia (human-style chess) | lc0 + 5 nets | ~ | ~ |
 | KataGo (Go) | 2 nets (+ optional Human-SL 94.5 MB) | ~ | ~ |
 
@@ -284,8 +291,10 @@ The Windows installer name is pinned rather than left to electron-builder's defa
 
 ## 10. Owner credential checklist
 
-- [x] GitHub repo `isaacmiller123/nodechess` exists, **public**, Actions enabled.
-- [x] `origin` remote set; repo pushed; tags through `v1.2.1`.
+- [x] GitHub repo exists, **public**, Actions enabled, under `isaacmiller123/chess-sharp`.
+- [ ] **Rename it to `isaacmiller123/nodechess` and repoint `origin`** (§2). `release.mjs check`
+      fails until then, because `electron-builder.yml` and `updateLogic.ts` already say `nodechess`.
+- [x] `origin` remote set; repo pushed; tags through `v1.3.0`.
 - [x] `datasets-v1` release exists with the engine + puzzle assets.
 - [ ] **Per release:** bump `package.json`, push `vX.Y.Z`, confirm both CI legs green + the
       Release page shows the installers.

@@ -10,9 +10,14 @@ licenses, and how to host or rebuild them yourself.
 | Key | Dataset | Imported file | Download size | On-disk size |
 |---|---|---|---|---|
 | `engine` | Stockfish 18 (per-OS binary, NNUE embedded) | `datasets/engine/stockfish.exe` (Windows) · `datasets/engine/stockfish` (macOS/Linux) | ~109 MB | ~109 MB |
-| `puzzles` | Lichess puzzle database (Zstandard-compressed SQLite) | `datasets/puzzles.sqlite` | ~673 MB | ~2.0 GB |
+| `puzzles` | Lichess puzzle database (Zstandard-compressed SQLite) | `datasets/puzzles.sqlite` | 705 MB | 2.15 GB |
 | `maia` | lc0 0.32.1 (per-OS) + Maia 1100–1900 weights (the "Human" chess style) | `datasets/maia/lc0[.exe]` (+ `dnnl.dll` on Windows) · `datasets/maia/weights/maia-<level>.pb.gz` | ~2–21 MB + 5 × ~1.3 MB | same |
 | `katago` | KataGo 1.16.5 (per-OS archive) + Go nets (b6c96, b10c128; Human-SL b18 optional) | `datasets/katago/katago[.exe]` (+ libs + `default_gtp.cfg`) · `datasets/katago/nets/kata-*.bin.gz` | ~4.5 MB + 3.7/11.1/94.5 MB | ~36 MB + nets |
+
+The puzzle row's two figures are exact rather than rounded: they are the `bytes` (705,175,215
+compressed) and `installedBytes` (2,148,864,000) that `PUZZLES_ITEM` in
+`src/main/datasets/datasets.service.ts` verifies each download against. Other docs cite this table
+rather than measuring again.
 
 The engine artifact is selected per `process.platform`/`process.arch` (see `ENGINE_ARTIFACTS` in
 `src/main/datasets/datasets.service.ts`); the puzzle SQLite is byte-for-byte identical on every OS. Both
@@ -28,6 +33,29 @@ so importing applies without a reinstall.
 The smaller content is committed to the repo and bundled in the app, so those features work
 immediately: the openings book, the 0→2000 curriculum, famous games, persona definitions, and
 piece/sound assets.
+
+## The web target: the chunked puzzle artifact
+
+Everything above is the desktop path. The web build has no main process and no server, so the
+browser reads the puzzle SQLite itself, over HTTP Range requests, and needs the file split first.
+
+`npm run build:puzzle-chunks` (`scripts/build-puzzle-chunks.mjs`) turns
+`resources/data/puzzles.sqlite` into `dist-puzzles/` (gitignored): 60 chunks of 24 MiB, the last
+one short, named `puzzles.sqlite.000` upward, 1,488,551,936 bytes (1.49 GB) in total, plus
+`puzzles.manifest.json`, which carries those numbers and the histogram the reader plans its queries
+from. 24 MiB is under
+Cloudflare Pages' 25 MiB per-file cap, and 61 files is far under its 20,000-file cap. It is not a
+plain `split`: rows are re-inserted ordered by `(Rating, PuzzleId)` so a rating window is one
+contiguous rowid range and therefore one range read, and the 73 theme counts (a `GROUP BY` over
+21M junction rows) are precomputed into the manifest.
+
+The reader is `src/web/data/chunkedDb.ts` (sql.js-httpvfs over Range) plus
+`src/web/data/puzzleSource.ts` (the queries). `dev:web` and `vite preview` serve the directory at
+`/puzzles/` with real 206s. Production points `VITE_PUZZLE_BASE_URL` at an object store instead,
+because Cloudflare Pages answers a Range request with the whole file while still advertising
+`accept-ranges` (measured 2026-07-26), and the library reads that body as the range it asked for,
+so the failure is wrong pages rather than slow ones. Bucket, CORS and headers:
+[DEPLOY-WEB.md](DEPLOY-WEB.md) Part 6.
 
 ## How the importer works
 
