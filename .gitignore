@@ -24,7 +24,10 @@ release/
 /.userdata/
 /.appdata/
 /.cache/
-# Web server state: accounts DB + per-user game DBs (DATA_DIR default; see docs/WEB-DEPLOY.md)
+# Wrangler / Cloudflare Pages local CLI state
+/.wrangler/
+# Web server state: accounts DB + per-user game DBs (docker-compose bind mount
+# for DATA_DIR; see docs/WEB-DEPLOY.md). Bare node defaults to .webdata/ instead.
 /data-web/
 
 # ---- Raw downloads & temp (fetched/built by setup scripts) ----
@@ -62,9 +65,13 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+# Operator-local: the root file holds the puzzle CDN base, deploy/.env.production
+# holds the TURN secret. Bare pattern, so it matches at any depth.
+.env.production
 
-# ---- Stray agent/tool scratch dumps in repo root (never commit) ----
+# ---- Stray agent/tool scratch dumps (never commit) ----
 /_*.json
+scripts/_*
 
 # ---- Editor / OS junk ----
 .vscode/*

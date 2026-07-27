@@ -2,10 +2,18 @@
 # never desktop build output, dev data, or the multi-GB local datasets.
 node_modules
 out
+out-seed
 release
 dist-web
 dist-server
+dist-seed
+# 1.4 GB of local puzzle chunks: without this a dev who has run build:puzzles
+# sends a ~1.47 GB build context instead of ~52 MB.
+dist-puzzles
 .devdata
+# Local web-server state (accounts DB + per-user game DBs): never in an image.
+.webdata
+.wrangler
 .git
 .github
 .vscode
@@ -18,6 +26,9 @@ build
 release-notes*
 .DS_Store
 *.log
+# Operator-local env: vite loadEnv would otherwise bake the owner's puzzle CDN
+# into every third-party image built from this context.
+.env.production
 # Stray scratch files in the repo root
 _*
 PlayView-*.js
