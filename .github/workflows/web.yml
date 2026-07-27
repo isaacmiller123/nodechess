@@ -4,14 +4,17 @@ name: web
 # run the headless web suites, boot the real server bundle on an ephemeral
 # port and smoke it, then prove the Docker image builds and serves.
 #
-# Runs on every push/PR: the web target compiles the shared renderer + the
-# src/main logic the IPC bridge bundles, so "desktop-only" changes can break
-# it. Checking every time is cheap.
+# Runs on every push to a trunk branch and on every PR: the web target compiles
+# the shared renderer + the src/main logic the IPC bridge bundles, so
+# "desktop-only" changes can break it. Checking every time is cheap.
+#
+# web-port is where the work lands; main trails it. Both are listed so the gate
+# actually fires on a normal push instead of only on PRs and manual runs.
 
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [web-port, main]
   pull_request:
 
 concurrency:

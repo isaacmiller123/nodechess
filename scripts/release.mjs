@@ -147,6 +147,33 @@ function updaterTarget() {
   return owner && repo ? { owner, repo } : null
 }
 
+/** Grep `const RELEASE_BASE = '<github url>'` out of a source file (no ts dep). */
+function releaseBaseTarget(rel) {
+  let text
+  try {
+    text = readFileSync(path.join(ROOT, rel), 'utf8')
+  } catch {
+    return null
+  }
+  const url = /RELEASE_BASE\s*=\s*'([^']+)'/.exec(text)?.[1]
+  const m = url ? /github\.com\/([^/]+)\/([^/]+)/.exec(url) : null
+  return m ? { owner: m[1], repo: m[2] } : null
+}
+
+// The four runtime dataset importers. Each downloads the engine/puzzle assets
+// from the datasets-v1 release of the SHIPPING repo, so they carry the same
+// owner/repo the installer was published under.
+const DATASET_FILES = [
+  'src/main/datasets/datasets.service.ts',
+  'src/main/datasets/fairyStockfish.ts',
+  'src/main/datasets/katago.ts',
+  'src/main/datasets/maia.ts'
+]
+
+// The public landing page's download buttons. Not baked into the app: a link a
+// visitor clicks TODAY, so it tracks the live repo, see validate() step 4.
+const LANDING_FILE = 'src/renderer/src/features/landing/downloads.ts'
+
 // ---- validation ---------------------------------------------------------------
 
 /** Returns a snapshot of the checks so callers (bump) can reuse the results. */
@@ -176,10 +203,25 @@ function validate({ full = false } = {}) {
     warn(`tag ${tagName} already exists locally, bump the version before releasing`)
   else if (inRepo) ok(`tag ${tagName} is not yet used locally`)
 
-  // 4. the three GitHub targets must agree: builder publish, git origin, updater
+  // 4. the GitHub targets. Two groups, answering two different questions
+  //    (docs/RELEASE.md §2 is the runbook this encodes).
+  //
+  //    (a) BAKED INTO THE APP, so they must be IDENTICAL: electron-builder's
+  //        publish block, the updater's UPDATE_OWNER/UPDATE_REPO, and the four
+  //        src/main/datasets RELEASE_BASE constants. That shared slug is the
+  //        canonical one; `origin` must reach it before a tag can publish, which
+  //        is the pending-rename blocker RELEASE.md §2 describes.
+  //    (b) THE PUBLIC SITE: the landing page's RELEASE_BASE is a link a visitor
+  //        clicks TODAY, so it must name a slug that ALREADY resolves: the live
+  //        one (`origin`), or the canonical one once the rename has happened.
+  //        GitHub redirects the old name forever, so trailing the rename is
+  //        stale, not broken. Demanding it match the canonical slug early would
+  //        be demanding a 404.
   const remote = remoteOwnerRepo()
   const builder = builderPublishTarget()
   const updater = updaterTarget()
+  const datasets = DATASET_FILES.map((f) => ({ file: f, target: releaseBaseTarget(f) }))
+  const landing = releaseBaseTarget(LANDING_FILE)
   const fmt = (t) => (t ? `${t.owner}/${t.repo}` : '(unknown)')
   if (builder) ok(`electron-builder publishes to ${fmt(builder)}`)
   else fail('could not read publish owner/repo from electron-builder.yml')
@@ -190,8 +232,36 @@ function validate({ full = false } = {}) {
     fail(`MISMATCH: builder publishes to ${fmt(builder)} but origin is ${fmt(remote)}`)
   if (updater && builder && !same(updater, builder))
     fail(`MISMATCH: updater checks ${fmt(updater)} but builder publishes to ${fmt(builder)}`)
-  if (same(remote, builder) && same(updater, builder))
-    ok('publish target, git origin, and updater all agree')
+
+  // (a) continued: the dataset importers. A stray one here means a fresh install
+  // downloads its engine + puzzle DB from a repo the installer never published
+  // to, which is the first-run import failing on a name that does not exist.
+  for (const d of datasets) {
+    if (!d.target) fail(`could not read RELEASE_BASE from ${d.file}`)
+    else if (builder && !same(d.target, builder))
+      fail(`MISMATCH: ${d.file} imports datasets from ${fmt(d.target)} but builder publishes to ${fmt(builder)}`)
+  }
+  const datasetsAgree = datasets.every((d) => same(d.target, builder))
+  if (datasetsAgree) ok(`all ${datasets.length} dataset importers pull from ${fmt(builder)}`)
+  if (same(remote, builder) && same(updater, builder) && datasetsAgree)
+    ok('publish target, git origin, updater, and dataset importers all agree')
+
+  // (b) the landing page.
+  if (!landing) fail(`could not read RELEASE_BASE from ${LANDING_FILE}`)
+  else if (same(landing, builder)) ok(`landing page links to ${fmt(landing)}`)
+  else if (same(landing, remote))
+    warn(
+      `landing page links to the LIVE repo ${fmt(landing)}, not the canonical ${fmt(builder)}: ` +
+        'correct until the GitHub rename, repoint it after (docs/RELEASE.md §2)'
+    )
+  else if (!remote)
+    // No origin means no way to know which slug resolves today: not a blocker.
+    warn(`landing page links to ${fmt(landing)}, with no git origin to check it against`)
+  else
+    fail(
+      `MISMATCH: landing page links to ${fmt(landing)}, which is neither the live repo ` +
+        `${fmt(remote)} nor the publish target ${fmt(builder)}`
+    )
 
   // 5. build inputs electron-builder needs
   const needFiles = [

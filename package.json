@@ -5,6 +5,17 @@
   "author": "Isaac Miller",
   "license": "GPL-3.0-or-later",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaacmiller123/nodechess.git"
+  },
+  "homepage": "https://github.com/isaacmiller123/nodechess#readme",
+  "bugs": {
+    "url": "https://github.com/isaacmiller123/nodechess/issues"
+  },
+  "engines": {
+    "node": ">=26"
+  },
   "main": "./out/main/index.js",
   "scripts": {
     "postinstall": "node scripts/patch-ffish-csp.mjs",
@@ -22,6 +33,7 @@
     "build:server": "node scripts/build-server.mjs && node scripts/build-ipc-bridge.mjs",
     "serve:web": "node dist-server/index.cjs",
     "start:web": "npm run build:web && npm run build:server && npm run serve:web",
+    "test": "node scripts/run-suites.mjs",
     "test:db-seam": "node scripts/test-db-seam.mjs",
     "test:web-stub": "node scripts/test-web-stub.mjs",
     "test:web-server": "node scripts/test-web-server.mjs",
@@ -65,6 +77,7 @@
     "test:accounts-verdict-transport": "node scripts/test-accounts-verdict-transport.mjs",
     "test:accounts-verdict-client": "node scripts/test-accounts-verdict-client.mjs",
     "test:accounts-embed": "node scripts/test-accounts-embed.mjs",
+    "test:accounts-net-status": "node scripts/test-accounts-net-status.mjs",
     "test:a4-ui": "node scripts/test-a4-ui.mjs",
     "test:web-accounts-wiring": "node scripts/test-web-accounts-wiring.mjs",
     "test:afinal-flag": "node scripts/test-afinal-flag.mjs",
@@ -92,6 +105,12 @@
     "test:school-replace": "node scripts/test-school-replace.mjs",
     "test:theater": "node scripts/test-theater.mjs",
     "test:updater": "node scripts/test-updater.mjs",
+    "test:notation": "node scripts/test-notation.mjs",
+    "test:bots": "node scripts/test-bots.mjs",
+    "test:bots-ui": "node scripts/test-bots-ui.mjs",
+    "test:bot-legality": "node scripts/test-bot-legality.mjs",
+    "test:replay-pipe": "node scripts/test-replay-pipe.mjs",
+    "test:chapters": "node scripts/validate-chapter.mjs --all",
     "setup": "npm run setup:engines && npm run setup:puzzles && npm run build:puzzles && npm run build:openings",
     "dist:exe": "electron-vite build && electron-builder --dir",
     "package": "electron-vite build && electron-builder",

@@ -8,9 +8,10 @@ name: build
 #
 # Each matrix leg runs on its own OS (electron-builder cannot cross-compile the
 # native installers), installs deps, typechecks, builds the renderer/main bundles,
-# then packages with electron-builder for THAT platform only. Nothing is published
-# to a GitHub release automatically (`--publish never`); the packaged installers are
-# uploaded as workflow artifacts you can download and attach to a release yourself.
+# then packages with electron-builder for THAT platform only. electron-builder
+# itself publishes nothing (`--publish never`): every run uploads the installers as
+# workflow artifacts, and a v* tag run additionally attaches them to the matching
+# GitHub Release with `gh` (last step). A workflow_dispatch run stops at artifacts.
 #
 # No code signing: the mac build is unsigned (electron-builder.yml sets identity:
 # null) and the win build is unsigned too. Users clear Gatekeeper / SmartScreen
@@ -51,7 +52,10 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          # 26 is the floor package.json `engines` declares: the DB-backed suites
+          # (test-settings-persist, test-games-archive, test-ratings-integrity)
+          # import node:sqlite, which Node 22 gates behind --experimental-sqlite.
+          node-version: "26"
           cache: npm
 
       - name: Install dependencies
@@ -63,41 +67,22 @@ jobs:
       - name: Build (renderer + main)
         run: npm run build
 
-      # Cross-platform congruence gate: the pure-node game/platform suites run on
-      # BOTH OS legs (they need no engine binaries and no display, just headless
-      # esbuild bundles). Engine-dependent suites (bots-ui live probes) stay local-only.
+      # Cross-platform congruence gate: the pure-node game/platform/accounts suites
+      # run on BOTH OS legs (they need no engine binaries and no display, just
+      # headless esbuild bundles). scripts/run-suites.mjs globs scripts/test-*.mjs
+      # rather than repeating a stem list here, so a new suite is covered the day it
+      # lands; its in-file deny-list holds the exclusions and the reason for each
+      # (engine-binary probes stay local-only, the test-web-* set belongs to
+      # .github/workflows/web.yml). Reproduce a red leg locally with `npm test`, or
+      # one suite with `node scripts/run-suites.mjs --only=<substring>`.
       - name: Game & platform suites
         # Skippable for a fast release when the suites already passed on the other
         # leg: put [skip-tests] in the tagged commit message. Packaging/publish
-        # still run. Normal pushes always run the full wall.
+        # still run. Every other run (manual dispatch, or a tag without the
+        # marker) runs the full wall.
         if: ${{ !contains(github.event.head_commit.message, '[skip-tests]') }}
         shell: bash
-        run: |
-          for t in test-games-kernel test-ffish-games test-go test-checkers \
-                   test-small-games test-custom-variants test-mp test-mp-store \
-                   test-mp-v6 test-est-elo test-ratings-integrity test-manuals \
-                   test-board3d test-cg-keys test-custom-board-keys test-flip \
-                   test-games-archive test-settings-persist test-school-replace \
-                   test-updater test-accounts-core test-accounts-chain \
-                   test-accounts-witness test-accounts-pin test-accounts-lease \
-                   test-accounts-fabric test-accounts-rs test-accounts-overlay \
-                   test-accounts-shards test-accounts-pointers \
-                   test-accounts-reconstruct test-accounts-detmath \
-                   test-accounts-seams test-accounts-reputation \
-                   test-accounts-trust-mm test-accounts-ratings \
-                   test-accounts-tier1 test-accounts-tier2 \
-                   test-accounts-browser-fabric test-accounts-peer test-accounts-witness-runner test-accounts-live-slice \
-                   test-accounts-matchmaking test-accounts-lease-runner \
-                   test-accounts-shard-duty test-accounts-viewer-client test-accounts-pin-client \
-                   test-accounts-social-client \
-                   test-accounts-judge-runner test-accounts-verdict-client \
-                   test-accounts-social test-accounts-mailbox \
-                   test-accounts-social-transport test-accounts-a7-roundb test-accounts-verdict-transport \
-                   test-accounts-embed test-accounts-receipts test-a4-ui test-web-accounts-wiring \
-                   test-afinal-flag \
-                   test-judge-fit test-judge-node; do
-            echo "== $t =="; node scripts/$t.mjs
-          done
+        run: npm test
 
       # Package for the current OS only. electron-builder auto-selects the win/mac
       # target block from electron-builder.yml based on the runner. --publish never

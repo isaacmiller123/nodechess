@@ -122,6 +122,9 @@ cannot be checked for gaps or overlap with its neighbours.
    ship the mismatch.
 3. **Cross-checked in batches of 5** against the master curriculum and against each other, so gaps, repeats,
    and difficulty cliffs across chapter boundaries surface before the next batch is written.
+4. **`npm run test:chapters` is green** (scripts/validate-chapter.mjs): the mechanical enforcer of this spec,
+   replaying every FEN, guided/play move and puzzle pool in the chapter JSON. It is the floor under 1-3, not
+   a substitute for them.
 
 ## 8. Open decisions to confirm with the user (defaults noted, change on request)
 - UI visual reference/direction (§5).
