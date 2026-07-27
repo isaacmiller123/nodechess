@@ -48,6 +48,9 @@ import { buildReplay, type ReplayLine } from './replayData'
 // The theater borrows .b3d-* (3D host sizing), .votb-* (buttons/dots) and
 // .replay-speed* rules: import their sheets here so every launch surface
 // (and the ?theater harness) is self-sufficient; Vite dedupes repeats.
+// .b3d-* lives in play-surfaces.css: without it the canvas renders 300x150
+// on any route where GamesView has not already mounted.
+import '../games/play-surfaces.css'
 import '../games/games.css'
 import './library.css'
 import './theater.css'
