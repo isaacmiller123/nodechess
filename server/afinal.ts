@@ -1,4 +1,4 @@
-// A-final switch (docs/building/ACCOUNTS-SPEC.md §14): ACCOUNTS_DECENTRALIZED.
+// A-final switch (docs/ACCOUNTS-SPEC.md §14): ACCOUNTS_DECENTRALIZED.
 //
 // One explicit, reversible flag decides which account system this server
 // speaks. ON = the decentralized accounts are the account system and the

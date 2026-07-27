@@ -1,5 +1,9 @@
 # Getting nodechess online, click by click
 
+> **This is the live deployment: the static SPA on Cloudflare Pages, puzzle chunks in R2.** For
+> self-hosting the Docker image see `docs/WEB-DEPLOY.md`; for the relay and TURN stack see
+> `deploy/DEPLOY.md`.
+
 Everything here is a real link and a real button. Follow it top to bottom. Do not skip Part 0.
 
 Total hands-on time is about 40 minutes, plus two waits you can walk away from: the domain going
@@ -135,9 +139,20 @@ If it asks "Enter the production branch name", type `main` and press Enter.
 
 **3.3** Upload:
 
-    npx wrangler pages deploy dist-web --project-name nodechess
+    npx wrangler pages deploy dist-web --project-name nodechess --branch main
 
 This uploads about 70 MB, so it takes a minute or two. Later deploys only send what changed.
+
+> **Why `--branch main` is written out.** Work happens on the `web-port` branch, and the deploy
+> commands in this guide are run from that checkout. With no `--branch` flag wrangler takes the
+> branch name from the checkout, so the upload arrives tagged `web-port`, which is not the
+> project's production branch (3.2 set that to `main`) and lands as a preview deployment: it gets
+> its own URL, and your custom domain keeps serving the previous build. Naming the branch makes
+> every deploy a production deploy regardless of what is checked out.
+>
+> The repo also has a `cloudflare-pages-main` branch. It carries no commits of its own (it is an
+> ancestor of `web-port`) and nothing is built from it: it is a marker recording the commit last
+> deployed to Pages. Moving it after a deploy is optional bookkeeping, not part of the deploy.
 
 **3.4** When it finishes it prints a URL like `https://nodechess.pages.dev`. Open it. The landing
 page should appear and you should be able to play a game against the engine.
@@ -402,7 +417,7 @@ Then rebuild and redeploy:
 
     export PATH=/opt/homebrew/bin:$PATH
     npm run build:web
-    npx wrangler pages deploy dist-web --project-name nodechess
+    npx wrangler pages deploy dist-web --project-name nodechess --branch main
 
 Check the address really got baked in:
 
@@ -438,15 +453,17 @@ sizes in **kilobytes**. Statuses of `200` with sizes in megabytes mean 6.6 was n
 
 ## Doing it again later
 
-After any code change:
+After any code change, from the working branch (`web-port`):
 
     cd ~/chess/chess-sharp
     export PATH=/opt/homebrew/bin:$PATH
     npm run build:web
-    npx wrangler pages deploy dist-web --project-name nodechess
+    npx wrangler pages deploy dist-web --project-name nodechess --branch main
 
 That is the whole loop. Parts 2, 4, 5 and 6 are one-time, and `.env.production` from 6.8 is what
-keeps the puzzle address attached to every build without you thinking about it.
+keeps the puzzle address attached to every build without you thinking about it. Keep `--branch main`
+on the deploy: without it the upload is tagged with whatever branch is checked out and lands as a
+preview, leaving the custom domain on the previous build (3.3).
 
 **After a change to the puzzle database only** (you re-ran `npm run build:puzzles` or
 `build-puzzle-chunks`), the chunks have changed and the bucket has the old ones. Upload again with
@@ -455,14 +472,6 @@ its cached puzzle data to the artifact's build id, so nobody has to clear anythi
 
 ---
 
-## Separate problem, worth fixing before the next desktop release
+## Desktop releases
 
-`electron-builder.yml` is set to publish to `github.com/isaacmiller123/nodechess`, and that
-repository does not exist. Your actual repo, and every release so far, is
-`github.com/isaacmiller123/chess-sharp`. Until those agree, the in-app updater is pointing at
-nothing and `--publish` will fail. Either create the `nodechess` repo and move the releases, or
-change `publish.repo` in `electron-builder.yml` to `chess-sharp`.
-
-There is also no `linux:` section in `electron-builder.yml`, so no Linux build has ever been
-produced. The landing page says "No Linux build yet" rather than offering a file that does not
-exist.
+Different flow, different doc: `docs/RELEASE.md`.

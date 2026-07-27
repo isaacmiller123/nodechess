@@ -4,6 +4,34 @@ Authoritative design for the online-multiplayer hardening pass (2026-07). Writte
 45-defect audit (lifecycle L1-14, clocks D1-11, transport T1-9, lichess-parity MP-01..11) plus
 live two-window repro evidence. Builders conform to this exactly; deviations need lead approval.
 
+**Status, 2026-07-27: the wire has moved on. `PROTOCOL_VERSION = 6`.** This spec drove the v3
+hardening pass and the *behavioral* rules in §2 (first-move idle clocks, flag versus resign, lag
+compensation, suspend and resume grace, draw and rematch rules) are still exactly the design and
+still binding. The **version numbers and message shapes are not current**: the constant lives at
+`src/shared/mp/wire.ts` (search `PROTOCOL_VERSION`), and that file's header carries the full
+per-version rationale. Three revisions landed on top of v3, each of them additive on the wire but
+each bumping the version because the hello gate refuses mismatched peers:
+
+- **v4** (game-agnostic online, `docs/GAMES-PLATFORM-SPEC.md`): `MpGameConfig` gains
+  `game?: { kind, options }` (absent = chess); move strings become game-defined codecs, so the wire
+  only bounds them (non-empty string, ≤ 64 chars) and the HOST's game kernel validates legality
+  before committing or relaying; `resync` also carries the game config so a resumed guest can
+  rebuild a non-chess game.
+- **v5** (byo-yomi): `tc` gains optional `byoyomi { periods, periodMs }`, and `move`/`clock`/
+  `flag`/`resync` gain an optional per-side `byo` snapshot beside `clockMs`. With byo-yomi the
+  `clockMs` number means "current period remaining" once a side is in byo, so clock semantics
+  themselves changed.
+- **v6** (signed play + the witness seat, `docs/ACCOUNTS-SPEC.md` §3): `role` gains `'witness'` (a
+  third, non-playing peer that follows the game and countersigns the move stream; the session
+  admits exactly one); `hello` gains optional identity `root`/`key`; `start`/`rematchStart`/
+  `resync` gain optional `gameKey` + `players`; `move` gains an optional per-move `sig`;
+  `gameOver`/`resign`/`flag` gain an optional terminal `esig`; and two new witness-to-player
+  messages `wclk`/`wend` carry the witness's clock countersignature and terminal stream signature.
+  Every addition is optional, so an unsigned session's bytes are identical to v5.
+
+Suites: `npm run test:mp-v6` (`scripts/test-mp-v6.mjs`) covers the current wire;
+`scripts/test-mp.mjs` and `scripts/test-mp-store.mjs` are the §7 suites and stay green.
+
 ## The four user bugs this kills
 
 - **B1** navigating anywhere unmounts OnlineTab, which calls `mp.leave()` and destroys the live game
@@ -18,6 +46,9 @@ live two-window repro evidence. Builders conform to this exactly; deviations nee
   abort, resignation-flavored timeout copy, silent errors (MP-05..11, L10-12).
 
 ## 1. Wire protocol v3 (`src/shared/mp/wire.ts`): PROTOCOL_VERSION = 3
+
+> **Historical.** The live constant is **6**; see the status note above for the v4/v5/v6 delta and
+> `src/shared/mp/wire.ts` for the current schemas. The table below is the v3 baseline they extend.
 
 All in-game messages carry `gameId` (host-owned, monotonically increasing per session, starts 1;
 sent in start/rematchStart). Receivers DROP any in-game message whose gameId ≠ current (D8).
@@ -159,7 +190,15 @@ now − atMono : 0), clamped ≥ 0. Tenths shown under 10s. Low-time threshold
 min(60s, max(10s, base/8)) → is-low class + single low-time sound. Snapshot updates on every
 move/clock/flag/resync event AND after our own committed move.
 
-## 5. UI (`OnlineTab.tsx` rewrite + App shell)
+## 5. UI (`features/play/OnlineTab.tsx` rewrite + App shell)
+
+> **Paths, current.** `src/renderer/src/features/play/OnlineTab.tsx` (the tab, a pure view over the
+> store), `features/play/online.css`, `features/play/OnlineReturnChip.tsx` (the return chip,
+> rendered from `App.tsx`). Since this spec was written the live-game chrome (status strip, draw
+> and abort actions, peer-away countdown, peer-left claim row, rematch strip, Leave confirm) was
+> extracted into `features/play/online/OnlineChrome.tsx` so the chess `GameView` path and the
+> kernel-game path (`online/KernelOnlineGame.tsx`) render exactly the same surround. The behavior
+> specified below did not change; it just lives in two files now.
 
 - **Free navigation** (lichess model): the game runs in the store, so navigating away is SAFE.
   No blocking dialogs on nav. Instead: a floating **return chip** ("⏱ Online game" with a
@@ -189,17 +228,31 @@ this also protects the lobby/hosting phase which holds no WebRTC connection yet,
 
 ## 7. Ownership map
 
-- **builder-core**: wire.ts, mpSession.ts, rtcTransport.ts, shared/types.ts (MpEvent v3 union +
-  Api-comment), window.ts.
-- **builder-store**: online/onlineStore.ts, online/useOnlineGame.ts, Clock.tsx (ticking +
-  tenths + low-time), sound wiring inside the store.
-- **builder-ui**: OnlineTab.tsx, online.css, GameView.tsx (online-mode prop gaps: hide New game,
-  abort button seam), App.tsx + Layout.tsx + OnlineReturnChip.tsx (return chip + rail dot),
-  PlayView.tsx stage wiring (may now read the store directly).
-- **builder-tests**: scripts/test-mp.mjs (v3 suite, ≥100 assertions incl. every §2 rule),
-  scripts/test-mp-store.mjs (store against a mocked mp), E2E harness upgrade.
+> **Historical**: this split the v3 pass across builders and only meant anything while that pass
+> was live. Kept for the file list, with the paths corrected. All renderer paths are under
+> `src/renderer/src/`.
+
+- **builder-core**: `src/shared/mp/wire.ts`, `features/play/online/mpSession.ts`,
+  `features/play/online/rtcTransport.ts`, `src/shared/types.ts` (the `MpEvent` union +
+  Api-comment), `src/main/window.ts`.
+- **builder-store**: `features/play/online/onlineStore.ts`,
+  `features/play/online/useOnlineGame.ts`, `features/play/Clock.tsx` (ticking + tenths +
+  low-time), sound wiring inside the store.
+- **builder-ui**: `features/play/OnlineTab.tsx`, `features/play/online.css`,
+  `features/play/GameView.tsx` (online-mode prop gaps: hide New game, abort button seam),
+  `App.tsx` + `components/Layout.tsx` + `features/play/OnlineReturnChip.tsx` (return chip + rail
+  dot), `features/play/PlayView.tsx` stage wiring. The shared chrome later extracted to
+  `features/play/online/OnlineChrome.tsx` belongs here too (§5).
+- **builder-tests**: `scripts/test-mp.mjs` (v3 suite, ≥100 assertions incl. every §2 rule),
+  `scripts/test-mp-store.mjs` (store against a mocked mp), E2E harness upgrade. The current wire
+  is covered by `scripts/test-mp-v6.mjs`.
 
 ## 8. MpEvent v3 (shared/types.ts): the exact union
+
+> **Historical.** Three protocol revisions have moved past this. The live union is
+> `src/shared/types.ts` (`export type MpEvent`), which is documented member by member in place:
+> `move`/`clock`/`flag` now carry an optional `byo` (wire v5), and the v6 signing fields ride
+> alongside. Read the type, not this block.
 
 ```ts
 export type MpEvent =

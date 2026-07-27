@@ -1,8 +1,13 @@
 # nodechess: Going Live (web + infrastructure)
 
+> **This is the relay and TURN stack** (Caddy + a Nostr relay + coturn), plus the web container in
+> front of it. For the live web deployment (static SPA on Cloudflare Pages, puzzle chunks in R2)
+> see [../docs/DEPLOY-WEB.md](../docs/DEPLOY-WEB.md); for self-hosting the Docker image on its own
+> see [../docs/WEB-DEPLOY.md](../docs/WEB-DEPLOY.md).
+
 This is the runbook to put nodechess on the public internet so anyone in the world
 can make an account and play. Desktop app releases (mac/win installers) are a
-separate flow, covered in [RELEASE.md](RELEASE.md).
+separate flow, covered in [docs/RELEASE.md](../docs/RELEASE.md).
 
 Because nodechess is **decentralized peer-to-peer** (gameplay rides WebRTC data
 channels; there is no central game server or game database), "hosting for a
@@ -87,8 +92,8 @@ deploying. If you change them, rebuild: `up --build -d` again.
 - Leaving them unset still produces a working app that uses public defaults
   (fine for a quick demo, rate-limited under load, not for a million).
 - The **desktop apps** read the same `VITE_*` values at *their* build time. Set
-  them in CI before packaging (see RELEASE.md) so installed apps use your relays
-  too.
+  them in CI before packaging (see `docs/RELEASE.md`) so installed apps use your
+  relays too.
 
 ---
 

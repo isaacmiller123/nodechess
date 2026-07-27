@@ -1,8 +1,8 @@
 # UI/UX SPEC
 
-> Implementable UI/UX specification for the Offline Chess Trainer, a fully offline, local-first
-> chess analysis & teaching desktop app (Electron + React + TypeScript + Vite). Targets a
-> chess.com / lichess-grade feel using only open, redistributable assets.
+> Implementable UI/UX specification for nodechess, a fully offline, local-first chess analysis &
+> teaching app (Electron + React + TypeScript + Vite). Targets a chess.com / lichess-grade feel
+> using only open, redistributable assets.
 >
 > **Scope.** This document defines the screen map, the full component inventory, the complete
 > Analysis Board layout, the interaction model, the design-token set, the icon pack + mapping, the
@@ -25,6 +25,28 @@
 > **Companion specs:** `docs/architecture.md` (process/IPC/packaging), `docs/content-coaching.md`
 > (coach text, curriculum, classification math). Where this spec references a formula or DB table,
 > the authoritative definition lives in those documents and in `docs/feature-addendum.md`.
+
+**Status, 2026-07-27: superseded on look, still binding on behavior.**
+
+**`design-lab/v1` is the design.** Its stylesheets are installed verbatim as
+`src/renderer/src/styles/`: `tokens.css`, `palettes.css`, `shell.css`, `brand.css`, and
+`pieces.css` landing as `board-pieces.css` (the app's own `styles/pieces.css` is a separate file,
+the alternate piece sets). `app.css` and `global.css` are **deleted**: they described a shell that
+no longer exists. `styles/components.css` is the ONLY place additions go, and only for surfaces v1
+never drew (dialogs, error states, avatars). If v1 draws the thing, it belongs in the v1 stylesheet
+under the v1 class name, not in a new rule.
+
+What that means for this document:
+- **§6 (design tokens) is superseded and must NOT be applied.** It specifies a light-first `:root`
+  with a `[data-theme="dark"]` override and a lichess-blue `--accent: #3893e8`. The installed
+  `tokens.css` is dark-only (`:root` IS the dark palette, there is no light block) and its accent
+  is bone, `#cec9c0`. Alternate palettes are `[data-theme='name']` blocks in `palettes.css` that
+  redeclare colour and nothing else. Read `src/renderer/src/styles/tokens.css`, not §6.
+- **§7.1 to §7.2 (Lucide as the primary icon pack) is superseded** for chrome: see §7.1.
+- **§1's screen map is superseded** by `design-lab/v1`'s pages and the destination list in
+  `src/renderer/src/components/Layout.tsx`, which is the single source of truth for where you can go.
+- **§3, §4, §5, §8, §9 and §10** (board wrapper, analysis layout, interaction model, motion,
+  accessibility, renderer contract) still describe intended behavior and are still binding.
 
 ---
 
@@ -53,28 +75,34 @@
 
 ## 1. Screen Map
 
-Top-level navigation is a persistent **left rail** (icon + label) on desktop widths, collapsing to
-an icon-only rail below 1100 px. Seven primary destinations, plus secondary screens reachable from
-within them.
+Top-level navigation is a persistent **left rail** on desktop widths. The shipped rail is UI-v1's:
+**ten destinations** in three hairline-separated groups, deliberately unlabelled, with Account in
+the foot and Settings in the tool row. Below the phone breakpoint it becomes four permanent tabs
+(Home, Play, Puzzles, School) plus a fifth control that lifts a sheet carrying the other six.
+`src/renderer/src/components/Layout.tsx` (`ViewKey`, `RAIL_GROUPS`, `TABS`, `SHEET`,
+`DESTINATIONS`) is the source of truth; the command palette reads the same list so there are never
+two that drift.
 
 ```
-App Shell
-├─ Home / Dashboard            [home]        landing; resume, daily, progress glance
-├─ Play                        [swords]      vs Engine / vs Human-like (Maia) / vs Style+Book
-│   ├─ Play Setup (opponent gallery, color, time, level)
-│   └─ Game Screen (live board + clocks + controls)
-├─ Analysis Board              [cpu]         the analysis workbench (full spec §4)
-│   └─ Game Review (post-game; accuracy, classifications, eval graph)
-├─ Puzzles / Trainer           [puzzle]      rated puzzles, themed sets, SRS review queue
-│   └─ Puzzle Result / Streak
-├─ Lessons                     [graduation]  curriculum 0→2000; lesson player; famous games
-│   ├─ Lesson Player (interactive board lesson)
-│   └─ Famous Games library + viewer
-├─ Progress / Profile          [user]        ratings (both kinds), trends, my games, achievements
-│   └─ My Games (list → opens Game Review)
-└─ Settings                    [settings]    appearance, board/piece/sound themes, engine, data, about
-    └─ Credits / Licenses
+App Shell (design-lab/v1: home.html, play.html, games.html, puzzles.html,
+           school.html, openings.html, analysis.html, progress.html,
+           account.html, settings.html)
+├─ home        landing; resume, daily, progress glance
+├─ play        vs Engine / vs Human-like (Maia) / vs Persona / local / online
+├─ games       the games platform: 23 board games (docs/GAMES-PLATFORM-SPEC.md)
+├─ puzzles     rated puzzles, themed sets, rush, daily
+├─ school      the 40-chapter curriculum (docs/SCHOOL-SPEC.md)
+├─ openings    opening explorer + repertoire
+├─ analysis    the analysis workbench (full spec §4) and Game Review
+├─ progress    ratings (both kinds), trends, my games
+├─ account     the decentralized account (docs/ACCOUNTS-SPEC.md)
+└─ settings    appearance, board/piece/sound themes, engine, data, about
 ```
+
+> **Superseded, 2026-07-27.** The seven-destination tree this section used to draw predates the
+> Games, School (then "Lessons"), Openings and Account destinations. §1.1 to §1.7 below still
+> describe what each screen is FOR, which is worth keeping, but for what each screen LOOKS like,
+> the mockup in `design-lab/v1` wins.
 
 ### 1.1 Home / Dashboard
 
@@ -171,15 +199,18 @@ Sectioned single-scroll page with a sticky section nav:
 
 ### 2.1 Shell
 
-- **TitleBar** (custom, frameless): app name (left), centered context title (current screen), window
-  controls (right). Drag region excludes interactive zones. Height `--space-9` (40 px).
-- **LeftRail (primary nav):** 7 destinations, each `NavItem` = Lucide icon + label, active state =
-  accent-soft background + accent left-marker (3 px) + accent icon. Collapses to icon-only < 1100 px
-  with tooltips. Footer slot: theme quick-toggle, Settings.
+- **TitleBar: not built.** The window is NOT frameless (`src/main/window.ts` sets no `frame:false`
+  and no `titleBarStyle`), so the OS draws the title bar and the app menu is auto-hidden. UI-v1's
+  own header is the rail head on desktop and a `topbar-m` strip on phone widths, both `--topbar-h`
+  tall (`shell.css`). The custom frameless title bar specified here was never implemented.
+- **LeftRail (primary nav):** the ten destinations of §1, grouped and icon-only, drawn from the
+  in-house sprite (§7.1). Footer slot: Account. Tool row: Settings.
 - **ContentArea:** routed screen; max content width 1440 px, centered, with responsive side gutters.
 - **GlobalToast / Snackbar:** bottom-center, for non-blocking confirmations ("PGN copied," "Analysis
   cached"). Auto-dismiss 4 s.
-- **CommandPalette (optional, NEXT):** `Ctrl/Cmd+K` fuzzy actions/navigation.
+- **CommandPalette: SHIPPED**, not optional and not NEXT. `Cmd/Ctrl+K` opens it
+  (`src/renderer/src/components/CommandPalette.tsx`, rendered from `App.tsx`); it navigates off the
+  same `DESTINATIONS` list the rail uses. `?` opens the shortcuts sheet.
 
 ### 2.2 Reusable primitives (the component inventory baseline)
 
@@ -508,6 +539,17 @@ Pinch is ignored on the board (board size is fixed by layout, zoom is the app's)
 
 ## 6. DESIGN TOKENS
 
+> **SUPERSEDED by UI-v1, 2026-07-27. Do not apply this section.** The shipped token layer is
+> `src/renderer/src/styles/tokens.css` + `palettes.css`, installed verbatim from `design-lab/v1`.
+> It is **dark only** (`:root` IS the dark palette; there is no light block and no
+> `[data-theme="dark"]` override block), its accent is bone `#cec9c0` rather than lichess blue
+> `#3893e8`, and its surfaces get LIGHTER as they come forward, which is the opposite of the
+> convention below. Alternate palettes are `[data-theme='name']` blocks that redeclare colour and
+> nothing else, so a palette swap can never reflow a page. §6.1 to §6.9 are kept as the record of
+> the pre-v1 palette: applying them would put the old UI back on screen one variable at a time.
+> The **names** in §6.4 to §6.9 (space, radius, type, motion, z-index) did survive the promotion,
+> so those blocks still read close to true; the colour blocks do not.
+
 All tokens are CSS custom properties on `:root` (light) and `[data-theme="dark"]` (dark overrides).
 Component CSS reads only tokens. Hex values are concrete and drop-in.
 
@@ -738,16 +780,19 @@ graph scrubber tween); piece movement reduces to a 0 ms snap.
 
 ## 7. Icons, Pieces, Boards, Sounds (theming model)
 
-### 7.1 Icon pack: Lucide (MIT)
+### 7.1 Icon pack: an in-house sprite, with Lucide inside features
 
-Primary UI icon pack: **Lucide** (~1,600 stroke icons, 24×24, 2 px stroke; clean, matches the
-minimal lichess/chess.com aesthetic). Bundled offline as a tree-shaken `lucide-react` import set
-**or** a vendored SVG sprite (pin the version, snapshot the SVGs so an upgrade can't drop a glyph).
-**Phosphor (MIT)** is the only fallback for a niche glyph Lucide lacks; do not mix three packs in
-visible UI. The lichess in-house icon font (AGPL) and chess.com's icon font (proprietary) are **not**
-used.
+**Chrome (the rail, the tab bar, the shell) draws from an in-house SVG sprite**,
+`src/renderer/src/components/IconSprite.tsx`, whose ids are the destination keys (`i-home`,
+`i-play`, `i-games`, `i-puzzles`, `i-school`, `i-openings`, `i-analysis`, `i-progress`,
+`i-account`, `i-settings`). That is UI-v1: the navigation glyphs are drawn for this product, not
+picked from a general pack, so they read as one set at 20 px.
 
-### 7.2 Icon mapping (all names verified in Lucide)
+**Lucide (MIT) is still the pack inside feature surfaces**, imported as `lucide-react` where a
+one-off glyph is needed. Both are bundled offline. The lichess in-house icon font (AGPL) and
+chess.com's icon font (proprietary) are **not** used.
+
+### 7.2 Icon mapping (Lucide names, for feature surfaces; the rail uses the sprite ids above)
 
 | Purpose | Icon | | Purpose | Icon |
 |---|---|---|---|---|
@@ -802,10 +847,13 @@ wrapper class (`.board-brown` default). Texture themes (AGPL images) are out of 
 
 ### 7.5 Sound themes
 
-- **Do NOT ship the lichess "standard" sound set** (no clear license) or robot/instrument/
-  woodland/other. Cleanly free options: lila **futuristic / nes / piano / sfx** (AGPLv3+, only if we
-  accept AGPL on the app); otherwise the safe default is **Kenney CC0** UI/interface audio remapped
-  to events. Default ship = Kenney CC0 to keep licensing clean.
+- **Shipped set (this supersedes the original "never ship lichess sounds" rule).** Three themes
+  under `src/renderer/src/assets/sounds/`: `classic/` and `real/`, synthesized in-repo by
+  `scripts/gen-sounds.mjs` (plus the theme-agnostic `games/` pool from `gen-game-sounds.mjs`), and
+  `standard/`, which IS the lichess set. Its license turned out to be clear rather than unclear:
+  **AGPL-3.0-or-later**, shipped as unmodified data assets alongside (not linked into) the app,
+  with upstream commit, per-file mapping and license recorded in
+  `src/renderer/src/assets/sounds/ATTRIBUTION.md`. Kenney CC0 audio is not used.
 - **Events:** `move`, `capture`, `check`, `castle`, `promote`, `low-time`, `game-start`,
   `game-end-win/lose/draw`, `puzzle-correct`, `puzzle-wrong`, `notify`. Each mapped to one short
   clip (`.mp3` / `.webm`; Chromium plays either).
@@ -891,8 +939,15 @@ Micro-interaction rules: never animate the board's *size*; never block input on 
 
 ## 11. Implementation Checklist (v0 UI)
 
-1. App shell: TitleBar, LeftRail, ContentArea, routing for the 7 screens.
-2. Token layer: ship `tokens.css` (§6) as the only color/space/type source.
+> This checklist is the v0 build order and is **done**. Items 1 and 2 are corrected below because
+> following them as written would undo UI-v1.
+
+1. App shell: LeftRail, ContentArea, routing for the ten destinations of §1
+   (`components/Layout.tsx`), plus the CommandPalette.
+2. Token layer: the installed `src/renderer/src/styles/` (design-lab/v1's `tokens.css`,
+   `palettes.css`, `shell.css`, `brand.css`, `board-pieces.css`) is the only colour/space/type
+   source. **Do not** ship §6's tokens over them, and do not edit the installed files: additions
+   go in `styles/components.css`, and only for surfaces v1 never drew.
 3. `<ChessBoard>` chessground wrapper + chessops dests; piece/board theme classes; promotion overlay.
 4. Analysis Board: EvalBar, MoveList (figurine/letter, NAGs, variation tree), EnginePanel/EngineLine
    (MultiPV streaming), ControlsBar, keyboard nav.

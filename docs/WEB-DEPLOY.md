@@ -1,17 +1,31 @@
-# nodechess web: deployment guide
+# nodechess web: self-hosting the Docker image
 
-The web target ships as **one Docker image**: the SPA (`dist-web`), the Fastify
-server + IPC bridge bundles (`dist-server`), and the static content trees the
-server serves (games-art, curriculum, famous, personas, openings, manuals).
-Running it locally and deploying it to a VPS use the same artifact. See
-`docs/WEB-PORT-SPEC.md` for the architecture.
+> **This is the self-hosted route.** For the live deployment (static SPA on Cloudflare Pages,
+> puzzle chunks in R2) see `docs/DEPLOY-WEB.md`; for the relay and TURN stack see
+> `deploy/DEPLOY.md`.
 
-Two pieces of state live OUTSIDE the image:
+This image is **one way to host the same static SPA yourself**, with COOP/COEP
+already set: the SPA (`dist-web`), the Fastify server + IPC bridge bundles
+(`dist-server`), and the static content trees the server serves (games-art,
+curriculum, famous, personas, openings, manuals). Running it locally and
+deploying it to a VPS use the same artifact. See `docs/WEB-PORT-SPEC.md` for the
+architecture.
+
+**Where the app's data actually lives: the browser.** The shipped web client
+talks to no server for game data. Games, ratings, settings, puzzle attempts,
+stored reviews and School progress are all browser-local
+(`src/web/webApi.ts`: "NOTHING here talks to a server"), and accounts are
+decentralized (`docs/ACCOUNTS-SPEC.md`). What this container adds on top of a
+plain static host is the cross-origin-isolation headers, the games-art tree, and
+a legacy `/api/ipc` bridge that the shipped client does not call. Read that
+before you plan backups: **`DATA_DIR` is not where a player's games live.**
 
 | What | Where | Why |
 | --- | --- | --- |
-| Accounts + per-user game DBs | volume at `/data` (`DATA_DIR`) | the only thing you must back up |
-| Puzzle DB (`puzzles.sqlite`, ~2.1 GB) | read-only mount (default) or baked into the image | keeps the image lean |
+| Per-player games, ratings, School progress | the player's own browser | no server copy exists; clearing site data clears it |
+| Interim accounts + per-user DBs (`ACCOUNTS_DECENTRALIZED=0` only) | volume at `/data` (`DATA_DIR`) | empty and unused on a default build |
+| Puzzle chunks the browser reads | wherever `VITE_PUZZLE_BASE_URL` points (baked at build time) | see "The puzzle database" below |
+| Puzzle DB (`puzzles.sqlite`, ~2.1 GB) for the `/api/ipc` bridge | read-only mount or baked into the image | not read by the shipped browser client |
 
 ## Quickstart
 
@@ -29,9 +43,10 @@ docker run -d --name chess-web \
 # → http://localhost:8080
 ```
 
-Both `-v` mounts are optional: without `/data` the accounts DB lives in an
-anonymous volume (fine for a throwaway), and without the puzzle mount the app
-runs with puzzle features honestly reporting "not installed".
+Both `-v` mounts are optional, and on a default build neither carries player
+data: `/data` is only used by the interim accounts (off by default, see the env
+table), and the puzzle mount feeds the `/api/ipc` bridge, which the browser
+client does not call. **Browser puzzles need the separate step below.**
 
 ### docker compose (recommended)
 
@@ -46,57 +61,106 @@ docker compose up --build -d
 
 ## The puzzle database
 
-`resources/data/puzzles.sqlite` (~2.1 GB, built from the Lichess puzzle dump
-via `npm run setup:puzzles && npm run build:puzzles`, or copied from a dev
-machine). Three supported configurations:
+**Read this before mounting 2.1 GB of anything.** The browser does not ask the
+server for puzzles. It reads a **chunked copy** of the puzzle DB directly over
+HTTP `Range`: 60 files of 24 MiB plus a manifest, built by
+`npm run build:puzzle-chunks` into `dist-puzzles/`. The address it reads from is
+`VITE_PUZZLE_BASE_URL`, **baked into the SPA at build time**, defaulting to
+`<base>puzzles/` (`src/web/data/puzzleSource.ts`). `PUZZLES_PATH` and the
+`puzzles.sqlite` mount below feed only the `/api/ipc` bridge, which the shipped
+client never calls.
 
-1. **Volume mount (default).** The DB stays on the host; compose mounts it
-   read-only and points `PUZZLES_PATH` at it. Image stays ~small, DB updates
-   don't require a rebuild. The DB is in `.dockerignore`, so it never bloats
-   the build context either.
-2. **Baked into the image.** Useful for single-artifact platforms (registry →
-   Fly/Cloud Run style). The Dockerfile takes the DB as a *named build
-   context*, which is exempt from `.dockerignore`. No repo edits needed:
+`.env.production` is operator-local and git-ignored, so a fresh clone has none
+and the build falls back to same-origin `<base>puzzles/`. **If you copied a
+`.env.production` from somewhere, check it**: a value pointing at another
+operator's bucket bakes in an address your users cannot read, because that
+bucket's CORS rules list that operator's origins and not yours. Pick one of
+these:
 
-   ```sh
-   docker build -t nodechess-web \
-     --build-arg WITH_PUZZLES=true \
-     --build-context puzzles-db=resources/data .
-   ```
+1. **Serve the chunks from your own container.** Build them
+   (`npm run build:puzzle-chunks`), copy `dist-puzzles/*` into the SPA directory
+   under `puzzles/` (i.e. `$WEB_ROOT/puzzles/`, which is the default base), and
+   rebuild the image or bind-mount it in. Adds ~1.4 GB to whatever you copy it
+   into. Then run the `206` check from `docs/DEPLOY-WEB.md` 6.6 against your own
+   host: an origin that answers `200` with the whole 24 MiB chunk makes every
+   puzzle read pull 24 MB, which is the failure this is all about.
+2. **Serve them from an object store.** Any origin that does real byte serving
+   and allows your site's origin in CORS with `Content-Range` in
+   `exposeHeaders`. Set `VITE_PUZZLE_BASE_URL=https://your-host/` in
+   `.env.production` **before** `npm run build:web`, then rebuild the image.
+   The exact header set and the verification curls are in `docs/DEPLOY-WEB.md`
+   Part 6.
+3. **No puzzle chunks.** Everything else works; puzzle surfaces show their
+   honest "not installed" state and `datasets.status` reports `puzzles:false`.
 
-   The file lands at `/app/resources/data/puzzles.sqlite`, the image's
-   default `PUZZLES_PATH`, so no runtime configuration is needed. Expect a
-   ~2.3 GB image.
-3. **No puzzle DB.** Everything else works; puzzle surfaces show their honest
-   "not installed" state.
+### The server-side `puzzles.sqlite` (bridge only)
+
+`resources/data/puzzles.sqlite` (~2.1 GB, built from the Lichess puzzle dump via
+`npm run setup:puzzles && npm run build:puzzles`, or copied from a dev machine)
+is what `PUZZLES_PATH` points at. It is read by the `/api/ipc` puzzle channels
+only, so on a default build you can skip it entirely. If you do want it:
+
+- **Volume mount (what compose does).** The DB stays on the host, mounted
+  read-only, `PUZZLES_PATH` pointed at it. The DB is in `.dockerignore`, so it
+  never bloats the build context.
+- **Baked into the image.** For single-artifact platforms (registry →
+  Fly/Cloud Run style). The Dockerfile takes the DB as a *named build context*,
+  which is exempt from `.dockerignore`:
+
+  ```sh
+  docker build -t nodechess-web \
+    --build-arg WITH_PUZZLES=true \
+    --build-context puzzles-db=resources/data .
+  ```
+
+  The file lands at `/app/resources/data/puzzles.sqlite`, the image's default
+  `PUZZLES_PATH`. Expect a ~2.3 GB image.
 
 ## Environment variables
 
 All optional: the image defaults are a complete configuration.
 
+Rows marked **(interim accounts only)** do nothing on a default build.
+`scripts/build-server.mjs` bakes `ACCOUNTS_DECENTRALIZED` **on** into every
+shipped bundle, so `server/index.ts` registers the 410 gate instead of the auth
+routes and `/api/auth/*` answers `410 Gone, superseded`. They come back only if
+you restart with `ACCOUNTS_DECENTRALIZED=0`, which is the reversible emergency
+fallback described in `server/afinal.ts`, not a supported deployment.
+
 | Variable | Image default | Meaning |
 | --- | --- | --- |
 | `PORT` | `8080` | Listen port. |
 | `HOST` | `0.0.0.0` | Bind address. |
-| `WEB_ROOT` | `/app/dist-web` | Built SPA directory (source default: `<bundle>/../dist-web`). |
+| `WEB_ROOT` | `/app/dist-web` | Built SPA directory (source default: `<bundle>/../dist-web`). Also where `puzzles/` goes if you self-serve the chunks. |
 | `GAMES_ART_ROOT` | `/app/resources/games-art` | 3D tabletop textures/pieces, served at `/games-art`. Missing dir = procedural fallbacks, warning logged. |
-| `DATA_DIR` | `/data` | Server state: `server.sqlite` (accounts + sessions), `users/<id>/app.sqlite` (per-user data), plus the shared anonymous DB for logged-out reads. Source default: `./data-web`. |
-| `PUZZLES_PATH` | `/app/resources/data/puzzles.sqlite` | Puzzle DB file. Compose overrides to `/puzzles/puzzles.sqlite`. Missing file = puzzles report "not installed". |
-| `TRUST_PROXY` | unset (off) | `1` = trust `X-Forwarded-*` from the reverse proxy in front. **Set this whenever you run behind a proxy**. It is what gives rate limiting real client IPs and lets `X-Forwarded-Proto` mark the session cookie `Secure`. Leave off only when clients hit the container directly (a trusted header would then be client-spoofable). Compose sets it. |
-| `COOKIE_SECURE` | unset (auto) | Session-cookie `Secure` flag. Auto = on for https requests **and whenever `NODE_ENV=production`** (so a misconfigured proxy can't downgrade it). `1` forces it on, `0` turns it off: only for plain-http LAN/localhost hosting (Safari refuses `Secure` cookies on `http://localhost`; Chrome/Firefox accept them). |
-| `MAX_ACCOUNTS` | `500` | Signup ceiling: each account is an on-disk per-user DB, so an open server refuses account #501 with `403 signups-closed`. |
-| `AUTH_RATE_LOGIN` | `10` | Login attempts allowed per IP per minute (429 beyond). |
-| `AUTH_RATE_SIGNUP` | `5` | Signups allowed per IP per hour (429 beyond). |
-| `MAX_OPEN_USER_DBS` | `32` | Per-user SQLite handles kept open (LRU; cold ones close and reopen on demand). |
+| `ACCOUNTS_DECENTRALIZED` | `on` (baked in at build) | `0`/`off` re-enables the interim server accounts and every row below marked interim. `server/afinal.ts`. |
+| `DATA_DIR` | `/data` | Server state: `server.sqlite` (accounts + sessions), `users/<id>/app.sqlite`, plus the shared anonymous DB. **Not where a player's games live** (those are in the browser). Effectively unused on a default build. Source default: `./data-web`. |
+| `PUZZLES_PATH` | `/app/resources/data/puzzles.sqlite` | Puzzle DB for the `/api/ipc` bridge only; the browser reads the chunked artifact instead. Compose overrides to `/puzzles/puzzles.sqlite`. Missing file = the bridge's puzzle channels degrade to empty results. |
+| `RESOURCES_ROOT` | unset → `/app/resources` | Content tree the bridge reads: curriculum, famous, personas, openings. Source default is `<bundle>/../resources`, which the image layout resolves to `/app/resources`. |
+| `BRIDGE_PATH` | unset → `/app/dist-server/ipc-bridge.cjs` | The prebundled IPC bridge. Absent file = `/api/ipc` stays an honest 503 and the static server still works. |
+| `TRUST_PROXY` | unset (off) | `1` = trust `X-Forwarded-*` from the reverse proxy in front. **Set this whenever you run behind a proxy**: it is what gives rate limiting real client IPs. (It also lets `X-Forwarded-Proto` mark the session cookie `Secure`, which matters only with interim accounts.) Leave off only when clients hit the container directly (a trusted header would then be client-spoofable). Compose sets it. |
+| `COOKIE_SECURE` | unset (auto) | **(interim accounts only)** Session-cookie `Secure` flag. Auto = on for https requests **and whenever `NODE_ENV=production`**. `1` forces it on, `0` turns it off: only for plain-http LAN/localhost hosting (Safari refuses `Secure` cookies on `http://localhost`; Chrome/Firefox accept them). |
+| `MAX_ACCOUNTS` | `500` | **(interim accounts only)** Signup ceiling: each account is an on-disk per-user DB, so an open server refuses account #501 with `403 signups-closed`. |
+| `AUTH_RATE_LOGIN` | `10` | **(interim accounts only)** Login attempts allowed per IP per minute (429 beyond). |
+| `AUTH_RATE_SIGNUP` | `5` | **(interim accounts only)** Signups allowed per IP per hour (429 beyond). |
+| `MAX_OPEN_USER_DBS` | `32` | **(interim accounts only)** Per-user SQLite handles kept open (LRU; cold ones close and reopen on demand). |
 | `LOG_LEVEL` | `info` | Pino log level (`silent`…`trace`). |
 | `NODE_ENV` | `production` | Set by the image. Also drives the cookie `Secure` default above. |
 
 ## Data & backups
 
-Everything worth backing up is `DATA_DIR` (`/data`, i.e. `./data-web` with
-compose): accounts, sessions, and every user's games/ratings/school
-progress/settings. The puzzle DB and everything in the image are
-reproducible, so don't bother backing them up.
+**On a default build there is nothing on the server to back up.** Player data
+lives in each player's browser, so `DATA_DIR` stays effectively empty, and the
+image, the puzzle chunks and the content trees are all reproducible from the
+repo. What a self-hoster owes their players is not a backup policy but honesty:
+clearing site data, or a browser that evicts storage, loses that player's games.
+Accounts are decentralized (`docs/ACCOUNTS-SPEC.md`) and their recovery story is
+the account's own, not the host's.
+
+If you deliberately run with `ACCOUNTS_DECENTRALIZED=0`, then `DATA_DIR`
+(`/data`, i.e. `./data-web` with compose) holds accounts, sessions and every
+user's games/ratings/school progress/settings, and it is the only thing you must
+back up:
 
 ```sh
 docker compose stop web
@@ -109,15 +173,15 @@ SQLite's online backup instead of a raw copy (`sqlite3 app.sqlite
 ".backup out.sqlite"` per file). Restore = put the directory back and start
 the container.
 
-Accounts are deliberately friends-scale: username + password (argon2id),
-httpOnly session cookie, no email verification or self-service reset. Session
-tokens are stored **hashed** (sha256), so a leaked `server.sqlite` does not
-yield replayable sessions. The argon2 password hashes do live there, so
-treat backups accordingly. Login and signup are rate-limited per IP and
-signups stop at `MAX_ACCOUNTS`. One accepted friends-scale limitation:
-usernames are enumerable (signup answers 409 for a taken name); login timing
-does not leak them, but don't host with the expectation of anonymous
-membership.
+Those interim accounts are deliberately friends-scale: username + password
+(argon2id), httpOnly session cookie, no email verification or self-service
+reset. Session tokens are stored **hashed** (sha256), so a leaked
+`server.sqlite` does not yield replayable sessions. The argon2 password hashes
+do live there, so treat backups accordingly. Login and signup are rate-limited
+per IP and signups stop at `MAX_ACCOUNTS`. One accepted friends-scale
+limitation: usernames are enumerable (signup answers 409 for a taken name);
+login timing does not leak them, but don't host with the expectation of
+anonymous membership.
 
 ## Reverse proxy & TLS
 
@@ -177,11 +241,10 @@ uncompressed).
 
 ### Fly.io
 
-One machine + one volume (SQLite has a single writer; do not scale out):
+On a default build the container is stateless, so this is just "run the image":
 
 ```sh
 fly launch --no-deploy          # detects the Dockerfile, writes fly.toml
-fly volumes create data --size 4
 ```
 
 `fly.toml` essentials:
@@ -190,25 +253,34 @@ fly volumes create data --size 4
 [http_service]
   internal_port = 8080
   force_https = true
+```
 
+Add a volume only if you are running the interim accounts
+(`ACCOUNTS_DECENTRALIZED=0`), in which case SQLite has a single writer, so it is
+one machine (`fly scale count 1`) and one volume:
+
+```sh
+fly volumes create data --size 4
+```
+```toml
 [[mounts]]
   source = "data"
   destination = "/data"
 ```
 
-Puzzle DB, either: upload it to the same volume once with
-`fly sftp shell` → `put resources/data/puzzles.sqlite /data/puzzles.sqlite`
-and set `PUZZLES_PATH=/data/puzzles.sqlite` (`fly secrets set` or `[env]`);
-or bake it into the image (option 2 above) and deploy the bigger image.
-Then `fly deploy` and keep it at one machine (`fly scale count 1`).
+Puzzles: build the chunks and either put them in an object store and set
+`VITE_PUZZLE_BASE_URL` before building the image, or copy them into the SPA
+directory as `dist-web/puzzles/`. The `puzzles.sqlite` volume upload only feeds
+the `/api/ipc` bridge and is not needed for the browser.
 
 ### Hetzner / DigitalOcean (any VPS)
 
 ```sh
 # on the server (Docker + compose plugin installed)
 git clone <your-fork> nodechess && cd nodechess
-# copy the puzzle DB from wherever you built it (optional):
-#   rsync --progress dev-box:nodechess/resources/data/puzzles.sqlite resources/data/
+# set your own puzzle chunk address BEFORE building, or the SPA bakes in the
+# project's bucket, which will not serve your origin:
+#   echo 'VITE_PUZZLE_BASE_URL=https://your-host/' > .env.production
 docker compose up --build -d
 ```
 

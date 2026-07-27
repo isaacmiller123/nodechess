@@ -55,7 +55,11 @@ Registry: `games/registry.ts` maps kind → GameSpec + renderer component + bot 
 manual id. Everything (library UI, online, OTB, bots) consumes the registry ONLY.
 
 ### Wire v4 (game-agnostic online)
-PROTOCOL_VERSION = 4. MpGameConfig gains `game: { kind: string; options?: unknown }`
+> **The wire is at 6 now** (`src/shared/mp/wire.ts`, `PROTOCOL_VERSION`): v5 added byo-yomi and v6
+> added signed play + the witness seat. The game-agnostic design below is unchanged and still
+> current; only the number moved. Delta summary in `docs/MP-V3-SPEC.md`.
+
+PROTOCOL_VERSION = 4 (at the time of this phase). MpGameConfig gains `game: { kind: string; options?: unknown }`
 (default chess). wire.ts move schema: uci regex → non-empty string ≤ 64 chars (kernel
 validates; HOST validates via GameSpec.play before relaying, so authority is unchanged). start/
 resync carry game kind+options. Session/clock/suspend/rematch logic UNCHANGED (game-agnostic
@@ -73,8 +77,10 @@ Classic (SF) / Human (Maia) / Weak-calibrated). Never more than two controls.
 ### Library UI
 New top-level tab **Games** (rail icon): card grid (per-game live-board thumbnail, NOT stock
 icons), each card → game page with sub-tabs Play (Local OTB / vs Bot / Online, the same trio as
-chess Play), Manual. Online reuses OnlineTab machinery parameterized by kind (host card shows
+chess Play), Manual. Online reuses the online machinery parameterized by kind (host card shows
 the game name; join code works across games: start config carries kind; joiner UI renders it).
+The shared live-game chrome is `features/play/online/OnlineChrome.tsx`, rendered around both the
+chess `GameView` and the kernel path (`features/play/online/KernelOnlineGame.tsx`).
 Manuals: `resources/manuals/<kind>.md` (rules, how to read the board, 3 beginner principles,
 2 classic traps/patterns with diagrams) rendered in-app with board diagrams (FEN/position
 snippets rendered by the game's 2D board component, read-only).
@@ -96,15 +102,17 @@ snippets rendered by the game's 2D board component, read-only).
   (sub-1320 calibration + Maia groundwork) started.
 - **P2: DONE** (commits 09015df, d985ece): ffish family (xiangqi/shogi/janggi/makruk +
   placement), checkers both, go+gomoku (Shudan+tenuki), othello/c4/hex/morris/TTT; Fairy-SF +
-  KataGo + lc0 published in datasets for BOTH platforms; manuals authored for all 22 games
-  (scripts/test-manuals.mjs green).
-- **P3: DONE except noted** (commits d552b10..2110058): 3D shared renderer + assets (Tabletop3D
-  lazy chunk, Poly Haven chess set, per-game 2D/3D toggle per the tier table) DONE; custom
-  variant editor (Variant Lab: variants.ini builder UI + ffish.loadVariantConfig + Fairy-SF
-  VariantPath) DONE; visual polish audits per game DONE (305bf3d). Open: CI runs
-  typecheck+build+package on windows-latest + macos-latest (.github/workflows/build.yml) but
-  does NOT yet run the game suites there (suites are green locally on mac); no tagged release
-  contains the games platform yet (latest tag v1.0.1 predates it).
+  KataGo + lc0 published in datasets for BOTH platforms; manuals authored for all **23** games,
+  one per `GameKind` (`resources/manuals/`, `scripts/test-manuals.mjs` green).
+- **P3: DONE** (commits d552b10..2110058): 3D shared renderer + assets (Tabletop3D lazy chunk,
+  Poly Haven chess set, per-game 2D/3D toggle per the tier table) DONE; custom variant editor
+  (Variant Lab: variants.ini builder UI + ffish.loadVariantConfig + Fairy-SF VariantPath) DONE;
+  visual polish audits per game DONE (305bf3d).
+- **Shipped, status as of 2026-07-27 (app v1.3.0).** Both P3 open items are closed.
+  `.github/workflows/build.yml` now runs the game and platform suites on BOTH OS legs, not just
+  typecheck+build+package. And the games platform ships in tagged releases: P1 through P3 are all
+  contained in **v1.1.0** (`git tag --contains 1822c36`), and tags now run through **v1.3.0**,
+  matching `package.json`.
 
 ## Quality gates (every phase)
 typecheck+build clean; test-mp/test-mp-store stay green (chess online untouched); new
