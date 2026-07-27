@@ -71,14 +71,13 @@ Gatekeeper story in §6 is written for, not a build defect.
 ## 2. One-time owner setup (mostly already done)
 
 The classic "it's not a git repo yet" step is **already complete**: this tree is a git repo
-with remote `origin → https://github.com/isaacmiller123/chess-sharp.git` (the rename to
-`nodechess` is the one step still outstanding, see below) and tags through `v1.3.0`. Kept here
-so the flow is reproducible from scratch:
+with remote `origin → https://github.com/isaacmiller123/nodechess.git` (renamed from
+`chess-sharp` on 2026-07-27) and tags through `v1.3.0`. Kept here so the flow is
+reproducible from scratch:
 
 1. **GitHub repo**, **public** (the Releases page *is* the download page), Actions enabled.
-   Done, but still under the old name `isaacmiller123/chess-sharp`.
-2. **Origin remote + first push** (already done, against `chess-sharp`; a from-scratch setup
-   would use the new name):
+   Done, as `isaacmiller123/nodechess`.
+2. **Origin remote + first push** (already done):
    ```sh
    git init && git branch -M main
    git remote add origin https://github.com/isaacmiller123/nodechess.git
@@ -98,15 +97,13 @@ verifies this:
 - `src/main/updates/updateLogic.ts` → `UPDATE_OWNER` / `UPDATE_REPO` (where the app checks
   for updates)
 
-`electron-builder.yml` and `updateLogic.ts` read `isaacmiller123/nodechess`. The `origin` remote
-still points at `isaacmiller123/chess-sharp`, so `release.mjs check` fails until the repo is renamed
-on GitHub and the remote is repointed:
+All three read `isaacmiller123/nodechess` since the 2026-07-27 rename. GitHub redirects the
+old `chess-sharp` path, so stale clones and old release links keep working; repoint any
+remaining local clone with:
 
 ```sh
 git remote set-url origin https://github.com/isaacmiller123/nodechess.git
 ```
-
-GitHub redirects the old path, so clones and existing release links keep working either way.
 
 ---
 
@@ -291,9 +288,8 @@ The Windows installer name is pinned rather than left to electron-builder's defa
 
 ## 10. Owner credential checklist
 
-- [x] GitHub repo exists, **public**, Actions enabled, under `isaacmiller123/chess-sharp`.
-- [ ] **Rename it to `isaacmiller123/nodechess` and repoint `origin`** (§2). `release.mjs check`
-      fails until then, because `electron-builder.yml` and `updateLogic.ts` already say `nodechess`.
+- [x] GitHub repo exists, **public**, Actions enabled, under `isaacmiller123/nodechess`
+      (renamed from `chess-sharp` 2026-07-27; `origin` repointed, §2).
 - [x] `origin` remote set; repo pushed; tags through `v1.3.0`.
 - [x] `datasets-v1` release exists with the engine + puzzle assets.
 - [ ] **Per release:** bump `package.json`, push `vX.Y.Z`, confirm both CI legs green + the

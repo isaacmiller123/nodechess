@@ -849,8 +849,8 @@ Seven commits landed after the entry above. Scope and date per commit, oldest fi
 - **STILL OPEN after this run.** (a) The chunked puzzle artifact has to be built and uploaded before
   a deploy has puzzles at all: dist-puzzles is gitignored, is not part of the site upload, and goes
   to its own bucket (docs/DEPLOY-WEB.md Part 6). (b) The Cloudflare Pages project and the DNS/domain
-  setup are not recorded as done here (docs/DEPLOY-WEB.md Parts 2 to 5). (c) The GitHub repo rename
-  to isaacmiller123/nodechess is still pending, so `node scripts/release.mjs check` fails and the
-  in-app updater names a repo that does not resolve (docs/RELEASE.md §2). (d) The A-final residuals
+  setup are not recorded as done here (docs/DEPLOY-WEB.md Parts 2 to 5). (c) DONE 2026-07-27: the
+  GitHub repo rename to isaacmiller123/nodechess landed and `origin` was repointed; `node
+  scripts/release.mjs check` passes the slug checks (docs/RELEASE.md §2). (d) The A-final residuals
   above stand: public-relay reliability and a TURN server for NAT-hard peers are ops work, and rated
   ladders need real opponents before they mean anything.

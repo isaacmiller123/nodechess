@@ -1,8 +1,9 @@
 // Which build the visitor is offered, and where it comes from.
 
 /* WHERE THE BUILDS ARE.
-   github.com/isaacmiller123/chess-sharp is the repo the git remote points at
-   and the one carrying every release.
+   github.com/isaacmiller123/nodechess is the repo the git remote points at
+   and the one carrying every release (renamed from chess-sharp 2026-07-27;
+   GitHub 301-redirects the old slug).
 
    THESE ARE DIRECT DOWNLOADS. /releases/latest/download/<name> resolves with a
    302 to the asset itself, so a click downloads rather than landing the visitor
@@ -18,7 +19,7 @@
    src/main/updates/updateLogic.ts pickWinAsset still matches: its comment says
    it keys off the installer's exact prefix, so renaming without looking would
    break auto-update to fix a link. */
-const RELEASE_BASE = 'https://github.com/isaacmiller123/chess-sharp/releases'
+const RELEASE_BASE = 'https://github.com/isaacmiller123/nodechess/releases'
 const LATEST = `${RELEASE_BASE}/latest/download`
 
 /** Every asset the current release actually publishes, verified against the
