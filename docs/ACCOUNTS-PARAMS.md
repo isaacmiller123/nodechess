@@ -1,6 +1,6 @@
 # Decentralized Accounts: §13 parameter decisions (build-time defaults)
 
-Companion to docs/ACCOUNTS-SPEC.md v1.1. Every §13 open parameter, the chosen default, and the
+Companion to docs/ACCOUNTS-SPEC.md v1.2. Every §13 open parameter, the chosen default, and the
 rationale. Parameters marked **[SIGN-OFF]** want Isaac's explicit approval; everything else is a
 sensible default changeable before A-final without migration pain. Parameters marked
 **[A5-CALIBRATED]** get provisional values here and final values from the A5 calibration runs
@@ -42,7 +42,7 @@ new params version that only applies to chains/segments created after it.
 | `W_n` (canonical witness set) | **16** | Large enough that eligibility floors + diversity rules leave a working quorum under churn; small enough that key-distance committees stay cheap to enumerate at 2-user scale (rule: at populations < W_n, all eligible nodes serve, spec §4). |
 | `T_lease` | **9 of 16** | Strict majority → two valid overlapping-epoch leases impossible (9+9>16). |
 | Checkpoint cosigners | **M=4 of N=8** eligible witnesses, ≥3 distinct /16-key-space prefixes (diversity bound) | 4 slashable cosignatures per checkpoint is real skin-in-the-game without making checkpoints expensive; N=8 is the nearest-eligible half of W_n. **[SIGN-OFF]**. This is the fraud-cost dial. |
-| Witness eligibility floors | own-trust ≥ **0.5**; uptime attestation ≥ **95%** trailing 30d; entanglement-distance: **no direct game/friend edge with subject in trailing 90d AND shared-partner overlap < 20%** | Spec requires floors exist; these are the initial dials. At tiny populations the floors relax per §4 (any eligible node serves) but M-of-N + diversity still bound single-witness power. |
+| Witness eligibility floors | own-trust ≥ **0.5**; uptime attestation ≥ **95%** trailing 30d; entanglement-distance: **no direct game/friend edge with subject in trailing 90d AND shared-partner overlap < 20%** | Spec requires floors exist; these are the initial dials. At tiny populations only the soft floors (trust, uptime) relax per §4; the structural gates (self, advertised `caps.witness`, presence freshness, the entanglement gates) never relax (src/shared/accounts/witness/eligibility.ts), and M-of-N + diversity still bound single-witness power. |
 | Witnessed-time window | timestamp valid within **±90s** of the median of the attesting witnesses' independently observed network time; age/ban/staleness timestamps need ≥3 entanglement-distant attesters | Wide enough for clock skew + relay latency, far too narrow to fake account age or shave ban expiries meaningfully. |
 | Lease TTL / heartbeat / epoch | **TTL 120s, heartbeat 20s** (5 missed beats → expiry), epoch = monotonic u64 fencing token | Short enough that "playing elsewhere" clears in ≤2 min after a crash; heartbeats piggyback on existing presence traffic. |
 
@@ -51,7 +51,7 @@ new params version that only applies to chains/segments created after it.
 | Param | Default | Rationale |
 |---|---|---|
 | `N_ckpt` | every **20** witnessed games | 10k-game chain → 500 checkpoints; incremental verify stays one small fold; fast-path viewers re-fold ≤19 games worst case. |
-| `p_spot` | **0.05** (5%), always spot-check when cosigners lack diversity or checkpoint is < 2 epochs old | Cheap per-view; expected detection of a bad checkpoint ≈ certain at modest view counts, and fraud is permanent slashing on first catch. |
+| `p_spot` | **0.2** (20%), pinned as `VIEWER_SPOT_CHECK_P` in the live viewer (src/renderer/src/features/account/net/viewerClient.ts) and injected into the substrate per resolve (storage/viewer.ts pins no default); the spot-check runs regardless of the draw when the cosigner set lacks /16-prefix diversity or diversity is unknown | Fails toward auditing: the deep re-derivation is cheap in JS, expected detection of a bad checkpoint ≈ certain at modest view counts, and fraud is permanent slashing on first catch. |
 | Avatar cap | ≤ **32 KB** base64 | Fixed by spec §2. |
 
 ## Storage (§5)
@@ -78,7 +78,7 @@ new params version that only applies to chains/segments created after it.
 |---|---|---|
 | Width curve | `width(T) = 50 + 450·(1−T)^2` | Continuous, ±50 at T=1, ±500 at T=0, flat near the top (honest players sit in precision matchmaking), steep near the floor. |
 | Island term | pairing cost includes `0.35 · |T_a − T_b| · 500` Elo-equivalent penalty when either side's T < 0.6 | Comparable-suspicion accounts attract; negligible effect in the honest band. **[A5-CALIBRATED]** |
-| Opponent-diversity weighting | opponent o contributes `T_o · min(1, entdist(o)/D₀)` to the diversity term, saturating log-count of unique weighted opponents; D₀ = the eligibility floor distance | Fresh/low-trust/close sock puppets contribute ≈0 (spec §7). |
+| Opponent-diversity weighting | Shipped A4 construction (normative: src/shared/accounts/mm/trust.ts; supersedes the pre-A4 `T_o · min(1, entdist(o)/D₀)` sketch, 2026-07-25). Per opponent: weight = the embedded-oppCkpt trust proxy, `TRUST_OPP_CKPT_BASE_MICRO` 0.25 + `TRUST_OPP_COSIG_STEP_MICRO` 0.10 per verified cosigner (capped at `TRUST_OPP_COSIG_CAP` 4) + a chain-depth term up to `TRUST_OPP_HEIGHT_SPAN_MICRO` 0.35, floor `TRUST_OPP_PROXY_FLOOR_MICRO` 0.05 for a verified segment with no oppCkpt, clamped to the verifier's eligibility-verified evidence, × repeat-play discount `entSat(n) = floor(1e6/n)`. The weighted sum S saturates rationally, `div = S/(S + TRUST_DIV_SAT_MICRO)` (8 fully-weighted opponents = 0.5), over a trailing window of `trustDivWindow` = **1000** witnessed heights (`PARAMS_A4`, src/shared/accounts/ratings/params.ts). | Fresh/low-trust/close sock puppets contribute ≈0 (spec §7): a forged segment fails the verify gate and scores 0, a no-checkpoint opponent earns 1/20 weight, and repeat play against one root divides its own contribution away. |
 | Trust-term weights (chain-shape, A4) | age 0.15 · diversity 0.30 · fork/checkpoint cleanliness 0.25 · completion hygiene 0.30; forensic terms re-weight in at A5 | A4 ships T from chain shape only (spec §14-A4); weights renormalize when Tier-1 forensics land. **[A5-CALIBRATED]** |
 
 ## Judge (§8): provisional, every value re-pinned by A5 calibration
@@ -90,7 +90,9 @@ new params version that only applies to chains/segments created after it.
 | `T2_nodes` | **2,000,000/position, MultiPV 6** | Deep enough for Regan-style aggregation; runnable overnight on a phone, minutes on desktop. **[A5-CALIBRATED]** |
 | Hash / TT | **16 MB**, `ucinewgame` + TT clear before every judged game (per-game granularity) | Fixed by spec (≤16 MB, weakest-device allocatable). |
 | Score-equivalence window | engine-match counts any move within **±15cp** of a MultiPV line at the judged depth | Absorbs engine variance per spec (never exact-move matching). **[A5-CALIBRATED]** |
-| Regan window | **K=30** rated games per ladder, z-threshold **5.0** | ~2.9e-7 single-test FPR before correction; A5's obligation is proving the empty-margin property, which may move both. **[A5-CALIBRATED]** |
+| Regan window | **K=30** rated games per ladder, z-threshold **5.0** (`reganK`, `zThresholdMicro`: `PARAMS_A5`, src/shared/accounts/judge/params.ts) | ~2.9e-7 single-test FPR before correction; A5's obligation is proving the empty-margin property, which may move both. **[A5-CALIBRATED]** |
+| Regan escalation | z-escalation **3.0** (`zEscalateMicro`, `PARAMS_A5`) | The deterministic Tier-2 escalation trigger (spec §8): obliges the deeper analysis only, never a ban; conviction stays at 5.0. **[A5-CALIBRATED]** |
+| Lifetime accumulation | `z_life(W) = floor(Σ z_w / √W)` over the ladder's closed windows; scheme id `z-sum-over-sqrt-windows-v1` (`lifetimeScheme`, `PARAMS_A5`) | ~N(0,1) under the null, so the same 3.0/5.0 lines apply (spec §8 self-ban rule); sustained just-under-escalation metering (≈2.6σ/window) escalates at ~2 windows and convicts at ~4. Owner decision 2026-07-21. **[A5-CALIBRATED]** |
 | Commit-reveal salt | `sha256(thresholdSig_lease-epoch(root ‖ ladder ‖ windowIndex))`, revealed at window close | Witness-derived per spec §7(b): unpredictable before, fully recomputable after. |
 | estElo | refit against the corpus re-analyzed at (T1_nodes, MultiPV 4) via the existing corpus/fit harness | Spec obligation. Shipped depth-12 fit does not transfer. |
 
@@ -98,9 +100,9 @@ new params version that only applies to chains/segments created after it.
 
 | Param | Default | Rationale |
 |---|---|---|
-| Mailbox retention | **30 days** or until synced | Covers a monthly-cadence player; it's ephemeral coordination state (C-3). |
-| Per-sender-root limits | **5 pending friend requests** per recipient; **20 mailbox items/day** per (sender, recipient) | Stops floods without touching normal use. |
-| Per-recipient fair-share | **200 items**; eviction order: strangers-by-oldest first, entangled/friend senders never evicted by stranger pressure | Spec §10: sybil floods can't evict established roots. |
+| Mailbox retention | **14 days** (`retentionMs`) or until synced | Ephemeral coordination state (C-3), pruned eagerly on every state-modifying call. Every value in these three rows is pinned as `PARAMS_SOCIAL_MAILBOX` (src/shared/accounts/social/mailbox.ts); mailbox state pins the params digest, so relays on different rule sets fail closed instead of diverging. |
+| Per-sender-root limits | **8 admitted items per fixed 1 h window** per sender root, across all recipients (`ratePerWindow`/`rateWindowMs`); **4 slots** per sender root in any one recipient's box, all kinds (`perSenderPerBox`) | Stops floods without touching normal use; only admitted messages charge the window, so replaying a captured envelope cannot burn a sender's budget. |
+| Per-recipient fair-share | box cap **64** (`boxCap`); a full box admits a new item only by evicting a stored one with strictly lower sender-edge priority (`edgeMicro`: the §10 entanglement/trust/reputation fold), so a fresh root (edge 0) never evicts an established sender's mail | Spec §10: sybil floods can't evict established roots. Relay-wide bounds: **512** recipient boxes (`recipientsCap`, a new recipient never evicts another's box), **4096** tracked sender windows (`sendersCap`), payload ≤ **2048** chars (`payloadMaxChars`). |
 | Reputation fold weights | completion 0.35 · disconnect/abandon 0.25 · timeout-vs-resign 0.10 · rematch acceptance 0.05 · no-show 0.10 · commendations 0.15 → 0–100 score; badge tiers 0–39 / 40–69 / 70–89 / 90–100 | **[SIGN-OFF]** First-cut weighting of §6b's enumerated inputs; commendations rate-limited 1/opponent/game by entanglement. |
 
 ## Items explicitly flagged for sign-off

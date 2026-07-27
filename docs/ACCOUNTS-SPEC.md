@@ -1,12 +1,16 @@
-# Decentralized Accounts: binding spec (v1.1)
+# Decentralized Accounts: binding spec (v1.2)
 
 Authoritative design for the database-less account system. User decisions locked 2026-07-14.
 v1.1 (same day) folds a 33-finding adversarial review: the witness fabric is now defined, rating
 fold inputs are pinned, the PIN committee is bound, checkpoints are self-verifying, wire
 signatures are scheduled as new work, and the build phases were reordered to match real
-dependencies. Builders conform to this exactly; deviations need owner approval. This spec
-supersedes the interim server-account system (server/auth.ts + per-user DBs) once phase A-final
-ships: see §14.
+dependencies. v1.2 (2026-07-25, owner decision) folds the shipped build: lease takeover is a
+two-lane gate (§4), removing the deadlock where an account without a PIN could never reach a
+second device; sign-in on a never-seen machine restores the chain over the overlay (§1, §10);
+the product ships no PIN UI (§1); witness eligibility gates on advertised capabilities and a
+standalone seed node exists (§4, §11). Builders conform to this exactly; deviations need owner
+approval. This spec supersedes the interim server-account system (server/auth.ts + per-user DBs)
+once phase A-final ships: see §14.
 
 **The goal, in the owner's words:** accounts without a database. Not for anonymization, but for
 nodes and network verification. Ratings, bans, reputation, profiles, and anticheat all exist and
@@ -35,6 +39,12 @@ designed so tampering is detectable by anyone, forever, and strictly worse than 
 - **Derivation**: `argon2id(password, salt = username) → 32-byte seed → ed25519 root keypair`
   (SLIP-0010 hardened derivation for private child keys). Creating an account is pure local
   computation; signing in on any device is re-derivation. No signup round-trip, no email.
+  **Cross-device restore**: on a machine that holds no chain for the derived root, sign-in
+  additionally resolves the account chain over the §5 overlay, verifies it fully (a hostile or
+  partial reconstruction never becomes a local account), and appends a root-signed personal-lane
+  device certificate at the next free index, so every machine's key stays independently
+  revocable (src/web/accounts.ts, adoptFromNetwork). An unreachable overlay reads as "not
+  found", never as a broken sign-in.
   Crypto deps: an audited ed25519 library (e.g. @noble/ed25519) + hash-wasm **promoted to
   `dependencies`** with its first renderer-side import. Both A1 deliverables.
 - **Display identity**: `name#TAG`, TAG = first 4–5 base32 chars of the root pubkey fingerprint.
@@ -48,14 +58,21 @@ designed so tampering is detectable by anyone, forever, and strictly worse than 
   the **root** and cannot be shed by key rotation.
 - **Devices**: enrollment is a **personal-lane** root-signed certificate, valid offline and
   sufficient for local/offline use. **Witnessed-zone participation** by a device additionally
-  requires its enrollment to be witness-countersigned at first witnessed contact (PIN-gated, like
-  lease takeover). A witnessed revocation invalidates all enrollments with earlier witnessed
+  requires its enrollment to be witness-countersigned at first witnessed contact (session-gated
+  like lease takeover, §4: PIN lane when the account carries an active PIN record, root lane
+  otherwise). A witnessed revocation invalidates all enrollments with earlier witnessed
   timestamps, so a password thief's silent offline enrollments never outrank the owner's
   witnessed revocation.
 - **Recovery**: none, by design. The client nudges a mnemonic/keyfile export at creation and
   states the deal plainly. (C-5.)
 - **PIN** (4–8 digits): gates the witnessed zone only. Password alone = full local/offline use +
-  unrated link-play. Mechanics, bound tight (closes the committee attack):
+  unrated link-play. **Product posture (2026-07-25): the protocol path below ships and stays
+  verifiable, but the product deliberately offers no PIN creation or entry UI.** Provisioning
+  cannot succeed without a real T-of-N committee of independent nodes, and the lifetime fuse
+  made offering it early pure downside (permanent failure accrual against accounts that gained
+  nothing by enrolling). Accounts without a PIN record take the root takeover lane (§4).
+  Enabling PINs later is an append, not a migration: an account that appends a PIN record
+  upgrades to the PIN lane automatically. Mechanics, bound tight (closes the committee attack):
   - Verification is a **threshold OPRF against a bound committee**: at PIN creation, a witnessed
     root-signed record fixes a T-of-N committee drawn by key-distance from the witness fabric
     (§4). Members hold shares + a **threshold-replicated failure counter**. They can neither
@@ -134,9 +151,14 @@ Consequences, load-bearing:
 key: the W_n closest **eligible** live nodes by key-distance in the overlay (§5's metric).
 Eligibility: minimum own-trust floor, uptime attestation, and **entanglement-distance from the
 subject above a floor** (a node you mostly play/befriend cannot witness you, closes sock-puppet
-witnessing). At populations too small to fill W_n, any eligible node serves (the operator peer
-exists for exactly this); the M-of-N and diversity rules below still bound what any single
-witness can attest.
+witnessing), plus **structural gates that never relax**: a node cannot witness itself, cannot
+advertise presence from beyond the clock window, and must **advertise the witness capability**
+in its presence record (src/shared/accounts/witness/eligibility.ts, reason `no-witness-cap`;
+infrastructure-mode seed nodes are ineligible by construction, §11). PIN-committee draws
+likewise filter on the advertised committee capability. At populations too small to fill W_n,
+only the soft floors (trust, uptime) relax and any remaining eligible node serves (the operator
+peer exists for exactly this); the anti-sock-puppet gates hold at every population, and the
+M-of-N and diversity rules below still bound what any single witness can attest.
 
 - **Rated play requires ≥1 witness that is neither player**. The honest boundary, stated
   plainly: with exactly two machines online and no third reachable, rated play is unavailable
@@ -149,7 +171,14 @@ witness can attest.
   a **threshold T_lease of the canonical set** and carries a **monotonic epoch (fencing token)**;
   the threshold intersection makes two valid overlapping-epoch leases impossible. Devices append
   witnessed events only under a live lease; second device → "playing elsewhere"; expiry frees
-  takeover; **takeover requires a PIN-gated witnessed session**. Slashing distinguishes: two
+  takeover; **takeover requires a witnessed session bound to exactly that device and epoch, with
+  the lane chosen from the subject's own signed state** (verifyTakeover,
+  src/shared/accounts/witness/lease.ts): PIN-signed when the account carries an active PIN
+  record, root-signed when it does not. The verifier derives the lane from the subject's
+  records, never from the claimant, so a password thief cannot downgrade a PIN-protected
+  account; an account that appends a PIN record later moves to the PIN lane automatically. The
+  root lane is one factor by design: whoever holds the password holds the account, the §1
+  recovery deal stated plainly. Slashing distinguishes: two
   successors under **one** epoch = user fraud, permanent; successors under **different epochs
   with conflicting witness grants** = witness fault: the accused presents the lease-epoch
   evidence (an automatic, mechanical appeal) and the faulty grantors are the ones slashed.
@@ -342,7 +371,9 @@ after arbitrary prior engine use yields identical bits.)
 
 ## §10 Social surface (chess.com-parity behaviors)
 
-Sign-in anywhere (derivation, not lookup) · edit profile (signed personal-lane records) · view
+Sign-in anywhere (key derivation, plus verified chain resolution over the §5 overlay and a fresh
+device enrollment when this machine has never seen the account, §1; no registry lookup) · edit
+profile (signed personal-lane records) · view
 anyone incl. years-offline (§5; staleness shown as "last witnessed activity") · friends add/remove
 (witnessed countersigned edges, §3) · reputation badge (§6b) · presence (ephemeral) ·
 stats/history/rating graphs (viewer-derived). **Mailbox anti-spam (closes friend-request floods):**
@@ -370,6 +401,13 @@ can carry (advertised):
 - **The operator's always-awake peer needs two new integrations to be a real peer** (not "just
   evolves"): a Node WebRTC binding to join the fabric, and a Node harness for the pinned judge WASM
   (worker/loader shim): both A2 deliverables, since it is also witness-of-last-resort.
+- **Seed node** (2026-07-25, src/seed): a standalone target running up to 25 full peers in one
+  process (browser tab or desktop shell), so a volunteer contributes capacity without owning N
+  machines. Infrastructure mode is the default: `caps.witness` and `caps.committee` are false, so
+  seed nodes route, host shards, relay mailboxes, and announce presence, and are ineligible to
+  attest, cosign checkpoints, grant leases, or hold PIN shares by §4's capability gate. Capacity
+  in bulk, zero authority. Witness mode is opt-in and flips `caps.witness` on: it exists to
+  supply the third machine a 2-player rated table needs (§4, C-10), not to run at scale.
 
 ## §12 Accepted compromises (the honest ledger)
 
@@ -426,9 +464,11 @@ multi-client suites in the test-mp mock-pair style):
   keyring, mnemonic export, ed25519 + hash-wasm packaging. Proof: create / sign-in / local device
   enroll fully offline; chains verify headless.
 - **A2, Witness fabric + PIN**: canonical witness set, write lease with epochs, diversity-bound
-  witnessed time, the tOPRF PIN committee (**pulled here; leases depend on it**), operator-peer
-  Node WebRTC + Node judge-WASM harness. Proof: lease grant/takeover PIN-gated; a forced
-  same-epoch fork is slashed and a different-epoch double-grant is appealed, in test.
+  witnessed time, the tOPRF PIN committee (**pulled here; PIN-lane leases depend on it**),
+  operator-peer Node WebRTC + Node judge-WASM harness. Proof: lease grant/takeover gated by the
+  lane the subject's state selects (PIN session when a PIN record exists, root session
+  otherwise, §4); a forced same-epoch fork is slashed and a different-epoch double-grant is
+  appealed, in test.
 - **A3, Overlay + storage + wire v6**: Kademlia-over-WebRTC (routing, iterative lookup,
   bootstrap), shard duty + repair, authenticated pointers, reconstruction viewer, **wire v6**
   (PROTOCOL_VERSION bump, `witness` role, per-move signature chaining, countersigned clock stream).
