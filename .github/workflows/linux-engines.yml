@@ -1,0 +1,169 @@
+name: linux-engines
+
+# Builds and PROVES the Linux engine set that datasets-v1 serves.
+#
+# Why this workflow exists at all: the four engines are downloaded at runtime
+# from the datasets-v1 release (docs/DATASETS.md), keyed by
+# `${process.platform}-${process.arch}`. Three of them have an upstream Linux
+# build to mirror. lc0 does NOT: LeelaChessZero publishes Windows zips, an
+# Android apk and source, and nothing else, so the Linux binary has to be built
+# somewhere. This is that somewhere.
+#
+# It is also the only place the Linux engines can actually be RUN before they
+# ship. Development happens on an arm64 Mac, which cannot execute an x86-64 ELF,
+# so "the binary downloads and hashes correctly" was the strongest claim
+# available without this job. Each engine here gets the same handshake the app
+# performs (UCI for the three chess-family engines, GTP for KataGo), against a
+# real net where one is needed, so a green run means they start and speak.
+#
+# Run it from the Actions tab, then attach the lc0 artifact to datasets-v1.
+
+on:
+  workflow_dispatch:
+  # Guards the engine tables against edits that outrun the release: touching a
+  # per-platform artifact table should re-prove the Linux set still starts.
+  push:
+    paths:
+      - "src/main/datasets/**"
+      - ".github/workflows/linux-engines.yml"
+
+permissions:
+  contents: read
+
+env:
+  LC0_VERSION: "0.32.1"
+  SF_TAG: sf_18
+  FAIRY_TAG: fairy_sf_14
+  KATAGO_VERSION: "1.16.5"
+  DATASETS: https://github.com/isaacmiller123/nodechess/releases/download/datasets-v1
+
+jobs:
+  engines:
+    name: build lc0 + prove the Linux engine set
+    # 22.04 ON PURPOSE, NOT ubuntu-latest. lc0 is compiled here and links the
+    # runner's glibc, so the runner image sets the OLDEST distro the binary can
+    # run on. 22.04 gives glibc 2.35 (Ubuntu 22.04+, Debian 12+, Mint 21+).
+    # Building on 24.04 would raise that floor to glibc 2.39 and silently break
+    # the binary on the distros most desktop users are actually running.
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---- lc0: the one with no upstream Linux build -----------------------
+      - name: Install lc0 build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            ninja-build meson libeigen3-dev zlib1g-dev build-essential
+
+      - name: Build lc0 ${{ env.LC0_VERSION }}
+        run: |
+          set -euxo pipefail
+          git clone --depth 1 --branch "v${LC0_VERSION}" --recurse-submodules \
+            https://github.com/LeelaChessZero/lc0.git lc0-src
+          cd lc0-src
+          # CPU-only. The GPU backends (cuda/opencl/dnnl) would drag in vendor
+          # SDKs this build must not depend on, and Maia runs at nodes=1 where
+          # the eigen/blas backend is entirely adequate.
+          meson setup build --buildtype=release \
+            -Dgtest=false \
+            -Dcudnn=false \
+            -Dopencl=false \
+            -Ddnnl=false
+          ninja -C build lc0
+          strip build/lc0
+          cp build/lc0 "$GITHUB_WORKSPACE/lc0-${LC0_VERSION}-linux-x64"
+
+      # ---- The three with an upstream Linux build --------------------------
+      - name: Fetch Stockfish, Fairy-Stockfish and KataGo
+        run: |
+          set -euxo pipefail
+          # Stockfish: sse41-popcnt, NOT avx2. It is the widest baseline that is
+          # still fast (Nehalem 2008 and later). An avx2 binary raises the floor
+          # to Haswell 2013 and dies with SIGILL on anything older, and a crash
+          # on first analysis is far worse than a few percent of node rate.
+          curl -sSfL -o sf.tar \
+            "https://github.com/official-stockfish/Stockfish/releases/download/${SF_TAG}/stockfish-ubuntu-x86-64-sse41-popcnt.tar"
+          tar xf sf.tar
+          mv stockfish/stockfish-ubuntu-x86-64-sse41-popcnt stockfish-sf18-linux-x64
+          chmod +x stockfish-sf18-linux-x64
+
+          # Fairy-Stockfish: the plain largeboard build, matching the Windows
+          # artifact already in FAIRY_SF_ARTIFACTS (not the bmi2/modern ones).
+          curl -sSfL -o fairy-stockfish-14-linux-x64 \
+            "https://github.com/fairy-stockfish/Fairy-Stockfish/releases/download/${FAIRY_TAG}/fairy-stockfish-largeboard_x86-64"
+          chmod +x fairy-stockfish-14-linux-x64
+
+          # KataGo: the eigen (pure CPU) build, matching the Windows choice.
+          # REPACKAGED FROM .zip TO .tgz DELIBERATELY. katago.ts extracts with
+          # the OS's own `tar -xf`, which is bsdtar on macOS and Windows and
+          # reads zip happily. On Linux `tar` is GNU tar, which cannot read zip
+          # at all, so shipping the upstream zip here would fail extraction on
+          # every Linux install.
+          curl -sSfL -o katago.zip \
+            "https://github.com/lightvector/KataGo/releases/download/v${KATAGO_VERSION}/katago-v${KATAGO_VERSION}-eigen-linux-x64.zip"
+          mkdir -p kg && cd kg && unzip -q ../katago.zip && chmod +x katago
+          tar czf ../katago-linux-x64.tgz katago default_gtp.cfg
+          cd ..
+
+      # ---- Prove they run --------------------------------------------------
+      - name: Stockfish and Fairy-Stockfish speak UCI
+        run: |
+          set -euo pipefail
+          for e in stockfish-sf18-linux-x64 fairy-stockfish-14-linux-x64; do
+            out=$(printf 'uci\nquit\n' | "./$e")
+            echo "$out" | grep -q uciok || { echo "FAIL: $e never said uciok"; echo "$out" | head -20; exit 1; }
+            echo "OK: $e"
+          done
+          # Fairy must also actually route a non-chess variant, which is the
+          # entire reason it is shipped. xiangqi is the load-bearing one.
+          out=$(printf 'setoption name UCI_Variant value xiangqi\nposition startpos\ngo depth 5\nquit\n' \
+            | ./fairy-stockfish-14-linux-x64)
+          echo "$out" | grep -q bestmove || { echo "FAIL: fairy found no xiangqi move"; echo "$out" | tail -20; exit 1; }
+          echo "OK: fairy plays xiangqi"
+
+      - name: lc0 speaks UCI with real Maia weights
+        run: |
+          set -euo pipefail
+          chmod +x "lc0-${LC0_VERSION}-linux-x64"
+          curl -sSfL -o maia-1100.pb.gz \
+            "https://github.com/CSSLab/maia-chess/releases/download/v1.0/maia-1100.pb.gz"
+          # Exactly how MaiaPool spawns it: the binary plus --weights=<file>.
+          out=$(printf 'uci\nquit\n' | "./lc0-${LC0_VERSION}-linux-x64" --weights=maia-1100.pb.gz 2>&1)
+          echo "$out" | grep -q uciok || { echo "FAIL: lc0 never said uciok"; echo "$out" | head -30; exit 1; }
+          # A handshake is not a move. Make it actually play one.
+          out=$(printf 'uci\nposition startpos\ngo nodes 1\nquit\n' \
+            | "./lc0-${LC0_VERSION}-linux-x64" --weights=maia-1100.pb.gz 2>&1)
+          echo "$out" | grep -q bestmove || { echo "FAIL: lc0 found no move"; echo "$out" | tail -30; exit 1; }
+          echo "OK: lc0 plays with maia-1100"
+
+      - name: KataGo answers GTP with a real net
+        run: |
+          set -euo pipefail
+          tar xzf katago-linux-x64.tgz
+          ./katago version
+          curl -sSfL -o kata-b6c96.bin.gz "${DATASETS}/kata-b6c96.bin.gz"
+          # The same GTP path the Go bot uses, and a real generated move.
+          out=$(printf 'name\ngenmove B\nquit\n' \
+            | ./katago gtp -config default_gtp.cfg -model kata-b6c96.bin.gz 2>/dev/null)
+          echo "$out" | grep -q '^=' || { echo "FAIL: katago gave no GTP response"; echo "$out" | head -30; exit 1; }
+          echo "OK: katago generated a move over GTP"
+
+      - name: Checksums for the artifact tables
+        run: |
+          echo "Paste these into the datasets tables (bytes + sha256):"
+          for f in "lc0-${LC0_VERSION}-linux-x64" stockfish-sf18-linux-x64 \
+                   fairy-stockfish-14-linux-x64 katago-linux-x64.tgz; do
+            printf '%s  bytes=%s  sha256=%s\n' "$f" "$(stat -c%s "$f")" "$(sha256sum "$f" | cut -d' ' -f1)"
+          done
+
+      # lc0 is the only one that cannot be re-fetched from an upstream URL, so
+      # it is the only one that has to leave this run as an artifact.
+      - name: Upload lc0
+        uses: actions/upload-artifact@v4
+        with:
+          name: lc0-linux-x64
+          if-no-files-found: error
+          path: lc0-${{ env.LC0_VERSION }}-linux-x64
