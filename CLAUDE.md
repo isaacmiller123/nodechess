@@ -39,6 +39,17 @@ Non-negotiables from that spec:
 - **Look:** chess.com/Lichess-grade, not merely consistent.
 - Coach persona is **Viktor**, an exacting old-school master.
 
+## Shipping
+
+- Anything that lands on GitHub as a release (a `v*` tag / GitHub Release) carries its CHANGELOG.md
+  entry in the SAME commit that gets tagged, because
+  `src/renderer/src/features/welcome/changelog.ts` inlines CHANGELOG.md at build time via Vite
+  `?raw`: an entry added after the tag never reaches the packaged app or the web build, so it is
+  invisible to users forever.
+- Entries say what changed for a player, not which file moved. CHANGELOG.md documents the format
+  contract; the welcome screen parses it, so the shape is load bearing.
+- A release with no changelog entry is incomplete work, not a release.
+
 ## Gotchas
 
 - Keep every React hook above any early return. A hook after a return caused a prior #300 crash.

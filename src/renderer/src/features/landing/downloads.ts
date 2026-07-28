@@ -10,8 +10,8 @@
    on a release page to hunt through seven files.
 
    THE ONE MAINTENANCE COST, and it is real: electron-builder writes the version
-   into every artifact name, so these names carry 1.3.0 and will 404 the moment
-   1.4.0 ships. They are all in this one array so it is one edit.
+   into every artifact name, so these names carry 1.4.0 and will 404 the moment
+   1.5.0 ships. They are all in this one array so it is one edit.
 
    TO MAKE THEM PERMANENT, drop ${version} from the artifactName entries in
    electron-builder.yml so the files are named nodechess-mac-arm64.dmg and so
@@ -25,7 +25,7 @@ const LATEST = `${RELEASE_BASE}/latest/download`
 /** Every asset the current release actually publishes, verified against the
  *  GitHub API rather than guessed. Sizes are the real ones, so a visitor on a
  *  phone plan knows what they are starting. */
-export const RELEASE_VERSION = '1.3.0'
+export const RELEASE_VERSION = '1.4.0'
 
 export type PlatformId = 'macos' | 'macos-intel' | 'windows' | 'linux' | 'ios' | 'android'
 
@@ -45,32 +45,44 @@ export interface PlatformOffer {
    cannot promise a build no target produces:
      mac    dmg + zip, arm64 and x64
      win    NSIS installer, portable exe and zip, x64 only
-     linux  NOTHING. There is no linux: block in electron-builder.yml, so no
-            Linux artifact has ever been built. Offered as "not yet" rather
-            than pointed at a page with no Linux file on it. */
+     linux  AppImage + deb, x64 only (added 1.4.0)
+
+   THE ASSET PREFIX CHANGED. Up to and including 1.3.0 electron-builder wrote
+   `Chess-...` because productName was still Chess#. It is `nodechess-...` from
+   1.4.0 on. Both the version AND the prefix move together, which is why every
+   link is built from RELEASE_VERSION rather than written out. */
 export const OFFERS: readonly PlatformOffer[] = [
   {
     id: 'macos',
     name: 'macOS, Apple silicon',
-    href: `${LATEST}/Chess-${RELEASE_VERSION}-arm64.dmg`,
+    href: `${LATEST}/nodechess-${RELEASE_VERSION}-arm64.dmg`,
     note: 'M1 and later',
     size: '177 MB'
   },
   {
     id: 'macos-intel',
     name: 'macOS, Intel',
-    href: `${LATEST}/Chess-${RELEASE_VERSION}-x64.dmg`,
+    href: `${LATEST}/nodechess-${RELEASE_VERSION}-x64.dmg`,
     note: 'Pre-2020 Macs',
     size: '179 MB'
   },
   {
     id: 'windows',
     name: 'Windows',
-    href: `${LATEST}/Chess-Setup-${RELEASE_VERSION}.exe`,
+    href: `${LATEST}/nodechess-Setup-${RELEASE_VERSION}.exe`,
     note: '64 bit installer',
     size: '144 MB'
   },
-  { id: 'linux', name: 'Linux', href: null, note: 'No Linux build yet' },
+  {
+    id: 'linux',
+    name: 'Linux',
+    href: `${LATEST}/nodechess-${RELEASE_VERSION}-linux-x64.AppImage`,
+    // Said plainly because it is the one platform where a headline feature is
+    // missing: ENGINE_ARTIFACTS in src/main/datasets/datasets.service.ts has no
+    // linux-x64 row, so Settings -> Datasets offers the puzzle DB and no engine.
+    note: 'AppImage, x64. No Stockfish analysis yet',
+    size: '180 MB'
+  },
   { id: 'ios', name: 'iOS', href: null, note: 'The iOS app is coming soon' },
   { id: 'android', name: 'Android', href: null, note: 'The Android app is coming soon' }
 ]
@@ -99,9 +111,17 @@ interface UaWindow extends Navigator {
  * Apple silicon versus Intel cannot be told apart from the user agent: every
  * Mac says the same thing. Apple silicon leads because it is every Mac sold
  * since 2020, and the Intel build is one control away in the full list.
+ *
+ * THE FALLBACK IS WINDOWS, NOT LINUX, as of 1.4.0. It was linux while linux
+ * had no build, where leading with it meant showing "no Linux build yet": a
+ * truthful answer for a browser we could not identify. Now that Linux is a real
+ * AppImage, that same fallback would hand an unidentifiable visitor a binary
+ * their machine probably cannot run. Windows is the majority desktop, so it is
+ * the better guess, and every other build stays one control away in the full
+ * list below the lead.
  */
 export function detectPlatform(): PlatformId {
-  if (typeof navigator === 'undefined') return 'linux'
+  if (typeof navigator === 'undefined') return 'windows'
   const nav = navigator as UaWindow
   const hinted = (nav.userAgentData?.platform ?? '').toLowerCase()
   const ua = nav.userAgent ?? ''
@@ -114,5 +134,5 @@ export function detectPlatform(): PlatformId {
   }
   if (hinted === 'windows' || /windows/i.test(ua)) return 'windows'
   if (hinted === 'linux' || /linux|x11|cros/i.test(ua)) return 'linux'
-  return 'linux'
+  return 'windows'
 }

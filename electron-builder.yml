@@ -82,6 +82,31 @@ mac:
   gatekeeperAssess: false
   # Fallback for the mac zip target (dmg has its own block below).
   artifactName: nodechess-${version}-${os}-${arch}.${ext}
+linux:
+  # x64 only, for the same reason as Windows: it is the arch the published
+  # Stockfish artifacts target, and an arm64 Linux build would offer an engine
+  # import that does not exist. Two artifacts: AppImage (runs anywhere, no
+  # install, no root) and .deb (Debian/Ubuntu/Mint, the majority desktop).
+  # No .rpm and no snap/flatpak: each is another packaging toolchain to keep
+  # green, and the AppImage already covers every distro the deb does not.
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  # build/icon.png (the same source the .icns and .ico derive from).
+  icon: build/icon.png
+  category: Game
+  synopsis: Offline-first board-game studio
+  description: >-
+    Chess with Stockfish analysis, a 40-chapter school, ~4.7M Lichess puzzles,
+    peer-to-peer online play, and 20+ board games including xiangqi, shogi, go,
+    checkers and othello.
+  # Matches the mac/win scheme so every asset on the release reads the same and
+  # the landing page can build all six links from one version string.
+  artifactName: nodechess-${version}-${os}-${arch}.${ext}
 dmg:
   artifactName: nodechess-${version}-${arch}.${ext}
 nsis:
