@@ -126,28 +126,34 @@ jobs:
 
       - name: lc0 speaks UCI with real Maia weights
         run: |
-          set -euo pipefail
+          set -uo pipefail
           chmod +x "lc0-${LC0_VERSION}-linux-x64"
           curl -sSfL -o maia-1100.pb.gz \
             "https://github.com/CSSLab/maia-chess/releases/download/v1.0/maia-1100.pb.gz"
-          # Exactly how MaiaPool spawns it: the binary plus --weights=<file>.
-          out=$(printf 'uci\nquit\n' | "./lc0-${LC0_VERSION}-linux-x64" --weights=maia-1100.pb.gz 2>&1)
+          # NOTE ON THE `sleep`, WHICH LOOKS LIKE PADDING AND IS NOT. Piping
+          # `quit` straight after `go` makes lc0 read EOF and exit before the
+          # search ever prints bestmove, which fails a perfectly good binary.
+          # Holding stdin open lets the search finish the way the app's long
+          # lived pipe does. nodes 1 keeps it near instant.
+          out=$( { printf 'uci\nucinewgame\nisready\nposition startpos\ngo nodes 1\n'; sleep 20; } \
+            | "./lc0-${LC0_VERSION}-linux-x64" --weights=maia-1100.pb.gz 2>&1 || true)
           echo "$out" | grep -q uciok || { echo "FAIL: lc0 never said uciok"; echo "$out" | head -30; exit 1; }
-          # A handshake is not a move. Make it actually play one.
-          out=$(printf 'uci\nposition startpos\ngo nodes 1\nquit\n' \
-            | "./lc0-${LC0_VERSION}-linux-x64" --weights=maia-1100.pb.gz 2>&1)
           echo "$out" | grep -q bestmove || { echo "FAIL: lc0 found no move"; echo "$out" | tail -30; exit 1; }
-          echo "OK: lc0 plays with maia-1100"
+          echo "OK: lc0 answered uci and played a move with maia-1100"
 
       - name: KataGo answers GTP with a real net
         run: |
-          set -euo pipefail
+          set -uo pipefail
+          # Extract with GNU tar specifically, which is the whole point of
+          # shipping a .tgz here: this is the tool katago.ts will invoke on a
+          # user's Linux box, and it is the one that cannot read the upstream zip.
           tar xzf katago-linux-x64.tgz
-          ./katago version
+          ./katago version || { echo "FAIL: katago will not even report a version"; exit 1; }
           curl -sSfL -o kata-b6c96.bin.gz "${DATASETS}/kata-b6c96.bin.gz"
-          # The same GTP path the Go bot uses, and a real generated move.
-          out=$(printf 'name\ngenmove B\nquit\n' \
-            | ./katago gtp -config default_gtp.cfg -model kata-b6c96.bin.gz 2>/dev/null)
+          # Same stdin-stays-open reason as lc0: a Go search needs to finish
+          # before genmove answers.
+          out=$( { printf 'name\ngenmove B\n'; sleep 30; } \
+            | ./katago gtp -config default_gtp.cfg -model kata-b6c96.bin.gz 2>/dev/null || true)
           echo "$out" | grep -q '^=' || { echo "FAIL: katago gave no GTP response"; echo "$out" | head -30; exit 1; }
           echo "OK: katago generated a move over GTP"
 
@@ -159,11 +165,19 @@ jobs:
             printf '%s  bytes=%s  sha256=%s\n' "$f" "$(stat -c%s "$f")" "$(sha256sum "$f" | cut -d' ' -f1)"
           done
 
-      # lc0 is the only one that cannot be re-fetched from an upstream URL, so
-      # it is the only one that has to leave this run as an artifact.
-      - name: Upload lc0
+      # ALL FOUR leave the run, not just lc0. The bytes that were exercised in
+      # the steps above are then the exact bytes uploaded to datasets-v1, so the
+      # sha256 recorded in the artifact tables belongs to a file that was proven
+      # to start. Rebuilding the KataGo .tgz locally instead would produce a
+      # different hash for the same contents (tar and gzip record timestamps),
+      # and the tested file and the shipped file would quietly diverge.
+      - name: Upload the Linux engine set
         uses: actions/upload-artifact@v4
         with:
-          name: lc0-linux-x64
+          name: linux-engines
           if-no-files-found: error
-          path: lc0-${{ env.LC0_VERSION }}-linux-x64
+          path: |
+            lc0-${{ env.LC0_VERSION }}-linux-x64
+            stockfish-sf18-linux-x64
+            fairy-stockfish-14-linux-x64
+            katago-linux-x64.tgz
