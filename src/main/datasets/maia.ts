@@ -114,6 +114,28 @@ const LC0_ARTIFACTS: Record<string, Lc0File[]> = {
       bytes: 19601280,
       sha256: '4c642ebe5e4300fb74417d43cc57d5ef33656f7b5fc536a9655ca02f8120c930'
     }
+  ],
+  // Added 1.4.0, and the only engine in the project with NO upstream binary to
+  // mirror on any platform: LeelaChessZero publishes Windows zips, an Android
+  // apk and source, and nothing else. Every release was checked, not assumed.
+  // So this one is COMPILED, by .github/workflows/linux-engines.yml, from the
+  // v0.32.1 tag with the CPU-only eigen backend (the GPU backends would pull in
+  // vendor SDKs, and Maia runs at nodes=1 where eigen is plenty).
+  //
+  // That workflow pins ubuntu-22.04 rather than ubuntu-latest for a reason that
+  // is invisible from here: lc0 links the builder's glibc, so the runner image
+  // IS the compatibility floor. 22.04 means glibc 2.35 (Ubuntu 22.04+, Debian
+  // 12+, Mint 21+). Building on 24.04 would lift that to 2.39 and break the
+  // binary on most desktops in service. One file, like the mac build: it links
+  // only libstdc++/libgomp/libc, so there is no dnnl.dll equivalent to carry.
+  'linux-x64': [
+    {
+      asset: 'lc0-0.32.1-linux-x64',
+      file: 'lc0',
+      bytes: 2237392,
+      sha256: 'b4b40f86f93c9bf84c10b7ca4088db860c6e9c026300bad2f3893d5218f73b43',
+      executable: true
+    }
   ]
 }
 

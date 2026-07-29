@@ -27,8 +27,8 @@ Releases go directly below this line, newest first.
 
 ## 1.4.0 - 2026-07-28
 
-- nodechess runs on Linux: an AppImage for any distribution, or a .deb for Debian, Ubuntu and Mint. Both are 64 bit.
-- Stockfish analysis is not available on Linux yet, because there is no Linux engine build to import. Settings, Datasets offers the puzzle database only. Online play, the 20+ board games and the puzzles all work.
+- nodechess runs on Linux: an AppImage for any distribution, or a .deb for Debian, Ubuntu and Mint. Both are 64 bit, and both need Ubuntu 22.04, Debian 12, Mint 21 or newer.
+- Every engine works on Linux, not just the app around them: Stockfish 18 for analysis and the engine bots, Fairy-Stockfish for xiangqi, shogi, janggi, makruk and the variants, lc0 with the Maia human-like opponents, and KataGo for Go. Import them from Settings, Datasets exactly as on Windows and macOS.
 - The download page offers the Linux build to visitors on Linux, instead of telling them there is nothing for them.
 - A browser we cannot identify is offered Windows rather than Linux, so an unrecognised machine gets the build it is most likely to be able to run.
 - Downloads are named nodechess rather than Chess, matching the rename. Older releases keep their original names and still install.

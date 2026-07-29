@@ -99,13 +99,30 @@ linux:
   # build/icon.png (the same source the .icns and .ico derive from).
   icon: build/icon.png
   category: Game
+  # REQUIRED BY THE DEB TARGET, not optional politeness: fpm refuses to build a
+  # .deb without a maintainer, and `author` in package.json is a bare name with
+  # no address, so the first 1.4.0 run failed here after the AppImage had
+  # already succeeded. Debian wants the RFC-822 `Name <email>` shape.
+  # admin@nodechess.com is not receiving mail yet.
+  maintainer: Isaac Miller <admin@nodechess.com>
+  # Window association. Without a .desktop filename that matches Electron's
+  # app_id, GNOME and KDE show a running nodechess window as a generic
+  # unbranded entry instead of linking it to its launcher icon. syncDesktopName
+  # derives the .desktop name from executableName when package.json declares no
+  # desktopName, which is why executableName is pinned rather than left to
+  # default off productName.
+  executableName: nodechess
+  syncDesktopName: true
   synopsis: Offline-first board-game studio
   description: >-
     Chess with Stockfish analysis, a 40-chapter school, ~4.7M Lichess puzzles,
     peer-to-peer online play, and 20+ board games including xiangqi, shogi, go,
     checkers and othello.
-  # Matches the mac/win scheme so every asset on the release reads the same and
-  # the landing page can build all six links from one version string.
+  # CAREFUL: ${arch} is NOT literal here. electron-builder rewrites it into each
+  # packaging format's own arch spelling, so this one template yields
+  # nodechess-<v>-linux-x86_64.AppImage and nodechess-<v>-linux-amd64.deb, not
+  # the "x64" written on the mac and win artifacts. The landing page has to spell
+  # those two out exactly; check release assets before editing this line.
   artifactName: nodechess-${version}-${os}-${arch}.${ext}
 dmg:
   artifactName: nodechess-${version}-${arch}.${ext}

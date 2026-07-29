@@ -56,6 +56,25 @@ const KATAGO_BINARIES: Record<string, KatagoBinaryArtifact> = {
     asset: 'katago-win-x64.zip',
     bytes: 4773666,
     sha256: '02c0dd2417939bf891988f7106e4776e513c2a198e2338bd42aa826def67669b'
+  },
+  // Added 1.4.0. The official eigen (pure CPU) build, matching the Windows
+  // choice.
+  //
+  // .tgz AND NOT .zip, WHICH IS NOT COSMETIC. extractArchive below shells out
+  // to `tar -xf`, which is bsdtar on macOS and on Windows 10+ and reads zip
+  // quite happily. On Linux `tar` is GNU tar, which cannot read a zip at all.
+  // Shipping the upstream zip here would therefore fail extraction on every
+  // single Linux install, so the release asset is the upstream archive
+  // repacked as a gzipped tar carrying the same katago + default_gtp.cfg.
+  // It is repacked BY linux-engines.yml, not by hand, because tar and gzip
+  // record timestamps: a local rebuild of "the same" archive yields a
+  // different sha256 and would quietly desync this row from the file on the
+  // release. That workflow extracts it with GNU tar and drives a real GTP
+  // genmove before the bytes are ever uploaded.
+  'linux-x64': {
+    asset: 'katago-linux-x64.tgz',
+    bytes: 37084276,
+    sha256: '06d45e0978a3ae8cff403afe7c0cab0ce29b864c034173b6c32623ef003facbf'
   }
 }
 

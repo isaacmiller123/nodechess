@@ -67,6 +67,19 @@ const ENGINE_ARTIFACTS: Record<string, EngineArtifact> = {
     asset: 'stockfish-sf18-mac-arm64',
     bytes: 113853992,
     sha256: 'bc0cac905ecdf2147fe22055c733bcd999b1e3f7c399fbaf7fb9055786563590'
+  },
+  // Added 1.4.0 with the first Linux build. This is the official sf_18
+  // `stockfish-ubuntu-x86-64-sse41-popcnt` binary, mirrored here unmodified.
+  // SSE4.1+POPCNT AND NOT AVX2, deliberately: avx2 is quicker but raises the
+  // CPU floor from Nehalem (2008) to Haswell (2013) and dies with SIGILL below
+  // it, and an engine that crashes the moment a user asks for analysis is a
+  // far worse trade than a few percent of node rate. Proven to answer UCI on
+  // Linux by .github/workflows/linux-engines.yml, which is the only place an
+  // x86-64 ELF can actually be run in this project.
+  'linux-x64': {
+    asset: 'stockfish-sf18-linux-x64',
+    bytes: 112933248,
+    sha256: 'f89b3b35c0588ff88582c3cdbd64bceafc2b71692d3977e1ed7be93871827369'
   }
 }
 

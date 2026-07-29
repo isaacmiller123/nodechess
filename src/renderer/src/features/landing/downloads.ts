@@ -76,11 +76,15 @@ export const OFFERS: readonly PlatformOffer[] = [
   {
     id: 'linux',
     name: 'Linux',
-    href: `${LATEST}/nodechess-${RELEASE_VERSION}-linux-x64.AppImage`,
-    // Said plainly because it is the one platform where a headline feature is
-    // missing: ENGINE_ARTIFACTS in src/main/datasets/datasets.service.ts has no
-    // linux-x64 row, so Settings -> Datasets offers the puzzle DB and no engine.
-    note: 'AppImage, x64. No Stockfish analysis yet',
+    // x86_64, NOT x64. electron-builder spells the arch the way each packaging
+    // format does, so the AppImage is -linux-x86_64 while the deb beside it is
+    // -linux-amd64 and the mac/win artifacts above are -x64. Verified against
+    // the actual release assets, because guessing this 404s the button.
+    href: `${LATEST}/nodechess-${RELEASE_VERSION}-linux-x86_64.AppImage`,
+    // The distro floor is real and worth one line here rather than a support
+    // question later: lc0 is compiled against glibc 2.35 (see maia.ts), so
+    // anything older cannot run the Maia bots.
+    note: 'AppImage, 64 bit. Ubuntu 22.04 and later',
     size: '180 MB'
   },
   { id: 'ios', name: 'iOS', href: null, note: 'The iOS app is coming soon' },

@@ -108,6 +108,10 @@ the nets are platform-independent. Asset name → size → sha256:
 | `lc0-0.32.1-mac-arm64` | 1848672 | `6a6f5e8083025c6cd194ddcfb3ead17b51347c4591cff436670ce7a3bd14f98f` | Homebrew 0.32.1 bottle `libexec/lc0` (system libs only), GPL-3.0 |
 | `katago-win-x64.zip` | 4773666 | `02c0dd2417939bf891988f7106e4776e513c2a198e2338bd42aa826def67669b` | official `katago-v1.16.5-eigen-windows-x64.zip`, unmodified, MIT-style (see upstream LICENSE) |
 | `katago-mac-arm64.tgz` | 4451080 | `bd6cf118f55654936143aee0656105a40b3263bb4ca3f9c1f58d1a820bb1463b` | relocatable bundle built from the Homebrew 1.16.5 bottle (Metal backend): binary + 84 dylibs rewritten to `@executable_path`, ad-hoc signed, + `default_gtp.cfg` |
+| `stockfish-sf18-linux-x64` | 112933248 | `f89b3b35c0588ff88582c3cdbd64bceafc2b71692d3977e1ed7be93871827369` | official sf_18 `stockfish-ubuntu-x86-64-sse41-popcnt`, unmodified, GPL-3.0 |
+| `fairy-stockfish-14-linux-x64` | 2527680 | `41b8b4d539adfd9924929ee4a948d1a37dd1e9beaa535a811cb5e7fee9e4cb99` | official `fairy_sf_14` release, `fairy-stockfish-largeboard_x86-64`, GPL-3.0 |
+| `lc0-0.32.1-linux-x64` | 2237392 | `b4b40f86f93c9bf84c10b7ca4088db860c6e9c026300bad2f3893d5218f73b43` | **compiled by us**, not mirrored: upstream publishes no Linux binary in any release. `v0.32.1` tag, eigen backend, built on ubuntu-22.04 (glibc 2.35 floor) by `.github/workflows/linux-engines.yml`, GPL-3.0 |
+| `katago-linux-x64.tgz` | 37084276 | `06d45e0978a3ae8cff403afe7c0cab0ce29b864c034173b6c32623ef003facbf` | official `katago-v1.16.5-eigen-linux-x64.zip`, **repacked as `.tgz`** (GNU tar cannot read zip; see below), binary + `default_gtp.cfg` |
 | `kata-b6c96.bin.gz` | 3827339 | `f57fddf4672364d385d6ab177364ab819810d1123e229cb2649c4f337a2160b1` | katagoarchive.org g170 (`g170-b6c96-s175395328-d26788732`), CC0 |
 | `kata-b10c128.bin.gz` | 11138361 | `1a8e05a4ea3fca20dab79410cbb566c760767fcdd2fa0b701cfe259a84cc8b04` | katagoarchive.org g170 (`g170e-b10c128-s1141046784-d204142634`), CC0 |
 | `kata-b18-humanv0.bin.gz` | 99066230 | `637746e44f0efe00ad1245a50aa9bbf0716efe364c43965ead97bd6835d84ab5` | KataGo v1.15.0 release (`b18c384nbt-humanv0.bin.gz`, Human-SL) |
@@ -116,8 +120,11 @@ the nets are platform-independent. Asset name → size → sha256:
 Consumers: `src/main/datasets/maia.ts` (lc0 + maia weights; mirror-first with CSSLab fallback for the
 weights) and `src/main/datasets/katago.ts` (KataGo archive + nets; mirror-first with
 katagoarchive.org/GitHub fallback). The KataGo binary ships as an **archive** (it is not
-self-contained on either OS); the importer extracts it with the system `tar` (bsdtar, present on
-macOS and Windows 10+, and it reads `.zip` as well as `.tgz`). Everything else follows the raw
+self-contained on any OS); the importer extracts it with the system `tar`. On macOS and Windows 10+
+that is bsdtar, which reads `.zip` as well as `.tgz`, so those two archives are the upstream zips
+unmodified. **On Linux `tar` is GNU tar, which cannot read a zip at all**, which is why the Linux
+KataGo asset is the upstream zip repacked as a `.tgz`. Getting this wrong does not degrade, it fails
+extraction on every Linux install. Everything else follows the raw
 one-file-per-item pattern. `scripts/verify-katago.mjs` spawns the imported mac KataGo over GTP with
 the b6c96 net and prints a 9×9 `genmove` as proof the bundle runs. Rebuilding the mac KataGo bundle:
 install `katago` from Homebrew, copy the binary + transitive `/opt/homebrew` dylibs, rewrite ids/load
@@ -126,7 +133,7 @@ paths to `@executable_path/<name>` with `install_name_tool`, `codesign -f -s -` 
 directory contents (files at archive root).
 
 The Fairy-Stockfish group is wired in `src/main/datasets/fairyStockfish.ts` (mirror-first from this
-release, official `fairy_sf_14` URL as the win-x64 fallback; the mac binary additionally ships
+release, official `fairy_sf_14` URL as the fallback on win-x64 and linux-x64; the mac binary ships
 BUNDLED in `resources/engine/mac`, see `electron-builder.yml`). Keep asset names + checksums in
 sync with this table.
 

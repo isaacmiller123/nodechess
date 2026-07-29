@@ -19,6 +19,9 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 //     official mac build exists upstream). The datasets-v1 mirror row below is
 //     the fallback for installs without the bundled copy. Proven against all
 //     13 routed variants by scripts/probe-fairy-sf.mjs.
+//   - linux-x64 (added 1.4.0): the same plain 'largeboard' build as Windows,
+//     downloaded rather than bundled, because unlike mac an official Linux
+//     binary does exist upstream. Mirror first, upstream fallback.
 //
 // Resolution is imported-first then bundled (datasets/paths.ts), same as
 // Stockfish, so an imported binary always wins without a reinstall.
@@ -49,6 +52,19 @@ export const FAIRY_SF_ARTIFACTS: Record<string, FairyArtifact> = {
     urls: [`${RELEASE_BASE}/fairy-stockfish-14-mac-arm64`],
     bytes: 743240,
     sha256: 'df96025ba16b8be2c3f7ae2e867844545330915e477c512eaf4c1202918f9e87'
+  },
+  // Added 1.4.0. The plain `largeboard_x86-64` build, matching the Windows row
+  // above rather than the bmi2/modern variants, so both desktops run the same
+  // instruction baseline. Mirror first, official release as fallback, same as
+  // Windows. linux-engines.yml proves it routes an actual xiangqi move, not
+  // merely that it answers uci: variant routing is the entire reason it ships.
+  'linux-x64': {
+    urls: [
+      `${RELEASE_BASE}/fairy-stockfish-14-linux-x64`,
+      `${FAIRY_OFFICIAL}/fairy-stockfish-largeboard_x86-64`
+    ],
+    bytes: 2527680,
+    sha256: '41b8b4d539adfd9924929ee4a948d1a37dd1e9beaa535a811cb5e7fee9e4cb99'
   }
 }
 
