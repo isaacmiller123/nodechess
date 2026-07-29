@@ -57,21 +57,21 @@ export const OFFERS: readonly PlatformOffer[] = [
     name: 'macOS, Apple silicon',
     href: `${LATEST}/nodechess-${RELEASE_VERSION}-arm64.dmg`,
     note: 'M1 and later',
-    size: '177 MB'
+    size: '180 MB'
   },
   {
     id: 'macos-intel',
     name: 'macOS, Intel',
     href: `${LATEST}/nodechess-${RELEASE_VERSION}-x64.dmg`,
     note: 'Pre-2020 Macs',
-    size: '179 MB'
+    size: '181 MB'
   },
   {
     id: 'windows',
     name: 'Windows',
     href: `${LATEST}/nodechess-Setup-${RELEASE_VERSION}.exe`,
     note: '64 bit installer',
-    size: '144 MB'
+    size: '145 MB'
   },
   {
     id: 'linux',
@@ -85,7 +85,7 @@ export const OFFERS: readonly PlatformOffer[] = [
     // question later: lc0 is compiled against glibc 2.35 (see maia.ts), so
     // anything older cannot run the Maia bots.
     note: 'AppImage, 64 bit. Ubuntu 22.04 and later',
-    size: '180 MB'
+    size: '186 MB'
   },
   { id: 'ios', name: 'iOS', href: null, note: 'The iOS app is coming soon' },
   { id: 'android', name: 'Android', href: null, note: 'The Android app is coming soon' }
