@@ -144,7 +144,7 @@ jobs:
           **macOS:** the `.dmg` for your chip (arm64 = Apple Silicon, x64 = Intel).
           **Linux:** `nodechess-*-linux-x86_64.AppImage` (any distro, `chmod +x` and run) or `nodechess-*-linux-amd64.deb` (Debian/Ubuntu/Mint). Needs glibc 2.35 or newer, so Ubuntu 22.04+, Debian 12+, Mint 21+. All four engines are available: Stockfish 18, Fairy-Stockfish (the variant games), lc0 with the Maia human-like bots, and KataGo for Go.
 
-          Both players must run the same version for online play. The app checks for updates on launch (Windows updates itself; macOS offers the new `.dmg` to install over the old app). Builds are unsigned: Windows SmartScreen → More info → Run anyway; macOS → right-click the app → Open (first launch only). On first run, use Settings → Datasets to import the engine and puzzle database.
+          Both players must run the same version for online play. The app checks for updates on launch (Windows updates itself; macOS offers the new `.dmg`, and Linux offers whichever of the AppImage or `.deb` you installed, to put over the old one). Builds are unsigned: Windows SmartScreen → More info → Run anyway; macOS → right-click the app → Open (first launch only). On first run, use Settings → Datasets to import the engine and puzzle database.
           EOF
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" \
             --title "nodechess $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md" \

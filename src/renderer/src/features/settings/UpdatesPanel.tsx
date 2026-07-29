@@ -96,9 +96,16 @@ export default function UpdatesPanel(): JSX.Element {
                 ? 'Restart to finish, or it installs on your next quit.'
                 : auto
                   ? 'It will download and install automatically.'
-                  : openedExternal
-                    ? 'Download started in your browser. Quit nodechess, then install the new app over the old one. Your games and progress are kept.'
-                    : 'One click downloads the new app. Install it over the old one. Your games and progress are kept.'
+                  : // Same honesty check as UpdateToast: no downloadUrl means
+                    // the click only opens the release page, so neither branch
+                    // below may promise a download that did not start.
+                    openedExternal
+                    ? status?.downloadUrl
+                      ? 'Download started in your browser. Quit nodechess, then install the new file over the old one. Your games and progress are kept.'
+                      : 'Opened the release page in your browser. Pick the file for your system. Your games and progress are kept.'
+                    : status?.downloadUrl
+                      ? 'One click downloads the new app. Install it over the old one. Your games and progress are kept.'
+                      : 'One click opens the release page, where you pick the file for your system. Your games and progress are kept.'
             }
           >
             <button type="button" className="btn" onClick={onUpdate}>

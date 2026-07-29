@@ -25,7 +25,7 @@ Rules the parser follows:
 
 Releases go directly below this line, newest first.
 
-## 1.4.0 - 2026-07-28
+## 1.4.0 - 2026-07-29
 
 - nodechess runs on Linux: an AppImage for any distribution, or a .deb for Debian, Ubuntu and Mint. Both are 64 bit, and both need Ubuntu 22.04, Debian 12, Mint 21 or newer.
 - Every engine works on Linux, not just the app around them: Stockfish 18 for analysis and the engine bots, Fairy-Stockfish for xiangqi, shogi, janggi, makruk and the variants, lc0 with the Maia human-like opponents, and KataGo for Go. Import them from Settings, Datasets exactly as on Windows and macOS.

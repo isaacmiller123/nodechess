@@ -75,13 +75,21 @@ export function UpdateToast({ raised, onOpenSettings }: { raised?: boolean; onOp
             : `v${status.latestVersion} is out`}
         </strong>
         <span>
+          {/* status.downloadUrl is the honesty check. It is set only when the
+              updater could name the exact file for THIS machine; without it
+              the click opens the release page and no download begins, so the
+              copy must not claim one did. */}
           {phase === 'opened'
-            ? 'Download started. Quit nodechess and install it over the old app.'
+            ? status.downloadUrl
+              ? 'Download started. Quit nodechess, then install the new file over it.'
+              : 'Opened the release page. Pick the download for your system.'
             : status.state === 'ready'
               ? 'Restart to finish, or it installs on your next quit.'
               : status.mode === 'auto'
                 ? 'Downloads and installs itself.'
-                : 'One-click download; install it over the old app.'}
+                : status.downloadUrl
+                  ? 'One-click download; install it over the old app.'
+                  : 'Opens the release page to pick your download.'}
         </span>
       </div>
       {phase === 'offer' && (

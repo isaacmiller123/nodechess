@@ -12,6 +12,8 @@
 // State is a single UpdateStatus snapshot; every change is pushed to all
 // windows on 'updates:status' (renderer store: state/updates.ts).
 
+import fs from 'node:fs'
+import path from 'node:path'
 import { app, shell, BrowserWindow, net } from 'electron'
 import type { UpdateActionResult, UpdateStatus } from '@shared/types'
 import {
@@ -19,8 +21,33 @@ import {
   isNewerVersion,
   latestReleaseApiUrl,
   parseLatestRelease,
-  pickAssetForPlatform
+  pickAssetForPlatform,
+  type LinuxPackageFormat
 } from './updateLogic'
+
+/**
+ * Which Linux package this process is running from. Both signals are written
+ * by the packaging itself, and they are the same two electron-updater reads to
+ * choose between its AppImage and deb updaters, so this agrees with the tool
+ * that would take over if Linux ever gets in-place updates:
+ *   - APPIMAGE is exported into the environment by the AppImage runtime.
+ *   - `package-type` is dropped next to the app by electron-builder when it
+ *     builds an installable package (it holds the literal "deb" here).
+ * Neither present means an unpacked tree, a distro rebuild, or something we do
+ * not recognise: return null and let the caller fall back to the release page
+ * rather than assert a format and hand out the wrong file.
+ */
+function linuxPackageFormat(): LinuxPackageFormat {
+  if (process.platform !== 'linux') return null
+  if (process.env.APPIMAGE) return 'appimage'
+  try {
+    const declared = fs.readFileSync(path.join(process.resourcesPath, 'package-type'), 'utf8')
+    if (declared.trim() === 'deb') return 'deb'
+  } catch {
+    // No such file on an AppImage or an unpacked run. Not an error.
+  }
+  return null
+}
 
 const updatePath = decideUpdatePath(process.platform, app.isPackaged)
 
@@ -95,7 +122,12 @@ async function checkViaGitHub(): Promise<void> {
     setStatus({ state: 'up-to-date', latestVersion: release.version, checkedAt: Date.now() })
     return
   }
-  const asset = pickAssetForPlatform(release.assets, process.platform, process.arch)
+  const asset = pickAssetForPlatform(
+    release.assets,
+    process.platform,
+    process.arch,
+    linuxPackageFormat()
+  )
   setStatus({
     state: 'available',
     latestVersion: release.version,

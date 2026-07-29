@@ -4,7 +4,7 @@ nodechess is a board-game app that runs on your own machine. It plays and analys
 Stockfish, teaches it through a 40-chapter school, and ships about twenty other games: chess
 variants, xiangqi, shogi, janggi, makruk, go, checkers, othello, connect four, gomoku, hex and
 nine men's morris. Each one is playable locally, against a bot, or online. There is one build for
-Windows and macOS as a desktop app, and the same source builds a web version.
+Windows, macOS and Linux as a desktop app, and the same source builds a web version.
 
 Single-player works with no network at all once the engine and puzzle database are imported.
 Online play is peer-to-peer: two clients connect directly over WebRTC and there is no game server
@@ -99,7 +99,7 @@ npm run package          # installers for the current OS
 
 Large binaries and generated databases are not committed; `npm run setup` fetches and builds them.
 Tests are standalone scripts under `scripts/`: run one with `node scripts/<name>.mjs`, or through
-the matching `npm run test:*`. CI builds both platforms and runs the suites on each.
+the matching `npm run test:*`. CI builds all three platforms and runs the suites on each.
 
 There is a third target, `npm run dev:seed`, which is a small standalone page that runs storage and
 relay nodes for other players. It shares nothing with the app but the accounts code.

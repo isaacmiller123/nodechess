@@ -65,6 +65,7 @@ try {
     parseLatestRelease,
     pickMacAsset,
     pickWinAsset,
+    pickLinuxAsset,
     pickAssetForPlatform
   } = await import(pathToFileURL(outfile).href)
 
@@ -78,7 +79,7 @@ try {
     ['win32', false, 'notify-download'], // dev on Windows: never touch the real installer
     ['darwin', true, 'notify-download'], // mac packaged: UNSIGNED → Squirrel refuses; NEVER in-place
     ['darwin', false, 'notify-download'], // mac dev
-    ['linux', true, 'notify-download'], // no linux artifacts: release page fallback
+    ['linux', true, 'notify-download'], // linux ships an AppImage + deb, but never in-place
     ['freebsd', false, 'notify-download'] // anything unknown
   ]
   for (const [platform, packaged, want] of TABLE) {
@@ -213,6 +214,8 @@ try {
     { name: `nodechess-${V}-x64.dmg`, url: 'u:dmg-x64' },
     { name: `nodechess-${V}-mac-arm64.zip`, url: 'u:zip-arm64' },
     { name: `nodechess-${V}-mac-x64.zip`, url: 'u:zip-x64' },
+    { name: `nodechess-${V}-linux-x86_64.AppImage`, url: 'u:appimage' },
+    { name: `nodechess-${V}-linux-amd64.deb`, url: 'u:deb' },
     { name: 'latest.yml', url: 'u:latest' },
     { name: `nodechess-Setup-${V}.exe.blockmap`, url: 'u:blockmap' }
   ]
@@ -241,10 +244,41 @@ try {
     'legacy mac dmg naming still resolves (suffix match)'
   )
 
+  // ==========================================================================
+  // pickLinuxAsset (BINDING): a Linux user must be handed the format they
+  // actually installed, never "a Linux file". The release carries both, so a
+  // wrong guess installs cleanly and leaves two copies or a dead one.
+  // ==========================================================================
+  console.log('pickLinuxAsset: format decides, and an unknown format never guesses')
+  eq(pickLinuxAsset(RELEASE_ASSETS, 'appimage')?.url, 'u:appimage', 'appimage install → AppImage')
+  eq(pickLinuxAsset(RELEASE_ASSETS, 'deb')?.url, 'u:deb', 'deb install → deb')
+  eq(pickLinuxAsset(RELEASE_ASSETS, null), null, 'unknown format → null, NEVER a guess')
+  ok(
+    pickLinuxAsset(RELEASE_ASSETS, 'appimage').name.endsWith('.AppImage') &&
+      pickLinuxAsset(RELEASE_ASSETS, 'deb').name.endsWith('.deb'),
+    'the two Linux formats are never crossed'
+  )
+  eq(pickLinuxAsset([], 'appimage'), null, 'no assets → null (release page link remains)')
+
   console.log('pickAssetForPlatform: per-platform dispatch')
   eq(pickAssetForPlatform(RELEASE_ASSETS, 'darwin', 'arm64')?.url, 'u:dmg-arm64', 'darwin → mac pick')
   eq(pickAssetForPlatform(RELEASE_ASSETS, 'win32', 'x64')?.url, 'u:setup', 'win32 → win pick')
-  eq(pickAssetForPlatform(RELEASE_ASSETS, 'linux', 'x64'), null, 'linux → null (release page fallback)')
+  eq(
+    pickAssetForPlatform(RELEASE_ASSETS, 'linux', 'x64', 'appimage')?.url,
+    'u:appimage',
+    'linux + appimage → AppImage'
+  )
+  eq(
+    pickAssetForPlatform(RELEASE_ASSETS, 'linux', 'x64', 'deb')?.url,
+    'u:deb',
+    'linux + deb → deb'
+  )
+  eq(
+    pickAssetForPlatform(RELEASE_ASSETS, 'linux', 'x64'),
+    null,
+    'linux, format unknown → null (release page fallback)'
+  )
+  eq(pickAssetForPlatform(RELEASE_ASSETS, 'freebsd', 'x64'), null, 'unknown platform → null')
 
   console.log(`\nALL GREEN: ${passed} assertions`)
 } finally {

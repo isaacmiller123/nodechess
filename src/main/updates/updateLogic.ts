@@ -152,14 +152,40 @@ export function pickWinAsset(assets: ReleaseAsset[]): ReleaseAsset | null {
   return assets.find((a) => /^(?:nodechess|Chess)-Setup-.*\.exe$/.test(a.name)) ?? null
 }
 
+/**
+ * Which kind of Linux package this build was installed from, or null when that
+ * cannot be known.
+ *
+ * THIS CANNOT BE GUESSED FROM THE ASSET NAMES, and guessing is the trap. A
+ * release carries both a .AppImage and a .deb; handing a .deb to someone
+ * running the AppImage (or the reverse) is worse than handing them nothing,
+ * because it looks like it worked. The only honest source is the running
+ * install itself, which is why updateService resolves this from the AppImage
+ * env var and electron-builder's `package-type` resource rather than from the
+ * release. Anything it cannot identify stays null and gets the release page.
+ */
+export type LinuxPackageFormat = 'appimage' | 'deb' | null
+
+/** The Linux artifact matching the format the user actually installed. */
+export function pickLinuxAsset(
+  assets: ReleaseAsset[],
+  format: LinuxPackageFormat
+): ReleaseAsset | null {
+  if (format === 'appimage') return assets.find((a) => /\.AppImage$/i.test(a.name)) ?? null
+  if (format === 'deb') return assets.find((a) => /\.deb$/i.test(a.name)) ?? null
+  return null
+}
+
 /** Per-platform pick for the notify-download path. Unknown platform → null
  *  (the release page link still works). */
 export function pickAssetForPlatform(
   assets: ReleaseAsset[],
   platform: string,
-  arch: string
+  arch: string,
+  linuxFormat: LinuxPackageFormat = null
 ): ReleaseAsset | null {
   if (platform === 'darwin') return pickMacAsset(assets, arch)
   if (platform === 'win32') return pickWinAsset(assets)
+  if (platform === 'linux') return pickLinuxAsset(assets, linuxFormat)
   return null
 }

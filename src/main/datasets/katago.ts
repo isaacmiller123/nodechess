@@ -10,13 +10,16 @@ import { downloadVerified, type DownloadSpec } from './datasets.service'
 //   - the KataGo 1.16.5 engine, per-platform, spawned over GTP;
 //   - neural nets, platform-independent .bin.gz files KataGo loads directly.
 //
-// Unlike stockfish/lc0, KataGo is NOT a single self-contained file on either
+// Unlike stockfish/lc0, KataGo is NOT a single self-contained file on any
 // platform (mac: Metal-backend binary + ~84 relocated Homebrew dylibs, all load
 // paths rewritten to @executable_path and ad-hoc re-signed; win: katago.exe +
-// its MSVC/libzip/OpenSSL DLLs), so the binary ships as ONE archive per
-// platform and the importer extracts it with the OS's own bsdtar. /usr/bin/tar
-// on macOS, %SystemRoot%\System32\tar.exe on Windows 10+ (reads .zip too).
-// Both archives also carry default_gtp.cfg, the config the GTP spawn uses.
+// its MSVC/libzip/OpenSSL DLLs; linux: the eigen build plus its config), so the
+// binary ships as ONE archive per platform and the importer extracts it with
+// the OS's own tar. That is bsdtar on macOS (/usr/bin/tar) and on Windows 10+
+// (%SystemRoot%\System32\tar.exe), both of which read .zip as well as .tgz. It
+// is GNU tar on Linux, which reads NEITHER zip nor anything but tar formats,
+// which is why the Linux asset is a .tgz. See the linux-x64 row below.
+// Every archive also carries default_gtp.cfg, the config the GTP spawn uses.
 //
 // Layout on disk (per-user, writable; same root as the other datasets):
 //   <userData>/datasets/katago/katago[.exe]     (+ dylibs/DLLs + default_gtp.cfg)

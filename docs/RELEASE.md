@@ -1,10 +1,10 @@
-# nodechess desktop release runbook: mac + win. Status: verified live (2026-07-24).
+# nodechess desktop release runbook: mac + win + linux. Status: verified live (2026-07-29).
 
 How a nodechess **desktop** build gets from this repo to the public download page. The web
 target is a separate artifact: see [`WEB-DEPLOY.md`](WEB-DEPLOY.md).
 
-The whole release is one idea: **push a `vX.Y.Z` git tag, and CI builds the mac + Windows
-installers and attaches them to a GitHub Release.** Everything below is the detail around
+The whole release is one idea: **push a `vX.Y.Z` git tag, and CI builds the mac, Windows and
+Linux installers and attaches them to a GitHub Release.** Everything below is the detail around
 that one sentence. The guarded helper `scripts/release.mjs` does the safe parts (validate +
 bump); a human pushes the tag.
 
@@ -17,7 +17,7 @@ bump); a human pushes the tag.
 | Download page | GitHub Releases of **`isaacmiller123/nodechess`** (public) |
 | What triggers a build | pushing a tag matching `v*` (also runnable manually via Actions) |
 | Who builds | `.github/workflows/build.yml`: `macos-latest` + `windows-latest`, in parallel |
-| Platforms | mac + Windows only: `electron-builder.yml` has no `linux:` target, so no Linux build has ever been produced |
+| Platforms | mac + Windows + Linux. The `linux:` block builds an AppImage and a .deb (x64) on an `ubuntu-latest` leg, added in 1.4.0 |
 | Signing | **none**: mac + win ship unsigned (users clear Gatekeeper / SmartScreen once) |
 | Auto-update | Windows = in-place (electron-updater); macOS = check-and-notify + `.dmg` download |
 | Installer size | ~186–188 MB per mac artifact (lean: engine + puzzle DB are **not** bundled) |
@@ -155,7 +155,7 @@ Release exists at `https://github.com/isaacmiller123/nodechess/releases/tag/vX.Y
 installers attached.
 
 To rehearse without releasing: **Actions → build → Run workflow** (`workflow_dispatch`) builds
-both platforms and uploads them as 14-day **workflow artifacts** without creating a Release
+all three platforms and uploads them as 14-day **workflow artifacts** without creating a Release
 (the publish step is tag-only).
 
 ---
@@ -179,17 +179,41 @@ installer. They download on first run via **Settings → Datasets** from the sep
 Consequences for releasing:
 - **App version bumps never re-upload datasets.** The `RELEASE_BASE` URL is pinned to the
   `datasets-v1` tag. Only touch that release when the engine/puzzle **data** itself changes.
-- **Known gap: Intel Mac (`darwin-x64`) has no Stockfish artifact.** `ENGINE_ARTIFACTS`
-  publishes `win32-x64` and `darwin-arm64` only, so on an Intel Mac the main analysis engine
-  is unavailable (puzzles/Maia/KataGo still import; the tiny bundled Fairy-Stockfish still
-  works). The `.dmg`/`.zip` still build and ship. This is a datasets-coverage gap, not a
-  packaging one. Closing it = add a verified `darwin-x64` row (owned by the datasets lane).
+- **KNOWN GAP, AND IT IS BIGGER THAN THIS DOC USED TO SAY: Intel Mac (`darwin-x64`) has no
+  engines at all.** An earlier version of this entry called it one missing Stockfish row and
+  said "puzzles/Maia/KataGo still import; the tiny bundled Fairy-Stockfish still works". Both
+  of those parentheticals are FALSE, and believing them is why the gap keeps surviving review.
+  As of 1.4.0 the real state is:
+  - **All four** tables (`ENGINE_ARTIFACTS`, `FAIRY_SF_ARTIFACTS`, `LC0_ARTIFACTS`,
+    `KATAGO_BINARIES`) key `win32-x64`, `darwin-arm64` and `linux-x64`. **None** has
+    `darwin-x64`. Intel Mac is now the only shipped desktop artifact with an empty column.
+  - **Stockfish:** `engineItem()` returns null, so the engine row is absent from Settings →
+    Datasets, while `EngineRequiredNotice` still tells the user to "Download in Settings →
+    Datasets". The app points at a control it does not render.
+  - **Maia and KataGo:** the *nets* download and report success, but `maiaGroupInstalled()` /
+    `katagoGroupInstalled()` require the binary and stay false forever. The panel sits at
+    "1 of 3 installed" and the Download button reports success every time. Silent, repeatable,
+    fake success.
+  - **Fairy-Stockfish is worse than missing.** `resources/engine/mac/fairy-stockfish` is
+    `Mach-O arm64` single-slice (verify: `lipo -archs`), and `mac.extraResources` in
+    `electron-builder.yml` is **arch-blind**, so that arm64 binary is bundled into the x64
+    `.dmg` too. `fairyEngineInstalled()` therefore returns true on Intel, `fairyImportNeeded()`
+    returns false so no download is ever attempted, `fairyReady: true` is reported, the variant
+    bots advertise as available, and the spawn fails at play time. Rosetta translates x86_64 to
+    arm64, never the reverse.
+  - Net effect: an Intel Mac user gets puzzles and little else, across four different failure
+    presentations, none of which says what is wrong.
+  Closing it needs BOTH a verified `darwin-x64` row in all four tables AND an arch-aware (or
+  deleted) mac Fairy bundle; rows alone leave the false-positive above intact. The honest
+  alternative is to drop the `x64` mac targets from `electron-builder.yml` and the "macOS,
+  Intel" offer from `features/landing/downloads.ts`. Shipping the download while the column
+  stays empty is the one option that should not continue.
 
 ---
 
 ## 5. Auto-update model (why the artifact names matter)
 
-Both platforms check `isaacmiller123/nodechess` releases on launch (5 s after ready,
+All three platforms check `isaacmiller123/nodechess` releases on launch (5 s after ready,
 packaged builds only) to keep online-play peers on matching versions. The path is decided in
 `src/main/updates/` and is a **hard constraint of shipping unsigned**:
 
@@ -278,7 +302,9 @@ From `electron-builder.yml` (`${version}` = `package.json` version):
 | Windows | Zip | `nodechess-${version}-win-x64.zip` |
 | macOS | DMG | `nodechess-${version}-${arch}.dmg` (`arm64` / `x64`) |
 | macOS | Zip | `nodechess-${version}-mac-${arch}.zip` |
-| both | Update feed | `latest.yml` (win), `latest-mac.yml` (mac), `*.blockmap` |
+| Linux | AppImage | `nodechess-${version}-linux-x86_64.AppImage` (note `x86_64`, not `x64`) |
+| Linux | Deb | `nodechess-${version}-linux-amd64.deb` (note `amd64`) |
+| all | Update feed | `latest.yml` (win), `latest-mac.yml` (mac), `latest-linux.yml` (linux), `*.blockmap` |
 
 The Windows installer name is pinned rather than left to electron-builder's default because
 `updateLogic.pickWinAsset` matches it by prefix. Releases published before the rename used a

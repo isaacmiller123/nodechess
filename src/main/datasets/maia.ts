@@ -84,7 +84,7 @@ interface Lc0File {
 }
 
 // lc0 0.32.1, keyed by `${process.platform}-${process.arch}` like ENGINE_ARTIFACTS.
-// Both platforms uploaded + verified 2026-07-06 (see docs/DATASETS.md):
+// mac and win uploaded + verified 2026-07-06, linux 2026-07-29 (docs/DATASETS.md):
 //   mac-arm64: the raw Mach-O from the Homebrew bottle's libexec/lc0 (0.32.1,
 //     Metal/Accelerate. Links only system libraries, so one file suffices).
 //   win-x64: lc0.exe + dnnl.dll extracted from the official release zip

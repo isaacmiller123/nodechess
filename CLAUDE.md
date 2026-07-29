@@ -1,6 +1,6 @@
 # nodechess: project instructions
 
-Offline-first chess app: Electron desktop (mac + Windows), a web target, and a standalone seed
+Offline-first chess app: Electron desktop (mac + Windows + Linux), a web target, and a standalone seed
 node, all built from the same source. A 40-chapter school, 20+ board games, online multiplayer, and
 a decentralized account system. Stockfish and the ~4.7M Lichess puzzles are imported at runtime,
 not bundled (`docs/DATASETS.md`).

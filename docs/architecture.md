@@ -68,13 +68,13 @@ this table exists to record *why* each choice was made.
 | Rules / SAN / FEN / EPD / PGN | **chessops** | `^0.15.0` | lichess-grade. **Decisive:** full PGN game tree (variations + NAGs + comments) via `pgn` module; `makeFen(setup,{epd:true})` for EPD keys; legal-move `dests` map feeds chessground. GPL-3.0 (accepted). *(chess.js is NOT a dependency and is imported nowhere: chessops is the only rules library, in the app and in the build scripts alike, §5.5.)* |
 | Analysis/play/review engine | **Stockfish** (native NNUE binary) | **18** (release `sf_18`) | Native > WASM: full NNUE, true multithreading. NNUE net **embedded** → no loose `.nnue` to ship. **Not bundled:** imported at runtime from the public GitHub release via Settings → Datasets (`src/main/datasets`, `docs/DATASETS.md`), which is what keeps the installer small. GPL-3.0. |
 | Engines in the browser | **stockfish** (WASM) + **lila-stockfish-web** | `^18.0.8`, `^0.0.11` | The web target has no child processes: the same UCI seam is spoken by WASM workers (`src/web/engines`). Multi-thread needs COOP/COEP, which the host sets. |
-| Variants engine | **fairy-stockfish-nnue.wasm** (+ a native mac binary) | `^1.1.11` | Chess variants and the xiangqi/shogi/janggi/makruk bots. The ~750 KB mac binary is the one engine that IS bundled (`electron-builder.yml` mac block); Windows imports it. |
+| Variants engine | **fairy-stockfish-nnue.wasm** (+ a native mac binary) | `^1.1.11` | Chess variants and the xiangqi/shogi/janggi/makruk bots. The ~750 KB mac binary is the one engine that IS bundled (`electron-builder.yml` mac block; it is arm64-only, see the Intel-Mac gap in RELEASE.md §4); Windows and Linux import it. |
 | Human-feel engine | **lc0** (CPU build) + **Maia-1** weights | `maia-1100..1900.pb.gz` | Human move distribution for sub-1900 play. Imported at runtime like Stockfish (`src/main/datasets/maia.ts`), never bundled. GPL-3.0 (weights treated as GPL pending CSSLab confirmation). |
 | Local DB | **`node:sqlite`** (Node builtin) | n/a (ships with Electron 42) | `DatabaseSync`, synchronous, zero install. **No native module**, so no `@electron/rebuild`, no `asarUnpack`, no ABI rebuild step. `src/main/db/database.ts` is deliberately electron-free so the same repos + migrations run under Electron AND the web server. |
 | Spaced repetition | **ts-fsrs** (FSRS-6) | `^5.4.1` | MIT, default weights, `request_retention=0.9`. Schedules failed-puzzle / mistake review cards. |
 | Ratings | **hand-rolled Glicko-2** (~120 LOC) | in-repo | Glickman spec, numerically verified. Puzzle rating + vs-bot rating. No runtime dep. |
 | IPC validation | **zod** | `^4.4.3` | Schema-validate every IPC payload in `ipcMain.handle`. |
-| Packaging | **electron-builder** | `^26.15.3` | Windows **NSIS** + **portable** + **zip**; macOS **dmg** + **zip** (§7). |
+| Packaging | **electron-builder** | `^26.15.3` | Windows **NSIS** + **portable** + **zip**; macOS **dmg** + **zip**; Linux **AppImage** + **deb** (§7). |
 | Icons | **in-house SVG sprite** | in-repo | `src/renderer/src/components/IconSprite.tsx` draws the rail and chrome (ids `i-home`, `i-play`, …), per UI-v1. **lucide-react** `^1.21.0` (MIT) survives inside feature surfaces. |
 | Fonts | **Inter** (UI) + **JetBrains Mono** (numerals) + **Noto Sans Symbols 2** | OFL, self-hosted variable `.woff2` | Bundled under `resources/fonts/`, declared in `src/renderer/src/styles/fonts.css`. Same bytes on macOS, Windows and the web. No Google Fonts hotlink (`font-src 'self'`). |
 | 3D | **three** + **@react-three/fiber** + **drei** | `^0.185.1`, `^9.6.1`, `^10.7.7` | The games-platform 3D tabletop and Replay Theater, lazy-chunked so 2D never pays for it. |
@@ -513,7 +513,7 @@ Maia-1100; `<1900` → nearest Maia net; `1900–3190` → Stockfish `UCI_Elo`.
 
 ---
 
-## 7. Packaging (electron-builder: Windows NSIS + portable + zip, macOS dmg + zip)
+## 7. Packaging (electron-builder: Windows NSIS + portable + zip, macOS dmg + zip, Linux AppImage + deb)
 
 `electron-builder.yml`, abridged (the file itself is the source of truth):
 ```yaml
@@ -554,7 +554,7 @@ portable:
 - **No `asarUnpack`**: with `node:sqlite` there is no native module and no `.node` file to unpack.
 - `publish` declares the GitHub feed so electron-builder emits `latest.yml` / `latest-mac.yml`.
   Nothing publishes from here: CI packages with `--publish never` and attaches the files itself.
-  Windows auto-updates in place; macOS is check + notify + browser download, because Squirrel.Mac
+  Windows auto-updates in place; macOS and Linux are check + notify + browser download, because Squirrel.Mac
   refuses unsigned bundles. See `docs/RELEASE.md`.
 - `npm run setup` is **not** a packaging prerequisite any more: the datasets it builds are imported
   at runtime (§6.1), so a clean checkout can package without a 2 GB build first.
